@@ -1462,14 +1462,11 @@
     // ADMIN, REGISTRATION & VISUAL EDITOR ENGINE
     // ==========================================
 
+    // Админ — только после входа по паролю на главной (токен от сервера).
+    // Почта или role в сессии ученика админом не делают.
     function isAdminAuth() {
-      if (localStorage.getItem('nis_admin_auth') === 'true') return true;
-      if (localStorage.getItem('geotany_admin_auth') === 'true') return true;
-      try {
-        const s = JSON.parse(localStorage.getItem('geotany_user_session') || '{}');
-        if (s && (s.role === 'admin' || s.email === 'showanchik@gmail.com')) return true;
-      } catch(e) {}
-      return false;
+      if (!hasPortalAdminToken()) return false;
+      return localStorage.getItem('nis_admin_auth') === 'true' || localStorage.getItem('geotany_admin_auth') === 'true';
     }
 
     function isUserAllowed() {

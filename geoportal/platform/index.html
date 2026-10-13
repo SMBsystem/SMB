@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="kk" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SMB Portal — курстар</title>
+  <meta name="description" content="SMB Portal: барлық курстар бір жерде. Мұғалім берген кодпен немесе сұраныс арқылы кіріңіз.">
+  <meta name="theme-color" content="#090d16">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+  </style>
+</head>
+<body class="bg-[#090d16] text-slate-100 min-h-screen flex flex-col overflow-x-hidden">
+
+  <div class="fixed top-0 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none -z-10"></div>
+  <div class="fixed bottom-0 right-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none -z-10"></div>
+
+  <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800/80">
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-3">
+      <a href="index.html" class="flex items-center gap-3 shrink-0">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500 via-cyan-500 to-amber-400 flex items-center justify-center">
+          <span class="text-sm font-black text-slate-950 font-mono tracking-tighter">SMB</span>
+        </div>
+        <div>
+          <span class="font-black text-lg text-white">SMB Portal</span>
+          <p class="text-[11px] text-slate-400 hidden sm:block" data-i18n="brandSub"></p>
+        </div>
+      </a>
+      <div class="flex items-center gap-2">
+        <a href="admin.html" id="adminLink" class="hidden px-3 py-1.5 rounded-xl bg-amber-500/15 text-amber-300 border border-amber-500/40 text-xs font-bold">👑 <span data-i18n="admin"></span></a>
+        <button id="logoutBtn" class="hidden px-3 py-1.5 rounded-xl bg-rose-500/10 text-rose-300 border border-rose-500/30 text-xs font-bold" data-i18n="logout"></button>
+        <select id="langSelect" aria-label="Тіл / Язык" class="bg-slate-800 text-xs text-slate-200 border border-slate-700 rounded-xl px-2.5 py-1.5 font-bold cursor-pointer">
+          <option value="kz">🇰🇿 KZ</option>
+          <option value="ru">🇷🇺 RU</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 w-full max-w-6xl mx-auto px-4 py-8 space-y-8">
+
+    <div id="setupNotice" class="hidden p-4 rounded-2xl bg-amber-500/15 border border-amber-500/40 text-amber-200 text-sm font-bold" data-i18n="notConfigured"></div>
+
+    <!-- Вход -->
+    <section id="loginView" class="hidden max-w-md mx-auto bg-slate-900/90 border border-cyan-500/30 rounded-3xl p-6 sm:p-8 space-y-5 shadow-2xl">
+      <div class="text-center space-y-2">
+        <h1 class="text-2xl font-black text-white" data-i18n="loginTitle"></h1>
+        <p class="text-sm text-slate-400" data-i18n="loginDesc"></p>
+      </div>
+      <form id="emailForm" class="space-y-3">
+        <input type="email" id="emailInput" required autocomplete="email" inputmode="email" data-i18n-ph="emailPh"
+               class="w-full px-4 py-3 bg-slate-950 border border-slate-700 focus:border-cyan-400 rounded-2xl text-sm text-white placeholder-slate-500 focus:outline-none">
+        <button type="submit" id="emailBtn" class="w-full py-3 rounded-2xl bg-gradient-to-r from-emerald-500 via-cyan-500 to-amber-400 text-slate-950 font-black text-sm disabled:opacity-60" data-i18n="sendLink"></button>
+      </form>
+      <button id="googleBtn" class="w-full py-3 rounded-2xl bg-white text-slate-900 font-bold text-sm flex items-center justify-center gap-2">
+        <span class="font-black text-blue-600">G</span> <span data-i18n="orGoogle"></span>
+      </button>
+    </section>
+
+    <!-- Кабинет ученика -->
+    <div id="appView" class="hidden space-y-8">
+
+      <form id="profileCard" class="hidden max-w-xl p-5 rounded-2xl bg-slate-900 border border-cyan-500/30 space-y-3">
+        <h2 class="font-black text-white" data-i18n="profileTitle"></h2>
+        <div class="grid sm:grid-cols-3 gap-2.5">
+          <label class="sm:col-span-2 block text-xs font-bold text-slate-300"><span data-i18n="fullName"></span>
+            <input id="nameInput" required minlength="2" maxlength="80" autocomplete="name" class="mt-1 w-full px-3 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-400">
+          </label>
+          <label class="block text-xs font-bold text-slate-300"><span data-i18n="grade"></span>
+            <select id="gradeInput" class="mt-1 w-full px-3 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-sm text-white">
+              <option value="11">11</option><option value="10">10</option><option value="9">9</option>
+              <option value="8">8</option><option value="7">7</option><option value="6">6</option><option value="other">—</option>
+            </select>
+          </label>
+        </div>
+        <button type="submit" class="px-5 py-2.5 rounded-xl bg-cyan-500 text-slate-950 font-black text-sm" data-i18n="save"></button>
+      </form>
+
+      <section class="space-y-3">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+          <h2 class="text-xl font-black text-white" data-i18n="myCourses"></h2>
+          <form id="codeForm" class="flex gap-2 w-full sm:w-auto">
+            <label for="codeInput" class="sr-only" data-i18n="enterCode"></label>
+            <input id="codeInput" required autocomplete="off" autocapitalize="characters" spellcheck="false" data-i18n-ph="codePh"
+                   class="flex-1 sm:w-64 px-3.5 py-2.5 bg-slate-950 border-2 border-amber-500/50 focus:border-amber-400 rounded-xl text-sm text-amber-300 font-mono font-black uppercase placeholder-slate-600 focus:outline-none">
+            <button type="submit" id="codeBtn" class="px-4 py-2.5 rounded-xl bg-amber-400 text-slate-950 font-black text-sm disabled:opacity-60" data-i18n="activate"></button>
+          </form>
+        </div>
+        <div id="myCourses" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-xl font-black text-white" data-i18n="catalog"></h2>
+        <div id="catalog" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+      </section>
+    </div>
+
+    <!-- Каталог для гостей (виден и без входа) -->
+    <section id="guestCatalogWrap" class="hidden space-y-3">
+      <h2 class="text-xl font-black text-white" data-i18n="catalog"></h2>
+      <div id="guestCatalog" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </section>
+  </main>
+
+  <!-- Окно запроса доступа -->
+  <dialog id="requestDialog" class="bg-transparent backdrop:bg-black/80 p-0 w-full max-w-md">
+    <form method="dialog" id="requestForm" class="m-4 p-5 rounded-3xl bg-slate-900 border border-cyan-500/40 space-y-3 text-slate-100">
+      <h3 id="requestTitle" class="font-black text-white"></h3>
+      <textarea id="requestMsg" maxlength="500" rows="3" data-i18n-ph="reqMsgPh"
+                class="w-full px-3 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400"></textarea>
+      <div class="flex justify-end gap-2">
+        <button value="cancel" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-sm font-bold" data-i18n="cancel"></button>
+        <button value="send" class="px-4 py-2 rounded-xl bg-cyan-500 text-slate-950 text-sm font-black" data-i18n="send"></button>
+      </div>
+    </form>
+  </dialog>
+
+  <script>
+    const { sb, t, esc, toast, courseTitle, courseDesc } = SMB;
+    let state = { user: null, profile: null, courses: [], enrolled: new Set(), pending: new Set() };
+    let requestCourseId = null;
+
+    function applyLang() {
+      const lang = SMB.getLang();
+      document.documentElement.lang = lang === 'ru' ? 'ru' : 'kk';
+      document.getElementById('langSelect').value = lang;
+      document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+      document.querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = t(el.dataset.i18nPh); });
+    }
+
+    function courseCard(c, action) {
+      return `
+        <article class="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 hover:border-cyan-500/40 transition flex flex-col gap-3">
+          <div class="flex items-start gap-3">
+            <span class="text-3xl leading-none" aria-hidden="true">${esc(c.icon)}</span>
+            <div class="min-w-0">
+              <h3 class="font-black text-white leading-snug">${esc(courseTitle(c))}</h3>
+              <p class="text-xs text-slate-400 mt-1">${esc(courseDesc(c))}</p>
+            </div>
+          </div>
+          <div class="mt-auto">${action}</div>
+        </article>`;
+    }
+
+    function openBtn(c) {
+      return `<a href="course.html?c=${encodeURIComponent(c.slug)}" class="block text-center w-full py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950 font-black text-sm">${esc(t('open'))}</a>`;
+    }
+
+    function catalogAction(c) {
+      if (state.pending.has(c.id)) return `<span class="block text-center w-full py-2.5 rounded-xl bg-slate-800 text-slate-400 font-bold text-sm">⏳ ${esc(t('requested'))}</span>`;
+      if (!c.allow_requests) return `<span class="block text-center w-full py-2.5 rounded-xl bg-slate-800 text-slate-500 font-bold text-sm">🔑 ${esc(t('closed'))}</span>`;
+      return `<button data-request="${esc(c.id)}" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-cyan-500/40 text-cyan-300 font-bold text-sm">${esc(t('request'))}</button>`;
+    }
+
+    function render() {
+      const loggedIn = !!state.user;
+      document.getElementById('loginView').classList.toggle('hidden', loggedIn || !SMB.configured);
+      document.getElementById('appView').classList.toggle('hidden', !loggedIn);
+      document.getElementById('logoutBtn').classList.toggle('hidden', !loggedIn);
+      document.getElementById('adminLink').classList.toggle('hidden', !(state.profile && state.profile.role !== 'student'));
+
+      const guestWrap = document.getElementById('guestCatalogWrap');
+      guestWrap.classList.toggle('hidden', loggedIn || !state.courses.length);
+      if (!loggedIn) {
+        document.getElementById('guestCatalog').innerHTML = state.courses.map(c => courseCard(c, '')).join('');
+        return;
+      }
+
+      const p = state.profile || {};
+      const profileCard = document.getElementById('profileCard');
+      profileCard.classList.toggle('hidden', !!p.full_name);
+
+      const mine = state.courses.filter(c => state.enrolled.has(c.id));
+      const others = state.courses.filter(c => !state.enrolled.has(c.id));
+      document.getElementById('myCourses').innerHTML = mine.length
+        ? mine.map(c => courseCard(c, openBtn(c))).join('')
+        : `<p class="sm:col-span-2 lg:col-span-3 p-5 rounded-2xl border border-dashed border-slate-700 text-sm text-slate-400">${esc(t('noCourses'))}</p>`;
+      document.getElementById('catalog').innerHTML = others.map(c => courseCard(c, catalogAction(c))).join('');
+    }
+
+    async function refresh() {
+      if (!SMB.configured) { render(); return; }
+      state.user = await SMB.currentUser();
+      const coursesQ = await sb.from('courses').select('*').eq('is_published', true).order('sort_order').order('created_at');
+      state.courses = coursesQ.data || [];
+      state.enrolled = new Set();
+      state.pending = new Set();
+      state.profile = null;
+      if (state.user) {
+        const [profile, enr, reqs] = await Promise.all([
+          SMB.loadProfile(state.user.id),
+          sb.from('enrollments').select('course_id').eq('user_id', state.user.id),
+          sb.from('access_requests').select('course_id').eq('user_id', state.user.id).eq('status', 'pending')
+        ]);
+        state.profile = profile;
+        (enr.data || []).forEach(r => state.enrolled.add(r.course_id));
+        (reqs.data || []).forEach(r => state.pending.add(r.course_id));
+      }
+      render();
+    }
+
+    // ---------- Действия ----------
+    document.getElementById('langSelect').addEventListener('change', e => { SMB.setLang(e.target.value); applyLang(); render(); });
+    document.getElementById('logoutBtn').addEventListener('click', () => SMB.signOut());
+
+    document.getElementById('emailForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const btn = document.getElementById('emailBtn');
+      btn.disabled = true;
+      const { error } = await SMB.signInWithEmail(document.getElementById('emailInput').value.trim());
+      btn.disabled = false;
+      if (error) toast(error.message, true); else toast(t('linkSent'));
+    });
+
+    document.getElementById('googleBtn').addEventListener('click', async () => {
+      const { error } = await SMB.signInWithGoogle();
+      if (error) toast(error.message, true);
+    });
+
+    document.getElementById('profileCard').addEventListener('submit', async e => {
+      e.preventDefault();
+      const full_name = document.getElementById('nameInput').value.trim();
+      const grade = document.getElementById('gradeInput').value;
+      const { error } = await sb.from('profiles').update({ full_name, grade, lang: SMB.getLang() }).eq('id', state.user.id);
+      if (error) return toast(SMB.errText('generic'), true);
+      await refresh();
+    });
+
+    document.getElementById('codeForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const input = document.getElementById('codeInput');
+      const btn = document.getElementById('codeBtn');
+      btn.disabled = true;
+      const { data, error } = await sb.rpc('redeem_code', { p_code: input.value });
+      btn.disabled = false;
+      if (error || !data || !data.ok) return toast(SMB.errText(data && data.error), true);
+      input.value = '';
+      toast(t('codeOk'));
+      await refresh();
+    });
+
+    document.getElementById('catalog').addEventListener('click', e => {
+      const btn = e.target.closest('[data-request]');
+      if (!btn) return;
+      requestCourseId = btn.dataset.request;
+      const c = state.courses.find(x => x.id === requestCourseId);
+      document.getElementById('requestTitle').textContent = t('request') + ': ' + (c ? courseTitle(c) : '');
+      document.getElementById('requestMsg').value = '';
+      document.getElementById('requestDialog').showModal();
+    });
+
+    document.getElementById('requestDialog').addEventListener('close', async e => {
+      if (e.target.returnValue !== 'send' || !requestCourseId) return;
+      const { data, error } = await sb.rpc('request_access', { p_course: requestCourseId, p_message: document.getElementById('requestMsg').value });
+      if (error || !data || !data.ok) return toast(SMB.errText(data && data.error), true);
+      toast('⏳ ' + t('requested'));
+      await refresh();
+    });
+
+    // ---------- Старт ----------
+    applyLang();
+    if (!SMB.configured) {
+      document.getElementById('setupNotice').classList.remove('hidden');
+      render();
+    } else {
+      // Срабатывает сразу при загрузке (INITIAL_SESSION) и после входа по ссылке из письма.
+      // Запросы к базе — вне колбэка, иначе supabase-js может зависнуть.
+      sb.auth.onAuthStateChange(() => setTimeout(refresh, 0));
+    }
+  </script>
+</body>
+</html>

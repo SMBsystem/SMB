@@ -13,6 +13,7 @@
  *   2. Расширения → Apps Script. Удалите всё в Code.gs, вставьте этот файл, сохраните.
  *   3. Слева «Настройки проекта» (шестерёнка) → «Свойства скрипта» → Добавить:
  *        ADMIN_PASSWORD = <новый длинный пароль, НЕ старый SMB...>
+ *        COURSE_CODES   = {"КОД-ДЛЯ-GEOTANU":"geotanu","КОД-ДЛЯ-GEONISH":"geonish"}
  *   4. Развернуть → Новое развёртывание → тип «Веб-приложение»:
  *        Выполнять как: Я;  У кого есть доступ: Все.
  *      Разрешите доступ, когда Google спросит.
@@ -21,7 +22,7 @@
  *   6. После любых правок этого кода: Развернуть → Управление развёртываниями →
  *      ✏️ → Версия «Новая» → Развернуть (URL останется тем же).
  *
- * Коды курсов меняются в DEFAULT_CODES ниже или в админ-панели сайта (лист «Коды»).
+ * Базовые коды меняются в свойстве COURSE_CODES, дополнительные — в админ-панели сайта (лист «Коды»).
  */
 
 var CONFIG = {
@@ -52,12 +53,23 @@ var COURSES = {
   }
 };
 
-// Базовые коды. Сравнение без учёта регистра, пробелов, «-» и «_».
-// Совет: смените их на новые — старые уже были опубликованы в коде сайта.
-var DEFAULT_CODES = {
-  "GeoTanu19_57": "geotanu",
-  "GeoNISH19_57": "geonish"
-};
+// Базовые коды НЕ хранятся в этом файле (он лежит в публичном репозитории).
+// Они задаются в «Свойствах скрипта»: COURSE_CODES = {"КОД-КУРСА":"geotanu", ...}
+// Сравнение без учёта регистра, пробелов, «-» и «_».
+var DEFAULT_CODES = loadDefaultCodes_();
+
+function loadDefaultCodes_() {
+  var raw = PropertiesService.getScriptProperties().getProperty("COURSE_CODES");
+  if (!raw) return {};
+  try {
+    var parsed = JSON.parse(raw), out = {};
+    for (var k in parsed) if (COURSES[parsed[k]]) out[k] = parsed[k];
+    return out;
+  } catch (e) {
+    console.error("COURSE_CODES: неверный JSON");
+    return {};
+  }
+}
 
 /* ===================== Точки входа ===================== */
 
@@ -217,7 +229,7 @@ function adminDeleteCode_(req) {
   for (var i = rows.length - 1; i >= 1; i--) {
     if (norm_(rows[i][0]) === target) { sheet.deleteRow(i + 1); return ok_({}); }
   }
-  return fail_("Код не найден (базовые коды меняются в DEFAULT_CODES)");
+  return fail_("Код не найден (базовые коды меняются в свойстве COURSE_CODES)");
 }
 
 /* ===================== Вспомогательное ===================== */
