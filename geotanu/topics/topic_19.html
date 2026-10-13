@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="kk" class="dark">
+<head>
+  <!-- COURSE ACCESS GUARD: RESTRICT DIRECT ACCESS WITHOUT VALID CODE -->
+  <style id="authCloak">body { display: none !important; }</style>
+  <script>
+    (function() {
+      try {
+        var isAdmin = localStorage.getItem('geotany_admin_auth') === 'true';
+        var sessionStr = localStorage.getItem('geotany_user_session');
+        var isAuthorized = isAdmin;
+        if (!isAuthorized && sessionStr) {
+          var s = JSON.parse(sessionStr);
+          if (s && s.email && (s.courseCode || s.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        var profileStr = localStorage.getItem('geotany_user_profile');
+        if (!isAuthorized && profileStr) {
+          var p = JSON.parse(profileStr);
+          if (p && p.isRegistered && p.email && p.courseCode) {
+            isAuthorized = true;
+          }
+        }
+        if (!isAuthorized) {
+          var target = window.location.pathname.split('/').pop() || 'topics.html';
+          window.location.replace('../index.html?need_course=GEOTANY&redirect=' + encodeURIComponent(target));
+          return;
+        }
+        var cloak = document.getElementById('authCloak');
+        if (cloak) cloak.remove();
+      } catch (err) {
+        window.location.replace('../index.html');
+      }
+    })();
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>#19 Халықаралық ірі ұйымдар | GeoTany</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50: '#eef2ff', 100: '#e0e7ff', 200: '#c7d2fe', 300: '#a5b4fc', 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 800: '#3730a3', 900: '#312e81' },
+            space: { 800: '#1e293b', 850: '#172033', 900: '#0f172a', 950: '#0b1120' }
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Outfit', 'Inter', sans-serif; }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #0b1120; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+  </style>
+</head>
+<body class="bg-[#070b14] text-slate-100 min-h-screen flex flex-col selection:bg-cyan-500 selection:text-space-950">
+
+  <!-- STICKY TOP NAVBAR -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-space-950/85 border-b border-slate-800/80 px-4 sm:px-8 py-3">
+    <div class="max-w-6xl mx-auto flex items-center justify-between gap-3">
+      <!-- Left: Back Button & Badges -->
+      <div class="flex items-center space-x-2.5 sm:space-x-3 shrink-0">
+        <a href="../index.html#section-zhattau_grammar" id="btnBackToCourse" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white transition"><span>←</span><span id="btnBackToCourseText">Артқа</span></a>
+        <span class="px-2.5 py-1 rounded-full text-xs font-black bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
+          #19
+        </span>
+        <span id="navCatBadge" class="text-xs text-slate-400 font-bold hidden md:inline truncate max-w-[200px]">
+          Саяси география
+        </span>
+      </div>
+
+      <!-- Right: Controls (Lang Switcher & Mark Complete) -->
+      <div class="flex items-center space-x-2 sm:space-x-3 shrink-0">
+        <!-- Language Switcher -->
+        <div class="inline-flex p-1 bg-space-900 border border-slate-800 rounded-xl space-x-1">
+          <button id="btnLangKz" onclick="setLang('kz')" class="px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow">
+            KZ
+          </button>
+          <button id="btnLangRu" onclick="setLang('ru')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">
+            RU
+          </button>
+        </div>
+
+        <!-- Mark as Completed Button -->
+        <button id="btnComplete" onclick="toggleComplete()" class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition border border-slate-700 bg-space-900 text-slate-300 hover:text-white hover:border-slate-600">
+          <span id="completeIcon" class="text-sm">○</span>
+          <span id="completeText" class="hidden sm:inline">Меңгерілді</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN TOPIC CONTAINER -->
+  <main class="max-w-5xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-8 space-y-6 flex-1">
+
+    <!-- HERO HEADER CARD -->
+    <div class="p-6 sm:p-7 rounded-2xl bg-space-950/90 border border-slate-800 space-y-3.5 shadow-xl relative overflow-hidden">
+      <div class="absolute -right-12 -top-12 w-48 h-48 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="flex items-center space-x-2">
+        <span id="heroCatBadge" class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-space-850 text-cyan-400 border border-cyan-500/20">
+          Саяси география
+        </span>
+        <span class="text-xs text-slate-400">⏱️ ~8-12 мин оқу</span>
+      </div>
+      <h1 id="heroTitle" class="text-xl sm:text-2xl md:text-3xl font-black text-white tracking-tight leading-snug">
+        Халықаралық ірі ұйымдар
+      </h1>
+      <!-- External Links Bar -->
+      <div class="flex flex-wrap items-center gap-2 pt-1">
+        <a id="btnBlooket" href="https://dashboard.blooket.com/set/6a95f474c923faa1d82d4025" target="_blank" class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 border border-purple-500/40 text-xs font-bold transition shadow-sm">
+          <span>🎮</span>
+          <span id="btnBlooketText">Blooket ойыны</span>
+        </a>
+        
+      </div>
+    </div>
+
+    <!-- 1. BRIEF SUMMARY CARD -->
+    <section class="p-5 rounded-2xl bg-space-950 border border-brand-500/40 text-xs sm:text-sm text-slate-200 leading-relaxed shadow-lg">
+      <div class="flex items-center space-x-2 text-brand-400 font-extrabold text-xs mb-2">
+        <span>📖</span>
+        <span id="summaryHeader">ТАҚЫРЫПҚА ҚЫСҚАША ШОЛУ</span>
+      </div>
+      <p id="summaryText" class="leading-relaxed">
+        Халықаралық ірі ұйымдар — БҰҰ және оның мамандандырылған агенттіктері (ЮНЕСКО, ЮНИСЕФ, ДДҰ, ФАО, МАГАТЭ/АЭХА), әскери-саяси одақ НАТО және мұнай картельдері (ОПЕК, ОПЕК+), аймақтық экономикалық интеграциялар (Еуропалық Одақ, Бенилюкс, НАФТА, Меркосур, ЛАЙ), Еуразиялық және Азия-Тынық мұхиты қауымдастықтары (ШЫҰ, АСЕАН, АПЕК, БРИКС, ТМД және Грузияның шығуы), басты дипломатиялық хабтар (Брюссель, Вена, Женева, Нью-Йорк, Сингапур, Монтевидео) және Қазақстанның жаһандық ұйымдардағы рөлі.
+      </p>
+    </section>
+
+    <!-- 2. FULL THEORY SECTION -->
+    <section class="p-5 sm:p-7 rounded-2xl bg-space-950 border border-slate-800 space-y-4 shadow-xl">
+      <div class="flex items-center space-x-2 border-b border-slate-800 pb-3">
+        <span class="text-base text-cyan-400 font-black">📚</span>
+        <h2 id="theoryHeader" class="text-xs sm:text-sm font-black text-white uppercase tracking-wider">
+          ТОЛЫҚ ТЕОРИЯЛЫҚ МАТЕРИАЛ МЕН КОНСПЕКТ
+        </h2>
+      </div>
+      <div id="theoryContent">
+        <div class="space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed">
+
+  <!-- БӨЛІМ 1: ХАЛЫҚАРАЛЫҚ ҰЙЫМДАРДЫҢ ҚҰРЫЛЫМДЫҚ ЖІКТЕЛУІ МЕН БАСТЫ ХАБТАР -->
+  <div class="p-5 rounded-2xl bg-space-900/80 border border-slate-800 space-y-4 shadow-xl">
+    <div class="flex items-center space-x-3 border-b border-slate-800 pb-3">
+      <span class="flex items-center justify-center w-8 h-8 rounded-xl bg-blue-500/20 text-blue-400 font-black text-sm">1</span>
+      <h3 class="text-sm sm:text-base font-black text-white uppercase tracking-wider">Халықаралық ұйымдардың жіктелуі және басты дипломатиялық хабтар</h3>
+    </div>
+    <p class="text-slate-300">
+      <b class="text-cyan-400">Халықаралық ұйымдар</b> — мемлекеттердің немесе ұлттық қоғамдардың халықаралық шарттар негізінде саяси, әскери, экономикалық, ғылыми-мәдени және әлеуметтік мақсаттарға бірлесіп қол жеткізу үшін құрылған тұрақты институттары. Олар заманауи геосаяси кеңістіктің басты реттеуші күші болып табылады.
+    </p>
+
+    <!-- 4 негізгі тип -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-1">
+      <div class="p-3 rounded-xl bg-space-950 border border-blue-500/30 space-y-1">
+        <span class="text-blue-400 font-bold text-xs">🌐 ЖАЛПЫҒА ОРТАҚ (ӘМБЕБАП):</span>
+        <p class="text-slate-300 text-xs">Әлемнің барлық егеменді елдеріне ашық, жаһандық мәселелерді шешетін құрылымдар: <b>БҰҰ және оның агенттіктері</b>.</p>
+      </div>
+      <div class="p-3 rounded-xl bg-space-950 border border-emerald-500/30 space-y-1">
+        <span class="text-emerald-400 font-bold text-xs">🗺️ АЙМАҚТЫҚ ЭКОНОМИКАЛЫҚ:</span>
+        <p class="text-slate-300 text-xs">Белгілі бір географиялық кеңістіктегі сауда-кедендік одақтар: <b>ЕО, Бенилюкс, НАФТА, Меркосур, АСЕАН</b>.</p>
+      </div>
+      <div class="p-3 rounded-xl bg-space-950 border border-amber-500/30 space-y-1">
+        <span class="text-amber-400 font-bold text-xs">🛡️ ӘСКЕРИ-САЯСИ ОДАҚТАР:</span>
+        <p class="text-slate-300 text-xs">Ұжымдық қорғаныс пен геосаяси қауіпсіздікті қамтамасыз ететін альянстар: <b>НАТО, ШЫҰ, ҰҚШҰ</b>.</p>
+      </div>
+      <div class="p-3 rounded-xl bg-space-950 border border-purple-500/30 space-y-1">
+        <span class="text-purple-400 font-bold text-xs">⚡ САЛАЛЫҚ ЖӘНЕ КОАЛИЦИЯЛАР:</span>
+        <p class="text-slate-300 text-xs">Нақты экономикалық немесе стратегиялық саланы реттейтін бірлестіктер: <b>ОПЕК, МАГАТЭ, БРИКС</b>.</p>
+      </div>
+    </div>
+
+    <!-- SVG 4: Басты қалалық хабтар -->
+    <svg viewBox="0 0 700 230" class="w-full h-auto max-w-full my-4 rounded-xl shadow-lg border border-slate-800" xmlns="http://www.w3.org/2000/svg">
+  <rect width="700" height="230" fill="#0b1120" rx="12"/>
+  <text x="350" y="24" fill="#38bdf8" font-size="13" font-weight="bold" text-anchor="middle">ХАЛЫҚАРАЛЫҚ ҰЙЫМДАРДЫҢ БАСТЫ ШТАБ-ПӘТЕРЛЕРІ ЖӘНЕ ХАБТАРЫ</text>
+  
+  <!-- Hub 1: Брюссель -->
+  <g transform="translate(25, 42)">
+    <rect width="150" height="85" rx="8" fill="#1e293b" stroke="#3b82f6" stroke-width="1.2"/>
+    <text x="75" y="20" fill="#60a5fa" font-size="10.5" font-weight="bold" text-anchor="middle">БРЮССЕЛЬ (Бельгия)</text>
+    <text x="12" y="40" fill="#ffffff" font-size="9.5">• <tspan font-weight="bold">НАТО</tspan> (1949 ж.)</text>
+    <text x="12" y="56" fill="#ffffff" font-size="9.5">• <tspan font-weight="bold">ЕО</tspan> (1993 ж.)</text>
+    <text x="12" y="72" fill="#ffffff" font-size="9.5">• <tspan font-weight="bold">Бенилюкс</tspan> (1944 ж.)</text>
+  </g>
+
+  <!-- Hub 2: Вена -->
+  <g transform="translate(190, 42)">
+    <rect width="150" height="85" rx="8" fill="#1e293b" stroke="#f59e0b" stroke-width="1.2"/>
+    <text x="75" y="20" fill="#fbbf24" font-size="10.5" font-weight="bold" text-anchor="middle">ВЕНА (Австрия)</text>
+    <text x="12" y="40" fill="#ffffff" font-size="9.5">• <tspan font-weight="bold">ОПЕК</tspan> (1960/1961 ж.)</text>
+    <text x="12" y="56" fill="#ffffff" font-size="9.5">• <tspan font-weight="bold">МАГАТЭ (АЭХА)</tspan> (1957)</text>
+    <text x="12" y="72" fill="#cbd5e1" font-size="8.5">ЮНИДО, БҰҰ бөлімшесі</text>
+  </g>
+
+  <!-- Hub 3: Швейцария (Женева & Берн) -->
+  <g transform="translate(355, 42)">
+    <rect width="160" height="85" rx="8" fill="#1e293b" stroke="#10b981" stroke-width="1.2"/>
+    <text x="80" y="20" fill="#34d399" font-size="10.5" font-weight="bold" text-anchor="middle">ЖЕНЕВА (Швейцария)</text>
+    <text x="12" y="38" fill="#ffffff" font-size="9">• <tspan font-weight="bold">ДДҰ</tspan> (ВОЗ, 1948 ж.)</text>
+    <text x="12" y="52" fill="#ffffff" font-size="9">• <tspan font-weight="bold">ХЕҰ</tspan> (Еңбек) • <tspan font-weight="bold">ДМҰ</tspan> (Ауа-райы)</text>
+    <text x="12" y="66" fill="#ffffff" font-size="9">• <tspan font-weight="bold">ДСҰ</tspan> (Сауда) • Пошта (Берн)</text>
+  </g>
+
+  <!-- Hub 4: Нью-Йорк -->
+  <g transform="translate(530, 42)">
+    <rect width="145" height="85" rx="8" fill="#1e293b" stroke="#ec4899" stroke-width="1.2"/>
+    <text x="72" y="20" fill="#f472b6" font-size="10.5" font-weight="bold" text-anchor="middle">НЬЮ-ЙОРК (АҚШ)</text>
+    <text x="12" y="40" fill="#ffffff" font-size="9.5">• <tspan font-weight="bold">БҰҰ</tspan> (1945 ж.)</text>
+    <text x="12" y="56" fill="#ffffff" font-size="9.5">• <tspan font-weight="bold">ЮНИСЕФ</tspan> (1946 ж.)</text>
+    <text x="12" y="72" fill="#cbd5e1" font-size="8.5">БҰҰ Даму бағдарламасы</text>
+  </g>
+
+  <!-- Bottom Row: Other Cities (Париж, Рим, Пекин, Сингапур, Монтевидео, Минск) -->
+  <g transform="translate(25, 137)">
+    <rect width="650" height="75" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+    <text x="15" y="22" fill="#38bdf8" font-size="10" font-weight="bold">БАСҚА ДҮНИЕЖҮЗІЛІК ОРТАЛЫҚТАР:</text>
+    <text x="15" y="42" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#ffffff">Париж:</tspan> ЮНЕСКО (1945) • <tspan font-weight="bold" fill="#ffffff">Рим:</tspan> ФАО (1945) • <tspan font-weight="bold" fill="#ffffff">Пекин:</tspan> ШЫҰ (2001)</text>
+    <text x="15" y="60" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#ffffff">Сингапур:</tspan> АПЕК (1989), АСЕАН • <tspan font-weight="bold" fill="#ffffff">Монтевидео:</tspan> Меркосур (1991), ЛАЙ (1980) • <tspan font-weight="bold" fill="#ffffff">Минск:</tspan> ТМД (Грузия 2008 ж. шықты)</text>
+  </g>
+</svg>
+
+    <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 text-xs text-slate-300 space-y-1.5">
+      <div class="text-cyan-400 font-bold">⭐ ҰБТ-ДА КЕЗДЕСЕТІН БАСТЫ ШТАБ-ПӘТЕР БІРІКТІРУЛЕРІ:</div>
+      <p>
+        • <b>Брюссель (Бельгия):</b> <b>НАТО</b> (1949 ж.) мен <b>Еуропалық Одақ (ЕО)</b> (1993 ж.) және <b>Бенилюкс</b> (1944 ж.) орналасқан.<br>
+        • <b>Вена (Австрия):</b> <b>ОПЕК</b> (1960/1961 ж.) мен <b>МАГАТЭ / АЭХА</b> (1957 ж.) штаб-пәтерлері орналасқан.<br>
+        • <b>Швейцария (Женева &amp; Берн):</b> <b>ДДҰ (ВОЗ)</b>, <b>ХЕҰ (МОТ)</b>, <b>ДМҰ (ВМО)</b>, <b>ДСҰ (ВТО)</b> — Женевада; <b>Бүкіләлемдік пошта одағы</b> — Берн қаласында.<br>
+        • <b>Монтевидео (Уругвай):</b> Оңтүстік Американың <b>Меркосур</b> (1991 ж.) және <b>ЛАЙ</b> (1980 ж.) одақтары орналасқан.<br>
+        • <b>Сингапур:</b> <b>АПЕК</b> хатшылығы (1989 ж.) мен АСЕАН-ның жетекші қаржылық хабы.
+      </p>
+    </div>
+  </div>
+
+  <!-- БӨЛІМ 2: БҰҰ ЖҮЙЕСІ ЖӘНЕ ОНЫҢ МАМАНДАНДЫРЫЛҒАН АГЕНТТІКТЕРІ -->
+  <div class="p-5 rounded-2xl bg-space-900/80 border border-slate-800 space-y-4 shadow-xl">
+    <div class="flex items-center space-x-3 border-b border-slate-800 pb-3">
+      <span class="flex items-center justify-center w-8 h-8 rounded-xl bg-purple-500/20 text-purple-400 font-black text-sm">2</span>
+      <h3 class="text-sm sm:text-base font-black text-white uppercase tracking-wider">БҰҰ жүйесі және оның мамандандырылған құрылымдары</h3>
+    </div>
+    <p class="text-slate-300 text-xs">
+      <b>Біріккен Ұлттар Ұйымы (БҰҰ / ООН)</b> — 1945 жылы 24 қазанда Сан-Франциско конференциясының нәтижесінде құрылған дүниежүзіндегі ең ірі халықаралық ұйым. Штаб-пәтері <b>Нью-Йорк қаласында (АҚШ)</b> орналасқан. Басты органдары: Қауіпсіздік Кеңесі (5 тұрақты мүше: АҚШ, Ұлыбритания, Франция, Ресей, Қытай), Бас Ассамблея, Экономикалық және Әлеуметтік Кеңес (ЭКОСОС), Халықаралық Сот (Гаага, Нидерланды).
+    </p>
+
+    <!-- SVG 1: БҰҰ жүйесі агенттіктері -->
+    <svg viewBox="0 0 700 230" class="w-full h-auto max-w-full my-4 rounded-xl shadow-lg border border-slate-800" xmlns="http://www.w3.org/2000/svg">
+  <rect width="700" height="230" fill="#0b1120" rx="12"/>
+  <text x="350" y="24" fill="#38bdf8" font-size="13" font-weight="bold" text-anchor="middle">БҰҰ ЖҮЙЕСІ ЖӘНЕ ОНЫҢ МАМАНДАНДЫРЫЛҒАН АГЕНТТІКТЕРІ</text>
+  
+  <!-- Central UN Block -->
+  <g transform="translate(260, 40)">
+    <rect width="180" height="60" rx="10" fill="#1e3a8a" stroke="#60a5fa" stroke-width="1.5"/>
+    <text x="90" y="24" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">БҰҰ (ООН, 1945 ж.)</text>
+    <text x="90" y="40" fill="#93c5fd" font-size="9.5" text-anchor="middle">Штаб-пәтері: Нью-Йорк (АҚШ)</text>
+    <text x="90" y="52" fill="#cbd5e1" font-size="8.5" text-anchor="middle">Қауіпсіздік кеңесі • Бас Ассамблея</text>
+  </g>
+
+  <!-- Agencies Grid Below -->
+  <!-- ЮНИСЕФ -->
+  <g transform="translate(25, 115)">
+    <rect width="120" height="95" rx="8" fill="#0f172a" stroke="#3b82f6" stroke-width="1"/>
+    <text x="60" y="20" fill="#60a5fa" font-size="10.5" font-weight="bold" text-anchor="middle">ЮНИСЕФ (1946)</text>
+    <text x="60" y="36" fill="#e2e8f0" font-size="9" text-anchor="middle">Нью-Йорк</text>
+    <text x="60" y="54" fill="#94a3b8" font-size="8.5" text-anchor="middle">Балалар қоры</text>
+    <text x="60" y="70" fill="#cbd5e1" font-size="8" text-anchor="middle">Денсаулық, білім,</text>
+    <text x="60" y="82" fill="#cbd5e1" font-size="8" text-anchor="middle">қорғау шаралары</text>
+  </g>
+
+  <!-- ЮНЕСКО -->
+  <g transform="translate(155, 115)">
+    <rect width="120" height="95" rx="8" fill="#0f172a" stroke="#8b5cf6" stroke-width="1"/>
+    <text x="60" y="20" fill="#c084fc" font-size="10.5" font-weight="bold" text-anchor="middle">ЮНЕСКО (1945)</text>
+    <text x="60" y="36" fill="#e2e8f0" font-size="9" text-anchor="middle">Париж (Лондон 1945)</text>
+    <text x="60" y="54" fill="#94a3b8" font-size="8.5" text-anchor="middle">Білім, ғылым,</text>
+    <text x="60" y="68" fill="#cbd5e1" font-size="8" text-anchor="middle">мәдени мұраны</text>
+    <text x="60" y="80" fill="#cbd5e1" font-size="8" text-anchor="middle">қорғау ұйымы</text>
+  </g>
+
+  <!-- ДДҰ -->
+  <g transform="translate(290, 115)">
+    <rect width="120" height="95" rx="8" fill="#0f172a" stroke="#10b981" stroke-width="1"/>
+    <text x="60" y="20" fill="#34d399" font-size="10.5" font-weight="bold" text-anchor="middle">ДДҰ / ВОЗ (1948)</text>
+    <text x="60" y="36" fill="#e2e8f0" font-size="9" text-anchor="middle">Женева (Швейцария)</text>
+    <text x="60" y="54" fill="#94a3b8" font-size="8.5" text-anchor="middle">Денсаулық сақтау</text>
+    <text x="60" y="68" fill="#cbd5e1" font-size="8" text-anchor="middle">Індеттермен күрес,</text>
+    <text x="60" y="80" fill="#cbd5e1" font-size="8" text-anchor="middle">жаһандық сақтық</text>
+  </g>
+
+  <!-- ФАО -->
+  <g transform="translate(425, 115)">
+    <rect width="120" height="95" rx="8" fill="#0f172a" stroke="#f59e0b" stroke-width="1"/>
+    <text x="60" y="20" fill="#fbbf24" font-size="10.5" font-weight="bold" text-anchor="middle">ФАО (1945)</text>
+    <text x="60" y="36" fill="#e2e8f0" font-size="9" text-anchor="middle">Рим (Италия)</text>
+    <text x="60" y="54" fill="#94a3b8" font-size="8.5" text-anchor="middle">Азық-түлік және</text>
+    <text x="60" y="68" fill="#cbd5e1" font-size="8" text-anchor="middle">ауыл шаруашылығы</text>
+    <text x="60" y="80" fill="#cbd5e1" font-size="8" text-anchor="middle">ұйымы</text>
+  </g>
+
+  <!-- МАГАТЭ -->
+  <g transform="translate(555, 115)">
+    <rect width="120" height="95" rx="8" fill="#0f172a" stroke="#ef4444" stroke-width="1"/>
+    <text x="60" y="20" fill="#f87171" font-size="10.5" font-weight="bold" text-anchor="middle">МАГАТЭ (1957)</text>
+    <text x="60" y="36" fill="#e2e8f0" font-size="9" text-anchor="middle">Вена (Австрия)</text>
+    <text x="60" y="54" fill="#94a3b8" font-size="8.5" text-anchor="middle">АЭХА • Атом</text>
+    <text x="60" y="68" fill="#cbd5e1" font-size="8" text-anchor="middle">энергиясын бейбіт</text>
+    <text x="60" y="80" fill="#cbd5e1" font-size="8" text-anchor="middle">пайдалану агенттігі</text>
+  </g>
+</svg>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 text-xs text-slate-300">
+      <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-1.5">
+        <b class="text-purple-400 font-bold">1. ЮНЕСКО (UNESCO, 1945 ж.):</b>
+        <p>БҰҰ Білім, ғылым және мәдениет мәселелері жөніндегі ұйымы. 1945 жылы <b>Лондонда</b> өткен конференцияда Жарғысы қабылданып, тұрақты бас штаб-пәтері <b>Францияның Париж қаласында</b> орналасты. Негізгі қызметі: Дүниежүзілік мәдени және табиғи мұра объектілерін тіркеу және қорғау (Қазақстандағы Қожа Ахмет Ясауи кесенесі, Тамғалы петроглифтері, Сарыарқа мен Батыс Тянь-Шань табиғи мұралары).</p>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-1.5">
+        <b class="text-blue-400 font-bold">2. ЮНИСЕФ (UNICEF, 1946 ж.):</b>
+        <p>БҰҰ Балалар қоры. Штаб-пәтері <b>Нью-Йорк қаласында (АҚШ)</b> орналасқан. Бастапқыда Екінші дүниежүзілік соғыстан зардап шеккен балаларға көмек көрсету үшін құрылған. Қазіргі таңда бүкіл әлемдегі балалардың денсаулығын, тамақтануын, білім алуын және қауіпсіздігін қамтамасыз ететін жаһандық гуманитарлық құрылым.</p>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-space-950 border border-teal-500/30 space-y-1.5">
+        <b class="text-teal-400 font-bold">3. ДДҰ / ВОЗ (WHO, 1948 ж.):</b>
+        <p>Дүниежүзілік денсаулық сақтау ұйымы. Штаб-пәтері <b>Швейцарияның Женева қаласында</b> орналасқан. Халықаралық санитарлық нормаларды бекіту, жұқпалы аурулар мен жаһандық пандемияларға қарсы күресу, денсаулық сақтау жүйелерін дамыту бойынша БҰҰ-ның бас үйлестірушісі.</p>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-space-950 border border-amber-500/30 space-y-1.5">
+        <b class="text-amber-400 font-bold">4. ФАО (FAO, 1945 ж.):</b>
+        <p>БҰҰ Азық-түлік және ауыл шаруашылығы ұйымы. Штаб-пәтері <b>Италия астанасы Рим қаласында</b> орналасқан. Дүниежүзіндегі аштық пен кедейлікпен күресу, ауыл шаруашылығының өнімділігін арттыру, орман және балық шаруашылығын тұрақты басқару мақсатында құрылған.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- БӨЛІМ 3: ӘСКЕРИ ЖӘНЕ САЛАЛЫҚ ОДАҚТАР: НАТО ЖӘНЕ ОПЕК -->
+  <div class="p-5 rounded-2xl bg-space-900/80 border border-slate-800 space-y-4 shadow-xl">
+    <div class="flex items-center space-x-3 border-b border-slate-800 pb-3">
+      <span class="flex items-center justify-center w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 font-black text-sm">3</span>
+      <h3 class="text-sm sm:text-base font-black text-white uppercase tracking-wider">Әскери-саяси және салалық ұйымдар: НАТО және ОПЕК</h3>
+    </div>
+    
+    <!-- SVG 5: НАТО мен ОПЕК -->
+    <svg viewBox="0 0 700 230" class="w-full h-auto max-w-full my-4 rounded-xl shadow-lg border border-slate-800" xmlns="http://www.w3.org/2000/svg">
+  <rect width="700" height="230" fill="#0b1120" rx="12"/>
+  <text x="350" y="24" fill="#38bdf8" font-size="13" font-weight="bold" text-anchor="middle">ӘСКЕРИ ЖӘНЕ САЛАЛЫҚ САЯСАТ: НАТО ЖӘНЕ ОПЕК</text>
+  
+  <!-- Left Half: НАТО -->
+  <g transform="translate(30, 42)">
+    <rect width="310" height="170" rx="10" fill="#0f172a" stroke="#3b82f6" stroke-width="1.2"/>
+    <rect width="310" height="28" rx="10" fill="#1e3a8a"/>
+    <text x="155" y="18" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">НАТО (СОЛТҮСТІК АТЛАНТИКАЛЫҚ ОДАҚ)</text>
+    <text x="15" y="48" fill="#60a5fa" font-size="10" font-weight="bold">• Құрылған жылы:</text>
+    <text x="135" y="48" fill="#ffffff" font-size="10">1949 жыл (Вашингтон келісімі)</text>
+    <text x="15" y="68" fill="#60a5fa" font-size="10" font-weight="bold">• Штаб-пәтері:</text>
+    <text x="105" y="68" fill="#ffffff" font-size="10">Бельгия — Брюссель қаласы</text>
+    <text x="15" y="88" fill="#60a5fa" font-size="10" font-weight="bold">• Сипаты:</text>
+    <text x="75" y="88" fill="#cbd5e1" font-size="9.5">Әскери-саяси қорғаныс альянсы</text>
+    <text x="15" y="108" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#ffffff">5-бап принципі:</tspan> Бір мүшеге шабуыл — барлығына шабуыл</text>
+    <text x="15" y="126" fill="#cbd5e1" font-size="9">• Негізін қалаушылар: АҚШ, Канада, Ұлыбритания, Франция т.б.</text>
+    <text x="15" y="144" fill="#cbd5e1" font-size="9">• Қазіргі құрамы: Солтүстік Америка мен Еуропаның 32 елі</text>
+    <text x="15" y="160" fill="#93c5fd" font-size="8.5">Қазақстан «Бейбітшілік жолындағы серіктестік» бағдарламасына қатысады</text>
+  </g>
+
+  <!-- Right Half: ОПЕК -->
+  <g transform="translate(360, 42)">
+    <rect width="310" height="170" rx="10" fill="#0f172a" stroke="#f59e0b" stroke-width="1.2"/>
+    <rect width="310" height="28" rx="10" fill="#78350f"/>
+    <text x="155" y="18" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">ОПЕК (МҰНАЙ ЭКСПОРТТАУШЫ ЕЛДЕР ҰЙЫМЫ)</text>
+    <text x="15" y="48" fill="#fbbf24" font-size="10" font-weight="bold">• Құрылған жылы:</text>
+    <text x="135" y="48" fill="#ffffff" font-size="10">1960 ж. (1961 ж. жұмысын бастады)</text>
+    <text x="15" y="68" fill="#fbbf24" font-size="10" font-weight="bold">• Штаб-пәтері:</text>
+    <text x="105" y="68" fill="#ffffff" font-size="10">Австрия — Вена қаласы</text>
+    <text x="15" y="88" fill="#fbbf24" font-size="10" font-weight="bold">• Құрушы 5 ел:</text>
+    <text x="110" y="88" fill="#cbd5e1" font-size="9.5">Сауд Арабиясы, Иран, Ирак,</text>
+    <text x="25" y="102" fill="#fde68a" font-size="9">Кувейт, Венесуэла (Бағдат конференциясы)</text>
+    <text x="15" y="122" fill="#cbd5e1" font-size="9">• Мақсаты: Мұнай бағасын реттеу және квота бекіту</text>
+    <text x="15" y="140" fill="#cbd5e1" font-size="9">• ОПЕК+ форматы: Ресей, Қазақстан серіктес ретінде қатысады</text>
+    <text x="15" y="158" fill="#fbbf24" font-size="8.5">Австрия мұнай өндірмесе де, бейтарап Венада штаб орналасқан</text>
+  </g>
+</svg>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 text-xs text-slate-300">
+      <div class="p-4 rounded-xl bg-space-950 border border-blue-500/30 space-y-2">
+        <div class="flex items-center space-x-2 text-blue-400 font-bold">
+          <span>🛡️</span>
+          <span>НАТО (СОЛТҮСТІК АТЛАНТИКАЛЫҚ КЕЛІСІМ ҰЙЫМЫ, 1949 ж.):</span>
+        </div>
+        <p>
+          • <b>Құрылған жылы:</b> 1949 жылғы 4 сәуір (Вашингтон келісімі).<br>
+          • <b>Штаб-пәтері:</b> Бельгия астанасы — <b>Брюссель қаласы</b>.<br>
+          • <b>Мазмұны мен қағидаты:</b> Солтүстік Америка мен Еуропа елдерінің әскери-саяси қорғаныс одағы. Вашингтон шартының әйгілі <b>5-бабына</b> сәйкес, одаққа мүше бір мемлекетке жасалған қарулы шабуыл — барлық мүше елдерге жасалған шабуыл болып бағаланады.<br>
+          • <b>Қазақстанмен байланысы:</b> ҚР 1994 жылдан бері НАТО-ның «Бейбітшілік жолындағы серіктестік» (PfP) бағдарламасына қатысады.
+        </p>
+      </div>
+
+      <div class="p-4 rounded-xl bg-space-950 border border-amber-500/30 space-y-2">
+        <div class="flex items-center space-x-2 text-amber-400 font-bold">
+          <span>🛢️</span>
+          <span>ОПЕК (МҰНАЙ ЭКСПОРТТАУШЫ ЕЛДЕР ҰЙЫМЫ, 1960/1961 ж.):</span>
+        </div>
+        <p>
+          • <b>Құрылған уақыты:</b> <b>1960 жылы</b> Бағдат конференциясында құрылып, ресми түрде <b>1961 жылы</b> өз қызметін бастады.<br>
+          • <b>Штаб-пәтері:</b> <b>Австрия — Вена қаласы</b> (1965 жылдан бері).<br>
+          • <b>Құрушы 5 мемлекет:</b> Сауд Арабиясы, Иран, Ирак, Кувейт, Венесуэла.<br>
+          • <b>Негізгі функциясы:</b> Мұнай өндіру көлемдеріне квоталар белгілеу, әлемдік энергетикалық нарықтағы баға тұрақтылығын қорғау.<br>
+          • <b>ОПЕК+ және Қазақстан:</b> 2016 жылдан бері картель сыртындағы ірі өндірушілер (Қазақстан, Ресей т.б.) ортақ мәмілемен мұнай нарығын теңгеріп келеді.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- БӨЛІМ 4: ЕУРОПАЛЫҚ ЖӘНЕ АМЕРИКАЛЫҚ АЙМАҚТЫҚ ЭКОНОМИКАЛЫҚ ОДАҚТАР -->
+  <div class="p-5 rounded-2xl bg-space-900/80 border border-slate-800 space-y-4 shadow-xl">
+    <div class="flex items-center space-x-3 border-b border-slate-800 pb-3">
+      <span class="flex items-center justify-center w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 font-black text-sm">4</span>
+      <h3 class="text-sm sm:text-base font-black text-white uppercase tracking-wider">Еуропалық және Америкалық аймақтық экономикалық одақтар</h3>
+    </div>
+    
+    <!-- SVG 2: Аймақтық сауда одақтары -->
+    <svg viewBox="0 0 700 230" class="w-full h-auto max-w-full my-4 rounded-xl shadow-lg border border-slate-800" xmlns="http://www.w3.org/2000/svg">
+  <rect width="700" height="230" fill="#0b1120" rx="12"/>
+  <text x="350" y="24" fill="#38bdf8" font-size="13" font-weight="bold" text-anchor="middle">АЙМАҚТЫҚ ЭКОНОМИКАЛЫҚ ИНТЕГРАЦИЯ ЖӘНЕ САУДА ОДАҚТАРЫ</text>
+  
+  <!-- Block 1: ЕО және Бенилюкс -->
+  <g transform="translate(25, 42)">
+    <rect width="155" height="170" rx="10" fill="#0f172a" stroke="#3b82f6" stroke-width="1.2"/>
+    <rect width="155" height="26" rx="10" fill="#1e40af"/>
+    <text x="77" y="17" fill="#ffffff" font-size="10.5" font-weight="bold" text-anchor="middle">ЕУРОПА (ЕО &amp; Бенилюкс)</text>
+    <text x="10" y="42" fill="#60a5fa" font-size="10" font-weight="bold">ЕО (1993 ж.):</text>
+    <text x="10" y="56" fill="#cbd5e1" font-size="9">• Штаб-пәтері: Брюссель</text>
+    <text x="10" y="70" fill="#cbd5e1" font-size="9">• Маастрихт келісімі (1992)</text>
+    <text x="10" y="84" fill="#cbd5e1" font-size="9">• Біртұтас нарық, еуро</text>
+    <text x="10" y="106" fill="#60a5fa" font-size="10" font-weight="bold">Бенилюкс (1944 ж.):</text>
+    <text x="10" y="120" fill="#cbd5e1" font-size="9">• Штаб-пәтері: Брюссель</text>
+    <text x="10" y="134" fill="#cbd5e1" font-size="9">• Бельгия, Нидерланды,</text>
+    <text x="18" y="148" fill="#93c5fd" font-size="8.5">Люксембург кеден одағы</text>
+    <text x="10" y="162" fill="#cbd5e1" font-size="8.5">Еуроинтеграция бастауы</text>
+  </g>
+
+  <!-- Block 2: НАФТА -->
+  <g transform="translate(190, 42)">
+    <rect width="155" height="170" rx="10" fill="#0f172a" stroke="#10b981" stroke-width="1.2"/>
+    <rect width="155" height="26" rx="10" fill="#047857"/>
+    <text x="77" y="17" fill="#ffffff" font-size="10.5" font-weight="bold" text-anchor="middle">СОЛТҮСТІК АМЕРИКА</text>
+    <text x="10" y="42" fill="#34d399" font-size="10" font-weight="bold">НАФТА (1994 ж.):</text>
+    <text x="10" y="56" fill="#cbd5e1" font-size="9">• Еркін сауда аймағы</text>
+    <text x="10" y="72" fill="#cbd5e1" font-size="9.5"><tspan font-weight="bold" fill="#ffffff">3 ел астанасы:</tspan></text>
+    <text x="10" y="88" fill="#cbd5e1" font-size="9">• Вашингтон (АҚШ)</text>
+    <text x="10" y="104" fill="#cbd5e1" font-size="9">• Оттава (Канада)</text>
+    <text x="10" y="120" fill="#cbd5e1" font-size="9">• Мехико (Мексика)</text>
+    <text x="10" y="142" fill="#6ee7b7" font-size="8.5">Кеденсіз сауда аймағы,</text>
+    <text x="10" y="156" fill="#6ee7b7" font-size="8.5">қазіргі жаңартылған USMCA</text>
+  </g>
+
+  <!-- Block 3: Меркосур және ЛАЙ -->
+  <g transform="translate(355, 42)">
+    <rect width="165" height="170" rx="10" fill="#0f172a" stroke="#f59e0b" stroke-width="1.2"/>
+    <rect width="165" height="26" rx="10" fill="#b45309"/>
+    <text x="82" y="17" fill="#ffffff" font-size="10.5" font-weight="bold" text-anchor="middle">ОҢТҮСТІК АМЕРИКА</text>
+    <text x="10" y="42" fill="#fbbf24" font-size="10" font-weight="bold">Меркосур (1991 ж.):</text>
+    <text x="10" y="56" fill="#cbd5e1" font-size="9">• Монтевидео (Уругвай)</text>
+    <text x="10" y="70" fill="#cbd5e1" font-size="9">• Оңтүстік ортақ нарығы</text>
+    <text x="10" y="84" fill="#cbd5e1" font-size="8.5">• Бразилия, Аргентина,</text>
+    <text x="18" y="98" fill="#fde68a" font-size="8.5">Парагвай, Уругвай</text>
+    <text x="10" y="118" fill="#fbbf24" font-size="10" font-weight="bold">ЛАЙ / ALADI (1980 ж.):</text>
+    <text x="10" y="132" fill="#cbd5e1" font-size="9">• Монтевидео (Уругвай)</text>
+    <text x="10" y="146" fill="#cbd5e1" font-size="8.5">• Латын Америкасының</text>
+    <text x="10" y="160" fill="#cbd5e1" font-size="8.5">  интеграциялық қауымдастығы</text>
+  </g>
+
+  <!-- Block 4: АСЕАН & АПЕК -->
+  <g transform="translate(530, 42)">
+    <rect width="150" height="170" rx="10" fill="#0f172a" stroke="#8b5cf6" stroke-width="1.2"/>
+    <rect width="150" height="26" rx="10" fill="#6d28d9"/>
+    <text x="75" y="17" fill="#ffffff" font-size="10.5" font-weight="bold" text-anchor="middle">АЗИЯ-ТЫНЫҚ МҰХИТ</text>
+    <text x="10" y="42" fill="#c084fc" font-size="10" font-weight="bold">АСЕАН (1967 ж.):</text>
+    <text x="10" y="56" fill="#cbd5e1" font-size="9">• Сингапур / Джакарта</text>
+    <text x="10" y="70" fill="#cbd5e1" font-size="9">• Оңтүстік-Шығыс Азия</text>
+    <text x="10" y="84" fill="#cbd5e1" font-size="8.5">• 10 мемлекет одағы</text>
+    <text x="10" y="106" fill="#c084fc" font-size="10" font-weight="bold">АПЕК (1989 ж.):</text>
+    <text x="10" y="120" fill="#cbd5e1" font-size="9">• Сингапур (хатшылық)</text>
+    <text x="10" y="134" fill="#cbd5e1" font-size="9">• Азия-Тынық мұхит</text>
+    <text x="10" y="148" fill="#cbd5e1" font-size="8.5">  ынтымақтастығы</text>
+    <text x="10" y="162" fill="#d8b4fe" font-size="8.5">• 21 экономика мүше</text>
+  </g>
+</svg>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs text-slate-300">
+      <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-1.5">
+        <b class="text-blue-400 font-bold">1. ЕУРОПАЛЫҚ ОДАҚ ЖӘНЕ БЕНИЛЮКС:</b>
+        <p>• <b>Бенилюкс (1944 ж.):</b> Бельгия, Нидерланды, Люксембург кеден одағы. Штаб-пәтері: <b>Брюссель</b>. Еуропалық бірігудің алғашқы сынақ алаңы болды.<br>
+        • <b>ЕО (1993 ж.):</b> 1992 жылы Нидерландының <b>Маастрихт қаласында</b> қол қойылып, 1993 ж. күшіне енді. Штаб-пәтері: <b>Брюссель</b>. Қазіргі уақытта 27 еуропалық мемлекетті біріктіреді, ортақ валютасы — еуро (€).</p>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-1.5">
+        <b class="text-emerald-400 font-bold">2. НАФТА (NAFTA, 1994 ж.):</b>
+        <p>Солтүстік Америка еркін сауда келісімі. <b>3 ел астанасында</b> (Вашингтон, Оттава, Мехико) үйлестіріледі. АҚШ, Канада және Мексика арасындағы тарифтік кедергілерді жойып, әлемдегі ең ірі ортақ сауда аймақтарының бірін қалыптастырды (қазір жаңартылған USMCA форматы).</p>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-1.5">
+        <b class="text-amber-400 font-bold">3. МЕРКОСУР ЖӘНЕ ЛАЙ (УРУГВАЙ):</b>
+        <p>• <b>Меркосур (1991 ж.):</b> Оңтүстік ортақ нарығы. Штаб-пәтері: <b>Монтевидео (Уругвай)</b>. Мүшелері: Бразилия, Аргентина, Парагвай, Уругвай.<br>
+        • <b>ЛАЙ / ALADI (1980 ж.):</b> Латын Америкасы интеграциясы қауымдастығы. Штаб-пәтері де <b>Монтевидео қаласында</b> орналасқан.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- БӨЛІМ 5: ЕУРАЗИЯЛЫҚ ЖӘНЕ АЗИЯ-ТЫНЫҚ МҰХИТЫ ҚАУЫМДАСТЫҚТАРЫ -->
+  <div class="p-5 rounded-2xl bg-space-900/80 border border-slate-800 space-y-4 shadow-xl">
+    <div class="flex items-center space-x-3 border-b border-slate-800 pb-3">
+      <span class="flex items-center justify-center w-8 h-8 rounded-xl bg-indigo-500/20 text-indigo-400 font-black text-sm">5</span>
+      <h3 class="text-sm sm:text-base font-black text-white uppercase tracking-wider">Еуразиялық және Азия-Тынық мұхиты қауымдастықтары</h3>
+    </div>
+    
+    <!-- SVG 3: ШЫҰ және БРИКС -->
+    <svg viewBox="0 0 700 230" class="w-full h-auto max-w-full my-4 rounded-xl shadow-lg border border-slate-800" xmlns="http://www.w3.org/2000/svg">
+  <rect width="700" height="230" fill="#0b1120" rx="12"/>
+  <text x="350" y="24" fill="#38bdf8" font-size="13" font-weight="bold" text-anchor="middle">ЕУРАЗИЯ ЖӘНЕ ЖАҺАНДЫҚ ОҢТҮСТІК: ШЫҰ МЕН БРИКС</text>
+  
+  <!-- Left Box: ШЫҰ -->
+  <g transform="translate(30, 42)">
+    <rect width="310" height="170" rx="10" fill="#0f172a" stroke="#8b5cf6" stroke-width="1.2"/>
+    <rect width="310" height="28" rx="10" fill="#4c1d95"/>
+    <text x="155" y="18" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">ШЫҰ — ШАНХАЙ ЫНТЫМАҚТАСТЫҚ ҰЙЫМЫ</text>
+    <text x="15" y="48" fill="#c084fc" font-size="10" font-weight="bold">• Құрылған жылы:</text>
+    <text x="135" y="48" fill="#ffffff" font-size="10">2001 жыл (Шанхай бестігі негізінде)</text>
+    <text x="15" y="68" fill="#c084fc" font-size="10" font-weight="bold">• Штаб-пәтері (Хатшылық):</text>
+    <text x="175" y="68" fill="#ffffff" font-size="10">Пекин (Қытай)</text>
+    <text x="15" y="88" fill="#c084fc" font-size="10" font-weight="bold">• Лаңкестікке қарсы орталық (РАТС):</text>
+    <text x="235" y="88" fill="#ffffff" font-size="10">Ташкент</text>
+    <text x="15" y="108" fill="#e2e8f0" font-size="9.5"><tspan font-weight="bold" fill="#38bdf8">Мүшелері:</tspan> Қазақстан, Қытай, Ресей, Өзбекстан,</text>
+    <text x="25" y="122" fill="#e2e8f0" font-size="9.5">Қырғызстан, Тәжікстан, Пәкістан, Үндістан (Иран, Беларусь)</text>
+    <text x="15" y="142" fill="#cbd5e1" font-size="9">• Мақсаты: Аймақтық қауіпсіздік, сауда және «Шанхай рухы»</text>
+    <text x="15" y="158" fill="#94a3b8" font-size="8.5">• Еуразияның 60% аумағын және әлем халқының жартысын қамтиды</text>
+  </g>
+
+  <!-- Right Box: БРИКС -->
+  <g transform="translate(360, 42)">
+    <rect width="310" height="170" rx="10" fill="#0f172a" stroke="#f59e0b" stroke-width="1.2"/>
+    <rect width="310" height="28" rx="10" fill="#78350f"/>
+    <text x="155" y="18" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">БРИКС (BRICS) ГЕОСАЯСИ ҚАУЫМДАСТЫҒЫ</text>
+    <text x="15" y="48" fill="#fbbf24" font-size="10" font-weight="bold">• Мүше мемлекеттер коалициясы:</text>
+    <text x="15" y="68" fill="#ffffff" font-size="9.5"><tspan font-weight="bold" fill="#f59e0b">B</tspan> — Бразилия | <tspan font-weight="bold" fill="#f59e0b">R</tspan> — Ресей | <tspan font-weight="bold" fill="#f59e0b">I</tspan> — Үндістан</text>
+    <text x="15" y="84" fill="#ffffff" font-size="9.5"><tspan font-weight="bold" fill="#f59e0b">C</tspan> — Қытай | <tspan font-weight="bold" fill="#f59e0b">S</tspan> — Оңтүстік Африка Республикасы (ОАР)</text>
+    <text x="15" y="104" fill="#fbbf24" font-size="10" font-weight="bold">• Сипаты:</text>
+    <text x="75" y="104" fill="#cbd5e1" font-size="9.5">Әлемдік қарқынды дамушы ірі елдер коалициясы</text>
+    <text x="15" y="122" fill="#cbd5e1" font-size="9">• Жаңа даму банкі (NDB): Шанхай қаласы</text>
+    <text x="15" y="138" fill="#cbd5e1" font-size="9">• Жаһандық ЖІӨ-нің 30%-дан астамы және халықтың 40%-ы</text>
+    <text x="15" y="156" fill="#fde68a" font-size="8.5">• Көпполярлы әлем қалыптастырудың негізгі саяси өзегі</text>
+  </g>
+</svg>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 text-xs text-slate-300">
+      <div class="p-4 rounded-xl bg-space-950 border border-purple-500/30 space-y-2">
+        <b class="text-purple-400 font-bold text-xs">🌐 ШЫҰ (ШАНХАЙ ЫНТЫМАҚТАСТЫҚ ҰЙЫМЫ, 2001 ж.):</b>
+        <p>
+          1996 жылғы «Шанхай бестігі» шекаралық келісімі негізінде 2001 жылы ресми түрде құрылды. Бас хатшылығы <b>Қытай астанасы Пекин қаласында</b> орналасқан. Аймақтық лаңкестікке қарсы құрылымының (РАТС) атқарушы комитеті — <b>Ташкент қаласында (Өзбекстан)</b>.<br>
+          <b>Негізгі мүшелері:</b> Қазақстан, Қытай, Ресей, Өзбекстан, Қырғызстан, Тәжікстан, Пәкістан, Үндістан (сонымен бірге Иран мен Беларусь мүше болды).
+        </p>
+      </div>
+
+      <div class="p-4 rounded-xl bg-space-950 border border-amber-500/30 space-y-2">
+        <b class="text-amber-400 font-bold text-xs">🌏 АПЕК ЖӘНЕ АСЕАН (АЗИЯ-ТЫНЫҚ МҰХИТ ХАБЫ):</b>
+        <p>
+          • <b>АПЕК (1989 ж.):</b> Азия-Тынық мұхиты экономикалық ынтымақтастығы. Хатшылығы — <b>Сингапурда</b>. Құрамында 21 мемлекет бар (АҚШ, Қытай, Жапония, Ресей, Канада, Аустралия т.б.).<br>
+          • <b>АСЕАН (1967 ж.):</b> Оңтүстік-Шығыс Азия елдерінің қауымдастығы (10 мемлекет). Хатшылығы Индонезияның <b>Джакарта</b> қаласында, қаржылық орталығы <b>Сингапурда</b>.<br>
+          • <b>БРИКС:</b> Бразилия, Ресей, Үндістан, Қытай, ОАР қауымдастығы.
+        </p>
+      </div>
+    </div>
+
+    <!-- ТМД және Грузияның шығуы -->
+    <div class="p-3.5 rounded-xl bg-space-950 border border-red-500/30 text-xs text-slate-300 space-y-1">
+      <div class="text-red-400 font-bold">⚠️ ТМД ЖӘНЕ ГРУЗИЯНЫҢ ШЫҒУЫ (ҰБТ ТҰЗАҒЫ):</div>
+      <p>
+        <b>ТМД (Тәуелсіз Мемлекеттер Достастығы)</b> — 1991 жылғы желтоқсандағы Алматы декларациясы негізінде құрылды. Атқару комитеті — <b>Минск қаласында (Беларусь)</b>. <b>Грузия мемлекеті 2008 жылы</b> Оңтүстік Осетиядағы қарулы қақтығыстан кейін ТМД құрамынан өз еркімен шығу туралы мәлімдеп, 2009 жылы достастықтан толық шықты.
+      </p>
+    </div>
+  </div>
+
+  <!-- БӨЛІМ 6: ШВЕЙЦАРИЯЛЫҚ АРНАЙЫ АГЕНТТІКТЕР ЖӘНЕ ҚАЗАҚСТАННЫҢ ОРНЫ -->
+  <div class="p-5 rounded-2xl bg-space-900/80 border border-slate-800 space-y-4 shadow-xl">
+    <div class="flex items-center space-x-3 border-b border-slate-800 pb-3">
+      <span class="flex items-center justify-center w-8 h-8 rounded-xl bg-teal-500/20 text-teal-400 font-black text-sm">6</span>
+      <h3 class="text-sm sm:text-base font-black text-white uppercase tracking-wider">Швейцария хабы және Қазақстанның халықаралық ұйымдардағы белсенділігі</h3>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 text-xs text-slate-300">
+      <div class="p-3.5 rounded-xl bg-space-950 border border-teal-500/30 space-y-1.5">
+        <b class="text-teal-400 font-bold">🇨🇭 ШВЕЙЦАРИЯНЫҢ БЕЙТАРАП ДИПЛОМАТИЯЛЫҚ ХАБЫ:</b>
+        <p>Швейцария мемлекеті тарихи тұрақты бейтараптығының арқасында жаһандық маңызды ұйымдардың орталығына айналған:</p>
+        <ul class="list-disc list-inside space-y-1 text-slate-300">
+          <li><b>ДДҰ (ВОЗ, 1948 ж.)</b> — Женева қаласында (Денсаулық сақтау).</li>
+          <li><b>ХЕҰ (МОТ, 1919 ж.)</b> — Женева қаласында (Халықаралық еңбек ұйымы).</li>
+          <li><b>ДМҰ (ВМО, 1950 ж.)</b> — Женева қаласында (Дүниежүзілік метеорология).</li>
+          <li><b>ДСҰ (ВТО, 1995 ж.)</b> — Женева қаласында (Дүниежүзілік сауда ұйымы).</li>
+          <li><b>БПО (ВПС, 1874 ж.)</b> — Берн қаласында (Бүкіләлемдік пошта одағы).</li>
+        </ul>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-space-950 border border-blue-500/30 space-y-1.5">
+        <b class="text-blue-400 font-bold">🇰🇿 ҚАЗАҚСТАННЫҢ ХАЛЫҚАРАЛЫҚ ҰЙЫМДАРДАҒЫ РӨЛІ:</b>
+        <p>
+          • <b>БҰҰ мүшесі:</b> 1992 жылғы 2 наурыздан бастап (БҰҰ Қауіпсіздік Кеңесінің тұрақты емес мүшесі болды 2017–2018 жж.).<br>
+          • <b>ШЫҰ құрылтайшысы:</b> Ұйымның негізін қалаушы мемлекеттердің бірі, Астана саммиттерін ұйымдастырушы.<br>
+          • <b>ДСҰ мүшелігі:</b> 2015 жылы Дүниежүзілік сауда ұйымының толыққанды мүшесі атанды.<br>
+          • <b>АӨСШК (СВМДА):</b> Қазақстанның бастамасымен құрылған Азиядағы өзара іс-қимыл және сенім шаралары жөніндегі кеңес.<br>
+          • <b>МАГАТЭ Төмен байытылған уран банкі:</b> Өскемендегі Үлбі металлургия зауытында ашылған жаһандық ядролық қауіпсіздік нысаны.
+        </p>
+      </div>
+    </div>
+  </div>
+
+</div>
+      </div>
+    </section>
+
+    <!-- 3. VISUAL SVG DIAGRAM / ILLUSTRATION -->
+    <section id="svgSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl">
+      <div class="flex items-center space-x-2 text-amber-400 font-extrabold text-xs">
+        <span>🎨</span>
+        <span id="svgHeader">КӨРНЕКІ СХЕМА МЕН ИНФОГРАФИКА</span>
+      </div>
+      <div id="svgContainer" class="w-full flex justify-center overflow-x-auto">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 280" class="w-full h-auto max-w-full">
+  <defs>
+    <linearGradient id="ioBgKZ" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#090d16"/>
+      <stop offset="100%" stop-color="#111827"/>
+    </linearGradient>
+    <linearGradient id="iog1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+    <linearGradient id="iog2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#047857"/>
+    </linearGradient>
+    <linearGradient id="iog3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#6d28d9"/>
+    </linearGradient>
+    <linearGradient id="iog4" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#b45309"/>
+    </linearGradient>
+  </defs>
+  <rect width="760" height="280" rx="16" fill="url(#ioBgKZ)" stroke="#1e293b" stroke-width="1.5"/>
+  <text x="380" y="28" fill="#38bdf8" font-size="14" font-weight="bold" text-anchor="middle" letter-spacing="1">ХАЛЫҚАРАЛЫҚ ІРІ ҰЙЫМДАРДЫҢ ҚҰРЫЛЫМДЫҚ ЖІКТЕЛУІ</text>
+  <text x="380" y="46" fill="#94a3b8" font-size="11" text-anchor="middle">Жалпыға ортақ • Аймақтық интеграция • Әскери-саяси • Салалық ұйымдар мен коалициялар</text>
+  
+  <!-- Col 1: Жалпыға ортақ (БҰҰ жүйесі) -->
+  <g transform="translate(20, 62)">
+    <rect width="170" height="198" rx="12" fill="#0f172a" stroke="#3b82f6" stroke-width="1.2"/>
+    <rect width="170" height="32" rx="12" fill="url(#iog1)"/>
+    <text x="85" y="20" fill="#ffffff" font-size="10.5" font-weight="bold" text-anchor="middle">ЖАЛПЫҒА ОРТАҚ (БҰҰ)</text>
+    <text x="12" y="52" fill="#60a5fa" font-size="10" font-weight="bold">БҰҰ (1945 ж.):</text>
+    <text x="12" y="66" fill="#cbd5e1" font-size="9.5">Нью-Йорк • Бейбітшілік</text>
+    <text x="12" y="86" fill="#60a5fa" font-size="10" font-weight="bold">ЮНЕСКО (1945 ж.):</text>
+    <text x="12" y="100" fill="#cbd5e1" font-size="9.5">Париж / Лондон • Мәдениет</text>
+    <text x="12" y="120" fill="#60a5fa" font-size="10" font-weight="bold">ЮНИСЕФ (1946 ж.):</text>
+    <text x="12" y="134" fill="#cbd5e1" font-size="9.5">Нью-Йорк • Балалар қоры</text>
+    <text x="12" y="154" fill="#60a5fa" font-size="10" font-weight="bold">ДДҰ (1948 ж.):</text>
+    <text x="12" y="168" fill="#cbd5e1" font-size="9.5">Женева • Денсаулық</text>
+    <text x="12" y="186" fill="#93c5fd" font-size="9">ФАО (Рим), МАГАТЭ (Вена)</text>
+  </g>
+
+  <!-- Col 2: Аймақтық сауда және одақтар -->
+  <g transform="translate(202, 62)">
+    <rect width="170" height="198" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.2"/>
+    <rect width="170" height="32" rx="12" fill="url(#iog2)"/>
+    <text x="85" y="20" fill="#ffffff" font-size="10.5" font-weight="bold" text-anchor="middle">АЙМАҚТЫҚ ОДАҚТАР</text>
+    <text x="12" y="52" fill="#34d399" font-size="10" font-weight="bold">ЕО (1993 ж.):</text>
+    <text x="12" y="66" fill="#cbd5e1" font-size="9.5">Брюссель • Маастрихт</text>
+    <text x="12" y="86" fill="#34d399" font-size="10" font-weight="bold">Бенилюкс (1944 ж.):</text>
+    <text x="12" y="100" fill="#cbd5e1" font-size="9.5">Брюссель • Кеден одағы</text>
+    <text x="12" y="120" fill="#34d399" font-size="10" font-weight="bold">НАФТА (1994 ж.):</text>
+    <text x="12" y="134" fill="#cbd5e1" font-size="9.5">АҚШ, Канада, Мексика</text>
+    <text x="12" y="154" fill="#34d399" font-size="10" font-weight="bold">Меркосур (1991 ж.):</text>
+    <text x="12" y="168" fill="#cbd5e1" font-size="9.5">Монтевидео • Оңтүстік нарық</text>
+    <text x="12" y="186" fill="#6ee7b7" font-size="9">ЛАЙ (1980 ж. Монтевидео)</text>
+  </g>
+
+  <!-- Col 3: Азия және Еуразия одақтары -->
+  <g transform="translate(384, 62)">
+    <rect width="175" height="198" rx="12" fill="#0f172a" stroke="#8b5cf6" stroke-width="1.2"/>
+    <rect width="175" height="32" rx="12" fill="url(#iog3)"/>
+    <text x="87" y="20" fill="#ffffff" font-size="10.5" font-weight="bold" text-anchor="middle">АЗИЯ ЖӘНЕ ЕУРАЗИЯ</text>
+    <text x="12" y="52" fill="#c084fc" font-size="10" font-weight="bold">ШЫҰ (2001 ж.):</text>
+    <text x="12" y="66" fill="#cbd5e1" font-size="9.5">Пекин • ҚР, ҚХР, РФ, Үндістан</text>
+    <text x="12" y="86" fill="#c084fc" font-size="10" font-weight="bold">АСЕАН (1967 ж.):</text>
+    <text x="12" y="100" fill="#cbd5e1" font-size="9.5">Сингапур / Джакарта</text>
+    <text x="12" y="120" fill="#c084fc" font-size="10" font-weight="bold">АПЕК (1989 ж.):</text>
+    <text x="12" y="134" fill="#cbd5e1" font-size="9.5">Сингапур • АТЭС 21 мемлекет</text>
+    <text x="12" y="154" fill="#c084fc" font-size="10" font-weight="bold">БРИКС коалициясы:</text>
+    <text x="12" y="168" fill="#cbd5e1" font-size="9.5">Бразилия, РФ, Үндістан, ҚХР, ОАР</text>
+    <text x="12" y="186" fill="#d8b4fe" font-size="9">ТМД (Минск; Грузия шықты 2008)</text>
+  </g>
+
+  <!-- Col 4: Әскери және Салалық -->
+  <g transform="translate(571, 62)">
+    <rect width="170" height="198" rx="12" fill="#0f172a" stroke="#f59e0b" stroke-width="1.2"/>
+    <rect width="170" height="32" rx="12" fill="url(#iog4)"/>
+    <text x="85" y="20" fill="#ffffff" font-size="10.5" font-weight="bold" text-anchor="middle">ӘСКЕРИ ЖӘНЕ САЛАЛЫҚ</text>
+    <text x="12" y="52" fill="#fbbf24" font-size="10" font-weight="bold">НАТО (1949 ж.):</text>
+    <text x="12" y="66" fill="#cbd5e1" font-size="9.5">Брюссель • Әскери-саяси</text>
+    <text x="12" y="86" fill="#fbbf24" font-size="10" font-weight="bold">ОПЕК (1960 ж.):</text>
+    <text x="12" y="100" fill="#cbd5e1" font-size="9.5">Вена • Мұнай экспорттау</text>
+    <text x="12" y="120" fill="#fbbf24" font-size="10" font-weight="bold">МАГАТЭ / АЭХА (1957):</text>
+    <text x="12" y="134" fill="#cbd5e1" font-size="9.5">Вена • Атом қауіпсіздігі</text>
+    <text x="12" y="154" fill="#fbbf24" font-size="10" font-weight="bold">Швейцария хабы:</text>
+    <text x="12" y="168" fill="#cbd5e1" font-size="9.5">ДДҰ, ХЕҰ, ДМҰ, ДСҰ, Пошта</text>
+    <text x="12" y="186" fill="#fde68a" font-size="9">Женева &amp; Берн қалалары</text>
+  </g>
+</svg>
+      </div>
+    </section>
+
+    <!-- 4. STRUCTURED DATA TABLE -->
+    <section id="tableSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl overflow-x-auto">
+      <h3 class="text-xs font-black text-cyan-400 flex items-center space-x-2">
+        <span>📊</span>
+        <span id="tableHeader">НАҚТЫ КӨРСЕТКІШТЕР МЕН КЛАССИФИКАЦИЯ КЕСТЕСІ</span>
+      </h3>
+      <div id="tableContainer">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- 5. KEY FACTS FOR UNT / ЕНТ -->
+    <section id="factsSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl">
+      <h3 class="text-xs font-black text-amber-400 flex items-center space-x-2">
+        <span>⚡</span>
+        <span id="factsHeader">ҰБТ-ҒА ҚАЖЕТТІ НЕГІЗГІ ЕРЕЖЕЛЕР МЕН ФАКТІЛЕР</span>
+      </h3>
+      <ul id="factsList" class="space-y-2 text-xs text-slate-300">
+        <!-- Rendered via JS -->
+      </ul>
+    </section>
+
+    <!-- 6. TRAPS AND HACKS -->
+    <section id="trapsSection" class="p-5 rounded-2xl bg-gradient-to-r from-amber-950/40 via-space-950 to-space-950 border border-amber-500/40 space-y-3 shadow-xl">
+      <h3 class="text-xs font-black text-amber-400 flex items-center space-x-2">
+        <span>💡</span>
+        <span id="trapsHeader">ҰБТ ҚАҚПАНДАРЫ МЕН ЛАЙФХАКТАР</span>
+      </h3>
+      <div id="trapsList" class="space-y-2 text-xs text-slate-200">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- FOOTER NAVIGATION -->
+    <nav class="pt-4 pb-8 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3 text-xs">
+      <a href="topic_18.html" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white transition shadow-sm">
+      <span>←</span>
+      <span>#18 Алдыңғы тақырып</span>
+    </a>
+      <a href="../index.html#section-zhattau_grammar" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-400 hover:text-white transition">
+        <span>🏠</span>
+        <span>Барлық тақырыптар</span>
+      </a>
+      <a href="topic_20.html" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-xs font-bold text-cyan-300 hover:text-white transition shadow-sm">
+      <span>Келесі тақырып #20</span>
+      <span>→</span>
+    </a>
+    </nav>
+
+  </main>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="xpToast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300 flex items-center space-x-2 px-4 py-3 rounded-2xl bg-space-900 border border-cyan-500/40 shadow-2xl text-xs font-bold text-white">
+    <span class="text-cyan-400 text-base">✨</span>
+    <span id="toastMsg">+20 XP! Тақырып меңгерілді</span>
+  </div>
+
+  <script>
+    const topicData = {"num": 19, "title_kz": "Халықаралық ірі ұйымдар", "title_ru": "Крупные международные организации", "category_kz": "Саяси география", "category_ru": "Политическая география", "summary_kz": "Халықаралық ірі ұйымдар — БҰҰ және оның мамандандырылған агенттіктері (ЮНЕСКО, ЮНИСЕФ, ДДҰ, ФАО, МАГАТЭ/АЭХА), әскери-саяси одақ НАТО және мұнай картельдері (ОПЕК, ОПЕК+), аймақтық экономикалық интеграциялар (Еуропалық Одақ, Бенилюкс, НАФТА, Меркосур, ЛАЙ), Еуразиялық және Азия-Тынық мұхиты қауымдастықтары (ШЫҰ, АСЕАН, АПЕК, БРИКС, ТМД және Грузияның шығуы), басты дипломатиялық хабтар (Брюссель, Вена, Женева, Нью-Йорк, Сингапур, Монтевидео) және Қазақстанның жаһандық ұйымдардағы рөлі.", "summary_ru": "Крупные международные организации — система ООН и её специализированные учреждения (ЮНЕСКО, ЮНИСЕФ, ВОЗ, ФАО, МАГАТЭ), военно-политический альянс НАТО и нефтяной картель ОПЕК (ОПЕК+), региональная экономическая интеграция (Европейский Союз, Бенилюкс, НАФТА, Меркосур, ЛАИ), объединения Евразии и АТР (ШОС, АСЕАН, АТЭС, БРИКС, СНГ и выход Грузии), ключевые дипломатические хабы (Брюссель, Вена, Женева, Нью-Йорк, Сингапур, Монтевидео) и участие Казахстана.", "full_theory_kz": "<div class=\"space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed\">\n\n  <!-- БӨЛІМ 1: ХАЛЫҚАРАЛЫҚ ҰЙЫМДАРДЫҢ ҚҰРЫЛЫМДЫҚ ЖІКТЕЛУІ МЕН БАСТЫ ХАБТАР -->\n  <div class=\"p-5 rounded-2xl bg-space-900/80 border border-slate-800 space-y-4 shadow-xl\">\n    <div class=\"flex items-center space-x-3 border-b border-slate-800 pb-3\">\n      <span class=\"flex items-center justify-center w-8 h-8 rounded-xl bg-blue-500/20 text-blue-400 font-black text-sm\">1</span>\n      <h3 class=\"text-sm sm:text-base font-black text-white uppercase tracking-wider\">Халықаралық ұйымдардың жіктелуі және басты дипломатиялық хабтар</h3>\n    </div>\n    <p class=\"text-slate-300\">\n      <b class=\"text-cyan-400\">Халықаралық ұйымдар</b> — мемлекеттердің немесе ұлттық қоғамдардың халықаралық шарттар негізінде саяси, әскери, экономикалық, ғылыми-мәдени және әлеуметтік мақсаттарға бірлесіп қол жеткізу үшін құрылған тұрақты институттары. Олар заманауи геосаяси кеңістіктің басты реттеуші күші болып табылады.\n    </p>\n\n    <!-- 4 негізгі тип -->\n    <div class=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-1\">\n      <div class=\"p-3 rounded-xl bg-space-950 border border-blue-500/30 space-y-1\">\n        <span class=\"text-blue-400 font-bold text-xs\">🌐 ЖАЛПЫҒА ОРТАҚ (ӘМБЕБАП):</span>\n        <p class=\"text-slate-300 text-xs\">Әлемнің барлық егеменді елдеріне ашық, жаһандық мәселелерді шешетін құрылымдар: <b>БҰҰ және оның агенттіктері</b>.</p>\n      </div>\n      <div class=\"p-3 rounded-xl bg-space-950 border border-emerald-500/30 space-y-1\">\n        <span class=\"text-emerald-400 font-bold text-xs\">🗺️ АЙМАҚТЫҚ ЭКОНОМИКАЛЫҚ:</span>\n        <p class=\"text-slate-300 text-xs\">Белгілі бір географиялық кеңістіктегі сауда-кедендік одақтар: <b>ЕО, Бенилюкс, НАФТА, Меркосур, АСЕАН</b>.</p>\n      </div>\n      <div class=\"p-3 rounded-xl bg-space-950 border border-amber-500/30 space-y-1\">\n        <span class=\"text-amber-400 font-bold text-xs\">🛡️ ӘСКЕРИ-САЯСИ ОДАҚТАР:</span>\n        <p class=\"text-slate-300 text-xs\">Ұжымдық қорғаныс пен геосаяси қауіпсіздікті қамтамасыз ететін альянстар: <b>НАТО, ШЫҰ, ҰҚШҰ</b>.</p>\n      </div>\n      <div class=\"p-3 rounded-xl bg-space-950 border border-purple-500/30 space-y-1\">\n        <span class=\"text-purple-400 font-bold text-xs\">⚡ САЛАЛЫҚ ЖӘНЕ КОАЛИЦИЯЛАР:</span>\n        <p class=\"text-slate-300 text-xs\">Нақты экономикалық немесе стратегиялық саланы реттейтін бірлестіктер: <b>ОПЕК, МАГАТЭ, БРИКС</b>.</p>\n      </div>\n    </div>\n\n    <!-- SVG 4: Басты қалалық хабтар -->\n    <svg viewBox=\"0 0 700 230\" class=\"w-full h-auto max-w-full my-4 rounded-xl shadow-lg border border-slate-800\" xmlns=\"http://www.w3.org/2000/svg\">\n  <rect width=\"700\" height=\"230\" fill=\"#0b1120\" rx=\"12\"/>\n  <text x=\"350\" y=\"24\" fill=\"#38bdf8\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\">ХАЛЫҚАРАЛЫҚ ҰЙЫМДАРДЫҢ БАСТЫ ШТАБ-ПӘТЕРЛЕРІ ЖӘНЕ ХАБТАРЫ</text>\n  \n  <!-- Hub 1: Брюссель -->\n  <g transform=\"translate(25, 42)\">\n    <rect width=\"150\" height=\"85\" rx=\"8\" fill=\"#1e293b\" stroke=\"#3b82f6\" stroke-width=\"1.2\"/>\n    <text x=\"75\" y=\"20\" fill=\"#60a5fa\" font-size=\"10.5\" font-weight=\"bold\" text-anchor=\"middle\">БРЮССЕЛЬ (Бельгия)</text>\n    <text x=\"12\" y=\"40\" fill=\"#ffffff\" font-size=\"9.5\">• <tspan font-weight=\"bold\">НАТО</tspan> (1949 ж.)</text>\n    <text x=\"12\" y=\"56\" fill=\"#ffffff\" font-size=\"9.5\">• <tspan font-weight=\"bold\">ЕО</tspan> (1993 ж.)</text>\n    <text x=\"12\" y=\"72\" fill=\"#ffffff\" font-size=\"9.5\">• <tspan font-weight=\"bold\">Бенилюкс</tspan> (1944 ж.)</text>\n  </g>\n\n  <!-- Hub 2: Вена -->\n  <g transform=\"translate(190, 42)\">\n    <rect width=\"150\" height=\"85\" rx=\"8\" fill=\"#1e293b\" stroke=\"#f59e0b\" stroke-width=\"1.2\"/>\n    <text x=\"75\" y=\"20\" fill=\"#fbbf24\" font-size=\"10.5\" font-weight=\"bold\" text-anchor=\"middle\">ВЕНА (Австрия)</text>\n    <text x=\"12\" y=\"40\" fill=\"#ffffff\" font-size=\"9.5\">• <tspan font-weight=\"bold\">ОПЕК</tspan> (1960/1961 ж.)</text>\n    <text x=\"12\" y=\"56\" fill=\"#ffffff\" font-size=\"9.5\">• <tspan font-weight=\"bold\">МАГАТЭ (АЭХА)</tspan> (1957)</text>\n    <text x=\"12\" y=\"72\" fill=\"#cbd5e1\" font-size=\"8.5\">ЮНИДО, БҰҰ бөлімшесі</text>\n  </g>\n\n  <!-- Hub 3: Швейцария (Женева & Берн) -->\n  <g transform=\"translate(355, 42)\">\n    <rect width=\"160\" height=\"85\" rx=\"8\" fill=\"#1e293b\" stroke=\"#10b981\" stroke-width=\"1.2\"/>\n    <text x=\"80\" y=\"20\" fill=\"#34d399\" font-size=\"10.5\" font-weight=\"bold\" text-anchor=\"middle\">ЖЕНЕВА (Швейцария)</text>\n    <text x=\"12\" y=\"38\" fill=\"#ffffff\" font-size=\"9\">• <tspan font-weight=\"bold\">ДДҰ</tspan> (ВОЗ, 1948 ж.)</text>\n    <text x=\"12\" y=\"52\" fill=\"#ffffff\" font-size=\"9\">• <tspan font-weight=\"bold\">ХЕҰ</tspan> (Еңбек) • <tspan font-weight=\"bold\">ДМҰ</tspan> (Ауа-райы)</text>\n    <text x=\"12\" y=\"66\" fill=\"#ffffff\" font-size=\"9\">• <tspan font-weight=\"bold\">ДСҰ</tspan> (Сауда) • Пошта (Берн)</text>\n  </g>\n\n  <!-- Hub 4: Нью-Йорк -->\n  <g transform=\"translate(530, 42)\">\n    <rect width=\"145\" height=\"85\" rx=\"8\" fill=\"#1e293b\" stroke=\"#ec4899\" stroke-width=\"1.2\"/>\n    <text x=\"72\" y=\"20\" fill=\"#f472b6\" font-size=\"10.5\" font-weight=\"bold\" text-anchor=\"middle\">НЬЮ-ЙОРК (АҚШ)</text>\n    <text x=\"12\" y=\"40\" fill=\"#ffffff\" font-size=\"9.5\">• <tspan font-weight=\"bold\">БҰҰ</tspan> (1945 ж.)</text>\n    <text x=\"12\" y=\"56\" fill=\"#ffffff\" font-size=\"9.5\">• <tspan font-weight=\"bold\">ЮНИСЕФ</tspan> (1946 ж.)</text>\n    <text x=\"12\" y=\"72\" fill=\"#cbd5e1\" font-size=\"8.5\">БҰҰ Даму бағдарламасы</text>\n  </g>\n\n  <!-- Bottom Row: Other Cities (Париж, Рим, Пекин, Сингапур, Монтевидео, Минск) -->\n  <g transform=\"translate(25, 137)\">\n    <rect width=\"650\" height=\"75\" rx=\"8\" fill=\"#0f172a\" stroke=\"#334155\" stroke-width=\"1\"/>\n    <text x=\"15\" y=\"22\" fill=\"#38bdf8\" font-size=\"10\" font-weight=\"bold\">БАСҚА ДҮНИЕЖҮЗІЛІК ОРТАЛЫҚТАР:</text>\n    <text x=\"15\" y=\"42\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Париж:</tspan> ЮНЕСКО (1945) • <tspan font-weight=\"bold\" fill=\"#ffffff\">Рим:</tspan> ФАО (1945) • <tspan font-weight=\"bold\" fill=\"#ffffff\">Пекин:</tspan> ШЫҰ (2001)</text>\n    <text x=\"15\" y=\"60\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Сингапур:</tspan> АПЕК (1989), АСЕАН • <tspan font-weight=\"bold\" fill=\"#ffffff\">Монтевидео:</tspan> Меркосур (1991), ЛАЙ (1980) • <tspan font-weight=\"bold\" fill=\"#ffffff\">Минск:</tspan> ТМД (Грузия 2008 ж. шықты)</text>\n  </g>\n</svg>\n\n    <div class=\"p-3.5 rounded-xl bg-space-950 border border-slate-800 text-xs text-slate-300 space-y-1.5\">\n      <div class=\"text-cyan-400 font-bold\">⭐ ҰБТ-ДА КЕЗДЕСЕТІН БАСТЫ ШТАБ-ПӘТЕР БІРІКТІРУЛЕРІ:</div>\n      <p>\n        • <b>Брюссель (Бельгия):</b> <b>НАТО</b> (1949 ж.) мен <b>Еуропалық Одақ (ЕО)</b> (1993 ж.) және <b>Бенилюкс</b> (1944 ж.) орналасқан.<br>\n        • <b>Вена (Австрия):</b> <b>ОПЕК</b> (1960/1961 ж.) мен <b>МАГАТЭ / АЭХА</b> (1957 ж.) штаб-пәтерлері орналасқан.<br>\n        • <b>Швейцария (Женева &amp; Берн):</b> <b>ДДҰ (ВОЗ)</b>, <b>ХЕҰ (МОТ)</b>, <b>ДМҰ (ВМО)</b>, <b>ДСҰ (ВТО)</b> — Женевада; <b>Бүкіләлемдік пошта одағы</b> — Берн қаласында.<br>\n        • <b>Монтевидео (Уругвай):</b> Оңтүстік Американың <b>Меркосур</b> (1991 ж.) және <b>ЛАЙ</b> (1980 ж.) одақтары орналасқан.<br>\n        • <b>Сингапур:</b> <b>АПЕК</b> хатшылығы (1989 ж.) мен АСЕАН-ның жетекші қаржылық хабы.\n      </p>\n    </div>\n  </div>\n\n  <!-- БӨЛІМ 2: БҰҰ ЖҮЙЕСІ ЖӘНЕ ОНЫҢ МАМАНДАНДЫРЫЛҒАН АГЕНТТІКТЕРІ -->\n  <div class=\"p-5 rounded-2xl bg-space-900/80 border border-slate-800 space-y-4 shadow-xl\">\n    <div class=\"flex items-center space-x-3 border-b border-slate-800 pb-3\">\n      <span class=\"flex items-center justify-center w-8 h-8 rounded-xl bg-purple-500/20 text-purple-400 font-black text-sm\">2</span>\n      <h3 class=\"text-sm sm:text-base font-black text-white uppercase tracking-wider\">БҰҰ жүйесі және оның мамандандырылған құрылымдары</h3>\n    </div>\n    <p class=\"text-slate-300 text-xs\">\n      <b>Біріккен Ұлттар Ұйымы (БҰҰ / ООН)</b> — 1945 жылы 24 қазанда Сан-Франциско конференциясының нәтижесінде құрылған дүниежүзіндегі ең ірі халықаралық ұйым. Штаб-пәтері <b>Нью-Йорк қаласында (АҚШ)</b> орналасқан. Басты органдары: Қауіпсіздік Кеңесі (5 тұрақты мүше: АҚШ, Ұлыбритания, Франция, Ресей, Қытай), Бас Ассамблея, Экономикалық және Әлеуметтік Кеңес (ЭКОСОС), Халықаралық Сот (Гаага, Нидерланды).\n    </p>\n\n    <!-- SVG 1: БҰҰ жүйесі агенттіктері -->\n    <svg viewBox=\"0 0 700 230\" class=\"w-full h-auto max-w-full my-4 rounded-xl shadow-lg border border-slate-800\" xmlns=\"http://www.w3.org/2000/svg\">\n  <rect width=\"700\" height=\"230\" fill=\"#0b1120\" rx=\"12\"/>\n  <text x=\"350\" y=\"24\" fill=\"#38bdf8\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\">БҰҰ ЖҮЙЕСІ ЖӘНЕ ОНЫҢ МАМАНДАНДЫРЫЛҒАН АГЕНТТІКТЕРІ</text>\n  \n  <!-- Central UN Block -->\n  <g transform=\"translate(260, 40)\">\n    <rect width=\"180\" height=\"60\" rx=\"10\" fill=\"#1e3a8a\" stroke=\"#60a5fa\" stroke-width=\"1.5\"/>\n    <text x=\"90\" y=\"24\" fill=\"#ffffff\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\">БҰҰ (ООН, 1945 ж.)</text>\n    <text x=\"90\" y=\"40\" fill=\"#93c5fd\" font-size=\"9.5\" text-anchor=\"middle\">Штаб-пәтері: Нью-Йорк (АҚШ)</text>\n    <text x=\"90\" y=\"52\" fill=\"#cbd5e1\" font-size=\"8.5\" text-anchor=\"middle\">Қауіпсіздік кеңесі • Бас Ассамблея</text>\n  </g>\n\n  <!-- Agencies Grid Below -->\n  <!-- ЮНИСЕФ -->\n  <g transform=\"translate(25, 115)\">\n    <rect width=\"120\" height=\"95\" rx=\"8\" fill=\"#0f172a\" stroke=\"#3b82f6\" stroke-width=\"1\"/>\n    <text x=\"60\" y=\"20\" fill=\"#60a5fa\" font-size=\"10.5\" font-weight=\"bold\" text-anchor=\"middle\">ЮНИСЕФ (1946)</text>\n    <text x=\"60\" y=\"36\" fill=\"#e2e8f0\" font-size=\"9\" text-anchor=\"middle\">Нью-Йорк</text>\n    <text x=\"60\" y=\"54\" fill=\"#94a3b8\" font-size=\"8.5\" text-anchor=\"middle\">Балалар қоры</text>\n    <text x=\"60\" y=\"70\" fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\">Денсаулық, білім,</text>\n    <text x=\"60\" y=\"82\" fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\">қорғау шаралары</text>\n  </g>\n\n  <!-- ЮНЕСКО -->\n  <g transform=\"translate(155, 115)\">\n    <rect width=\"120\" height=\"95\" rx=\"8\" fill=\"#0f172a\" stroke=\"#8b5cf6\" stroke-width=\"1\"/>\n    <text x=\"60\" y=\"20\" fill=\"#c084fc\" font-size=\"10.5\" font-weight=\"bold\" text-anchor=\"middle\">ЮНЕСКО (1945)</text>\n    <text x=\"60\" y=\"36\" fill=\"#e2e8f0\" font-size=\"9\" text-anchor=\"middle\">Париж (Лондон 1945)</text>\n    <text x=\"60\" y=\"54\" fill=\"#94a3b8\" font-size=\"8.5\" text-anchor=\"middle\">Білім, ғылым,</text>\n    <text x=\"60\" y=\"68\" fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\">мәдени мұраны</text>\n    <text x=\"60\" y=\"80\" fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\">қорғау ұйымы</text>\n  </g>\n\n  <!-- ДДҰ -->\n  <g transform=\"translate(290, 115)\">\n    <rect width=\"120\" height=\"95\" rx=\"8\" fill=\"#0f172a\" stroke=\"#10b981\" stroke-width=\"1\"/>\n    <text x=\"60\" y=\"20\" fill=\"#34d399\" font-size=\"10.5\" font-weight=\"bold\" text-anchor=\"middle\">ДДҰ / ВОЗ (1948)</text>\n    <text x=\"60\" y=\"36\" fill=\"#e2e8f0\" font-size=\"9\" text-anchor=\"middle\">Женева (Швейцария)</text>\n    <text x=\"60\" y=\"54\" fill=\"#94a3b8\" font-size=\"8.5\" text-anchor=\"middle\">Денсаулық сақтау</text>\n    <text x=\"60\" y=\"68\" fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\">Індеттермен күрес,</text>\n    <text x=\"60\" y=\"80\" fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\">жаһандық сақтық</text>\n  </g>\n\n  <!-- ФАО -->\n  <g transform=\"translate(425, 115)\">\n    <rect width=\"120\" height=\"95\" rx=\"8\" fill=\"#0f172a\" stroke=\"#f59e0b\" stroke-width=\"1\"/>\n    <text x=\"60\" y=\"20\" fill=\"#fbbf24\" font-size=\"10.5\" font-weight=\"bold\" text-anchor=\"middle\">ФАО (1945)</text>\n    <text x=\"60\" y=\"36\" fill=\"#e2e8f0\" font-size=\"9\" text-anchor=\"middle\">Рим (Италия)</text>\n    <text x=\"60\" y=\"54\" fill=\"#94a3b8\" font-size=\"8.5\" text-anchor=\"middle\">Азық-түлік және</text>\n    <text x=\"60\" y=\"68\" fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\">ауыл шаруашылығы</text>\n    <text x=\"60\" y=\"80\" fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\">ұйымы</text>\n  </g>\n\n  <!-- МАГАТЭ -->\n  <g transform=\"translate(555, 115)\">\n    <rect width=\"120\" height=\"95\" rx=\"8\" fill=\"#0f172a\" stroke=\"#ef4444\" stroke-width=\"1\"/>\n    <text x=\"60\" y=\"20\" fill=\"#f87171\" font-size=\"10.5\" font-weight=\"bold\" text-anchor=\"middle\">МАГАТЭ (1957)</text>\n    <text x=\"60\" y=\"36\" fill=\"#e2e8f0\" font-size=\"9\" text-anchor=\"middle\">Вена (Австрия)</text>\n    <text x=\"60\" y=\"54\" fill=\"#94a3b8\" font-size=\"8.5\" text-anchor=\"middle\">АЭХА • Атом</text>\n    <text x=\"60\" y=\"68\" fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\">энергиясын бейбіт</text>\n    <text x=\"60\" y=\"80\" fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\">пайдалану агенттігі</text>\n  </g>\n</svg>\n\n    <div class=\"grid grid-cols-1 md:grid-cols-2 gap-3.5 text-xs text-slate-300\">\n      <div class=\"p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-1.5\">\n        <b class=\"text-purple-400 font-bold\">1. ЮНЕСКО (UNESCO, 1945 ж.):</b>\n        <p>БҰҰ Білім, ғылым және мәдениет мәселелері жөніндегі ұйымы. 1945 жылы <b>Лондонда</b> өткен конференцияда Жарғысы қабылданып, тұрақты бас штаб-пәтері <b>Францияның Париж қаласында</b> орналасты. Негізгі қызметі: Дүниежүзілік мәдени және табиғи мұра объектілерін тіркеу және қорғау (Қазақстандағы Қожа Ахмет Ясауи кесенесі, Тамғалы петроглифтері, Сарыарқа мен Батыс Тянь-Шань табиғи мұралары).</p>\n      </div>\n\n      <div class=\"p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-1.5\">\n        <b class=\"text-blue-400 font-bold\">2. ЮНИСЕФ (UNICEF, 1946 ж.):</b>\n        <p>БҰҰ Балалар қоры. Штаб-пәтері <b>Нью-Йорк қаласында (АҚШ)</b> орналасқан. Бастапқыда Екінші дүниежүзілік соғыстан зардап шеккен балаларға көмек көрсету үшін құрылған. Қазіргі таңда бүкіл әлемдегі балалардың денсаулығын, тамақтануын, білім алуын және қауіпсіздігін қамтамасыз ететін жаһандық гуманитарлық құрылым.</p>\n      </div>\n\n      <div class=\"p-3.5 rounded-xl bg-space-950 border border-teal-500/30 space-y-1.5\">\n        <b class=\"text-teal-400 font-bold\">3. ДДҰ / ВОЗ (WHO, 1948 ж.):</b>\n        <p>Дүниежүзілік денсаулық сақтау ұйымы. Штаб-пәтері <b>Швейцарияның Женева қаласында</b> орналасқан. Халықаралық санитарлық нормаларды бекіту, жұқпалы аурулар мен жаһандық пандемияларға қарсы күресу, денсаулық сақтау жүйелерін дамыту бойынша БҰҰ-ның бас үйлестірушісі.</p>\n      </div>\n\n      <div class=\"p-3.5 rounded-xl bg-space-950 border border-amber-500/30 space-y-1.5\">\n        <b class=\"text-amber-400 font-bold\">4. ФАО (FAO, 1945 ж.):</b>\n        <p>БҰҰ Азық-түлік және ауыл шаруашылығы ұйымы. Штаб-пәтері <b>Италия астанасы Рим қаласында</b> орналасқан. Дүниежүзіндегі аштық пен кедейлікпен күресу, ауыл шаруашылығының өнімділігін арттыру, орман және балық шаруашылығын тұрақты басқару мақсатында құрылған.</p>\n      </div>\n    </div>\n  </div>\n\n  <!-- БӨЛІМ 3: ӘСКЕРИ ЖӘНЕ САЛАЛЫҚ ОДАҚТАР: НАТО ЖӘНЕ ОПЕК -->\n  <div class=\"p-5 rounded-2xl bg-space-900/80 border border-slate-800 space-y-4 shadow-xl\">\n    <div class=\"flex items-center space-x-3 border-b border-slate-800 pb-3\">\n      <span class=\"flex items-center justify-center w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 font-black text-sm\">3</span>\n      <h3 class=\"text-sm sm:text-base font-black text-white uppercase tracking-wider\">Әскери-саяси және салалық ұйымдар: НАТО және ОПЕК</h3>\n    </div>\n    \n    <!-- SVG 5: НАТО мен ОПЕК -->\n    <svg viewBox=\"0 0 700 230\" class=\"w-full h-auto max-w-full my-4 rounded-xl shadow-lg border border-slate-800\" xmlns=\"http://www.w3.org/2000/svg\">\n  <rect width=\"700\" height=\"230\" fill=\"#0b1120\" rx=\"12\"/>\n  <text x=\"350\" y=\"24\" fill=\"#38bdf8\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\">ӘСКЕРИ ЖӘНЕ САЛАЛЫҚ САЯСАТ: НАТО ЖӘНЕ ОПЕК</text>\n  \n  <!-- Left Half: НАТО -->\n  <g transform=\"translate(30, 42)\">\n    <rect width=\"310\" height=\"170\" rx=\"10\" fill=\"#0f172a\" stroke=\"#3b82f6\" stroke-width=\"1.2\"/>\n    <rect width=\"310\" height=\"28\" rx=\"10\" fill=\"#1e3a8a\"/>\n    <text x=\"155\" y=\"18\" fill=\"#ffffff\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\">НАТО (СОЛТҮСТІК АТЛАНТИКАЛЫҚ ОДАҚ)</text>\n    <text x=\"15\" y=\"48\" fill=\"#60a5fa\" font-size=\"10\" font-weight=\"bold\">• Құрылған жылы:</text>\n    <text x=\"135\" y=\"48\" fill=\"#ffffff\" font-size=\"10\">1949 жыл (Вашингтон келісімі)</text>\n    <text x=\"15\" y=\"68\" fill=\"#60a5fa\" font-size=\"10\" font-weight=\"bold\">• Штаб-пәтері:</text>\n    <text x=\"105\" y=\"68\" fill=\"#ffffff\" font-size=\"10\">Бельгия — Брюссель қаласы</text>\n    <text x=\"15\" y=\"88\" fill=\"#60a5fa\" font-size=\"10\" font-weight=\"bold\">• Сипаты:</text>\n    <text x=\"75\" y=\"88\" fill=\"#cbd5e1\" font-size=\"9.5\">Әскери-саяси қорғаныс альянсы</text>\n    <text x=\"15\" y=\"108\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">5-бап принципі:</tspan> Бір мүшеге шабуыл — барлығына шабуыл</text>\n    <text x=\"15\" y=\"126\" fill=\"#cbd5e1\" font-size=\"9\">• Негізін қалаушылар: АҚШ, Канада, Ұлыбритания, Франция т.б.</text>\n    <text x=\"15\" y=\"144\" fill=\"#cbd5e1\" font-size=\"9\">• Қазіргі құрамы: Солтүстік Америка мен Еуропаның 32 елі</text>\n    <text x=\"15\" y=\"160\" fill=\"#93c5fd\" font-size=\"8.5\">Қазақстан «Бейбітшілік жолындағы серіктестік» бағдарламасына қатысады</text>\n  </g>\n\n  <!-- Right Half: ОПЕК -->\n  <g transform=\"translate(360, 42)\">\n    <rect width=\"310\" height=\"170\" rx=\"10\" fill=\"#0f172a\" stroke=\"#f59e0b\" stroke-width=\"1.2\"/>\n    <rect width=\"310\" height=\"28\" rx=\"10\" fill=\"#78350f\"/>\n    <text x=\"155\" y=\"18\" fill=\"#ffffff\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\">ОПЕК (МҰНАЙ ЭКСПОРТТАУШЫ ЕЛДЕР ҰЙЫМЫ)</text>\n    <text x=\"15\" y=\"48\" fill=\"#fbbf24\" font-size=\"10\" font-weight=\"bold\">• Құрылған жылы:</text>\n    <text x=\"135\" y=\"48\" fill=\"#ffffff\" font-size=\"10\">1960 ж. (1961 ж. жұмысын бастады)</text>\n    <text x=\"15\" y=\"68\" fill=\"#fbbf24\" font-size=\"10\" font-weight=\"bold\">• Штаб-пәтері:</text>\n    <text x=\"105\" y=\"68\" fill=\"#ffffff\" font-size=\"10\">Австрия — Вена қаласы</text>\n    <text x=\"15\" y=\"88\" fill=\"#fbbf24\" font-size=\"10\" font-weight=\"bold\">• Құрушы 5 ел:</text>\n    <text x=\"110\" y=\"88\" fill=\"#cbd5e1\" font-size=\"9.5\">Сауд Арабиясы, Иран, Ирак,</text>\n    <text x=\"25\" y=\"102\" fill=\"#fde68a\" font-size=\"9\">Кувейт, Венесуэла (Бағдат конференциясы)</text>\n    <text x=\"15\" y=\"122\" fill=\"#cbd5e1\" font-size=\"9\">• Мақсаты: Мұнай бағасын реттеу және квота бекіту</text>\n    <text x=\"15\" y=\"140\" fill=\"#cbd5e1\" font-size=\"9\">• ОПЕК+ форматы: Ресей, Қазақстан серіктес ретінде қатысады</text>\n    <text x=\"15\" y=\"158\" fill=\"#fbbf24\" font-size=\"8.5\">Австрия мұнай өндірмесе де, бейтарап Венада штаб орналасқан</text>\n  </g>\n</svg>\n\n    <div class=\"grid grid-cols-1 md:grid-cols-2 gap-3.5 text-xs text-slate-300\">\n      <div class=\"p-4 rounded-xl bg-space-950 border border-blue-500/30 space-y-2\">\n        <div class=\"flex items-center space-x-2 text-blue-400 font-bold\">\n          <span>🛡️</span>\n          <span>НАТО (СОЛТҮСТІК АТЛАНТИКАЛЫҚ КЕЛІСІМ ҰЙЫМЫ, 1949 ж.):</span>\n        </div>\n        <p>\n          • <b>Құрылған жылы:</b> 1949 жылғы 4 сәуір (Вашингтон келісімі).<br>\n          • <b>Штаб-пәтері:</b> Бельгия астанасы — <b>Брюссель қаласы</b>.<br>\n          • <b>Мазмұны мен қағидаты:</b> Солтүстік Америка мен Еуропа елдерінің әскери-саяси қорғаныс одағы. Вашингтон шартының әйгілі <b>5-бабына</b> сәйкес, одаққа мүше бір мемлекетке жасалған қарулы шабуыл — барлық мүше елдерге жасалған шабуыл болып бағаланады.<br>\n          • <b>Қазақстанмен байланысы:</b> ҚР 1994 жылдан бері НАТО-ның «Бейбітшілік жолындағы серіктестік» (PfP) бағдарламасына қатысады.\n        </p>\n      </div>\n\n      <div class=\"p-4 rounded-xl bg-space-950 border border-amber-500/30 space-y-2\">\n        <div class=\"flex items-center space-x-2 text-amber-400 font-bold\">\n          <span>🛢️</span>\n          <span>ОПЕК (МҰНАЙ ЭКСПОРТТАУШЫ ЕЛДЕР ҰЙЫМЫ, 1960/1961 ж.):</span>\n        </div>\n        <p>\n          • <b>Құрылған уақыты:</b> <b>1960 жылы</b> Бағдат конференциясында құрылып, ресми түрде <b>1961 жылы</b> өз қызметін бастады.<br>\n          • <b>Штаб-пәтері:</b> <b>Австрия — Вена қаласы</b> (1965 жылдан бері).<br>\n          • <b>Құрушы 5 мемлекет:</b> Сауд Арабиясы, Иран, Ирак, Кувейт, Венесуэла.<br>\n          • <b>Негізгі функциясы:</b> Мұнай өндіру көлемдеріне квоталар белгілеу, әлемдік энергетикалық нарықтағы баға тұрақтылығын қорғау.<br>\n          • <b>ОПЕК+ және Қазақстан:</b> 2016 жылдан бері картель сыртындағы ірі өндірушілер (Қазақстан, Ресей т.б.) ортақ мәмілемен мұнай нарығын теңгеріп келеді.\n        </p>\n      </div>\n    </div>\n  </div>\n\n  <!-- БӨЛІМ 4: ЕУРОПАЛЫҚ ЖӘНЕ АМЕРИКАЛЫҚ АЙМАҚТЫҚ ЭКОНОМИКАЛЫҚ ОДАҚТАР -->\n  <div class=\"p-5 rounded-2xl bg-space-900/80 border border-slate-800 space-y-4 shadow-xl\">\n    <div class=\"flex items-center space-x-3 border-b border-slate-800 pb-3\">\n      <span class=\"flex items-center justify-center w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 font-black text-sm\">4</span>\n      <h3 class=\"text-sm sm:text-base font-black text-white uppercase tracking-wider\">Еуропалық және Америкалық аймақтық экономикалық одақтар</h3>\n    </div>\n    \n    <!-- SVG 2: Аймақтық сауда одақтары -->\n    <svg viewBox=\"0 0 700 230\" class=\"w-full h-auto max-w-full my-4 rounded-xl shadow-lg border border-slate-800\" xmlns=\"http://www.w3.org/2000/svg\">\n  <rect width=\"700\" height=\"230\" fill=\"#0b1120\" rx=\"12\"/>\n  <text x=\"350\" y=\"24\" fill=\"#38bdf8\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\">АЙМАҚТЫҚ ЭКОНОМИКАЛЫҚ ИНТЕГРАЦИЯ ЖӘНЕ САУДА ОДАҚТАРЫ</text>\n  \n  <!-- Block 1: ЕО және Бенилюкс -->\n  <g transform=\"translate(25, 42)\">\n    <rect width=\"155\" height=\"170\" rx=\"10\" fill=\"#0f172a\" stroke=\"#3b82f6\" stroke-width=\"1.2\"/>\n    <rect width=\"155\" height=\"26\" rx=\"10\" fill=\"#1e40af\"/>\n    <text x=\"77\" y=\"17\" fill=\"#ffffff\" font-size=\"10.5\" font-weight=\"bold\" text-anchor=\"middle\">ЕУРОПА (ЕО &amp; Бенилюкс)</text>\n    <text x=\"10\" y=\"42\" fill=\"#60a5fa\" font-size=\"10\" font-weight=\"bold\">ЕО (1993 ж.):</text>\n    <text x=\"10\" y=\"56\" fill=\"#cbd5e1\" font-size=\"9\">• Штаб-пәтері: Брюссель</text>\n    <text x=\"10\" y=\"70\" fill=\"#cbd5e1\" font-size=\"9\">• Маастрихт келісімі (1992)</text>\n    <text x=\"10\" y=\"84\" fill=\"#cbd5e1\" font-size=\"9\">• Біртұтас нарық, еуро</text>\n    <text x=\"10\" y=\"106\" fill=\"#60a5fa\" font-size=\"10\" font-weight=\"bold\">Бенилюкс (1944 ж.):</text>\n    <text x=\"10\" y=\"120\" fill=\"#cbd5e1\" font-size=\"9\">• Штаб-пәтері: Брюссель</text>\n    <text x=\"10\" y=\"134\" fill=\"#cbd5e1\" font-size=\"9\">• Бельгия, Нидерланды,</text>\n    <text x=\"18\" y=\"148\" fill=\"#93c5fd\" font-size=\"8.5\">Люксембург кеден одағы</text>\n    <text x=\"10\" y=\"162\" fill=\"#cbd5e1\" font-size=\"8.5\">Еуроинтеграция бастауы</text>\n  </g>\n\n  <!-- Block 2: НАФТА -->\n  <g transform=\"translate(190, 42)\">\n    <rect width=\"155\" height=\"170\" rx=\"10\" fill=\"#0f172a\" stroke=\"#10b981\" stroke-width=\"1.2\"/>\n    <rect width=\"155\" height=\"26\" rx=\"10\" fill=\"#047857\"/>\n    <text x=\"77\" y=\"17\" fill=\"#ffffff\" font-size=\"10.5\" font-weight=\"bold\" text-anchor=\"middle\">СОЛТҮСТІК АМЕРИКА</text>\n    <text x=\"10\" y=\"42\" fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\">НАФТА (1994 ж.):</text>\n    <text x=\"10\" y=\"56\" fill=\"#cbd5e1\" font-size=\"9\">• Еркін сауда аймағы</text>\n    <text x=\"10\" y=\"72\" fill=\"#cbd5e1\" font-size=\"9.5\"><tspan font-weight=\"bold\" fill=\"#ffffff\">3 ел астанасы:</tspan></text>\n    <text x=\"10\" y=\"88\" fill=\"#cbd5e1\" font-size=\"9\">• Вашингтон (АҚШ)</text>\n    <text x=\"10\" y=\"104\" fill=\"#cbd5e1\" font-size=\"9\">• Оттава (Канада)</text>\n    <text x=\"10\" y=\"120\" fill=\"#cbd5e1\" font-size=\"9\">• Мехико (Мексика)</text>\n    <text x=\"10\" y=\"142\" fill=\"#6ee7b7\" font-size=\"8.5\">Кеденсіз сауда аймағы,</text>\n    <text x=\"10\" y=\"156\" fill=\"#6ee7b7\" font-size=\"8.5\">қазіргі жаңартылған USMCA</text>\n  </g>\n\n  <!-- Block 3: Меркосур және ЛАЙ -->\n  <g transform=\"translate(355, 42)\">\n    <rect width=\"165\" height=\"170\" rx=\"10\" fill=\"#0f172a\" stroke=\"#f59e0b\" stroke-width=\"1.2\"/>\n    <rect width=\"165\" height=\"26\" rx=\"10\" fill=\"#b45309\"/>\n    <text x=\"82\" y=\"17\" fill=\"#ffffff\" font-size=\"10.5\" font-weight=\"bold\" text-anchor=\"middle\">ОҢТҮСТІК АМЕРИКА</text>\n    <text x=\"10\" y=\"42\" fill=\"#fbbf24\" font-size=\"10\" font-weight=\"bold\">Меркосур (1991 ж.):</text>\n    <text x=\"10\" y=\"56\" fill=\"#cbd5e1\" font-size=\"9\">• Монтевидео (Уругвай)</text>\n    <text x=\"10\" y=\"70\" fill=\"#cbd5e1\" font-size=\"9\">• Оңтүстік ортақ нарығы</text>\n    <text x=\"10\" y=\"84\" fill=\"#cbd5e1\" font-size=\"8.5\">• Бразилия, Аргентина,</text>\n    <text x=\"18\" y=\"98\" fill=\"#fde68a\" font-size=\"8.5\">Парагвай, Уругвай</text>\n    <text x=\"10\" y=\"118\" fill=\"#fbbf24\" font-size=\"10\" font-weight=\"bold\">ЛАЙ / ALADI (1980 ж.):</text>\n    <text x=\"10\" y=\"132\" fill=\"#cbd5e1\" font-size=\"9\">• Монтевидео (Уругвай)</text>\n    <text x=\"10\" y=\"146\" fill=\"#cbd5e1\" font-size=\"8.5\">• Латын Америкасының</text>\n    <text x=\"10\" y=\"160\" fill=\"#cbd5e1\" font-size=\"8.5\">  интеграциялық қауымдастығы</text>\n  </g>\n\n  <!-- Block 4: АСЕАН & АПЕК -->\n  <g transform=\"translate(530, 42)\">\n    <rect width=\"150\" height=\"170\" rx=\"10\" fill=\"#0f172a\" stroke=\"#8b5cf6\" stroke-width=\"1.2\"/>\n    <rect width=\"150\" height=\"26\" rx=\"10\" fill=\"#6d28d9\"/>\n    <text x=\"75\" y=\"17\" fill=\"#ffffff\" font-size=\"10.5\" font-weight=\"bold\" text-anchor=\"middle\">АЗИЯ-ТЫНЫҚ МҰХИТ</text>\n    <text x=\"10\" y=\"42\" fill=\"#c084fc\" font-size=\"10\" font-weight=\"bold\">АСЕАН (1967 ж.):</text>\n    <text x=\"10\" y=\"56\" fill=\"#cbd5e1\" font-size=\"9\">• Сингапур / Джакарта</text>\n    <text x=\"10\" y=\"70\" fill=\"#cbd5e1\" font-size=\"9\">• Оңтүстік-Шығыс Азия</text>\n    <text x=\"10\" y=\"84\" fill=\"#cbd5e1\" font-size=\"8.5\">• 10 мемлекет одағы</text>\n    <text x=\"10\" y=\"106\" fill=\"#c084fc\" font-size=\"10\" font-weight=\"bold\">АПЕК (1989 ж.):</text>\n    <text x=\"10\" y=\"120\" fill=\"#cbd5e1\" font-size=\"9\">• Сингапур (хатшылық)</text>\n    <text x=\"10\" y=\"134\" fill=\"#cbd5e1\" font-size=\"9\">• Азия-Тынық мұхит</text>\n    <text x=\"10\" y=\"148\" fill=\"#cbd5e1\" font-size=\"8.5\">  ынтымақтастығы</text>\n    <text x=\"10\" y=\"162\" fill=\"#d8b4fe\" font-size=\"8.5\">• 21 экономика мүше</text>\n  </g>\n</svg>\n\n    <div class=\"grid grid-cols-1 md:grid-cols-3 gap-3 text-xs text-slate-300\">\n      <div class=\"p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-1.5\">\n        <b class=\"text-blue-400 font-bold\">1. ЕУРОПАЛЫҚ ОДАҚ ЖӘНЕ БЕНИЛЮКС:</b>\n        <p>• <b>Бенилюкс (1944 ж.):</b> Бельгия, Нидерланды, Люксембург кеден одағы. Штаб-пәтері: <b>Брюссель</b>. Еуропалық бірігудің алғашқы сынақ алаңы болды.<br>\n        • <b>ЕО (1993 ж.):</b> 1992 жылы Нидерландының <b>Маастрихт қаласында</b> қол қойылып, 1993 ж. күшіне енді. Штаб-пәтері: <b>Брюссель</b>. Қазіргі уақытта 27 еуропалық мемлекетті біріктіреді, ортақ валютасы — еуро (€).</p>\n      </div>\n\n      <div class=\"p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-1.5\">\n        <b class=\"text-emerald-400 font-bold\">2. НАФТА (NAFTA, 1994 ж.):</b>\n        <p>Солтүстік Америка еркін сауда келісімі. <b>3 ел астанасында</b> (Вашингтон, Оттава, Мехико) үйлестіріледі. АҚШ, Канада және Мексика арасындағы тарифтік кедергілерді жойып, әлемдегі ең ірі ортақ сауда аймақтарының бірін қалыптастырды (қазір жаңартылған USMCA форматы).</p>\n      </div>\n\n      <div class=\"p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-1.5\">\n        <b class=\"text-amber-400 font-bold\">3. МЕРКОСУР ЖӘНЕ ЛАЙ (УРУГВАЙ):</b>\n        <p>• <b>Меркосур (1991 ж.):</b> Оңтүстік ортақ нарығы. Штаб-пәтері: <b>Монтевидео (Уругвай)</b>. Мүшелері: Бразилия, Аргентина, Парагвай, Уругвай.<br>\n        • <b>ЛАЙ / ALADI (1980 ж.):</b> Латын Америкасы интеграциясы қауымдастығы. Штаб-пәтері де <b>Монтевидео қаласында</b> орналасқан.</p>\n      </div>\n    </div>\n  </div>\n\n  <!-- БӨЛІМ 5: ЕУРАЗИЯЛЫҚ ЖӘНЕ АЗИЯ-ТЫНЫҚ МҰХИТЫ ҚАУЫМДАСТЫҚТАРЫ -->\n  <div class=\"p-5 rounded-2xl bg-space-900/80 border border-slate-800 space-y-4 shadow-xl\">\n    <div class=\"flex items-center space-x-3 border-b border-slate-800 pb-3\">\n      <span class=\"flex items-center justify-center w-8 h-8 rounded-xl bg-indigo-500/20 text-indigo-400 font-black text-sm\">5</span>\n      <h3 class=\"text-sm sm:text-base font-black text-white uppercase tracking-wider\">Еуразиялық және Азия-Тынық мұхиты қауымдастықтары</h3>\n    </div>\n    \n    <!-- SVG 3: ШЫҰ және БРИКС -->\n    <svg viewBox=\"0 0 700 230\" class=\"w-full h-auto max-w-full my-4 rounded-xl shadow-lg border border-slate-800\" xmlns=\"http://www.w3.org/2000/svg\">\n  <rect width=\"700\" height=\"230\" fill=\"#0b1120\" rx=\"12\"/>\n  <text x=\"350\" y=\"24\" fill=\"#38bdf8\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\">ЕУРАЗИЯ ЖӘНЕ ЖАҺАНДЫҚ ОҢТҮСТІК: ШЫҰ МЕН БРИКС</text>\n  \n  <!-- Left Box: ШЫҰ -->\n  <g transform=\"translate(30, 42)\">\n    <rect width=\"310\" height=\"170\" rx=\"10\" fill=\"#0f172a\" stroke=\"#8b5cf6\" stroke-width=\"1.2\"/>\n    <rect width=\"310\" height=\"28\" rx=\"10\" fill=\"#4c1d95\"/>\n    <text x=\"155\" y=\"18\" fill=\"#ffffff\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\">ШЫҰ — ШАНХАЙ ЫНТЫМАҚТАСТЫҚ ҰЙЫМЫ</text>\n    <text x=\"15\" y=\"48\" fill=\"#c084fc\" font-size=\"10\" font-weight=\"bold\">• Құрылған жылы:</text>\n    <text x=\"135\" y=\"48\" fill=\"#ffffff\" font-size=\"10\">2001 жыл (Шанхай бестігі негізінде)</text>\n    <text x=\"15\" y=\"68\" fill=\"#c084fc\" font-size=\"10\" font-weight=\"bold\">• Штаб-пәтері (Хатшылық):</text>\n    <text x=\"175\" y=\"68\" fill=\"#ffffff\" font-size=\"10\">Пекин (Қытай)</text>\n    <text x=\"15\" y=\"88\" fill=\"#c084fc\" font-size=\"10\" font-weight=\"bold\">• Лаңкестікке қарсы орталық (РАТС):</text>\n    <text x=\"235\" y=\"88\" fill=\"#ffffff\" font-size=\"10\">Ташкент</text>\n    <text x=\"15\" y=\"108\" fill=\"#e2e8f0\" font-size=\"9.5\"><tspan font-weight=\"bold\" fill=\"#38bdf8\">Мүшелері:</tspan> Қазақстан, Қытай, Ресей, Өзбекстан,</text>\n    <text x=\"25\" y=\"122\" fill=\"#e2e8f0\" font-size=\"9.5\">Қырғызстан, Тәжікстан, Пәкістан, Үндістан (Иран, Беларусь)</text>\n    <text x=\"15\" y=\"142\" fill=\"#cbd5e1\" font-size=\"9\">• Мақсаты: Аймақтық қауіпсіздік, сауда және «Шанхай рухы»</text>\n    <text x=\"15\" y=\"158\" fill=\"#94a3b8\" font-size=\"8.5\">• Еуразияның 60% аумағын және әлем халқының жартысын қамтиды</text>\n  </g>\n\n  <!-- Right Box: БРИКС -->\n  <g transform=\"translate(360, 42)\">\n    <rect width=\"310\" height=\"170\" rx=\"10\" fill=\"#0f172a\" stroke=\"#f59e0b\" stroke-width=\"1.2\"/>\n    <rect width=\"310\" height=\"28\" rx=\"10\" fill=\"#78350f\"/>\n    <text x=\"155\" y=\"18\" fill=\"#ffffff\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\">БРИКС (BRICS) ГЕОСАЯСИ ҚАУЫМДАСТЫҒЫ</text>\n    <text x=\"15\" y=\"48\" fill=\"#fbbf24\" font-size=\"10\" font-weight=\"bold\">• Мүше мемлекеттер коалициясы:</text>\n    <text x=\"15\" y=\"68\" fill=\"#ffffff\" font-size=\"9.5\"><tspan font-weight=\"bold\" fill=\"#f59e0b\">B</tspan> — Бразилия | <tspan font-weight=\"bold\" fill=\"#f59e0b\">R</tspan> — Ресей | <tspan font-weight=\"bold\" fill=\"#f59e0b\">I</tspan> — Үндістан</text>\n    <text x=\"15\" y=\"84\" fill=\"#ffffff\" font-size=\"9.5\"><tspan font-weight=\"bold\" fill=\"#f59e0b\">C</tspan> — Қытай | <tspan font-weight=\"bold\" fill=\"#f59e0b\">S</tspan> — Оңтүстік Африка Республикасы (ОАР)</text>\n    <text x=\"15\" y=\"104\" fill=\"#fbbf24\" font-size=\"10\" font-weight=\"bold\">• Сипаты:</text>\n    <text x=\"75\" y=\"104\" fill=\"#cbd5e1\" font-size=\"9.5\">Әлемдік қарқынды дамушы ірі елдер коалициясы</text>\n    <text x=\"15\" y=\"122\" fill=\"#cbd5e1\" font-size=\"9\">• Жаңа даму банкі (NDB): Шанхай қаласы</text>\n    <text x=\"15\" y=\"138\" fill=\"#cbd5e1\" font-size=\"9\">• Жаһандық ЖІӨ-нің 30%-дан астамы және халықтың 40%-ы</text>\n    <text x=\"15\" y=\"156\" fill=\"#fde68a\" font-size=\"8.5\">• Көпполярлы әлем қалыптастырудың негізгі саяси өзегі</text>\n  </g>\n</svg>\n\n    <div class=\"grid grid-cols-1 md:grid-cols-2 gap-3.5 text-xs text-slate-300\">\n      <div class=\"p-4 rounded-xl bg-space-950 border border-purple-500/30 space-y-2\">\n        <b class=\"text-purple-400 font-bold text-xs\">🌐 ШЫҰ (ШАНХАЙ ЫНТЫМАҚТАСТЫҚ ҰЙЫМЫ, 2001 ж.):</b>\n        <p>\n          1996 жылғы «Шанхай бестігі» шекаралық келісімі негізінде 2001 жылы ресми түрде құрылды. Бас хатшылығы <b>Қытай астанасы Пекин қаласында</b> орналасқан. Аймақтық лаңкестікке қарсы құрылымының (РАТС) атқарушы комитеті — <b>Ташкент қаласында (Өзбекстан)</b>.<br>\n          <b>Негізгі мүшелері:</b> Қазақстан, Қытай, Ресей, Өзбекстан, Қырғызстан, Тәжікстан, Пәкістан, Үндістан (сонымен бірге Иран мен Беларусь мүше болды).\n        </p>\n      </div>\n\n      <div class=\"p-4 rounded-xl bg-space-950 border border-amber-500/30 space-y-2\">\n        <b class=\"text-amber-400 font-bold text-xs\">🌏 АПЕК ЖӘНЕ АСЕАН (АЗИЯ-ТЫНЫҚ МҰХИТ ХАБЫ):</b>\n        <p>\n          • <b>АПЕК (1989 ж.):</b> Азия-Тынық мұхиты экономикалық ынтымақтастығы. Хатшылығы — <b>Сингапурда</b>. Құрамында 21 мемлекет бар (АҚШ, Қытай, Жапония, Ресей, Канада, Аустралия т.б.).<br>\n          • <b>АСЕАН (1967 ж.):</b> Оңтүстік-Шығыс Азия елдерінің қауымдастығы (10 мемлекет). Хатшылығы Индонезияның <b>Джакарта</b> қаласында, қаржылық орталығы <b>Сингапурда</b>.<br>\n          • <b>БРИКС:</b> Бразилия, Ресей, Үндістан, Қытай, ОАР қауымдастығы.\n        </p>\n      </div>\n    </div>\n\n    <!-- ТМД және Грузияның шығуы -->\n    <div class=\"p-3.5 rounded-xl bg-space-950 border border-red-500/30 text-xs text-slate-300 space-y-1\">\n      <div class=\"text-red-400 font-bold\">⚠️ ТМД ЖӘНЕ ГРУЗИЯНЫҢ ШЫҒУЫ (ҰБТ ТҰЗАҒЫ):</div>\n      <p>\n        <b>ТМД (Тәуелсіз Мемлекеттер Достастығы)</b> — 1991 жылғы желтоқсандағы Алматы декларациясы негізінде құрылды. Атқару комитеті — <b>Минск қаласында (Беларусь)</b>. <b>Грузия мемлекеті 2008 жылы</b> Оңтүстік Осетиядағы қарулы қақтығыстан кейін ТМД құрамынан өз еркімен шығу туралы мәлімдеп, 2009 жылы достастықтан толық шықты.\n      </p>\n    </div>\n  </div>\n\n  <!-- БӨЛІМ 6: ШВЕЙЦАРИЯЛЫҚ АРНАЙЫ АГЕНТТІКТЕР ЖӘНЕ ҚАЗАҚСТАННЫҢ ОРНЫ -->\n  <div class=\"p-5 rounded-2xl bg-space-900/80 border border-slate-800 space-y-4 shadow-xl\">\n    <div class=\"flex items-center space-x-3 border-b border-slate-800 pb-3\">\n      <span class=\"flex items-center justify-center w-8 h-8 rounded-xl bg-teal-500/20 text-teal-400 font-black text-sm\">6</span>\n      <h3 class=\"text-sm sm:text-base font-black text-white uppercase tracking-wider\">Швейцария хабы және Қазақстанның халықаралық ұйымдардағы белсенділігі</h3>\n    </div>\n    \n    <div class=\"grid grid-cols-1 md:grid-cols-2 gap-3.5 text-xs text-slate-300\">\n      <div class=\"p-3.5 rounded-xl bg-space-950 border border-teal-500/30 space-y-1.5\">\n        <b class=\"text-teal-400 font-bold\">🇨🇭 ШВЕЙЦАРИЯНЫҢ БЕЙТАРАП ДИПЛОМАТИЯЛЫҚ ХАБЫ:</b>\n        <p>Швейцария мемлекеті тарихи тұрақты бейтараптығының арқасында жаһандық маңызды ұйымдардың орталығына айналған:</p>\n        <ul class=\"list-disc list-inside space-y-1 text-slate-300\">\n          <li><b>ДДҰ (ВОЗ, 1948 ж.)</b> — Женева қаласында (Денсаулық сақтау).</li>\n          <li><b>ХЕҰ (МОТ, 1919 ж.)</b> — Женева қаласында (Халықаралық еңбек ұйымы).</li>\n          <li><b>ДМҰ (ВМО, 1950 ж.)</b> — Женева қаласында (Дүниежүзілік метеорология).</li>\n          <li><b>ДСҰ (ВТО, 1995 ж.)</b> — Женева қаласында (Дүниежүзілік сауда ұйымы).</li>\n          <li><b>БПО (ВПС, 1874 ж.)</b> — Берн қаласында (Бүкіләлемдік пошта одағы).</li>\n        </ul>\n      </div>\n\n      <div class=\"p-3.5 rounded-xl bg-space-950 border border-blue-500/30 space-y-1.5\">\n        <b class=\"text-blue-400 font-bold\">🇰🇿 ҚАЗАҚСТАННЫҢ ХАЛЫҚАРАЛЫҚ ҰЙЫМДАРДАҒЫ РӨЛІ:</b>\n        <p>\n          • <b>БҰҰ мүшесі:</b> 1992 жылғы 2 наурыздан бастап (БҰҰ Қауіпсіздік Кеңесінің тұрақты емес мүшесі болды 2017–2018 жж.).<br>\n          • <b>ШЫҰ құрылтайшысы:</b> Ұйымның негізін қалаушы мемлекеттердің бірі, Астана саммиттерін ұйымдастырушы.<br>\n          • <b>ДСҰ мүшелігі:</b> 2015 жылы Дүниежүзілік сауда ұйымының толыққанды мүшесі атанды.<br>\n          • <b>АӨСШК (СВМДА):</b> Қазақстанның бастамасымен құрылған Азиядағы өзара іс-қимыл және сенім шаралары жөніндегі кеңес.<br>\n          • <b>МАГАТЭ Төмен байытылған уран банкі:</b> Өскемендегі Үлбі металлургия зауытында ашылған жаһандық ядролық қауіпсіздік нысаны.\n        </p>\n      </div>\n    </div>\n  </div>\n\n</div>", "full_theory_ru": "<div class=\"space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed\">\n\n  <!-- РАЗДЕЛ 1: КЛАССИФИКАЦИЯ МЕЖДУНАРОДНЫХ ОРГАНИЗАЦИЙ И ГЛАВНЫЕ ХАБЫ -->\n  <div class=\"p-5 rounded-2xl bg-space-900/80 border border-slate-800 space-y-4 shadow-xl\">\n    <div class=\"flex items-center space-x-3 border-b border-slate-800 pb-3\">\n      <span class=\"flex items-center justify-center w-8 h-8 rounded-xl bg-blue-500/20 text-blue-400 font-black text-sm\">1</span>\n      <h3 class=\"text-sm sm:text-base font-black text-white uppercase tracking-wider\">Классификация международных организаций и дипломатические хабы</h3>\n    </div>\n    <p class=\"text-slate-300\">\n      <b class=\"text-cyan-400\">Международные организации</b> — постоянные объединения суверенных государств или национальных обществ, учрежденные на основе международных договоров для координации действий в политической, военной, экономической, научно-культурной и гуманитарной сферах.\n    </p>\n\n    <!-- 4 основных типа -->\n    <div class=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-1\">\n      <div class=\"p-3 rounded-xl bg-space-950 border border-blue-500/30 space-y-1\">\n        <span class=\"text-blue-400 font-bold text-xs\">🌐 ВСЕМИРНЫЕ (УНИВЕРСАЛЬНЫЕ):</span>\n        <p class=\"text-slate-300 text-xs\">Открыты для всех суверенных стран планеты, решают глобальные проблемы: <b>ООН и ее агентства</b>.</p>\n      </div>\n      <div class=\"p-3 rounded-xl bg-space-950 border border-emerald-500/30 space-y-1\">\n        <span class=\"text-emerald-400 font-bold text-xs\">🗺️ РЕГИОНАЛЬНЫЕ СОЮЗЫ:</span>\n        <p class=\"text-slate-300 text-xs\">Таможенные и экономические объединения конкретного региона: <b>ЕС, Бенилюкс, НАФТА, Меркосур, АСЕАН</b>.</p>\n      </div>\n      <div class=\"p-3 rounded-xl bg-space-950 border border-amber-500/30 space-y-1\">\n        <span class=\"text-amber-400 font-bold text-xs\">🛡️ ВОЕННО-ПОЛИТИЧЕСКИЕ:</span>\n        <p class=\"text-slate-300 text-xs\">Блоки коллективной обороны и региональной безопасности: <b>НАТО, ШОС, ОДКБ</b>.</p>\n      </div>\n      <div class=\"p-3 rounded-xl bg-space-950 border border-purple-500/30 space-y-1\">\n        <span class=\"text-purple-400 font-bold text-xs\">⚡ ОТРАСЛЕВЫЕ И КОАЛИЦИИ:</span>\n        <p class=\"text-slate-300 text-xs\">Регулирование конкретных отраслей или стратегических сфер: <b>ОПЕК, МАГАТЭ, БРИКС</b>.</p>\n      </div>\n    </div>\n\n    <!-- SVG 4: Карта хабов RU -->\n    <svg viewBox=\"0 0 700 230\" class=\"w-full h-auto max-w-full my-4 rounded-xl shadow-lg border border-slate-800\" xmlns=\"http://www.w3.org/2000/svg\">\n  <rect width=\"700\" height=\"230\" fill=\"#0b1120\" rx=\"12\"/>\n  <text x=\"350\" y=\"24\" fill=\"#38bdf8\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\">ГЛАВНЫЕ ШТАБ-КВАРТИРЫ И ХАБЫ МЕЖДУНАРОДНЫХ ОРГАНИЗАЦИЙ</text>\n  \n  <!-- Hub 1: Брюссель -->\n  <g transform=\"translate(25, 42)\">\n    <rect width=\"150\" height=\"85\" rx=\"8\" fill=\"#1e293b\" stroke=\"#3b82f6\" stroke-width=\"1.2\"/>\n    <text x=\"75\" y=\"20\" fill=\"#60a5fa\" font-size=\"10.5\" font-weight=\"bold\" text-anchor=\"middle\">БРЮССЕЛЬ (Бельгия)</text>\n    <text x=\"12\" y=\"40\" fill=\"#ffffff\" font-size=\"9.5\">• <tspan font-weight=\"bold\">НАТО</tspan> (1949 г.)</text>\n    <text x=\"12\" y=\"56\" fill=\"#ffffff\" font-size=\"9.5\">• <tspan font-weight=\"bold\">ЕС</tspan> (1993 г.)</text>\n    <text x=\"12\" y=\"72\" fill=\"#ffffff\" font-size=\"9.5\">• <tspan font-weight=\"bold\">Бенилюкс</tspan> (1944 г.)</text>\n  </g>\n\n  <!-- Hub 2: Вена -->\n  <g transform=\"translate(190, 42)\">\n    <rect width=\"150\" height=\"85\" rx=\"8\" fill=\"#1e293b\" stroke=\"#f59e0b\" stroke-width=\"1.2\"/>\n    <text x=\"75\" y=\"20\" fill=\"#fbbf24\" font-size=\"10.5\" font-weight=\"bold\" text-anchor=\"middle\">ВЕНА (Австрия)</text>\n    <text x=\"12\" y=\"40\" fill=\"#ffffff\" font-size=\"9.5\">• <tspan font-weight=\"bold\">ОПЕК</tspan> (1960/1961 г.)</text>\n    <text x=\"12\" y=\"56\" fill=\"#ffffff\" font-size=\"9.5\">• <tspan font-weight=\"bold\">МАГАТЭ</tspan> (1957 г.)</text>\n    <text x=\"12\" y=\"72\" fill=\"#cbd5e1\" font-size=\"8.5\">ЮНИДО, отделение ООН</text>\n  </g>\n\n  <!-- Hub 3: Швейцария -->\n  <g transform=\"translate(355, 42)\">\n    <rect width=\"160\" height=\"85\" rx=\"8\" fill=\"#1e293b\" stroke=\"#10b981\" stroke-width=\"1.2\"/>\n    <text x=\"80\" y=\"20\" fill=\"#34d399\" font-size=\"10.5\" font-weight=\"bold\" text-anchor=\"middle\">ЖЕНЕВА (Швейцария)</text>\n    <text x=\"12\" y=\"38\" fill=\"#ffffff\" font-size=\"9\">• <tspan font-weight=\"bold\">ВОЗ</tspan> (1948 г.)</text>\n    <text x=\"12\" y=\"52\" fill=\"#ffffff\" font-size=\"9\">• <tspan font-weight=\"bold\">МОТ</tspan> (Труд) • <tspan font-weight=\"bold\">ВМО</tspan> (Метеорология)</text>\n    <text x=\"12\" y=\"66\" fill=\"#ffffff\" font-size=\"9\">• <tspan font-weight=\"bold\">ВТО</tspan> (Торговля) • Почта (Берн)</text>\n  </g>\n\n  <!-- Hub 4: Нью-Йорк -->\n  <g transform=\"translate(530, 42)\">\n    <rect width=\"145\" height=\"85\" rx=\"8\" fill=\"#1e293b\" stroke=\"#ec4899\" stroke-width=\"1.2\"/>\n    <text x=\"72\" y=\"20\" fill=\"#f472b6\" font-size=\"10.5\" font-weight=\"bold\" text-anchor=\"middle\">НЬЮ-ЙОРК (США)</text>\n    <text x=\"12\" y=\"40\" fill=\"#ffffff\" font-size=\"9.5\">• <tspan font-weight=\"bold\">ООН</tspan> (1945 г.)</text>\n    <text x=\"12\" y=\"56\" fill=\"#ffffff\" font-size=\"9.5\">• <tspan font-weight=\"bold\">ЮНИСЕФ</tspan> (1946 г.)</text>\n    <text x=\"12\" y=\"72\" fill=\"#cbd5e1\" font-size=\"8.5\">ПРООН и институты ООН</text>\n  </g>\n\n  <!-- Bottom Row: Other Cities -->\n  <g transform=\"translate(25, 137)\">\n    <rect width=\"650\" height=\"75\" rx=\"8\" fill=\"#0f172a\" stroke=\"#334155\" stroke-width=\"1\"/>\n    <text x=\"15\" y=\"22\" fill=\"#38bdf8\" font-size=\"10\" font-weight=\"bold\">ДРУГИЕ МИРОВЫЕ СТОЛИЦЫ И ШТАБ-КВАРТИРЫ:</text>\n    <text x=\"15\" y=\"42\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Париж:</tspan> ЮНЕСКО (1945) • <tspan font-weight=\"bold\" fill=\"#ffffff\">Рим:</tspan> ФАО (1945) • <tspan font-weight=\"bold\" fill=\"#ffffff\">Пекин:</tspan> ШОС (2001)</text>\n    <text x=\"15\" y=\"60\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Сингапур:</tspan> АТЭС (1989), АСЕАН • <tspan font-weight=\"bold\" fill=\"#ffffff\">Монтевидео:</tspan> Меркосур (1991), ЛАИ (1980) • <tspan font-weight=\"bold\" fill=\"#ffffff\">Минск:</tspan> СНГ (Грузия вышла в 2008)</text>\n  </g>\n</svg>\n\n    <div class=\"p-3.5 rounded-xl bg-space-950 border border-slate-800 text-xs text-slate-300 space-y-1.5\">\n      <div class=\"text-cyan-400 font-bold\">⭐ КЛЮЧЕВЫЕ ГОРОДСКИЕ ХАБЫ ШТАБ-КВАРТИР ДЛЯ ЕНТ:</div>\n      <p>\n        • <b>Брюссель (Бельгия):</b> Штаб-квартиры <b>НАТО</b> (1949 г.), <b>Европейского Союза (ЕС)</b> (1993 г.) и <b>Бенилюкса</b> (1944 г.).<br>\n        • <b>Вена (Австрия):</b> Штаб-квартиры <b>ОПЕК</b> (1960/1961 г.) и <b>МАГАТЭ (АЭХА)</b> (1957 г.).<br>\n        • <b>Швейцария (Женева и Берн):</b> <b>ВОЗ</b>, <b>МОТ</b>, <b>ВМО</b>, <b>ВТО</b> — в Женеве; <b>Всемирный почтовый союз (ВПС)</b> — в Берне.<br>\n        • <b>Монтевидео (Уругвай):</b> Южноамериканские интеграционные блоки <b>Меркосур</b> (1991 г.) и <b>ЛАИ</b> (1980 г.).<br>\n        • <b>Сингапур:</b> Секретариат <b>АТЭС</b> (1989 г.) и ключевой деловой центр АСЕАН.\n      </p>\n    </div>\n  </div>\n\n  <!-- РАЗДЕЛ 2: СИСТЕМА ООН И ЕЁ СПЕЦИАЛИЗИРОВАННЫЕ УЧРЕЖДЕНИЯ -->\n  <div class=\"p-5 rounded-2xl bg-space-900/80 border border-slate-800 space-y-4 shadow-xl\">\n    <div class=\"flex items-center space-x-3 border-b border-slate-800 pb-3\">\n      <span class=\"flex items-center justify-center w-8 h-8 rounded-xl bg-purple-500/20 text-purple-400 font-black text-sm\">2</span>\n      <h3 class=\"text-sm sm:text-base font-black text-white uppercase tracking-wider\">Система ООН и её специализированные учреждения</h3>\n    </div>\n    <p class=\"text-slate-300 text-xs\">\n      <b>Организация Объединенных Наций (ООН)</b> — учреждена 24 октября 1945 года по итогам конференции в Сан-Франциско. Штаб-квартира расположена в <b>Нью-Йорке (США)</b>. Главные органы: Совет Безопасности (5 постоянных членов: США, Великобритания, Франция, Россия, Китай), Генеральная Ассамблея, ЭКОСОС, Международный суд (Гаага, Нидерланды).\n    </p>\n\n    <!-- SVG 1: Агентства ООН RU -->\n    <svg viewBox=\"0 0 700 230\" class=\"w-full h-auto max-w-full my-4 rounded-xl shadow-lg border border-slate-800\" xmlns=\"http://www.w3.org/2000/svg\">\n  <rect width=\"700\" height=\"230\" fill=\"#0b1120\" rx=\"12\"/>\n  <text x=\"350\" y=\"24\" fill=\"#38bdf8\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\">СИСТЕМА ООН И ЕЁ СПЕЦИАЛИЗИРОВАННЫЕ УЧРЕЖДЕНИЯ</text>\n  \n  <!-- Central UN Block -->\n  <g transform=\"translate(260, 40)\">\n    <rect width=\"180\" height=\"60\" rx=\"10\" fill=\"#1e3a8a\" stroke=\"#60a5fa\" stroke-width=\"1.5\"/>\n    <text x=\"90\" y=\"24\" fill=\"#ffffff\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\">ООН (1945 г.)</text>\n    <text x=\"90\" y=\"40\" fill=\"#93c5fd\" font-size=\"9.5\" text-anchor=\"middle\">Штаб-квартира: Нью-Йорк (США)</text>\n    <text x=\"90\" y=\"52\" fill=\"#cbd5e1\" font-size=\"8.5\" text-anchor=\"middle\">Совет Безопасности • Генассамблея</text>\n  </g>\n\n  <!-- Agencies Grid Below -->\n  <!-- ЮНИСЕФ -->\n  <g transform=\"translate(25, 115)\">\n    <rect width=\"120\" height=\"95\" rx=\"8\" fill=\"#0f172a\" stroke=\"#3b82f6\" stroke-width=\"1\"/>\n    <text x=\"60\" y=\"20\" fill=\"#60a5fa\" font-size=\"10.5\" font-weight=\"bold\" text-anchor=\"middle\">ЮНИСЕФ (1946)</text>\n    <text x=\"60\" y=\"36\" fill=\"#e2e8f0\" font-size=\"9\" text-anchor=\"middle\">Нью-Йорк</text>\n    <text x=\"60\" y=\"54\" fill=\"#94a3b8\" font-size=\"8.5\" text-anchor=\"middle\">Детский фонд ООН</text>\n    <text x=\"60\" y=\"70\" fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\">Защита прав детей,</text>\n    <text x=\"60\" y=\"82\" fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\">здоровье и питание</text>\n  </g>\n\n  <!-- ЮНЕСКО -->\n  <g transform=\"translate(155, 115)\">\n    <rect width=\"120\" height=\"95\" rx=\"8\" fill=\"#0f172a\" stroke=\"#8b5cf6\" stroke-width=\"1\"/>\n    <text x=\"60\" y=\"20\" fill=\"#c084fc\" font-size=\"10.5\" font-weight=\"bold\" text-anchor=\"middle\">ЮНЕСКО (1945)</text>\n    <text x=\"60\" y=\"36\" fill=\"#e2e8f0\" font-size=\"9\" text-anchor=\"middle\">Париж (Лондон 1945)</text>\n    <text x=\"60\" y=\"54\" fill=\"#94a3b8\" font-size=\"8.5\" text-anchor=\"middle\">Охрана культуры,</text>\n    <text x=\"60\" y=\"68\" fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\">всемирного наследия,</text>\n    <text x=\"60\" y=\"80\" fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\">науки и образования</text>\n  </g>\n\n  <!-- ВОЗ -->\n  <g transform=\"translate(290, 115)\">\n    <rect width=\"120\" height=\"95\" rx=\"8\" fill=\"#0f172a\" stroke=\"#10b981\" stroke-width=\"1\"/>\n    <text x=\"60\" y=\"20\" fill=\"#34d399\" font-size=\"10.5\" font-weight=\"bold\" text-anchor=\"middle\">ВОЗ (1948)</text>\n    <text x=\"60\" y=\"36\" fill=\"#e2e8f0\" font-size=\"9\" text-anchor=\"middle\">Женева (Швейцария)</text>\n    <text x=\"60\" y=\"54\" fill=\"#94a3b8\" font-size=\"8.5\" text-anchor=\"middle\">Здравоохранение</text>\n    <text x=\"60\" y=\"68\" fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\">Борьба с эпидемиями,</text>\n    <text x=\"60\" y=\"80\" fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\">стандарты медицины</text>\n  </g>\n\n  <!-- ФАО -->\n  <g transform=\"translate(425, 115)\">\n    <rect width=\"120\" height=\"95\" rx=\"8\" fill=\"#0f172a\" stroke=\"#f59e0b\" stroke-width=\"1\"/>\n    <text x=\"60\" y=\"20\" fill=\"#fbbf24\" font-size=\"10.5\" font-weight=\"bold\" text-anchor=\"middle\">ФАО (1945)</text>\n    <text x=\"60\" y=\"36\" fill=\"#e2e8f0\" font-size=\"9\" text-anchor=\"middle\">Рим (Италия)</text>\n    <text x=\"60\" y=\"54\" fill=\"#94a3b8\" font-size=\"8.5\" text-anchor=\"middle\">Продовольственная и</text>\n    <text x=\"60\" y=\"68\" fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\">сельскохозяйственная</text>\n    <text x=\"60\" y=\"80\" fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\">организация</text>\n  </g>\n\n  <!-- МАГАТЭ -->\n  <g transform=\"translate(555, 115)\">\n    <rect width=\"120\" height=\"95\" rx=\"8\" fill=\"#0f172a\" stroke=\"#ef4444\" stroke-width=\"1\"/>\n    <text x=\"60\" y=\"20\" fill=\"#f87171\" font-size=\"10.5\" font-weight=\"bold\" text-anchor=\"middle\">МАГАТЭ (1957)</text>\n    <text x=\"60\" y=\"36\" fill=\"#e2e8f0\" font-size=\"9\" text-anchor=\"middle\">Вена (Австрия)</text>\n    <text x=\"60\" y=\"54\" fill=\"#94a3b8\" font-size=\"8.5\" text-anchor=\"middle\">Агентство по атомной</text>\n    <text x=\"60\" y=\"68\" fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\">энергии • Контроль</text>\n    <text x=\"60\" y=\"80\" fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\">нераспространения</text>\n  </g>\n</svg>\n\n    <div class=\"grid grid-cols-1 md:grid-cols-2 gap-3.5 text-xs text-slate-300\">\n      <div class=\"p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-1.5\">\n        <b class=\"text-purple-400 font-bold\">1. ЮНЕСКО (UNESCO, 1945 г.):</b>\n        <p>Организация Объединенных Наций по вопросам образования, науки и культуры. Учредительная конференция состоялась в <b>Лондоне</b> в 1945 г., а постоянная штаб-квартира расположена в <b>Париже (Франция)</b>. Охрана объектов Всемирного наследия (в Казахстане: мавзолей Ходжи Ахмеда Ясави, петроглифы Тамгалы, Сарыарка, Западный Тянь-Шань).</p>\n      </div>\n\n      <div class=\"p-3.5 rounded-xl bg-space-950 border border-blue-500/30 space-y-1.5\">\n        <b class=\"text-blue-400 font-bold\">2. ЮНИСЕФ (UNICEF, 1946 г.):</b>\n        <p>Детский фонд ООН. Штаб-квартира в <b>Нью-Йорке (США)</b>. Создан для оказания помощи детям, пострадавшим во Второй мировой войне. Ныне обеспечивает защиту прав детей, программы питания, медицины и доступного начального образования во всем мире.</p>\n      </div>\n\n      <div class=\"p-3.5 rounded-xl bg-space-950 border border-teal-500/30 space-y-1.5\">\n        <b class=\"text-teal-400 font-bold\">3. ВОЗ / ДДҰ (WHO, 1948 г.):</b>\n        <p>Всемирная организация здравоохранения. Штаб-квартира в <b>Женеве (Швейцария)</b>. Главный координирующий орган международного здравоохранения, устанавливает медико-санитарные правила, борется с эпидемиями и пандемиями.</p>\n      </div>\n\n      <div class=\"p-3.5 rounded-xl bg-space-950 border border-amber-500/30 space-y-1.5\">\n        <b class=\"text-amber-400 font-bold\">4. ФАО (FAO, 1945 г.):</b>\n        <p>Продовольственная и сельскохозяйственная организация ООН. Штаб-квартира в <b>Риме (Италия)</b>. Борется с голодом и нищетой, содействует росту продуктивности сельского хозяйства и продовольственной безопасности.</p>\n      </div>\n    </div>\n  </div>\n\n  <!-- РАЗДЕЛ 3: ВОЕННО-ПОЛИТИЧЕСКИЕ И ОТРАСЛЕВЫЕ СОЮЗЫ: НАТО И ОПЕК -->\n  <div class=\"p-5 rounded-2xl bg-space-900/80 border border-slate-800 space-y-4 shadow-xl\">\n    <div class=\"flex items-center space-x-3 border-b border-slate-800 pb-3\">\n      <span class=\"flex items-center justify-center w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 font-black text-sm\">3</span>\n      <h3 class=\"text-sm sm:text-base font-black text-white uppercase tracking-wider\">Военно-политические и отраслевые союзы: НАТО и ОПЕК</h3>\n    </div>\n    \n    <!-- SVG 5: НАТО и ОПЕК RU -->\n    <svg viewBox=\"0 0 700 230\" class=\"w-full h-auto max-w-full my-4 rounded-xl shadow-lg border border-slate-800\" xmlns=\"http://www.w3.org/2000/svg\">\n  <rect width=\"700\" height=\"230\" fill=\"#0b1120\" rx=\"12\"/>\n  <text x=\"350\" y=\"24\" fill=\"#38bdf8\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\">ВОЕННАЯ И ОТРАСЛЕВАЯ ПОЛИТИКА: НАТО И ОПЕК</text>\n  \n  <!-- Left Half: НАТО -->\n  <g transform=\"translate(30, 42)\">\n    <rect width=\"310\" height=\"170\" rx=\"10\" fill=\"#0f172a\" stroke=\"#3b82f6\" stroke-width=\"1.2\"/>\n    <rect width=\"310\" height=\"28\" rx=\"10\" fill=\"#1e3a8a\"/>\n    <text x=\"155\" y=\"18\" fill=\"#ffffff\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\">НАТО (СЕВЕРОАТЛАНТИЧЕСКИЙ АЛЬЯНС)</text>\n    <text x=\"15\" y=\"48\" fill=\"#60a5fa\" font-size=\"10\" font-weight=\"bold\">• Год основания:</text>\n    <text x=\"125\" y=\"48\" fill=\"#ffffff\" font-size=\"10\">1949 год (Вашингтонский договор)</text>\n    <text x=\"15\" y=\"68\" fill=\"#60a5fa\" font-size=\"10\" font-weight=\"bold\">• Штаб-квартира:</text>\n    <text x=\"115\" y=\"68\" fill=\"#ffffff\" font-size=\"10\">Бельгия — город Брюссель</text>\n    <text x=\"15\" y=\"88\" fill=\"#60a5fa\" font-size=\"10\" font-weight=\"bold\">• Характер:</text>\n    <text x=\"85\" y=\"88\" fill=\"#cbd5e1\" font-size=\"9.5\">Военно-политический союз обороны</text>\n    <text x=\"15\" y=\"108\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Принцип статьи 5:</tspan> Нападение на одного — нападение на всех</text>\n    <text x=\"15\" y=\"126\" fill=\"#cbd5e1\" font-size=\"9\">• Основатели: США, Канада, Великобритания, Франция и др.</text>\n    <text x=\"15\" y=\"144\" fill=\"#cbd5e1\" font-size=\"9\">• Включает 32 государства Северной Америки и Европы</text>\n    <text x=\"15\" y=\"160\" fill=\"#93c5fd\" font-size=\"8.5\">Казахстан сотрудничает в рамках программы «Партнерство ради мира»</text>\n  </g>\n\n  <!-- Right Half: ОПЕК -->\n  <g transform=\"translate(360, 42)\">\n    <rect width=\"310\" height=\"170\" rx=\"10\" fill=\"#0f172a\" stroke=\"#f59e0b\" stroke-width=\"1.2\"/>\n    <rect width=\"310\" height=\"28\" rx=\"10\" fill=\"#78350f\"/>\n    <text x=\"155\" y=\"18\" fill=\"#ffffff\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\">ОПЕК (СТРАНЫ-ЭКСПОРТЕРЫ НЕФТИ)</text>\n    <text x=\"15\" y=\"48\" fill=\"#fbbf24\" font-size=\"10\" font-weight=\"bold\">• Год основания:</text>\n    <text x=\"125\" y=\"48\" fill=\"#ffffff\" font-size=\"10\">1960 г. (начал работу в 1961 г.)</text>\n    <text x=\"15\" y=\"68\" fill=\"#fbbf24\" font-size=\"10\" font-weight=\"bold\">• Штаб-квартира:</text>\n    <text x=\"115\" y=\"68\" fill=\"#ffffff\" font-size=\"10\">Австрия — город Вена</text>\n    <text x=\"15\" y=\"88\" fill=\"#fbbf24\" font-size=\"10\" font-weight=\"bold\">• 5 стран-учредителей:</text>\n    <text x=\"145\" y=\"88\" fill=\"#cbd5e1\" font-size=\"9.5\">Саудовская Аравия, Иран,</text>\n    <text x=\"25\" y=\"102\" fill=\"#fde68a\" font-size=\"9\">Ирак, Кувейт, Венесуэла (Багдадская конференция)</text>\n    <text x=\"15\" y=\"122\" fill=\"#cbd5e1\" font-size=\"9\">• Цель: Регулирование добычи, квот и цен на нефть</text>\n    <text x=\"15\" y=\"140\" fill=\"#cbd5e1\" font-size=\"9\">• Формат ОПЕК+: Россия, Казахстан участвуют как партнеры</text>\n    <text x=\"15\" y=\"158\" fill=\"#fbbf24\" font-size=\"8.5\">Австрия не добывает нефть, но принимает штаб в нейтральной Вене</text>\n  </g>\n</svg>\n\n    <div class=\"grid grid-cols-1 md:grid-cols-2 gap-3.5 text-xs text-slate-300\">\n      <div class=\"p-4 rounded-xl bg-space-950 border border-blue-500/30 space-y-2\">\n        <div class=\"flex items-center space-x-2 text-blue-400 font-bold\">\n          <span>🛡️</span>\n          <span>НАТО (СЕВЕРОАТЛАНТИЧЕСКИЙ АЛЬЯНС, 1949 г.):</span>\n        </div>\n        <p>\n          • <b>Год основания:</b> 4 апреля 1949 года (Вашингтонский договор).<br>\n          • <b>Штаб-квартира:</b> Бельгия — <b>город Брюссель</b>.<br>\n          • <b>Принцип статьи 5:</b> Вооруженное нападение на одно или несколько государств-членов рассматривается как нападение на союз в целом.<br>\n          • <b>Сотрудничество с РК:</b> Казахстан с 1994 года участвует в программе «Партнерство ради мира» (PfP).\n        </p>\n      </div>\n\n      <div class=\"p-4 rounded-xl bg-space-950 border border-amber-500/30 space-y-2\">\n        <div class=\"flex items-center space-x-2 text-amber-400 font-bold\">\n          <span>🛢️</span>\n          <span>ОПЕК (СТРАНЫ-ЭКСПОРТЕРЫ НЕФТИ, 1960/1961 г.):</span>\n        </div>\n        <p>\n          • <b>Год основания:</b> Создана в <b>1960 году</b> в Багдаде, начала деятельность в <b>1961 году</b>.<br>\n          • <b>Штаб-квартира:</b> <b>Австрия — город Вена</b> (с 1965 г.).<br>\n          • <b>5 стран-учредителей:</b> Саудовская Аравия, Иран, Ирак, Кувейт, Венесуэла.<br>\n          • <b>Цель:</b> Контроль объемов добычи, квотирование и балансировка мировых цен на нефть.<br>\n          • <b>Формат ОПЕК+:</b> С 2016 г. независимые экспортеры (Казахстан, Россия и др.) совместно балансируют мировой рынок.\n        </p>\n      </div>\n    </div>\n  </div>\n\n  <!-- РАЗДЕЛ 4: РЕГИОНАЛЬНЫЕ СОЮЗЫ ЕВРОПЫ И АМЕРИКИ -->\n  <div class=\"p-5 rounded-2xl bg-space-900/80 border border-slate-800 space-y-4 shadow-xl\">\n    <div class=\"flex items-center space-x-3 border-b border-slate-800 pb-3\">\n      <span class=\"flex items-center justify-center w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 font-black text-sm\">4</span>\n      <h3 class=\"text-sm sm:text-base font-black text-white uppercase tracking-wider\">Региональные союзы Европы и Америки</h3>\n    </div>\n    \n    <!-- SVG 2: Региональные блоки RU -->\n    <svg viewBox=\"0 0 700 230\" class=\"w-full h-auto max-w-full my-4 rounded-xl shadow-lg border border-slate-800\" xmlns=\"http://www.w3.org/2000/svg\">\n  <rect width=\"700\" height=\"230\" fill=\"#0b1120\" rx=\"12\"/>\n  <text x=\"350\" y=\"24\" fill=\"#38bdf8\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\">РЕГИОНАЛЬНАЯ ЭКОНОМИЧЕСКАЯ ИНТЕГРАЦИЯ И ТОРГОВЫЕ БЛОКИ</text>\n  \n  <!-- Block 1: ЕС и Бенилюкс -->\n  <g transform=\"translate(25, 42)\">\n    <rect width=\"155\" height=\"170\" rx=\"10\" fill=\"#0f172a\" stroke=\"#3b82f6\" stroke-width=\"1.2\"/>\n    <rect width=\"155\" height=\"26\" rx=\"10\" fill=\"#1e40af\"/>\n    <text x=\"77\" y=\"17\" fill=\"#ffffff\" font-size=\"10.5\" font-weight=\"bold\" text-anchor=\"middle\">ЕВРОПА (ЕС &amp; Бенилюкс)</text>\n    <text x=\"10\" y=\"42\" fill=\"#60a5fa\" font-size=\"10\" font-weight=\"bold\">ЕС (1993 г.):</text>\n    <text x=\"10\" y=\"56\" fill=\"#cbd5e1\" font-size=\"9\">• Штаб-квартира: Брюссель</text>\n    <text x=\"10\" y=\"70\" fill=\"#cbd5e1\" font-size=\"9\">• Маастрихтский договор</text>\n    <text x=\"10\" y=\"84\" fill=\"#cbd5e1\" font-size=\"9\">• Единый рынок и евро</text>\n    <text x=\"10\" y=\"106\" fill=\"#60a5fa\" font-size=\"10\" font-weight=\"bold\">Бенилюкс (1944 г.):</text>\n    <text x=\"10\" y=\"120\" fill=\"#cbd5e1\" font-size=\"9\">• Штаб-квартира: Брюссель</text>\n    <text x=\"10\" y=\"134\" fill=\"#cbd5e1\" font-size=\"9\">• Бельгия, Нидерланды,</text>\n    <text x=\"18\" y=\"148\" fill=\"#93c5fd\" font-size=\"8.5\">Люксембург (тамож. союз)</text>\n    <text x=\"10\" y=\"162\" fill=\"#cbd5e1\" font-size=\"8.5\">Исток евроинтеграции</text>\n  </g>\n\n  <!-- Block 2: НАФТА -->\n  <g transform=\"translate(190, 42)\">\n    <rect width=\"155\" height=\"170\" rx=\"10\" fill=\"#0f172a\" stroke=\"#10b981\" stroke-width=\"1.2\"/>\n    <rect width=\"155\" height=\"26\" rx=\"10\" fill=\"#047857\"/>\n    <text x=\"77\" y=\"17\" fill=\"#ffffff\" font-size=\"10.5\" font-weight=\"bold\" text-anchor=\"middle\">СЕВЕРНАЯ АМЕРИКА</text>\n    <text x=\"10\" y=\"42\" fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\">НАФТА (1994 г.):</text>\n    <text x=\"10\" y=\"56\" fill=\"#cbd5e1\" font-size=\"9\">• Зона свободной торговли</text>\n    <text x=\"10\" y=\"72\" fill=\"#cbd5e1\" font-size=\"9.5\"><tspan font-weight=\"bold\" fill=\"#ffffff\">3 столицы союза:</tspan></text>\n    <text x=\"10\" y=\"88\" fill=\"#cbd5e1\" font-size=\"9\">• Вашингтон (США)</text>\n    <text x=\"10\" y=\"104\" fill=\"#cbd5e1\" font-size=\"9\">• Оттава (Канада)</text>\n    <text x=\"10\" y=\"120\" fill=\"#cbd5e1\" font-size=\"9\">• Мехико (Мексика)</text>\n    <text x=\"10\" y=\"142\" fill=\"#6ee7b7\" font-size=\"8.5\">Беспошлинная торговля,</text>\n    <text x=\"10\" y=\"156\" fill=\"#6ee7b7\" font-size=\"8.5\">ныне формат USMCA</text>\n  </g>\n\n  <!-- Block 3: Меркосур и ЛАИ -->\n  <g transform=\"translate(355, 42)\">\n    <rect width=\"165\" height=\"170\" rx=\"10\" fill=\"#0f172a\" stroke=\"#f59e0b\" stroke-width=\"1.2\"/>\n    <rect width=\"165\" height=\"26\" rx=\"10\" fill=\"#b45309\"/>\n    <text x=\"82\" y=\"17\" fill=\"#ffffff\" font-size=\"10.5\" font-weight=\"bold\" text-anchor=\"middle\">ЮЖНАЯ АМЕРИКА</text>\n    <text x=\"10\" y=\"42\" fill=\"#fbbf24\" font-size=\"10\" font-weight=\"bold\">Меркосур (1991 г.):</text>\n    <text x=\"10\" y=\"56\" fill=\"#cbd5e1\" font-size=\"9\">• Монтевидео (Уругвай)</text>\n    <text x=\"10\" y=\"70\" fill=\"#cbd5e1\" font-size=\"9\">• Общий рынок Юга</text>\n    <text x=\"10\" y=\"84\" fill=\"#cbd5e1\" font-size=\"8.5\">• Бразилия, Аргентина,</text>\n    <text x=\"18\" y=\"98\" fill=\"#fde68a\" font-size=\"8.5\">Парагвай, Уругвай</text>\n    <text x=\"10\" y=\"118\" fill=\"#fbbf24\" font-size=\"10\" font-weight=\"bold\">ЛАИ / ALADI (1980 г.):</text>\n    <text x=\"10\" y=\"132\" fill=\"#cbd5e1\" font-size=\"9\">• Монтевидео (Уругвай)</text>\n    <text x=\"10\" y=\"146\" fill=\"#cbd5e1\" font-size=\"8.5\">• Латиноамериканская</text>\n    <text x=\"10\" y=\"160\" fill=\"#cbd5e1\" font-size=\"8.5\">  ассоциация интеграции</text>\n  </g>\n\n  <!-- Block 4: АСЕАН & АТЭС -->\n  <g transform=\"translate(530, 42)\">\n    <rect width=\"150\" height=\"170\" rx=\"10\" fill=\"#0f172a\" stroke=\"#8b5cf6\" stroke-width=\"1.2\"/>\n    <rect width=\"150\" height=\"26\" rx=\"10\" fill=\"#6d28d9\"/>\n    <text x=\"75\" y=\"17\" fill=\"#ffffff\" font-size=\"10.5\" font-weight=\"bold\" text-anchor=\"middle\">АЗИАТСКО-ТИХООКЕАН.</text>\n    <text x=\"10\" y=\"42\" fill=\"#c084fc\" font-size=\"10\" font-weight=\"bold\">АСЕАН (1967 г.):</text>\n    <text x=\"10\" y=\"56\" fill=\"#cbd5e1\" font-size=\"9\">• Сингапур / Джакарта</text>\n    <text x=\"10\" y=\"70\" fill=\"#cbd5e1\" font-size=\"9\">• Юго-Восточная Азия</text>\n    <text x=\"10\" y=\"84\" fill=\"#cbd5e1\" font-size=\"8.5\">• 10 государств региона</text>\n    <text x=\"10\" y=\"106\" fill=\"#c084fc\" font-size=\"10\" font-weight=\"bold\">АТЭС (1989 г.):</text>\n    <text x=\"10\" y=\"120\" fill=\"#cbd5e1\" font-size=\"9\">• Сингапур (секретариат)</text>\n    <text x=\"10\" y=\"134\" fill=\"#cbd5e1\" font-size=\"9\">• Азиатско-Тихоокеанское</text>\n    <text x=\"10\" y=\"148\" fill=\"#cbd5e1\" font-size=\"8.5\">  сотрудничество</text>\n    <text x=\"10\" y=\"162\" fill=\"#d8b4fe\" font-size=\"8.5\">• 21 экономика мира</text>\n  </g>\n</svg>\n\n    <div class=\"grid grid-cols-1 md:grid-cols-3 gap-3 text-xs text-slate-300\">\n      <div class=\"p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-1.5\">\n        <b class=\"text-blue-400 font-bold\">1. ЕВРОПЕЙСКИЙ СОЮЗ И БЕНИЛЮКС:</b>\n        <p>• <b>Бенилюкс (1944 г.):</b> Таможенный союз Бельгии, Нидерландов и Люксембурга. Штаб: <b>Брюссель</b>. Модель будущей евроинтеграции.<br>\n        • <b>ЕС (1993 г.):</b> Договор подписан в 1992 г. в <b>Маастрихте (Нидерланды)</b>. Штаб-квартира: <b>Брюссель</b>. Объединяет 27 государств, единый рынок, валюта евро (€).</p>\n      </div>\n\n      <div class=\"p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-1.5\">\n        <b class=\"text-emerald-400 font-bold\">2. НАФТА (NAFTA, 1994 г.):</b>\n        <p>Соглашение о свободной торговле в Северной Америке. Координируется в <b>3 столицах</b>: Вашингтон, Оттава, Мехико. Сняло пошлины между США, Канадой и Мексикой (ныне формат USMCA).</p>\n      </div>\n\n      <div class=\"p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-1.5\">\n        <b class=\"text-amber-400 font-bold\">3. МЕРКОСУР И ЛАИ (УРУГВАЙ):</b>\n        <p>• <b>Меркосур (1991 г.):</b> Общий рынок стран Южной Америки. Штаб-квартира: <b>Монтевидео (Уругвай)</b>. Члены: Бразилия, Аргентина, Парагвай, Уругвай.<br>\n        • <b>ЛАИ / ALADI (1980 г.):</b> Латиноамериканская интеграция, штаб в <b>Монтевидео</b>.</p>\n      </div>\n    </div>\n  </div>\n\n  <!-- РАЗДЕЛ 5: ЕВРАЗИЙСКИЕ И АЗИАТСКО-ТИХООКЕАНСКИЕ ОБЪЕДИНЕНИЯ -->\n  <div class=\"p-5 rounded-2xl bg-space-900/80 border border-slate-800 space-y-4 shadow-xl\">\n    <div class=\"flex items-center space-x-3 border-b border-slate-800 pb-3\">\n      <span class=\"flex items-center justify-center w-8 h-8 rounded-xl bg-indigo-500/20 text-indigo-400 font-black text-sm\">5</span>\n      <h3 class=\"text-sm sm:text-base font-black text-white uppercase tracking-wider\">Евразийские и Азиатско-Тихоокеанские объединения</h3>\n    </div>\n    \n    <!-- SVG 3: ШОС и БРИКС RU -->\n    <svg viewBox=\"0 0 700 230\" class=\"w-full h-auto max-w-full my-4 rounded-xl shadow-lg border border-slate-800\" xmlns=\"http://www.w3.org/2000/svg\">\n  <rect width=\"700\" height=\"230\" fill=\"#0b1120\" rx=\"12\"/>\n  <text x=\"350\" y=\"24\" fill=\"#38bdf8\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\">ЕВРАЗИЯ И ГЛОБАЛЬНЫЙ ЮГ: ШОС И БРИКС</text>\n  \n  <!-- Left Box: ШОС -->\n  <g transform=\"translate(30, 42)\">\n    <rect width=\"310\" height=\"170\" rx=\"10\" fill=\"#0f172a\" stroke=\"#8b5cf6\" stroke-width=\"1.2\"/>\n    <rect width=\"310\" height=\"28\" rx=\"10\" fill=\"#4c1d95\"/>\n    <text x=\"155\" y=\"18\" fill=\"#ffffff\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\">ШОС — ШАНХАЙСКАЯ ОРГАНИЗАЦИЯ СОТРУДНИЧЕСТВА</text>\n    <text x=\"15\" y=\"48\" fill=\"#c084fc\" font-size=\"10\" font-weight=\"bold\">• Год основания:</text>\n    <text x=\"125\" y=\"48\" fill=\"#ffffff\" font-size=\"10\">2001 год (на базе «Шанхайской пятерки»)</text>\n    <text x=\"15\" y=\"68\" fill=\"#c084fc\" font-size=\"10\" font-weight=\"bold\">• Штаб-квартира (Секретариат):</text>\n    <text x=\"205\" y=\"68\" fill=\"#ffffff\" font-size=\"10\">Пекин (Китай)</text>\n    <text x=\"15\" y=\"88\" fill=\"#c084fc\" font-size=\"10\" font-weight=\"bold\">• Антитеррористический центр (РАТС):</text>\n    <text x=\"245\" y=\"88\" fill=\"#ffffff\" font-size=\"10\">Ташкент</text>\n    <text x=\"15\" y=\"108\" fill=\"#e2e8f0\" font-size=\"9.5\"><tspan font-weight=\"bold\" fill=\"#38bdf8\">Члены:</tspan> Казахстан, Китай, Россия, Узбекистан,</text>\n    <text x=\"25\" y=\"122\" fill=\"#e2e8f0\" font-size=\"9.5\">Кыргызстан, Таджикистан, Пакистан, Индия (Иран, Беларусь)</text>\n    <text x=\"15\" y=\"142\" fill=\"#cbd5e1\" font-size=\"9\">• Цели: Региональная безопасность, торговля и «Шанхайский дух»</text>\n    <text x=\"15\" y=\"158\" fill=\"#94a3b8\" font-size=\"8.5\">• Охватывает 60% площади Евразии и половину населения Земли</text>\n  </g>\n\n  <!-- Right Box: БРИКС -->\n  <g transform=\"translate(360, 42)\">\n    <rect width=\"310\" height=\"170\" rx=\"10\" fill=\"#0f172a\" stroke=\"#f59e0b\" stroke-width=\"1.2\"/>\n    <rect width=\"310\" height=\"28\" rx=\"10\" fill=\"#78350f\"/>\n    <text x=\"155\" y=\"18\" fill=\"#ffffff\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\">БРИКС (BRICS) ГЕОПОЛИТИЧЕСКАЯ КОАЛИЦИЯ</text>\n    <text x=\"15\" y=\"48\" fill=\"#fbbf24\" font-size=\"10\" font-weight=\"bold\">• Государства-основатели коалиции:</text>\n    <text x=\"15\" y=\"68\" fill=\"#ffffff\" font-size=\"9.5\"><tspan font-weight=\"bold\" fill=\"#f59e0b\">B</tspan> — Бразилия | <tspan font-weight=\"bold\" fill=\"#f59e0b\">R</tspan> — Россия | <tspan font-weight=\"bold\" fill=\"#f59e0b\">I</tspan> — Индия</text>\n    <text x=\"15\" y=\"84\" fill=\"#ffffff\" font-size=\"9.5\"><tspan font-weight=\"bold\" fill=\"#f59e0b\">C</tspan> — Китай | <tspan font-weight=\"bold\" fill=\"#f59e0b\">S</tspan> — Южно-Африканская Республика (ЮАР)</text>\n    <text x=\"15\" y=\"104\" fill=\"#fbbf24\" font-size=\"10\" font-weight=\"bold\">• Характер:</text>\n    <text x=\"80\" y=\"104\" fill=\"#cbd5e1\" font-size=\"9.5\">Коалиция крупнейших развивающихся экономик</text>\n    <text x=\"15\" y=\"122\" fill=\"#cbd5e1\" font-size=\"9\">• Новый банк развития (NDB): город Шанхай</text>\n    <text x=\"15\" y=\"138\" fill=\"#cbd5e1\" font-size=\"9\">• Более 30% мирового ВВП и свыше 40% населения планеты</text>\n    <text x=\"15\" y=\"156\" fill=\"#fde68a\" font-size=\"8.5\">• Ключевой полюс формирования многополярного мироустройства</text>\n  </g>\n</svg>\n\n    <div class=\"grid grid-cols-1 md:grid-cols-2 gap-3.5 text-xs text-slate-300\">\n      <div class=\"p-4 rounded-xl bg-space-950 border border-purple-500/30 space-y-2\">\n        <b class=\"text-purple-400 font-bold text-xs\">🌐 ШОС (ШАНХАЙСКАЯ ОРГАНИЗАЦИЯ СОТРУДНИЧЕСТВА, 2001 г.):</b>\n        <p>\n          Основана в 2001 г. на базе «Шанхайской пятерки». Секретариат находится в <b>Пекине (Китай)</b>. Исполком Региональной антитеррористической структуры (РАТС) — в <b>Ташкенте (Узбекистан)</b>.<br>\n          <b>Состав:</b> Казахстан, Китай, Россия, Узбекистан, Кыргызстан, Таджикистан, Пакистан, Индия (также Иран и Беларусь).\n        </p>\n      </div>\n\n      <div class=\"p-4 rounded-xl bg-space-950 border border-amber-500/30 space-y-2\">\n        <b class=\"text-amber-400 font-bold text-xs\">🌏 АТЭС И АСЕАН (АЗИАТСКО-ТИХООКЕАНСКИЙ ХАБ):</b>\n        <p>\n          • <b>АТЭС (1989 г.):</b> Азиатско-Тихоокеанское сотрудничество. Секретариат в <b>Сингапуре</b>. 21 экономика мира.<br>\n          • <b>АСЕАН (1967 г.):</b> Ассоциация стран Юго-Восточной Азии (10 стран). Секретариат в <b>Джакарте</b>, деловой центр — в <b>Сингапуре</b>.<br>\n          • <b>БРИКС:</b> Коалиция Бразилии, России, Индии, Китая, ЮАР (банк NDB в Шанхае).\n        </p>\n      </div>\n    </div>\n\n    <!-- СНГ и выход Грузии -->\n    <div class=\"p-3.5 rounded-xl bg-space-950 border border-red-500/30 text-xs text-slate-300 space-y-1\">\n      <div class=\"text-red-400 font-bold\">⚠️ СНГ И ВЫХОД ГРУЗИИ (ЛОВУШКА ЕНТ):</div>\n      <p>\n        <b>СНГ (Содружество Независимых Государств)</b> создано в 1991 году на основе Алма-Атинской декларации. Исполком находится в <b>Минске (Беларусь)</b>. <b>Грузия добровольно покинула СНГ в 2008 году</b> после событий в Южной Осетии (процедура завершилась в 2009 г.). В тестах правильный ответ о годе выхода — <b>2008 год</b>.\n      </p>\n    </div>\n  </div>\n\n  <!-- РАЗДЕЛ 6: ШВЕЙЦАРСКИЙ ХАБ И УЧАСТИЕ КАЗАХСТАНА -->\n  <div class=\"p-5 rounded-2xl bg-space-900/80 border border-slate-800 space-y-4 shadow-xl\">\n    <div class=\"flex items-center space-x-3 border-b border-slate-800 pb-3\">\n      <span class=\"flex items-center justify-center w-8 h-8 rounded-xl bg-teal-500/20 text-teal-400 font-black text-sm\">6</span>\n      <h3 class=\"text-sm sm:text-base font-black text-white uppercase tracking-wider\">Швейцарский дипломатический хаб и роль Казахстана</h3>\n    </div>\n    \n    <div class=\"grid grid-cols-1 md:grid-cols-2 gap-3.5 text-xs text-slate-300\">\n      <div class=\"p-3.5 rounded-xl bg-space-950 border border-teal-500/30 space-y-1.5\">\n        <b class=\"text-teal-400 font-bold\">🇨🇭 НЕЙТРАЛЬНЫЙ ХАБ ШВЕЙЦАРИИ:</b>\n        <p>Благодаря нейтральному статусу Швейцария концентрирует ключевые специализированные институты:</p>\n        <ul class=\"list-disc list-inside space-y-1 text-slate-300\">\n          <li><b>ВОЗ (1948 г.)</b> — Женева (Здравоохранение).</li>\n          <li><b>МОТ (1919 г.)</b> — Женева (Международная организация труда).</li>\n          <li><b>ВМО (1950 г.)</b> — Женева (Всемирная метеорологическая организация).</li>\n          <li><b>ВТО (1995 г.)</b> — Женева (Всемирная торговая организация).</li>\n          <li><b>ВПС (1874 г.)</b> — Берн (Всемирный почтовый союз).</li>\n        </ul>\n      </div>\n\n      <div class=\"p-3.5 rounded-xl bg-space-950 border border-blue-500/30 space-y-1.5\">\n        <b class=\"text-blue-400 font-bold\">🇰🇿 КАЗАХСТАН В СИСТЕМЕ МЕЖДУНАРОДНЫХ ОРГАНИЗАЦИЙ:</b>\n        <p>\n          • <b>Член ООН:</b> со 2 марта 1992 года (непостоянный член СБ ООН в 2017–2018 гг.).<br>\n          • <b>Учредитель ШОС:</b> одна из опорных стран шанхайского процесса.<br>\n          • <b>Член ВТО:</b> вступил во Всемирную торговую организацию в 2015 году.<br>\n          • <b>СВМДА (АӨСШК):</b> инициатива РК по мерам доверия в Азии.<br>\n          • <b>Банк низкообогащенного урана МАГАТЭ:</b> открыт на Ульбинском металлургическом заводе в Усть-Каменогорске.\n        </p>\n      </div>\n    </div>\n  </div>\n\n</div>", "svg_diagram": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 760 280\" class=\"w-full h-auto max-w-full\">\n  <defs>\n    <linearGradient id=\"ioBgKZ\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n      <stop offset=\"0%\" stop-color=\"#090d16\"/>\n      <stop offset=\"100%\" stop-color=\"#111827\"/>\n    </linearGradient>\n    <linearGradient id=\"iog1\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n      <stop offset=\"0%\" stop-color=\"#3b82f6\"/>\n      <stop offset=\"100%\" stop-color=\"#1d4ed8\"/>\n    </linearGradient>\n    <linearGradient id=\"iog2\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n      <stop offset=\"0%\" stop-color=\"#10b981\"/>\n      <stop offset=\"100%\" stop-color=\"#047857\"/>\n    </linearGradient>\n    <linearGradient id=\"iog3\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n      <stop offset=\"0%\" stop-color=\"#8b5cf6\"/>\n      <stop offset=\"100%\" stop-color=\"#6d28d9\"/>\n    </linearGradient>\n    <linearGradient id=\"iog4\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n      <stop offset=\"0%\" stop-color=\"#f59e0b\"/>\n      <stop offset=\"100%\" stop-color=\"#b45309\"/>\n    </linearGradient>\n  </defs>\n  <rect width=\"760\" height=\"280\" rx=\"16\" fill=\"url(#ioBgKZ)\" stroke=\"#1e293b\" stroke-width=\"1.5\"/>\n  <text x=\"380\" y=\"28\" fill=\"#38bdf8\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" letter-spacing=\"1\">ХАЛЫҚАРАЛЫҚ ІРІ ҰЙЫМДАРДЫҢ ҚҰРЫЛЫМДЫҚ ЖІКТЕЛУІ</text>\n  <text x=\"380\" y=\"46\" fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\">Жалпыға ортақ • Аймақтық интеграция • Әскери-саяси • Салалық ұйымдар мен коалициялар</text>\n  \n  <!-- Col 1: Жалпыға ортақ (БҰҰ жүйесі) -->\n  <g transform=\"translate(20, 62)\">\n    <rect width=\"170\" height=\"198\" rx=\"12\" fill=\"#0f172a\" stroke=\"#3b82f6\" stroke-width=\"1.2\"/>\n    <rect width=\"170\" height=\"32\" rx=\"12\" fill=\"url(#iog1)\"/>\n    <text x=\"85\" y=\"20\" fill=\"#ffffff\" font-size=\"10.5\" font-weight=\"bold\" text-anchor=\"middle\">ЖАЛПЫҒА ОРТАҚ (БҰҰ)</text>\n    <text x=\"12\" y=\"52\" fill=\"#60a5fa\" font-size=\"10\" font-weight=\"bold\">БҰҰ (1945 ж.):</text>\n    <text x=\"12\" y=\"66\" fill=\"#cbd5e1\" font-size=\"9.5\">Нью-Йорк • Бейбітшілік</text>\n    <text x=\"12\" y=\"86\" fill=\"#60a5fa\" font-size=\"10\" font-weight=\"bold\">ЮНЕСКО (1945 ж.):</text>\n    <text x=\"12\" y=\"100\" fill=\"#cbd5e1\" font-size=\"9.5\">Париж / Лондон • Мәдениет</text>\n    <text x=\"12\" y=\"120\" fill=\"#60a5fa\" font-size=\"10\" font-weight=\"bold\">ЮНИСЕФ (1946 ж.):</text>\n    <text x=\"12\" y=\"134\" fill=\"#cbd5e1\" font-size=\"9.5\">Нью-Йорк • Балалар қоры</text>\n    <text x=\"12\" y=\"154\" fill=\"#60a5fa\" font-size=\"10\" font-weight=\"bold\">ДДҰ (1948 ж.):</text>\n    <text x=\"12\" y=\"168\" fill=\"#cbd5e1\" font-size=\"9.5\">Женева • Денсаулық</text>\n    <text x=\"12\" y=\"186\" fill=\"#93c5fd\" font-size=\"9\">ФАО (Рим), МАГАТЭ (Вена)</text>\n  </g>\n\n  <!-- Col 2: Аймақтық сауда және одақтар -->\n  <g transform=\"translate(202, 62)\">\n    <rect width=\"170\" height=\"198\" rx=\"12\" fill=\"#0f172a\" stroke=\"#10b981\" stroke-width=\"1.2\"/>\n    <rect width=\"170\" height=\"32\" rx=\"12\" fill=\"url(#iog2)\"/>\n    <text x=\"85\" y=\"20\" fill=\"#ffffff\" font-size=\"10.5\" font-weight=\"bold\" text-anchor=\"middle\">АЙМАҚТЫҚ ОДАҚТАР</text>\n    <text x=\"12\" y=\"52\" fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\">ЕО (1993 ж.):</text>\n    <text x=\"12\" y=\"66\" fill=\"#cbd5e1\" font-size=\"9.5\">Брюссель • Маастрихт</text>\n    <text x=\"12\" y=\"86\" fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\">Бенилюкс (1944 ж.):</text>\n    <text x=\"12\" y=\"100\" fill=\"#cbd5e1\" font-size=\"9.5\">Брюссель • Кеден одағы</text>\n    <text x=\"12\" y=\"120\" fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\">НАФТА (1994 ж.):</text>\n    <text x=\"12\" y=\"134\" fill=\"#cbd5e1\" font-size=\"9.5\">АҚШ, Канада, Мексика</text>\n    <text x=\"12\" y=\"154\" fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\">Меркосур (1991 ж.):</text>\n    <text x=\"12\" y=\"168\" fill=\"#cbd5e1\" font-size=\"9.5\">Монтевидео • Оңтүстік нарық</text>\n    <text x=\"12\" y=\"186\" fill=\"#6ee7b7\" font-size=\"9\">ЛАЙ (1980 ж. Монтевидео)</text>\n  </g>\n\n  <!-- Col 3: Азия және Еуразия одақтары -->\n  <g transform=\"translate(384, 62)\">\n    <rect width=\"175\" height=\"198\" rx=\"12\" fill=\"#0f172a\" stroke=\"#8b5cf6\" stroke-width=\"1.2\"/>\n    <rect width=\"175\" height=\"32\" rx=\"12\" fill=\"url(#iog3)\"/>\n    <text x=\"87\" y=\"20\" fill=\"#ffffff\" font-size=\"10.5\" font-weight=\"bold\" text-anchor=\"middle\">АЗИЯ ЖӘНЕ ЕУРАЗИЯ</text>\n    <text x=\"12\" y=\"52\" fill=\"#c084fc\" font-size=\"10\" font-weight=\"bold\">ШЫҰ (2001 ж.):</text>\n    <text x=\"12\" y=\"66\" fill=\"#cbd5e1\" font-size=\"9.5\">Пекин • ҚР, ҚХР, РФ, Үндістан</text>\n    <text x=\"12\" y=\"86\" fill=\"#c084fc\" font-size=\"10\" font-weight=\"bold\">АСЕАН (1967 ж.):</text>\n    <text x=\"12\" y=\"100\" fill=\"#cbd5e1\" font-size=\"9.5\">Сингапур / Джакарта</text>\n    <text x=\"12\" y=\"120\" fill=\"#c084fc\" font-size=\"10\" font-weight=\"bold\">АПЕК (1989 ж.):</text>\n    <text x=\"12\" y=\"134\" fill=\"#cbd5e1\" font-size=\"9.5\">Сингапур • АТЭС 21 мемлекет</text>\n    <text x=\"12\" y=\"154\" fill=\"#c084fc\" font-size=\"10\" font-weight=\"bold\">БРИКС коалициясы:</text>\n    <text x=\"12\" y=\"168\" fill=\"#cbd5e1\" font-size=\"9.5\">Бразилия, РФ, Үндістан, ҚХР, ОАР</text>\n    <text x=\"12\" y=\"186\" fill=\"#d8b4fe\" font-size=\"9\">ТМД (Минск; Грузия шықты 2008)</text>\n  </g>\n\n  <!-- Col 4: Әскери және Салалық -->\n  <g transform=\"translate(571, 62)\">\n    <rect width=\"170\" height=\"198\" rx=\"12\" fill=\"#0f172a\" stroke=\"#f59e0b\" stroke-width=\"1.2\"/>\n    <rect width=\"170\" height=\"32\" rx=\"12\" fill=\"url(#iog4)\"/>\n    <text x=\"85\" y=\"20\" fill=\"#ffffff\" font-size=\"10.5\" font-weight=\"bold\" text-anchor=\"middle\">ӘСКЕРИ ЖӘНЕ САЛАЛЫҚ</text>\n    <text x=\"12\" y=\"52\" fill=\"#fbbf24\" font-size=\"10\" font-weight=\"bold\">НАТО (1949 ж.):</text>\n    <text x=\"12\" y=\"66\" fill=\"#cbd5e1\" font-size=\"9.5\">Брюссель • Әскери-саяси</text>\n    <text x=\"12\" y=\"86\" fill=\"#fbbf24\" font-size=\"10\" font-weight=\"bold\">ОПЕК (1960 ж.):</text>\n    <text x=\"12\" y=\"100\" fill=\"#cbd5e1\" font-size=\"9.5\">Вена • Мұнай экспорттау</text>\n    <text x=\"12\" y=\"120\" fill=\"#fbbf24\" font-size=\"10\" font-weight=\"bold\">МАГАТЭ / АЭХА (1957):</text>\n    <text x=\"12\" y=\"134\" fill=\"#cbd5e1\" font-size=\"9.5\">Вена • Атом қауіпсіздігі</text>\n    <text x=\"12\" y=\"154\" fill=\"#fbbf24\" font-size=\"10\" font-weight=\"bold\">Швейцария хабы:</text>\n    <text x=\"12\" y=\"168\" fill=\"#cbd5e1\" font-size=\"9.5\">ДДҰ, ХЕҰ, ДМҰ, ДСҰ, Пошта</text>\n    <text x=\"12\" y=\"186\" fill=\"#fde68a\" font-size=\"9\">Женева &amp; Берн қалалары</text>\n  </g>\n</svg>", "svg_diagram_ru": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 760 280\" class=\"w-full h-auto max-w-full\">\n  <defs>\n    <linearGradient id=\"ioBgRU\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n      <stop offset=\"0%\" stop-color=\"#090d16\"/>\n      <stop offset=\"100%\" stop-color=\"#111827\"/>\n    </linearGradient>\n    <linearGradient id=\"iog1r\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n      <stop offset=\"0%\" stop-color=\"#3b82f6\"/>\n      <stop offset=\"100%\" stop-color=\"#1d4ed8\"/>\n    </linearGradient>\n    <linearGradient id=\"iog2r\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n      <stop offset=\"0%\" stop-color=\"#10b981\"/>\n      <stop offset=\"100%\" stop-color=\"#047857\"/>\n    </linearGradient>\n    <linearGradient id=\"iog3r\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n      <stop offset=\"0%\" stop-color=\"#8b5cf6\"/>\n      <stop offset=\"100%\" stop-color=\"#6d28d9\"/>\n    </linearGradient>\n    <linearGradient id=\"iog4r\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n      <stop offset=\"0%\" stop-color=\"#f59e0b\"/>\n      <stop offset=\"100%\" stop-color=\"#b45309\"/>\n    </linearGradient>\n  </defs>\n  <rect width=\"760\" height=\"280\" rx=\"16\" fill=\"url(#ioBgRU)\" stroke=\"#1e293b\" stroke-width=\"1.5\"/>\n  <text x=\"380\" y=\"28\" fill=\"#38bdf8\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" letter-spacing=\"1\">КЛАССИФИКАЦИЯ КРУПНЕЙШИХ МЕЖДУНАРОДНЫХ ОРГАНИЗАЦИЙ</text>\n  <text x=\"380\" y=\"46\" fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\">Универсальные • Региональная интеграция • Военно-политические • Отраслевые союзы</text>\n  \n  <!-- Col 1: Универсальные (ООН) -->\n  <g transform=\"translate(20, 62)\">\n    <rect width=\"170\" height=\"198\" rx=\"12\" fill=\"#0f172a\" stroke=\"#3b82f6\" stroke-width=\"1.2\"/>\n    <rect width=\"170\" height=\"32\" rx=\"12\" fill=\"url(#iog1r)\"/>\n    <text x=\"85\" y=\"20\" fill=\"#ffffff\" font-size=\"10.5\" font-weight=\"bold\" text-anchor=\"middle\">СИСТЕМА ООН</text>\n    <text x=\"12\" y=\"52\" fill=\"#60a5fa\" font-size=\"10\" font-weight=\"bold\">ООН (1945 г.):</text>\n    <text x=\"12\" y=\"66\" fill=\"#cbd5e1\" font-size=\"9.5\">Нью-Йорк • Безопасность</text>\n    <text x=\"12\" y=\"86\" fill=\"#60a5fa\" font-size=\"10\" font-weight=\"bold\">ЮНЕСКО (1945 г.):</text>\n    <text x=\"12\" y=\"100\" fill=\"#cbd5e1\" font-size=\"9.5\">Париж / Лондон • Культура</text>\n    <text x=\"12\" y=\"120\" fill=\"#60a5fa\" font-size=\"10\" font-weight=\"bold\">ЮНИСЕФ (1946 г.):</text>\n    <text x=\"12\" y=\"134\" fill=\"#cbd5e1\" font-size=\"9.5\">Нью-Йорк • Детский фонд</text>\n    <text x=\"12\" y=\"154\" fill=\"#60a5fa\" font-size=\"10\" font-weight=\"bold\">ВОЗ (1948 г.):</text>\n    <text x=\"12\" y=\"168\" fill=\"#cbd5e1\" font-size=\"9.5\">Женева • Здравоохранение</text>\n    <text x=\"12\" y=\"186\" fill=\"#93c5fd\" font-size=\"9\">ФАО (Рим), МАГАТЭ (Вена)</text>\n  </g>\n\n  <!-- Col 2: Региональная интеграция -->\n  <g transform=\"translate(202, 62)\">\n    <rect width=\"170\" height=\"198\" rx=\"12\" fill=\"#0f172a\" stroke=\"#10b981\" stroke-width=\"1.2\"/>\n    <rect width=\"170\" height=\"32\" rx=\"12\" fill=\"url(#iog2r)\"/>\n    <text x=\"85\" y=\"20\" fill=\"#ffffff\" font-size=\"10.5\" font-weight=\"bold\" text-anchor=\"middle\">РЕГИОНАЛЬНЫЕ СОЮЗЫ</text>\n    <text x=\"12\" y=\"52\" fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\">ЕС (1993 г.):</text>\n    <text x=\"12\" y=\"66\" fill=\"#cbd5e1\" font-size=\"9.5\">Брюссель • Маастрихт</text>\n    <text x=\"12\" y=\"86\" fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\">Бенилюкс (1944 г.):</text>\n    <text x=\"12\" y=\"100\" fill=\"#cbd5e1\" font-size=\"9.5\">Брюссель • Тамож. союз</text>\n    <text x=\"12\" y=\"120\" fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\">НАФТА (1994 г.):</text>\n    <text x=\"12\" y=\"134\" fill=\"#cbd5e1\" font-size=\"9.5\">США, Канада, Мексика</text>\n    <text x=\"12\" y=\"154\" fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\">Меркосур (1991 г.):</text>\n    <text x=\"12\" y=\"168\" fill=\"#cbd5e1\" font-size=\"9.5\">Монтевидео • Южный рынок</text>\n    <text x=\"12\" y=\"186\" fill=\"#6ee7b7\" font-size=\"9\">ЛАИ (1980 г. Монтевидео)</text>\n  </g>\n\n  <!-- Col 3: Азия и Евразия -->\n  <g transform=\"translate(384, 62)\">\n    <rect width=\"175\" height=\"198\" rx=\"12\" fill=\"#0f172a\" stroke=\"#8b5cf6\" stroke-width=\"1.2\"/>\n    <rect width=\"175\" height=\"32\" rx=\"12\" fill=\"url(#iog3r)\"/>\n    <text x=\"87\" y=\"20\" fill=\"#ffffff\" font-size=\"10.5\" font-weight=\"bold\" text-anchor=\"middle\">АЗИЯ И ЕВРАЗИЯ</text>\n    <text x=\"12\" y=\"52\" fill=\"#c084fc\" font-size=\"10\" font-weight=\"bold\">ШОС (2001 г.):</text>\n    <text x=\"12\" y=\"66\" fill=\"#cbd5e1\" font-size=\"9.5\">Пекин • РК, КНР, РФ, Индия</text>\n    <text x=\"12\" y=\"86\" fill=\"#c084fc\" font-size=\"10\" font-weight=\"bold\">АСЕАН (1967 г.):</text>\n    <text x=\"12\" y=\"100\" fill=\"#cbd5e1\" font-size=\"9.5\">Сингапур / Джакарта</text>\n    <text x=\"12\" y=\"120\" fill=\"#c084fc\" font-size=\"10\" font-weight=\"bold\">АТЭС (1989 г.):</text>\n    <text x=\"12\" y=\"134\" fill=\"#cbd5e1\" font-size=\"9.5\">Сингапур • Азиатско-Тихоок.</text>\n    <text x=\"12\" y=\"154\" fill=\"#c084fc\" font-size=\"10\" font-weight=\"bold\">БРИКС коалиция:</text>\n    <text x=\"12\" y=\"168\" fill=\"#cbd5e1\" font-size=\"9.5\">Бразилия, РФ, Индия, КНР, ЮАР</text>\n    <text x=\"12\" y=\"186\" fill=\"#d8b4fe\" font-size=\"9\">СНГ (Минск; Грузия вышла в 2008)</text>\n  </g>\n\n  <!-- Col 4: Военные и Отраслевые -->\n  <g transform=\"translate(571, 62)\">\n    <rect width=\"170\" height=\"198\" rx=\"12\" fill=\"#0f172a\" stroke=\"#f59e0b\" stroke-width=\"1.2\"/>\n    <rect width=\"170\" height=\"32\" rx=\"12\" fill=\"url(#iog4r)\"/>\n    <text x=\"85\" y=\"20\" fill=\"#ffffff\" font-size=\"10.5\" font-weight=\"bold\" text-anchor=\"middle\">ВОЕННЫЕ И ОТРАСЛЕВЫЕ</text>\n    <text x=\"12\" y=\"52\" fill=\"#fbbf24\" font-size=\"10\" font-weight=\"bold\">НАТО (1949 г.):</text>\n    <text x=\"12\" y=\"66\" fill=\"#cbd5e1\" font-size=\"9.5\">Брюссель • Военный блок</text>\n    <text x=\"12\" y=\"86\" fill=\"#fbbf24\" font-size=\"10\" font-weight=\"bold\">ОПЕК (1960 г.):</text>\n    <text x=\"12\" y=\"100\" fill=\"#cbd5e1\" font-size=\"9.5\">Вена • Нефтяной картель</text>\n    <text x=\"12\" y=\"120\" fill=\"#fbbf24\" font-size=\"10\" font-weight=\"bold\">МАГАТЭ (1957 г.):</text>\n    <text x=\"12\" y=\"134\" fill=\"#cbd5e1\" font-size=\"9.5\">Вена • Мирный атом</text>\n    <text x=\"12\" y=\"154\" fill=\"#fbbf24\" font-size=\"10\" font-weight=\"bold\">Хаб в Швейцарии:</text>\n    <text x=\"12\" y=\"168\" fill=\"#cbd5e1\" font-size=\"9.5\">ВОЗ, МОТ, ВМО, ВТО, Почта</text>\n    <text x=\"12\" y=\"186\" fill=\"#fde68a\" font-size=\"9\">Женева и Берн</text>\n  </g>\n</svg>", "table_kz": {"cols": ["Ұйым атауы / Құрылым", "Құрылған жылы және Штаб-пәтері", "Мүше елдер / Мақсаты / Геосаяси маңызы"], "rows": [["НАТО (Солтүстік Атлантикалық Одақ)", "1949 ж. • Бельгия — Брюссель қаласы", "Әскери-саяси қорғаныс одағы; 5-бап принципі («біреуіне шабуыл — барлығына шабуыл»); АҚШ, Еуропа елдері"], ["НАФТА (Солтүстік Америка еркін сауда келісімі)", "1994 ж. • 3 ел астанасы (Вашингтон, Оттава, Мехико)", "АҚШ, Канада, Мексика арасындағы кеденсіз сауда және инвестициялық кеңістік (қазіргі USMCA)"], ["БҰҰ (Біріккен Ұлттар Ұйымы)", "1945 ж. • АҚШ — Нью-Йорк қаласы", "Әлемдегі ең ірі әмбебап ұйым; Халықаралық бейбітшілік, қауіпсіздік пен ынтымақтастықты сақтау"], ["Меркосур (Оңтүстік ортақ нарығы)", "1991 ж. • Уругвай — Монтевидео қаласы", "Оңтүстік Америка елдерінің интеграциясы: Бразилия, Аргентина, Парагвай, Уругвай (ортақ экономикалық кеңістік)"], ["ШЫҰ (Шанхай ынтымақтастық ұйымы)", "2001 ж. • Қытай — Пекин қаласы (Хатшылық)", "Қазақстан, Қытай, Ресей, Өзбекстан, Қырғызстан, Тәжікстан, Пәкістан, Үндістан (РАТС — Ташкентте)"], ["ФАО (Азық-түлік және ауыл шаруашылығы ұйымы)", "1945 ж. • Италия — Рим қаласы", "БҰҰ мамандандырылған агенттігі; Әлемдегі аштықты жою, аграрлық өндіріс пен азық-түлік қауіпсіздігін арттыру"], ["ОПЕК (Мұнай экспорттаушы елдер ұйымы)", "1960 ж. құрылды, 1961 ж. жұмысын бастады • Австрия — Вена қаласы", "Мұнай өндіру квоталары мен әлемдік бағаны үйлестіру; Негізін қалаушылар: Сауд Арабиясы, Иран, Ирак, Кувейт, Венесуэла"], ["АПЕК (Азия-Тынық мұхиты экономикалық ынтымақтастығы)", "1989 ж. • Сингапур (Тұрақты Хатшылық)", "Азия-Тынық мұхит аймағындағы 21 экономиканың сауда-экономикалық еркін ықпалдастығы мен интеграциясы"], ["АСЕАН (Оңтүстік-Шығыс Азия елдерінің қауымдастығы)", "1967 ж. • Сингапур / Индонезия — Джакарта", "Оңтүстік-Шығыс Азияның 10 елі (Индонезия, Малайзия, Сингапур, Тайланд, Филиппин т.б.) экономикалық-саяси одағы"], ["Бенилюкс (Бельгия, Нидерланды, Люксембург)", "1944 ж. • Бельгия — Брюссель қаласы", "Батыс Еуропадағы үш мемлекеттің кедендік және экономикалық одағы; Еуропалық Одақ интеграциясының бастауы"], ["ЮНИСЕФ (БҰҰ Балалар қоры)", "1946 ж. • АҚШ — Нью-Йорк қаласы", "Әлемдегі балалардың құқығын, денсаулығын, білімін және өмірін қорғауға арналған БҰҰ арнайы қоры"], ["МАГАТЭ / АЭХА (Атом энергиясы агенттігі)", "1957 ж. • Австрия — Вена қаласы", "Атом энергиясын бейбіт мақсатта пайдалану, ядролық қауіпсіздік және ядролық қаруды таратпау режимін бақылау"], ["ЕО (Еуропалық Одақ)", "1993 ж. (Маастрихт келісімі, Нидерланды) • Бельгия — Брюссель", "Еуропаның 27 елінің саяси-экономикалық интеграциясы, бірыңғай нарық, ортақ валюта (еуро), Шенген аймағы"], ["ДДҰ / ВОЗ (Дүниежүзілік денсаулық сақтау ұйымы)", "1948 ж. • Швейцария — Женева қаласы", "Жаһандық денсаулық сақтау стандарттары, эпидемиялар мен пандемияларға қарсы күрес, санитарлық ережелер"], ["ЛАЙ / ALADI (Латын Америкасы интеграциясы)", "1980 ж. • Уругвай — Монтевидео қаласы", "Латын Америкасы аймағындағы сауда-экономикалық жеңілдіктер мен ортақ нарықты дамыту қауымдастығы"], ["ЮНЕСКО (Білім, ғылым және мәдениет ұйымы)", "1945 ж. • Ұлыбритания — Лондон (құрылтайы) / Франция — Париж (штаб-пәтері)", "Әлемдік мәдени және табиғи мұраны қорғау, білім беру жүйелерін дамыту, халықаралық ғылыми ынтымақтастық"], ["БРИКС (BRICS) геосаяси коалициясы", "Бразилия, Ресей, Үндістан, Қытай, ОАР • Жаңа даму банкі: Шанхай", "Әлемнің жетекші қарқынды дамушы ірі елдерінің геосаяси қауымдастығы; Көпполярлы әлем құру өзегі"], ["ХЕҰ / МОТ (Халықаралық еңбек ұйымы)", "1919 ж. • Швейцария — Женева қаласы", "Әлемдік еңбек стандарттары, жұмысшылар құқығын қорғау және әлеуметтік әділеттілік агенттігі"], ["ДМҰ / ВМО (Дүниежүзілік метеорология ұйымы)", "1950 ж. • Швейцария — Женева қаласы", "Ауа райы, климат, гидрология және ғаламдық климаттық өзгерістерді бақылау БҰҰ агенттігі"], ["ДСҰ / ВТО (Дүниежүзілік сауда ұйымы)", "1995 ж. • Швейцария — Женева қаласы", "Халықаралық сауда ережелерін реттеу, кедендік тарифтерді төмендету (Қазақстан 2015 ж. мүше болды)"], ["БПО / ВПС (Бүкіләлемдік пошта одағы)", "1874 ж. • Швейцария — Берн қаласы", "Дүниежүзілік пошта байланысы мен пошта қызметтерінің бірыңғай халықаралық ережелерін үйлестіру"], ["ТМД (Тәуелсіз Мемлекеттер Достастығы)", "1991 ж. (Алматы декларациясы) • Беларусь — Минск қаласы", "КСРО ыдыраған соң құрылған посткеңестік елдер достастығы; Грузия 2008 жылы өз еркімен шықты"], ["Брюссель хабы (Бельгия)", "НАТО мен ЕО, Бенилюкс штаб-пәтерлері", "Еуропаның бейресми саяси және әскери астанасы; Батыс Еуропа интеграциясының орталығы"], ["Вена хабы (Австрия)", "АЭХА (МАГАТЭ) мен ОПЕК штаб-пәтерлері", "Бейтарап Австрия астанасы — мұнай картельдері мен атом қауіпсіздігі ұйымдарының жаһандық үйлестірушісі"], ["Швейцария хабы (Женева және Берн)", "ДДҰ, ХЕҰ, ДМҰ, ДСҰ (Женева), БПО (Берн)", "Швейцарияның дәстүрлі бейтараптығына байланысты мамандандырылған жаһандық агенттіктер орталығы"], ["Нью-Йорк хабы (АҚШ)", "БҰҰ Бас штаб-пәтері, ЮНИСЕФ, ПРООН", "Жаһандық саяси қауіпсіздік пен даму мәселелерін реттейтін әлемдік басты дипломатиялық орталық"], ["Монтевидео хабы (Уругвай)", "Меркосур (1991 ж.) және ЛАЙ (1980 ж.)", "Оңтүстік және Латын Америкасының аймақтық сауда-экономикалық интеграциясының орталығы"], ["Сингапур хабы", "АПЕК хатшылығы (1989 ж.), АСЕАН экономикалық орталығы", "Азия-Тынық мұхиты мен Оңтүстік-Шығыс Азияның қаржылық-дипломатиялық жетекші хабы"], ["Грузияның ТМД-дан шығуы", "2008 жыл (ресми түрде 2009 ж. тамыз)", "Оңтүстік Осетиядағы әскери қақтығыстан кейін Грузия ТМД құрамынан өз еркімен шығу туралы шешім қабылдады"], ["ОПЕК+ форматы және Қазақстан", "2016 жылдан бастап жұмыс істейді", "ОПЕК мүшелері мен одақтас 10 мемлекет (Ресей, Қазақстан, Әзірбайжан т.б.) арасындағы мұнай көлемін реттеу келісімі"]]}, "table_ru": {"cols": ["Название организации / Структура", "Год основания и Штаб-квартира", "Страны-участницы / Цель / Геополитическое значение"], "rows": [["НАТО (Североатлантический альянс)", "1949 г. • Бельгия — город Брюссель", "Военно-политический союз обороны; принцип статьи 5 («нападение на одного — нападение на всех»); США, страны Европы"], ["НАФТА (Североамериканское соглашение)", "1994 г. • 3 столицы (Вашингтон, Оттава, Мехико)", "Зона свободной торговли и инвестиций между США, Канадой и Мексикой (ныне обновленный формат USMCA)"], ["ООН (Организация Объединенных Наций)", "1945 г. • США — город Нью-Йорк", "Крупнейшая универсальная организация мира; поддержание международного мира, безопасности и сотрудничества"], ["Меркосур (Общий рынок Юга)", "1991 г. • Уругвай — город Монтевидео", "Экономическая интеграция стран Южной Америки: Бразилия, Аргентина, Парагвай, Уругвай (единый рынок)"], ["ШОС (Шанхайская организация сотрудничества)", "2001 г. • Китай — город Пекин (Секретариат)", "Казахстан, Китай, Россия, Узбекистан, Кыргызстан, Таджикистан, Пакистан, Индия (РАТС — в Ташкенте)"], ["ФАО (Продовольственная и с/х организация)", "1945 г. • Италия — город Рим", "Специализированное учреждение ООН; борьба с голодом, повышение продуктивности аграрного сектора"], ["ОПЕК (Организация стран-экспортеров нефти)", "1960 г. основана, начала работу в 1961 г. • Австрия — Вена", "Координация объемов добычи, квот и мировых цен на нефть; Учредители: Саудовская Аравия, Иран, Ирак, Кувейт, Венесуэла"], ["АТЭС (Азиатско-Тихоокеанское сотрудничество)", "1989 г. • Сингапур (Постоянный секретариат)", "Торгово-экономический форум 21 экономики Азиатско-Тихоокеанского региона для либерализации торговли"], ["АСЕАН (Ассоциация государств ЮВА)", "1967 г. • Сингапур / Индонезия — Джакарта", "Политико-экономический союз 10 стран Юго-Восточной Азии (Индонезия, Малайзия, Сингапур, Таиланд, Филиппины и др.)"], ["Бенилюкс (Бельгия, Нидерланды, Люксембург)", "1944 г. • Бельгия — город Брюссель", "Таможенный и экономический союз трех государств Западной Европы; первооснова европейской интеграции"], ["ЮНИСЕФ (Детский фонд ООН)", "1946 г. • США — город Нью-Йорк", "Специализированный фонд ООН по защите прав, здоровья, образования и благополучия детей во всем мире"], ["МАГАТЭ (Агентство по атомной энергии)", "1957 г. • Австрия — город Вена", "Развитие мирного использования ядерной энергии, стандарты радиационной безопасности и контроль нераспространения"], ["ЕС (Европейский Союз)", "1993 г. (Маастрихтский договор, Нидерланды) • Бельгия — Брюссель", "Экономический и политический союз 27 европейских государств, единый внутренний рынок, валюта евро, Шенген"], ["ВОЗ (Всемирная организация здравоохранения)", "1948 г. • Швейцария — город Женева", "Международные стандарты медицины, борьба с эпидемиями и пандемиями, глобальная санитарная безопасность"], ["ЛАИ / ALADI (Латиноамериканская интеграция)", "1980 г. • Уругвай — город Монтевидео", "Ассоциация региональной интеграции и преференциальной торговли стран Латинской Америки"], ["ЮНЕСКО (Организация по образованию, науке и культуре)", "1945 г. • Великобритания — Лондон (учреждение) / Франция — Париж (штаб)", "Охрана всемирного природного и культурного наследия, международные программы развития образования и науки"], ["БРИКС (BRICS) геополитическая коалиция", "Бразилия, Россия, Индия, Китай, ЮАР • Новый банк развития: Шанхай", "Коалиция крупнейших развивающихся экономик мира; опора формирования справедливого многополярного мира"], ["МОТ (Международная организация труда)", "1919 г. • Швейцария — город Женева", "Установление международных трудовых стандартов, защита прав трудящихся и социальная справедливость"], ["ВМО (Всемирная метеорологическая организация)", "1950 г. • Швейцария — город Женева", "Мониторинг атмосферы, климата, погоды, гидрологии и глобальных климатических изменений Земли"], ["ВТО (Всемирная торговая организация)", "1995 г. • Швейцария — город Женева", "Правила международной торговли товарами и услугами, снижение пошлин (Казахстан вступил в 2015 г.)"], ["ВПС (Всемирный почтовый союз)", "1874 г. • Швейцария — город Берн", "Единые правила и организация международного почтового сообщения между государствами планеты"], ["СНГ (Содружество Независимых Государств)", "1991 г. (Алма-Атинская декларация) • Беларусь — город Минск", "Содружество постсоветских государств; Грузия добровольно вышла из состава СНГ в 2008 году"], ["Хаб в Брюсселе (Бельгия)", "Штаб-квартиры НАТО, ЕС, Бенилюкса", "Неофициальная политическая и военная столица Европы; ядро западноевропейской интеграции"], ["Хаб в Вене (Австрия)", "Штаб-квартиры ОПЕК и МАГАТЭ (АЭХА)", "Нейтральная столица Австрии как центр регулирования нефтяного рынка и ядерной безопасности"], ["Хаб в Швейцарии (Женева и Берн)", "ВОЗ, МОТ, ВМО, ВТО (Женева), ВПС (Берн)", "Традиционный нейтралитет Швейцарии обусловил размещение ключевых отраслевых агентств ООН"], ["Хаб в Нью-Йорке (США)", "Главная штаб-квартира ООН, ЮНИСЕФ, ПРООН", "Главный центр глобальной дипломатии, безопасности и программ всемирного развития"], ["Хаб в Монтевидео (Уругвай)", "Штаб-квартиры Меркосур (1991 г.) и ЛАИ (1980 г.)", "Центр торгово-экономической интеграции и общего рынка государств Южной и Латинской Америки"], ["Хаб в Сингапуре", "Секретариат АТЭС (1989 г.), экономический центр АСЕАН", "Ведущий финансово-дипломатический хаб Азиатско-Тихоокеанского региона и Юго-Восточной Азии"], ["Выход Грузии из состава СНГ", "2008 год (юридически оформился в августе 2009 г.)", "После вооруженного конфликта в Южной Осетии Грузия приняла решение о добровольном выходе из СНГ"], ["Формат ОПЕК+ и участие Казахстана", "Действует с 2016 года", "Соглашение между странами ОПЕК и 10 независимыми экспортерами (Россия, Казахстан и др.) по балансировке рынка"]]}, "key_facts_kz": ["НАТО (1949 ж.), Еуропалық Одақ (1993 ж.) және Бенилюкс одағының (1944 ж.) штаб-пәтерлері Бельгия астанасы Брюссельде орналасқан.", "АЭХА (МАГАТЭ, 1957 ж.) және Мұнай экспорттаушы елдер ұйымының (ОПЕК, 1960/1961 ж.) штаб-пәтерлері Австрия астанасы Вена қаласында.", "ДДҰ (1948 ж.), Халықаралық еңбек ұйымы (ХЕҰ, 1919 ж.), Дүниежүзілік метеорология ұйымы (ДМҰ, 1950 ж.) және ДСҰ (1995 ж.) штаб-пәтерлері Швейцарияның Женева қаласында орналасқан.", "Бүкіләлемдік пошта одағының (БПО, 1874 ж.) штаб-пәтері Швейцарияның Берн қаласында орналасқан.", "БҰҰ (1945 ж.) Бас штаб-пәтері және ЮНИСЕФ Балалар қоры (1946 ж.) АҚШ-тың Нью-Йорк қаласында орналасқан.", "НАФТА (1994 ж.) Солтүстік Америка еркін сауда келісімі 3 мемлекет астанасында (Вашингтон, Оттава, Мехико) үйлестіріледі.", "ШЫҰ (2001 ж.) Хатшылығы Пекинде (Қытай), ал Аймақтық лаңкестікке қарсы құрылымы (РАТС) Ташкентте (Өзбекстан) орналасқан.", "Оңтүстік Американың қос ірі ұйымы — Меркосур (1991 ж.) және ЛАЙ (1980 ж.) штаб-пәтерлері Уругвайдың Монтевидео қаласында.", "БҰҰ Азық-түлік және ауыл шаруашылығы ұйымының (ФАО, 1945 ж.) штаб-пәтері Италия астанасы Рим қаласында.", "АПЕК (1989 ж.) тұрақты Хатшылығы Сингапур мемлекетінде орналасқан.", "АСЕАН (1967 ж.) Оңтүстік-Шығыс Азия елдері қауымдастығының Бас хатшылығы Индонезияның Джакарта қаласында, экономикалық орталығы Сингапурда.", "ЮНЕСКО (1945 ж.) құрылтай конференциясы Лондонда өтті, ал ұйымның тұрақты бас штаб-пәтері Франция астанасы Парижде.", "БРИКС коалициясының негізін 5 мемлекет (Бразилия, Ресей, Үндістан, Қытай, ОАР) қалады, Жаңа даму банкі Шанхайда орналасқан.", "Грузия мемлекеті 2008 жылғы қарулы қақтығыстан кейін ТМД (Тәуелсіз Мемлекеттер Достастығы) құрамынан өз еркімен шықты.", "ОПЕК ұйымын 1960 жылы Бағдатта 5 негізін қалаушы мемлекет (Сауд Арабиясы, Иран, Ирак, Кувейт, Венесуэла) құрды."], "key_facts_ru": ["Штаб-квартиры НАТО (1949 г.), Европейского Союза (1993 г.) и союза Бенилюкс (1944 г.) расположены в столице Бельгии — Брюсселе.", "Штаб-квартиры МАГАТЭ (1957 г.) и Организации стран-экспортеров нефти (ОПЕК, 1960/1961 г.) находятся в столице Австрии — Вене.", "Штаб-квартиры ВОЗ (1948 г.), Международной организации труда (МОТ, 1919 г.), ВМО (1950 г.) и ВТО (1995 г.) базируются в Женеве (Швейцария).", "Штаб-квартира Всемирного почтового союза (ВПС, 1874 г.) расположена в столице Швейцарии — городе Берн.", "Главная штаб-квартира ООН (1945 г.) и Детский фонд ООН (ЮНИСЕФ, 1946 г.) находятся в Нью-Йорке (США).", "Североамериканское соглашение НАФТА (1994 г.) координируется в 3 столицах государств-участников: Вашингтоне, Оттаве и Мехико.", "Секретариат ШОС (2001 г.) находится в Пекине (Китай), а Региональная антитеррористическая структура (РАТС) — в Ташкенте (Узбекистан).", "Штаб-квартиры двух ключевых объединений Южной Америки — Меркосур (1991 г.) и ЛАИ (1980 г.) — расположены в Монтевидео (Уругвай).", "Продовольственная и сельскохозяйственная организация ООН (ФАО, 1945 г.) имеет штаб-квартиру в Риме (Италия).", "Постоянный секретариат АТЭС (1989 г.) расположен в Сингапуре.", "Главный секретариат АСЕАН (1967 г.) находится в Джакарте (Индонезия), крупный деловой центр союза — в Сингапуре.", "Учредительная конференция ЮНЕСКО (1945 г.) проходила в Лондоне, а постоянная штаб-квартира организации находится в Париже (Франция).", "Коалицию БРИКС основали 5 ключевых государств (Бразилия, Россия, Индия, Китай, ЮАР), Новый банк развития союза расположен в Шанхае.", "Грузия в 2008 году после вооруженного конфликта добровольно покинула Содружество Независимых Государств (СНГ).", "ОПЕК была основана в 1960 году на конференции в Багдаде пятью государствами: Саудовской Аравией, Ираном, Ираком, Кувейтом и Венесуэлой."], "traps_kz": ["⚠️ ОПЕК штаб-пәтері Венада: Австрия ұйымға мүше емес!: ОПЕК-тің штаб-пәтері Австрия астанасы Венада орналасқан, алайда Австрия ОПЕК-ке МҮШЕ ЕМЕС! Австрия — мұнай экспорттамайтын, бейтарап мемлекет. Картель 1965 жылы Женевадан Венаға бейтарап саяси мәртебесі үшін көшірілген. Сондай-ақ МАГАТЭ де Венада орналасқан.", "⚠️ ЮНЕСКО: Лондон әлде Париж?: ЮНЕСКО 1945 жылы Лондондағы халықаралық конференцияда құрылды (ұйым Жарғысына Лондонда қол қойылды), бірақ оның ТҰРАҚТЫ БАС ШТАБ-ПӘТЕРІ Франция астанасы Парижде орналасқан. Сұрақта «құрылған/жарғы қабылданған қала» десе — Лондон, «штаб-пәтері» десе — Париж таңдалады.", "⚠️ Брюссель — Еуропаның үштік хабы!: Брюссельде бір мезгілде 3 ірі ұйымның штаб-пәтері орналасқан: 1) НАТО (әскери одақ, 1949 ж.); 2) Еуропалық Одақ (ЕО, 1993 ж.); 3) Бенилюкс (Бельгия, Нидерланды, Люксембург кеден одағы, 1944 ж.). Бұл Брюссельді Еуропаның бейресми саяси орталығы етеді.", "⚠️ Швейцария хабы: Женева және Берн қалалары!: ДДҰ (ВОЗ), Халықаралық еңбек ұйымы (ХЕҰ), Дүниежүзілік метеорология ұйымы (ДМҰ), Дүниежүзілік сауда ұйымы (ДСҰ) — Женева қаласында; ал Бүкіләлемдік пошта одағы (БПО) — Берн қаласында. Швейцария дәстүрлі бейтарап мемлекет болғандықтан, халықаралық ұйымдар осында шоғырланған.", "⚠️ Грузияның ТМД-дан шығуы: 2008 жыл!: Грузия ТМД-дан 2008 жылғы тамыздағы қақтығыстан кейін өз еркімен шығу туралы мәлімдеп, 2009 жылдың тамызында рәсімді толық аяқтады. ҰБТ тестінде «Грузия ТМД-дан өз еркі бойынша шыққан жыл» деген сұрақтың ресми дұрыс жауабы — 2008 жыл."], "traps_ru": ["⚠️ Штаб-квартира ОПЕК в Вене: Австрия не входит в картель!: Штаб-квартира ОПЕК находится в столице Австрии — Вене, однако сама Австрия НЕ ЯВЛЯЕТСЯ ЧЛЕНОМ ОПЕК! Австрия — нейтральное европейское государство, не экспортирующее нефть. Картель выбрал Вену благодаря её нейтральному статусу. В Вене также находится штаб-квартира МАГАТЭ.", "⚠️ ЮНЕСКО: Лондон или Париж?: ЮНЕСКО была основана в 1945 году на конференции в Лондоне (Устав подписан в Лондоне), однако ПОСТОЯННАЯ ШТАБ-КВАРТИРА организации находится в Париже (Франция). Если в вопросе спрашивается место учреждения Устава — Лондон, а постоянная резиденция/штаб — Париж.", "⚠️ Брюссель — тройной политический хаб Европы!: В Брюсселе одновременно находятся штаб-квартиры трех крупнейших блоков: 1) НАТО (военный союз, 1949 г.); 2) Европейский Союз (ЕС, 1993 г.); 3) Бенилюкс (таможенный союз Бельгии, Нидерландов и Люксембурга, 1944 г.).", "⚠️ Швейцарский хаб: Женева и Берн!: ВОЗ, МОТ, ВМО, ВТО базируются в Женеве; Всемирный почтовый союз (ВПС) — в Берне. Традиционный постоянный нейтралитет Швейцарии сделал её главной площадкой для размещения специализированных гуманитарных и отраслевых агентств ООН.", "⚠️ Выход Грузии из СНГ: 2008 год!: Грузия объявила о выходе из Содружества Независимых Государств в августе 2008 года после вооруженного конфликта (юридически процедура завершилась в августе 2009 года). В тестах ЕНТ официальным правильным ответом на вопрос о выходе Грузии является 2008 год."]};
+    const blooketData = {"kz": "https://dashboard.blooket.com/set/6a95f474c923faa1d82d4025", "ru": "https://dashboard.blooket.com/set/6a94d4dd8bb8084c251f28b3", "doc_kz": "https://docs.google.com/document/d/11iXIPHzLmlbfvrzUQxEChlmbDUB2W23O-ysYhd8dSUM/edit?usp=sharing", "doc_ru": "https://drive.google.com/file/d/1vNhQu6KD1TFg59d_Tdi-coOmdyZutngK/view?usp=sharing"};
+    let currentLang = 'kz';
+
+    // Safe localStorage helper
+    const safeStorage = {
+      getItem(k) {
+        try { return localStorage.getItem(k); } catch (e) { return null; }
+      },
+      setItem(k, v) {
+        try { localStorage.setItem(k, v); } catch (e) {}
+      }
+    };
+
+    function getCompletedSet() {
+      try {
+        return new Set(JSON.parse(safeStorage.getItem('geotany_grammar_completed') || '[]'));
+      } catch (e) {
+        return new Set();
+      }
+    }
+
+    function saveCompletedSet(setObj) {
+      safeStorage.setItem('geotany_grammar_completed', JSON.stringify(Array.from(setObj)));
+    }
+
+    function updateCompleteButton() {
+      const setObj = getCompletedSet();
+      const isDone = setObj.has(topicData.num);
+      const btn = document.getElementById('btnComplete');
+      const icon = document.getElementById('completeIcon');
+      const text = document.getElementById('completeText');
+
+      if (isDone) {
+        btn.className = "inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black transition border border-emerald-500/50 bg-emerald-500/20 text-emerald-300 shadow-md shadow-emerald-500/10";
+        icon.textContent = "✓";
+        text.textContent = (currentLang === 'ru') ? "Изучено" : "Меңгерілді";
+      } else {
+        btn.className = "inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition border border-slate-700 bg-space-900 text-slate-300 hover:text-white hover:border-slate-600";
+        icon.textContent = "○";
+        text.textContent = (currentLang === 'ru') ? "Отметить изученным" : "Меңгерілді деп белгілеу";
+      }
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('xpToast');
+      const m = document.getElementById('toastMsg');
+      m.textContent = msg;
+      t.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        t.classList.add('translate-y-20', 'opacity-0');
+      }, 2500);
+    }
+
+    function toggleComplete() {
+      const setObj = getCompletedSet();
+      const isDone = setObj.has(topicData.num);
+      let xp = parseInt(safeStorage.getItem('geotany_user_xp') || '0', 10);
+
+      if (isDone) {
+        setObj.delete(topicData.num);
+        xp = Math.max(0, xp - 20);
+        showToast((currentLang === 'ru') ? "-20 XP. Отметка снята" : "-20 XP. Белгі алынды");
+      } else {
+        setObj.add(topicData.num);
+        xp += 20;
+        showToast((currentLang === 'ru') ? "+20 XP! Тема изучена" : "+20 XP! Тақырып меңгерілді");
+      }
+
+      saveCompletedSet(setObj);
+      safeStorage.setItem('geotany_user_xp', xp.toString());
+      updateCompleteButton();
+    }
+
+    function renderTable(isRu) {
+      const tbl = isRu ? (topicData.table_ru || topicData.table_kz) : topicData.table_kz;
+      const container = document.getElementById('tableContainer');
+      if (!tbl || !tbl.cols || !tbl.rows || tbl.rows.length === 0) {
+        document.getElementById('tableSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('tableSection').classList.remove('hidden');
+
+      let html = '<table class="w-full text-left text-xs border-collapse">';
+      html += '<thead><tr class="border-b border-slate-800 text-slate-400 font-bold">';
+      tbl.cols.forEach(col => {
+        html += `<th class="p-2.5 sm:p-3 bg-space-900/60 rounded-lg whitespace-nowrap text-cyan-300 font-bold">${col}</th>`;
+      });
+      html += '</tr></thead><tbody class="divide-y divide-slate-800/60">';
+      tbl.rows.forEach(row => {
+        html += '<tr class="hover:bg-space-900/40 transition">';
+        row.forEach((cell, idx) => {
+          const cls = idx === 0 ? "font-bold text-white whitespace-nowrap" : (idx === 1 ? "text-cyan-300 font-medium" : "text-slate-300");
+          html += `<td class="p-2.5 sm:p-3 ${cls}">${cell}</td>`;
+        });
+        html += '</tr>';
+      });
+      html += '</tbody></table>';
+      container.innerHTML = html;
+    }
+
+    function renderFacts(isRu) {
+      const facts = isRu ? (topicData.key_facts_ru || topicData.key_facts_kz) : topicData.key_facts_kz;
+      const list = document.getElementById('factsList');
+      if (!facts || facts.length === 0) {
+        document.getElementById('factsSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('factsSection').classList.remove('hidden');
+      list.innerHTML = facts.map(f => `<li class="flex items-start space-x-2"><span class="text-amber-400 font-bold shrink-0 mt-0.5">•</span><span>${f}</span></li>`).join('');
+    }
+
+    function renderTraps(isRu) {
+      const traps = isRu ? (topicData.traps_ru || topicData.traps_kz) : topicData.traps_kz;
+      const list = document.getElementById('trapsList');
+      if (!traps || traps.length === 0) {
+        document.getElementById('trapsSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('trapsSection').classList.remove('hidden');
+      list.innerHTML = traps.map(tr => {
+        const str = String(tr);
+        const icon = str.startsWith('⚠️') ? '' : '<span class="text-amber-400 shrink-0 mt-0.5">⚠️</span> ';
+        return `<p class="leading-relaxed flex items-start space-x-2">${icon}<span>${str}</span></p>`;
+      }).join('');
+    }
+
+    function setLang(lang) {
+      currentLang = lang;
+      safeStorage.setItem('geotany_lang', lang);
+      const isRu = (lang === 'ru');
+
+      // Update lang buttons
+      const btnKz = document.getElementById('btnLangKz');
+      const btnRu = document.getElementById('btnLangRu');
+      if (isRu) {
+        btnRu.className = "px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow";
+        btnKz.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+      } else {
+        btnKz.className = "px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow";
+        btnRu.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+      }
+
+      // Update text fields
+      document.getElementById('navCatBadge').textContent = isRu ? (topicData.category_ru || 'География') : (topicData.category_kz || 'География');
+      document.getElementById('heroCatBadge').textContent = isRu ? (topicData.category_ru || 'География') : (topicData.category_kz || 'География');
+      document.getElementById('heroTitle').textContent = isRu ? topicData.title_ru : topicData.title_kz;
+
+      // Summary
+      document.getElementById('summaryHeader').textContent = isRu ? "КРАТКИЙ ОБЗОР ТЕМЫ" : "ТАҚЫРЫПҚА ҚЫСҚАША ШОЛУ";
+      document.getElementById('summaryText').textContent = isRu ? topicData.summary_ru : topicData.summary_kz;
+
+      // Theory
+      document.getElementById('theoryHeader').textContent = isRu ? "ПОЛНЫЙ ТЕОРЕТИЧЕСКИЙ МАТЕРИАЛ И КОНСПЕКТ" : "ТОЛЫҚ ТЕОРИЯЛЫҚ МАТЕРИАЛ МЕН КОНСПЕКТ";
+      document.getElementById('theoryContent').innerHTML = isRu ? topicData.full_theory_ru : topicData.full_theory_kz;
+
+      // SVG
+      document.getElementById('svgHeader').textContent = isRu ? "НАГЛЯДНАЯ СХЕМА И ИНФОГРАФИКА" : "КӨРНЕКІ СХЕМА МЕН ИНФОГРАФИКА";
+      const svgCode = isRu ? (topicData.svg_diagram_ru || topicData.svg_diagram) : topicData.svg_diagram;
+      document.getElementById('svgContainer').innerHTML = svgCode || '';
+
+      // Table, Facts, Traps
+      document.getElementById('tableHeader').textContent = isRu ? "СТРУКТУРИРОВАННАЯ ТАБЛИЦА ПОКАЗАТЕЛЕЙ И КЛАССИФИКАЦИИ" : "НАҚТЫ КӨРСЕТКІШТЕР МЕН КЛАССИФИКАЦИЯ КЕСТЕСІ";
+      renderTable(isRu);
+
+      document.getElementById('factsHeader').textContent = isRu ? "ГЛАВНЫЕ ФАКТЫ ДЛЯ ЕНТ И ЗАПОМИНАНИЯ" : "ҰБТ-ҒА ҚАЖЕТТІ НЕГІЗГІ ЕРЕЖЕЛЕР МЕН ФАКТІЛЕР";
+      renderFacts(isRu);
+
+      document.getElementById('trapsHeader').textContent = isRu ? "ЛОВУШКИ И ЛАЙФХАКИ ЕНТ" : "ҰБТ ҚАҚПАНДАРЫ МЕН ЛАЙФХАКТАР";
+      renderTraps(isRu);
+
+      // Blooket & Doc links
+      const btnB = document.getElementById('btnBlooket');
+      const bUrl = isRu ? (blooketData.ru || blooketData.kz) : (blooketData.kz || blooketData.ru);
+      if (bUrl) {
+        btnB.href = bUrl;
+        btnB.classList.remove('hidden');
+      } else {
+        btnB.classList.add('hidden');
+      }
+
+      const btnD = document.getElementById('btnDoc');
+      if (btnD) { const dUrl = isRu ? (blooketData.doc_ru || blooketData.doc_kz) : (blooketData.doc_kz || blooketData.doc_ru); if (dUrl) { btnD.href = dUrl; btnD.classList.remove('hidden'); } else { btnD.classList.add('hidden'); } }
+
+      updateCompleteButton();
+    }
+
+    // Initialization on page load with URL param and localStorage sync
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const queryLang = urlParams.get('lang');
+      let langToSet = 'kz';
+      if (queryLang === 'ru' || queryLang === 'kz') {
+        langToSet = queryLang;
+        safeStorage.setItem('geotany_lang', queryLang);
+      } else {
+        const savedLang = safeStorage.getItem('geotany_lang');
+        if (savedLang === 'ru') langToSet = 'ru';
+        else langToSet = 'kz';
+      }
+      setLang(langToSet);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>12 урок. Биосфера Казахстана | GEOTANY</title>
+
+  <!-- AUTH GUARD: RESTRICT DIRECT ACCESS WITHOUT VALID SESSION -->
+  <style id="authCloak">body { display: none !important; }</style>
+  <script>
+    (function() {
+      try {
+        var isAdmin = localStorage.getItem('geotany_admin_auth') === 'true';
+        var sessionStr = localStorage.getItem('geotany_user_session');
+        var isAuthorized = isAdmin;
+        if (!isAuthorized && sessionStr) {
+          var s = JSON.parse(sessionStr);
+          if (s && s.email && (s.courseCode || s.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        var profileStr = localStorage.getItem('geotany_user_profile');
+        if (!isAuthorized && profileStr) {
+          var p = JSON.parse(profileStr);
+          if (p && p.email && (p.courseCode || p.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        if (!isAuthorized) {
+          window.location.replace('../index.html?error=unauthorized_course');
+          return;
+        }
+        var cloak = document.getElementById('authCloak');
+        if (cloak) cloak.remove();
+      } catch (e) {
+        window.location.replace('../index.html?error=unauthorized_course');
+      }
+    })();
+  </script>
+
+  <!-- TAILWIND CSS & FONTS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            space: {
+              800: '#1E293B',
+              850: '#151E2E',
+              900: '#0F172A',
+              950: '#0B0F19',
+            },
+            brand: {
+              400: '#34D399',
+              500: '#10B981',
+              600: '#059669',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0B0F19;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1E293B;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+    .prose-theory h1, .prose-theory h2, .prose-theory h3, .prose-theory h4 {
+      color: #F8FAFC;
+      font-weight: 800;
+    }
+    .prose-theory p {
+      color: #CBD5E1;
+      line-height: 1.75;
+      font-size: 0.875rem;
+    }
+    .prose-theory ul {
+      list-style-type: disc;
+      margin-left: 1.25rem;
+      color: #CBD5E1;
+      font-size: 0.875rem;
+    }
+    .prose-theory table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.75rem;
+    }
+    .prose-theory th, .prose-theory td {
+      border: 1px solid #334155;
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+    }
+    .prose-theory th {
+      background: #1E293B;
+      color: #F8FAFC;
+      font-weight: 700;
+    }
+    .prose-theory tr:nth-child(even) {
+      background: rgba(15, 23, 42, 0.6);
+    }
+  </style>
+</head>
+<body class="bg-space-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-brand-500/30 selection:text-brand-400">
+
+  <!-- TOP APP BAR -->
+  <header class="sticky top-0 z-40 bg-space-950/90 backdrop-blur-xl border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+      
+      <!-- Left: Back Button & Title -->
+      <div class="flex items-center space-x-3">
+        <a href="../index.html?lang=ru#section-sabaktar_reading" class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 text-slate-300 hover:text-white border border-slate-700/80 text-xs sm:text-sm font-bold transition shadow-sm">
+          <span>←</span>
+          <span>Назад</span>
+        </a>
+        <div class="h-6 w-px bg-slate-800 hidden sm:block"></div>
+        <div class="flex items-center space-x-2">
+          <span class="text-xs px-2.5 py-1 rounded-lg bg-cyan-500/10 text-cyan-400 font-extrabold border border-cyan-500/20">
+            12 / 20 урок
+          </span>
+          <span class="text-sm font-bold text-slate-200 hidden md:inline truncate max-w-xs">
+            12 урок. Биосфера Казахстана
+          </span>
+        </div>
+      </div>
+
+      <!-- Center: Reading Time Badge -->
+      <div class="hidden sm:flex items-center space-x-1.5 bg-space-900 border border-slate-800 px-3 py-1.5 rounded-xl text-xs text-slate-400 font-medium">
+        <span>⏱️</span>
+        <span>8 мин</span>
+      </div>
+
+      <!-- Right: Direct Language Page Switcher & Complete Button -->
+      <div class="flex items-center space-x-2 sm:space-x-3">
+        
+        <!-- Language Switcher linking directly to counterpart page -->
+        <div class="flex items-center bg-space-900 p-0.5 rounded-xl border border-slate-800 text-xs font-bold">
+          <a href="lesson_12_kz.html" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition">
+            🇰🇿 KZ
+          </a>
+          <a href="lesson_12_ru.html" class="px-2.5 py-1 rounded-lg bg-brand-500 text-space-950 font-black transition">
+            🇷🇺 RU
+          </a>
+        </div>
+
+        <!-- Mark as Completed Toggle Button -->
+        <button id="btnHeaderComplete" onclick="toggleLessonComplete()" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-emerald-400 text-xs font-bold transition flex items-center space-x-1.5 shadow-sm">
+          <span id="headerCheckIcon">○</span>
+          <span id="headerCompleteText" class="hidden sm:inline">Прочитано</span>
+        </button>
+
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-8">
+
+    <!-- HERO LESSON BANNER -->
+    <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-space-900 via-space-850 to-space-900 border border-slate-800 shadow-xl relative overflow-hidden">
+      <!-- Glow decoration -->
+      <div class="absolute -right-20 -top-20 w-60 h-60 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-20 -bottom-20 w-60 h-60 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10 space-y-4">
+        
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <span class="px-3 py-1 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 font-extrabold text-xs tracking-wider uppercase">
+              📖 ЕНТ ГЕОГРАФИЯ • УРОК №12
+            </span>
+            <span class="px-3 py-1 rounded-xl bg-brand-500/10 border border-brand-500/30 text-brand-400 font-bold text-xs">
+              Русское отделение
+            </span>
+          </div>
+
+          <!-- Prev / Next Navigation -->
+          <div class="flex items-center space-x-2 text-xs font-bold">
+            <a href="lesson_11_ru.html" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition flex items-center space-x-1"><span>←</span><span>Предыдущий</span></a>
+            <span class="text-slate-500">|</span>
+            <a href="lesson_13_ru.html" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition flex items-center space-x-1"><span>Следующий</span><span>→</span></a>
+          </div>
+        </div>
+
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            12 урок. Биосфера Казахстана
+          </h1>
+          <h2 class="text-sm font-semibold text-cyan-300/80 mt-1">
+            12-сабақ. Қазақстан биосферасы
+          </h2>
+        </div>
+
+        <!-- Tags Row -->
+        <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-800/80">
+          <span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">#Биосфера Казахстана</span><span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">#Биосфера Казахстана</span>
+        </div>
+
+        <!-- Completed Banner -->
+        <div id="lessonCompletedBanner" class="hidden p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-xs sm:text-sm text-emerald-300 flex items-center justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <span>✅</span>
+            <span>Этот урок отмечен как прочитанный.</span>
+          </div>
+          <span class="text-xs px-2.5 py-1 rounded-xl bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40">
+            +30 XP получено
+          </span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SECTION 1: KEY TERMS & DEFINITIONS -->
+    <section class="p-6 sm:p-7 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-base sm:text-lg font-black text-white flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center text-sm font-black">1</span>
+          <span>Ключевые термины и понятия</span>
+        </h3>
+        <span class="text-xs text-slate-400 font-semibold">
+          5 терминов
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Лесостепь и степь</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Северные природные зоны Казахстана с плодородными черноземами, главные житницы страны.</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Чернозем</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Высокоплодородная почва степной зоны с мощным гумусовым горизонтом.</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Пустыня и полупустыня</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Аридные ландшафты, занимающие более половины площади республики (сероземы и бурые почвы).</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Высотная поясность</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Закономерная смена природных комплексов в горах от подножия к вершинам.</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Аксу-Джабаглы</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Первый и старейший государственный природный заповедник Казахстана, основанный в 1926 году.</p>
+        </div>
+        
+      </div>
+    </section>
+
+    <!-- SECTION 2: FULL COMPREHENSIVE THEORY -->
+    <section class="p-6 sm:p-8 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-5">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-base sm:text-lg font-black text-white flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-brand-500/10 border border-brand-500/20 text-brand-400 flex items-center justify-center text-sm font-black">2</span>
+          <span>Полный теоретический конспект и иллюстрации</span>
+        </h3>
+        <span class="text-xs text-slate-400 font-medium hidden sm:inline">
+          Интерактивное чтение
+        </span>
+      </div>
+
+      <!-- Theory Body Container -->
+      <div class="prose-theory leading-relaxed space-y-4 overflow-x-auto">
+        <h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>1. Природные зоны Казахстана</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">На территории Казахстана с севера на юг последовательно сменяются <b class="text-cyan-300 font-bold">4 природные зоны</b>:</li>
+</ul>
+<ol class="space-y-3 my-2.5 ml-6 list-none"><li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">1.</span><b class="text-emerald-300 font-bold">Лесостепная зона (2,4% территории):</b><ul class="space-y-1.5 my-2 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Самый север страны (СКО). Максимальное для равнин увлажнение (400–500 мм).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Серые лесные и выщелоченные черноземы с рекордным гумусом до 9–10%.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Березово-осиновые рощи («колки»).</li>
+</ul></li><li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">2.</span><b class="text-emerald-300 font-bold">Степная зона (28% территории):</b><ul class="space-y-1.5 my-2 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Главная житница страны (Акмолинская, Костанайская, Павлодарская области).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Черноземы и темно-каштановые почвы, ковыльно-типчаковые сообщества.</li>
+</ul></li><li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">3.</span><b class="text-emerald-300 font-bold">Полупустынная зона (14% территории):</b><ul class="space-y-1.5 my-2 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Переходная полоса. Вегетационный период длится 160–170 дней.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Светло-каштановые почвы, полынь и житняк.</li>
+</ul></li><li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">4.</span><b class="text-emerald-300 font-bold">Пустынная зона (44% территории):</b><ul class="space-y-1.5 my-2 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Самая обширная зона. Осадков всего 100–150 мм.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Глинистые, песчаные и каменистые пустыни. Обитают тушканчики, песчанки, растет саксаул.</li>
+</ul></li></ol>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>🌾</span>
+<span>1-СЫЗБА: ПРИРОДНЫЕ ЗОНЫ КАЗАХСТАНА</span>
+</span>
+<span class="text-[10px] bg-emerald-500/10 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-500/20 font-mono">Орманды дала • Дала • Шөлейт • Шөл</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 220">
+<rect fill="#0b1329" height="170" rx="6" stroke="#10b981" width="150" x="25" y="25"></rect>
+<text fill="#34d399" font-size="11" font-weight="bold" text-anchor="middle" x="100" y="48">ОРМАНДЫ ДАЛА</text>
+<text fill="#f8fafc" font-size="9" text-anchor="middle" x="100" y="68">2,4% территории</text>
+<text fill="#38bdf8" font-size="9" text-anchor="middle" x="100" y="90">Жауын: 400–500 мм</text>
+<text fill="#fde047" font-size="10" font-weight="bold" text-anchor="middle" x="100" y="115">Қара топырақ (9–10%)</text>
+<text fill="#cbd5e1" font-size="8" text-anchor="middle" x="100" y="140">Қайың, көктерек шоқтары</text>
+<text fill="#94a3b8" font-size="8" text-anchor="middle" x="100" y="160">Солтүстік Қазақстан</text>
+<rect fill="#0b1329" height="170" rx="6" stroke="#22c55e" width="155" x="190" y="25"></rect>
+<text fill="#86efac" font-size="11" font-weight="bold" text-anchor="middle" x="267" y="48">ДАЛА ЗОНАСЫ</text>
+<text fill="#f8fafc" font-size="9" text-anchor="middle" x="267" y="68">28% территории</text>
+<text fill="#38bdf8" font-size="9" text-anchor="middle" x="267" y="90">Жауын: 200–300 мм</text>
+<text fill="#fde047" font-size="10" font-weight="bold" text-anchor="middle" x="267" y="115">Қара және қарақоңыр</text>
+<text fill="#cbd5e1" font-size="8" text-anchor="middle" x="267" y="140">Селеу, бетеге, бидай</text>
+<text fill="#94a3b8" font-size="8" text-anchor="middle" x="267" y="160">Басты астық белдеуі</text>
+<rect fill="#0b1329" height="170" rx="6" stroke="#f59e0b" width="150" x="360" y="25"></rect>
+<text fill="#fbbf24" font-size="11" font-weight="bold" text-anchor="middle" x="435" y="48">ШӨЛЕЙТ ЗОНАСЫ</text>
+<text fill="#f8fafc" font-size="9" text-anchor="middle" x="435" y="68">14% территории</text>
+<text fill="#38bdf8" font-size="9" text-anchor="middle" x="435" y="90">Жауын: 180–200 мм</text>
+<text fill="#fed7aa" font-size="10" font-weight="bold" text-anchor="middle" x="435" y="115">Ашық қарақоңыр</text>
+<text fill="#cbd5e1" font-size="8" text-anchor="middle" x="435" y="140">Жусан, еркекшөп</text>
+<text fill="#fbbf24" font-size="8" text-anchor="middle" x="435" y="160">Вегетация: 160–170 күн</text>
+<rect fill="#0b1329" height="170" rx="6" stroke="#ef4444" width="150" x="525" y="25"></rect>
+<text fill="#f87171" font-size="11" font-weight="bold" text-anchor="middle" x="600" y="48">ШӨЛ ЗОНАСЫ</text>
+<text fill="#f8fafc" font-size="9" text-anchor="middle" x="600" y="68">44% территории</text>
+<text fill="#38bdf8" font-size="9" text-anchor="middle" x="600" y="90">Жауын: 100–150 мм</text>
+<text fill="#cbd5e1" font-size="10" font-weight="bold" text-anchor="middle" x="600" y="115">Қоңыр, сұрқоңыр</text>
+<text fill="#cbd5e1" font-size="8" text-anchor="middle" x="600" y="140">Сексеуіл, жүзгін, қосаяқ</text>
+<text fill="#f87171" font-size="8" text-anchor="middle" x="600" y="160">Сазды (Бетпақдала), Құмды</text>
+</svg>
+</div>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>2. Заповедники и эндемики Казахстана</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">В республике действуют <b class="text-cyan-300 font-bold">10 государственных природных заповедников</b> и <b class="text-cyan-300 font-bold">14 национальных парков</b>.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Эндемики:</b> Виды, обитающие строго в пределах определенного региона. Во флоре Казахстана насчитывается <b class="text-cyan-300 font-bold">730 эндемичных видов растений</b>!</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Главные заповедники:</b></li>
+</ul>
+<ol class="space-y-2 my-2.5 ml-6 list-none">
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">1.</span><b class="text-emerald-300 font-bold">Аксу-Жабаглы (1926 г.):</b> Старейший заповедник страны в Западном Тянь-Шане. Охраняются тюльпаны Грейга и Кауфмана, снежный барс.</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">2.</span><b class="text-emerald-300 font-bold">Коргалжынский заповедник:</b> Водно-болотные угодья в Тенгиз-Коргалжынской впадине. Севернейшее в мире место гнездования розового фламинго (ЮНЕСКО).</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">3.</span><b class="text-emerald-300 font-bold">Наурзумский заповедник:</b> Реликтовый островной сосновый бор посреди ковыльных степей.</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">4.</span><b class="text-emerald-300 font-bold">Маркакольский заповедник:</b> На Южном Алтае вокруг тектонического озера Маркаколь. Эндемичная рыба — ускуч (ленок).</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">5.</span><b class="text-emerald-300 font-bold">Устюртский заповедник:</b> Охраняет пустынную биоту чинков плато Устюрт и редчайшего дикого барана — устюртского муфлона.</li>
+</ol>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>🦅</span>
+<span>2-СЫЗБА: ЗАПОВЕДНИКИ И ЭНДЕМИКИ КАЗАХСТАНА</span>
+</span>
+<span class="text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono">10 Қорық • 730 эндемик өсімдік</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 220">
+<rect fill="#0b1329" height="180" rx="8" stroke="#1e293b" width="205" x="20" y="20"></rect>
+<text fill="#38bdf8" font-size="11" font-weight="bold" text-anchor="middle" x="122" y="45">АКСУ-ЖАБАГЛЫ (1926 г.)</text>
+<text fill="#34d399" font-size="10" font-weight="bold" text-anchor="middle" x="122" y="70">Первый заповедник РК</text>
+<text fill="#cbd5e1" font-size="9" text-anchor="middle" x="122" y="90">Батыс Тянь-Шань таулары</text>
+<line stroke="#1e293b" x1="40" x2="200" y1="105" y2="105"></line>
+<text fill="#f8fafc" font-size="9" x="122" y="130">Арқар, қар барысы</text>
+<text fill="#fde047" font-size="9" font-weight="bold" text-anchor="middle" x="122" y="150">Грейг және Кауфман қызғалдағы</text>
+<text fill="#94a3b8" font-size="8" text-anchor="middle" x="122" y="175">ЮНЕСКО биосфералық резерваты</text>
+<rect fill="#0b1329" height="180" rx="8" stroke="#1e293b" width="210" x="245" y="20"></rect>
+<text fill="#34d399" font-size="11" font-weight="bold" text-anchor="middle" x="350" y="45">КОРГАЛЖЫН И НАУРЫЗЫМ</text>
+<text fill="#f87171" font-size="10" font-weight="bold" text-anchor="middle" x="350" y="70">Қорғалжын: Қызғылт қоқиқаз</text>
+<text fill="#94a3b8" font-size="8" text-anchor="middle" x="350" y="88">Дүниежүзіндегі ең солтүстік ұясы</text>
+<line stroke="#1e293b" x1="265" x2="435" y1="105" y2="105"></line>
+<text fill="#34d399" font-size="10" font-weight="bold" text-anchor="middle" x="350" y="130">Наурызым: Қарағай орманы</text>
+<text fill="#cbd5e1" font-size="8" text-anchor="middle" x="350" y="148">Реликті далалық қарағай шоғыры</text>
+<text fill="#fbbf24" font-size="9" font-weight="bold" text-anchor="middle" x="350" y="175">ЮНЕСКО Бүкіләлемдік мұрасы</text>
+<rect fill="#0b1329" height="180" rx="8" stroke="#1e293b" width="205" x="475" y="20"></rect>
+<text fill="#f59e0b" font-size="11" font-weight="bold" text-anchor="middle" x="577" y="45">МАРКАКОЛЬ И УСТЮРТ</text>
+<text fill="#38bdf8" font-size="10" font-weight="bold" text-anchor="middle" x="577" y="70">Марқакөл: Оңтүстік Алтай</text>
+<text fill="#cbd5e1" font-size="8" text-anchor="middle" x="577" y="88">Эндемик балық: Үшкіл (ускуч)</text>
+<line stroke="#1e293b" x1="495" x2="660" y1="105" y2="105"></line>
+<text fill="#f59e0b" font-size="10" font-weight="bold" text-anchor="middle" x="577" y="130">Үстірт: Маңғыстау шөлі</text>
+<text fill="#cbd5e1" font-size="8" text-anchor="middle" x="577" y="148">Үстірт муфлоны, гепард, қарақұйрық</text>
+<text fill="#34d399" font-size="9" font-weight="bold" text-anchor="middle" x="577" y="175">730 эндемичных видов растений</text>
+</svg>
+</div>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>3. Четыре почвенные зоны равнин</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">На равнинах Казахстана выделяются <b class="text-cyan-300 font-bold">4 основные широтные зоны почв</b>:</li>
+</ul>
+<ol class="space-y-2 my-2.5 ml-6 list-none">
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">1.</span>Серые лесные почвы лесостепи (гумус 9–10%);</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">2.</span>Черноземы степной зоны (гумус 6–8%, зерновой пояс);</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">3.</span>Каштановые почвы полупустыни (гумус 3–4%);</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">4.</span>Бурые и серо-бурые почвы пустынь (гумус 1–2%, высокая засоленность).</li>
+</ol>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>🌱</span>
+<span>3-СЫЗБА: 4 ПОЧВЕННЫЕ ЗОНЫ РАВНИН КАЗАХСТАНА</span>
+</span>
+<span class="text-[10px] bg-purple-500/10 text-purple-300 px-2.5 py-0.5 rounded-full border border-purple-500/20 font-mono">Сұр топырақ • Қара топырақ • Қарақоңыр • Сұрқоңыр</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 220">
+<rect fill="#1e293b" height="35" rx="4" stroke="#64748b" width="310" x="30" y="30"></rect>
+<text fill="#f8fafc" font-size="10" font-weight="bold" x="45" y="52">1. Сұр топырақ (Орманды дала):</text>
+<text fill="#34d399" font-size="9" text-anchor="end" x="320" y="52">Гумус: 9–10%</text>
+<rect fill="#0f172a" height="35" rx="4" stroke="#10b981" width="310" x="30" y="75"></rect>
+<text fill="#86efac" font-size="10" font-weight="bold" x="45" y="97">2. Қара топырақ (Дала зонасы):</text>
+<text fill="#fde047" font-size="9" text-anchor="end" x="320" y="97">Гумус: 6–8% (құнарлы)</text>
+<rect fill="#78350f" fill-opacity="0.4" height="35" rx="4" stroke="#b45309" width="310" x="30" y="120"></rect>
+<text fill="#fed7aa" font-size="10" font-weight="bold" x="45" y="142">3. Қарақоңыр топырақ (Шөлейт):</text>
+<text fill="#fbbf24" font-size="9" text-anchor="end" x="320" y="142">Гумус: 3–4%</text>
+<rect fill="#a16207" fill-opacity="0.3" height="35" rx="4" stroke="#eab308" width="310" x="30" y="165"></rect>
+<text fill="#fef08a" font-size="10" font-weight="bold" x="45" y="187">4. Сұрқоңыр және сұр топырақ (Шөл):</text>
+<text fill="#ef4444" font-size="9" text-anchor="end" x="320" y="187">Гумус: 1–2% (сортаңды)</text>
+<!-- Side card -->
+<rect fill="#0b1329" height="175" rx="8" stroke="#1e293b" width="315" x="365" y="25"></rect>
+<text fill="#38bdf8" font-size="11" font-weight="bold" text-anchor="middle" x="522" y="50">ШИРОТНАЯ ЗОНАЛЬНОСТЬ ПОЧВ</text>
+<text fill="#f8fafc" font-size="9" x="385" y="80">• Плодородие почв падает с севера на юг</text>
+<text fill="#f8fafc" font-size="9" x="385" y="105">• Причина: уменьшение осадков и рост испарения</text>
+<text fill="#f8fafc" font-size="9" x="385" y="130">• Черноземный пояс: СКО, Акмолинская, Костанайская</text>
+<text fill="#fde047" font-size="9" font-weight="bold" x="385" y="155">• Солонцы и солончаки типичны для пустынь</text>
+</svg>
+</div>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>4. Генетические типы пустынь</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Глинистые пустыни:</b> Плато <b class="text-cyan-300 font-bold">Бетпакдала</b> («Голодная степь»), изобилующее такырами.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Песчаные пустыни:</b> <b class="text-cyan-300 font-bold">Кызылкум, Мойынкум, Сарыесик-Атырау, Нарынские пески</b>.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Каменистые пустыни:</b> Плато Устюрт и щебнистые пустыни Прибалхашья.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Саксаул:</b> Древесное растение пустынь с корневой системой до 15–20 м, скрепляющее пески.</li>
+</ul>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>🏜️</span>
+<span>4-СЫЗБА: ТИПЫ ПУСТЫНЬ КАЗАХСТАНА</span>
+</span>
+<span class="text-[10px] bg-amber-500/10 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/20 font-mono">Сазды • Құмды • Тасты • Сортаңды</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 220">
+<!-- 3 Desert types cards -->
+<rect fill="#0b1329" height="170" rx="8" stroke="#f59e0b" width="200" x="25" y="25"></rect>
+<text fill="#fde047" font-size="11" font-weight="bold" text-anchor="middle" x="125" y="50">ГЛИНИСТЫЕ ПУСТЫНИ</text>
+<rect fill="#ca8a04" fill-opacity="0.3" height="30" rx="4" width="170" x="40" y="65"></rect>
+<text fill="#f8fafc" font-size="10" font-weight="black" text-anchor="middle" x="125" y="85">БЕТПАҚДАЛА</text>
+<text fill="#cbd5e1" font-size="9" text-anchor="middle" x="125" y="115">Үстірт тақталарында</text>
+<text fill="#94a3b8" font-size="8" text-anchor="middle" x="125" y="135">Тақырлар түзіледі</text>
+<text fill="#fbbf24" font-size="9" text-anchor="middle" x="125" y="165">Жусан, бұйырғын</text>
+<rect fill="#0b1329" height="170" rx="8" stroke="#f97316" width="200" x="250" y="25"></rect>
+<text fill="#fb923c" font-size="11" font-weight="bold" text-anchor="middle" x="350" y="50">ПЕСЧАНЫЕ ПУСТЫНИ</text>
+<rect fill="#ea580c" fill-opacity="0.3" height="30" rx="4" width="170" x="265" y="65"></rect>
+<text fill="#f8fafc" font-size="10" font-weight="black" text-anchor="middle" x="350" y="85">ҚЫЗЫЛҚҰМ, МОЙЫНҚҰМ</text>
+<text fill="#cbd5e1" font-size="9" text-anchor="middle" x="350" y="115">Сарыесікатырау, Нарын</text>
+<text fill="#94a3b8" font-size="8" text-anchor="middle" x="350" y="135">Шағылдар, бархандар</text>
+<text fill="#fb923c" font-size="9" text-anchor="middle" x="350" y="165">Сексеуіл, қосаяқ</text>
+<rect fill="#0b1329" height="170" rx="8" stroke="#64748b" width="200" x="475" y="25"></rect>
+<text fill="#cbd5e1" font-size="11" font-weight="bold" text-anchor="middle" x="575" y="50">КАМЕНИСТЫЕ ПУСТЫНИ</text>
+<rect fill="#475569" fill-opacity="0.3" height="30" rx="4" width="170" x="490" y="65"></rect>
+<text fill="#f8fafc" font-size="10" font-weight="black" text-anchor="middle" x="575" y="85">ҮСТІРТ ЧИНКТЕРІ</text>
+<text fill="#cbd5e1" font-size="9" text-anchor="middle" x="575" y="115">Балқаш маңы гамадалары</text>
+<text fill="#94a3b8" font-size="8" text-anchor="middle" x="575" y="135">Үгілген тас қиыршықтары</text>
+<text fill="#cbd5e1" font-size="9" text-anchor="middle" x="575" y="165">Сирек эфемерлер</text>
+</svg>
+</div>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>5. Отличие заповедников от национальных парков</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Заповедники:</b> Объекты со строгим режимом охраны. Любая хозяйственная деятельность, строительство и туризм категорически запрещены.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Национальные природные парки:</b> Особо охраняемые территории, где охрана природы сочетается с организованным экологическим туризмом и отдыхом населения (Бурабай, Иле-Алатау, Баянаул, Чарын).</li>
+</ul>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>🏕️</span>
+<span>5-СЫЗБА: ЗАПОВЕДНИКИ И НАЦИОНАЛЬНЫЕ ПАРКИ</span>
+</span>
+<span class="text-[10px] bg-emerald-500/10 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-500/20 font-mono">Қорық (Тиым салынған) vs Саябақ (Туризмге ашық)</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 220">
+<rect fill="#0b1329" height="170" rx="8" stroke="#ef4444" width="310" x="25" y="25"></rect>
+<text fill="#f87171" font-size="12" font-weight="bold" text-anchor="middle" x="180" y="52">ГОСУДАРСТВЕННЫЕ ЗАПОВЕДНИКИ (10)</text>
+<text fill="#ef4444" font-size="10" font-weight="black" text-anchor="middle" x="180" y="75">СТРОГИЙ РЕЖИМ ОХРАНЫ</text>
+<line stroke="#1e293b" x1="45" x2="315" y1="90" y2="90"></line>
+<text fill="#cbd5e1" font-size="9" x="50" y="115">• Запрещена любая хозяйственная деятельность</text>
+<text fill="#cbd5e1" font-size="9" x="50" y="135">• Только научные экологические наблюдения</text>
+<text fill="#cbd5e1" font-size="9" x="50" y="155">• Аксу-Жабаглы, Коргалжын, Маркаколь...</text>
+<rect fill="#0b1329" height="170" rx="8" stroke="#10b981" width="310" x="365" y="25"></rect>
+<text fill="#34d399" font-size="12" font-weight="bold" text-anchor="middle" x="520" y="52">НАЦИОНАЛЬНЫЕ ПАРКИ (14)</text>
+<text fill="#34d399" font-size="10" font-weight="black" text-anchor="middle" x="520" y="75">ТУРИЗМ И РЕКРЕАЦИЯ РАЗРЕШЕНЫ</text>
+<line stroke="#1e293b" x1="385" x2="655" y1="90" y2="90"></line>
+<text fill="#cbd5e1" font-size="9" x="390" y="115">• Экотуризм, размещение кемпингов и троп</text>
+<text fill="#cbd5e1" font-size="9" x="390" y="135">• Сочетание строгой охраны и туристских зон</text>
+<text fill="#cbd5e1" font-size="9" x="390" y="155">• Бурабай, Иле-Алатау, Баянаул, Чарын...</text>
+</svg>
+</div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: COMMON EXAM TRAPS & PITFALLS (if available) -->
+    <section class="p-6 sm:p-7 rounded-3xl bg-amber-500/5 border border-amber-500/20 shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-amber-500/20 pb-3">
+        <h3 class="text-base sm:text-lg font-black text-amber-300 flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center text-sm font-black">⚠️</span>
+          <span>Экзаменационные ловушки и нюансы ЕНТ</span>
+        </h3>
+        <span class="text-xs text-amber-400/80 font-bold">
+          Обратите внимание
+        </span>
+      </div>
+
+      <div class="space-y-2.5 text-xs sm:text-sm text-slate-200">
+        <p class="leading-relaxed flex items-start space-x-2"><span class="text-amber-400 shrink-0 mt-0.5">⚠️</span><span>⚠️ Назар аударыңыз: Қазақстан биосферасы бойынша сұрақтар ҰБТ-ның контексттік тесттерінде жиі кездеседі.</span></p>
+      </div>
+    </section>
+
+    <!-- SECTION 4: END-OF-LESSON TEST -->
+    <section class="p-6 sm:p-8 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-6">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-brand-500/10 border border-brand-500/20 text-brand-400 flex items-center justify-center text-sm font-black">3</span>
+          <div>
+            <h3 class="text-base sm:text-lg font-black text-white">
+              Итоговый тест по теме
+            </h3>
+            <p class="text-xs text-slate-400 mt-0.5">
+              Проходной балл: 80% • Награда: +30 XP
+            </p>
+          </div>
+        </div>
+
+        <div id="testScoreBadge" class="hidden px-3 py-1 rounded-xl bg-space-850 border border-slate-700 text-xs font-bold text-amber-400 font-mono">
+          0%
+        </div>
+      </div>
+
+      <!-- Test Questions Container -->
+      <div id="testQuestionsList" class="space-y-6">
+        <!-- Dynamically populated test questions via JS -->
+      </div>
+
+      <!-- Test Submit & Score Action Bar -->
+      <div class="pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="text-xs text-slate-400" id="testProgressInfo">
+          Ответьте на все вопросы и проверьте свои знания.
+        </div>
+        <div class="flex items-center space-x-2.5 w-full sm:w-auto">
+          <button id="btnSubmitTest" onclick="submitLessonTest()" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-brand-500 hover:from-amber-400 hover:to-brand-400 text-space-950 font-black text-xs sm:text-sm shadow-md transition flex items-center justify-center space-x-2">
+            <span>🏁</span>
+            <span>Проверить ответы</span>
+          </button>
+          <button id="btnResetTest" onclick="resetLessonTest()" class="hidden px-4 py-2.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-bold transition flex items-center justify-center space-x-1">
+            <span>🔄</span>
+            <span>Пересдать</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- BOTTOM NAVIGATION & FOOTER -->
+    <div class="p-6 rounded-3xl bg-space-900 border border-slate-800 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleLessonComplete()" class="px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-400 text-space-950 font-black text-xs sm:text-sm shadow-md transition flex items-center space-x-2">
+          <span>✓</span>
+          <span id="lblBottomComplete">Отметить как прочитанное (+30 XP)</span>
+        </button>
+      </div>
+
+      <div class="flex items-center space-x-2 text-xs font-bold">
+        <a href="lesson_11_ru.html" class="px-4 py-2 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition">← Предыдущий</a>
+        <a href="../index.html?lang=ru#section-sabaktar_reading" class="px-4 py-2 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition">
+          Каталог уроков
+        </a>
+        <a href="lesson_13_ru.html" class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-space-950 transition font-black">Следующий →</a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- LESSON SCRIPT ENGINE -->
+  <script>
+    const lessonData = {"id": 12, "title_kz": "12-сабақ. Қазақстан биосферасы", "title_ru": "12 урок. Биосфера Казахстана", "time": "8 мин", "tags": ["Қазақстан биосферасы", "Биосфера Казахстана"], "terms": [{"kz": "Орманды дала және дала", "ru": "Лесостепь и степь", "desc_kz": "Қазақстанның солтүстігіндегі аса құнарлы қара және қарақоңыр топырақты басты егіншілік аймағы.", "desc_ru": "Северные природные зоны Казахстана с плодородными черноземами, главные житницы страны."}, {"kz": "Қара топырақ (Чернозем)", "ru": "Чернозем", "desc_kz": "Құрамында 6-9% қарашірігі (гумусы) бар, өте құнарлы құрылымды топырақ типі.", "desc_ru": "Высокоплодородная почва степной зоны с мощным гумусовым горизонтом."}, {"kz": "Шөл және шөлейт", "ru": "Пустыня и полупустыня", "desc_kz": "Қазақстан аумағының 60%-дан астамын алып жатқан қуаң сұр және құба топырақты зоналар.", "desc_ru": "Аридные ландшафты, занимающие более половины площади республики (сероземы и бурые почвы)."}, {"kz": "Биіктік белдеулік", "ru": "Высотная поясность", "desc_kz": "Таулы өңірлерде биіктік артқан сайын табиғат кешендерінің (шөлден мәңгі қарға дейін) заңды алмасуы.", "desc_ru": "Закономерная смена природных комплексов в горах от подножия к вершинам."}, {"kz": "Ақсу-Жабағылы", "ru": "Аксу-Джабаглы", "desc_kz": "1926 жылы Қазақстанда құрылған ең көне тұңғыш мемлекеттік қорық (Талас Алатауы).", "desc_ru": "Первый и старейший государственный природный заповедник Казахстана, основанный в 1926 году."}], "theory_kz": "<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>1. Қазақстанның табиғат зоналары</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Қазақстан аумағында солтүстіктен оңтүстікке қарай <b class=\"text-cyan-300 font-bold\">4 негізгі табиғат зонасы</b> алмасады:</li>\n</ul>\n<ol class=\"space-y-3 my-2.5 ml-6 list-none\"><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Орманды дала зонасы (аумақтың 2,4%-ы):</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Еліміздің ең солтүстігінде (СҚО) орналасқан, жауын-шашыны ең мол жазық (400–500 мм).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Сұр орман топырағы мен сілтісізденген қара топырақ таралған, гумус үлесі 9–10%-ға жетеді.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Ағаш түрлері: қайың мен көктерек шоқтары («колки»).</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Дала зонасы (аумақтың 28%-ы):</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Еліміздің негізгі егін шаруашылығы мен астық өндіретін басты белдеуі (Ақмола, Қостанай, Павлодар).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Топырағы: кәдімгі және оңтүстіктік қара топырақ, құнарлы қарақоңыр топырақ.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Өсімдіктері: селеу, бетеге, бидайық.</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Шөлейт (жартылай шөл) зонасы (аумақтың 14%-ы):</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Дала мен шөл арасындағы өтпелі белдеу. Жауын-шашын 180–200 мм.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Вегетациялық кезеңі 160–170 күнге дейін созылады.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Ашық қарақоңыр топырақ, жусан мен еркекшөп басым.</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">4.</span><b class=\"text-emerald-300 font-bold\">Шөл зонасы (аумақтың 44%-ы):</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Қазақстанның ең үлкен табиғат зонасы. Жауын-шашын 100–150 мм ғана.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Сазды, құмды, тасты шөлдерге бөлінеді. Түнгі кеміргіштер (қосаяқ, құмтышқан), сексеуіл, жүзгін өседі.</li>\n</ul></li></ol>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🌾</span>\n<span>1-СЫЗБА: ҚАЗАҚСТАННЫҢ ТАБИҒАТ ЗОНАЛАРЫ</span>\n</span>\n<span class=\"text-[10px] bg-emerald-500/10 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-500/20 font-mono\">Орманды дала • Дала • Шөлейт • Шөл</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<rect fill=\"#0b1329\" height=\"170\" rx=\"6\" stroke=\"#10b981\" width=\"150\" x=\"25\" y=\"25\"></rect>\n<text fill=\"#34d399\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"100\" y=\"48\">ОРМАНДЫ ДАЛА</text>\n<text fill=\"#f8fafc\" font-size=\"9\" text-anchor=\"middle\" x=\"100\" y=\"68\">Аумақтың 2,4%-ы</text>\n<text fill=\"#38bdf8\" font-size=\"9\" text-anchor=\"middle\" x=\"100\" y=\"90\">Жауын: 400–500 мм</text>\n<text fill=\"#fde047\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"100\" y=\"115\">Қара топырақ (9–10%)</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\" x=\"100\" y=\"140\">Қайың, көктерек шоқтары</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"100\" y=\"160\">Солтүстік Қазақстан</text>\n<rect fill=\"#0b1329\" height=\"170\" rx=\"6\" stroke=\"#22c55e\" width=\"155\" x=\"190\" y=\"25\"></rect>\n<text fill=\"#86efac\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"267\" y=\"48\">ДАЛА ЗОНАСЫ</text>\n<text fill=\"#f8fafc\" font-size=\"9\" text-anchor=\"middle\" x=\"267\" y=\"68\">Аумақтың 28%-ы</text>\n<text fill=\"#38bdf8\" font-size=\"9\" text-anchor=\"middle\" x=\"267\" y=\"90\">Жауын: 200–300 мм</text>\n<text fill=\"#fde047\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"267\" y=\"115\">Қара және қарақоңыр</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\" x=\"267\" y=\"140\">Селеу, бетеге, бидай</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"267\" y=\"160\">Басты астық белдеуі</text>\n<rect fill=\"#0b1329\" height=\"170\" rx=\"6\" stroke=\"#f59e0b\" width=\"150\" x=\"360\" y=\"25\"></rect>\n<text fill=\"#fbbf24\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"435\" y=\"48\">ШӨЛЕЙТ ЗОНАСЫ</text>\n<text fill=\"#f8fafc\" font-size=\"9\" text-anchor=\"middle\" x=\"435\" y=\"68\">Аумақтың 14%-ы</text>\n<text fill=\"#38bdf8\" font-size=\"9\" text-anchor=\"middle\" x=\"435\" y=\"90\">Жауын: 180–200 мм</text>\n<text fill=\"#fed7aa\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"435\" y=\"115\">Ашық қарақоңыр</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\" x=\"435\" y=\"140\">Жусан, еркекшөп</text>\n<text fill=\"#fbbf24\" font-size=\"8\" text-anchor=\"middle\" x=\"435\" y=\"160\">Вегетация: 160–170 күн</text>\n<rect fill=\"#0b1329\" height=\"170\" rx=\"6\" stroke=\"#ef4444\" width=\"150\" x=\"525\" y=\"25\"></rect>\n<text fill=\"#f87171\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"600\" y=\"48\">ШӨЛ ЗОНАСЫ</text>\n<text fill=\"#f8fafc\" font-size=\"9\" text-anchor=\"middle\" x=\"600\" y=\"68\">Аумақтың 44%-ы</text>\n<text fill=\"#38bdf8\" font-size=\"9\" text-anchor=\"middle\" x=\"600\" y=\"90\">Жауын: 100–150 мм</text>\n<text fill=\"#cbd5e1\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"600\" y=\"115\">Қоңыр, сұрқоңыр</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\" x=\"600\" y=\"140\">Сексеуіл, жүзгін, қосаяқ</text>\n<text fill=\"#f87171\" font-size=\"8\" text-anchor=\"middle\" x=\"600\" y=\"160\">Сазды (Бетпақдала), Құмды</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>2. Қазақстан қорықтары және эндемиктер</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Қазақстанда <b class=\"text-cyan-300 font-bold\">10 мемлекеттік табиғи қорық</b> және <b class=\"text-cyan-300 font-bold\">14 ұлттық табиғи саябақ</b> бар.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Эндемиктер:</b> Тек белгілі бір шағын аймақта ғана кездесетін түрлер. Қазақстан флорасында <b class=\"text-cyan-300 font-bold\">730 эндемик өсімдік түрі</b> өседі!</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Басты қорықтар:</b></li>\n</ul>\n<ol class=\"space-y-2 my-2.5 ml-6 list-none\">\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Ақсу-Жабағылы (1926 ж.):</b> Қазақстандағы ең көне әрі алғашқы қорық. Батыс Тянь-Шаньда орналасқан, Грейг және Кауфман қызғалдақтары, қар барысы, таутеке қорғалады.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Қорғалжын қорығы:</b> Ақмола мен Қарағанды облыстарындағы сулы-батпақты алап. Мұнда дүниежүзіндегі ең солтүстікке ұя салатын қызғылт қоқиқаздар мекендейді.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Наурызым қорығы:</b> Қостанай облысындағы құм үстіндегі реликті реликті қарағай шоқтары мен жыртқыш құстар.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">4.</span><b class=\"text-emerald-300 font-bold\">Марқакөл қорығы:</b> Оңтүстік Алтайдағы аттас терең тектоникалық көлде орналасқан. Көлдің эндемик балығы — үскіл (ускуч).</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">5.</span><b class=\"text-emerald-300 font-bold\">Үстірт қорығы:</b> Маңғыстау облысындағы шөлді ландшафт пен Қызыл кітапқа енген үстірт муфлонын (жабайы тау қойы) сақтайды.</li>\n</ol>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🦅</span>\n<span>2-СЫЗБА: ҚАЗАҚСТАННЫҢ ТАБИҒИ ҚОРЫҚТАРЫ МЕН ЭНДЕМИКТЕРІ</span>\n</span>\n<span class=\"text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono\">10 Қорық • 730 эндемик өсімдік</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"205\" x=\"20\" y=\"20\"></rect>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"122\" y=\"45\">АҚСУ-ЖАБАҒЫЛЫ (1926 ж.)</text>\n<text fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"122\" y=\"70\">ҚР ең алғашқы қорығы</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" text-anchor=\"middle\" x=\"122\" y=\"90\">Батыс Тянь-Шань таулары</text>\n<line stroke=\"#1e293b\" x1=\"40\" x2=\"200\" y1=\"105\" y2=\"105\"></line>\n<text fill=\"#f8fafc\" font-size=\"9\" x=\"122\" y=\"130\">Арқар, қар барысы</text>\n<text fill=\"#fde047\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"122\" y=\"150\">Грейг және Кауфман қызғалдағы</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"122\" y=\"175\">ЮНЕСКО биосфералық резерваты</text>\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"210\" x=\"245\" y=\"20\"></rect>\n<text fill=\"#34d399\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"45\">ҚОРҒАЛЖЫН ЖӘНЕ НАУРЫЗЫМ</text>\n<text fill=\"#f87171\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"70\">Қорғалжын: Қызғылт қоқиқаз</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"350\" y=\"88\">Дүниежүзіндегі ең солтүстік ұясы</text>\n<line stroke=\"#1e293b\" x1=\"265\" x2=\"435\" y1=\"105\" y2=\"105\"></line>\n<text fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"130\">Наурызым: Қарағай орманы</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\" x=\"350\" y=\"148\">Реликті далалық қарағай шоғыры</text>\n<text fill=\"#fbbf24\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"175\">ЮНЕСКО Бүкіләлемдік мұрасы</text>\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"205\" x=\"475\" y=\"20\"></rect>\n<text fill=\"#f59e0b\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"577\" y=\"45\">МАРҚАКӨЛ ЖӘНЕ ҮСТІРТ</text>\n<text fill=\"#38bdf8\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"577\" y=\"70\">Марқакөл: Оңтүстік Алтай</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\" x=\"577\" y=\"88\">Эндемик балық: Үшкіл (ускуч)</text>\n<line stroke=\"#1e293b\" x1=\"495\" x2=\"660\" y1=\"105\" y2=\"105\"></line>\n<text fill=\"#f59e0b\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"577\" y=\"130\">Үстірт: Маңғыстау шөлі</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\" x=\"577\" y=\"148\">Үстірт муфлоны, гепард, қарақұйрық</text>\n<text fill=\"#34d399\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"577\" y=\"175\">730 эндемик өсімдік</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>3. Жазықтардағы 4 топырақ зонасы</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Қазақстан жазықтарында солтүстіктен оңтүстікке қарай <b class=\"text-cyan-300 font-bold\">4 негізгі топырақ зонасы</b> алмасады:</li>\n</ul>\n<ol class=\"space-y-2 my-2.5 ml-6 list-none\">\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Орманды даланың сұр топырағы</b> (гумус 9–10%);</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Даланың қара топырағы (чернозем)</b> (гумус 6–8%, ең құнарлы);</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Шөлейттің қарақоңыр топырағы</b> (гумус 3–4%);</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">4.</span><b class=\"text-emerald-300 font-bold\">Шөлдің қоңыр және сұрқоңыр топырағы</b> (гумус 1–2%, сортаңдар мен сорлар көп).</li>\n</ol>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🌱</span>\n<span>3-СЫЗБА: ҚАЗАҚСТАН ЖАЗЫҚТАРЫНЫҢ 4 НЕГІЗГІ ТОПЫРАҚ ЗОНАСЫ</span>\n</span>\n<span class=\"text-[10px] bg-purple-500/10 text-purple-300 px-2.5 py-0.5 rounded-full border border-purple-500/20 font-mono\">Сұр топырақ • Қара топырақ • Қарақоңыр • Сұрқоңыр</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<rect fill=\"#1e293b\" height=\"35\" rx=\"4\" stroke=\"#64748b\" width=\"310\" x=\"30\" y=\"30\"></rect>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" x=\"45\" y=\"52\">1. Сұр топырақ (Орманды дала):</text>\n<text fill=\"#34d399\" font-size=\"9\" text-anchor=\"end\" x=\"320\" y=\"52\">Гумус: 9–10%</text>\n<rect fill=\"#0f172a\" height=\"35\" rx=\"4\" stroke=\"#10b981\" width=\"310\" x=\"30\" y=\"75\"></rect>\n<text fill=\"#86efac\" font-size=\"10\" font-weight=\"bold\" x=\"45\" y=\"97\">2. Қара топырақ (Дала зонасы):</text>\n<text fill=\"#fde047\" font-size=\"9\" text-anchor=\"end\" x=\"320\" y=\"97\">Гумус: 6–8% (құнарлы)</text>\n<rect fill=\"#78350f\" fill-opacity=\"0.4\" height=\"35\" rx=\"4\" stroke=\"#b45309\" width=\"310\" x=\"30\" y=\"120\"></rect>\n<text fill=\"#fed7aa\" font-size=\"10\" font-weight=\"bold\" x=\"45\" y=\"142\">3. Қарақоңыр топырақ (Шөлейт):</text>\n<text fill=\"#fbbf24\" font-size=\"9\" text-anchor=\"end\" x=\"320\" y=\"142\">Гумус: 3–4%</text>\n<rect fill=\"#a16207\" fill-opacity=\"0.3\" height=\"35\" rx=\"4\" stroke=\"#eab308\" width=\"310\" x=\"30\" y=\"165\"></rect>\n<text fill=\"#fef08a\" font-size=\"10\" font-weight=\"bold\" x=\"45\" y=\"187\">4. Сұрқоңыр және сұр топырақ (Шөл):</text>\n<text fill=\"#ef4444\" font-size=\"9\" text-anchor=\"end\" x=\"320\" y=\"187\">Гумус: 1–2% (сортаңды)</text>\n<!-- Side card -->\n<rect fill=\"#0b1329\" height=\"175\" rx=\"8\" stroke=\"#1e293b\" width=\"315\" x=\"365\" y=\"25\"></rect>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"522\" y=\"50\">ТОПЫРАҚТЫҢ ЕНДІК БӨЛІНІСІ</text>\n<text fill=\"#f8fafc\" font-size=\"9\" x=\"385\" y=\"80\">• Солтүстіктен оңтүстікке қарай құнарлылық кемиді</text>\n<text fill=\"#f8fafc\" font-size=\"9\" x=\"385\" y=\"105\">• Себебі: ылғал азайып, буланушылық артады</text>\n<text fill=\"#f8fafc\" font-size=\"9\" x=\"385\" y=\"130\">• Қара топырақты аймақ: СҚО, Ақмола, Қостанай</text>\n<text fill=\"#fde047\" font-size=\"9\" font-weight=\"bold\" x=\"385\" y=\"155\">• Сортаң және сор топырақтар шөлде басым</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>4. Шөлдердің генетикалық типтері</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Сазды шөлдер:</b> <b class=\"text-cyan-300 font-bold\">Бетпақдала</b> үстірті (Орталық Қазақстан), құрғақ балшықты тақырлар тән.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Құмды шөлдер:</b> <b class=\"text-cyan-300 font-bold\">Қызылқұм, Мойынқұм, Сарыесікатырау, Нарын құмдары</b>. Жел үрлеуінен бархандар мен шағылдар пайда болады.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Тасты шөлдер:</b> Үстірт платосының шеттері (чинктер) мен Балқаш маңындағы тасты төбелер.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Сексеуіл (Saxaul):</b> Шөлде өсетін, тамыры 15–20 метр тереңге кететін ерекше ағаш тектес өсімдік (шөл орманы).</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🏜️</span>\n<span>4-СЫЗБА: ҚАЗАҚСТАН ШӨЛДЕРІНІҢ ТҮРЛЕРІ</span>\n</span>\n<span class=\"text-[10px] bg-amber-500/10 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/20 font-mono\">Сазды • Құмды • Тасты • Сортаңды</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<!-- 3 Desert types cards -->\n<rect fill=\"#0b1329\" height=\"170\" rx=\"8\" stroke=\"#f59e0b\" width=\"200\" x=\"25\" y=\"25\"></rect>\n<text fill=\"#fde047\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"125\" y=\"50\">САЗДЫ ШӨЛДЕР</text>\n<rect fill=\"#ca8a04\" fill-opacity=\"0.3\" height=\"30\" rx=\"4\" width=\"170\" x=\"40\" y=\"65\"></rect>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"black\" text-anchor=\"middle\" x=\"125\" y=\"85\">БЕТПАҚДАЛА</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" text-anchor=\"middle\" x=\"125\" y=\"115\">Үстірт тақталарында</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"125\" y=\"135\">Тақырлар түзіледі</text>\n<text fill=\"#fbbf24\" font-size=\"9\" text-anchor=\"middle\" x=\"125\" y=\"165\">Жусан, бұйырғын</text>\n<rect fill=\"#0b1329\" height=\"170\" rx=\"8\" stroke=\"#f97316\" width=\"200\" x=\"250\" y=\"25\"></rect>\n<text fill=\"#fb923c\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"50\">ҚҰМДЫ ШӨЛДЕР</text>\n<rect fill=\"#ea580c\" fill-opacity=\"0.3\" height=\"30\" rx=\"4\" width=\"170\" x=\"265\" y=\"65\"></rect>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"black\" text-anchor=\"middle\" x=\"350\" y=\"85\">ҚЫЗЫЛҚҰМ, МОЙЫНҚҰМ</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" text-anchor=\"middle\" x=\"350\" y=\"115\">Сарыесікатырау, Нарын</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"350\" y=\"135\">Шағылдар, бархандар</text>\n<text fill=\"#fb923c\" font-size=\"9\" text-anchor=\"middle\" x=\"350\" y=\"165\">Сексеуіл, қосаяқ</text>\n<rect fill=\"#0b1329\" height=\"170\" rx=\"8\" stroke=\"#64748b\" width=\"200\" x=\"475\" y=\"25\"></rect>\n<text fill=\"#cbd5e1\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"575\" y=\"50\">ТАСТЫ ШӨЛДЕР</text>\n<rect fill=\"#475569\" fill-opacity=\"0.3\" height=\"30\" rx=\"4\" width=\"170\" x=\"490\" y=\"65\"></rect>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"black\" text-anchor=\"middle\" x=\"575\" y=\"85\">ҮСТІРТ ЧИНКТЕРІ</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" text-anchor=\"middle\" x=\"575\" y=\"115\">Балқаш маңы гамадалары</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"575\" y=\"135\">Үгілген тас қиыршықтары</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" text-anchor=\"middle\" x=\"575\" y=\"165\">Сирек эфемерлер</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>5. Қорықтар мен Ұлттық саябақтардың айырмашылығы</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Қорықтар (Заповедники):</b> Шаруашылық әрекетке толық тыйым салынған, қатаң режимді табиғат қорғау мекемесі. Туристерге кіруге болмайды, тек ғалымдар зерттеу жүргізеді.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Ұлттық саябақтар (Национальные парки):</b> Табиғатты қорғаумен қатар, экологиялық туризмге, демалушылардың келуіне рұқсат етілетін рекреациялық аймақтар (Бурабай, Баянауыл, Іле Алатауы, Шарын, Көлсай).</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🏕️</span>\n<span>5-СЫЗБА: ҚОРЫҚТАР МЕН ҰЛТТЫҚ САЯБАҚТАРДЫҢ АЙЫРМАШЫЛЫҒЫ</span>\n</span>\n<span class=\"text-[10px] bg-emerald-500/10 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-500/20 font-mono\">Қорық (Тиым салынған) vs Саябақ (Туризмге ашық)</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<rect fill=\"#0b1329\" height=\"170\" rx=\"8\" stroke=\"#ef4444\" width=\"310\" x=\"25\" y=\"25\"></rect>\n<text fill=\"#f87171\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"180\" y=\"52\">МЕМЛЕКЕТТІК ҚОРЫҚТАР (10)</text>\n<text fill=\"#ef4444\" font-size=\"10\" font-weight=\"black\" text-anchor=\"middle\" x=\"180\" y=\"75\">ҚАТАҢ РЕЖИМ: ШАРУАШЫЛЫҚҚА ТИЫМ САЛЫНҒАН</text>\n<line stroke=\"#1e293b\" x1=\"45\" x2=\"315\" y1=\"90\" y2=\"90\"></line>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"50\" y=\"115\">• Туристер мен келушілерге кіруге болмайды</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"50\" y=\"135\">• Тек ғылыми зерттеулер жүргізіледі</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"50\" y=\"155\">• Ақсу-Жабағылы, Қорғалжын, Марқакөл...</text>\n<rect fill=\"#0b1329\" height=\"170\" rx=\"8\" stroke=\"#10b981\" width=\"310\" x=\"365\" y=\"25\"></rect>\n<text fill=\"#34d399\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"520\" y=\"52\">ҰЛТТЫҚ ТАБИҒИ САЯБАҚТАР (14)</text>\n<text fill=\"#34d399\" font-size=\"10\" font-weight=\"black\" text-anchor=\"middle\" x=\"520\" y=\"75\">ТУРИЗМ МЕН РЕКРЕАЦИЯҒА РҰҚСАТ ЕТІЛЕДІ</text>\n<line stroke=\"#1e293b\" x1=\"385\" x2=\"655\" y1=\"90\" y2=\"90\"></line>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"390\" y=\"115\">• Экологиялық туризм, демалыс орындары</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"390\" y=\"135\">• Табиғатты қорғау аймақтарымен қатар жүреді</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"390\" y=\"155\">• Бурабай, Іле Алатауы, Баянауыл, Шарын...</text>\n</svg>\n</div>", "theory_ru": "<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>1. Природные зоны Казахстана</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">На территории Казахстана с севера на юг последовательно сменяются <b class=\"text-cyan-300 font-bold\">4 природные зоны</b>:</li>\n</ul>\n<ol class=\"space-y-3 my-2.5 ml-6 list-none\"><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Лесостепная зона (2,4% территории):</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Самый север страны (СКО). Максимальное для равнин увлажнение (400–500 мм).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Серые лесные и выщелоченные черноземы с рекордным гумусом до 9–10%.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Березово-осиновые рощи («колки»).</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Степная зона (28% территории):</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Главная житница страны (Акмолинская, Костанайская, Павлодарская области).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Черноземы и темно-каштановые почвы, ковыльно-типчаковые сообщества.</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Полупустынная зона (14% территории):</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Переходная полоса. Вегетационный период длится 160–170 дней.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Светло-каштановые почвы, полынь и житняк.</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">4.</span><b class=\"text-emerald-300 font-bold\">Пустынная зона (44% территории):</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Самая обширная зона. Осадков всего 100–150 мм.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Глинистые, песчаные и каменистые пустыни. Обитают тушканчики, песчанки, растет саксаул.</li>\n</ul></li></ol>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🌾</span>\n<span>1-СЫЗБА: ПРИРОДНЫЕ ЗОНЫ КАЗАХСТАНА</span>\n</span>\n<span class=\"text-[10px] bg-emerald-500/10 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-500/20 font-mono\">Орманды дала • Дала • Шөлейт • Шөл</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<rect fill=\"#0b1329\" height=\"170\" rx=\"6\" stroke=\"#10b981\" width=\"150\" x=\"25\" y=\"25\"></rect>\n<text fill=\"#34d399\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"100\" y=\"48\">ОРМАНДЫ ДАЛА</text>\n<text fill=\"#f8fafc\" font-size=\"9\" text-anchor=\"middle\" x=\"100\" y=\"68\">2,4% территории</text>\n<text fill=\"#38bdf8\" font-size=\"9\" text-anchor=\"middle\" x=\"100\" y=\"90\">Жауын: 400–500 мм</text>\n<text fill=\"#fde047\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"100\" y=\"115\">Қара топырақ (9–10%)</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\" x=\"100\" y=\"140\">Қайың, көктерек шоқтары</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"100\" y=\"160\">Солтүстік Қазақстан</text>\n<rect fill=\"#0b1329\" height=\"170\" rx=\"6\" stroke=\"#22c55e\" width=\"155\" x=\"190\" y=\"25\"></rect>\n<text fill=\"#86efac\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"267\" y=\"48\">ДАЛА ЗОНАСЫ</text>\n<text fill=\"#f8fafc\" font-size=\"9\" text-anchor=\"middle\" x=\"267\" y=\"68\">28% территории</text>\n<text fill=\"#38bdf8\" font-size=\"9\" text-anchor=\"middle\" x=\"267\" y=\"90\">Жауын: 200–300 мм</text>\n<text fill=\"#fde047\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"267\" y=\"115\">Қара және қарақоңыр</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\" x=\"267\" y=\"140\">Селеу, бетеге, бидай</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"267\" y=\"160\">Басты астық белдеуі</text>\n<rect fill=\"#0b1329\" height=\"170\" rx=\"6\" stroke=\"#f59e0b\" width=\"150\" x=\"360\" y=\"25\"></rect>\n<text fill=\"#fbbf24\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"435\" y=\"48\">ШӨЛЕЙТ ЗОНАСЫ</text>\n<text fill=\"#f8fafc\" font-size=\"9\" text-anchor=\"middle\" x=\"435\" y=\"68\">14% территории</text>\n<text fill=\"#38bdf8\" font-size=\"9\" text-anchor=\"middle\" x=\"435\" y=\"90\">Жауын: 180–200 мм</text>\n<text fill=\"#fed7aa\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"435\" y=\"115\">Ашық қарақоңыр</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\" x=\"435\" y=\"140\">Жусан, еркекшөп</text>\n<text fill=\"#fbbf24\" font-size=\"8\" text-anchor=\"middle\" x=\"435\" y=\"160\">Вегетация: 160–170 күн</text>\n<rect fill=\"#0b1329\" height=\"170\" rx=\"6\" stroke=\"#ef4444\" width=\"150\" x=\"525\" y=\"25\"></rect>\n<text fill=\"#f87171\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"600\" y=\"48\">ШӨЛ ЗОНАСЫ</text>\n<text fill=\"#f8fafc\" font-size=\"9\" text-anchor=\"middle\" x=\"600\" y=\"68\">44% территории</text>\n<text fill=\"#38bdf8\" font-size=\"9\" text-anchor=\"middle\" x=\"600\" y=\"90\">Жауын: 100–150 мм</text>\n<text fill=\"#cbd5e1\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"600\" y=\"115\">Қоңыр, сұрқоңыр</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\" x=\"600\" y=\"140\">Сексеуіл, жүзгін, қосаяқ</text>\n<text fill=\"#f87171\" font-size=\"8\" text-anchor=\"middle\" x=\"600\" y=\"160\">Сазды (Бетпақдала), Құмды</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>2. Заповедники и эндемики Казахстана</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">В республике действуют <b class=\"text-cyan-300 font-bold\">10 государственных природных заповедников</b> и <b class=\"text-cyan-300 font-bold\">14 национальных парков</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Эндемики:</b> Виды, обитающие строго в пределах определенного региона. Во флоре Казахстана насчитывается <b class=\"text-cyan-300 font-bold\">730 эндемичных видов растений</b>!</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Главные заповедники:</b></li>\n</ul>\n<ol class=\"space-y-2 my-2.5 ml-6 list-none\">\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Аксу-Жабаглы (1926 г.):</b> Старейший заповедник страны в Западном Тянь-Шане. Охраняются тюльпаны Грейга и Кауфмана, снежный барс.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Коргалжынский заповедник:</b> Водно-болотные угодья в Тенгиз-Коргалжынской впадине. Севернейшее в мире место гнездования розового фламинго (ЮНЕСКО).</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Наурзумский заповедник:</b> Реликтовый островной сосновый бор посреди ковыльных степей.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">4.</span><b class=\"text-emerald-300 font-bold\">Маркакольский заповедник:</b> На Южном Алтае вокруг тектонического озера Маркаколь. Эндемичная рыба — ускуч (ленок).</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">5.</span><b class=\"text-emerald-300 font-bold\">Устюртский заповедник:</b> Охраняет пустынную биоту чинков плато Устюрт и редчайшего дикого барана — устюртского муфлона.</li>\n</ol>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🦅</span>\n<span>2-СЫЗБА: ЗАПОВЕДНИКИ И ЭНДЕМИКИ КАЗАХСТАНА</span>\n</span>\n<span class=\"text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono\">10 Қорық • 730 эндемик өсімдік</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"205\" x=\"20\" y=\"20\"></rect>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"122\" y=\"45\">АКСУ-ЖАБАГЛЫ (1926 г.)</text>\n<text fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"122\" y=\"70\">Первый заповедник РК</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" text-anchor=\"middle\" x=\"122\" y=\"90\">Батыс Тянь-Шань таулары</text>\n<line stroke=\"#1e293b\" x1=\"40\" x2=\"200\" y1=\"105\" y2=\"105\"></line>\n<text fill=\"#f8fafc\" font-size=\"9\" x=\"122\" y=\"130\">Арқар, қар барысы</text>\n<text fill=\"#fde047\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"122\" y=\"150\">Грейг және Кауфман қызғалдағы</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"122\" y=\"175\">ЮНЕСКО биосфералық резерваты</text>\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"210\" x=\"245\" y=\"20\"></rect>\n<text fill=\"#34d399\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"45\">КОРГАЛЖЫН И НАУРЫЗЫМ</text>\n<text fill=\"#f87171\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"70\">Қорғалжын: Қызғылт қоқиқаз</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"350\" y=\"88\">Дүниежүзіндегі ең солтүстік ұясы</text>\n<line stroke=\"#1e293b\" x1=\"265\" x2=\"435\" y1=\"105\" y2=\"105\"></line>\n<text fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"130\">Наурызым: Қарағай орманы</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\" x=\"350\" y=\"148\">Реликті далалық қарағай шоғыры</text>\n<text fill=\"#fbbf24\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"175\">ЮНЕСКО Бүкіләлемдік мұрасы</text>\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"205\" x=\"475\" y=\"20\"></rect>\n<text fill=\"#f59e0b\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"577\" y=\"45\">МАРКАКОЛЬ И УСТЮРТ</text>\n<text fill=\"#38bdf8\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"577\" y=\"70\">Марқакөл: Оңтүстік Алтай</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\" x=\"577\" y=\"88\">Эндемик балық: Үшкіл (ускуч)</text>\n<line stroke=\"#1e293b\" x1=\"495\" x2=\"660\" y1=\"105\" y2=\"105\"></line>\n<text fill=\"#f59e0b\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"577\" y=\"130\">Үстірт: Маңғыстау шөлі</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\" x=\"577\" y=\"148\">Үстірт муфлоны, гепард, қарақұйрық</text>\n<text fill=\"#34d399\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"577\" y=\"175\">730 эндемичных видов растений</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>3. Четыре почвенные зоны равнин</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">На равнинах Казахстана выделяются <b class=\"text-cyan-300 font-bold\">4 основные широтные зоны почв</b>:</li>\n</ul>\n<ol class=\"space-y-2 my-2.5 ml-6 list-none\">\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span>Серые лесные почвы лесостепи (гумус 9–10%);</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span>Черноземы степной зоны (гумус 6–8%, зерновой пояс);</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span>Каштановые почвы полупустыни (гумус 3–4%);</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">4.</span>Бурые и серо-бурые почвы пустынь (гумус 1–2%, высокая засоленность).</li>\n</ol>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🌱</span>\n<span>3-СЫЗБА: 4 ПОЧВЕННЫЕ ЗОНЫ РАВНИН КАЗАХСТАНА</span>\n</span>\n<span class=\"text-[10px] bg-purple-500/10 text-purple-300 px-2.5 py-0.5 rounded-full border border-purple-500/20 font-mono\">Сұр топырақ • Қара топырақ • Қарақоңыр • Сұрқоңыр</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<rect fill=\"#1e293b\" height=\"35\" rx=\"4\" stroke=\"#64748b\" width=\"310\" x=\"30\" y=\"30\"></rect>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" x=\"45\" y=\"52\">1. Сұр топырақ (Орманды дала):</text>\n<text fill=\"#34d399\" font-size=\"9\" text-anchor=\"end\" x=\"320\" y=\"52\">Гумус: 9–10%</text>\n<rect fill=\"#0f172a\" height=\"35\" rx=\"4\" stroke=\"#10b981\" width=\"310\" x=\"30\" y=\"75\"></rect>\n<text fill=\"#86efac\" font-size=\"10\" font-weight=\"bold\" x=\"45\" y=\"97\">2. Қара топырақ (Дала зонасы):</text>\n<text fill=\"#fde047\" font-size=\"9\" text-anchor=\"end\" x=\"320\" y=\"97\">Гумус: 6–8% (құнарлы)</text>\n<rect fill=\"#78350f\" fill-opacity=\"0.4\" height=\"35\" rx=\"4\" stroke=\"#b45309\" width=\"310\" x=\"30\" y=\"120\"></rect>\n<text fill=\"#fed7aa\" font-size=\"10\" font-weight=\"bold\" x=\"45\" y=\"142\">3. Қарақоңыр топырақ (Шөлейт):</text>\n<text fill=\"#fbbf24\" font-size=\"9\" text-anchor=\"end\" x=\"320\" y=\"142\">Гумус: 3–4%</text>\n<rect fill=\"#a16207\" fill-opacity=\"0.3\" height=\"35\" rx=\"4\" stroke=\"#eab308\" width=\"310\" x=\"30\" y=\"165\"></rect>\n<text fill=\"#fef08a\" font-size=\"10\" font-weight=\"bold\" x=\"45\" y=\"187\">4. Сұрқоңыр және сұр топырақ (Шөл):</text>\n<text fill=\"#ef4444\" font-size=\"9\" text-anchor=\"end\" x=\"320\" y=\"187\">Гумус: 1–2% (сортаңды)</text>\n<!-- Side card -->\n<rect fill=\"#0b1329\" height=\"175\" rx=\"8\" stroke=\"#1e293b\" width=\"315\" x=\"365\" y=\"25\"></rect>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"522\" y=\"50\">ШИРОТНАЯ ЗОНАЛЬНОСТЬ ПОЧВ</text>\n<text fill=\"#f8fafc\" font-size=\"9\" x=\"385\" y=\"80\">• Плодородие почв падает с севера на юг</text>\n<text fill=\"#f8fafc\" font-size=\"9\" x=\"385\" y=\"105\">• Причина: уменьшение осадков и рост испарения</text>\n<text fill=\"#f8fafc\" font-size=\"9\" x=\"385\" y=\"130\">• Черноземный пояс: СКО, Акмолинская, Костанайская</text>\n<text fill=\"#fde047\" font-size=\"9\" font-weight=\"bold\" x=\"385\" y=\"155\">• Солонцы и солончаки типичны для пустынь</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>4. Генетические типы пустынь</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Глинистые пустыни:</b> Плато <b class=\"text-cyan-300 font-bold\">Бетпакдала</b> («Голодная степь»), изобилующее такырами.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Песчаные пустыни:</b> <b class=\"text-cyan-300 font-bold\">Кызылкум, Мойынкум, Сарыесик-Атырау, Нарынские пески</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Каменистые пустыни:</b> Плато Устюрт и щебнистые пустыни Прибалхашья.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Саксаул:</b> Древесное растение пустынь с корневой системой до 15–20 м, скрепляющее пески.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🏜️</span>\n<span>4-СЫЗБА: ТИПЫ ПУСТЫНЬ КАЗАХСТАНА</span>\n</span>\n<span class=\"text-[10px] bg-amber-500/10 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/20 font-mono\">Сазды • Құмды • Тасты • Сортаңды</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<!-- 3 Desert types cards -->\n<rect fill=\"#0b1329\" height=\"170\" rx=\"8\" stroke=\"#f59e0b\" width=\"200\" x=\"25\" y=\"25\"></rect>\n<text fill=\"#fde047\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"125\" y=\"50\">ГЛИНИСТЫЕ ПУСТЫНИ</text>\n<rect fill=\"#ca8a04\" fill-opacity=\"0.3\" height=\"30\" rx=\"4\" width=\"170\" x=\"40\" y=\"65\"></rect>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"black\" text-anchor=\"middle\" x=\"125\" y=\"85\">БЕТПАҚДАЛА</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" text-anchor=\"middle\" x=\"125\" y=\"115\">Үстірт тақталарында</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"125\" y=\"135\">Тақырлар түзіледі</text>\n<text fill=\"#fbbf24\" font-size=\"9\" text-anchor=\"middle\" x=\"125\" y=\"165\">Жусан, бұйырғын</text>\n<rect fill=\"#0b1329\" height=\"170\" rx=\"8\" stroke=\"#f97316\" width=\"200\" x=\"250\" y=\"25\"></rect>\n<text fill=\"#fb923c\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"50\">ПЕСЧАНЫЕ ПУСТЫНИ</text>\n<rect fill=\"#ea580c\" fill-opacity=\"0.3\" height=\"30\" rx=\"4\" width=\"170\" x=\"265\" y=\"65\"></rect>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"black\" text-anchor=\"middle\" x=\"350\" y=\"85\">ҚЫЗЫЛҚҰМ, МОЙЫНҚҰМ</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" text-anchor=\"middle\" x=\"350\" y=\"115\">Сарыесікатырау, Нарын</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"350\" y=\"135\">Шағылдар, бархандар</text>\n<text fill=\"#fb923c\" font-size=\"9\" text-anchor=\"middle\" x=\"350\" y=\"165\">Сексеуіл, қосаяқ</text>\n<rect fill=\"#0b1329\" height=\"170\" rx=\"8\" stroke=\"#64748b\" width=\"200\" x=\"475\" y=\"25\"></rect>\n<text fill=\"#cbd5e1\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"575\" y=\"50\">КАМЕНИСТЫЕ ПУСТЫНИ</text>\n<rect fill=\"#475569\" fill-opacity=\"0.3\" height=\"30\" rx=\"4\" width=\"170\" x=\"490\" y=\"65\"></rect>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"black\" text-anchor=\"middle\" x=\"575\" y=\"85\">ҮСТІРТ ЧИНКТЕРІ</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" text-anchor=\"middle\" x=\"575\" y=\"115\">Балқаш маңы гамадалары</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"575\" y=\"135\">Үгілген тас қиыршықтары</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" text-anchor=\"middle\" x=\"575\" y=\"165\">Сирек эфемерлер</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>5. Отличие заповедников от национальных парков</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Заповедники:</b> Объекты со строгим режимом охраны. Любая хозяйственная деятельность, строительство и туризм категорически запрещены.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Национальные природные парки:</b> Особо охраняемые территории, где охрана природы сочетается с организованным экологическим туризмом и отдыхом населения (Бурабай, Иле-Алатау, Баянаул, Чарын).</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🏕️</span>\n<span>5-СЫЗБА: ЗАПОВЕДНИКИ И НАЦИОНАЛЬНЫЕ ПАРКИ</span>\n</span>\n<span class=\"text-[10px] bg-emerald-500/10 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-500/20 font-mono\">Қорық (Тиым салынған) vs Саябақ (Туризмге ашық)</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<rect fill=\"#0b1329\" height=\"170\" rx=\"8\" stroke=\"#ef4444\" width=\"310\" x=\"25\" y=\"25\"></rect>\n<text fill=\"#f87171\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"180\" y=\"52\">ГОСУДАРСТВЕННЫЕ ЗАПОВЕДНИКИ (10)</text>\n<text fill=\"#ef4444\" font-size=\"10\" font-weight=\"black\" text-anchor=\"middle\" x=\"180\" y=\"75\">СТРОГИЙ РЕЖИМ ОХРАНЫ</text>\n<line stroke=\"#1e293b\" x1=\"45\" x2=\"315\" y1=\"90\" y2=\"90\"></line>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"50\" y=\"115\">• Запрещена любая хозяйственная деятельность</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"50\" y=\"135\">• Только научные экологические наблюдения</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"50\" y=\"155\">• Аксу-Жабаглы, Коргалжын, Маркаколь...</text>\n<rect fill=\"#0b1329\" height=\"170\" rx=\"8\" stroke=\"#10b981\" width=\"310\" x=\"365\" y=\"25\"></rect>\n<text fill=\"#34d399\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"520\" y=\"52\">НАЦИОНАЛЬНЫЕ ПАРКИ (14)</text>\n<text fill=\"#34d399\" font-size=\"10\" font-weight=\"black\" text-anchor=\"middle\" x=\"520\" y=\"75\">ТУРИЗМ И РЕКРЕАЦИЯ РАЗРЕШЕНЫ</text>\n<line stroke=\"#1e293b\" x1=\"385\" x2=\"655\" y1=\"90\" y2=\"90\"></line>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"390\" y=\"115\">• Экотуризм, размещение кемпингов и троп</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"390\" y=\"135\">• Сочетание строгой охраны и туристских зон</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"390\" y=\"155\">• Бурабай, Иле-Алатау, Баянаул, Чарын...</text>\n</svg>\n</div>", "traps": ["⚠️ Назар аударыңыз: Қазақстан биосферасы бойынша сұрақтар ҰБТ-ның контексттік тесттерінде жиі кездеседі."], "quiz": [{"q": "Қазақстан биосферасы бойынша негізгі ұғымды атаңыз?", "options": ["Қазақстан биосферасы", "Жалпы ұғым", "Қосымша фактор", "Байланыссыз"], "answer": 0, "exp": "Бұл сабақтың өзегі — Қазақстан биосферасы заңдылықтарын түсіну."}], "blooket": "https://dashboard.blooket.com/set/6a84d892aa52753c4b9327db", "test": {"passingScore": 80, "questions": [{"id": 1, "q_kz": "Орталық Қазақстандағы ең ірі сазды (үстіртті) шөлді анықтаңыз:", "q_ru": "Крупнейшая глинистая пустыня в Центральном Казахстане:", "options_kz": ["Қызылқұм", "Бетпақдала", "Мойынқұм", "Сарыесікатырау"], "options_ru": ["Кызылкум", "Бетпакдала", "Мойынкум", "Сарыесик-Атырау"], "answer": 1, "exp_kz": "Бетпақдала — Орталық Қазақстандағы сазды шөл. Қызылқұм, Мойынқұм — құмды шөлдерге жатады.", "exp_ru": "Бетпакдала — типичная глинистая пустыня. Кызылкум и Мойынкум сложены песчаными массивами."}, {"id": 2, "q_kz": "Шөл зонасында тіршілік етуге бейімделген, түнгі өмір салтын кешетін кеміргіш:", "q_ru": "Грызун, приспособленный к засушливому климату пустынь и ведущий ночной образ жизни:", "options_kz": ["Тиін", "Бұлан", "Қосаяқ (тушканчик)", "Сусар"], "options_ru": ["Белка", "Лось", "Тушканчик (қосаяқ)", "Куница"], "answer": 2, "exp_kz": "Қосаяқ — шөлдің аптап ыстығынан күндіз інінде тығылып, түнде ғана қоректенетін типтік кеміргіш.", "exp_ru": "Тушканчик — типичный обитатель пустынь, ведущий ночной образ жизни во избежание дневного зноя."}, {"id": 3, "q_kz": "Оңтүстік Алтай тауларының терең тектоникалық көлінде орналасқан таулы қорық:", "q_ru": "Горный заповедник, расположенный у тектонического озера на Южном Алтае:", "options_kz": ["Наурызым", "Қорғалжын", "Марқакөл", "Барсакелмес"], "options_ru": ["Наурзумский", "Коргалжынский", "Маркакольский", "Барсакельмес"], "answer": 2, "exp_kz": "Марқакөл мемлекеттік табиғи қорығы Оңтүстік Алтай тауларындағы аттас көл маңында орналасқан.", "exp_ru": "Маркакольский заповедник охраняет экосистему живописного горного озера Маркаколь на Алтае."}, {"id": 4, "q_kz": "Қазақстанның жазық бөлігінде солтүстіктен оңтүстікке қарай неше негізгі топырақ зонасы таралған?", "q_ru": "Сколько основных зональных типов почв сменяют друг друга на равнинах Казахстана с севера на юг?", "options_kz": ["2 зона", "4 зона (сұр, қара, қарақоңыр, сұрқоңыр)", "8 зона", "10 зона"], "options_ru": ["2 зоны", "4 зоны (серые лесные, черноземы, каштановые, бурые)", "8 зон", "10 зон"], "answer": 1, "exp_kz": "Қазақстан жазығында 4 негізгі топырақ зонасы бар: сұр орман, қара топырақ, қарақоңыр және шөлдің сұрқоңыр топырақтары.", "exp_ru": "На равнинах выделяются 4 зональных типа почв: серые лесные, черноземы, каштановые и бурые/серо-бурые."}, {"id": 5, "q_kz": "Қазақстандағы ең құнарлы қара топырақтар (чернозем) қай өңірде шоғырланған?", "q_ru": "В каком географическом регионе Казахстана сосредоточены самые плодородные черноземы?", "options_kz": ["Солтүстік Қазақстанда", "Оңтүстік шөлдерде", "Маңғыстау түбегінде", "Балқаш маңында"], "options_ru": ["В Северном Казахстане", "В южных пустынях", "На полуострове Мангыстау", "В Прибалхашье"], "answer": 0, "exp_kz": "Қара топырақ еліміздің солтүстігінде (СҚО, Ақмола, Қостанай облыстарының далалы өңірінде) таралған.", "exp_ru": "Черноземный пояс протянулся по северу Казахстана в зоне лесостепи и северной степи."}, {"id": 6, "q_kz": "Тек Қазақстан аумағында ғана өсетін эндемик өсімдік түрлерінің жалпы саны шамамен қанша?", "q_ru": "Каково примерное число эндемичных видов растений, произрастающих исключительно в Казахстане?", "options_kz": ["100 түр", "350 түр", "730 түр", "2500 түр"], "options_ru": ["100 видов", "350 видов", "730 видов", "2500 видов"], "answer": 2, "exp_kz": "Қазақстан флорасында 730-дан астам эндемик (тек біздің елде кездесетін) өсімдік түрі бар.", "exp_ru": "Во флоре Казахстана насчитывается порядка 730 эндемичных видов растений."}, {"id": 7, "q_kz": "Қазақстандағы ең алғашқы құрылған (1926 ж.) Батыс Тянь-Шаньдағы қорық:", "q_ru": "Первый и старейший заповедник Казахстана, основанный в 1926 году в Западном Тянь-Шане:", "options_kz": ["Ақсу-Жабағылы", "Қорғалжын", "Алматы қорығы", "Үстірт"], "options_ru": ["Аксу-Жабаглы", "Коргалжын", "Алматинский заповедник", "Устюртский"], "answer": 0, "exp_kz": "1926 жылы құрылған Ақсу-Жабағылы қорығы — еліміздегі ең алғашқы қорық (қызғалдақ отаны).", "exp_ru": "Аксу-Жабаглы — первый государственный заповедник Казахстана, учрежденный в 1926 году."}, {"id": 8, "q_kz": "Үстірт мемлекеттік табиғи қорығында ерекше қорғауға алынған сирек жануар:", "q_ru": "Редкое копытное животное, находящееся под особой охраной в Устюртском заповеднике:", "options_kz": ["Ақ аю", "Үстірт муфлоны", "Бұлғын", "Құндыз"], "options_ru": ["Белый медведь", "Устюртский муфлон", "Соболь", "Бобр"], "answer": 1, "exp_kz": "Үстірт қорығында жабайы тау қойы — үстірт муфлоны мен қарақұйрық қорғалады.", "exp_ru": "В Устюртском заповеднике охраняется эндемичный подвид дикого барана — устюртский муфлон."}, {"id": 9, "q_kz": "Қазақстанның шөлейт (жартылай шөл) зонасындағы вегетациялық кезеңнің орташа ұзақтығы:", "q_ru": "Средняя продолжительность вегетационного периода в полупустынной зоне Казахстана:", "options_kz": ["90–100 күн", "120–130 күн", "160–170 күн", "240 күн"], "options_ru": ["90–100 дней", "120–130 дней", "160–170 дней", "240 дней"], "answer": 2, "exp_kz": "Шөлейт зонасында жылу жеткілікті болғандықтан вегетациялық кезең 160-170 күнге дейін жетеді.", "exp_ru": "В полупустыне период активной вегетации растений продолжается от 160 до 170 суток."}, {"id": 10, "q_kz": "Құрғақ шөл климатына өте жақсы бейімделген, тамыры тереңге кететін жапырақсыз ағаш тектес өсімдік:", "q_ru": "Типичное пустынное древесно-кустарниковое растение с глубокой корневой системой, закрепляющее пески:", "options_kz": ["Қайың", "Сексеуіл", "Емен", "Шырша"], "options_ru": ["Береза", "Саксаул", "Дуб", "Ель"], "answer": 1, "exp_kz": "Сексеуіл — шөлдің қатал климатына бейімделген, тамыры тереңге бойлайтын ағаш тектес өсімдік.", "exp_ru": "Саксаул — классический эдификатор песчаных пустынь с мощной корневой системой до 15-20 метров."}]}, "pdf_kz": "https://drive.google.com/file/d/1Cy7KdLU-Xfp3Oyel9TygdIoct5GAzGu2/view?usp=sharing", "pdf_ru": "https://drive.google.com/file/d/1s9ay9M-_CTqx4p-U4ZL18tiBbS4ra8hE/view?usp=drive_link"};
+    const currentLang = 'ru';
+    let userTestAnswers = {};
+    let isTestSubmitted = false;
+
+    // Render Test Questions
+    function renderTestQuestions() {
+      const container = document.getElementById('testQuestionsList');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const testObj = lessonData.test;
+      if (!testObj || !testObj.questions || testObj.questions.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-400">Тест готовится / Тест дайындалуда.</p>';
+        return;
+      }
+
+      const isRu = (currentLang === 'ru');
+      const letters = ['A', 'B', 'C', 'D', 'E'];
+
+      testObj.questions.forEach((q, idx) => {
+        const qCard = document.createElement('div');
+        qCard.className = 'p-5 rounded-2xl bg-space-850 border border-slate-800 space-y-3';
+
+        const qPrompt = isRu ? (q.q_ru || q.q_kz) : q.q_kz;
+        const options = isRu ? (q.options_ru || q.options_kz) : q.options_kz;
+        const exp = isRu ? (q.exp_ru || q.exp_kz) : q.exp_kz;
+
+        qCard.innerHTML = `
+          <div class="flex items-center justify-between gap-2 border-b border-slate-800/80 pb-2">
+            <span class="text-xs font-bold text-slate-400 uppercase">
+              ${isRu ? 'Вопрос ' + (idx + 1) : 'Сұрақ ' + (idx + 1)}
+            </span>
+            <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-bold">1 балл</span>
+          </div>
+          <p class="text-xs sm:text-sm font-semibold text-slate-100 leading-relaxed">${qPrompt}</p>
+        `;
+
+        const optContainer = document.createElement('div');
+        optContainer.className = 'space-y-2 pt-1';
+
+        const selectedAnswer = userTestAnswers[q.id];
+
+        options.forEach((optText, optIdx) => {
+          const isSelected = selectedAnswer === optIdx;
+          const isCorrect = q.answer === optIdx;
+
+          const optDiv = document.createElement('div');
+          optDiv.className = 'p-3 rounded-xl border text-xs font-medium cursor-pointer transition flex items-center space-x-2.5 ';
+
+          if (isTestSubmitted) {
+            if (isCorrect) {
+              optDiv.className += 'bg-emerald-500/15 border-emerald-500 text-emerald-200 font-bold';
+            } else if (isSelected) {
+              optDiv.className += 'bg-rose-500/15 border-rose-500 text-rose-200';
+            } else {
+              optDiv.className += 'bg-space-900/50 border-slate-800 text-slate-500';
+            }
+          } else {
+            if (isSelected) {
+              optDiv.className += 'bg-cyan-500/15 border-cyan-500 text-cyan-200 font-bold';
+            } else {
+              optDiv.className += 'bg-space-900 hover:bg-space-800 border-slate-800 hover:border-slate-700 text-slate-300';
+            }
+          }
+
+          const badge = document.createElement('span');
+          badge.className = 'w-5 h-5 rounded-md text-[10px] font-black flex items-center justify-center shrink-0 ' +
+            (isSelected ? 'bg-cyan-500 text-space-950' : 'bg-space-850 text-slate-400 border border-slate-700');
+          badge.textContent = letters[optIdx] || String(optIdx + 1);
+          optDiv.appendChild(badge);
+
+          const txt = document.createElement('span');
+          txt.className = 'flex-1';
+          txt.textContent = optText;
+          optDiv.appendChild(txt);
+
+          optDiv.onclick = () => {
+            if (isTestSubmitted) return;
+            userTestAnswers[q.id] = optIdx;
+            renderTestQuestions();
+          };
+
+          optContainer.appendChild(optDiv);
+        });
+
+        qCard.appendChild(optContainer);
+
+        // Explanation Box after submission
+        if (isTestSubmitted) {
+          const expBox = document.createElement('div');
+          expBox.className = 'p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-xs text-cyan-200 space-y-1';
+          expBox.innerHTML = `
+            <span class="font-bold text-cyan-300 block">💡 ${isRu ? 'Пояснение:' : 'Түсіндірме:'}</span>
+            <p class="text-slate-300 leading-relaxed">${exp || (isRu ? 'Авторское пояснение к вопросу.' : 'Сұраққа арналған түсіндірме.')}</p>
+          `;
+          qCard.appendChild(expBox);
+        }
+
+        container.appendChild(qCard);
+      });
+    }
+
+    function submitLessonTest() {
+      const testObj = lessonData.test;
+      if (!testObj || !testObj.questions) return;
+
+      const answeredCount = Object.keys(userTestAnswers).length;
+      const total = testObj.questions.length;
+      const isRu = (currentLang === 'ru');
+
+      if (answeredCount < total) {
+        const msg = isRu 
+          ? `Вы ответили только на ${answeredCount} из ${total} вопросов. Завершить тест?` 
+          : `Сіз ${total} сұрақтың ${answeredCount}-не жауап бердіңіз. Тестті аяқтайсыз ба?`;
+        if (!confirm(msg)) return;
+      }
+
+      isTestSubmitted = true;
+      let correct = 0;
+
+      testObj.questions.forEach(q => {
+        if (userTestAnswers[q.id] === q.answer) {
+          correct++;
+        }
+      });
+
+      const percentage = Math.round((correct / total) * 100);
+      const isPassed = percentage >= 80;
+
+      // Update badges & UI
+      const scoreBadge = document.getElementById('testScoreBadge');
+      if (scoreBadge) {
+        scoreBadge.classList.remove('hidden');
+        scoreBadge.textContent = `${correct} / ${total} (${percentage}%)`;
+        scoreBadge.className = 'px-3 py-1 rounded-xl text-xs font-bold font-mono border ' +
+          (isPassed ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-rose-500/20 text-rose-300 border-rose-500/40');
+      }
+
+      const info = document.getElementById('testProgressInfo');
+      if (info) {
+        info.textContent = isPassed 
+          ? (isRu ? `🎉 Поздравляем! Вы сдали тест на ${percentage}% (+30 XP)` : `🎉 Құттықтаймыз! Сіз тестті ${percentage}%-ға тапсырдыңыз (+30 XP)`)
+          : (isRu ? `Результат: ${percentage}%. Для зачета требуется 80%. Попробуйте еще раз.` : `Нәтиже: ${percentage}%. Өту үшін 80% қажет. Қайта тапсырып көріңіз.`);
+      }
+
+      document.getElementById('btnSubmitTest').classList.add('hidden');
+      document.getElementById('btnResetTest').classList.remove('hidden');
+
+      // Save to localStorage
+      try {
+        let scores = JSON.parse(localStorage.getItem('geotany_lesson_scores') || '{}');
+        scores[lessonData.id] = percentage;
+        localStorage.setItem('geotany_lesson_scores', JSON.stringify(scores));
+
+        if (isPassed) {
+          let completed = JSON.parse(localStorage.getItem('geotany_completed_lessons') || '[]');
+          if (!completed.includes(lessonData.id)) {
+            completed.push(lessonData.id);
+            localStorage.setItem('geotany_completed_lessons', JSON.stringify(completed));
+          }
+          let curXp = parseInt(localStorage.getItem('geotany_user_xp') || '0', 10);
+          curXp += 30;
+          localStorage.setItem('geotany_user_xp', curXp.toString());
+        }
+      } catch(e) {}
+
+      renderTestQuestions();
+      updateCompleteButtons();
+    }
+
+    function resetLessonTest() {
+      userTestAnswers = {};
+      isTestSubmitted = false;
+      document.getElementById('testScoreBadge').classList.add('hidden');
+      document.getElementById('btnSubmitTest').classList.remove('hidden');
+      document.getElementById('btnResetTest').classList.add('hidden');
+      document.getElementById('testProgressInfo').textContent = (currentLang === 'ru') 
+        ? 'Ответьте на все вопросы и проверьте свои знания.' 
+        : 'Барлық сұрақтарға жауап беріп, өзіңізді тексеріңіз.';
+      renderTestQuestions();
+    }
+
+    // Toggle Lesson Complete Status
+    function toggleLessonComplete() {
+      let completed = [];
+      try {
+        completed = JSON.parse(localStorage.getItem('geotany_completed_lessons') || '[]');
+      } catch(e) {}
+
+      const isDone = completed.includes(lessonData.id);
+      let curXp = parseInt(localStorage.getItem('geotany_user_xp') || '0', 10);
+
+      if (isDone) {
+        completed = completed.filter(id => id !== lessonData.id);
+        curXp = Math.max(0, curXp - 30);
+      } else {
+        completed.push(lessonData.id);
+        curXp += 30;
+      }
+
+      try {
+        localStorage.setItem('geotany_completed_lessons', JSON.stringify(completed));
+        localStorage.setItem('geotany_user_xp', curXp.toString());
+      } catch(e) {}
+
+      updateCompleteButtons();
+    }
+
+    function updateCompleteButtons() {
+      let completed = [];
+      try {
+        completed = JSON.parse(localStorage.getItem('geotany_completed_lessons') || '[]');
+      } catch(e) {}
+
+      const isDone = completed.includes(lessonData.id);
+      const isRu = (currentLang === 'ru');
+
+      const banner = document.getElementById('lessonCompletedBanner');
+      if (banner) banner.classList.toggle('hidden', !isDone);
+
+      const headerBtn = document.getElementById('btnHeaderComplete');
+      const headerIcon = document.getElementById('headerCheckIcon');
+      const headerText = document.getElementById('headerCompleteText');
+
+      if (headerBtn) {
+        if (isDone) {
+          headerBtn.className = 'px-3 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold transition flex items-center space-x-1.5';
+          if (headerIcon) headerIcon.textContent = '✓';
+          if (headerText) headerText.textContent = isRu ? 'Прочитано' : 'Оқылды';
+        } else {
+          headerBtn.className = 'px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-emerald-400 text-xs font-bold transition flex items-center space-x-1.5';
+          if (headerIcon) headerIcon.textContent = '○';
+          if (headerText) headerText.textContent = isRu ? 'Отметить' : 'Белгілеу';
+        }
+      }
+
+      const bottomLbl = document.getElementById('lblBottomComplete');
+      if (bottomLbl) {
+        bottomLbl.textContent = isDone 
+          ? (isRu ? '✓ Прочитано (Нажмите, чтобы отменить)' : '✓ Оқылды (Өшіру үшін басыңыз)')
+          : (isRu ? 'Отметить как прочитанное (+30 XP)' : 'Сабақты оқылды деп белгілеу (+30 XP)');
+      }
+    }
+
+    // Boot
+    window.addEventListener('DOMContentLoaded', () => {
+      renderTestQuestions();
+      updateCompleteButtons();
+    });
+  </script>
+
+</body>
+</html>

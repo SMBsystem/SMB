@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="kk" class="dark">
+<head>
+  <!-- COURSE ACCESS GUARD: RESTRICT DIRECT ACCESS WITHOUT VALID CODE -->
+  <style id="authCloak">body { display: none !important; }</style>
+  <script>
+    (function() {
+      try {
+        var isAdmin = localStorage.getItem('geotany_admin_auth') === 'true';
+        var sessionStr = localStorage.getItem('geotany_user_session');
+        var isAuthorized = isAdmin;
+        if (!isAuthorized && sessionStr) {
+          var s = JSON.parse(sessionStr);
+          if (s && s.email && (s.courseCode || s.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        var profileStr = localStorage.getItem('geotany_user_profile');
+        if (!isAuthorized && profileStr) {
+          var p = JSON.parse(profileStr);
+          if (p && p.isRegistered && p.email && p.courseCode) {
+            isAuthorized = true;
+          }
+        }
+        if (!isAuthorized) {
+          var target = window.location.pathname.split('/').pop() || 'topics.html';
+          window.location.replace('../index.html?need_course=GEOTANY&redirect=' + encodeURIComponent(target));
+          return;
+        }
+        var cloak = document.getElementById('authCloak');
+        if (cloak) cloak.remove();
+      } catch (err) {
+        window.location.replace('../index.html');
+      }
+    })();
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>#33 Қазақстан әлем картасында | GeoTany</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50: '#eef2ff', 100: '#e0e7ff', 200: '#c7d2fe', 300: '#a5b4fc', 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 800: '#3730a3', 900: '#312e81' },
+            space: { 800: '#1e293b', 850: '#172033', 900: '#0f172a', 950: '#0b1120' }
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Outfit', 'Inter', sans-serif; }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #0b1120; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+  </style>
+</head>
+<body class="bg-[#070b14] text-slate-100 min-h-screen flex flex-col selection:bg-cyan-500 selection:text-space-950">
+
+  <!-- STICKY TOP NAVBAR -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-space-950/85 border-b border-slate-800/80 px-4 sm:px-8 py-3">
+    <div class="max-w-6xl mx-auto flex items-center justify-between gap-3">
+      <!-- Left: Back Button & Badges -->
+      <div class="flex items-center space-x-2.5 sm:space-x-3 shrink-0">
+        <a href="../index.html#section-zhattau_grammar" id="btnBackToCourse" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white transition"><span>←</span><span id="btnBackToCourseText">Артқа</span></a>
+        <span class="px-2.5 py-1 rounded-full text-xs font-black bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
+          #33
+        </span>
+        <span id="navCatBadge" class="text-xs text-slate-400 font-bold hidden md:inline truncate max-w-[200px]">
+          Экономикалық аудандар және геосаясат
+        </span>
+      </div>
+
+      <!-- Right: Controls (Lang Switcher & Mark Complete) -->
+      <div class="flex items-center space-x-2 sm:space-x-3 shrink-0">
+        <!-- Language Switcher -->
+        <div class="inline-flex p-1 bg-space-900 border border-slate-800 rounded-xl space-x-1">
+          <button id="btnLangKz" onclick="setLang('kz')" class="px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow">
+            KZ
+          </button>
+          <button id="btnLangRu" onclick="setLang('ru')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">
+            RU
+          </button>
+        </div>
+
+        <!-- Mark as Completed Button -->
+        <button id="btnComplete" onclick="toggleComplete()" class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition border border-slate-700 bg-space-900 text-slate-300 hover:text-white hover:border-slate-600">
+          <span id="completeIcon" class="text-sm">○</span>
+          <span id="completeText" class="hidden sm:inline">Меңгерілді</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN TOPIC CONTAINER -->
+  <main class="max-w-5xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-8 space-y-6 flex-1">
+
+    <!-- HERO HEADER CARD -->
+    <div class="p-6 sm:p-7 rounded-2xl bg-space-950/90 border border-slate-800 space-y-3.5 shadow-xl relative overflow-hidden">
+      <div class="absolute -right-12 -top-12 w-48 h-48 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="flex items-center space-x-2">
+        <span id="heroCatBadge" class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-space-850 text-cyan-400 border border-cyan-500/20">
+          Экономикалық аудандар және геосаясат
+        </span>
+        <span class="text-xs text-slate-400">⏱️ ~8-12 мин оқу</span>
+      </div>
+      <h1 id="heroTitle" class="text-xl sm:text-2xl md:text-3xl font-black text-white tracking-tight leading-snug">
+        Қазақстан әлем картасында
+      </h1>
+      <!-- External Links Bar -->
+      <div class="flex flex-wrap items-center gap-2 pt-1">
+        <a id="btnBlooket" href="https://dashboard.blooket.com/set/6a96ebfe483f23716988d47c" target="_blank" class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 border border-purple-500/40 text-xs font-bold transition shadow-sm">
+          <span>🎮</span>
+          <span id="btnBlooketText">Blooket ойыны</span>
+        </a>
+        
+      </div>
+    </div>
+
+    <!-- 1. BRIEF SUMMARY CARD -->
+    <section class="p-5 rounded-2xl bg-space-950 border border-brand-500/40 text-xs sm:text-sm text-slate-200 leading-relaxed shadow-lg">
+      <div class="flex items-center space-x-2 text-brand-400 font-extrabold text-xs mb-2">
+        <span>📖</span>
+        <span id="summaryHeader">ТАҚЫРЫПҚА ҚЫСҚАША ШОЛУ</span>
+      </div>
+      <p id="summaryText" class="leading-relaxed">
+        Қазақстанның экономикалық-географиялық жағдайы (ауданы 2724,9 мың км², әлемде 9-орын), шекаралары (13 394 км: Ресей 7591 км), шеткі нүктелері, географиялық орталығы (Ұлытау). Қазақстанның 5 экономикалық ауданы: Орталық, Шығыс, Батыс, Солтүстік және Оңтүстік Қазақстанның табиғи байлықтары, өнеркәсіп орталықтары мен СЭС-тері.
+      </p>
+    </section>
+
+    <!-- 2. FULL THEORY SECTION -->
+    <section class="p-5 sm:p-7 rounded-2xl bg-space-950 border border-slate-800 space-y-4 shadow-xl">
+      <div class="flex items-center space-x-2 border-b border-slate-800 pb-3">
+        <span class="text-base text-cyan-400 font-black">📚</span>
+        <h2 id="theoryHeader" class="text-xs sm:text-sm font-black text-white uppercase tracking-wider">
+          ТОЛЫҚ ТЕОРИЯЛЫҚ МАТЕРИАЛ МЕН КОНСПЕКТ
+        </h2>
+      </div>
+      <div id="theoryContent">
+        <div class="space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed">
+<div class="p-5 rounded-2xl bg-space-900/90 border border-indigo-500/30 space-y-4 shadow-xl">
+  <div class="flex items-center space-x-3 text-indigo-400">
+    <span class="text-2xl">🗺️</span>
+    <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-wider">1. Қазақстанның экономикалық-географиялық жағдайы (ЭГЖ)</h3>
+  </div>
+  <div class="space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed">
+    <p class="leading-relaxed">• <b>Географиялық орны</b>: Қазақстан Еуразия құрлығының дәл кіндік орталығында орналасқан.</p><p class="leading-relaxed">• <b>Жер көлемі</b>: <b>2 724,9 мың км²</b>.</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Дүниежүзі бойынша — <b>9-орын</b>;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Еуразия құрлығы бойынша — <b>4-орын</b> (Ресей, Қытай, Үндістаннан кейін);</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• ТМД елдері бойынша — <b>2-орын</b> (Ресейден кейін).</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Әлем құрлығының <b>2%-ын</b>, Еуразияның <b>6,1%-ын</b>, ТМД елдері аумағының <b>12%-ын</b> алып жатыр.</p><p class="leading-relaxed">• <b>Аумақтың созылуы</b>: Батыстан шығысқа қарай — <b>3 000 км</b>, солтүстіктен оңтүстікке қарай — <b>1 650 км</b>.</p><p class="leading-relaxed">• <b>Еуропа мен Азия шекарасы</b>: Қазақстан аумағының <b>19,65%-ы Еуропаға</b>, ал <b>81,35%-ы Азияға</b> тиесілі. Бүкіл аумағы солтүстік және шығыс жартышарда орналасқан.</p><p class="leading-relaxed">• <b>Географиялық орталықтар</b>:</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b>Еуразияның географиялық орталығы</b>: 78° меридиан мен 50° параллельдің қиылысында (Абай облысы, Жидебай шатқалы);</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b>Қазақстанның географиялық орталығы</b>: 48°11' с.е. және 66°22' ш.б. қиылысында — Ұлытау тауында (Жезқазған қаласынан солтүстік-шығысқа қарай 100 км жерде).</p><p class="leading-relaxed">• <b>Мұхиттар мен теңіздерден қашықтығы</b>:</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Солтүстік Мұзды мұхитынан — <b>1 400 км</b>;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Үнді мұхитынан — <b>1 800 км</b>;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Атлант мұхитынан — <b>3 000 км</b>;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Тынық мұхитынан — <b>2 800 км</b>;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Ең жақын жылы теңіз — Қара теңізден арақашықтығы <b>750 км</b>.</p><p class="leading-relaxed">• <b>Қазақстанның 4 шеткі нүктесі</b>:</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b class="text-amber-400">1)</b> <b>Солтүстік шеткі нүктесі</b>: <b>55°26' с.е.</b> — Солтүстік Қазақстан облысы, Қызылжар ауданы, Сумное елді мекені (Британ аралдарының оңтүстігіне және Шығыс Еуропа жазығының орталық бөлігінің ендігіне сәйкес келеді);</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b class="text-amber-400">2)</b> <b>Оңтүстік шеткі нүктесі</b>: <b>40°56' с.е.</b> — Түркістан облысы, Мақтаарал ауданы, Т. Жайлыбаев елді мекені (Оңтүстік Еуропа, Кавказ, Жерорта теңізі ендіктерімен сәйкес келеді);</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b class="text-amber-400">3)</b> <b>Батыс шеткі нүктесі</b>: <b>46°24' ш.б.</b> — Батыс Қазақстан облысы, Бөкейорда ауданы, Шоңай елді мекені (Ресейдің Эльтон және Басқұншақ көлдері маңы);</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b class="text-amber-400">4)</b> <b>Шығыс шеткі нүктесі</b>: <b>87°20' ш.б.</b> — Шығыс Қазақстан облысы, Қатонқарағай ауданы, Бұқтырма өзенінің жоғарғы бастауы (Алтай таулары).</p><p class="leading-relaxed">• <b>Мемлекеттік шекарасы</b>: Жалпы ұзындығы — <b>13 394 км</b>, оның ішінде теңіз шекарасы (Каспий) — <b>2 000 км</b>, құрлықтық шекара — <b>11 394 км</b>.</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b>Ресей Федерациясымен — 7 591 км</b> (дүниежүзіндегі ең ұзын үздіксіз құрлықтық мемлекеттік шекара);</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b>Өзбекстан Республикасымен — 2 354 км</b>;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b>Қытай Халық Республикасымен — 1 782 км</b>;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b>Қырғызстан Республикасымен — 1 241 км</b>;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b>Түркіменстанмен — 426 км</b>.</p><p class="leading-relaxed">• <b>ЭГЖ артықшылықтары</b>: Тарихи-экономикалық дамыған алпауыт елдермен (Ресей, Қытай) шектесуі; Еуразия құрлығының көлік-транзиттік торабында орналасуы; аумақтың көп бөлігінің жазық болуы (85%); табиғи және минералды ресурстардың орасан байлығы.</p>
+  </div>
+</div>
+<div class="p-5 rounded-2xl bg-space-900/90 border border-amber-500/30 space-y-4 shadow-xl">
+  <div class="flex items-center space-x-3 text-amber-400">
+    <span class="text-2xl">🧭</span>
+    <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-wider">2. Қазақстанның 5 экономикалық ауданына толық кешенді сипаттама</h3>
+  </div>
+  <div class="space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed">
+    <div class="p-4 rounded-xl bg-space-950/80 border border-slate-800 space-y-2 mt-3 shadow-inner">
+<h4 class="font-bold text-xs sm:text-sm text-cyan-300 flex items-center space-x-2 border-b border-slate-800/80 pb-1.5"><span>📌</span><span>1) Орталық Қазақстан экономикалық ауданы:</span></h4>
+<div class="space-y-1.5 pl-2 text-xs text-slate-300">
+<p class="leading-relaxed">• <b>Құрамы</b>: Қарағанды облысы, Ұлытау облысы. Аумағы — <b>428,0 мың км²</b>, халқы — <b>1 378 554 адам</b>.</p>
+<p class="leading-relaxed">• <b>Негізгі табиғи байлықтары</b>:</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Таскөмір кен орны — <b>Қарағанды көмір алабы</b>;</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Мыс кендері — <b>Жезқазған, Қоңырат, Саяқ, Қарсақпай</b>;</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Марганец кендері — <b>Жезді, Қаражал</b>;</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Полиметалл кен орындары — <b>Жәйрем, Қарағайлы</b>;</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• 40-қа жуық темір және марганец кендері бар: Ақтау, Үшқатын, Қамыс, Қаражал, Қарсақпай, Балбырауын, Жезді, Найзатас.</p>
+<p class="leading-relaxed">• <b>Өнеркәсіптік мамандануы</b>:</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• <b>Кокс көмірі, марганец, шойын мен болаттың 100%-ы Орталық Қазақстанға тиесілі!</b></p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Толық циклді металлургиялық комбинат — Теміртаудағы <b>«АрселорМиттал Теміртау»</b>;</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Мыс қорыту зауыттары: <b>Жезқазған мыс балқыту комбинаты</b> және <b>Балқаш мыс зауыты</b> («Балқашмыс» бірлестігі: Қоңырат, Саяқ, Шығыс зауыттары);</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Ауыр машина жасау: кеніштер мен шахталар үшін құралдар, комбайндар, крандар — Қарағандыда;</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Химия өнеркәсібі: синтетикалық каучук, аммоний сульфаты (Қарағанды, Теміртау);</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Балық өнеркәсібі: Шашубай кентіндегі «Балқаш балық өнеркәсіптік кешені» (Мыңарал, Алғазы балық зауыттары).</p>
+</div></div><div class="p-4 rounded-xl bg-space-950/80 border border-slate-800 space-y-2 mt-3 shadow-inner">
+<h4 class="font-bold text-xs sm:text-sm text-cyan-300 flex items-center space-x-2 border-b border-slate-800/80 pb-1.5"><span>📌</span><span>2) Шығыс Қазақстан экономикалық ауданы:</span></h4>
+<div class="space-y-1.5 pl-2 text-xs text-slate-300">
+<p class="leading-relaxed">• <b>Құрамы</b>: Шығыс Қазақстан облысы, Абай облысы (орталығы — Өскемен). Аумағы — <b>283,3 мың км²</b>, халқы — <b>1 378 504 адам</b>.</p>
+<p class="leading-relaxed">• <b>Негізгі табиғи байлықтары</b>:</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• <b>Кенді Алтай полиметалл кендері</b>: қорғасын, мырыш, мыс, алтын, күміс, кадмий, сурьма, темір, күкірт, молибден, висмут, индий, таллий, селен, теллур, сынап (XVIII ғасырдан игеріліп келеді);</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• <b>Су және гидроэнергия қоры</b>: республикадағы барлық су қорының <b>50%-ы</b> осы ауданға тиесілі (Ертіс, Нарын, Үлбі, Бұқтырма, Күршім өзендері).</p>
+<p class="leading-relaxed">• <b>Өнеркәсіп орталықтары</b>:</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Түсті металлургия: Өскемен қорғасын-мырыш және титан-магний комбинаттары; Риддер полиметалл кешені; Алтай кен-металлургиясы;</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Машина жасау: Өскемендегі <b>«Азия-Авто» зауыты</b> («Нива», «Шкода», «Шевроле», «Киа»);</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Төл монета мен наградалар: Өскемендегі <b>«Ақша Сарайы» (Монета сарайы)</b>;</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Жеңіл және тамақ өнеркәсібі: Семей шұға комбинаты және киіз басу фабрикасы; Аягөз ет комбинаты мен тігін фабрикасы.</p>
+</div></div><div class="p-4 rounded-xl bg-space-950/80 border border-slate-800 space-y-2 mt-3 shadow-inner">
+<h4 class="font-bold text-xs sm:text-sm text-cyan-300 flex items-center space-x-2 border-b border-slate-800/80 pb-1.5"><span>📌</span><span>3) Батыс Қазақстан экономикалық ауданы:</span></h4>
+<div class="space-y-1.5 pl-2 text-xs text-slate-300">
+<p class="leading-relaxed">• <b>Құрамы</b>: Ақтөбе, Атырау, Батыс Қазақстан, Маңғыстау облыстары. Аумағы — <b>735,5 мың км²</b> (Қазақстандағы ең ауқымды экономикалық аудан), халқы — <b>2 833 942 адам</b>.</p>
+<p class="leading-relaxed">• <b>Негізгі салалары мен қазбалары</b>:</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• <b>Мұнай және газ</b>: Солтүстік Каспий қайраңы (Қашаған), Теңіз, Өзен, Қаражанбас, Қаламқас. Ең ірі табиғи газ алабы — <b>Қарашығанақ</b> (БҚО), сонымен қатар Өзен, Үстірт, Теңге, Дүңге;</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• <b>Хром мен никель</b>: Мұғалжардағы Дөң және Хромтау (хром қорының 97%-ы); Кемпірсай никель кені;</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Фосфорит — Шилісай, Богданов; Калий тұзы — Индер көлі; Уран — Маңғыстау; Құрылыс ұлутасы — Ақтау;</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Балық байлығы: Каспий теңізі мен Жайық өзеніндегі бекіре, ақсерке, шоқыр.</p>
+<p class="leading-relaxed">• <b>Өнеркәсіп орталықтары</b>:</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• <b>Ақтөбе</b>: Ақтөбе ферроқорытпа зауыты (феррохром), ТМД-дағы ең ірі Рентген аппаратурасы зауыты, мұнай құралдары мен а/ш машиналары;</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• <b>Атырау</b>: Тұңғыш Мұнай өңдеу зауыты (Атырау МӨЗ), мұнай жабдықтары, полиэтилен құбырлары, балық зауыттары;</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• <b>Ақтау</b>: Халықаралық теңіз сауда порты, пластмасса зауыты, 1973-1992 жж. АЭС (БН-350);</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• <b>Орал</b>: «Зенит» кеме жасау зауыты, «Омега», «Металлист» металл бұйымдары зауыты, Қызылмия экстракт зауыты.</p>
+</div></div><div class="p-4 rounded-xl bg-space-950/80 border border-slate-800 space-y-2 mt-3 shadow-inner">
+<h4 class="font-bold text-xs sm:text-sm text-cyan-300 flex items-center space-x-2 border-b border-slate-800/80 pb-1.5"><span>📌</span><span>4) Солтүстік Қазақстан экономикалық ауданы:</span></h4>
+<div class="space-y-1.5 pl-2 text-xs text-slate-300">
+<p class="leading-relaxed">• <b>Құрамы</b>: Солтүстік Қазақстан, Ақмола, Қостанай, Павлодар облыстары (аумағы — <b>565,3 мың км²</b>, Батыс пен Оңтүстіктен кейін 3-орында; халқы — <b>3 998 008 адам</b>).</p>
+<p class="leading-relaxed">• <b>Негізгі байлықтары</b>:</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Темір рудасы — Соколов-Сарыбай, Қашар, шөгінді темір кендері Лисаков және Әйет;</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Асбест — Жітіқара (Жетіқара);</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Боксит — Арқалық;</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Көмір — Екібастұз таскөмірі, Торғай және Майкүбі қоңыр көмірі;</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Мыс — Бозшакөл; Алтын — Васильков, Степняк; Ас тұзы — Коряков, Тобылжан, Қалқаман.</p>
+<p class="leading-relaxed">• <b>Өнеркәсіп кәсіпорындары</b>:</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Павлодар — глинозем, алюминий электролиз зауыты, мұнай өңдеу зауыты (Павлодар МӨЗ), пластмасса;</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Ақсу — ферроқорытпа зауыты (ферросилиций) және Ақсу МАЭС-і;</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Петропавл — шағын литражды қозғалтқыштар, астық тасымалдайтын вагондар;</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Степногорск — мойынтірек (подшипник) зауыты;</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Көкшетау — оттекті тыныс алу аппаратуралары, механикалық таразылар;</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Астана (Нұр-Сұлтан) — ауыл шаруашылығы машина жасау зауыты;</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Екібастұз — кен тасымалдайтын жүк вагондары зауыты, Екібастұз ГРЭС-1 және ГРЭС-2.</p>
+</div></div><div class="p-4 rounded-xl bg-space-950/80 border border-slate-800 space-y-2 mt-3 shadow-inner">
+<h4 class="font-bold text-xs sm:text-sm text-cyan-300 flex items-center space-x-2 border-b border-slate-800/80 pb-1.5"><span>📌</span><span>5) Оңтүстік Қазақстан экономикалық ауданы:</span></h4>
+<div class="space-y-1.5 pl-2 text-xs text-slate-300">
+<p class="leading-relaxed">• <b>Құрамы</b>: Алматы, Жамбыл, Қызылорда, Түркістан, Жетісу облыстары (аумағы — <b>712,8 мың км²</b>, республикада 2-орында; <b>халқы — 8 806 652 адам — ел халқының ең көбі шоғырланған аудан!</b>).</p>
+<p class="leading-relaxed">• <b>Негізгі байлықтары</b>:</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Фосфориттер: Қаратау тау жотасында Жаңатас, Ақсай, Шолақтау кен орындары;</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Полиметалдар: Ащысай, Мырғалымсай, Байжансай (Түркістан), Шалқия (Қызылорда);</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Уран кен орындары: Қорасан (Хорасан), Иірсу, Семізбай, Мыңқұдық;</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Мұнай: Тұран ойпатындағы Құмкөл кен орны;</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Құрылыс материалдары: Түркістандағы цемент, гипс, әктас.</p>
+<p class="leading-relaxed">• <b>Өнеркәсіп орталықтары мен гидроэнергетика</b>:</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Шымкент: Шымкент мұнай өңдеу зауыты (ПКОП), фармацевтика («Химфарм»), цемент, фосфатты қосылыстар;</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Тараз: Жамбыл фосфор зауыты, былғары-аяқ киім фабрикасы;</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Алматы: Жеңіл, тамақ, трикотаж, полиграфия, төменгі вольтты аппаратура, КамАЗ жинақтау, троллейбус құрастыру;</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Кентау: Кентау трансформатор зауыты; Талдықорған: аккумулятор зауыты;</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• <b>Ірі СЭС-тер</b>:</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Іле өзенінде — <b>Қапшағай СЭС-і</b>;</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Шарын өзенінде — <b>Мойнақ СЭС-і</b>;</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Сырдария өзенінде — <b>Шардара СЭС-і</b>;</p>
+<p class="pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5">• Баламалы энергия: 2018 жылдан бастап электр энергиясының 0,5%-ы Жел және Күн станцияларынан өндіріледі (Жамбыл, Түркістан, Алматы облыстарында).</p>
+</div></div>
+  </div>
+</div>
+</div>
+      </div>
+    </section>
+
+    <!-- 3. VISUAL SVG DIAGRAM / ILLUSTRATION -->
+    <section id="svgSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl">
+      <div class="flex items-center space-x-2 text-amber-400 font-extrabold text-xs">
+        <span>🎨</span>
+        <span id="svgHeader">КӨРНЕКІ СХЕМА МЕН ИНФОГРАФИКА</span>
+      </div>
+      <div id="svgContainer" class="w-full flex justify-center overflow-x-auto">
+        <svg viewBox="0 0 800 480" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg" style="background:#0b1120; border-radius:16px;">
+  <defs>
+    <linearGradient id="topG33" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4338ca"/><stop offset="100%" stop-color="#312e81"/></linearGradient>
+    <linearGradient id="cg33" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1e293b"/><stop offset="100%" stop-color="#0f172a"/></linearGradient>
+    <filter id="sh33" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.5"/></filter>
+  </defs>
+  <rect width="800" height="480" fill="#0b1120" rx="16"/>
+  <rect x="30" y="20" width="740" height="55" rx="12" fill="url(#topG33)" filter="url(#sh33)"/>
+  <text x="400" y="45" fill="#fff" font-size="17" font-weight="bold" text-anchor="middle" font-family="system-ui, sans-serif">ҚАЗАҚСТАН ӘЛЕМ КАРТАСЫНДА ЖӘНЕ 5 ЭКОНОМИКАЛЫҚ АУДАН</text>
+  <text x="400" y="64" fill="#c7d2fe" font-size="12" text-anchor="middle" font-family="system-ui, sans-serif">Жер көлемі 2724,9 мың км² (әлемде 9-орын) • Шекарасы 13 394 км • Шеткі нүктелер • 5 Экономикалық аудан</text>
+  
+  <!-- Col 1: EGP & Boundaries -->
+  <g transform="translate(30, 95)" filter="url(#sh33)">
+    <rect width="235" height="175" rx="12" fill="url(#cg33)" stroke="#818cf8" stroke-width="1.5"/>
+    <text x="15" y="26" fill="#818cf8" font-size="12" font-weight="bold">ЭГЖ ЖӘНЕ ШЕКАРАЛАРЫ</text>
+    <text x="15" y="48" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• Аумағы:</tspan> 2724,9 мың км² (әлемде 9, Еуразияда 4, ТМД-да 2-орын). Б-Ш: 3000 км, С-О: 1650 км.</text>
+    <text x="15" y="94" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• Шекарасы:</tspan> 13 394 км (теңіз 2000 км). Ресеймен — 7591 км, Өзбекстан — 2354 км, Қытай — 1782 км.</text>
+    <text x="15" y="140" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• Орталықтары:</tspan> Еуразиянікі — Жидебай; ҚР орталығы — Ұлытау (Жезқазғаннан 100 км).</text>
+  </g>
+
+  <!-- Col 2: Central & East & North -->
+  <g transform="translate(282, 95)" filter="url(#sh33)">
+    <rect width="235" height="175" rx="12" fill="url(#cg33)" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="15" y="26" fill="#f59e0b" font-size="12" font-weight="bold">ОРТАЛЫҚ, ШЫҒЫС, СОЛТҮСТІК</text>
+    <text x="15" y="48" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• Орталық:</tspan> Қарағанды көмірі, Жезқазған, Балқаш мысы, марганец, болат 100%.</text>
+    <text x="15" y="88" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• Шығыс:</tspan> Кенді Алтай полиметалдары, су қоры 50%, Өскемен, Азия-Авто, Монета сарайы.</text>
+    <text x="15" y="128" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• Солтүстік:</tspan> Темір (Соколов-Сарыбай), Екібастұз көмірі, алюминий (Павлодар), Ақсу.</text>
+  </g>
+
+  <!-- Col 3: West & South -->
+  <g transform="translate(535, 95)" filter="url(#sh33)">
+    <rect width="235" height="175" rx="12" fill="url(#cg33)" stroke="#10b981" stroke-width="1.5"/>
+    <text x="15" y="26" fill="#10b981" font-size="12" font-weight="bold">БАТЫС ЖӘНЕ ОҢТҮСТІК</text>
+    <text x="15" y="48" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• Батыс (ең ірісі):</tspan> Мұнай-газ (Теңіз, Қашаған, Қарашығанақ), хром (Дөң), Ақтау порты мен АЭС.</text>
+    <text x="15" y="96" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• Оңтүстік (ең халқы көп):</tspan> 8,8 млн адам! Фосфорит (Қаратау), уран, СЭС-тер (Қапшағай, Шардара, Мойнақ).</text>
+    <text x="15" y="146" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• Егіншілік:</tspan> Мақта, күріш, қант қызылшасы.</text>
+  </g>
+
+  <!-- Bottom Panel: Extreme Points & Geographic Coordinates -->
+  <g transform="translate(30, 285)" filter="url(#sh33)">
+    <rect width="740" height="175" rx="12" fill="url(#cg33)" stroke="#38bdf8" stroke-width="1.5"/>
+    <text x="20" y="24" fill="#38bdf8" font-size="12" font-weight="bold">ҚАЗАҚСТАННЫҢ 4 ШЕТКІ НҮКТЕСІ ЖӘНЕ ГЕОГРАФИЯЛЫҚ ОРНЫ:</text>
+    <text x="20" y="48" fill="#e2e8f0" font-size="11"><tspan font-weight="bold" fill="#fde047">Солтүстік шеткі нүктесі:</tspan> 55°26' с.е. — СҚО, Қызылжар ауданы, Сумное кенті (Британ аралдары мен Шығыс Еуропа жазығының орталығы).</text>
+    <text x="20" y="70" fill="#e2e8f0" font-size="11"><tspan font-weight="bold" fill="#fde047">Оңтүстік шеткі нүктесі:</tspan> 40°56' с.е. — Түркістан облысы, Мақтаарал ауданы, Т. Жайлыбаев (Оңтүстік Еуропа мен Жерорта теңізі ендігі).</text>
+    <text x="20" y="92" fill="#e2e8f0" font-size="11"><tspan font-weight="bold" fill="#fde047">Батыс шеткі нүктесі:</tspan> 46°24' ш.б. — БҚО, Бөкейорда ауданы, Шоңай кенті (Эльтон және Басқұншақ көлдері маңы).</text>
+    <text x="20" y="114" fill="#e2e8f0" font-size="11"><tspan font-weight="bold" fill="#fde047">Шығыс шеткі нүктесі:</tspan> 87°20' ш.б. — ШҚО, Қатонқарағай ауданы, Бұқтырма өзенінің жоғарғы бастауы (Алтай).</text>
+    <text x="20" y="136" fill="#e2e8f0" font-size="11"><tspan font-weight="bold" fill="#34d399">Мұхиттардан қашықтығы:</tspan> Солтүстік Мұзды — 1400 км | Үнді — 1800 км | Атлант — 3000 км | Тынық — 2800 км | Қара теңіз — 750 км.</text>
+    <text x="20" y="156" fill="#94a3b8" font-size="10.5">🌍 Қазақстанның 19,65%-ы Еуропада, 81,35%-ы Азияда орналасқан. Солтүстік және шығыс жартышарда жатыр.</text>
+  </g>
+</svg>
+      </div>
+    </section>
+
+    <!-- 4. STRUCTURED DATA TABLE -->
+    <section id="tableSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl overflow-x-auto">
+      <h3 class="text-xs font-black text-cyan-400 flex items-center space-x-2">
+        <span>📊</span>
+        <span id="tableHeader">НАҚТЫ КӨРСЕТКІШТЕР МЕН КЛАССИФИКАЦИЯ КЕСТЕСІ</span>
+      </h3>
+      <div id="tableContainer">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- 5. KEY FACTS FOR UNT / ЕНТ -->
+    <section id="factsSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl">
+      <h3 class="text-xs font-black text-amber-400 flex items-center space-x-2">
+        <span>⚡</span>
+        <span id="factsHeader">ҰБТ-ҒА ҚАЖЕТТІ НЕГІЗГІ ЕРЕЖЕЛЕР МЕН ФАКТІЛЕР</span>
+      </h3>
+      <ul id="factsList" class="space-y-2 text-xs text-slate-300">
+        <!-- Rendered via JS -->
+      </ul>
+    </section>
+
+    <!-- 6. TRAPS AND HACKS -->
+    <section id="trapsSection" class="p-5 rounded-2xl bg-gradient-to-r from-amber-950/40 via-space-950 to-space-950 border border-amber-500/40 space-y-3 shadow-xl">
+      <h3 class="text-xs font-black text-amber-400 flex items-center space-x-2">
+        <span>💡</span>
+        <span id="trapsHeader">ҰБТ ҚАҚПАНДАРЫ МЕН ЛАЙФХАКТАР</span>
+      </h3>
+      <div id="trapsList" class="space-y-2 text-xs text-slate-200">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- FOOTER NAVIGATION -->
+    <nav class="pt-4 pb-8 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3 text-xs">
+      <a href="topic_32.html" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white transition shadow-sm">
+      <span>←</span>
+      <span>#32 Алдыңғы тақырып</span>
+    </a>
+      <a href="../index.html#section-zhattau_grammar" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-400 hover:text-white transition">
+        <span>🏠</span>
+        <span>Барлық тақырыптар</span>
+      </a>
+      <a href="topic_34.html" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-xs font-bold text-cyan-300 hover:text-white transition shadow-sm">
+      <span>Келесі тақырып #34</span>
+      <span>→</span>
+    </a>
+    </nav>
+
+  </main>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="xpToast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300 flex items-center space-x-2 px-4 py-3 rounded-2xl bg-space-900 border border-cyan-500/40 shadow-2xl text-xs font-bold text-white">
+    <span class="text-cyan-400 text-base">✨</span>
+    <span id="toastMsg">+20 XP! Тақырып меңгерілді</span>
+  </div>
+
+  <script>
+    const topicData = {"num": 33, "title_kz": "Қазақстан әлем картасында", "title_ru": "Казахстан на политической карте мира", "category_kz": "Экономикалық аудандар және геосаясат", "category_ru": "Экономические районы и геополитика", "summary_kz": "Қазақстанның экономикалық-географиялық жағдайы (ауданы 2724,9 мың км², әлемде 9-орын), шекаралары (13 394 км: Ресей 7591 км), шеткі нүктелері, географиялық орталығы (Ұлытау). Қазақстанның 5 экономикалық ауданы: Орталық, Шығыс, Батыс, Солтүстік және Оңтүстік Қазақстанның табиғи байлықтары, өнеркәсіп орталықтары мен СЭС-тері.", "summary_ru": "Экономико-географическое положение Казахстана (площадь 2724,9 тыс. км², 9-е место в мире), границы (13 394 км: Россия 7591 км), крайние точки, географический центр (Улытау). 5 экономических районов Казахстана: Центральный, Восточный, Западный, Северный и Южный Казахстан (богатства, промышленность, ГЭС).", "full_theory_kz": "<div class=\"space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed\">\n<div class=\"p-5 rounded-2xl bg-space-900/90 border border-indigo-500/30 space-y-4 shadow-xl\">\n  <div class=\"flex items-center space-x-3 text-indigo-400\">\n    <span class=\"text-2xl\">🗺️</span>\n    <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">1. Қазақстанның экономикалық-географиялық жағдайы (ЭГЖ)</h3>\n  </div>\n  <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n    <p class=\"leading-relaxed\">• <b>Географиялық орны</b>: Қазақстан Еуразия құрлығының дәл кіндік орталығында орналасқан.</p><p class=\"leading-relaxed\">• <b>Жер көлемі</b>: <b>2 724,9 мың км²</b>.</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Дүниежүзі бойынша — <b>9-орын</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Еуразия құрлығы бойынша — <b>4-орын</b> (Ресей, Қытай, Үндістаннан кейін);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• ТМД елдері бойынша — <b>2-орын</b> (Ресейден кейін).</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Әлем құрлығының <b>2%-ын</b>, Еуразияның <b>6,1%-ын</b>, ТМД елдері аумағының <b>12%-ын</b> алып жатыр.</p><p class=\"leading-relaxed\">• <b>Аумақтың созылуы</b>: Батыстан шығысқа қарай — <b>3 000 км</b>, солтүстіктен оңтүстікке қарай — <b>1 650 км</b>.</p><p class=\"leading-relaxed\">• <b>Еуропа мен Азия шекарасы</b>: Қазақстан аумағының <b>19,65%-ы Еуропаға</b>, ал <b>81,35%-ы Азияға</b> тиесілі. Бүкіл аумағы солтүстік және шығыс жартышарда орналасқан.</p><p class=\"leading-relaxed\">• <b>Географиялық орталықтар</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Еуразияның географиялық орталығы</b>: 78° меридиан мен 50° параллельдің қиылысында (Абай облысы, Жидебай шатқалы);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Қазақстанның географиялық орталығы</b>: 48°11' с.е. және 66°22' ш.б. қиылысында — Ұлытау тауында (Жезқазған қаласынан солтүстік-шығысқа қарай 100 км жерде).</p><p class=\"leading-relaxed\">• <b>Мұхиттар мен теңіздерден қашықтығы</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Солтүстік Мұзды мұхитынан — <b>1 400 км</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Үнді мұхитынан — <b>1 800 км</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Атлант мұхитынан — <b>3 000 км</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Тынық мұхитынан — <b>2 800 км</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Ең жақын жылы теңіз — Қара теңізден арақашықтығы <b>750 км</b>.</p><p class=\"leading-relaxed\">• <b>Қазақстанның 4 шеткі нүктесі</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">1)</b> <b>Солтүстік шеткі нүктесі</b>: <b>55°26' с.е.</b> — Солтүстік Қазақстан облысы, Қызылжар ауданы, Сумное елді мекені (Британ аралдарының оңтүстігіне және Шығыс Еуропа жазығының орталық бөлігінің ендігіне сәйкес келеді);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">2)</b> <b>Оңтүстік шеткі нүктесі</b>: <b>40°56' с.е.</b> — Түркістан облысы, Мақтаарал ауданы, Т. Жайлыбаев елді мекені (Оңтүстік Еуропа, Кавказ, Жерорта теңізі ендіктерімен сәйкес келеді);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">3)</b> <b>Батыс шеткі нүктесі</b>: <b>46°24' ш.б.</b> — Батыс Қазақстан облысы, Бөкейорда ауданы, Шоңай елді мекені (Ресейдің Эльтон және Басқұншақ көлдері маңы);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">4)</b> <b>Шығыс шеткі нүктесі</b>: <b>87°20' ш.б.</b> — Шығыс Қазақстан облысы, Қатонқарағай ауданы, Бұқтырма өзенінің жоғарғы бастауы (Алтай таулары).</p><p class=\"leading-relaxed\">• <b>Мемлекеттік шекарасы</b>: Жалпы ұзындығы — <b>13 394 км</b>, оның ішінде теңіз шекарасы (Каспий) — <b>2 000 км</b>, құрлықтық шекара — <b>11 394 км</b>.</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Ресей Федерациясымен — 7 591 км</b> (дүниежүзіндегі ең ұзын үздіксіз құрлықтық мемлекеттік шекара);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Өзбекстан Республикасымен — 2 354 км</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Қытай Халық Республикасымен — 1 782 км</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Қырғызстан Республикасымен — 1 241 км</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Түркіменстанмен — 426 км</b>.</p><p class=\"leading-relaxed\">• <b>ЭГЖ артықшылықтары</b>: Тарихи-экономикалық дамыған алпауыт елдермен (Ресей, Қытай) шектесуі; Еуразия құрлығының көлік-транзиттік торабында орналасуы; аумақтың көп бөлігінің жазық болуы (85%); табиғи және минералды ресурстардың орасан байлығы.</p>\n  </div>\n</div>\n<div class=\"p-5 rounded-2xl bg-space-900/90 border border-amber-500/30 space-y-4 shadow-xl\">\n  <div class=\"flex items-center space-x-3 text-amber-400\">\n    <span class=\"text-2xl\">🧭</span>\n    <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">2. Қазақстанның 5 экономикалық ауданына толық кешенді сипаттама</h3>\n  </div>\n  <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n    <div class=\"p-4 rounded-xl bg-space-950/80 border border-slate-800 space-y-2 mt-3 shadow-inner\">\n<h4 class=\"font-bold text-xs sm:text-sm text-cyan-300 flex items-center space-x-2 border-b border-slate-800/80 pb-1.5\"><span>📌</span><span>1) Орталық Қазақстан экономикалық ауданы:</span></h4>\n<div class=\"space-y-1.5 pl-2 text-xs text-slate-300\">\n<p class=\"leading-relaxed\">• <b>Құрамы</b>: Қарағанды облысы, Ұлытау облысы. Аумағы — <b>428,0 мың км²</b>, халқы — <b>1 378 554 адам</b>.</p>\n<p class=\"leading-relaxed\">• <b>Негізгі табиғи байлықтары</b>:</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Таскөмір кен орны — <b>Қарағанды көмір алабы</b>;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Мыс кендері — <b>Жезқазған, Қоңырат, Саяқ, Қарсақпай</b>;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Марганец кендері — <b>Жезді, Қаражал</b>;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Полиметалл кен орындары — <b>Жәйрем, Қарағайлы</b>;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• 40-қа жуық темір және марганец кендері бар: Ақтау, Үшқатын, Қамыс, Қаражал, Қарсақпай, Балбырауын, Жезді, Найзатас.</p>\n<p class=\"leading-relaxed\">• <b>Өнеркәсіптік мамандануы</b>:</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• <b>Кокс көмірі, марганец, шойын мен болаттың 100%-ы Орталық Қазақстанға тиесілі!</b></p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Толық циклді металлургиялық комбинат — Теміртаудағы <b>«АрселорМиттал Теміртау»</b>;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Мыс қорыту зауыттары: <b>Жезқазған мыс балқыту комбинаты</b> және <b>Балқаш мыс зауыты</b> («Балқашмыс» бірлестігі: Қоңырат, Саяқ, Шығыс зауыттары);</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Ауыр машина жасау: кеніштер мен шахталар үшін құралдар, комбайндар, крандар — Қарағандыда;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Химия өнеркәсібі: синтетикалық каучук, аммоний сульфаты (Қарағанды, Теміртау);</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Балық өнеркәсібі: Шашубай кентіндегі «Балқаш балық өнеркәсіптік кешені» (Мыңарал, Алғазы балық зауыттары).</p>\n</div></div><div class=\"p-4 rounded-xl bg-space-950/80 border border-slate-800 space-y-2 mt-3 shadow-inner\">\n<h4 class=\"font-bold text-xs sm:text-sm text-cyan-300 flex items-center space-x-2 border-b border-slate-800/80 pb-1.5\"><span>📌</span><span>2) Шығыс Қазақстан экономикалық ауданы:</span></h4>\n<div class=\"space-y-1.5 pl-2 text-xs text-slate-300\">\n<p class=\"leading-relaxed\">• <b>Құрамы</b>: Шығыс Қазақстан облысы, Абай облысы (орталығы — Өскемен). Аумағы — <b>283,3 мың км²</b>, халқы — <b>1 378 504 адам</b>.</p>\n<p class=\"leading-relaxed\">• <b>Негізгі табиғи байлықтары</b>:</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• <b>Кенді Алтай полиметалл кендері</b>: қорғасын, мырыш, мыс, алтын, күміс, кадмий, сурьма, темір, күкірт, молибден, висмут, индий, таллий, селен, теллур, сынап (XVIII ғасырдан игеріліп келеді);</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• <b>Су және гидроэнергия қоры</b>: республикадағы барлық су қорының <b>50%-ы</b> осы ауданға тиесілі (Ертіс, Нарын, Үлбі, Бұқтырма, Күршім өзендері).</p>\n<p class=\"leading-relaxed\">• <b>Өнеркәсіп орталықтары</b>:</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Түсті металлургия: Өскемен қорғасын-мырыш және титан-магний комбинаттары; Риддер полиметалл кешені; Алтай кен-металлургиясы;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Машина жасау: Өскемендегі <b>«Азия-Авто» зауыты</b> («Нива», «Шкода», «Шевроле», «Киа»);</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Төл монета мен наградалар: Өскемендегі <b>«Ақша Сарайы» (Монета сарайы)</b>;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Жеңіл және тамақ өнеркәсібі: Семей шұға комбинаты және киіз басу фабрикасы; Аягөз ет комбинаты мен тігін фабрикасы.</p>\n</div></div><div class=\"p-4 rounded-xl bg-space-950/80 border border-slate-800 space-y-2 mt-3 shadow-inner\">\n<h4 class=\"font-bold text-xs sm:text-sm text-cyan-300 flex items-center space-x-2 border-b border-slate-800/80 pb-1.5\"><span>📌</span><span>3) Батыс Қазақстан экономикалық ауданы:</span></h4>\n<div class=\"space-y-1.5 pl-2 text-xs text-slate-300\">\n<p class=\"leading-relaxed\">• <b>Құрамы</b>: Ақтөбе, Атырау, Батыс Қазақстан, Маңғыстау облыстары. Аумағы — <b>735,5 мың км²</b> (Қазақстандағы ең ауқымды экономикалық аудан), халқы — <b>2 833 942 адам</b>.</p>\n<p class=\"leading-relaxed\">• <b>Негізгі салалары мен қазбалары</b>:</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• <b>Мұнай және газ</b>: Солтүстік Каспий қайраңы (Қашаған), Теңіз, Өзен, Қаражанбас, Қаламқас. Ең ірі табиғи газ алабы — <b>Қарашығанақ</b> (БҚО), сонымен қатар Өзен, Үстірт, Теңге, Дүңге;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• <b>Хром мен никель</b>: Мұғалжардағы Дөң және Хромтау (хром қорының 97%-ы); Кемпірсай никель кені;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Фосфорит — Шилісай, Богданов; Калий тұзы — Индер көлі; Уран — Маңғыстау; Құрылыс ұлутасы — Ақтау;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Балық байлығы: Каспий теңізі мен Жайық өзеніндегі бекіре, ақсерке, шоқыр.</p>\n<p class=\"leading-relaxed\">• <b>Өнеркәсіп орталықтары</b>:</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• <b>Ақтөбе</b>: Ақтөбе ферроқорытпа зауыты (феррохром), ТМД-дағы ең ірі Рентген аппаратурасы зауыты, мұнай құралдары мен а/ш машиналары;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• <b>Атырау</b>: Тұңғыш Мұнай өңдеу зауыты (Атырау МӨЗ), мұнай жабдықтары, полиэтилен құбырлары, балық зауыттары;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• <b>Ақтау</b>: Халықаралық теңіз сауда порты, пластмасса зауыты, 1973-1992 жж. АЭС (БН-350);</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• <b>Орал</b>: «Зенит» кеме жасау зауыты, «Омега», «Металлист» металл бұйымдары зауыты, Қызылмия экстракт зауыты.</p>\n</div></div><div class=\"p-4 rounded-xl bg-space-950/80 border border-slate-800 space-y-2 mt-3 shadow-inner\">\n<h4 class=\"font-bold text-xs sm:text-sm text-cyan-300 flex items-center space-x-2 border-b border-slate-800/80 pb-1.5\"><span>📌</span><span>4) Солтүстік Қазақстан экономикалық ауданы:</span></h4>\n<div class=\"space-y-1.5 pl-2 text-xs text-slate-300\">\n<p class=\"leading-relaxed\">• <b>Құрамы</b>: Солтүстік Қазақстан, Ақмола, Қостанай, Павлодар облыстары (аумағы — <b>565,3 мың км²</b>, Батыс пен Оңтүстіктен кейін 3-орында; халқы — <b>3 998 008 адам</b>).</p>\n<p class=\"leading-relaxed\">• <b>Негізгі байлықтары</b>:</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Темір рудасы — Соколов-Сарыбай, Қашар, шөгінді темір кендері Лисаков және Әйет;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Асбест — Жітіқара (Жетіқара);</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Боксит — Арқалық;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Көмір — Екібастұз таскөмірі, Торғай және Майкүбі қоңыр көмірі;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Мыс — Бозшакөл; Алтын — Васильков, Степняк; Ас тұзы — Коряков, Тобылжан, Қалқаман.</p>\n<p class=\"leading-relaxed\">• <b>Өнеркәсіп кәсіпорындары</b>:</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Павлодар — глинозем, алюминий электролиз зауыты, мұнай өңдеу зауыты (Павлодар МӨЗ), пластмасса;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Ақсу — ферроқорытпа зауыты (ферросилиций) және Ақсу МАЭС-і;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Петропавл — шағын литражды қозғалтқыштар, астық тасымалдайтын вагондар;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Степногорск — мойынтірек (подшипник) зауыты;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Көкшетау — оттекті тыныс алу аппаратуралары, механикалық таразылар;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Астана (Нұр-Сұлтан) — ауыл шаруашылығы машина жасау зауыты;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Екібастұз — кен тасымалдайтын жүк вагондары зауыты, Екібастұз ГРЭС-1 және ГРЭС-2.</p>\n</div></div><div class=\"p-4 rounded-xl bg-space-950/80 border border-slate-800 space-y-2 mt-3 shadow-inner\">\n<h4 class=\"font-bold text-xs sm:text-sm text-cyan-300 flex items-center space-x-2 border-b border-slate-800/80 pb-1.5\"><span>📌</span><span>5) Оңтүстік Қазақстан экономикалық ауданы:</span></h4>\n<div class=\"space-y-1.5 pl-2 text-xs text-slate-300\">\n<p class=\"leading-relaxed\">• <b>Құрамы</b>: Алматы, Жамбыл, Қызылорда, Түркістан, Жетісу облыстары (аумағы — <b>712,8 мың км²</b>, республикада 2-орында; <b>халқы — 8 806 652 адам — ел халқының ең көбі шоғырланған аудан!</b>).</p>\n<p class=\"leading-relaxed\">• <b>Негізгі байлықтары</b>:</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Фосфориттер: Қаратау тау жотасында Жаңатас, Ақсай, Шолақтау кен орындары;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Полиметалдар: Ащысай, Мырғалымсай, Байжансай (Түркістан), Шалқия (Қызылорда);</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Уран кен орындары: Қорасан (Хорасан), Иірсу, Семізбай, Мыңқұдық;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Мұнай: Тұран ойпатындағы Құмкөл кен орны;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Құрылыс материалдары: Түркістандағы цемент, гипс, әктас.</p>\n<p class=\"leading-relaxed\">• <b>Өнеркәсіп орталықтары мен гидроэнергетика</b>:</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Шымкент: Шымкент мұнай өңдеу зауыты (ПКОП), фармацевтика («Химфарм»), цемент, фосфатты қосылыстар;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Тараз: Жамбыл фосфор зауыты, былғары-аяқ киім фабрикасы;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Алматы: Жеңіл, тамақ, трикотаж, полиграфия, төменгі вольтты аппаратура, КамАЗ жинақтау, троллейбус құрастыру;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Кентау: Кентау трансформатор зауыты; Талдықорған: аккумулятор зауыты;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• <b>Ірі СЭС-тер</b>:</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Іле өзенінде — <b>Қапшағай СЭС-і</b>;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Шарын өзенінде — <b>Мойнақ СЭС-і</b>;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Сырдария өзенінде — <b>Шардара СЭС-і</b>;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Баламалы энергия: 2018 жылдан бастап электр энергиясының 0,5%-ы Жел және Күн станцияларынан өндіріледі (Жамбыл, Түркістан, Алматы облыстарында).</p>\n</div></div>\n  </div>\n</div>\n</div>", "full_theory_ru": "<div class=\"space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed\">\n<div class=\"p-5 rounded-2xl bg-space-900/90 border border-indigo-500/30 space-y-4 shadow-xl\">\n  <div class=\"flex items-center space-x-3 text-indigo-400\">\n    <span class=\"text-2xl\">🗺️</span>\n    <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">1. Экономико-географическое положение (ЭГП) Казахстана</h3>\n  </div>\n  <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n    <p class=\"leading-relaxed\">• <b>Географическое положение</b>: Казахстан расположен в самом центре материка Евразия, на стыке Европы и Азии.</p><p class=\"leading-relaxed\">• <b>Площадь территории</b>: <b>2 724,9 тыс. км²</b>.</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• 9-е место в мире;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• 4-е место в Евразии (после России, Китая, Индии);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• 2-е место среди стран СНГ (после России).</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Занимает <b>2% суши планеты, 6,1% площади Евразии и 12% территории СНГ</b>.</p><p class=\"leading-relaxed\">• <b>Протяженность</b>: С запада на восток — <b>3 000 км</b>, с севера на юг — <b>1 650 км</b>.</p><p class=\"leading-relaxed\">• <b>Европа и Азия</b>: <b>19,65%</b> площади республики находится в Европе, <b>81,35%</b> — в Азии. Территория целиком лежит в Северном и Восточном полушариях.</p><p class=\"leading-relaxed\">• <b>Географические центры</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Географический центр Евразии</b>: На пересечении 78° в.д. и 50° с.ш. (урочище Жидебай, Абайская область);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Географический центр Казахстана</b>: На пересечении 48°11' с.ш. и 66°22' в.д. — в горах Улытау (в 100 км к северо-востоку от г. Жезказган).</p><p class=\"leading-relaxed\">• <b>Удаленность от океанов и морей</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Северный Ледовитый океан — <b>1 400 км</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Индийский океан — <b>1 800 км</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Атлантический океан — <b>3 000 км</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Тихий океан — <b>2 800 км</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Ближайшее теплое открытое море — Черное море (<b>750 км</b>).</p><p class=\"leading-relaxed\">• <b>4 крайние точки Казахстана</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">1)</b> <b>Северная крайняя точка</b>: <b>55°26' с.ш.</b> — Северо-Казахстанская область, Кызылжарский район, пос. Сумное (соответствует широтам юга Великобритании и центра Восточно-Европейской равнины);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">2)</b> <b>Южная крайняя точка</b>: <b>40°56' с.ш.</b> — Туркестанская область, Мактааральский район, пос. Т. Жайлыбаева (соответствует широтам Южной Европы, Закавказья и Средиземноморья);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">3)</b> <b>Западная крайняя точка</b>: <b>46°24' в.д.</b> — Западно-Казахстанская область, Бокейординский район, разъезд Шонай (вблизи озер Эльтон и Баскунчак);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">4)</b> <b>Восточная крайняя точка</b>: <b>87°20' в.д.</b> — Восточно-Казахстанская область, Катон-Карагайский район, верховья реки Бухтарма (хребты Южного Алтая).</p><p class=\"leading-relaxed\">• <b>Государственные границы</b>: Общая протяженность — <b>13 394 км</b>, в том числе морская (по Каспийскому морю) — <b>2 000 км</b>, сухопутная — <b>11 394 км</b>.</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>С Россией — 7 591 км</b> (самая длинная непрерывная сухопутная граница в мире);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>С Узбекистаном — 2 354 км</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>С Китаем — 1 782 км</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>С Кыргызстаном — 1 241 км</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>С Туркменистаном — 426 км</b>.</p><p class=\"leading-relaxed\">• <b>Преимущества ЭГП</b>: Соседство с экономическими гигантами (РФ, КНР); выгодное транзитное положение между Европой и Азией; преобладание равнинного рельефа (85%); колоссальные запасы минерально-сырьевых ресурсов.</p>\n  </div>\n</div>\n<div class=\"p-5 rounded-2xl bg-space-900/90 border border-amber-500/30 space-y-4 shadow-xl\">\n  <div class=\"flex items-center space-x-3 text-amber-400\">\n    <span class=\"text-2xl\">🧭</span>\n    <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">2. 5 Экономических районов Казахстана</h3>\n  </div>\n  <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n    <div class=\"p-4 rounded-xl bg-space-950/80 border border-slate-800 space-y-2 mt-3 shadow-inner\">\n<h4 class=\"font-bold text-xs sm:text-sm text-cyan-300 flex items-center space-x-2 border-b border-slate-800/80 pb-1.5\"><span>📌</span><span>1) Центральный Казахстан:</span></h4>\n<div class=\"space-y-1.5 pl-2 text-xs text-slate-300\">\n<p class=\"leading-relaxed\">• <b>Состав</b>: Карагандинская и Улытауская области. Площадь — <b>428,0 тыс. км²</b>, население — <b>1 378 554 чел.</b></p>\n<p class=\"leading-relaxed\">• <b>Главные богатства</b>:</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Каменный уголь — <b>Карагандинский угольный бассейн</b>;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Медные руды — <b>Жезказган, Конырат, Саяк, Карсакпай</b>;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Марганец — <b>Жезды, Каражал</b> (100% добычи в РК);</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Полиметаллы — <b>Жайрем, Карагайлы</b>;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Свыше 40 месторождений железа и марганца: Актау, Ушкатын, Камыс, Каражал, Балбырауын, Найзатас.</p>\n<p class=\"leading-relaxed\">• <b>Специализация</b>:</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• <b>100% коксующегося угля, марганца, чугуна и стали страны дает Центральный Казахстан!</b></p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Металлургический гигант полного цикла — <b>«АрселорМиттал Темиртау»</b>;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Медеплавильные заводы: <b>Жезказганский медеплавильный комбинат</b> и <b>Балхашский завод</b>;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Тяжелое машиностроение (горно-шахтное оборудование, краны) в Караганде;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Рыбопромышленный комплекс на озере Балхаш (пос. Шашубай, Мынарал, Алгазы).</p>\n</div></div><div class=\"p-4 rounded-xl bg-space-950/80 border border-slate-800 space-y-2 mt-3 shadow-inner\">\n<h4 class=\"font-bold text-xs sm:text-sm text-cyan-300 flex items-center space-x-2 border-b border-slate-800/80 pb-1.5\"><span>📌</span><span>2) Восточный Казахстан:</span></h4>\n<div class=\"space-y-1.5 pl-2 text-xs text-slate-300\">\n<p class=\"leading-relaxed\">• <b>Состав</b>: Восточно-Казахстанская и Абайская области (центр — Усть-Каменогорск). Площадь — <b>283,3 тыс. км²</b>, население — <b>1 378 504 чел.</b></p>\n<p class=\"leading-relaxed\">• <b>Главные богатства</b>:</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• <b>Полиметаллы Рудного Алтая</b>: свинец, цинк, медь, золото, серебро, титан, тантал, редкие металлы (осваиваются с XVIII века);</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• <b>Гидроэнергетические ресурсы</b>: <b>50% всех гидроресурсов Казахстана</b> (Иртыш, Нарын, Бухтарма, Ульба, Курчум).</p>\n<p class=\"leading-relaxed\">• <b>Промышленные центры</b>:</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Цветная металлургия: Усть-Каменогорский свинцово-цинковый и титано-магниевый комбинаты, Риддер, Алтай;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Автостроение: завод <b>«Азия-Авто»</b> в Усть-Каменогорске;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• <b>Монетный двор («Ақша Сарайы»)</b> в Усть-Каменогорске;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Семей (суконный комбинат, кабельный завод, первичная обработка шерсти), Аягоз (мясокомбинат, швейная фабрика).</p>\n</div></div><div class=\"p-4 rounded-xl bg-space-950/80 border border-slate-800 space-y-2 mt-3 shadow-inner\">\n<h4 class=\"font-bold text-xs sm:text-sm text-cyan-300 flex items-center space-x-2 border-b border-slate-800/80 pb-1.5\"><span>📌</span><span>3) Западный Казахстан:</span></h4>\n<div class=\"space-y-1.5 pl-2 text-xs text-slate-300\">\n<p class=\"leading-relaxed\">• <b>Состав</b>: Актюбинская, Атырауская, Западно-Казахстанская и Мангистауская области. Площадь — <b>735,5 тыс. км²</b> (крупнейший район страны), население — <b>2 833 942 чел.</b></p>\n<p class=\"leading-relaxed\">• <b>Специализация и ресурсы</b>:</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• <b>Нефть и газ</b>: шельф Северного Каспия (Кашаган), Тенгиз, Узень, Каражанбас. Крупнейший бассейн природного газа — <b>Карачаганак</b> (ЗКО);</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• <b>Хромиты (97% запасов)</b>: Донское, Хромтау в Мугалжарах; никель — Кемпирсай; калийные соли — озеро Индер; ракушечник — Мангыстау;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Промысловые рыбы: осетровые породы Каспийского моря и реки Урал.</p>\n<p class=\"leading-relaxed\">• <b>Промышленные узлы</b>:</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• <b>Актобе</b>: Актюбинский завод ферросплавов, крупнейший в СНГ завод рентгеноаппаратуры, машиностроение;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• <b>Атырау</b>: Атырауский НПЗ, нефтяное машиностроение, трубы;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• <b>Актау</b>: международный морской порт, завод пластмасс, АЭС (1973-1992 гг.);</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• <b>Уральск</b>: судостроительный завод «Зенит», заводы «Омега» и «Металлист».</p>\n</div></div><div class=\"p-4 rounded-xl bg-space-950/80 border border-slate-800 space-y-2 mt-3 shadow-inner\">\n<h4 class=\"font-bold text-xs sm:text-sm text-cyan-300 flex items-center space-x-2 border-b border-slate-800/80 pb-1.5\"><span>📌</span><span>4) Северный Казахстан:</span></h4>\n<div class=\"space-y-1.5 pl-2 text-xs text-slate-300\">\n<p class=\"leading-relaxed\">• <b>Состав</b>: Северо-Казахстанская, Акмолинская, Костанайская, Павлодарская области. Площадь — <b>565,3 тыс. км²</b> (3-е место), население — <b>3 998 008 чел.</b></p>\n<p class=\"leading-relaxed\">• <b>Главные богатства</b>:</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Железная руда — Соколовско-Сарбайское, Качарское, Лисаковское;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Асбест — Житикара; Бокситы — Аркалык;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Уголь — Экибастузский бассейн, Тургай, Майкубен;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Золото — Васильковское, Степняк; поваренная соль — Коряковка, Тобылжан, Калкаман.</p>\n<p class=\"leading-relaxed\">• <b>Предприятия</b>:</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Павлодар — глиноземный, алюминиевый электролизный, нефтеперерабатывающий (ПНХЗ);</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Аксу — Аксуский завод ферросплавов и Аксуская ГРЭС;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Петропавловск — вагоны-зерновозы, двигатели;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Степногорск — подшипниковый завод;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Астана — завод сельхозмашин;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Экибастуз — рудовозные вагоны, Экибастузская ГРЭС-1 и ГРЭС-2.</p>\n</div></div><div class=\"p-4 rounded-xl bg-space-950/80 border border-slate-800 space-y-2 mt-3 shadow-inner\">\n<h4 class=\"font-bold text-xs sm:text-sm text-cyan-300 flex items-center space-x-2 border-b border-slate-800/80 pb-1.5\"><span>📌</span><span>5) Южный Казахстан:</span></h4>\n<div class=\"space-y-1.5 pl-2 text-xs text-slate-300\">\n<p class=\"leading-relaxed\">• <b>Состав</b>: Алматинская, Жамбылская, Кызылординская, Туркестанская, Жетысуская области. Площадь — <b>712,8 тыс. км²</b> (2-е место); <b>население — 8 806 652 чел. (самый густонаселенный район РК!)</b>.</p>\n<p class=\"leading-relaxed\">• <b>Богатства и специализация</b>:</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Фосфориты хребта Каратау (Жанатас, Аксай, Шолактау);</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Полиметаллы (Ащысай, Миргалимсай, Шалкия);</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Уран (Хорасан, Семизбай, Мынкудук); Нефть — Кумколь;</p>\n<p class=\"leading-relaxed\">• <b>Промышленные центры и энергетика</b>:</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Шымкент — Шымкентский НПЗ (ПКОП), фармзавод «Химфарм», цемент;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Тараз — суперфосфатный завод;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Алматы — легкая, пищевая промышленность, полиграфия, низковольтная аппаратура, КамАЗ, троллейбусы;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Кентау — трансформаторный завод; Талдыкорган — аккумуляторы;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• <b>Крупные ГЭС</b>:</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Капшагайская ГЭС на реке Или;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Мойнакская ГЭС на реке Чарын;</p>\n<p class=\"pl-3 text-slate-300 leading-relaxed border-l-2 border-slate-800/60 py-0.5\">• Шардаринская ГЭС на реке Сырдарья.</p>\n</div></div>\n  </div>\n</div>\n</div>", "svg_diagram": "<svg viewBox=\"0 0 800 480\" width=\"100%\" height=\"auto\" xmlns=\"http://www.w3.org/2000/svg\" style=\"background:#0b1120; border-radius:16px;\">\n  <defs>\n    <linearGradient id=\"topG33\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" stop-color=\"#4338ca\"/><stop offset=\"100%\" stop-color=\"#312e81\"/></linearGradient>\n    <linearGradient id=\"cg33\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" stop-color=\"#1e293b\"/><stop offset=\"100%\" stop-color=\"#0f172a\"/></linearGradient>\n    <filter id=\"sh33\" x=\"-10%\" y=\"-10%\" width=\"120%\" height=\"120%\"><feDropShadow dx=\"0\" dy=\"4\" stdDeviation=\"6\" flood-color=\"#000\" flood-opacity=\"0.5\"/></filter>\n  </defs>\n  <rect width=\"800\" height=\"480\" fill=\"#0b1120\" rx=\"16\"/>\n  <rect x=\"30\" y=\"20\" width=\"740\" height=\"55\" rx=\"12\" fill=\"url(#topG33)\" filter=\"url(#sh33)\"/>\n  <text x=\"400\" y=\"45\" fill=\"#fff\" font-size=\"17\" font-weight=\"bold\" text-anchor=\"middle\" font-family=\"system-ui, sans-serif\">ҚАЗАҚСТАН ӘЛЕМ КАРТАСЫНДА ЖӘНЕ 5 ЭКОНОМИКАЛЫҚ АУДАН</text>\n  <text x=\"400\" y=\"64\" fill=\"#c7d2fe\" font-size=\"12\" text-anchor=\"middle\" font-family=\"system-ui, sans-serif\">Жер көлемі 2724,9 мың км² (әлемде 9-орын) • Шекарасы 13 394 км • Шеткі нүктелер • 5 Экономикалық аудан</text>\n  \n  <!-- Col 1: EGP & Boundaries -->\n  <g transform=\"translate(30, 95)\" filter=\"url(#sh33)\">\n    <rect width=\"235\" height=\"175\" rx=\"12\" fill=\"url(#cg33)\" stroke=\"#818cf8\" stroke-width=\"1.5\"/>\n    <text x=\"15\" y=\"26\" fill=\"#818cf8\" font-size=\"12\" font-weight=\"bold\">ЭГЖ ЖӘНЕ ШЕКАРАЛАРЫ</text>\n    <text x=\"15\" y=\"48\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Аумағы:</tspan> 2724,9 мың км² (әлемде 9, Еуразияда 4, ТМД-да 2-орын). Б-Ш: 3000 км, С-О: 1650 км.</text>\n    <text x=\"15\" y=\"94\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Шекарасы:</tspan> 13 394 км (теңіз 2000 км). Ресеймен — 7591 км, Өзбекстан — 2354 км, Қытай — 1782 км.</text>\n    <text x=\"15\" y=\"140\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Орталықтары:</tspan> Еуразиянікі — Жидебай; ҚР орталығы — Ұлытау (Жезқазғаннан 100 км).</text>\n  </g>\n\n  <!-- Col 2: Central & East & North -->\n  <g transform=\"translate(282, 95)\" filter=\"url(#sh33)\">\n    <rect width=\"235\" height=\"175\" rx=\"12\" fill=\"url(#cg33)\" stroke=\"#f59e0b\" stroke-width=\"1.5\"/>\n    <text x=\"15\" y=\"26\" fill=\"#f59e0b\" font-size=\"12\" font-weight=\"bold\">ОРТАЛЫҚ, ШЫҒЫС, СОЛТҮСТІК</text>\n    <text x=\"15\" y=\"48\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Орталық:</tspan> Қарағанды көмірі, Жезқазған, Балқаш мысы, марганец, болат 100%.</text>\n    <text x=\"15\" y=\"88\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Шығыс:</tspan> Кенді Алтай полиметалдары, су қоры 50%, Өскемен, Азия-Авто, Монета сарайы.</text>\n    <text x=\"15\" y=\"128\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Солтүстік:</tspan> Темір (Соколов-Сарыбай), Екібастұз көмірі, алюминий (Павлодар), Ақсу.</text>\n  </g>\n\n  <!-- Col 3: West & South -->\n  <g transform=\"translate(535, 95)\" filter=\"url(#sh33)\">\n    <rect width=\"235\" height=\"175\" rx=\"12\" fill=\"url(#cg33)\" stroke=\"#10b981\" stroke-width=\"1.5\"/>\n    <text x=\"15\" y=\"26\" fill=\"#10b981\" font-size=\"12\" font-weight=\"bold\">БАТЫС ЖӘНЕ ОҢТҮСТІК</text>\n    <text x=\"15\" y=\"48\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Батыс (ең ірісі):</tspan> Мұнай-газ (Теңіз, Қашаған, Қарашығанақ), хром (Дөң), Ақтау порты мен АЭС.</text>\n    <text x=\"15\" y=\"96\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Оңтүстік (ең халқы көп):</tspan> 8,8 млн адам! Фосфорит (Қаратау), уран, СЭС-тер (Қапшағай, Шардара, Мойнақ).</text>\n    <text x=\"15\" y=\"146\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Егіншілік:</tspan> Мақта, күріш, қант қызылшасы.</text>\n  </g>\n\n  <!-- Bottom Panel: Extreme Points & Geographic Coordinates -->\n  <g transform=\"translate(30, 285)\" filter=\"url(#sh33)\">\n    <rect width=\"740\" height=\"175\" rx=\"12\" fill=\"url(#cg33)\" stroke=\"#38bdf8\" stroke-width=\"1.5\"/>\n    <text x=\"20\" y=\"24\" fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\">ҚАЗАҚСТАННЫҢ 4 ШЕТКІ НҮКТЕСІ ЖӘНЕ ГЕОГРАФИЯЛЫҚ ОРНЫ:</text>\n    <text x=\"20\" y=\"48\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#fde047\">Солтүстік шеткі нүктесі:</tspan> 55°26' с.е. — СҚО, Қызылжар ауданы, Сумное кенті (Британ аралдары мен Шығыс Еуропа жазығының орталығы).</text>\n    <text x=\"20\" y=\"70\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#fde047\">Оңтүстік шеткі нүктесі:</tspan> 40°56' с.е. — Түркістан облысы, Мақтаарал ауданы, Т. Жайлыбаев (Оңтүстік Еуропа мен Жерорта теңізі ендігі).</text>\n    <text x=\"20\" y=\"92\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#fde047\">Батыс шеткі нүктесі:</tspan> 46°24' ш.б. — БҚО, Бөкейорда ауданы, Шоңай кенті (Эльтон және Басқұншақ көлдері маңы).</text>\n    <text x=\"20\" y=\"114\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#fde047\">Шығыс шеткі нүктесі:</tspan> 87°20' ш.б. — ШҚО, Қатонқарағай ауданы, Бұқтырма өзенінің жоғарғы бастауы (Алтай).</text>\n    <text x=\"20\" y=\"136\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#34d399\">Мұхиттардан қашықтығы:</tspan> Солтүстік Мұзды — 1400 км | Үнді — 1800 км | Атлант — 3000 км | Тынық — 2800 км | Қара теңіз — 750 км.</text>\n    <text x=\"20\" y=\"156\" fill=\"#94a3b8\" font-size=\"10.5\">🌍 Қазақстанның 19,65%-ы Еуропада, 81,35%-ы Азияда орналасқан. Солтүстік және шығыс жартышарда жатыр.</text>\n  </g>\n</svg>", "svg_diagram_ru": "<svg viewBox=\"0 0 800 480\" width=\"100%\" height=\"auto\" xmlns=\"http://www.w3.org/2000/svg\" style=\"background:#0b1120; border-radius:16px;\">\n  <defs>\n    <linearGradient id=\"topG33\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" stop-color=\"#4338ca\"/><stop offset=\"100%\" stop-color=\"#312e81\"/></linearGradient>\n    <linearGradient id=\"cg33\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" stop-color=\"#1e293b\"/><stop offset=\"100%\" stop-color=\"#0f172a\"/></linearGradient>\n    <filter id=\"sh33\" x=\"-10%\" y=\"-10%\" width=\"120%\" height=\"120%\"><feDropShadow dx=\"0\" dy=\"4\" stdDeviation=\"6\" flood-color=\"#000\" flood-opacity=\"0.5\"/></filter>\n  </defs>\n  <rect width=\"800\" height=\"480\" fill=\"#0b1120\" rx=\"16\"/>\n  <rect x=\"30\" y=\"20\" width=\"740\" height=\"55\" rx=\"12\" fill=\"url(#topG33)\" filter=\"url(#sh33)\"/>\n  <text x=\"400\" y=\"45\" fill=\"#fff\" font-size=\"17\" font-weight=\"bold\" text-anchor=\"middle\" font-family=\"system-ui, sans-serif\">КАЗАХСТАН НА КАРТЕ МИРА И 5 ЭКОНОМИЧЕСКИХ РАЙОНОВ</text>\n  <text x=\"400\" y=\"64\" fill=\"#c7d2fe\" font-size=\"12\" text-anchor=\"middle\" font-family=\"system-ui, sans-serif\">Площадь 2724,9 тыс. км² (9-е в мире) • Границы 13 394 км • Крайние точки • 5 Экономических районов</text>\n  \n  <!-- Col 1: EGP & Boundaries -->\n  <g transform=\"translate(30, 95)\" filter=\"url(#sh33)\">\n    <rect width=\"235\" height=\"175\" rx=\"12\" fill=\"url(#cg33)\" stroke=\"#818cf8\" stroke-width=\"1.5\"/>\n    <text x=\"15\" y=\"26\" fill=\"#818cf8\" font-size=\"12\" font-weight=\"bold\">ЭГП И ГРАНИЦЫ</text>\n    <text x=\"15\" y=\"48\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Площадь:</tspan> 2724,9 тыс. км² (9-е в мире, 4-е в Евразии, 2-е в СНГ). З-В: 3000 км, С-Ю: 1650 км.</text>\n    <text x=\"15\" y=\"94\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Границы:</tspan> 13 394 км (морская 2000 км). РФ — 7591 км, Узбекистан — 2354 км, КНР — 1782 км.</text>\n    <text x=\"15\" y=\"140\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Центры:</tspan> Евразии — Жидебай; центр РК — Улытау (100 км от Жезказгана).</text>\n  </g>\n\n  <!-- Col 2: Central & East & North -->\n  <g transform=\"translate(282, 95)\" filter=\"url(#sh33)\">\n    <rect width=\"235\" height=\"175\" rx=\"12\" fill=\"url(#cg33)\" stroke=\"#f59e0b\" stroke-width=\"1.5\"/>\n    <text x=\"15\" y=\"26\" fill=\"#f59e0b\" font-size=\"12\" font-weight=\"bold\">ЦЕНТР, ВОСТОК, СЕВЕР</text>\n    <text x=\"15\" y=\"48\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Центр:</tspan> Уголь Караганды, медь Жезказгана и Балхаша, марганец, 100% стали.</text>\n    <text x=\"15\" y=\"88\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Восток:</tspan> Полиметаллы Алтая, 50% гидроресурсов, Усть-Каменогорск, Монетный двор.</text>\n    <text x=\"15\" y=\"128\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Север:</tspan> Железо (Соколов-Сарбай), уголь Экибастуза, алюминий (Павлодар), Аксу.</text>\n  </g>\n\n  <!-- Col 3: West & South -->\n  <g transform=\"translate(535, 95)\" filter=\"url(#sh33)\">\n    <rect width=\"235\" height=\"175\" rx=\"12\" fill=\"url(#cg33)\" stroke=\"#10b981\" stroke-width=\"1.5\"/>\n    <text x=\"15\" y=\"26\" fill=\"#10b981\" font-size=\"12\" font-weight=\"bold\">ЗАПАД И ЮГ</text>\n    <text x=\"15\" y=\"48\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Запад (крупнейший):</tspan> Нефть-газ (Тенгиз, Кашаган, Карачаганак), хром (Донское), порт Актау.</text>\n    <text x=\"15\" y=\"96\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Юг (самый населенный):</tspan> 8,8 млн чел.! Фосфориты (Каратау), уран, ГЭС (Капшагай, Шардара, Мойнак).</text>\n    <text x=\"15\" y=\"146\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Земледелие:</tspan> Хлопок, рис, сахарная свекла.</text>\n  </g>\n\n  <!-- Bottom Panel: Extreme Points & Geographic Coordinates -->\n  <g transform=\"translate(30, 285)\" filter=\"url(#sh33)\">\n    <rect width=\"740\" height=\"175\" rx=\"12\" fill=\"url(#cg33)\" stroke=\"#38bdf8\" stroke-width=\"1.5\"/>\n    <text x=\"20\" y=\"24\" fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\">4 КРАЙНИЕ ТОЧКИ КАЗАХСТАНА И ГЕОГРАФИЧЕСКОЕ ПОЛОЖЕНИЕ:</text>\n    <text x=\"20\" y=\"48\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#fde047\">Северная крайняя точка:</tspan> 55°26' с.ш. — СКО, Кызылжарский р-н, пос. Сумное (широта юга Британии).</text>\n    <text x=\"20\" y=\"70\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#fde047\">Южная крайняя точка:</tspan> 40°56' с.ш. — Туркестанская обл., Мактааральский р-н, пос. Т. Жайлыбаева (широта Средиземноморья).</text>\n    <text x=\"20\" y=\"92\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#fde047\">Западная крайняя точка:</tspan> 46°24' в.д. — ЗКО, Бокейординский р-н, пос. Шонай (район озер Эльтон и Баскунчак).</text>\n    <text x=\"20\" y=\"114\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#fde047\">Восточная крайняя точка:</tspan> 87°20' в.д. — ВКО, Катон-Карагайский р-н, верховья реки Бухтарма (Алтай).</text>\n    <text x=\"20\" y=\"136\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#34d399\">Удаленность от океанов:</tspan> Сев. Ледовитый — 1400 км | Индийский — 1800 км | Атлантический — 3000 км | Тихий — 2800 км | Черное море — 750 км.</text>\n    <text x=\"20\" y=\"156\" fill=\"#94a3b8\" font-size=\"10.5\">🌍 19,65% площади РК расположено в Европе, 81,35% — в Азии. Северное и восточное полушария.</text>\n  </g>\n</svg>", "table_kz": {"cols": ["Экономикалық аудан", "Аумағы және халқы", "Құрамындағы облыстары", "Негізгі табиғи байлықтары", "Басты өнеркәсіп салалары мен ірі кәсіпорындары"], "rows": [["Орталық Қазақстан", "428,0 мың км² / 1,38 млн адам", "Қарағанды, Ұлытау", "Таскөмір (Қарағанды), мыс (Жезқазған, Қоңырат, Саяқ), марганец (Жезді, Қаражал — 100%)", "«АрселорМиттал Теміртау» (болаттың 100%-ы), Жезқазған және Балқаш мыс балқыту зауыттары, шахта жабдықтары"], ["Шығыс Қазақстан", "283,3 мың км² / 1,38 млн адам", "Шығыс Қазақстан, Абай (орталығы — Өскемен)", "Кенді Алтай полиметалдары (қорғасын, мырыш, алтын, титан), су ресурстарының 50%-ы", "Өскемен ТМК және ҚМК, «Азия-Авто», «Ақша Сарайы» Монета сарайы, Семей шұға комбинаты, Ертіс СЭС каскады"], ["Батыс Қазақстан", "735,5 мың км² (ең ірісі) / 2,83 млн адам", "Ақтөбе, Атырау, Батыс Қазақстан, Маңғыстау", "Мұнай-газ (Теңіз, Қашаған, Қарашығанақ), хром (Мұғалжар 97%), никель, ұлутас, Каспий бекіресі", "Ақтөбе ферроқорытпа зауыты, Атырау МӨЗ, Ақтау халықаралық порты және пластмасса зауыты, Орал «Зенит» кеме жасау"], ["Солтүстік Қазақстан", "565,3 мың км² (3-орын) / 4,0 млн адам", "Солтүстік Қазақстан, Ақмола, Қостанай, Павлодар", "Темір рудасы (Соколов-Сарыбай, Қашар), Екібастұз таскөмірі, боксит (Арқалық), асбест (Жітіқара)", "Павлодар алюминий және МӨЗ зауыттары, Ақсу ферроқорытпа зауыты, Степногорск подшипник, Петропавл және Екібастұз вагондары"], ["Оңтүстік Қазақстан", "712,8 мың км² / 8,8 млн адам (ең халқы көбі)", "Алматы, Жамбыл, Қызылорда, Түркістан, Жетісу", "Фосфорит (Қаратау, Жаңатас), уран (Қорасан), полиметалл, суармалы агроклиматтық ресурстар", "Шымкент МӨЗ және «Химфарм», Тараз суперфосфат зауыты, Кентау трансформаторы, Қапшағай, Шардара, Мойнақ СЭС-тері"]]}, "table_ru": {"cols": ["Экономический район", "Площадь и население", "Области в составе", "Главные природные богатства", "Отрасли специализации и ведущие предприятия"], "rows": [["Центральный Казахстан", "428,0 тыс. км² / 1,38 млн чел.", "Карагандинская, Улытауская", "Каменный уголь (Караганда), медь (Жезказган, Конырат, Саяк), марганец (Жезды, Каражал — 100%)", "«АрселорМиттал Темиртау» (100% стали), Жезказганский и Балхашский медеплавильные заводы, тяжелое машиностроение"], ["Восточный Казахстан", "283,3 тыс. км² / 1,38 млн чел.", "Восточно-Казахстанская, Абайская", "Полиметаллы Рудного Алтая (цинк, свинец, медь, золото), 50% всех гидроэнергоресурсов РК", "Усть-Каменогорские СЦК и ТМК, «Азия-Авто», Монетный двор, Семейский суконный комбинат, каскад ГЭС на Иртыше"], ["Западный Казахстан", "735,5 тыс. км² (крупнейший) / 2,83 млн чел.", "Актюбинская, Атырауская, Западно-Казахстанская, Мангистауская", "Нефть и газ (Тенгиз, Кашаган, Карачаганак), хромиты Мугалжар (97%), никель, ракушечник, осетровые", "Актюбинский завод ферросплавов, Атырауский НПЗ, морской порт Актау, завод пластмасс, Уральский судостроительный «Зенит»"], ["Северный Казахстан", "565,3 тыс. км² (3-е место) / 4,0 млн чел.", "Северо-Казахстанская, Акмолинская, Костанайская, Павлодарская", "Железная руда (Соколовско-Сарбайское), уголь Экибастуза, бокситы (Аркалык), асбест (Житикара)", "Павлодарский алюминиевый завод и НПЗ, Аксуский завод ферросплавов, подшипники Степногорска, вагоны Петропавловска и Экибастуза"], ["Южный Казахстан", "712,8 тыс. км² / 8,8 млн чел. (самый густонаселенный)", "Алматинская, Жамбылская, Кызылординская, Туркестанская, Жетысуская", "Фосфориты Каратау (Жанатас, Аксай), уран, полиметаллы, поливные агроклиматические ресурсы", "Шымкентский НПЗ и «Химфарм», Жамбылский суперфосфатный завод, Кентауские трансформаторы, Капшагайская, Шардаринская, Мойнакская ГЭС"]]}, "key_facts_kz": ["Қазақстанның жер көлемі 2724,9 мың км² (әлемде 9-орын, Еуразияда 4-орын, ТМД-да 2-орын).", "Қазақстан аумағының 19,65%-ы Еуропада, 81,35%-ы Азияда орналасқан; аумақ батыстан шығысқа 3000 км, солтүстіктен оңтүстікке 1650 км-ге созылып жатыр.", "Еуразияның географиялық орталығы Жидебайда (Абай обл.), ал Қазақстанның географиялық орталығы Ұлытауда орналасқан.", "Қазақстанның солтүстік шеткі нүктесі — Сумное (55°26' с.е.), оңтүстік — Т. Жайлыбаев (40°56' с.е.), батыс — Шоңай (46°24' ш.б.), шығыс — Бұқтырма бастауы (87°20' ш.б.).", "Қазақстан шекарасының жалпы ұзындығы 13 394 км; Ресеймен құрлықтық шекара — 7591 км (әлемдегі ең ұзын шекара).", "Орталық Қазақстан еліміздегі кокс көмірінің, марганецтің, шойын мен болаттың 100%-ын өндіреді («АрселорМиттал Теміртау»).", "Шығыс Қазақстан дүниежүзіндегі ең кенге бай өңірлердің бірі және еліміздің су қорының 50%-ына иелік етеді.", "Батыс Қазақстан — аумағы бойынша ең үлкен аудан (735,5 мың км²); мұнай-газдың, хромның (97%) және Ақтау портының орталығы.", "Солтүстік Қазақстан — темір рудасының (Соколов-Сарыбай), Экибастұз көмірінің, алюминий мен астық өндірісінің басты өлкесі.", "Оңтүстік Қазақстан — халқы ең көп шоғырланған экономикалық аудан (8,8 млн адам); фосфорит пен гидроэнергияның орталығы.", "Оңтүстік Қазақстанның ірі СЭС-тері: Іледегі Қапшағай СЭС-і, Шарындағы Мойнақ СЭС-і, Сырдариядағы Шардара СЭС-і.", "ЭГЖ-ның артықшылықтары: Еуразия кіндігіндегі транзиттік торап, Ресей және Қытаймен көршілік, жазықтық жер бедері."], "key_facts_ru": ["Площадь Казахстана — 2724,9 тыс. км² (9-е место в мире, 4-е в Евразии, 2-е в СНГ).", "19,65% территории РК расположено в Европе, 81,35% — в Азии; протяженность с запада на восток — 3000 км, с севера на юг — 1650 км.", "Географический центр Евразии находится в Жидебае, а географический центр Казахстана — в горах Улытау.", "Крайние точки: северная — пос. Сумное (55°26' с.ш.), южная — пос. Т. Жайлыбаева (40°56' с.ш.), западная — пос. Шонай (46°24' в.д.), восточная — исток р. Бухтарма (87°20' в.д.).", "Общая протяженность границы — 13 394 км; граница с Россией — 7591 км (самая протяженная непрерывная сухопутная граница в мире).", "Центральный Казахстан дает 100% коксующегося угля, марганца, чугуна и стали страны («АрселорМиттал Темиртау»).", "Восточный Казахстан концентрирует 50% гидроэнергетических ресурсов страны и полиметаллы Рудного Алтая.", "Западный Казахстан — крупнейший по площади район (735,5 тыс. км²); центр углеводородов (Тенгиз, Кашаган, Карачаганак) и хромитов (97%).", "Северный Казахстан — главная железорудная (Соколовско-Сарбайское), угольная (Экибастуз) и зерновая база страны.", "Южный Казахстан — самый густонаселенный экономический район (8,8 млн человек); центр фосфоритов и орошаемого земледелия.", "Крупнейшие ГЭС Южного Казахстана: Капшагайская (р. Или), Мойнакская (р. Чарын), Шардаринская (р. Сырдарья).", "Преимущества ЭГП: транзитный мост между Европой и Азией, соседство с РФ и КНР, 85% равнинного рельефа."], "traps_kz": ["⚠️ Қазақстанның 4 шеткі нүктесі мен елді мекендері: Солтүстік — СУМНОЕ (СҚО, 55°26' с.е.); Оңтүстік — Т. ЖАЙЛЫБАЕВ (Түркістан обл., 40°56' с.е.); Батыс — ШОҢАЙ (БҚО, 46°24' ш.б.); Шығыс — БҰҚТЫРМА бастауы (ШҚО, 87°20' ш.б.). Бұл атаулар мен координаттар ҰБТ-да өте жиі кездеседі!", "⚠️ Еуразия мен Қазақстанның географиялық орталықтары: Еуразияның орталығы — ЖИДЕБАЙ (Абай облысы, 78° ш.б., 50° с.е.). Қазақстанның орталығы — ҰЛЫТАУ (Жезқазғаннан 100 км, 48°11' с.е., 66°22' ш.б.). Екеуін шатастырмаңыз!", "⚠️ Мемлекеттік шекара ұзындығы: Жалпы — 13 394 км. Ең ұзыны — РЕСЕЙМЕН (7591 км). Екінші орында — Өзбекстанмен (2354 км). Үшінші — Қытаймен (1782 км). Төртінші — Қырғызстанмен (1241 км). Ең қысқасы — Түркіменстанмен (426 км).", "⚠️ Аудан мен халық саны бойынша рекордтар: Ең ҮЛКЕН экономикалық аудан — БАТЫС ҚАЗАҚСТАН (735,5 мың км²). Ең ХАЛҚЫ КӨП экономикалық аудан — ОҢТҮСТІК ҚАЗАҚСТАН (8,8 млн адам)."], "traps_ru": ["⚠️ 4 крайние точки Казахстана: Северная — пос. СУМНОЕ (СКО); Южная — пос. Т. ЖАЙЛЫБАЕВА (Туркестанская обл.); Западная — пос. ШОНАЙ (ЗКО); Восточная — исток реки БУХТАРМА (ВКО). Обязательно выучите названия поселков и координаты!", "⚠️ Центр Евразии vs Центр Казахстана: Центр Евразии — урочище ЖИДЕБАЙ (Абайская обл., 78° в.д., 50° с.ш.). Центр Казахстана — горы УЛЫТАУ (Карагандинская/Улытауская обл., 48°11' с.ш., 66°22' в.д.). Не путайте эти два центра!", "⚠️ Протяженность границ РК: Самая протяженная — с РОССИЕЙ (7591 км). На 2-м месте — с Узбекистаном (2354 км). На 3-м — с Китаем (1782 км). На 4-м — с Кыргызстаном (1241 км). Самая короткая — с Туркменистаном (426 км).", "⚠️ Рекорды экономических районов: Крупнейший по ПЛОЩАДИ район — ЗАПАДНЫЙ КАЗАХСТАН (735,5 тыс. км²). Крупнейший по НАСЕЛЕНИЮ — ЮЖНЫЙ КАЗАХСТАН (8,8 млн человек)."]};
+    const blooketData = {"kz": "https://dashboard.blooket.com/set/6a96ebfe483f23716988d47c", "ru": "https://dashboard.blooket.com/set/6a95eb71089e743aeedae639", "doc_kz": "https://docs.google.com/document/d/17OsluuauRg6SY7BeGVu6QzV-s79QSXjDvImY5FgWndA/edit?usp=sharing", "doc_ru": "https://drive.google.com/file/d/1Weo3rTEVsPIH3Uxg9wtUYXFr3Nr7N3bn/view?usp=sharing"};
+    let currentLang = 'kz';
+
+    // Safe localStorage helper
+    const safeStorage = {
+      getItem(k) {
+        try { return localStorage.getItem(k); } catch (e) { return null; }
+      },
+      setItem(k, v) {
+        try { localStorage.setItem(k, v); } catch (e) {}
+      }
+    };
+
+    function getCompletedSet() {
+      try {
+        return new Set(JSON.parse(safeStorage.getItem('geotany_grammar_completed') || '[]'));
+      } catch (e) {
+        return new Set();
+      }
+    }
+
+    function saveCompletedSet(setObj) {
+      safeStorage.setItem('geotany_grammar_completed', JSON.stringify(Array.from(setObj)));
+    }
+
+    function updateCompleteButton() {
+      const setObj = getCompletedSet();
+      const isDone = setObj.has(topicData.num);
+      const btn = document.getElementById('btnComplete');
+      const icon = document.getElementById('completeIcon');
+      const text = document.getElementById('completeText');
+
+      if (isDone) {
+        btn.className = "inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black transition border border-emerald-500/50 bg-emerald-500/20 text-emerald-300 shadow-md shadow-emerald-500/10";
+        icon.textContent = "✓";
+        text.textContent = (currentLang === 'ru') ? "Изучено" : "Меңгерілді";
+      } else {
+        btn.className = "inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition border border-slate-700 bg-space-900 text-slate-300 hover:text-white hover:border-slate-600";
+        icon.textContent = "○";
+        text.textContent = (currentLang === 'ru') ? "Отметить изученным" : "Меңгерілді деп белгілеу";
+      }
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('xpToast');
+      const m = document.getElementById('toastMsg');
+      m.textContent = msg;
+      t.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        t.classList.add('translate-y-20', 'opacity-0');
+      }, 2500);
+    }
+
+    function toggleComplete() {
+      const setObj = getCompletedSet();
+      const isDone = setObj.has(topicData.num);
+      let xp = parseInt(safeStorage.getItem('geotany_user_xp') || '0', 10);
+
+      if (isDone) {
+        setObj.delete(topicData.num);
+        xp = Math.max(0, xp - 20);
+        showToast((currentLang === 'ru') ? "-20 XP. Отметка снята" : "-20 XP. Белгі алынды");
+      } else {
+        setObj.add(topicData.num);
+        xp += 20;
+        showToast((currentLang === 'ru') ? "+20 XP! Тема изучена" : "+20 XP! Тақырып меңгерілді");
+      }
+
+      saveCompletedSet(setObj);
+      safeStorage.setItem('geotany_user_xp', xp.toString());
+      updateCompleteButton();
+    }
+
+    function renderTable(isRu) {
+      const tbl = isRu ? (topicData.table_ru || topicData.table_kz) : topicData.table_kz;
+      const container = document.getElementById('tableContainer');
+      if (!tbl || !tbl.cols || !tbl.rows || tbl.rows.length === 0) {
+        document.getElementById('tableSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('tableSection').classList.remove('hidden');
+
+      let html = '<table class="w-full text-left text-xs border-collapse">';
+      html += '<thead><tr class="border-b border-slate-800 text-slate-400 font-bold">';
+      tbl.cols.forEach(col => {
+        html += `<th class="p-2.5 sm:p-3 bg-space-900/60 rounded-lg whitespace-nowrap text-cyan-300 font-bold">${col}</th>`;
+      });
+      html += '</tr></thead><tbody class="divide-y divide-slate-800/60">';
+      tbl.rows.forEach(row => {
+        html += '<tr class="hover:bg-space-900/40 transition">';
+        row.forEach((cell, idx) => {
+          const cls = idx === 0 ? "font-bold text-white whitespace-nowrap" : (idx === 1 ? "text-cyan-300 font-medium" : "text-slate-300");
+          html += `<td class="p-2.5 sm:p-3 ${cls}">${cell}</td>`;
+        });
+        html += '</tr>';
+      });
+      html += '</tbody></table>';
+      container.innerHTML = html;
+    }
+
+    function renderFacts(isRu) {
+      const facts = isRu ? (topicData.key_facts_ru || topicData.key_facts_kz) : topicData.key_facts_kz;
+      const list = document.getElementById('factsList');
+      if (!facts || facts.length === 0) {
+        document.getElementById('factsSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('factsSection').classList.remove('hidden');
+      list.innerHTML = facts.map(f => `<li class="flex items-start space-x-2"><span class="text-amber-400 font-bold shrink-0 mt-0.5">•</span><span>${f}</span></li>`).join('');
+    }
+
+    function renderTraps(isRu) {
+      const traps = isRu ? (topicData.traps_ru || topicData.traps_kz) : topicData.traps_kz;
+      const list = document.getElementById('trapsList');
+      if (!traps || traps.length === 0) {
+        document.getElementById('trapsSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('trapsSection').classList.remove('hidden');
+      list.innerHTML = traps.map(tr => {
+        const str = String(tr);
+        const icon = str.startsWith('⚠️') ? '' : '<span class="text-amber-400 shrink-0 mt-0.5">⚠️</span> ';
+        return `<p class="leading-relaxed flex items-start space-x-2">${icon}<span>${str}</span></p>`;
+      }).join('');
+    }
+
+    function setLang(lang) {
+      currentLang = lang;
+      safeStorage.setItem('geotany_lang', lang);
+      const isRu = (lang === 'ru');
+
+      // Update lang buttons
+      const btnKz = document.getElementById('btnLangKz');
+      const btnRu = document.getElementById('btnLangRu');
+      if (isRu) {
+        btnRu.className = "px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow";
+        btnKz.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+      } else {
+        btnKz.className = "px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow";
+        btnRu.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+      }
+
+      // Update text fields
+      document.getElementById('navCatBadge').textContent = isRu ? (topicData.category_ru || 'География') : (topicData.category_kz || 'География');
+      document.getElementById('heroCatBadge').textContent = isRu ? (topicData.category_ru || 'География') : (topicData.category_kz || 'География');
+      document.getElementById('heroTitle').textContent = isRu ? topicData.title_ru : topicData.title_kz;
+
+      // Summary
+      document.getElementById('summaryHeader').textContent = isRu ? "КРАТКИЙ ОБЗОР ТЕМЫ" : "ТАҚЫРЫПҚА ҚЫСҚАША ШОЛУ";
+      document.getElementById('summaryText').textContent = isRu ? topicData.summary_ru : topicData.summary_kz;
+
+      // Theory
+      document.getElementById('theoryHeader').textContent = isRu ? "ПОЛНЫЙ ТЕОРЕТИЧЕСКИЙ МАТЕРИАЛ И КОНСПЕКТ" : "ТОЛЫҚ ТЕОРИЯЛЫҚ МАТЕРИАЛ МЕН КОНСПЕКТ";
+      document.getElementById('theoryContent').innerHTML = isRu ? topicData.full_theory_ru : topicData.full_theory_kz;
+
+      // SVG
+      document.getElementById('svgHeader').textContent = isRu ? "НАГЛЯДНАЯ СХЕМА И ИНФОГРАФИКА" : "КӨРНЕКІ СХЕМА МЕН ИНФОГРАФИКА";
+      const svgCode = isRu ? (topicData.svg_diagram_ru || topicData.svg_diagram) : topicData.svg_diagram;
+      document.getElementById('svgContainer').innerHTML = svgCode || '';
+
+      // Table, Facts, Traps
+      document.getElementById('tableHeader').textContent = isRu ? "СТРУКТУРИРОВАННАЯ ТАБЛИЦА ПОКАЗАТЕЛЕЙ И КЛАССИФИКАЦИИ" : "НАҚТЫ КӨРСЕТКІШТЕР МЕН КЛАССИФИКАЦИЯ КЕСТЕСІ";
+      renderTable(isRu);
+
+      document.getElementById('factsHeader').textContent = isRu ? "ГЛАВНЫЕ ФАКТЫ ДЛЯ ЕНТ И ЗАПОМИНАНИЯ" : "ҰБТ-ҒА ҚАЖЕТТІ НЕГІЗГІ ЕРЕЖЕЛЕР МЕН ФАКТІЛЕР";
+      renderFacts(isRu);
+
+      document.getElementById('trapsHeader').textContent = isRu ? "ЛОВУШКИ И ЛАЙФХАКИ ЕНТ" : "ҰБТ ҚАҚПАНДАРЫ МЕН ЛАЙФХАКТАР";
+      renderTraps(isRu);
+
+      // Blooket & Doc links
+      const btnB = document.getElementById('btnBlooket');
+      const bUrl = isRu ? (blooketData.ru || blooketData.kz) : (blooketData.kz || blooketData.ru);
+      if (bUrl) {
+        btnB.href = bUrl;
+        btnB.classList.remove('hidden');
+      } else {
+        btnB.classList.add('hidden');
+      }
+
+      const btnD = document.getElementById('btnDoc');
+      if (btnD) { const dUrl = isRu ? (blooketData.doc_ru || blooketData.doc_kz) : (blooketData.doc_kz || blooketData.doc_ru); if (dUrl) { btnD.href = dUrl; btnD.classList.remove('hidden'); } else { btnD.classList.add('hidden'); } }
+
+      updateCompleteButton();
+    }
+
+    // Initialization on page load with URL param and localStorage sync
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const queryLang = urlParams.get('lang');
+      let langToSet = 'kz';
+      if (queryLang === 'ru' || queryLang === 'kz') {
+        langToSet = queryLang;
+        safeStorage.setItem('geotany_lang', queryLang);
+      } else {
+        const savedLang = safeStorage.getItem('geotany_lang');
+        if (savedLang === 'ru') langToSet = 'ru';
+        else langToSet = 'kz';
+      }
+      setLang(langToSet);
+    });
+  </script>
+</body>
+</html>

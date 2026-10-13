@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="kz" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>6-сабақ. Қазақстан литосферасы | GEOTANY</title>
+
+  <!-- AUTH GUARD: RESTRICT DIRECT ACCESS WITHOUT VALID SESSION -->
+  <style id="authCloak">body { display: none !important; }</style>
+  <script>
+    (function() {
+      try {
+        var isAdmin = localStorage.getItem('geotany_admin_auth') === 'true';
+        var sessionStr = localStorage.getItem('geotany_user_session');
+        var isAuthorized = isAdmin;
+        if (!isAuthorized && sessionStr) {
+          var s = JSON.parse(sessionStr);
+          if (s && s.email && (s.courseCode || s.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        var profileStr = localStorage.getItem('geotany_user_profile');
+        if (!isAuthorized && profileStr) {
+          var p = JSON.parse(profileStr);
+          if (p && p.email && (p.courseCode || p.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        if (!isAuthorized) {
+          window.location.replace('../index.html?error=unauthorized_course');
+          return;
+        }
+        var cloak = document.getElementById('authCloak');
+        if (cloak) cloak.remove();
+      } catch (e) {
+        window.location.replace('../index.html?error=unauthorized_course');
+      }
+    })();
+  </script>
+
+  <!-- TAILWIND CSS & FONTS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            space: {
+              800: '#1E293B',
+              850: '#151E2E',
+              900: '#0F172A',
+              950: '#0B0F19',
+            },
+            brand: {
+              400: '#34D399',
+              500: '#10B981',
+              600: '#059669',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0B0F19;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1E293B;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+    .prose-theory h1, .prose-theory h2, .prose-theory h3, .prose-theory h4 {
+      color: #F8FAFC;
+      font-weight: 800;
+    }
+    .prose-theory p {
+      color: #CBD5E1;
+      line-height: 1.75;
+      font-size: 0.875rem;
+    }
+    .prose-theory ul {
+      list-style-type: disc;
+      margin-left: 1.25rem;
+      color: #CBD5E1;
+      font-size: 0.875rem;
+    }
+    .prose-theory table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.75rem;
+    }
+    .prose-theory th, .prose-theory td {
+      border: 1px solid #334155;
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+    }
+    .prose-theory th {
+      background: #1E293B;
+      color: #F8FAFC;
+      font-weight: 700;
+    }
+    .prose-theory tr:nth-child(even) {
+      background: rgba(15, 23, 42, 0.6);
+    }
+  </style>
+</head>
+<body class="bg-space-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-brand-500/30 selection:text-brand-400">
+
+  <!-- TOP APP BAR -->
+  <header class="sticky top-0 z-40 bg-space-950/90 backdrop-blur-xl border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+      
+      <!-- Left: Back Button & Title -->
+      <div class="flex items-center space-x-3">
+        <a href="../index.html?lang=kz#section-sabaktar_reading" class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 text-slate-300 hover:text-white border border-slate-700/80 text-xs sm:text-sm font-bold transition shadow-sm">
+          <span>←</span>
+          <span>Артқа</span>
+        </a>
+        <div class="h-6 w-px bg-slate-800 hidden sm:block"></div>
+        <div class="flex items-center space-x-2">
+          <span class="text-xs px-2.5 py-1 rounded-lg bg-cyan-500/10 text-cyan-400 font-extrabold border border-cyan-500/20">
+            6 / 20 сабақ
+          </span>
+          <span class="text-sm font-bold text-slate-200 hidden md:inline truncate max-w-xs">
+            6-сабақ. Қазақстан литосферасы
+          </span>
+        </div>
+      </div>
+
+      <!-- Center: Reading Time Badge -->
+      <div class="hidden sm:flex items-center space-x-1.5 bg-space-900 border border-slate-800 px-3 py-1.5 rounded-xl text-xs text-slate-400 font-medium">
+        <span>⏱️</span>
+        <span>8 мин</span>
+      </div>
+
+      <!-- Right: Direct Language Page Switcher & Complete Button -->
+      <div class="flex items-center space-x-2 sm:space-x-3">
+        
+        <!-- Language Switcher linking directly to counterpart page -->
+        <div class="flex items-center bg-space-900 p-0.5 rounded-xl border border-slate-800 text-xs font-bold">
+          <a href="lesson_06_kz.html" class="px-2.5 py-1 rounded-lg bg-brand-500 text-space-950 font-black transition">
+            🇰🇿 KZ
+          </a>
+          <a href="lesson_06_ru.html" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition">
+            🇷🇺 RU
+          </a>
+        </div>
+
+        <!-- Mark as Completed Toggle Button -->
+        <button id="btnHeaderComplete" onclick="toggleLessonComplete()" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-emerald-400 text-xs font-bold transition flex items-center space-x-1.5 shadow-sm">
+          <span id="headerCheckIcon">○</span>
+          <span id="headerCompleteText" class="hidden sm:inline">Оқылды</span>
+        </button>
+
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-8">
+
+    <!-- HERO LESSON BANNER -->
+    <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-space-900 via-space-850 to-space-900 border border-slate-800 shadow-xl relative overflow-hidden">
+      <!-- Glow decoration -->
+      <div class="absolute -right-20 -top-20 w-60 h-60 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-20 -bottom-20 w-60 h-60 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10 space-y-4">
+        
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <span class="px-3 py-1 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 font-extrabold text-xs tracking-wider uppercase">
+              📖 ҰБТ ГЕОГРАФИЯ • САБАҚ №6
+            </span>
+            <span class="px-3 py-1 rounded-xl bg-brand-500/10 border border-brand-500/30 text-brand-400 font-bold text-xs">
+              Қазақ бөлімі
+            </span>
+          </div>
+
+          <!-- Prev / Next Navigation -->
+          <div class="flex items-center space-x-2 text-xs font-bold">
+            <a href="lesson_05_kz.html" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition flex items-center space-x-1"><span>←</span><span>Алдыңғы сабақ</span></a>
+            <span class="text-slate-500">|</span>
+            <a href="lesson_07_kz.html" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition flex items-center space-x-1"><span>Келесі сабақ</span><span>→</span></a>
+          </div>
+        </div>
+
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            6-сабақ. Қазақстан литосферасы
+          </h1>
+          <h2 class="text-sm font-semibold text-cyan-300/80 mt-1">
+            6 урок. Литосфера Казахстана
+          </h2>
+        </div>
+
+        <!-- Tags Row -->
+        <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-800/80">
+          <span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">#Қазақстан литосферасы</span><span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">#Литосфера Казахстана</span>
+        </div>
+
+        <!-- Completed Banner -->
+        <div id="lessonCompletedBanner" class="hidden p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-xs sm:text-sm text-emerald-300 flex items-center justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <span>✅</span>
+            <span>Бұл сабақ оқылды деп белгіленген.</span>
+          </div>
+          <span class="text-xs px-2.5 py-1 rounded-xl bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40">
+            +30 XP алынды
+          </span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SECTION 1: KEY TERMS & DEFINITIONS -->
+    <section class="p-6 sm:p-7 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-base sm:text-lg font-black text-white flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center text-sm font-black">1</span>
+          <span>Негізгі терминдер мен ұғымдар</span>
+        </h3>
+        <span class="text-xs text-slate-400 font-semibold">
+          5 термин
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Шығыс Еуропа платформасы</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Еліміздің батысын (Каспий маңы ойпатын) алып жатқан ежелгі докембрийлік қатты іргетас.</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Эпигерциндік плиталар</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Тұран және Батыс Сібір жас плиталары — палеозой қатпарлы негізінен түзілген жазықтық аймақтар.</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Хан Тәңірі (6995 м)</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Орталық Тянь-Шаньдағы Қазақстанның ең биік шыңы.</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Сарыарқа (Қазақтың ұсақ шоқысы)</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Ежелгі каледон және герцин қатпарлықтарының ұзақ үгілуінен түзілген белесті қырат (Ақсораң, 1565 м).</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Қарақия ойысы (-132 м)</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Маңғыстау түбегіндегі Қазақстанның ең терең, әлемдегі бесінші ойысы.</p>
+        </div>
+        
+      </div>
+    </section>
+
+    <!-- SECTION 2: FULL COMPREHENSIVE THEORY -->
+    <section class="p-6 sm:p-8 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-5">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-base sm:text-lg font-black text-white flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-brand-500/10 border border-brand-500/20 text-brand-400 flex items-center justify-center text-sm font-black">2</span>
+          <span>Толық теориялық конспект және иллюстрациялар</span>
+        </h3>
+        <span class="text-xs text-slate-400 font-medium hidden sm:inline">
+          Интерактивті оқу
+        </span>
+      </div>
+
+      <!-- Theory Body Container -->
+      <div class="prose-theory leading-relaxed space-y-4 overflow-x-auto">
+        <h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>1. Қазақстанның тектоникалық құрылымы мен геологиялық тарихы</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Қазақстан аумағының геологиялық негізі:</b></li>
+</ul>
+<ol class="space-y-2 my-2.5 ml-6 list-none">
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">1.</span><b class="text-emerald-300 font-bold">Шығыс Еуропа ежелгі платформасы:</b> Еліміздің батысын (Каспий маңы ойпатын) алып жатыр. Оның докембрийлік іргетасы өте тереңде (10-20 км) жатыр, үстін қалың шөгінді жыныстар жапқан (негізгі мұнай-газ қоймасы).</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">2.</span><b class="text-emerald-300 font-bold">Жас палеозойлық плиталар (Тұран және Батыс Сібір плиталары):</b> Тұран плитасы Қазақстанның оңтүстік-батысы мен оңтүстігін, ал Батыс Сібір плитасы солтүстік және солтүстік-шығыс өңірлерін алып жатыр.</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">3.</span><b class="text-emerald-300 font-bold">Қатпарлы аймақтар:</b></li>
+</ol>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Каледон қатпарлығы (ерте палеозой):</b> Сарыарқаның солтүстік-батысы мен Солтүстік Тянь-Шань таулары көтерілді.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Герцин қатпарлығы (кеш палеозой):</b> Мұғалжар, Сарыарқаның шығысы, Алтай, Сауыр-Тарбағатай және Оңтүстік Тянь-Шань қатпарланды.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Мезозой эрасының басты ерекшелігі:</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Қазақстан аумағында <b class="text-cyan-300 font-bold">жанартау атқылауы мүлде болмады</b>. Бұл ұзаққа созылған тыныштық кезеңі еді. Көне палеозой таулары сыртқы күштердің әсерінен мүжіліп, тегістеліп, толқынды жазыққа — <b class="text-cyan-300 font-bold">пенепленге</b> айналды (бүгінгі Сарыарқа ұсақ шоқысының негізі).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Кайнозой эрасы (Альпі қатпарлығы):</b> Неоген мен төрттік дәуірдегі күшті тектоникалық қозғалыстар ежелгі тегістелген тауларды қайта жаңғыртып, бүгінгі биік тауларды (Тянь-Шань, Жоңғар Алатауы, Алтай) қалыптастырды.</li>
+</ul>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>🏔️</span>
+<span>1-СЫЗБА: ҚАЗАҚСТАННЫҢ ТЕКТОНИКАЛЫҚ ЖӘНЕ ПЛАТФОРМАЛЫҚ ҚҰРЫЛЫМЫ</span>
+</span>
+<span class="text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono">Платформалар • Плиталар • Қатпарлықтар</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 220">
+<rect fill="#0b1329" height="180" rx="8" stroke="#1e293b" width="205" x="20" y="20"></rect>
+<text fill="#38bdf8" font-size="11" font-weight="bold" text-anchor="middle" x="122" y="45">ШЫҒЫС ЕУРОПА ПЛАТФОРМАСЫ</text>
+<rect fill="#0284c7" fill-opacity="0.3" height="40" rx="4" stroke="#38bdf8" width="165" x="40" y="60"></rect>
+<text fill="#f8fafc" font-size="10" font-weight="bold" text-anchor="middle" x="122" y="85">Каспий маңы ойпаты</text>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="122" y="125">Ежелгі докембрийлік іргетас</text>
+<text fill="#38bdf8" font-size="9" text-anchor="middle" x="122" y="145">Қалың шөгінді қабат (мұнай-газ)</text>
+<text fill="#f59e0b" font-size="9" font-weight="bold" text-anchor="middle" x="122" y="175">Қарақия ойысы (-132 м)</text>
+<rect fill="#0b1329" height="180" rx="8" stroke="#1e293b" width="210" x="245" y="20"></rect>
+<text fill="#34d399" font-size="11" font-weight="bold" text-anchor="middle" x="350" y="45">ЖАС ЭПИГЕРЦИНДІК ПЛИТАЛАР</text>
+<rect fill="#10b981" fill-opacity="0.3" height="40" rx="4" stroke="#34d399" width="170" x="265" y="60"></rect>
+<text fill="#f8fafc" font-size="10" font-weight="bold" text-anchor="middle" x="350" y="85">Тұран және Батыс Сібір</text>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="350" y="125">Палеозойлық қатпарлы негіз</text>
+<text fill="#34d399" font-size="9" text-anchor="middle" x="350" y="145">Мезозой-кайнозой жамылғысы</text>
+<text fill="#f59e0b" font-size="9" font-weight="bold" text-anchor="middle" x="350" y="175">Үстірт платосы, Торғай үстірті</text>
+<rect fill="#0b1329" height="180" rx="8" stroke="#1e293b" width="205" x="475" y="20"></rect>
+<text fill="#f59e0b" font-size="11" font-weight="bold" text-anchor="middle" x="577" y="45">ҚАТПАРЛЫ ТАУЛЫ ОБЛЫСТАР</text>
+<rect fill="#f59e0b" fill-opacity="0.3" height="40" rx="4" stroke="#fbbf24" width="165" x="495" y="60"></rect>
+<text fill="#f8fafc" font-size="10" font-weight="bold" text-anchor="middle" x="577" y="85">Алтай, Сарыарқа, Тянь-Шань</text>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="577" y="125">Каледон: Сарыарқаның СБ</text>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="577" y="145">Герцин: Алтай, Жоңғар, ТШ</text>
+<text fill="#ef4444" font-size="9" font-weight="bold" text-anchor="middle" x="577" y="175">Альпіде қайта жаңғырған</text>
+</svg>
+</div>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>2. Қазақстанның таулы жүйелері мен биік шыңдары</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Қазақстанның ең биік таулары:</b></li>
+</ul>
+<ol class="space-y-3 my-2.5 ml-6 list-none"><li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">1.</span><b class="text-emerald-300 font-bold">Тянь-Шань («Тәңір шыңы»):</b> Еліміздің оңтүстік-шығысында орналасқан.<ul class="space-y-1.5 my-2 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Қазақстанның ең биік нүктесі — <b class="text-cyan-300 font-bold">Хан Тәңірі шыңы (6995 м)</b>, үш елдің (Қазақстан, Қырғызстан, Қытай) шекарасында орналасқан.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Батыс Тянь-Шаньның Тұран ойпатына тірелетін шеткі жотасы — <b class="text-cyan-300 font-bold">Қаратау</b>.</li>
+</ul></li><li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">2.</span><b class="text-emerald-300 font-bold">Алтай тау жүйесі:</b><ul class="space-y-1.5 my-2 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Ең биік шыңы — <b class="text-cyan-300 font-bold">Мұзтау (Белуха, 4506 м)</b>, Қатын жотасында орналасқан.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Кенді Алтай полиметалл кендеріне (қорғасын, мырыш, күміс) өте бай.</li>
+</ul></li><li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">3.</span><b class="text-emerald-300 font-bold">Жоңғар (Жетісу) Алатауы:</b><ul class="space-y-1.5 my-2 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Ең биік шыңы — <b class="text-cyan-300 font-bold">Бесбақан (4622 м)</b>.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Қытаймен шекарада атақты <b class="text-cyan-300 font-bold">Жетісу қақпасы</b> орналасқан (Ебі және Сайқан желдері өтетін табиғи дәліз).</li>
+</ul></li><li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">4.</span><b class="text-emerald-300 font-bold">Сауыр-Тарбағатай:</b><ul class="space-y-1.5 my-2 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Сауырдың биік нүктесі — <i class="text-slate-300">Мұзтау (3816 м)</i>, Тарбағатайдікі — <i class="text-slate-300">Тастау (2992 м)</i>.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Екі жотаның арасында көне сақ обаларымен әйгілі <b class="text-cyan-300 font-bold">Шілікті ойпаңы</b> орналасқан.</li>
+</ul></li><li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">5.</span><b class="text-emerald-300 font-bold">Сарыарқа (Қазақтың ұсақ шоқысы):</b><ul class="space-y-1.5 my-2 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Еліміздің орталығында орналасқан, ежелгі таулардың үгілуінен түзілген.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Ең биік нүктесі — Қызыларай тауындағы <b class="text-cyan-300 font-bold">Ақсораң шыңы (1565 м)</b>.</li>
+</ul></li><li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">6.</span><b class="text-emerald-300 font-bold">Мұғалжар тауы:</b><ul class="space-y-1.5 my-2 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Орал тауының оңтүстік табиғи жалғасы. Ең биік нүктесі — <b class="text-cyan-300 font-bold">Үлкен Боқтыбай (657 м)</b>.</li>
+</ul></li></ol>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>🏔️</span>
+<span>2-СЫЗБА: ҚАЗАҚСТАН ТАУЛАРЫ МЕН ЕҢ БИІК ШЫҢДАРЫ</span>
+</span>
+<span class="text-[10px] bg-emerald-500/10 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-500/20 font-mono">Хан Тәңірі (6995 м) • Мұзтау (4506 м)</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 220">
+<rect fill="#0b1329" height="160" rx="6" stroke="#ef4444" width="115" x="30" y="30"></rect>
+<polygon fill="#ef4444" fill-opacity="0.3" points="50,110 87,45 125,110"></polygon>
+<text fill="#fca5a5" font-size="11" font-weight="bold" text-anchor="middle" x="87" y="130">ТЯНЬ-ШАНЬ</text>
+<text fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle" x="87" y="148">Хан Тәңірі</text>
+<text fill="#ef4444" font-family="monospace" font-size="12" font-weight="bold" text-anchor="middle" x="87" y="165">6995 м</text>
+<text fill="#94a3b8" font-size="8" text-anchor="middle" x="87" y="180">Ең биік шың</text>
+<rect fill="#0b1329" height="160" rx="6" stroke="#f59e0b" width="115" x="165" y="30"></rect>
+<polygon fill="#f59e0b" fill-opacity="0.3" points="185,110 222,60 260,110"></polygon>
+<text fill="#fde047" font-size="11" font-weight="bold" text-anchor="middle" x="222" y="130">АЛТАЙ</text>
+<text fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle" x="222" y="148">Мұзтау (Белуха)</text>
+<text fill="#f59e0b" font-family="monospace" font-size="12" font-weight="bold" text-anchor="middle" x="222" y="165">4506 м</text>
+<text fill="#94a3b8" font-size="8" text-anchor="middle" x="222" y="180">Қатын жотасы</text>
+<rect fill="#0b1329" height="160" rx="6" stroke="#10b981" width="115" x="300" y="30"></rect>
+<polygon fill="#10b981" fill-opacity="0.3" points="320,110 357,65 395,110"></polygon>
+<text fill="#86efac" font-size="10" font-weight="bold" text-anchor="middle" x="357" y="130">ЖОҢҒАР АЛАТАУЫ</text>
+<text fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle" x="357" y="148">Бесбақан</text>
+<text fill="#10b981" font-family="monospace" font-size="12" font-weight="bold" text-anchor="middle" x="357" y="165">4622 м</text>
+<text fill="#94a3b8" font-size="8" text-anchor="middle" x="357" y="180">Жетісу қақпасы</text>
+<rect fill="#0b1329" height="160" rx="6" stroke="#06b6d4" width="115" x="435" y="30"></rect>
+<polygon fill="#06b6d4" fill-opacity="0.3" points="455,110 492,80 530,110"></polygon>
+<text fill="#7dd3fc" font-size="10" font-weight="bold" text-anchor="middle" x="492" y="130">САУЫР-ТАРБАҒАТАЙ</text>
+<text fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle" x="492" y="148">Мұзтау / Тастау</text>
+<text fill="#06b6d4" font-family="monospace" font-size="12" font-weight="bold" text-anchor="middle" x="492" y="165">3816 м / 2992 м</text>
+<text fill="#94a3b8" font-size="8" text-anchor="middle" x="492" y="180">Шілікті аңғары</text>
+<rect fill="#0b1329" height="160" rx="6" stroke="#a855f7" width="115" x="570" y="30"></rect>
+<polygon fill="#a855f7" fill-opacity="0.3" points="590,110 627,95 665,110"></polygon>
+<text fill="#d8b4fe" font-size="11" font-weight="bold" text-anchor="middle" x="627" y="130">САРЫАРҚА / МҰҒАЛЖАР</text>
+<text fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle" x="627" y="148">Ақсораң / Үлкен Боқтыбай</text>
+<text fill="#c084fc" font-family="monospace" font-size="12" font-weight="bold" text-anchor="middle" x="627" y="165">1565 м / 657 м</text>
+<text fill="#94a3b8" font-size="8" text-anchor="middle" x="627" y="180">Ұсақ шоқы / Орал жалғасы</text>
+</svg>
+</div>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>3. Жазықтар, ойпаттар мен үстірттер</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Қазақстан жерінің <b class="text-cyan-300 font-bold">85%-дан астамын жазықтар, ойпаттар, үстірттер мен аласа таулар</b> алып жатыр.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Басты жазықтары мен ойпаттары:</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Каспий маңы ойпаты:</b> Абсолюттік биіктігі теңіз деңгейінен төмен (-28 м-ден 200 м-ге дейін).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Қарақия ойысы:</b> Маңғыстау түбегінде, дүниежүзіндегі ең терең құрлық ойыстарының бірі — <b class="text-cyan-300 font-bold">-132 метр</b> (Қазақстанның ең төменгі нүктесі).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Тұран ойпаты:</b> Оңтүстік пен оңтүстік-батыстағы Қызылқұм, Мойынқұм, Арал маңы шөлдерін қамтитын кең-байтақ жазық.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Батыс Сібір жазығы (Солтүстік Қазақ жазығы):</b> Еліміздің солтүстігіндегі құнарлы қара топырақты астықты өңір.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Үстірт платосы:</b> Маңғыстау мен Арал арасындағы биіктігі 200–300 м болатын тік кемерлі (чинктермен қоршалған) таулы үстірт.</li>
+</ul>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>🌾</span>
+<span>3-СЫЗБА: ҚАЗАҚСТАННЫҢ ЖАЗЫҚТАРЫ МЕН ОЙПАТТАРЫ</span>
+</span>
+<span class="text-[10px] bg-amber-500/10 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/20 font-mono">Аумақтың 85%-ы — жазықтар, ойпаттар мен үстірттер</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 220">
+<rect fill="#15803d" fill-opacity="0.4" height="50" stroke="#22c55e" width="130" x="30" y="140"></rect>
+<text fill="#86efac" font-size="10" font-weight="bold" text-anchor="middle" x="95" y="162">Каспий маңы ойпаты</text>
+<text fill="#ffffff" font-size="9" text-anchor="middle" x="95" y="180">-28 м | Қарақия: -132 м</text>
+<rect fill="#ca8a04" fill-opacity="0.4" height="80" stroke="#eab308" width="140" x="180" y="110"></rect>
+<text fill="#fef08a" font-size="10" font-weight="bold" text-anchor="middle" x="250" y="135">Үстірт және Торғай</text>
+<text fill="#ffffff" font-size="9" text-anchor="middle" x="250" y="155">200 — 300 м үстірттер</text>
+<text fill="#cbd5e1" font-size="8" text-anchor="middle" x="250" y="175">Тектоникалық көтерілу</text>
+<rect fill="#15803d" fill-opacity="0.3" height="65" stroke="#22c55e" width="140" x="340" y="125"></rect>
+<text fill="#86efac" font-size="10" font-weight="bold" text-anchor="middle" x="410" y="150">Тұран ойпаты / Бетпақдала</text>
+<text fill="#ffffff" font-size="9" text-anchor="middle" x="410" y="170">100 — 250 м</text>
+<polygon fill="#78350f" fill-opacity="0.4" points="500,190 535,70 570,190" stroke="#b45309" stroke-width="2"></polygon>
+<text fill="#fed7aa" font-size="10" font-weight="bold" text-anchor="middle" x="535" y="120">Сарыарқа</text>
+<text fill="#ffffff" font-size="9" text-anchor="middle" x="535" y="140">1565 м (Ақсораң)</text>
+<polygon fill="#ef4444" fill-opacity="0.3" points="590,190 635,30 680,190" stroke="#ef4444" stroke-width="2"></polygon>
+<text fill="#fca5a5" font-size="10" font-weight="bold" text-anchor="middle" x="635" y="90">Тянь-Шань / Алтай</text>
+<text fill="#ffffff" font-size="9" text-anchor="middle" x="635" y="110">&gt; 4000 — 6995 м</text>
+</svg>
+</div>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>4. Пайдалы қазбалар және басты кен орындары</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Қазақстан Менделеев кестесіндегі барлық дерлік элементтердің бай қорына ие:</li>
+</ul>
+<ol class="space-y-2 my-2.5 ml-6 list-none">
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">1.</span><b class="text-emerald-300 font-bold">Мыс (Cu):</b> Шартты белгісі — іші боялған тіктөртбұрыш. Басты кен орындары: <b class="text-emerald-300 font-bold">Жезқазған, Қоңырат, Бозшакөл, Саяқ, Ақтоғай</b>.</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">2.</span><b class="text-emerald-300 font-bold">Темір (Fe):</b> Қостанай облысында шоғырланған: <b class="text-emerald-300 font-bold">Соколов-Сарыбай, Қашар, Лисаков, Аят</b>.</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">3.</span><b class="text-emerald-300 font-bold">Хром (Cr):</b> Мұғалжар (Кемпірсай кен орны) — хром қоры бойынша әлемде 1-орында.</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">4.</span><b class="text-emerald-300 font-bold">Тас көмір мен қоңыр көмір:</b> <b class="text-emerald-300 font-bold">Қарағанды</b> (жоғары сапалы кокстелетін көмір), <b class="text-emerald-300 font-bold">Екібастұз</b> (арзан, ашық әдіспен өндірілетін көмір), <b class="text-emerald-300 font-bold">Майкөбе</b>.</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">5.</span><b class="text-emerald-300 font-bold">Мұнай мен газ:</b> Атырау, Маңғыстау, Батыс Қазақстан және Ақтөбе облыстарында: <b class="text-emerald-300 font-bold">Теңіз, Қашаған, Қарашығанақ, Өзен, Қаламқас</b>.</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">6.</span><b class="text-emerald-300 font-bold">Уран (U):</b> Әлемдік қордың шамамен 19%-ы шоғырланған (әлемде өндіруден 1-орын). Негізгі кен орындары <b class="text-emerald-300 font-bold">Шу-Сарысу және Сырдария</b> провинцияларында.</li>
+</ol>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>⛏️</span>
+<span>4-СЫЗБА: ҚАЗАҚСТАННЫҢ ПАЙДАЛЫ ҚАЗБАЛАРЫ ЖӘНЕ БАСТЫ КЕН ОРЫНДАРЫ</span>
+</span>
+<span class="text-[10px] bg-red-500/10 text-red-300 px-2.5 py-0.5 rounded-full border border-red-500/20 font-mono">Мыс • Темір • Көмір • Мұнай • Уран</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 220">
+<rect fill="#0b1329" height="180" rx="8" stroke="#f97316" width="155" x="20" y="20"></rect>
+<rect fill="#ea580c" height="24" width="24" x="85" y="40"></rect>
+<text fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle" x="97" y="56">Cu</text>
+<text fill="#fb923c" font-size="11" font-weight="bold" text-anchor="middle" x="97" y="85">МЫС (Медь)</text>
+<text fill="#f8fafc" font-size="10" font-weight="bold" text-anchor="middle" x="97" y="110">Қоңырат, Бозшакөл</text>
+<text fill="#cbd5e1" font-size="9" text-anchor="middle" x="97" y="128">Жезқазған, Саяқ</text>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="97" y="155">Шартты белгісі:</text>
+<text fill="#fb923c" font-size="9" font-weight="bold" text-anchor="middle" x="97" y="172">Іші боялған тіктөртбұрыш</text>
+<rect fill="#0b1329" height="180" rx="8" stroke="#38bdf8" width="155" x="185" y="20"></rect>
+<circle cx="262" cy="52" fill="#0284c7" r="14"></circle>
+<text fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle" x="262" y="56">Fe</text>
+<text fill="#38bdf8" font-size="11" font-weight="bold" text-anchor="middle" x="262" y="85">ТЕМІР (Железо)</text>
+<text fill="#f8fafc" font-size="10" font-weight="bold" text-anchor="middle" x="262" y="110">Соколов-Сарыбай</text>
+<text fill="#cbd5e1" font-size="9" text-anchor="middle" x="262" y="128">Қашар, Лисаков</text>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="262" y="155">Қостанай облысы</text>
+<text fill="#38bdf8" font-size="9" font-weight="bold" text-anchor="middle" x="262" y="172">Қара металлургия базасы</text>
+<rect fill="#0b1329" height="180" rx="8" stroke="#10b981" width="160" x="355" y="20"></rect>
+<polygon fill="#059669" points="435,40 423,64 447,64"></polygon>
+<text fill="#34d399" font-size="11" font-weight="bold" text-anchor="middle" x="435" y="85">МҰНАЙ (Нефть)</text>
+<text fill="#f8fafc" font-size="10" font-weight="bold" text-anchor="middle" x="435" y="110">Теңіз, Қашаған</text>
+<text fill="#cbd5e1" font-size="9" text-anchor="middle" x="435" y="128">Қарашығанақ, Өзен</text>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="435" y="155">Батыс Қазақстан ойпаты</text>
+<text fill="#34d399" font-size="9" font-weight="bold" text-anchor="middle" x="435" y="172">Дүниежүзілік экспорт</text>
+<rect fill="#0b1329" height="180" rx="8" stroke="#eab308" width="155" x="525" y="20"></rect>
+<circle cx="602" cy="52" fill="#ca8a04" r="14"></circle>
+<text fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle" x="602" y="56">U</text>
+<text fill="#fde047" font-size="11" font-weight="bold" text-anchor="middle" x="602" y="85">УРАН</text>
+<text fill="#f8fafc" font-size="10" font-weight="bold" text-anchor="middle" x="602" y="110">Шу-Сарысу</text>
+<text fill="#cbd5e1" font-size="9" text-anchor="middle" x="602" y="128">Сырдария бассейні</text>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="602" y="155">Әлемдік қордың 19%-ы</text>
+<text fill="#fde047" font-size="9" font-weight="bold" text-anchor="middle" x="602" y="172">Өндіруден 1-орын</text>
+</svg>
+</div>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>5. Экзогендік процестер және жер бедерінің пішіндері</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Аллювийлі жазықтар:</b> Өзен ағысымен келген құм мен саз шөгінділерінің қабаттасуынан түзілген жазықтар (мысалы, Сырдария, Іле, Шу алқаптары).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Эолдық (жел) жер бедері:</b> Желдің үрлеуі мен шөгуінен құралған төбешікті құмдар мен шағылдар (бархандар): <b class="text-cyan-300 font-bold">Қызылқұм, Мойынқұм, Сарыесікатырау, Нарын құмдары</b>.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Суффозиялық пішіндер:</b> Жер асты суларының топырақты шайып кетуінен пайда болатын ойыстар («дала табақшалары»).</li>
+</ul>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>🏜️</span>
+<span>5-СЫЗБА: МЕЗОЗОЙ ПЕНЕПЛЕНІ ЖӘНЕ ЭКЗОГЕНДІК ЖЕР БЕДЕРІ</span>
+</span>
+<span class="text-[10px] bg-purple-500/10 text-purple-300 px-2.5 py-0.5 rounded-full border border-purple-500/20 font-mono">Пенеплен • Жел үгілуі • Бархандар • Құмдар</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 220">
+<rect fill="#0b1329" height="180" rx="8" stroke="#1e293b" width="315" x="20" y="20"></rect>
+<text fill="#38bdf8" font-size="12" font-weight="bold" text-anchor="middle" x="177" y="45">МЕЗОЗОЙДЫҢ ТЫНЫШТЫҚ КЕЗЕҢІ</text>
+<path d="M 40 120 Q 90 95 140 115 T 240 105 T 315 120" fill="none" stroke="#f59e0b" stroke-width="3"></path>
+<text fill="#fde047" font-size="10" font-weight="bold" text-anchor="middle" x="177" y="145">Пенеплен — тегістелген көне таулар</text>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="177" y="165">Жанартау атқылауы МҮЛДЕ БОЛМАДЫ</text>
+<text fill="#38bdf8" font-size="9" text-anchor="middle" x="177" y="185">Сарыарқа ұсақ шоқысына айналды</text>
+<rect fill="#0b1329" height="180" rx="8" stroke="#1e293b" width="315" x="365" y="20"></rect>
+<text fill="#f59e0b" font-size="12" font-weight="bold" text-anchor="middle" x="522" y="45">ЭОЛДЫҚ (ЖЕЛ) ЖӘНЕ СУЛЫҚ РЕЛЬЕФ</text>
+<path d="M 385 130 Q 420 90 445 105 L 470 130 Q 500 90 535 105 L 565 130" fill="#f59e0b" fill-opacity="0.3" stroke="#f59e0b" stroke-width="2"></path>
+<text fill="#fde047" font-size="10" font-weight="bold" text-anchor="middle" x="522" y="150">Қызылқұм, Мойынқұм, Нарын құмдары</text>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="522" y="170">Аллювийлі жазықтар: Сырдария, Іле, Шу</text>
+<text fill="#34d399" font-size="9" text-anchor="middle" x="522" y="188">Өзен шөгінділерінен қалыптасқан</text>
+</svg>
+</div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: COMMON EXAM TRAPS & PITFALLS (if available) -->
+    <section class="p-6 sm:p-7 rounded-3xl bg-amber-500/5 border border-amber-500/20 shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-amber-500/20 pb-3">
+        <h3 class="text-base sm:text-lg font-black text-amber-300 flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center text-sm font-black">⚠️</span>
+          <span>ҰБТ қақпандары мен ерекше ескертулер</span>
+        </h3>
+        <span class="text-xs text-amber-400/80 font-bold">
+          Мұқият есте сақтаңыз
+        </span>
+      </div>
+
+      <div class="space-y-2.5 text-xs sm:text-sm text-slate-200">
+        <p class="leading-relaxed flex items-start space-x-2"><span class="text-amber-400 shrink-0 mt-0.5">⚠️</span><span>⚠️ Назар аударыңыз: Қазақстан литосферасы бойынша сұрақтар ҰБТ-ның контексттік тесттерінде жиі кездеседі.</span></p>
+      </div>
+    </section>
+
+    <!-- SECTION 4: END-OF-LESSON TEST -->
+    <section class="p-6 sm:p-8 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-6">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-brand-500/10 border border-brand-500/20 text-brand-400 flex items-center justify-center text-sm font-black">3</span>
+          <div>
+            <h3 class="text-base sm:text-lg font-black text-white">
+              Тақырыптық қорытынды тест
+            </h3>
+            <p class="text-xs text-slate-400 mt-0.5">
+              Өту шегі: 80% • Сыйлық: +30 XP
+            </p>
+          </div>
+        </div>
+
+        <div id="testScoreBadge" class="hidden px-3 py-1 rounded-xl bg-space-850 border border-slate-700 text-xs font-bold text-amber-400 font-mono">
+          0%
+        </div>
+      </div>
+
+      <!-- Test Questions Container -->
+      <div id="testQuestionsList" class="space-y-6">
+        <!-- Dynamically populated test questions via JS -->
+      </div>
+
+      <!-- Test Submit & Score Action Bar -->
+      <div class="pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="text-xs text-slate-400" id="testProgressInfo">
+          Барлық сұрақтарға жауап беріп, өзіңізді тексеріңіз.
+        </div>
+        <div class="flex items-center space-x-2.5 w-full sm:w-auto">
+          <button id="btnSubmitTest" onclick="submitLessonTest()" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-brand-500 hover:from-amber-400 hover:to-brand-400 text-space-950 font-black text-xs sm:text-sm shadow-md transition flex items-center justify-center space-x-2">
+            <span>🏁</span>
+            <span>Тестті тексеру</span>
+          </button>
+          <button id="btnResetTest" onclick="resetLessonTest()" class="hidden px-4 py-2.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-bold transition flex items-center justify-center space-x-1">
+            <span>🔄</span>
+            <span>Қайта тапсыру</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- BOTTOM NAVIGATION & FOOTER -->
+    <div class="p-6 rounded-3xl bg-space-900 border border-slate-800 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleLessonComplete()" class="px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-400 text-space-950 font-black text-xs sm:text-sm shadow-md transition flex items-center space-x-2">
+          <span>✓</span>
+          <span id="lblBottomComplete">Сабақты оқылды деп белгілеу (+30 XP)</span>
+        </button>
+      </div>
+
+      <div class="flex items-center space-x-2 text-xs font-bold">
+        <a href="lesson_05_kz.html" class="px-4 py-2 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition">← Алдыңғы сабақ</a>
+        <a href="../index.html?lang=kz#section-sabaktar_reading" class="px-4 py-2 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition">
+          Сабақтар тізімі
+        </a>
+        <a href="lesson_07_kz.html" class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-space-950 transition font-black">Келесі сабақ →</a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- LESSON SCRIPT ENGINE -->
+  <script>
+    const lessonData = {"id": 6, "title_kz": "6-сабақ. Қазақстан литосферасы", "title_ru": "6 урок. Литосфера Казахстана", "time": "8 мин", "tags": ["Қазақстан литосферасы", "Литосфера Казахстана"], "terms": [{"kz": "Шығыс Еуропа платформасы", "ru": "Восточно-Европейская платформа", "desc_kz": "Еліміздің батысын (Каспий маңы ойпатын) алып жатқан ежелгі докембрийлік қатты іргетас.", "desc_ru": "Древняя докембрийская платформа, фундамент которой слагает Прикаспийскую низменность."}, {"kz": "Эпигерциндік плиталар", "ru": "Эпигерцинские плиты", "desc_kz": "Тұран және Батыс Сібір жас плиталары — палеозой қатпарлы негізінен түзілген жазықтық аймақтар.", "desc_ru": "Молодые платформенные структуры (Туранская и Западно-Сибирская) с палеозойским фундаментом."}, {"kz": "Хан Тәңірі (6995 м)", "ru": "Хан-Тенгри (6995 м)", "desc_kz": "Орталық Тянь-Шаньдағы Қазақстанның ең биік шыңы.", "desc_ru": "Высочайшая вершина Казахстана (6995 м), расположенная в Центральном Тянь-Шане."}, {"kz": "Сарыарқа (Қазақтың ұсақ шоқысы)", "ru": "Сарыарка (Казахский мелкосопочник)", "desc_kz": "Ежелгі каледон және герцин қатпарлықтарының ұзақ үгілуінен түзілген белесті қырат (Ақсораң, 1565 м).", "desc_ru": "Древняя разрушенная складчатая область в центре Казахстана (высшая точка — Аксоран, 1565 м)."}, {"kz": "Қарақия ойысы (-132 м)", "ru": "Впадина Каракия (-132 м)", "desc_kz": "Маңғыстау түбегіндегі Қазақстанның ең терең, әлемдегі бесінші ойысы.", "desc_ru": "Глубочайшая бессточная сухая впадина Казахстана (-132 м) на полуострове Мангышлак."}], "theory_kz": "<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>1. Қазақстанның тектоникалық құрылымы мен геологиялық тарихы</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Қазақстан аумағының геологиялық негізі:</b></li>\n</ul>\n<ol class=\"space-y-2 my-2.5 ml-6 list-none\">\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Шығыс Еуропа ежелгі платформасы:</b> Еліміздің батысын (Каспий маңы ойпатын) алып жатыр. Оның докембрийлік іргетасы өте тереңде (10-20 км) жатыр, үстін қалың шөгінді жыныстар жапқан (негізгі мұнай-газ қоймасы).</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Жас палеозойлық плиталар (Тұран және Батыс Сібір плиталары):</b> Тұран плитасы Қазақстанның оңтүстік-батысы мен оңтүстігін, ал Батыс Сібір плитасы солтүстік және солтүстік-шығыс өңірлерін алып жатыр.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Қатпарлы аймақтар:</b></li>\n</ol>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Каледон қатпарлығы (ерте палеозой):</b> Сарыарқаның солтүстік-батысы мен Солтүстік Тянь-Шань таулары көтерілді.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Герцин қатпарлығы (кеш палеозой):</b> Мұғалжар, Сарыарқаның шығысы, Алтай, Сауыр-Тарбағатай және Оңтүстік Тянь-Шань қатпарланды.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Мезозой эрасының басты ерекшелігі:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Қазақстан аумағында <b class=\"text-cyan-300 font-bold\">жанартау атқылауы мүлде болмады</b>. Бұл ұзаққа созылған тыныштық кезеңі еді. Көне палеозой таулары сыртқы күштердің әсерінен мүжіліп, тегістеліп, толқынды жазыққа — <b class=\"text-cyan-300 font-bold\">пенепленге</b> айналды (бүгінгі Сарыарқа ұсақ шоқысының негізі).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Кайнозой эрасы (Альпі қатпарлығы):</b> Неоген мен төрттік дәуірдегі күшті тектоникалық қозғалыстар ежелгі тегістелген тауларды қайта жаңғыртып, бүгінгі биік тауларды (Тянь-Шань, Жоңғар Алатауы, Алтай) қалыптастырды.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🏔️</span>\n<span>1-СЫЗБА: ҚАЗАҚСТАННЫҢ ТЕКТОНИКАЛЫҚ ЖӘНЕ ПЛАТФОРМАЛЫҚ ҚҰРЫЛЫМЫ</span>\n</span>\n<span class=\"text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono\">Платформалар • Плиталар • Қатпарлықтар</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"205\" x=\"20\" y=\"20\"></rect>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"122\" y=\"45\">ШЫҒЫС ЕУРОПА ПЛАТФОРМАСЫ</text>\n<rect fill=\"#0284c7\" fill-opacity=\"0.3\" height=\"40\" rx=\"4\" stroke=\"#38bdf8\" width=\"165\" x=\"40\" y=\"60\"></rect>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"122\" y=\"85\">Каспий маңы ойпаты</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"122\" y=\"125\">Ежелгі докембрийлік іргетас</text>\n<text fill=\"#38bdf8\" font-size=\"9\" text-anchor=\"middle\" x=\"122\" y=\"145\">Қалың шөгінді қабат (мұнай-газ)</text>\n<text fill=\"#f59e0b\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"122\" y=\"175\">Қарақия ойысы (-132 м)</text>\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"210\" x=\"245\" y=\"20\"></rect>\n<text fill=\"#34d399\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"45\">ЖАС ЭПИГЕРЦИНДІК ПЛИТАЛАР</text>\n<rect fill=\"#10b981\" fill-opacity=\"0.3\" height=\"40\" rx=\"4\" stroke=\"#34d399\" width=\"170\" x=\"265\" y=\"60\"></rect>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"85\">Тұран және Батыс Сібір</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"350\" y=\"125\">Палеозойлық қатпарлы негіз</text>\n<text fill=\"#34d399\" font-size=\"9\" text-anchor=\"middle\" x=\"350\" y=\"145\">Мезозой-кайнозой жамылғысы</text>\n<text fill=\"#f59e0b\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"175\">Үстірт платосы, Торғай үстірті</text>\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"205\" x=\"475\" y=\"20\"></rect>\n<text fill=\"#f59e0b\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"577\" y=\"45\">ҚАТПАРЛЫ ТАУЛЫ ОБЛЫСТАР</text>\n<rect fill=\"#f59e0b\" fill-opacity=\"0.3\" height=\"40\" rx=\"4\" stroke=\"#fbbf24\" width=\"165\" x=\"495\" y=\"60\"></rect>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"577\" y=\"85\">Алтай, Сарыарқа, Тянь-Шань</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"577\" y=\"125\">Каледон: Сарыарқаның СБ</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"577\" y=\"145\">Герцин: Алтай, Жоңғар, ТШ</text>\n<text fill=\"#ef4444\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"577\" y=\"175\">Альпіде қайта жаңғырған</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>2. Қазақстанның таулы жүйелері мен биік шыңдары</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Қазақстанның ең биік таулары:</b></li>\n</ul>\n<ol class=\"space-y-3 my-2.5 ml-6 list-none\"><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Тянь-Шань («Тәңір шыңы»):</b> Еліміздің оңтүстік-шығысында орналасқан.<ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Қазақстанның ең биік нүктесі — <b class=\"text-cyan-300 font-bold\">Хан Тәңірі шыңы (6995 м)</b>, үш елдің (Қазақстан, Қырғызстан, Қытай) шекарасында орналасқан.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Батыс Тянь-Шаньның Тұран ойпатына тірелетін шеткі жотасы — <b class=\"text-cyan-300 font-bold\">Қаратау</b>.</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Алтай тау жүйесі:</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Ең биік шыңы — <b class=\"text-cyan-300 font-bold\">Мұзтау (Белуха, 4506 м)</b>, Қатын жотасында орналасқан.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Кенді Алтай полиметалл кендеріне (қорғасын, мырыш, күміс) өте бай.</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Жоңғар (Жетісу) Алатауы:</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Ең биік шыңы — <b class=\"text-cyan-300 font-bold\">Бесбақан (4622 м)</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Қытаймен шекарада атақты <b class=\"text-cyan-300 font-bold\">Жетісу қақпасы</b> орналасқан (Ебі және Сайқан желдері өтетін табиғи дәліз).</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">4.</span><b class=\"text-emerald-300 font-bold\">Сауыр-Тарбағатай:</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Сауырдың биік нүктесі — <i class=\"text-slate-300\">Мұзтау (3816 м)</i>, Тарбағатайдікі — <i class=\"text-slate-300\">Тастау (2992 м)</i>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Екі жотаның арасында көне сақ обаларымен әйгілі <b class=\"text-cyan-300 font-bold\">Шілікті ойпаңы</b> орналасқан.</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">5.</span><b class=\"text-emerald-300 font-bold\">Сарыарқа (Қазақтың ұсақ шоқысы):</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Еліміздің орталығында орналасқан, ежелгі таулардың үгілуінен түзілген.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Ең биік нүктесі — Қызыларай тауындағы <b class=\"text-cyan-300 font-bold\">Ақсораң шыңы (1565 м)</b>.</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">6.</span><b class=\"text-emerald-300 font-bold\">Мұғалжар тауы:</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Орал тауының оңтүстік табиғи жалғасы. Ең биік нүктесі — <b class=\"text-cyan-300 font-bold\">Үлкен Боқтыбай (657 м)</b>.</li>\n</ul></li></ol>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🏔️</span>\n<span>2-СЫЗБА: ҚАЗАҚСТАН ТАУЛАРЫ МЕН ЕҢ БИІК ШЫҢДАРЫ</span>\n</span>\n<span class=\"text-[10px] bg-emerald-500/10 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-500/20 font-mono\">Хан Тәңірі (6995 м) • Мұзтау (4506 м)</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<rect fill=\"#0b1329\" height=\"160\" rx=\"6\" stroke=\"#ef4444\" width=\"115\" x=\"30\" y=\"30\"></rect>\n<polygon fill=\"#ef4444\" fill-opacity=\"0.3\" points=\"50,110 87,45 125,110\"></polygon>\n<text fill=\"#fca5a5\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"87\" y=\"130\">ТЯНЬ-ШАНЬ</text>\n<text fill=\"#ffffff\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"87\" y=\"148\">Хан Тәңірі</text>\n<text fill=\"#ef4444\" font-family=\"monospace\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"87\" y=\"165\">6995 м</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"87\" y=\"180\">Ең биік шың</text>\n<rect fill=\"#0b1329\" height=\"160\" rx=\"6\" stroke=\"#f59e0b\" width=\"115\" x=\"165\" y=\"30\"></rect>\n<polygon fill=\"#f59e0b\" fill-opacity=\"0.3\" points=\"185,110 222,60 260,110\"></polygon>\n<text fill=\"#fde047\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"222\" y=\"130\">АЛТАЙ</text>\n<text fill=\"#ffffff\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"222\" y=\"148\">Мұзтау (Белуха)</text>\n<text fill=\"#f59e0b\" font-family=\"monospace\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"222\" y=\"165\">4506 м</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"222\" y=\"180\">Қатын жотасы</text>\n<rect fill=\"#0b1329\" height=\"160\" rx=\"6\" stroke=\"#10b981\" width=\"115\" x=\"300\" y=\"30\"></rect>\n<polygon fill=\"#10b981\" fill-opacity=\"0.3\" points=\"320,110 357,65 395,110\"></polygon>\n<text fill=\"#86efac\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"357\" y=\"130\">ЖОҢҒАР АЛАТАУЫ</text>\n<text fill=\"#ffffff\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"357\" y=\"148\">Бесбақан</text>\n<text fill=\"#10b981\" font-family=\"monospace\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"357\" y=\"165\">4622 м</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"357\" y=\"180\">Жетісу қақпасы</text>\n<rect fill=\"#0b1329\" height=\"160\" rx=\"6\" stroke=\"#06b6d4\" width=\"115\" x=\"435\" y=\"30\"></rect>\n<polygon fill=\"#06b6d4\" fill-opacity=\"0.3\" points=\"455,110 492,80 530,110\"></polygon>\n<text fill=\"#7dd3fc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"492\" y=\"130\">САУЫР-ТАРБАҒАТАЙ</text>\n<text fill=\"#ffffff\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"492\" y=\"148\">Мұзтау / Тастау</text>\n<text fill=\"#06b6d4\" font-family=\"monospace\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"492\" y=\"165\">3816 м / 2992 м</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"492\" y=\"180\">Шілікті аңғары</text>\n<rect fill=\"#0b1329\" height=\"160\" rx=\"6\" stroke=\"#a855f7\" width=\"115\" x=\"570\" y=\"30\"></rect>\n<polygon fill=\"#a855f7\" fill-opacity=\"0.3\" points=\"590,110 627,95 665,110\"></polygon>\n<text fill=\"#d8b4fe\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"627\" y=\"130\">САРЫАРҚА / МҰҒАЛЖАР</text>\n<text fill=\"#ffffff\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"627\" y=\"148\">Ақсораң / Үлкен Боқтыбай</text>\n<text fill=\"#c084fc\" font-family=\"monospace\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"627\" y=\"165\">1565 м / 657 м</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"627\" y=\"180\">Ұсақ шоқы / Орал жалғасы</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>3. Жазықтар, ойпаттар мен үстірттер</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Қазақстан жерінің <b class=\"text-cyan-300 font-bold\">85%-дан астамын жазықтар, ойпаттар, үстірттер мен аласа таулар</b> алып жатыр.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Басты жазықтары мен ойпаттары:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Каспий маңы ойпаты:</b> Абсолюттік биіктігі теңіз деңгейінен төмен (-28 м-ден 200 м-ге дейін).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Қарақия ойысы:</b> Маңғыстау түбегінде, дүниежүзіндегі ең терең құрлық ойыстарының бірі — <b class=\"text-cyan-300 font-bold\">-132 метр</b> (Қазақстанның ең төменгі нүктесі).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Тұран ойпаты:</b> Оңтүстік пен оңтүстік-батыстағы Қызылқұм, Мойынқұм, Арал маңы шөлдерін қамтитын кең-байтақ жазық.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Батыс Сібір жазығы (Солтүстік Қазақ жазығы):</b> Еліміздің солтүстігіндегі құнарлы қара топырақты астықты өңір.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Үстірт платосы:</b> Маңғыстау мен Арал арасындағы биіктігі 200–300 м болатын тік кемерлі (чинктермен қоршалған) таулы үстірт.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🌾</span>\n<span>3-СЫЗБА: ҚАЗАҚСТАННЫҢ ЖАЗЫҚТАРЫ МЕН ОЙПАТТАРЫ</span>\n</span>\n<span class=\"text-[10px] bg-amber-500/10 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/20 font-mono\">Аумақтың 85%-ы — жазықтар, ойпаттар мен үстірттер</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<rect fill=\"#15803d\" fill-opacity=\"0.4\" height=\"50\" stroke=\"#22c55e\" width=\"130\" x=\"30\" y=\"140\"></rect>\n<text fill=\"#86efac\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"95\" y=\"162\">Каспий маңы ойпаты</text>\n<text fill=\"#ffffff\" font-size=\"9\" text-anchor=\"middle\" x=\"95\" y=\"180\">-28 м | Қарақия: -132 м</text>\n<rect fill=\"#ca8a04\" fill-opacity=\"0.4\" height=\"80\" stroke=\"#eab308\" width=\"140\" x=\"180\" y=\"110\"></rect>\n<text fill=\"#fef08a\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"250\" y=\"135\">Үстірт және Торғай</text>\n<text fill=\"#ffffff\" font-size=\"9\" text-anchor=\"middle\" x=\"250\" y=\"155\">200 — 300 м үстірттер</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\" x=\"250\" y=\"175\">Тектоникалық көтерілу</text>\n<rect fill=\"#15803d\" fill-opacity=\"0.3\" height=\"65\" stroke=\"#22c55e\" width=\"140\" x=\"340\" y=\"125\"></rect>\n<text fill=\"#86efac\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"410\" y=\"150\">Тұран ойпаты / Бетпақдала</text>\n<text fill=\"#ffffff\" font-size=\"9\" text-anchor=\"middle\" x=\"410\" y=\"170\">100 — 250 м</text>\n<polygon fill=\"#78350f\" fill-opacity=\"0.4\" points=\"500,190 535,70 570,190\" stroke=\"#b45309\" stroke-width=\"2\"></polygon>\n<text fill=\"#fed7aa\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"535\" y=\"120\">Сарыарқа</text>\n<text fill=\"#ffffff\" font-size=\"9\" text-anchor=\"middle\" x=\"535\" y=\"140\">1565 м (Ақсораң)</text>\n<polygon fill=\"#ef4444\" fill-opacity=\"0.3\" points=\"590,190 635,30 680,190\" stroke=\"#ef4444\" stroke-width=\"2\"></polygon>\n<text fill=\"#fca5a5\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"635\" y=\"90\">Тянь-Шань / Алтай</text>\n<text fill=\"#ffffff\" font-size=\"9\" text-anchor=\"middle\" x=\"635\" y=\"110\">&gt; 4000 — 6995 м</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>4. Пайдалы қазбалар және басты кен орындары</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Қазақстан Менделеев кестесіндегі барлық дерлік элементтердің бай қорына ие:</li>\n</ul>\n<ol class=\"space-y-2 my-2.5 ml-6 list-none\">\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Мыс (Cu):</b> Шартты белгісі — іші боялған тіктөртбұрыш. Басты кен орындары: <b class=\"text-emerald-300 font-bold\">Жезқазған, Қоңырат, Бозшакөл, Саяқ, Ақтоғай</b>.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Темір (Fe):</b> Қостанай облысында шоғырланған: <b class=\"text-emerald-300 font-bold\">Соколов-Сарыбай, Қашар, Лисаков, Аят</b>.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Хром (Cr):</b> Мұғалжар (Кемпірсай кен орны) — хром қоры бойынша әлемде 1-орында.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">4.</span><b class=\"text-emerald-300 font-bold\">Тас көмір мен қоңыр көмір:</b> <b class=\"text-emerald-300 font-bold\">Қарағанды</b> (жоғары сапалы кокстелетін көмір), <b class=\"text-emerald-300 font-bold\">Екібастұз</b> (арзан, ашық әдіспен өндірілетін көмір), <b class=\"text-emerald-300 font-bold\">Майкөбе</b>.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">5.</span><b class=\"text-emerald-300 font-bold\">Мұнай мен газ:</b> Атырау, Маңғыстау, Батыс Қазақстан және Ақтөбе облыстарында: <b class=\"text-emerald-300 font-bold\">Теңіз, Қашаған, Қарашығанақ, Өзен, Қаламқас</b>.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">6.</span><b class=\"text-emerald-300 font-bold\">Уран (U):</b> Әлемдік қордың шамамен 19%-ы шоғырланған (әлемде өндіруден 1-орын). Негізгі кен орындары <b class=\"text-emerald-300 font-bold\">Шу-Сарысу және Сырдария</b> провинцияларында.</li>\n</ol>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>⛏️</span>\n<span>4-СЫЗБА: ҚАЗАҚСТАННЫҢ ПАЙДАЛЫ ҚАЗБАЛАРЫ ЖӘНЕ БАСТЫ КЕН ОРЫНДАРЫ</span>\n</span>\n<span class=\"text-[10px] bg-red-500/10 text-red-300 px-2.5 py-0.5 rounded-full border border-red-500/20 font-mono\">Мыс • Темір • Көмір • Мұнай • Уран</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#f97316\" width=\"155\" x=\"20\" y=\"20\"></rect>\n<rect fill=\"#ea580c\" height=\"24\" width=\"24\" x=\"85\" y=\"40\"></rect>\n<text fill=\"#ffffff\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"97\" y=\"56\">Cu</text>\n<text fill=\"#fb923c\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"97\" y=\"85\">МЫС (Медь)</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"97\" y=\"110\">Қоңырат, Бозшакөл</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" text-anchor=\"middle\" x=\"97\" y=\"128\">Жезқазған, Саяқ</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"97\" y=\"155\">Шартты белгісі:</text>\n<text fill=\"#fb923c\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"97\" y=\"172\">Іші боялған тіктөртбұрыш</text>\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#38bdf8\" width=\"155\" x=\"185\" y=\"20\"></rect>\n<circle cx=\"262\" cy=\"52\" fill=\"#0284c7\" r=\"14\"></circle>\n<text fill=\"#ffffff\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"262\" y=\"56\">Fe</text>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"262\" y=\"85\">ТЕМІР (Железо)</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"262\" y=\"110\">Соколов-Сарыбай</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" text-anchor=\"middle\" x=\"262\" y=\"128\">Қашар, Лисаков</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"262\" y=\"155\">Қостанай облысы</text>\n<text fill=\"#38bdf8\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"262\" y=\"172\">Қара металлургия базасы</text>\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#10b981\" width=\"160\" x=\"355\" y=\"20\"></rect>\n<polygon fill=\"#059669\" points=\"435,40 423,64 447,64\"></polygon>\n<text fill=\"#34d399\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"435\" y=\"85\">МҰНАЙ (Нефть)</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"435\" y=\"110\">Теңіз, Қашаған</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" text-anchor=\"middle\" x=\"435\" y=\"128\">Қарашығанақ, Өзен</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"435\" y=\"155\">Батыс Қазақстан ойпаты</text>\n<text fill=\"#34d399\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"435\" y=\"172\">Дүниежүзілік экспорт</text>\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#eab308\" width=\"155\" x=\"525\" y=\"20\"></rect>\n<circle cx=\"602\" cy=\"52\" fill=\"#ca8a04\" r=\"14\"></circle>\n<text fill=\"#ffffff\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"602\" y=\"56\">U</text>\n<text fill=\"#fde047\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"602\" y=\"85\">УРАН</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"602\" y=\"110\">Шу-Сарысу</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" text-anchor=\"middle\" x=\"602\" y=\"128\">Сырдария бассейні</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"602\" y=\"155\">Әлемдік қордың 19%-ы</text>\n<text fill=\"#fde047\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"602\" y=\"172\">Өндіруден 1-орын</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>5. Экзогендік процестер және жер бедерінің пішіндері</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Аллювийлі жазықтар:</b> Өзен ағысымен келген құм мен саз шөгінділерінің қабаттасуынан түзілген жазықтар (мысалы, Сырдария, Іле, Шу алқаптары).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Эолдық (жел) жер бедері:</b> Желдің үрлеуі мен шөгуінен құралған төбешікті құмдар мен шағылдар (бархандар): <b class=\"text-cyan-300 font-bold\">Қызылқұм, Мойынқұм, Сарыесікатырау, Нарын құмдары</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Суффозиялық пішіндер:</b> Жер асты суларының топырақты шайып кетуінен пайда болатын ойыстар («дала табақшалары»).</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🏜️</span>\n<span>5-СЫЗБА: МЕЗОЗОЙ ПЕНЕПЛЕНІ ЖӘНЕ ЭКЗОГЕНДІК ЖЕР БЕДЕРІ</span>\n</span>\n<span class=\"text-[10px] bg-purple-500/10 text-purple-300 px-2.5 py-0.5 rounded-full border border-purple-500/20 font-mono\">Пенеплен • Жел үгілуі • Бархандар • Құмдар</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"315\" x=\"20\" y=\"20\"></rect>\n<text fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"45\">МЕЗОЗОЙДЫҢ ТЫНЫШТЫҚ КЕЗЕҢІ</text>\n<path d=\"M 40 120 Q 90 95 140 115 T 240 105 T 315 120\" fill=\"none\" stroke=\"#f59e0b\" stroke-width=\"3\"></path>\n<text fill=\"#fde047\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"145\">Пенеплен — тегістелген көне таулар</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"177\" y=\"165\">Жанартау атқылауы МҮЛДЕ БОЛМАДЫ</text>\n<text fill=\"#38bdf8\" font-size=\"9\" text-anchor=\"middle\" x=\"177\" y=\"185\">Сарыарқа ұсақ шоқысына айналды</text>\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"315\" x=\"365\" y=\"20\"></rect>\n<text fill=\"#f59e0b\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"522\" y=\"45\">ЭОЛДЫҚ (ЖЕЛ) ЖӘНЕ СУЛЫҚ РЕЛЬЕФ</text>\n<path d=\"M 385 130 Q 420 90 445 105 L 470 130 Q 500 90 535 105 L 565 130\" fill=\"#f59e0b\" fill-opacity=\"0.3\" stroke=\"#f59e0b\" stroke-width=\"2\"></path>\n<text fill=\"#fde047\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"522\" y=\"150\">Қызылқұм, Мойынқұм, Нарын құмдары</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"522\" y=\"170\">Аллювийлі жазықтар: Сырдария, Іле, Шу</text>\n<text fill=\"#34d399\" font-size=\"9\" text-anchor=\"middle\" x=\"522\" y=\"188\">Өзен шөгінділерінен қалыптасқан</text>\n</svg>\n</div>", "theory_ru": "<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>1. Тектоническое строение и геологическая история Казахстана</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Геологический фундамент территории Казахстана:</b></li>\n</ul>\n<ol class=\"space-y-2 my-2.5 ml-6 list-none\">\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Древняя Восточно-Европейская платформа:</b> Охватывает Прикаспийскую низменность на западе страны. Докембрийский фундамент погружен на глубину до 10–20 км и перекрыт мощным осадочным чехлом (главные нефтегазовые бассейны).</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Молодые эпигерцинские плиты (Туранская и Западно-Сибирская):</b> Фундамент сложен палеозойскими складчатыми породами, перекрытыми мезо-кайнозойскими морскими и континентальными осадками.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Складчатые области:</b></li>\n</ol>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Каледонская складчатость (ранний палеозой):</b> Сформировались северо-западная часть Сарыарки и Северный Тянь-Шань.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Герцинская складчатость (поздний палеозой):</b> Мугалжары, восток Сарыарки, Алтай, Саур-Тарбагатай, Южный Тянь-Шань.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Главная особенность мезозойской эры:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">На территории Казахстана <b class=\"text-cyan-300 font-bold\">полностью отсутствовали вулканические извержения</b>. Это была эпоха тектонического покоя. Древние палеозойские горы разрушались внешними силами и выравнивались, превратившись в волнистую равнину — <b class=\"text-cyan-300 font-bold\">пенеплен</b> (основа современного Казахского мелкосопочника).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Кайнозойская эра (Альпийский орогенез):</b> Мощные новейшие тектонические поднятия возродили древние выровненные горы, превратив их в современные высочайшие хребты Тянь-Шаня, Алтая и Джунгарского Алатау.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🏔️</span>\n<span>1-СЫЗБА: ТЕКТОНИЧЕСКОЕ И ПЛАТФОРМЕННОЕ СТРОЕНИЕ КАЗАХСТАНА</span>\n</span>\n<span class=\"text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono\">Платформалар • Плиталар • Қатпарлықтар</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"205\" x=\"20\" y=\"20\"></rect>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"122\" y=\"45\">ВОСТОЧНО-ЕВРОПЕЙСКАЯ ПЛАТФОРМА</text>\n<rect fill=\"#0284c7\" fill-opacity=\"0.3\" height=\"40\" rx=\"4\" stroke=\"#38bdf8\" width=\"165\" x=\"40\" y=\"60\"></rect>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"122\" y=\"85\">Прикаспийская низменность</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"122\" y=\"125\">Древний докембрийский фундамент</text>\n<text fill=\"#38bdf8\" font-size=\"9\" text-anchor=\"middle\" x=\"122\" y=\"145\">Мощный осадочный чехол (нефть-газ)</text>\n<text fill=\"#f59e0b\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"122\" y=\"175\">Впадина Каракия (-132 м)</text>\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"210\" x=\"245\" y=\"20\"></rect>\n<text fill=\"#34d399\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"45\">МОЛОДЫЕ ЭПИГЕРЦИНСКИЕ ПЛИТЫ</text>\n<rect fill=\"#10b981\" fill-opacity=\"0.3\" height=\"40\" rx=\"4\" stroke=\"#34d399\" width=\"170\" x=\"265\" y=\"60\"></rect>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"85\">Туранская и Западно-Сибирская</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"350\" y=\"125\">Палеозойское складчатое основание</text>\n<text fill=\"#34d399\" font-size=\"9\" text-anchor=\"middle\" x=\"350\" y=\"145\">Мезозойско-кайнозойский чехол</text>\n<text fill=\"#f59e0b\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"175\">Плато Устюрт, Тургайское плато</text>\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"205\" x=\"475\" y=\"20\"></rect>\n<text fill=\"#f59e0b\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"577\" y=\"45\">СКЛАДЧАТЫЕ ОБЛАСТИ</text>\n<rect fill=\"#f59e0b\" fill-opacity=\"0.3\" height=\"40\" rx=\"4\" stroke=\"#fbbf24\" width=\"165\" x=\"495\" y=\"60\"></rect>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"577\" y=\"85\">Алтай, Сарыарка, Тянь-Шань</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"577\" y=\"125\">Каледон: С-З Сарыарки</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"577\" y=\"145\">Герцин: Алтай, Джунгария, ТШ</text>\n<text fill=\"#ef4444\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"577\" y=\"175\">Возрожденные в альпийский орогенез</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>2. Горные системы и высочайшие вершины Казахстана</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Главные горные системы страны:</b></li>\n</ul>\n<ol class=\"space-y-3 my-2.5 ml-6 list-none\"><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Тянь-Шань:</b> Высочайшая горная система на юго-востоке.<ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Высшая точка Казахстана — <b class=\"text-cyan-300 font-bold\">пик Хан-Тенгри (6995 м)</b> на стыке границ Казахстана, Кыргызстана и Китая.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Северо-западный крайний отрог, уходящий в Туранскую низменность — хребет <b class=\"text-cyan-300 font-bold\">Каратау</b>.</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Алтай:</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Высшая точка казахстанского Алтая — двухглавая гора <b class=\"text-cyan-300 font-bold\">Белуха / Музтау (4506 м)</b> в Катунском хребте.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Рудный Алтай сказочно богат свинцово-цинковыми и серебряными полиметаллическими рудами.</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Джунгарский (Жетысуский) Алатау:</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Высшая точка — <b class=\"text-cyan-300 font-bold\">пик Бесбакан (4622 м)</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Знаменитый проход между хребтами — <b class=\"text-cyan-300 font-bold\">Джунгарские ворота</b> (коридор ветров Эби и Сайкан).</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">4.</span><b class=\"text-emerald-300 font-bold\">Саур-Тарбагатай:</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Высота Саура — гора <i class=\"text-slate-300\">Музтау (3816 м)</i>, Тарбагатая — <i class=\"text-slate-300\">Тастау (2992 м)</i>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Разделены тектонической <b class=\"text-cyan-300 font-bold\">Шиликтинской долиной</b> (древние сакские курганы).</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">5.</span><b class=\"text-emerald-300 font-bold\">Сарыарка (Казахский мелкосопочник):</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Реликтовый древний разрушенный массив в центре страны. Высшая точка — <b class=\"text-cyan-300 font-bold\">гора Аксоран (1565 м)</b> в массиве Кызыларай.</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">6.</span><b class=\"text-emerald-300 font-bold\">Мугалжары:</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Южное продолжение Уральских гор. Высшая точка — <b class=\"text-cyan-300 font-bold\">Большой Боктыбай (657 м)</b>.</li>\n</ul></li></ol>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🏔️</span>\n<span>2-СЫЗБА: ГОРЫ КАЗАХСТАНА И ВЫСОЧАЙШИЕ ВЕРШИНЫ</span>\n</span>\n<span class=\"text-[10px] bg-emerald-500/10 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-500/20 font-mono\">Хан Тәңірі (6995 м) • Мұзтау (4506 м)</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<rect fill=\"#0b1329\" height=\"160\" rx=\"6\" stroke=\"#ef4444\" width=\"115\" x=\"30\" y=\"30\"></rect>\n<polygon fill=\"#ef4444\" fill-opacity=\"0.3\" points=\"50,110 87,45 125,110\"></polygon>\n<text fill=\"#fca5a5\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"87\" y=\"130\">ТЯНЬ-ШАНЬ</text>\n<text fill=\"#ffffff\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"87\" y=\"148\">Хан Тәңірі</text>\n<text fill=\"#ef4444\" font-family=\"monospace\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"87\" y=\"165\">6995 м</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"87\" y=\"180\">Высшая точка РК</text>\n<rect fill=\"#0b1329\" height=\"160\" rx=\"6\" stroke=\"#f59e0b\" width=\"115\" x=\"165\" y=\"30\"></rect>\n<polygon fill=\"#f59e0b\" fill-opacity=\"0.3\" points=\"185,110 222,60 260,110\"></polygon>\n<text fill=\"#fde047\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"222\" y=\"130\">АЛТАЙ</text>\n<text fill=\"#ffffff\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"222\" y=\"148\">Мұзтау (Белуха)</text>\n<text fill=\"#f59e0b\" font-family=\"monospace\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"222\" y=\"165\">4506 м</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"222\" y=\"180\">Катунский хребет</text>\n<rect fill=\"#0b1329\" height=\"160\" rx=\"6\" stroke=\"#10b981\" width=\"115\" x=\"300\" y=\"30\"></rect>\n<polygon fill=\"#10b981\" fill-opacity=\"0.3\" points=\"320,110 357,65 395,110\"></polygon>\n<text fill=\"#86efac\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"357\" y=\"130\">ЖОҢҒАР АЛАТАУЫ</text>\n<text fill=\"#ffffff\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"357\" y=\"148\">Бесбақан</text>\n<text fill=\"#10b981\" font-family=\"monospace\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"357\" y=\"165\">4622 м</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"357\" y=\"180\">Джунгарские ворота</text>\n<rect fill=\"#0b1329\" height=\"160\" rx=\"6\" stroke=\"#06b6d4\" width=\"115\" x=\"435\" y=\"30\"></rect>\n<polygon fill=\"#06b6d4\" fill-opacity=\"0.3\" points=\"455,110 492,80 530,110\"></polygon>\n<text fill=\"#7dd3fc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"492\" y=\"130\">САУЫР-ТАРБАҒАТАЙ</text>\n<text fill=\"#ffffff\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"492\" y=\"148\">Мұзтау / Тастау</text>\n<text fill=\"#06b6d4\" font-family=\"monospace\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"492\" y=\"165\">3816 м / 2992 м</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"492\" y=\"180\">Шиликтинская впадина</text>\n<rect fill=\"#0b1329\" height=\"160\" rx=\"6\" stroke=\"#a855f7\" width=\"115\" x=\"570\" y=\"30\"></rect>\n<polygon fill=\"#a855f7\" fill-opacity=\"0.3\" points=\"590,110 627,95 665,110\"></polygon>\n<text fill=\"#d8b4fe\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"627\" y=\"130\">САРЫАРҚА / МҰҒАЛЖАР</text>\n<text fill=\"#ffffff\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"627\" y=\"148\">Ақсораң / Үлкен Боқтыбай</text>\n<text fill=\"#c084fc\" font-family=\"monospace\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"627\" y=\"165\">1565 м / 657 м</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"627\" y=\"180\">Мелкосопочник / Урал</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>3. Равнины, низменности и плато Казахстана</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Более <b class=\"text-cyan-300 font-bold\">85% территории Казахстана занимают равнины, низменности и плато</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Основные формы равнинного рельефа:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Прикаспийская низменность:</b> Лежит ниже уровня Мирового океана (от -28 до 200 м).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Впадина Каракия:</b> Расположена на полуострове Мангыстау — самая глубокая точка Казахстана и СНГ (<b class=\"text-cyan-300 font-bold\">-132 м</b>).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Туранская низменность:</b> Огромное песчаное и глинистое пространство на юге и юго-западе (пустыни Кызылкум, Мойынкум).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Северо-Казахская равнина (юг Западно-Сибирской равнины):</b> Зерновой пояс страны с плодородными черноземами.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Плато Устюрт:</b> Столовое плато высотой 200–300 м с обрывистыми уступами — чинками.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🌾</span>\n<span>3-СЫЗБА: РАВНИНЫ И НИЗМЕННОСТИ КАЗАХСТАНА</span>\n</span>\n<span class=\"text-[10px] bg-amber-500/10 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/20 font-mono\">Аумақтың 85%-ы — жазықтар, ойпаттар мен үстірттер</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<rect fill=\"#15803d\" fill-opacity=\"0.4\" height=\"50\" stroke=\"#22c55e\" width=\"130\" x=\"30\" y=\"140\"></rect>\n<text fill=\"#86efac\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"95\" y=\"162\">Каспий маңы ойпаты</text>\n<text fill=\"#ffffff\" font-size=\"9\" text-anchor=\"middle\" x=\"95\" y=\"180\">-28 м | Қарақия: -132 м</text>\n<rect fill=\"#ca8a04\" fill-opacity=\"0.4\" height=\"80\" stroke=\"#eab308\" width=\"140\" x=\"180\" y=\"110\"></rect>\n<text fill=\"#fef08a\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"250\" y=\"135\">Үстірт және Торғай</text>\n<text fill=\"#ffffff\" font-size=\"9\" text-anchor=\"middle\" x=\"250\" y=\"155\">200 — 300 м үстірттер</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\" x=\"250\" y=\"175\">Платообразное поднятие</text>\n<rect fill=\"#15803d\" fill-opacity=\"0.3\" height=\"65\" stroke=\"#22c55e\" width=\"140\" x=\"340\" y=\"125\"></rect>\n<text fill=\"#86efac\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"410\" y=\"150\">Тұран ойпаты / Бетпақдала</text>\n<text fill=\"#ffffff\" font-size=\"9\" text-anchor=\"middle\" x=\"410\" y=\"170\">100 — 250 м</text>\n<polygon fill=\"#78350f\" fill-opacity=\"0.4\" points=\"500,190 535,70 570,190\" stroke=\"#b45309\" stroke-width=\"2\"></polygon>\n<text fill=\"#fed7aa\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"535\" y=\"120\">Сарыарқа</text>\n<text fill=\"#ffffff\" font-size=\"9\" text-anchor=\"middle\" x=\"535\" y=\"140\">1565 м (Ақсораң)</text>\n<polygon fill=\"#ef4444\" fill-opacity=\"0.3\" points=\"590,190 635,30 680,190\" stroke=\"#ef4444\" stroke-width=\"2\"></polygon>\n<text fill=\"#fca5a5\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"635\" y=\"90\">Тянь-Шань / Алтай</text>\n<text fill=\"#ffffff\" font-size=\"9\" text-anchor=\"middle\" x=\"635\" y=\"110\">&gt; 4000 — 6995 м</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>4. Полезные ископаемые и главные месторождения</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Казахстан занимает ведущие места в мире по запасам минерального сырья:</li>\n</ul>\n<ol class=\"space-y-2 my-2.5 ml-6 list-none\">\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Медь (Cu):</b> Условный знак на карте — закрашенный прямоугольник. Месторождения: <b class=\"text-emerald-300 font-bold\">Жезказган, Коунрад, Бозшаколь, Саяк, Актогай</b>.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Железные руды (Fe):</b> В Костанайской области: <b class=\"text-emerald-300 font-bold\">Соколовско-Сарбайское, Качарское, Лисаковское, Аятское</b>.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Хромиты (Cr):</b> Кемпирсайское месторождение в Мугалжарах (1-е место в мире).</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">4.</span><b class=\"text-emerald-300 font-bold\">Уголь:</b> <b class=\"text-emerald-300 font-bold\">Карагандинский бассейн</b> (коксующийся уголь), <b class=\"text-emerald-300 font-bold\">Экибастузский бассейн</b> (открытая добыча, дешевый энергетический уголь).</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">5.</span><b class=\"text-emerald-300 font-bold\">Нефть и газ:</b> Западный Казахстан: месторождения-гиганты <b class=\"text-emerald-300 font-bold\">Тенгиз, Кашаган, Карачаганак, Узень</b>.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">6.</span><b class=\"text-emerald-300 font-bold\">Уран (U):</b> Около 19% мировых запасов (1-е место по добыче). Провинции <b class=\"text-emerald-300 font-bold\">Шу-Сарысу и Сырдарья</b>.</li>\n</ol>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>⛏️</span>\n<span>4-СЫЗБА: ПОЛЕЗНЫЕ ИСКОПАЕМЫЕ И МЕСТОРОЖДЕНИЯ КАЗАХСТАНА</span>\n</span>\n<span class=\"text-[10px] bg-red-500/10 text-red-300 px-2.5 py-0.5 rounded-full border border-red-500/20 font-mono\">Мыс • Темір • Көмір • Мұнай • Уран</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#f97316\" width=\"155\" x=\"20\" y=\"20\"></rect>\n<rect fill=\"#ea580c\" height=\"24\" width=\"24\" x=\"85\" y=\"40\"></rect>\n<text fill=\"#ffffff\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"97\" y=\"56\">Cu</text>\n<text fill=\"#fb923c\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"97\" y=\"85\">МЕДЬ</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"97\" y=\"110\">Қоңырат, Бозшакөл</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" text-anchor=\"middle\" x=\"97\" y=\"128\">Жезқазған, Саяқ</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"97\" y=\"155\">Условный знак:</text>\n<text fill=\"#fb923c\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"97\" y=\"172\">Закрашенный прямоуг.</text>\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#38bdf8\" width=\"155\" x=\"185\" y=\"20\"></rect>\n<circle cx=\"262\" cy=\"52\" fill=\"#0284c7\" r=\"14\"></circle>\n<text fill=\"#ffffff\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"262\" y=\"56\">Fe</text>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"262\" y=\"85\">ЖЕЛЕЗО</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"262\" y=\"110\">Соколов-Сарыбай</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" text-anchor=\"middle\" x=\"262\" y=\"128\">Қашар, Лисаков</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"262\" y=\"155\">Костанайская обл.</text>\n<text fill=\"#38bdf8\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"262\" y=\"172\">Черная металлургия</text>\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#10b981\" width=\"160\" x=\"355\" y=\"20\"></rect>\n<polygon fill=\"#059669\" points=\"435,40 423,64 447,64\"></polygon>\n<text fill=\"#34d399\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"435\" y=\"85\">НЕФТЬ И ГАЗ</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"435\" y=\"110\">Теңіз, Қашаған</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" text-anchor=\"middle\" x=\"435\" y=\"128\">Қарашығанақ, Өзен</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"435\" y=\"155\">Западный Казахстан</text>\n<text fill=\"#34d399\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"435\" y=\"172\">Мировой экспорт</text>\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#eab308\" width=\"155\" x=\"525\" y=\"20\"></rect>\n<circle cx=\"602\" cy=\"52\" fill=\"#ca8a04\" r=\"14\"></circle>\n<text fill=\"#ffffff\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"602\" y=\"56\">U</text>\n<text fill=\"#fde047\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"602\" y=\"85\">УРАН</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"602\" y=\"110\">Шу-Сарысу</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" text-anchor=\"middle\" x=\"602\" y=\"128\">Сырдария бассейні</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"602\" y=\"155\">19% мировых запасов</text>\n<text fill=\"#fde047\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"602\" y=\"172\">1-е место по добыче</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>5. Экзогенные процессы формирования рельефа</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Аллювиальные равнины:</b> Сформированы речными наносами (песок, ил, суглинки) в долинах Сырдарьи, Или, Чу.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Эоловый рельеф (песчаные пустыни):</b> Грядовые и барханные пески, созданные ветром: <b class=\"text-cyan-300 font-bold\">Кызылкум, Мойынкум, Приаральские Каракумы, Нарынские пески</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Суффозия:</b> Проседание грунта с образованием степных блюдец и западин при вымывании солей подземными водами.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🏜️</span>\n<span>5-СЫЗБА: МЕЗОЗОЙСКИЙ ПЕНЕПЛЕН И ЭКЗОГЕННЫЙ РЕЛЬЕФ</span>\n</span>\n<span class=\"text-[10px] bg-purple-500/10 text-purple-300 px-2.5 py-0.5 rounded-full border border-purple-500/20 font-mono\">Пенеплен • Жел үгілуі • Бархандар • Құмдар</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"315\" x=\"20\" y=\"20\"></rect>\n<text fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"45\">МЕЗОЗОЙСКИЙ ЭТАП ПОКОЯ</text>\n<path d=\"M 40 120 Q 90 95 140 115 T 240 105 T 315 120\" fill=\"none\" stroke=\"#f59e0b\" stroke-width=\"3\"></path>\n<text fill=\"#fde047\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"145\">Пенеплен — выровненная равнина</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"177\" y=\"165\">Вулканизм ПОЛНОСТЬЮ ОТСУТСТВОВАЛ</text>\n<text fill=\"#38bdf8\" font-size=\"9\" text-anchor=\"middle\" x=\"177\" y=\"185\">Формирование Сарыарки</text>\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"315\" x=\"365\" y=\"20\"></rect>\n<text fill=\"#f59e0b\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"522\" y=\"45\">ЭОЛОВЫЙ И АЛЛЮВИАЛЬНЫЙ РЕЛЬЕФ</text>\n<path d=\"M 385 130 Q 420 90 445 105 L 470 130 Q 500 90 535 105 L 565 130\" fill=\"#f59e0b\" fill-opacity=\"0.3\" stroke=\"#f59e0b\" stroke-width=\"2\"></path>\n<text fill=\"#fde047\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"522\" y=\"150\">Пески Кызылкум, Мойынкум, Нарын</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"522\" y=\"170\">Аллювиальные равнины Сырдарьи, Или</text>\n<text fill=\"#34d399\" font-size=\"9\" text-anchor=\"middle\" x=\"522\" y=\"188\">Сформированы речными наносами</text>\n</svg>\n</div>", "traps": ["⚠️ Назар аударыңыз: Қазақстан литосферасы бойынша сұрақтар ҰБТ-ның контексттік тесттерінде жиі кездеседі."], "quiz": [{"q": "Қазақстан литосферасы бойынша негізгі ұғымды атаңыз?", "options": ["Қазақстан литосферасы", "Жалпы ұғым", "Қосымша фактор", "Байланыссыз"], "answer": 0, "exp": "Бұл сабақтың өзегі — Қазақстан литосферасы заңдылықтарын түсіну."}], "blooket": "https://dashboard.blooket.com/set/6a84d667aa52753c4b932781", "test": {"passingScore": 80, "questions": [{"id": 1, "q_kz": "Қазақстан аумағындағы мезозой эрасының басты геологиялық ерекшелігін көрсетіңіз:", "q_ru": "Укажите главную геологическую особенность мезозойской эры на территории Казахстана:", "options_kz": ["Күшті қатпарлану және биік таулардың түзілуі", "Жанартау атқылауы мүлде болмады (тыныштық кезеңі)", "Мұз басу дәуірі басталды", "Жер сілкіністерінің жиілеуі"], "options_ru": ["Бурное складкообразование и рост гор", "Полное отсутствие вулканизма (эпоха покоя)", "Наступление ледникового периода", "Резкая активизация землетрясений"], "answer": 1, "exp_kz": "Мезозой эрасында Қазақстан аумағында жанартаулық әрекет тоқтады, таулар мүжіліп тегістелді (пенепленге айналды).", "exp_ru": "В мезозое на территории Казахстана вулканизм полностью отсутствовал; горы разрушались и превращались в пенеплен."}, {"id": 2, "q_kz": "Сырдария өңірінде қалың тұнбалы шөгінді қабаттан (құм мен саздан) қалыптасқан жазықтың түрі:", "q_ru": "Тип равнины в бассейне Сырдарьи, сформированный мощными речными илистыми наносами (песком и глиной):", "options_kz": ["Мореналық", "Аллювийлі (өзендік шөгінді)", "Карсттық", "Вулкандық"], "options_ru": ["Моренная", "Аллювиальная (речные наносы)", "Карстовая", "Вулканическая"], "answer": 1, "exp_kz": "Өзен суларының ағызып әкелген шөгінділерінен (құм, саз) түзілген жазықтар аллювийлі жазықтар деп аталады.", "exp_ru": "Равнины, сложенные речными отложениями (песком, илом, суглинком), называются аллювиальными."}, {"id": 3, "q_kz": "Тұран ойпатымен шектесетін, Батыс Тянь-Шаньның ең шеткі солтүстік-батыс жотасы:", "q_ru": "Крайний северо-западный хребет Западного Тянь-Шаня, примыкающий к Туранской низменности:", "options_kz": ["Күнгей Алатау", "Қаратау", "Іле Алатауы", "Теріскей Алатау"], "options_ru": ["Кунгей Алатау", "Каратау", "Заилийский Алатау", "Терскей Алатау"], "answer": 1, "exp_kz": "Тянь-Шань жүйесінің Тұран ойпатына қарай сұғына орналасқан ең солтүстік-батыс ежелгі жотасы — Қаратау.", "exp_ru": "Каратау — древний полуразрушенный крайний северо-западный хребет Тянь-Шаня, обрывающийся к Туранской низменности."}, {"id": 4, "q_kz": "Қоңырат және Бозшакөл кен орындарынан өндірілетін пайдалы қазба және оның картадағы шарты белгісі:", "q_ru": "Полезное ископаемое месторождений Коунрад и Бозшаколь и его условный знак на карте:", "options_kz": ["Мыс (іші боялған тіктөртбұрыш)", "Темір (қара дөңгелек)", "Тас көмір (қара шаршы)", "Мұнай (қара үшбұрыш)"], "options_ru": ["Медь (закрашенный прямоугольник)", "Железо (черный круг)", "Каменный уголь (черный квадрат)", "Нефть (черный треугольник)"], "answer": 0, "exp_kz": "Қоңырат пен Бозшакөл — Қазақстандағы аса ірі мыс кен орындары. Картада мыс тіктөртбұрышпен белгіленеді.", "exp_ru": "Коунрад и Бозшаколь — крупнейшие медные месторождения страны. Медь обозначается закрашенным прямоугольником."}, {"id": 5, "q_kz": "Платформалардағы жарықтарды бойлай тектоникалық көтерілуден түзілген қыратты үстіртті жазық:", "q_ru": "Столовая платообразная возвышенность, поднятая по разломам платформ и ограниченная чинками:", "options_kz": ["Үстірт", "Каспий маңы ойпаты", "Балқаш маңы жазығы", "Тұран ойпаты"], "options_ru": ["Устюрт", "Прикаспийская низменность", "Прибалхашская равнина", "Туранская низменность"], "answer": 0, "exp_kz": "Үстірт — Маңғыстау мен Арал арасындағы жарықтар арқылы көтерілген, шеті тік кемерлермен (чинктермен) шектелген таулы үстірт.", "exp_ru": "Плато Устюрт поднято по глубинным тектоническим разломам и окружено обрывистыми чинками высотой до 150-300 м."}, {"id": 6, "q_kz": "Абсолюттік биіктігі 200 м-ден аспайтын, кей бөлігі мұхит деңгейінен төмен жатқан Қазақстанның табиғи нысаны:", "q_ru": "Форма рельефа Казахстана с абсолютной высотой менее 200 м, часть которой лежит ниже уровня океана:", "options_kz": ["Торғай үстірті", "Каспий маңы ойпаты", "Сарыарқа", "Жалпы Сырт"], "options_ru": ["Тургайское плато", "Прикаспийская низменность", "Сарыарка", "Общий Сырт"], "answer": 1, "exp_kz": "Каспий маңы ойпаты теңіз деңгейінен -28 метрге дейін төмен жатыр және ойпаттар қатарына жатады.", "exp_ru": "Прикаспийская низменность лежит в пределах от -28 до 200 м над уровнем моря и является классической низменностью."}, {"id": 7, "q_kz": "Алтай тауының Қазақстандағы ең биік нүктесі (Мұзтау, 4506 м) қай жотада орналасқан?", "q_ru": "В каком хребте расположена высшая точка казахстанского Алтая (г. Белуха / Музтау, 4506 м)?", "options_kz": ["Қатын жотасында", "Күнгей жотасында", "Иванов жотасында", "Сарымсақты жотасында"], "options_ru": ["В Катунском хребте", "В Кунгейском хребте", "В Ивановском хребте", "В Сарымсактинском хребте"], "answer": 0, "exp_kz": "Алтайдың ең биік шыңы Мұзтау (4506 м) Қатын жотасының орталығында орналасқан.", "exp_ru": "Высшая вершина Алтая Белуха (Музтау, 4506 м) находится в центральной части Катунского хребта."}, {"id": 8, "q_kz": "Сауыр мен Тарбағатай тау жоталарын бір-бірінен бөліп жатқан табиғи аңғар:", "q_ru": "Тектоническая впадина, разделяющая горные хребты Саур и Тарбагатай:", "options_kz": ["Шілікті ойпаңы", "Іле аңғары", "Зайсан қазаншұңқыры", "Жетісу қақпасы"], "options_ru": ["Шиликтинская впадина", "Илийская долина", "Зайсанская котловина", "Джунгарские ворота"], "answer": 0, "exp_kz": "Сауыр мен Тарбағатай тауларының ортасында Шілікті ойпаңы орналасқан (сақ дәуірінің алтын қорғандарымен әйгілі).", "exp_ru": "Шиликтинская впадина разделяет горные хребты Саур и Тарбагатай и известна царскими сакскими курганами."}, {"id": 9, "q_kz": "Ресейден басталатын Орал тау жүйесінің Қазақстан аумағындағы оңтүстік жалғасы болып табылатын аласа тау:", "q_ru": "Низкогорный массив, являющийся южным продолжением Уральских гор на территории Казахстана:", "options_kz": ["Мұғалжар", "Қаратау", "Манғыстау таулары", "Шыңғыстау"], "options_ru": ["Мугалжары", "Каратау", "Мангыстауские горы", "Чингизтау"], "answer": 0, "exp_kz": "Орал таулары оңтүстікке қарай аласарып, Қазақстанда Мұғалжар тауы (Үлкен Боқтыбай 657 м) ретінде жалғасады.", "exp_ru": "Уральская горная система продолжается на юг в Казахстан в виде низкогорного массива Мугалжары (г. Большой Боктыбай, 657 м)."}, {"id": 10, "q_kz": "Шу-Сарысу және Сырдария өңірлерінде әлемдік қордың 19%-ын құрайтын қай стратегиялық пайдалы қазба өндіріледі?", "q_ru": "Какое стратегическое сырье, составляющее 19% мировых запасов, добывается в бассейнах Шу-Сарысу и Сырдарьи?", "options_kz": ["Уран", "Темір кені", "Тас көмір", "Ас тұзы"], "options_ru": ["Уран", "Железная руда", "Каменный уголь", "Поваренная соль"], "answer": 0, "exp_kz": "Қазақстан уран өндіруден әлемде 1-орында, негізгі кен орындары Шу-Сарысу және Сырдария бассейндерінде шоғырланған.", "exp_ru": "Казахстан лидирует в мире по добыче урана; крупнейшие месторождения сосредоточены в Шу-Сарысуйской и Сырдарьинской провинциях."}]}, "pdf_kz": "https://drive.google.com/file/d/16VHRCV3yfnyKJm1wUj4WnvwRUQkBPbSC/view?usp=sharing", "pdf_ru": "https://drive.google.com/file/d/1rFla6uqy4o0ola3TR7hQIxP4T6GkP9Ei/view?usp=drive_link"};
+    const currentLang = 'kz';
+    let userTestAnswers = {};
+    let isTestSubmitted = false;
+
+    // Render Test Questions
+    function renderTestQuestions() {
+      const container = document.getElementById('testQuestionsList');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const testObj = lessonData.test;
+      if (!testObj || !testObj.questions || testObj.questions.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-400">Тест готовится / Тест дайындалуда.</p>';
+        return;
+      }
+
+      const isRu = (currentLang === 'ru');
+      const letters = ['A', 'B', 'C', 'D', 'E'];
+
+      testObj.questions.forEach((q, idx) => {
+        const qCard = document.createElement('div');
+        qCard.className = 'p-5 rounded-2xl bg-space-850 border border-slate-800 space-y-3';
+
+        const qPrompt = isRu ? (q.q_ru || q.q_kz) : q.q_kz;
+        const options = isRu ? (q.options_ru || q.options_kz) : q.options_kz;
+        const exp = isRu ? (q.exp_ru || q.exp_kz) : q.exp_kz;
+
+        qCard.innerHTML = `
+          <div class="flex items-center justify-between gap-2 border-b border-slate-800/80 pb-2">
+            <span class="text-xs font-bold text-slate-400 uppercase">
+              ${isRu ? 'Вопрос ' + (idx + 1) : 'Сұрақ ' + (idx + 1)}
+            </span>
+            <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-bold">1 балл</span>
+          </div>
+          <p class="text-xs sm:text-sm font-semibold text-slate-100 leading-relaxed">${qPrompt}</p>
+        `;
+
+        const optContainer = document.createElement('div');
+        optContainer.className = 'space-y-2 pt-1';
+
+        const selectedAnswer = userTestAnswers[q.id];
+
+        options.forEach((optText, optIdx) => {
+          const isSelected = selectedAnswer === optIdx;
+          const isCorrect = q.answer === optIdx;
+
+          const optDiv = document.createElement('div');
+          optDiv.className = 'p-3 rounded-xl border text-xs font-medium cursor-pointer transition flex items-center space-x-2.5 ';
+
+          if (isTestSubmitted) {
+            if (isCorrect) {
+              optDiv.className += 'bg-emerald-500/15 border-emerald-500 text-emerald-200 font-bold';
+            } else if (isSelected) {
+              optDiv.className += 'bg-rose-500/15 border-rose-500 text-rose-200';
+            } else {
+              optDiv.className += 'bg-space-900/50 border-slate-800 text-slate-500';
+            }
+          } else {
+            if (isSelected) {
+              optDiv.className += 'bg-cyan-500/15 border-cyan-500 text-cyan-200 font-bold';
+            } else {
+              optDiv.className += 'bg-space-900 hover:bg-space-800 border-slate-800 hover:border-slate-700 text-slate-300';
+            }
+          }
+
+          const badge = document.createElement('span');
+          badge.className = 'w-5 h-5 rounded-md text-[10px] font-black flex items-center justify-center shrink-0 ' +
+            (isSelected ? 'bg-cyan-500 text-space-950' : 'bg-space-850 text-slate-400 border border-slate-700');
+          badge.textContent = letters[optIdx] || String(optIdx + 1);
+          optDiv.appendChild(badge);
+
+          const txt = document.createElement('span');
+          txt.className = 'flex-1';
+          txt.textContent = optText;
+          optDiv.appendChild(txt);
+
+          optDiv.onclick = () => {
+            if (isTestSubmitted) return;
+            userTestAnswers[q.id] = optIdx;
+            renderTestQuestions();
+          };
+
+          optContainer.appendChild(optDiv);
+        });
+
+        qCard.appendChild(optContainer);
+
+        // Explanation Box after submission
+        if (isTestSubmitted) {
+          const expBox = document.createElement('div');
+          expBox.className = 'p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-xs text-cyan-200 space-y-1';
+          expBox.innerHTML = `
+            <span class="font-bold text-cyan-300 block">💡 ${isRu ? 'Пояснение:' : 'Түсіндірме:'}</span>
+            <p class="text-slate-300 leading-relaxed">${exp || (isRu ? 'Авторское пояснение к вопросу.' : 'Сұраққа арналған түсіндірме.')}</p>
+          `;
+          qCard.appendChild(expBox);
+        }
+
+        container.appendChild(qCard);
+      });
+    }
+
+    function submitLessonTest() {
+      const testObj = lessonData.test;
+      if (!testObj || !testObj.questions) return;
+
+      const answeredCount = Object.keys(userTestAnswers).length;
+      const total = testObj.questions.length;
+      const isRu = (currentLang === 'ru');
+
+      if (answeredCount < total) {
+        const msg = isRu 
+          ? `Вы ответили только на ${answeredCount} из ${total} вопросов. Завершить тест?` 
+          : `Сіз ${total} сұрақтың ${answeredCount}-не жауап бердіңіз. Тестті аяқтайсыз ба?`;
+        if (!confirm(msg)) return;
+      }
+
+      isTestSubmitted = true;
+      let correct = 0;
+
+      testObj.questions.forEach(q => {
+        if (userTestAnswers[q.id] === q.answer) {
+          correct++;
+        }
+      });
+
+      const percentage = Math.round((correct / total) * 100);
+      const isPassed = percentage >= 80;
+
+      // Update badges & UI
+      const scoreBadge = document.getElementById('testScoreBadge');
+      if (scoreBadge) {
+        scoreBadge.classList.remove('hidden');
+        scoreBadge.textContent = `${correct} / ${total} (${percentage}%)`;
+        scoreBadge.className = 'px-3 py-1 rounded-xl text-xs font-bold font-mono border ' +
+          (isPassed ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-rose-500/20 text-rose-300 border-rose-500/40');
+      }
+
+      const info = document.getElementById('testProgressInfo');
+      if (info) {
+        info.textContent = isPassed 
+          ? (isRu ? `🎉 Поздравляем! Вы сдали тест на ${percentage}% (+30 XP)` : `🎉 Құттықтаймыз! Сіз тестті ${percentage}%-ға тапсырдыңыз (+30 XP)`)
+          : (isRu ? `Результат: ${percentage}%. Для зачета требуется 80%. Попробуйте еще раз.` : `Нәтиже: ${percentage}%. Өту үшін 80% қажет. Қайта тапсырып көріңіз.`);
+      }
+
+      document.getElementById('btnSubmitTest').classList.add('hidden');
+      document.getElementById('btnResetTest').classList.remove('hidden');
+
+      // Save to localStorage
+      try {
+        let scores = JSON.parse(localStorage.getItem('geotany_lesson_scores') || '{}');
+        scores[lessonData.id] = percentage;
+        localStorage.setItem('geotany_lesson_scores', JSON.stringify(scores));
+
+        if (isPassed) {
+          let completed = JSON.parse(localStorage.getItem('geotany_completed_lessons') || '[]');
+          if (!completed.includes(lessonData.id)) {
+            completed.push(lessonData.id);
+            localStorage.setItem('geotany_completed_lessons', JSON.stringify(completed));
+          }
+          let curXp = parseInt(localStorage.getItem('geotany_user_xp') || '0', 10);
+          curXp += 30;
+          localStorage.setItem('geotany_user_xp', curXp.toString());
+        }
+      } catch(e) {}
+
+      renderTestQuestions();
+      updateCompleteButtons();
+    }
+
+    function resetLessonTest() {
+      userTestAnswers = {};
+      isTestSubmitted = false;
+      document.getElementById('testScoreBadge').classList.add('hidden');
+      document.getElementById('btnSubmitTest').classList.remove('hidden');
+      document.getElementById('btnResetTest').classList.add('hidden');
+      document.getElementById('testProgressInfo').textContent = (currentLang === 'ru') 
+        ? 'Ответьте на все вопросы и проверьте свои знания.' 
+        : 'Барлық сұрақтарға жауап беріп, өзіңізді тексеріңіз.';
+      renderTestQuestions();
+    }
+
+    // Toggle Lesson Complete Status
+    function toggleLessonComplete() {
+      let completed = [];
+      try {
+        completed = JSON.parse(localStorage.getItem('geotany_completed_lessons') || '[]');
+      } catch(e) {}
+
+      const isDone = completed.includes(lessonData.id);
+      let curXp = parseInt(localStorage.getItem('geotany_user_xp') || '0', 10);
+
+      if (isDone) {
+        completed = completed.filter(id => id !== lessonData.id);
+        curXp = Math.max(0, curXp - 30);
+      } else {
+        completed.push(lessonData.id);
+        curXp += 30;
+      }
+
+      try {
+        localStorage.setItem('geotany_completed_lessons', JSON.stringify(completed));
+        localStorage.setItem('geotany_user_xp', curXp.toString());
+      } catch(e) {}
+
+      updateCompleteButtons();
+    }
+
+    function updateCompleteButtons() {
+      let completed = [];
+      try {
+        completed = JSON.parse(localStorage.getItem('geotany_completed_lessons') || '[]');
+      } catch(e) {}
+
+      const isDone = completed.includes(lessonData.id);
+      const isRu = (currentLang === 'ru');
+
+      const banner = document.getElementById('lessonCompletedBanner');
+      if (banner) banner.classList.toggle('hidden', !isDone);
+
+      const headerBtn = document.getElementById('btnHeaderComplete');
+      const headerIcon = document.getElementById('headerCheckIcon');
+      const headerText = document.getElementById('headerCompleteText');
+
+      if (headerBtn) {
+        if (isDone) {
+          headerBtn.className = 'px-3 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold transition flex items-center space-x-1.5';
+          if (headerIcon) headerIcon.textContent = '✓';
+          if (headerText) headerText.textContent = isRu ? 'Прочитано' : 'Оқылды';
+        } else {
+          headerBtn.className = 'px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-emerald-400 text-xs font-bold transition flex items-center space-x-1.5';
+          if (headerIcon) headerIcon.textContent = '○';
+          if (headerText) headerText.textContent = isRu ? 'Отметить' : 'Белгілеу';
+        }
+      }
+
+      const bottomLbl = document.getElementById('lblBottomComplete');
+      if (bottomLbl) {
+        bottomLbl.textContent = isDone 
+          ? (isRu ? '✓ Прочитано (Нажмите, чтобы отменить)' : '✓ Оқылды (Өшіру үшін басыңыз)')
+          : (isRu ? 'Отметить как прочитанное (+30 XP)' : 'Сабақты оқылды деп белгілеу (+30 XP)');
+      }
+    }
+
+    // Boot
+    window.addEventListener('DOMContentLoaded', () => {
+      renderTestQuestions();
+      updateCompleteButtons();
+    });
+  </script>
+
+</body>
+</html>

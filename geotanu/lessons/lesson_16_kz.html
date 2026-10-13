@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="kz" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>16-сабақ. Экономикалық география және геоэкономика | GEOTANY</title>
+
+  <!-- AUTH GUARD: RESTRICT DIRECT ACCESS WITHOUT VALID SESSION -->
+  <style id="authCloak">body { display: none !important; }</style>
+  <script>
+    (function() {
+      try {
+        var isAdmin = localStorage.getItem('geotany_admin_auth') === 'true';
+        var sessionStr = localStorage.getItem('geotany_user_session');
+        var isAuthorized = isAdmin;
+        if (!isAuthorized && sessionStr) {
+          var s = JSON.parse(sessionStr);
+          if (s && s.email && (s.courseCode || s.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        var profileStr = localStorage.getItem('geotany_user_profile');
+        if (!isAuthorized && profileStr) {
+          var p = JSON.parse(profileStr);
+          if (p && p.email && (p.courseCode || p.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        if (!isAuthorized) {
+          window.location.replace('../index.html?error=unauthorized_course');
+          return;
+        }
+        var cloak = document.getElementById('authCloak');
+        if (cloak) cloak.remove();
+      } catch (e) {
+        window.location.replace('../index.html?error=unauthorized_course');
+      }
+    })();
+  </script>
+
+  <!-- TAILWIND CSS & FONTS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            space: {
+              800: '#1E293B',
+              850: '#151E2E',
+              900: '#0F172A',
+              950: '#0B0F19',
+            },
+            brand: {
+              400: '#34D399',
+              500: '#10B981',
+              600: '#059669',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0B0F19;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1E293B;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+    .prose-theory h1, .prose-theory h2, .prose-theory h3, .prose-theory h4 {
+      color: #F8FAFC;
+      font-weight: 800;
+    }
+    .prose-theory p {
+      color: #CBD5E1;
+      line-height: 1.75;
+      font-size: 0.875rem;
+    }
+    .prose-theory ul {
+      list-style-type: disc;
+      margin-left: 1.25rem;
+      color: #CBD5E1;
+      font-size: 0.875rem;
+    }
+    .prose-theory table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.75rem;
+    }
+    .prose-theory th, .prose-theory td {
+      border: 1px solid #334155;
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+    }
+    .prose-theory th {
+      background: #1E293B;
+      color: #F8FAFC;
+      font-weight: 700;
+    }
+    .prose-theory tr:nth-child(even) {
+      background: rgba(15, 23, 42, 0.6);
+    }
+  </style>
+</head>
+<body class="bg-space-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-brand-500/30 selection:text-brand-400">
+
+  <!-- TOP APP BAR -->
+  <header class="sticky top-0 z-40 bg-space-950/90 backdrop-blur-xl border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+      
+      <!-- Left: Back Button & Title -->
+      <div class="flex items-center space-x-3">
+        <a href="../index.html?lang=kz#section-sabaktar_reading" class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 text-slate-300 hover:text-white border border-slate-700/80 text-xs sm:text-sm font-bold transition shadow-sm">
+          <span>←</span>
+          <span>Артқа</span>
+        </a>
+        <div class="h-6 w-px bg-slate-800 hidden sm:block"></div>
+        <div class="flex items-center space-x-2">
+          <span class="text-xs px-2.5 py-1 rounded-lg bg-cyan-500/10 text-cyan-400 font-extrabold border border-cyan-500/20">
+            16 / 20 сабақ
+          </span>
+          <span class="text-sm font-bold text-slate-200 hidden md:inline truncate max-w-xs">
+            16-сабақ. Экономикалық география және геоэкономика
+          </span>
+        </div>
+      </div>
+
+      <!-- Center: Reading Time Badge -->
+      <div class="hidden sm:flex items-center space-x-1.5 bg-space-900 border border-slate-800 px-3 py-1.5 rounded-xl text-xs text-slate-400 font-medium">
+        <span>⏱️</span>
+        <span>7 мин</span>
+      </div>
+
+      <!-- Right: Direct Language Page Switcher & Complete Button -->
+      <div class="flex items-center space-x-2 sm:space-x-3">
+        
+        <!-- Language Switcher linking directly to counterpart page -->
+        <div class="flex items-center bg-space-900 p-0.5 rounded-xl border border-slate-800 text-xs font-bold">
+          <a href="lesson_16_kz.html" class="px-2.5 py-1 rounded-lg bg-brand-500 text-space-950 font-black transition">
+            🇰🇿 KZ
+          </a>
+          <a href="lesson_16_ru.html" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition">
+            🇷🇺 RU
+          </a>
+        </div>
+
+        <!-- Mark as Completed Toggle Button -->
+        <button id="btnHeaderComplete" onclick="toggleLessonComplete()" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-emerald-400 text-xs font-bold transition flex items-center space-x-1.5 shadow-sm">
+          <span id="headerCheckIcon">○</span>
+          <span id="headerCompleteText" class="hidden sm:inline">Оқылды</span>
+        </button>
+
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-8">
+
+    <!-- HERO LESSON BANNER -->
+    <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-space-900 via-space-850 to-space-900 border border-slate-800 shadow-xl relative overflow-hidden">
+      <!-- Glow decoration -->
+      <div class="absolute -right-20 -top-20 w-60 h-60 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-20 -bottom-20 w-60 h-60 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10 space-y-4">
+        
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <span class="px-3 py-1 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 font-extrabold text-xs tracking-wider uppercase">
+              📖 ҰБТ ГЕОГРАФИЯ • САБАҚ №16
+            </span>
+            <span class="px-3 py-1 rounded-xl bg-brand-500/10 border border-brand-500/30 text-brand-400 font-bold text-xs">
+              Қазақ бөлімі
+            </span>
+          </div>
+
+          <!-- Prev / Next Navigation -->
+          <div class="flex items-center space-x-2 text-xs font-bold">
+            <a href="lesson_15_kz.html" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition flex items-center space-x-1"><span>←</span><span>Алдыңғы сабақ</span></a>
+            <span class="text-slate-500">|</span>
+            <a href="lesson_17_kz.html" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition flex items-center space-x-1"><span>Келесі сабақ</span><span>→</span></a>
+          </div>
+        </div>
+
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            16-сабақ. Экономикалық география және геоэкономика
+          </h1>
+          <h2 class="text-sm font-semibold text-cyan-300/80 mt-1">
+            16 урок. Экономическая география и геоэкономика
+          </h2>
+        </div>
+
+        <!-- Tags Row -->
+        <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-800/80">
+          <span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">##геоэкономика</span><span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">##интеграция</span><span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">##МЕРКОСУР</span><span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">##инвестициялар</span><span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">##қаржы</span>
+        </div>
+
+        <!-- Completed Banner -->
+        <div id="lessonCompletedBanner" class="hidden p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-xs sm:text-sm text-emerald-300 flex items-center justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <span>✅</span>
+            <span>Бұл сабақ оқылды деп белгіленген.</span>
+          </div>
+          <span class="text-xs px-2.5 py-1 rounded-xl bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40">
+            +30 XP алынды
+          </span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SECTION 1: KEY TERMS & DEFINITIONS -->
+    <section class="p-6 sm:p-7 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-base sm:text-lg font-black text-white flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center text-sm font-black">1</span>
+          <span>Негізгі терминдер мен ұғымдар</span>
+        </h3>
+        <span class="text-xs text-slate-400 font-semibold">
+          5 термин
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">МЕРКОСУР</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Оңтүстік Америка елдерінің (Бразилия, Аргентина т.б.) ортақ нарық ұйымы.</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Эмиссия</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Айналымға қосымша ақша немесе бағалы қағаздар шығару процесі.</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Индустриялық кезең</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Экономикада өнеркәсіп пен зауыттық өндірістің үлесі басым кезең.</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Латифундия</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Латын Америкасында кең таралған ірі жекеменшік жер иелігі.</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">ХЕБ (МГРТ)</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Халықаралық еңбек бөлінісі — елдердің белгілі бір тауар түрін экспортқа шығаруға мамандануы.</p>
+        </div>
+        
+      </div>
+    </section>
+
+    <!-- SECTION 2: FULL COMPREHENSIVE THEORY -->
+    <section class="p-6 sm:p-8 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-5">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-base sm:text-lg font-black text-white flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-brand-500/10 border border-brand-500/20 text-brand-400 flex items-center justify-center text-sm font-black">2</span>
+          <span>Толық теориялық конспект және иллюстрациялар</span>
+        </h3>
+        <span class="text-xs text-slate-400 font-medium hidden sm:inline">
+          Интерактивті оқу
+        </span>
+      </div>
+
+      <!-- Theory Body Container -->
+      <div class="prose-theory leading-relaxed space-y-4 overflow-x-auto">
+        <p class="text-xs text-slate-300 leading-relaxed my-2"># 16-сабақ: Экономикалық география және геоэкономика</p>
+<p class="text-xs text-slate-300 leading-relaxed my-2">Геоэкономика — экономикалық факторлар мен кеңістіктік географиялық заңдылықтардың өзара байланысын, мемлекеттердің жаһандық бәсекедегі экономикалық стратегияларын зерттейтін ғылым саласы.</p>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>1. Халықаралық экономикалық интеграция</span></h4>
+<p class="text-xs text-slate-300 leading-relaxed my-2">Қазіргі әлемде жеке елдердің жабық дамуы мүмкін емес. Мемлекеттер кедендік және сауда кедергілерін жою үшін интеграциялық блоктарға бірігеді:</p>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">МЕРКОСУР (MERCOSUR)</b> — Оңтүстік Америка елдерінің (Бразилия, Аргентина, Парагвай, Уругвай) ортақ нарығы;</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Еуропалық Одақ (ЕО)</b> — 27 еуропалық мемлекеттің біртұтас кеңістігі, ең дамыған интеграциялық үлгі;</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">НАФТА (USMCA)</b> — Солтүстік Америка еркін сауда аймағы (АҚШ, Канада, Мексика);</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">АСЕАН</b> — Оңтүстік-Шығыс Азия елдерінің қауымдастығы.</li>
+</ul>
+<svg height="220" viewbox="0 0 700 220" width="100%" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#0f172a" height="220" rx="12" width="700"></rect>
+<text fill="#38bdf8" font-size="16" font-weight="bold" text-anchor="middle" x="350" y="28">Халықаралық экономикалық интеграциялық бірлестіктер</text>
+<rect fill="#1e293b" height="135" rx="8" stroke="#3b82f6" stroke-width="1.5" width="190" x="40" y="55"></rect>
+<text fill="#38bdf8" font-size="14" font-weight="bold" text-anchor="middle" x="135" y="80">МЕРКОСУР</text>
+<text fill="#f8fafc" font-size="12" text-anchor="middle" x="135" y="105">Оңтүстік Америка</text>
+<text fill="#94a3b8" font-size="11" text-anchor="middle" x="135" y="130">Бразилия, Аргентина,</text>
+<text fill="#cbd5e1" font-size="11" text-anchor="middle" x="135" y="150">Парагвай, Уругвай</text>
+<text fill="#34d399" font-size="11" text-anchor="middle" x="135" y="172">Ортақ нарық кеңістігі</text>
+<rect fill="#1e293b" height="135" rx="8" stroke="#10b981" stroke-width="1.5" width="190" x="255" y="55"></rect>
+<text fill="#34d399" font-size="14" font-weight="bold" text-anchor="middle" x="350" y="80">Еуропалық Одақ (ЕО)</text>
+<text fill="#f8fafc" font-size="12" text-anchor="middle" x="350" y="105">Батыс және Орт. Еуропа</text>
+<text fill="#94a3b8" font-size="11" text-anchor="middle" x="350" y="130">27 мемлекет</text>
+<text fill="#cbd5e1" font-size="11" text-anchor="middle" x="350" y="150">Ең жоғары интеграция</text>
+<text fill="#38bdf8" font-size="11" text-anchor="middle" x="350" y="172">Ортақ валюта — Еуро</text>
+<rect fill="#1e293b" height="135" rx="8" stroke="#f59e0b" stroke-width="1.5" width="190" x="470" y="55"></rect>
+<text fill="#fbbf24" font-size="14" font-weight="bold" text-anchor="middle" x="565" y="80">АСЕАН / НАФТА</text>
+<text fill="#f8fafc" font-size="12" text-anchor="middle" x="565" y="105">Оңт.-Шығыс Азия / USMCA</text>
+<text fill="#94a3b8" font-size="11" text-anchor="middle" x="565" y="130">Азиялық «жолбарыстар»</text>
+<text fill="#cbd5e1" font-size="11" text-anchor="middle" x="565" y="150">АҚШ, Канада, Мексика</text>
+<text fill="#a855f7" font-size="11" text-anchor="middle" x="565" y="172">Еркін сауда аймақтары</text>
+</svg>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>2. Экономиканың кезеңдері мен секторлық құрылымы</span></h4>
+<p class="text-xs text-slate-300 leading-relaxed my-2">Адамзат экономикасы дамудың үш басты кезеңінен өтті:</p>
+<ol class="space-y-2 my-2.5 ml-6 list-none">
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">1.</span><b class="text-emerald-300 font-bold">Аграрлық кезең</b> — ауыл шаруашылығы мен өндіруші саланың басымдығы.</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">2.</span><b class="text-emerald-300 font-bold">Индустриялық кезең</b> — ауыр өнеркәсіптің, зауыт-фабрикалардың және машина жасаудың жетекші рөлі.</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">3.</span><b class="text-emerald-300 font-bold">Постиндустриялық кезең</b> — қызмет көрсету саласының, ақпараттық технологиялар мен ғылымның басым болуы (ЖІӨ-нің 60-70%-дан астамы).</li>
+</ol>
+<svg height="220" viewbox="0 0 700 220" width="100%" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#0f172a" height="220" rx="12" width="700"></rect>
+<text fill="#38bdf8" font-size="16" font-weight="bold" text-anchor="middle" x="350" y="28">Экономиканың даму кезеңдері және секторлық құрылымы</text>
+<rect fill="#1e293b" height="130" rx="8" stroke="#ef4444" stroke-width="1.5" width="180" x="50" y="60"></rect>
+<text fill="#f87171" font-size="13" font-weight="bold" text-anchor="middle" x="140" y="85">Аграрлық кезең</text>
+<text fill="#cbd5e1" font-size="12" text-anchor="middle" x="140" y="110">Бірінші сектор басым</text>
+<text fill="#94a3b8" font-size="11" text-anchor="middle" x="140" y="130">Ауыл шаруашылығы,</text>
+<text fill="#94a3b8" font-size="11" text-anchor="middle" x="140" y="150">орман, кен өндіру</text>
+<text fill="#e2e8f0" font-size="11" text-anchor="middle" x="140" y="172">Қол еңбегі негізінде</text>
+<rect fill="#1e293b" height="130" rx="8" stroke="#3b82f6" stroke-width="1.5" width="180" x="260" y="60"></rect>
+<text fill="#38bdf8" font-size="13" font-weight="bold" text-anchor="middle" x="350" y="85">Индустриялық кезең</text>
+<text fill="#cbd5e1" font-size="12" text-anchor="middle" x="350" y="110">Екінші сектор басым</text>
+<text fill="#94a3b8" font-size="11" text-anchor="middle" x="350" y="130">Өнеркәсіп пен зауыттар,</text>
+<text fill="#94a3b8" font-size="11" text-anchor="middle" x="350" y="150">машина жасау, металл</text>
+<text fill="#e2e8f0" font-size="11" text-anchor="middle" x="350" y="172">Механикаландыру</text>
+<rect fill="#1e293b" height="130" rx="8" stroke="#10b981" stroke-width="1.5" width="180" x="470" y="60"></rect>
+<text fill="#34d399" font-size="13" font-weight="bold" text-anchor="middle" x="560" y="85">Постиндустриялық</text>
+<text fill="#cbd5e1" font-size="12" text-anchor="middle" x="560" y="110">Үшінші сектор (&gt;60%)</text>
+<text fill="#94a3b8" font-size="11" text-anchor="middle" x="560" y="130">Қызмет, ғылым, IT,</text>
+<text fill="#94a3b8" font-size="11" text-anchor="middle" x="560" y="150">қаржы және биотехнология</text>
+<text fill="#e2e8f0" font-size="11" text-anchor="middle" x="560" y="172">Инновациялық даму</text>
+</svg>
+<p class="text-xs text-slate-300 leading-relaxed my-2">Сондай-ақ, мемлекеттің немесе орталық банктің айналымға жаңа қағаз ақша не бағалы қағаздар шығару процесі <b class="text-cyan-300 font-bold">эмиссия</b> деп аталады.</p>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>3. Әлемдік қаржы орталықтары және Валлерстайн моделі</span></h4>
+<p class="text-xs text-slate-300 leading-relaxed my-2">И. Валлерстайнның әлемдік жүйелер теориясы бойынша мемлекеттер үш топқа бөлінеді:</p>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Ядро (Орталық)</b> — ғылыми-техникалық прогресс пен әлемдік қаржыны жинақтайтын жоғары дамыған елдер (АҚШ, Батыс Еуропа, Жапония).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Жартылай периферия</b> — индустриялық және ресурстық әлеуеті бар дамушы елдер (Қытай, Бразилия, Ресей, Үндістан, Қазақстан).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Периферия</b> — шикізат пен арзан жұмыс күшін жеткізуші кедей елдер.</li>
+</ul>
+<svg height="220" viewbox="0 0 700 220" width="100%" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#0f172a" height="220" rx="12" width="700"></rect>
+<text fill="#38bdf8" font-size="16" font-weight="bold" text-anchor="middle" x="350" y="28">Әлемдік қаржы орталықтары мен Валлерстайнның «Орталық-Периферия» моделі</text>
+<circle cx="130" cy="120" fill="#0284c7" opacity="0.8" r="50"></circle>
+<text fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle" x="130" y="115">Ядро</text>
+<text fill="#e0f2fe" font-size="10" text-anchor="middle" x="130" y="135">(Орталық орталықтар)</text>
+<circle cx="350" cy="120" fill="#0d9488" opacity="0.8" r="55"></circle>
+<text fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle" x="350" y="115">Жартылай</text>
+<text fill="#ccfbf1" font-size="11" text-anchor="middle" x="350" y="135">периферия</text>
+<circle cx="570" cy="120" fill="#b45309" opacity="0.8" r="45"></circle>
+<text fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle" x="570" y="115">Периферия</text>
+<text fill="#fef3c7" font-size="10" text-anchor="middle" x="570" y="135">(Шеткі аймақтар)</text>
+<line marker-end="url(#arrow)" stroke="#38bdf8" stroke-width="2" x1="185" x2="290" y1="120" y2="120"></line>
+<line stroke="#38bdf8" stroke-width="2" x1="410" x2="520" y1="120" y2="120"></line>
+<text fill="#94a3b8" font-size="12" text-anchor="middle" x="350" y="195">Ірі ғаламдық қаржы орталықтары: Нью-Йорк (Уолл-стрит), Лондон, Токио, Сингапур</text>
+</svg>
+<p class="text-xs text-slate-300 leading-relaxed my-2">Әлемдегі ең ірі қаржы орталықтары — <b class="text-cyan-300 font-bold">Нью-Йорк</b> (Уолл-стрит), <b class="text-cyan-300 font-bold">Лондон</b>, <b class="text-cyan-300 font-bold">Токио</b>, <b class="text-cyan-300 font-bold">Сингапур</b> және <b class="text-cyan-300 font-bold">Франкфурт</b>.</p>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>4. Халықаралық еңбек бөлінісі (ХЕБ) және мамандану</span></h4>
+<p class="text-xs text-slate-300 leading-relaxed my-2">Әр ел өз табиғи ресурстарына, географиялық орны мен біліктілігіне байланысты белгілі бір тауар түрлерін өндіруге маманданады:</p>
+<svg height="220" viewbox="0 0 700 220" width="100%" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#0f172a" height="220" rx="12" width="700"></rect>
+<text fill="#38bdf8" font-size="16" font-weight="bold" text-anchor="middle" x="350" y="28">Елдердің халықаралық маманданған салалары (ХЕБ)</text>
+<rect fill="#1e293b" height="130" rx="6" stroke="#3b82f6" stroke-width="1" width="115" x="40" y="55"></rect>
+<text fill="#38bdf8" font-size="13" font-weight="bold" text-anchor="middle" x="97" y="80">Канада</text>
+<text fill="#f8fafc" font-size="11" text-anchor="middle" x="97" y="110">Ағаш өңдеу,</text>
+<text fill="#cbd5e1" font-size="11" text-anchor="middle" x="97" y="130">бидай экспорты,</text>
+<text fill="#94a3b8" font-size="10" text-anchor="middle" x="97" y="150">целлюлоза</text>
+<rect fill="#1e293b" height="130" rx="6" stroke="#10b981" stroke-width="1" width="115" x="165" y="55"></rect>
+<text fill="#34d399" font-size="13" font-weight="bold" text-anchor="middle" x="222" y="80">Жапония</text>
+<text fill="#f8fafc" font-size="11" text-anchor="middle" x="222" y="110">Автокөліктер,</text>
+<text fill="#cbd5e1" font-size="11" text-anchor="middle" x="222" y="130">робот жасау,</text>
+<text fill="#94a3b8" font-size="10" text-anchor="middle" x="222" y="150">микроэлектроника</text>
+<rect fill="#1e293b" height="130" rx="6" stroke="#f59e0b" stroke-width="1" width="115" x="290" y="55"></rect>
+<text fill="#fbbf24" font-size="13" font-weight="bold" text-anchor="middle" x="347" y="80">Аустралия</text>
+<text fill="#f8fafc" font-size="11" text-anchor="middle" x="347" y="110">Қой жүні,</text>
+<text fill="#cbd5e1" font-size="11" text-anchor="middle" x="347" y="130">ет, темір кені,</text>
+<text fill="#94a3b8" font-size="10" text-anchor="middle" x="347" y="150">бокситтер</text>
+<rect fill="#1e293b" height="130" rx="6" stroke="#ec4899" stroke-width="1" width="115" x="415" y="55"></rect>
+<text fill="#f472b6" font-size="13" font-weight="bold" text-anchor="middle" x="472" y="80">Замбия / Чили</text>
+<text fill="#f8fafc" font-size="11" text-anchor="middle" x="472" y="110">Мыс өндіру</text>
+<text fill="#cbd5e1" font-size="11" text-anchor="middle" x="472" y="130">және мыс</text>
+<text fill="#94a3b8" font-size="10" text-anchor="middle" x="472" y="150">концентраты</text>
+<rect fill="#1e293b" height="130" rx="6" stroke="#a855f7" stroke-width="1" width="120" x="540" y="55"></rect>
+<text fill="#c084fc" font-size="13" font-weight="bold" text-anchor="middle" x="600" y="80">БАӘ / Сауд Ар.</text>
+<text fill="#f8fafc" font-size="11" text-anchor="middle" x="600" y="110">Мұнай және</text>
+<text fill="#cbd5e1" font-size="11" text-anchor="middle" x="600" y="130">табиғи газ</text>
+<text fill="#94a3b8" font-size="10" text-anchor="middle" x="600" y="150">экспорты</text>
+</svg>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Канада</b> — қылқанжапырақты орман өнімдері (ағаш өңдеу, қағаз-целлюлоза) және бидай экспорты;</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Жапония</b> — жоғары технологиялар, автокөлік жасау, роботтехника;</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Аустралия</b> — қой шаруашылығы (жүн, ет), боксит пен темір кені;</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Замбия мен Чили</b> — мыс кені және өңделген мыс;</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Парсы шығанағы елдері (БАӘ, Сауд Арабиясы)</b> — мұнай және газ.</li>
+</ul>
+<p class="text-xs text-slate-300 leading-relaxed my-2">Сондай-ақ Латын Америкасында ежелден ірі жер иеліктері — <b class="text-cyan-300 font-bold">латифундиялар</b> сақталған.</p>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>5. Инвестициялар және жаңа салалар</span></h4>
+<p class="text-xs text-slate-300 leading-relaxed my-2">Қазақстан экономикасына тәуелсіздік жылдары 350 млрд доллардан астам тікелей шетелдік инвестиция (ТШИ) тартылды.</p>
+<svg height="220" viewbox="0 0 700 220" width="100%" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#0f172a" height="220" rx="12" width="700"></rect>
+<text fill="#38bdf8" font-size="16" font-weight="bold" text-anchor="middle" x="350" y="28">Тікелей шетелдік инвестициялар (ТШИ) және серіктестер</text>
+<rect fill="#1e293b" height="130" rx="8" stroke="#3b82f6" stroke-width="1.5" width="280" x="50" y="60"></rect>
+<text fill="#38bdf8" font-size="14" font-weight="bold" text-anchor="middle" x="190" y="85">Қазақстанның №1 инвесторы</text>
+<text fill="#ffffff" font-size="16" font-weight="bold" text-anchor="middle" x="190" y="115">Нидерланд Корольдігі</text>
+<text fill="#f59e0b" font-size="13" font-weight="bold" text-anchor="middle" x="190" y="140">&gt; 77.9 млрд доллар</text>
+<text fill="#94a3b8" font-size="11" text-anchor="middle" x="190" y="165">Еуропалық ірі холдингтер мен қаржы</text>
+<rect fill="#1e293b" height="130" rx="8" stroke="#10b981" stroke-width="1.5" width="280" x="370" y="60"></rect>
+<text fill="#34d399" font-size="14" font-weight="bold" text-anchor="middle" x="510" y="85">Басқа жетекші инвесторлар</text>
+<text fill="#cbd5e1" font-size="12" text-anchor="middle" x="510" y="110">АҚШ — мұнай-газ секторы (Шеврон)</text>
+<text fill="#cbd5e1" font-size="12" text-anchor="middle" x="510" y="132">Швейцария — металлургия, қаржы</text>
+<text fill="#cbd5e1" font-size="12" text-anchor="middle" x="510" y="154">Қытай — логистика, энергетика</text>
+<text fill="#cbd5e1" font-size="12" text-anchor="middle" x="510" y="174">Ресей — өңдеу өнеркәсібі, көлік</text>
+</svg>
+<p class="text-xs text-slate-300 leading-relaxed my-2">2005-2019 жылдары елімізге 77,9 млрд доллар инвестиция құйып, ең ірі инвестор болған мемлекет — <b class="text-cyan-300 font-bold">Нидерланд Корольдігі</b>. Бүгінгі таңда өңдеуші өнеркәсіптің ең серпінді жаңа салалары — микроэлектроника, робот жасау, биотехнология және жасыл энергетика болып табылады.</p>
+      </div>
+    </section>
+
+    <!-- SECTION 3: COMMON EXAM TRAPS & PITFALLS (if available) -->
+    
+
+    <!-- SECTION 4: END-OF-LESSON TEST -->
+    <section class="p-6 sm:p-8 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-6">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-brand-500/10 border border-brand-500/20 text-brand-400 flex items-center justify-center text-sm font-black">3</span>
+          <div>
+            <h3 class="text-base sm:text-lg font-black text-white">
+              Тақырыптық қорытынды тест
+            </h3>
+            <p class="text-xs text-slate-400 mt-0.5">
+              Өту шегі: 80% • Сыйлық: +30 XP
+            </p>
+          </div>
+        </div>
+
+        <div id="testScoreBadge" class="hidden px-3 py-1 rounded-xl bg-space-850 border border-slate-700 text-xs font-bold text-amber-400 font-mono">
+          0%
+        </div>
+      </div>
+
+      <!-- Test Questions Container -->
+      <div id="testQuestionsList" class="space-y-6">
+        <!-- Dynamically populated test questions via JS -->
+      </div>
+
+      <!-- Test Submit & Score Action Bar -->
+      <div class="pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="text-xs text-slate-400" id="testProgressInfo">
+          Барлық сұрақтарға жауап беріп, өзіңізді тексеріңіз.
+        </div>
+        <div class="flex items-center space-x-2.5 w-full sm:w-auto">
+          <button id="btnSubmitTest" onclick="submitLessonTest()" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-brand-500 hover:from-amber-400 hover:to-brand-400 text-space-950 font-black text-xs sm:text-sm shadow-md transition flex items-center justify-center space-x-2">
+            <span>🏁</span>
+            <span>Тестті тексеру</span>
+          </button>
+          <button id="btnResetTest" onclick="resetLessonTest()" class="hidden px-4 py-2.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-bold transition flex items-center justify-center space-x-1">
+            <span>🔄</span>
+            <span>Қайта тапсыру</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- BOTTOM NAVIGATION & FOOTER -->
+    <div class="p-6 rounded-3xl bg-space-900 border border-slate-800 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleLessonComplete()" class="px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-400 text-space-950 font-black text-xs sm:text-sm shadow-md transition flex items-center space-x-2">
+          <span>✓</span>
+          <span id="lblBottomComplete">Сабақты оқылды деп белгілеу (+30 XP)</span>
+        </button>
+      </div>
+
+      <div class="flex items-center space-x-2 text-xs font-bold">
+        <a href="lesson_15_kz.html" class="px-4 py-2 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition">← Алдыңғы сабақ</a>
+        <a href="../index.html?lang=kz#section-sabaktar_reading" class="px-4 py-2 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition">
+          Сабақтар тізімі
+        </a>
+        <a href="lesson_17_kz.html" class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-space-950 transition font-black">Келесі сабақ →</a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- LESSON SCRIPT ENGINE -->
+  <script>
+    const lessonData = {"id": 16, "title_kz": "16-сабақ. Экономикалық география және геоэкономика", "title_ru": "16 урок. Экономическая география и геоэкономика", "tags": ["#геоэкономика", "#интеграция", "#МЕРКОСУР", "#инвестициялар", "#қаржы"], "terms": [{"kz": "МЕРКОСУР", "ru": "МЕРКОСУР", "desc_kz": "Оңтүстік Америка елдерінің (Бразилия, Аргентина т.б.) ортақ нарық ұйымы.", "desc_ru": "Общий рынок стран Южной Америки (Бразилия, Аргентина, Уругвай, Парагвай)."}, {"kz": "Эмиссия", "ru": "Эмиссия", "desc_kz": "Айналымға қосымша ақша немесе бағалы қағаздар шығару процесі.", "desc_ru": "Выпуск в обращение новых денежных знаков или ценных бумаг для увеличения денежной массы."}, {"kz": "Индустриялық кезең", "ru": "Индустриальная эпоха", "desc_kz": "Экономикада өнеркәсіп пен зауыттық өндірістің үлесі басым кезең.", "desc_ru": "Период развития экономики, в котором преобладающую роль играет промышленное производство."}, {"kz": "Латифундия", "ru": "Латифундия", "desc_kz": "Латын Америкасында кең таралған ірі жекеменшік жер иелігі.", "desc_ru": "Обширное частное земельное поместье, характерное для стран Латинской Америки."}, {"kz": "ХЕБ (МГРТ)", "ru": "МГРТ", "desc_kz": "Халықаралық еңбек бөлінісі — елдердің белгілі бір тауар түрін экспортқа шығаруға мамандануы.", "desc_ru": "Международное географическое разделение труда — специализация стран на выпуске определенных товаров."}], "theory_kz": "<p class=\"text-xs text-slate-300 leading-relaxed my-2\"># 16-сабақ: Экономикалық география және геоэкономика</p>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Геоэкономика — экономикалық факторлар мен кеңістіктік географиялық заңдылықтардың өзара байланысын, мемлекеттердің жаһандық бәсекедегі экономикалық стратегияларын зерттейтін ғылым саласы.</p>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>1. Халықаралық экономикалық интеграция</span></h4>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Қазіргі әлемде жеке елдердің жабық дамуы мүмкін емес. Мемлекеттер кедендік және сауда кедергілерін жою үшін интеграциялық блоктарға бірігеді:</p>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">МЕРКОСУР (MERCOSUR)</b> — Оңтүстік Америка елдерінің (Бразилия, Аргентина, Парагвай, Уругвай) ортақ нарығы;</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Еуропалық Одақ (ЕО)</b> — 27 еуропалық мемлекеттің біртұтас кеңістігі, ең дамыған интеграциялық үлгі;</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">НАФТА (USMCA)</b> — Солтүстік Америка еркін сауда аймағы (АҚШ, Канада, Мексика);</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">АСЕАН</b> — Оңтүстік-Шығыс Азия елдерінің қауымдастығы.</li>\n</ul>\n<svg height=\"220\" viewbox=\"0 0 700 220\" width=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n<rect fill=\"#0f172a\" height=\"220\" rx=\"12\" width=\"700\"></rect>\n<text fill=\"#38bdf8\" font-size=\"16\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"28\">Халықаралық экономикалық интеграциялық бірлестіктер</text>\n<rect fill=\"#1e293b\" height=\"135\" rx=\"8\" stroke=\"#3b82f6\" stroke-width=\"1.5\" width=\"190\" x=\"40\" y=\"55\"></rect>\n<text fill=\"#38bdf8\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"135\" y=\"80\">МЕРКОСУР</text>\n<text fill=\"#f8fafc\" font-size=\"12\" text-anchor=\"middle\" x=\"135\" y=\"105\">Оңтүстік Америка</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"135\" y=\"130\">Бразилия, Аргентина,</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"135\" y=\"150\">Парагвай, Уругвай</text>\n<text fill=\"#34d399\" font-size=\"11\" text-anchor=\"middle\" x=\"135\" y=\"172\">Ортақ нарық кеңістігі</text>\n<rect fill=\"#1e293b\" height=\"135\" rx=\"8\" stroke=\"#10b981\" stroke-width=\"1.5\" width=\"190\" x=\"255\" y=\"55\"></rect>\n<text fill=\"#34d399\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"80\">Еуропалық Одақ (ЕО)</text>\n<text fill=\"#f8fafc\" font-size=\"12\" text-anchor=\"middle\" x=\"350\" y=\"105\">Батыс және Орт. Еуропа</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"350\" y=\"130\">27 мемлекет</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"350\" y=\"150\">Ең жоғары интеграция</text>\n<text fill=\"#38bdf8\" font-size=\"11\" text-anchor=\"middle\" x=\"350\" y=\"172\">Ортақ валюта — Еуро</text>\n<rect fill=\"#1e293b\" height=\"135\" rx=\"8\" stroke=\"#f59e0b\" stroke-width=\"1.5\" width=\"190\" x=\"470\" y=\"55\"></rect>\n<text fill=\"#fbbf24\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"565\" y=\"80\">АСЕАН / НАФТА</text>\n<text fill=\"#f8fafc\" font-size=\"12\" text-anchor=\"middle\" x=\"565\" y=\"105\">Оңт.-Шығыс Азия / USMCA</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"565\" y=\"130\">Азиялық «жолбарыстар»</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"565\" y=\"150\">АҚШ, Канада, Мексика</text>\n<text fill=\"#a855f7\" font-size=\"11\" text-anchor=\"middle\" x=\"565\" y=\"172\">Еркін сауда аймақтары</text>\n</svg>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>2. Экономиканың кезеңдері мен секторлық құрылымы</span></h4>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Адамзат экономикасы дамудың үш басты кезеңінен өтті:</p>\n<ol class=\"space-y-2 my-2.5 ml-6 list-none\">\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Аграрлық кезең</b> — ауыл шаруашылығы мен өндіруші саланың басымдығы.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Индустриялық кезең</b> — ауыр өнеркәсіптің, зауыт-фабрикалардың және машина жасаудың жетекші рөлі.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Постиндустриялық кезең</b> — қызмет көрсету саласының, ақпараттық технологиялар мен ғылымның басым болуы (ЖІӨ-нің 60-70%-дан астамы).</li>\n</ol>\n<svg height=\"220\" viewbox=\"0 0 700 220\" width=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n<rect fill=\"#0f172a\" height=\"220\" rx=\"12\" width=\"700\"></rect>\n<text fill=\"#38bdf8\" font-size=\"16\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"28\">Экономиканың даму кезеңдері және секторлық құрылымы</text>\n<rect fill=\"#1e293b\" height=\"130\" rx=\"8\" stroke=\"#ef4444\" stroke-width=\"1.5\" width=\"180\" x=\"50\" y=\"60\"></rect>\n<text fill=\"#f87171\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"140\" y=\"85\">Аграрлық кезең</text>\n<text fill=\"#cbd5e1\" font-size=\"12\" text-anchor=\"middle\" x=\"140\" y=\"110\">Бірінші сектор басым</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"140\" y=\"130\">Ауыл шаруашылығы,</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"140\" y=\"150\">орман, кен өндіру</text>\n<text fill=\"#e2e8f0\" font-size=\"11\" text-anchor=\"middle\" x=\"140\" y=\"172\">Қол еңбегі негізінде</text>\n<rect fill=\"#1e293b\" height=\"130\" rx=\"8\" stroke=\"#3b82f6\" stroke-width=\"1.5\" width=\"180\" x=\"260\" y=\"60\"></rect>\n<text fill=\"#38bdf8\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"85\">Индустриялық кезең</text>\n<text fill=\"#cbd5e1\" font-size=\"12\" text-anchor=\"middle\" x=\"350\" y=\"110\">Екінші сектор басым</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"350\" y=\"130\">Өнеркәсіп пен зауыттар,</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"350\" y=\"150\">машина жасау, металл</text>\n<text fill=\"#e2e8f0\" font-size=\"11\" text-anchor=\"middle\" x=\"350\" y=\"172\">Механикаландыру</text>\n<rect fill=\"#1e293b\" height=\"130\" rx=\"8\" stroke=\"#10b981\" stroke-width=\"1.5\" width=\"180\" x=\"470\" y=\"60\"></rect>\n<text fill=\"#34d399\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"560\" y=\"85\">Постиндустриялық</text>\n<text fill=\"#cbd5e1\" font-size=\"12\" text-anchor=\"middle\" x=\"560\" y=\"110\">Үшінші сектор (&gt;60%)</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"560\" y=\"130\">Қызмет, ғылым, IT,</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"560\" y=\"150\">қаржы және биотехнология</text>\n<text fill=\"#e2e8f0\" font-size=\"11\" text-anchor=\"middle\" x=\"560\" y=\"172\">Инновациялық даму</text>\n</svg>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Сондай-ақ, мемлекеттің немесе орталық банктің айналымға жаңа қағаз ақша не бағалы қағаздар шығару процесі <b class=\"text-cyan-300 font-bold\">эмиссия</b> деп аталады.</p>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>3. Әлемдік қаржы орталықтары және Валлерстайн моделі</span></h4>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">И. Валлерстайнның әлемдік жүйелер теориясы бойынша мемлекеттер үш топқа бөлінеді:</p>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Ядро (Орталық)</b> — ғылыми-техникалық прогресс пен әлемдік қаржыны жинақтайтын жоғары дамыған елдер (АҚШ, Батыс Еуропа, Жапония).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Жартылай периферия</b> — индустриялық және ресурстық әлеуеті бар дамушы елдер (Қытай, Бразилия, Ресей, Үндістан, Қазақстан).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Периферия</b> — шикізат пен арзан жұмыс күшін жеткізуші кедей елдер.</li>\n</ul>\n<svg height=\"220\" viewbox=\"0 0 700 220\" width=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n<rect fill=\"#0f172a\" height=\"220\" rx=\"12\" width=\"700\"></rect>\n<text fill=\"#38bdf8\" font-size=\"16\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"28\">Әлемдік қаржы орталықтары мен Валлерстайнның «Орталық-Периферия» моделі</text>\n<circle cx=\"130\" cy=\"120\" fill=\"#0284c7\" opacity=\"0.8\" r=\"50\"></circle>\n<text fill=\"#ffffff\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"130\" y=\"115\">Ядро</text>\n<text fill=\"#e0f2fe\" font-size=\"10\" text-anchor=\"middle\" x=\"130\" y=\"135\">(Орталық орталықтар)</text>\n<circle cx=\"350\" cy=\"120\" fill=\"#0d9488\" opacity=\"0.8\" r=\"55\"></circle>\n<text fill=\"#ffffff\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"115\">Жартылай</text>\n<text fill=\"#ccfbf1\" font-size=\"11\" text-anchor=\"middle\" x=\"350\" y=\"135\">периферия</text>\n<circle cx=\"570\" cy=\"120\" fill=\"#b45309\" opacity=\"0.8\" r=\"45\"></circle>\n<text fill=\"#ffffff\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"570\" y=\"115\">Периферия</text>\n<text fill=\"#fef3c7\" font-size=\"10\" text-anchor=\"middle\" x=\"570\" y=\"135\">(Шеткі аймақтар)</text>\n<line marker-end=\"url(#arrow)\" stroke=\"#38bdf8\" stroke-width=\"2\" x1=\"185\" x2=\"290\" y1=\"120\" y2=\"120\"></line>\n<line stroke=\"#38bdf8\" stroke-width=\"2\" x1=\"410\" x2=\"520\" y1=\"120\" y2=\"120\"></line>\n<text fill=\"#94a3b8\" font-size=\"12\" text-anchor=\"middle\" x=\"350\" y=\"195\">Ірі ғаламдық қаржы орталықтары: Нью-Йорк (Уолл-стрит), Лондон, Токио, Сингапур</text>\n</svg>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Әлемдегі ең ірі қаржы орталықтары — <b class=\"text-cyan-300 font-bold\">Нью-Йорк</b> (Уолл-стрит), <b class=\"text-cyan-300 font-bold\">Лондон</b>, <b class=\"text-cyan-300 font-bold\">Токио</b>, <b class=\"text-cyan-300 font-bold\">Сингапур</b> және <b class=\"text-cyan-300 font-bold\">Франкфурт</b>.</p>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>4. Халықаралық еңбек бөлінісі (ХЕБ) және мамандану</span></h4>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Әр ел өз табиғи ресурстарына, географиялық орны мен біліктілігіне байланысты белгілі бір тауар түрлерін өндіруге маманданады:</p>\n<svg height=\"220\" viewbox=\"0 0 700 220\" width=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n<rect fill=\"#0f172a\" height=\"220\" rx=\"12\" width=\"700\"></rect>\n<text fill=\"#38bdf8\" font-size=\"16\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"28\">Елдердің халықаралық маманданған салалары (ХЕБ)</text>\n<rect fill=\"#1e293b\" height=\"130\" rx=\"6\" stroke=\"#3b82f6\" stroke-width=\"1\" width=\"115\" x=\"40\" y=\"55\"></rect>\n<text fill=\"#38bdf8\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"97\" y=\"80\">Канада</text>\n<text fill=\"#f8fafc\" font-size=\"11\" text-anchor=\"middle\" x=\"97\" y=\"110\">Ағаш өңдеу,</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"97\" y=\"130\">бидай экспорты,</text>\n<text fill=\"#94a3b8\" font-size=\"10\" text-anchor=\"middle\" x=\"97\" y=\"150\">целлюлоза</text>\n<rect fill=\"#1e293b\" height=\"130\" rx=\"6\" stroke=\"#10b981\" stroke-width=\"1\" width=\"115\" x=\"165\" y=\"55\"></rect>\n<text fill=\"#34d399\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"222\" y=\"80\">Жапония</text>\n<text fill=\"#f8fafc\" font-size=\"11\" text-anchor=\"middle\" x=\"222\" y=\"110\">Автокөліктер,</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"222\" y=\"130\">робот жасау,</text>\n<text fill=\"#94a3b8\" font-size=\"10\" text-anchor=\"middle\" x=\"222\" y=\"150\">микроэлектроника</text>\n<rect fill=\"#1e293b\" height=\"130\" rx=\"6\" stroke=\"#f59e0b\" stroke-width=\"1\" width=\"115\" x=\"290\" y=\"55\"></rect>\n<text fill=\"#fbbf24\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"347\" y=\"80\">Аустралия</text>\n<text fill=\"#f8fafc\" font-size=\"11\" text-anchor=\"middle\" x=\"347\" y=\"110\">Қой жүні,</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"347\" y=\"130\">ет, темір кені,</text>\n<text fill=\"#94a3b8\" font-size=\"10\" text-anchor=\"middle\" x=\"347\" y=\"150\">бокситтер</text>\n<rect fill=\"#1e293b\" height=\"130\" rx=\"6\" stroke=\"#ec4899\" stroke-width=\"1\" width=\"115\" x=\"415\" y=\"55\"></rect>\n<text fill=\"#f472b6\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"472\" y=\"80\">Замбия / Чили</text>\n<text fill=\"#f8fafc\" font-size=\"11\" text-anchor=\"middle\" x=\"472\" y=\"110\">Мыс өндіру</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"472\" y=\"130\">және мыс</text>\n<text fill=\"#94a3b8\" font-size=\"10\" text-anchor=\"middle\" x=\"472\" y=\"150\">концентраты</text>\n<rect fill=\"#1e293b\" height=\"130\" rx=\"6\" stroke=\"#a855f7\" stroke-width=\"1\" width=\"120\" x=\"540\" y=\"55\"></rect>\n<text fill=\"#c084fc\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"600\" y=\"80\">БАӘ / Сауд Ар.</text>\n<text fill=\"#f8fafc\" font-size=\"11\" text-anchor=\"middle\" x=\"600\" y=\"110\">Мұнай және</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"600\" y=\"130\">табиғи газ</text>\n<text fill=\"#94a3b8\" font-size=\"10\" text-anchor=\"middle\" x=\"600\" y=\"150\">экспорты</text>\n</svg>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Канада</b> — қылқанжапырақты орман өнімдері (ағаш өңдеу, қағаз-целлюлоза) және бидай экспорты;</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Жапония</b> — жоғары технологиялар, автокөлік жасау, роботтехника;</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Аустралия</b> — қой шаруашылығы (жүн, ет), боксит пен темір кені;</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Замбия мен Чили</b> — мыс кені және өңделген мыс;</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Парсы шығанағы елдері (БАӘ, Сауд Арабиясы)</b> — мұнай және газ.</li>\n</ul>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Сондай-ақ Латын Америкасында ежелден ірі жер иеліктері — <b class=\"text-cyan-300 font-bold\">латифундиялар</b> сақталған.</p>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>5. Инвестициялар және жаңа салалар</span></h4>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Қазақстан экономикасына тәуелсіздік жылдары 350 млрд доллардан астам тікелей шетелдік инвестиция (ТШИ) тартылды.</p>\n<svg height=\"220\" viewbox=\"0 0 700 220\" width=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n<rect fill=\"#0f172a\" height=\"220\" rx=\"12\" width=\"700\"></rect>\n<text fill=\"#38bdf8\" font-size=\"16\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"28\">Тікелей шетелдік инвестициялар (ТШИ) және серіктестер</text>\n<rect fill=\"#1e293b\" height=\"130\" rx=\"8\" stroke=\"#3b82f6\" stroke-width=\"1.5\" width=\"280\" x=\"50\" y=\"60\"></rect>\n<text fill=\"#38bdf8\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"190\" y=\"85\">Қазақстанның №1 инвесторы</text>\n<text fill=\"#ffffff\" font-size=\"16\" font-weight=\"bold\" text-anchor=\"middle\" x=\"190\" y=\"115\">Нидерланд Корольдігі</text>\n<text fill=\"#f59e0b\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"190\" y=\"140\">&gt; 77.9 млрд доллар</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"190\" y=\"165\">Еуропалық ірі холдингтер мен қаржы</text>\n<rect fill=\"#1e293b\" height=\"130\" rx=\"8\" stroke=\"#10b981\" stroke-width=\"1.5\" width=\"280\" x=\"370\" y=\"60\"></rect>\n<text fill=\"#34d399\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"510\" y=\"85\">Басқа жетекші инвесторлар</text>\n<text fill=\"#cbd5e1\" font-size=\"12\" text-anchor=\"middle\" x=\"510\" y=\"110\">АҚШ — мұнай-газ секторы (Шеврон)</text>\n<text fill=\"#cbd5e1\" font-size=\"12\" text-anchor=\"middle\" x=\"510\" y=\"132\">Швейцария — металлургия, қаржы</text>\n<text fill=\"#cbd5e1\" font-size=\"12\" text-anchor=\"middle\" x=\"510\" y=\"154\">Қытай — логистика, энергетика</text>\n<text fill=\"#cbd5e1\" font-size=\"12\" text-anchor=\"middle\" x=\"510\" y=\"174\">Ресей — өңдеу өнеркәсібі, көлік</text>\n</svg>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">2005-2019 жылдары елімізге 77,9 млрд доллар инвестиция құйып, ең ірі инвестор болған мемлекет — <b class=\"text-cyan-300 font-bold\">Нидерланд Корольдігі</b>. Бүгінгі таңда өңдеуші өнеркәсіптің ең серпінді жаңа салалары — микроэлектроника, робот жасау, биотехнология және жасыл энергетика болып табылады.</p>", "theory_ru": "<p class=\"text-xs text-slate-300 leading-relaxed my-2\"># Урок 16: Экономическая география и геоэкономика</p>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Геоэкономика изучает пространственные закономерности экономической деятельности, размещение производительных сил и борьбу государств за лидерство в глобальном мировом хозяйстве.</p>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>1. Международная экономическая интеграция</span></h4>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">В современном взаимозависимом мире государства формируют торгово-экономические союзы:</p>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">МЕРКОСУР (MERCOSUR)</b> — общий рынок стран Южной Америки (Бразилия, Аргентина, Парагвай, Уругвай);</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Европейский союз (ЕС)</b> — интеграционное объединение 27 стран с единым рынком и валютой евро;</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">USMCA (ранее НАФТА)</b> — соглашение о свободной торговле между США, Канадой и Мексикой;</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">АСЕАН</b> — Ассоциация государств Юго-Восточной Азии.</li>\n</ul>\n<svg height=\"220\" viewbox=\"0 0 700 220\" width=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n<rect fill=\"#0f172a\" height=\"220\" rx=\"12\" width=\"700\"></rect>\n<text fill=\"#38bdf8\" font-size=\"16\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"28\">Халықаралық экономикалық интеграциялық бірлестіктер</text>\n<rect fill=\"#1e293b\" height=\"135\" rx=\"8\" stroke=\"#3b82f6\" stroke-width=\"1.5\" width=\"190\" x=\"40\" y=\"55\"></rect>\n<text fill=\"#38bdf8\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"135\" y=\"80\">МЕРКОСУР</text>\n<text fill=\"#f8fafc\" font-size=\"12\" text-anchor=\"middle\" x=\"135\" y=\"105\">Оңтүстік Америка</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"135\" y=\"130\">Бразилия, Аргентина,</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"135\" y=\"150\">Парагвай, Уругвай</text>\n<text fill=\"#34d399\" font-size=\"11\" text-anchor=\"middle\" x=\"135\" y=\"172\">Ортақ нарық кеңістігі</text>\n<rect fill=\"#1e293b\" height=\"135\" rx=\"8\" stroke=\"#10b981\" stroke-width=\"1.5\" width=\"190\" x=\"255\" y=\"55\"></rect>\n<text fill=\"#34d399\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"80\">Еуропалық Одақ (ЕО)</text>\n<text fill=\"#f8fafc\" font-size=\"12\" text-anchor=\"middle\" x=\"350\" y=\"105\">Батыс және Орт. Еуропа</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"350\" y=\"130\">27 мемлекет</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"350\" y=\"150\">Ең жоғары интеграция</text>\n<text fill=\"#38bdf8\" font-size=\"11\" text-anchor=\"middle\" x=\"350\" y=\"172\">Ортақ валюта — Еуро</text>\n<rect fill=\"#1e293b\" height=\"135\" rx=\"8\" stroke=\"#f59e0b\" stroke-width=\"1.5\" width=\"190\" x=\"470\" y=\"55\"></rect>\n<text fill=\"#fbbf24\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"565\" y=\"80\">АСЕАН / НАФТА</text>\n<text fill=\"#f8fafc\" font-size=\"12\" text-anchor=\"middle\" x=\"565\" y=\"105\">Оңт.-Шығыс Азия / USMCA</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"565\" y=\"130\">Азиялық «жолбарыстар»</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"565\" y=\"150\">АҚШ, Канада, Мексика</text>\n<text fill=\"#a855f7\" font-size=\"11\" text-anchor=\"middle\" x=\"565\" y=\"172\">Еркін сауда аймақтары</text>\n</svg>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>2. Стадии развития экономики и секторальная структура</span></h4>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Мировое хозяйство прошло три ключевые стадии развития:</p>\n<ol class=\"space-y-2 my-2.5 ml-6 list-none\">\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Аграрная стадия</b> — доминирование первичного сектора (сельское хозяйство, охота, лесозаготовки).</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Индустриальная стадия</b> — преобладание вторичного сектора (тяжелая и легкая промышленность, фабричное производство).</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Постиндустриальная стадия</b> — преобладание третичного сектора (сфера услуг, финансы, наука, IT и образование формируют свыше 60-70% ВВП).</li>\n</ol>\n<svg height=\"220\" viewbox=\"0 0 700 220\" width=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n<rect fill=\"#0f172a\" height=\"220\" rx=\"12\" width=\"700\"></rect>\n<text fill=\"#38bdf8\" font-size=\"16\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"28\">Экономиканың даму кезеңдері және секторлық құрылымы</text>\n<rect fill=\"#1e293b\" height=\"130\" rx=\"8\" stroke=\"#ef4444\" stroke-width=\"1.5\" width=\"180\" x=\"50\" y=\"60\"></rect>\n<text fill=\"#f87171\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"140\" y=\"85\">Аграрлық кезең</text>\n<text fill=\"#cbd5e1\" font-size=\"12\" text-anchor=\"middle\" x=\"140\" y=\"110\">Бірінші сектор басым</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"140\" y=\"130\">Ауыл шаруашылығы,</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"140\" y=\"150\">орман, кен өндіру</text>\n<text fill=\"#e2e8f0\" font-size=\"11\" text-anchor=\"middle\" x=\"140\" y=\"172\">Қол еңбегі негізінде</text>\n<rect fill=\"#1e293b\" height=\"130\" rx=\"8\" stroke=\"#3b82f6\" stroke-width=\"1.5\" width=\"180\" x=\"260\" y=\"60\"></rect>\n<text fill=\"#38bdf8\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"85\">Индустриялық кезең</text>\n<text fill=\"#cbd5e1\" font-size=\"12\" text-anchor=\"middle\" x=\"350\" y=\"110\">Екінші сектор басым</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"350\" y=\"130\">Өнеркәсіп пен зауыттар,</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"350\" y=\"150\">машина жасау, металл</text>\n<text fill=\"#e2e8f0\" font-size=\"11\" text-anchor=\"middle\" x=\"350\" y=\"172\">Механикаландыру</text>\n<rect fill=\"#1e293b\" height=\"130\" rx=\"8\" stroke=\"#10b981\" stroke-width=\"1.5\" width=\"180\" x=\"470\" y=\"60\"></rect>\n<text fill=\"#34d399\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"560\" y=\"85\">Постиндустриялық</text>\n<text fill=\"#cbd5e1\" font-size=\"12\" text-anchor=\"middle\" x=\"560\" y=\"110\">Үшінші сектор (&gt;60%)</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"560\" y=\"130\">Қызмет, ғылым, IT,</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"560\" y=\"150\">қаржы және биотехнология</text>\n<text fill=\"#e2e8f0\" font-size=\"11\" text-anchor=\"middle\" x=\"560\" y=\"172\">Инновациялық даму</text>\n</svg>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Выпуск в обращение дополнительных денежных знаков или ценных бумаг государством называется <b class=\"text-cyan-300 font-bold\">эмиссией</b>.</p>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>3. Мировые финансовые центры и мир-системный анализ</span></h4>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Согласно мир-системной модели И. Валлерстайна, мировое экономическое пространство делится на:</p>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Ядро</b> — высокотехнологичные развитые страны, контролирующие потоки мирового капитала и инноваций (США, Германия, Великобритания, Япония).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Полупериферию</b> — индустриальные державы со средним уровнем доходов (Китай, Бразилия, Индия, Россия, Казахстан).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Периферию</b> — наименее развитые аграрно-сырьевые государства.</li>\n</ul>\n<svg height=\"220\" viewbox=\"0 0 700 220\" width=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n<rect fill=\"#0f172a\" height=\"220\" rx=\"12\" width=\"700\"></rect>\n<text fill=\"#38bdf8\" font-size=\"16\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"28\">Әлемдік қаржы орталықтары мен Валлерстайнның «Орталық-Периферия» моделі</text>\n<circle cx=\"130\" cy=\"120\" fill=\"#0284c7\" opacity=\"0.8\" r=\"50\"></circle>\n<text fill=\"#ffffff\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"130\" y=\"115\">Ядро</text>\n<text fill=\"#e0f2fe\" font-size=\"10\" text-anchor=\"middle\" x=\"130\" y=\"135\">(Орталық орталықтар)</text>\n<circle cx=\"350\" cy=\"120\" fill=\"#0d9488\" opacity=\"0.8\" r=\"55\"></circle>\n<text fill=\"#ffffff\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"115\">Жартылай</text>\n<text fill=\"#ccfbf1\" font-size=\"11\" text-anchor=\"middle\" x=\"350\" y=\"135\">периферия</text>\n<circle cx=\"570\" cy=\"120\" fill=\"#b45309\" opacity=\"0.8\" r=\"45\"></circle>\n<text fill=\"#ffffff\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"570\" y=\"115\">Периферия</text>\n<text fill=\"#fef3c7\" font-size=\"10\" text-anchor=\"middle\" x=\"570\" y=\"135\">(Шеткі аймақтар)</text>\n<line marker-end=\"url(#arrow)\" stroke=\"#38bdf8\" stroke-width=\"2\" x1=\"185\" x2=\"290\" y1=\"120\" y2=\"120\"></line>\n<line stroke=\"#38bdf8\" stroke-width=\"2\" x1=\"410\" x2=\"520\" y1=\"120\" y2=\"120\"></line>\n<text fill=\"#94a3b8\" font-size=\"12\" text-anchor=\"middle\" x=\"350\" y=\"195\">Ірі ғаламдық қаржы орталықтары: Нью-Йорк (Уолл-стрит), Лондон, Токио, Сингапур</text>\n</svg>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Ведущими мировыми финансовыми центрами являются <b class=\"text-cyan-300 font-bold\">Нью-Йорк</b> (Уолл-стрит), <b class=\"text-cyan-300 font-bold\">Лондон</b>, <b class=\"text-cyan-300 font-bold\">Токио</b>, <b class=\"text-cyan-300 font-bold\">Сингапур</b>.</p>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>4. Международное географическое разделение труда (МГРТ)</span></h4>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Каждая страна специализируется на производстве тех видов продукции, для которых имеются наилучшие предпосылки:</p>\n<svg height=\"220\" viewbox=\"0 0 700 220\" width=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n<rect fill=\"#0f172a\" height=\"220\" rx=\"12\" width=\"700\"></rect>\n<text fill=\"#38bdf8\" font-size=\"16\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"28\">Елдердің халықаралық маманданған салалары (ХЕБ)</text>\n<rect fill=\"#1e293b\" height=\"130\" rx=\"6\" stroke=\"#3b82f6\" stroke-width=\"1\" width=\"115\" x=\"40\" y=\"55\"></rect>\n<text fill=\"#38bdf8\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"97\" y=\"80\">Канада</text>\n<text fill=\"#f8fafc\" font-size=\"11\" text-anchor=\"middle\" x=\"97\" y=\"110\">Ағаш өңдеу,</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"97\" y=\"130\">бидай экспорты,</text>\n<text fill=\"#94a3b8\" font-size=\"10\" text-anchor=\"middle\" x=\"97\" y=\"150\">целлюлоза</text>\n<rect fill=\"#1e293b\" height=\"130\" rx=\"6\" stroke=\"#10b981\" stroke-width=\"1\" width=\"115\" x=\"165\" y=\"55\"></rect>\n<text fill=\"#34d399\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"222\" y=\"80\">Жапония</text>\n<text fill=\"#f8fafc\" font-size=\"11\" text-anchor=\"middle\" x=\"222\" y=\"110\">Автокөліктер,</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"222\" y=\"130\">робот жасау,</text>\n<text fill=\"#94a3b8\" font-size=\"10\" text-anchor=\"middle\" x=\"222\" y=\"150\">микроэлектроника</text>\n<rect fill=\"#1e293b\" height=\"130\" rx=\"6\" stroke=\"#f59e0b\" stroke-width=\"1\" width=\"115\" x=\"290\" y=\"55\"></rect>\n<text fill=\"#fbbf24\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"347\" y=\"80\">Аустралия</text>\n<text fill=\"#f8fafc\" font-size=\"11\" text-anchor=\"middle\" x=\"347\" y=\"110\">Қой жүні,</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"347\" y=\"130\">ет, темір кені,</text>\n<text fill=\"#94a3b8\" font-size=\"10\" text-anchor=\"middle\" x=\"347\" y=\"150\">бокситтер</text>\n<rect fill=\"#1e293b\" height=\"130\" rx=\"6\" stroke=\"#ec4899\" stroke-width=\"1\" width=\"115\" x=\"415\" y=\"55\"></rect>\n<text fill=\"#f472b6\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"472\" y=\"80\">Замбия / Чили</text>\n<text fill=\"#f8fafc\" font-size=\"11\" text-anchor=\"middle\" x=\"472\" y=\"110\">Мыс өндіру</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"472\" y=\"130\">және мыс</text>\n<text fill=\"#94a3b8\" font-size=\"10\" text-anchor=\"middle\" x=\"472\" y=\"150\">концентраты</text>\n<rect fill=\"#1e293b\" height=\"130\" rx=\"6\" stroke=\"#a855f7\" stroke-width=\"1\" width=\"120\" x=\"540\" y=\"55\"></rect>\n<text fill=\"#c084fc\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"600\" y=\"80\">БАӘ / Сауд Ар.</text>\n<text fill=\"#f8fafc\" font-size=\"11\" text-anchor=\"middle\" x=\"600\" y=\"110\">Мұнай және</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"600\" y=\"130\">табиғи газ</text>\n<text fill=\"#94a3b8\" font-size=\"10\" text-anchor=\"middle\" x=\"600\" y=\"150\">экспорты</text>\n</svg>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Канада</b> — лесопереработка (обширная зона хвойной тайги), целлюлозно-бумажное производство, зерновое хозяйство;</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Япония</b> — автомобилестроение, электроника, робототехника;</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Австралия</b> — овцеводство (шерсть, баранина), железная руда, бокситы;</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Замбия и Чили</b> — медная промышленность;</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Страны Персидского залива</b> — экспорт нефти и СПГ.</li>\n</ul>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">В аграрном секторе Латинской Америки традиционно преобладают огромные частные поместья — <b class=\"text-cyan-300 font-bold\">латифундии</b>.</p>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>5. Иностранные инвестиции и новейшие отрасли</span></h4>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Казахстан является лидером Центральной Азии по привлечению прямых иностранных инвестиций (ПИИ).</p>\n<svg height=\"220\" viewbox=\"0 0 700 220\" width=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n<rect fill=\"#0f172a\" height=\"220\" rx=\"12\" width=\"700\"></rect>\n<text fill=\"#38bdf8\" font-size=\"16\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"28\">Тікелей шетелдік инвестициялар (ТШИ) және серіктестер</text>\n<rect fill=\"#1e293b\" height=\"130\" rx=\"8\" stroke=\"#3b82f6\" stroke-width=\"1.5\" width=\"280\" x=\"50\" y=\"60\"></rect>\n<text fill=\"#38bdf8\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"190\" y=\"85\">Қазақстанның №1 инвесторы</text>\n<text fill=\"#ffffff\" font-size=\"16\" font-weight=\"bold\" text-anchor=\"middle\" x=\"190\" y=\"115\">Нидерланд Корольдігі</text>\n<text fill=\"#f59e0b\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"190\" y=\"140\">&gt; 77.9 млрд доллар</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"190\" y=\"165\">Еуропалық ірі холдингтер мен қаржы</text>\n<rect fill=\"#1e293b\" height=\"130\" rx=\"8\" stroke=\"#10b981\" stroke-width=\"1.5\" width=\"280\" x=\"370\" y=\"60\"></rect>\n<text fill=\"#34d399\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"510\" y=\"85\">Басқа жетекші инвесторлар</text>\n<text fill=\"#cbd5e1\" font-size=\"12\" text-anchor=\"middle\" x=\"510\" y=\"110\">АҚШ — мұнай-газ секторы (Шеврон)</text>\n<text fill=\"#cbd5e1\" font-size=\"12\" text-anchor=\"middle\" x=\"510\" y=\"132\">Швейцария — металлургия, қаржы</text>\n<text fill=\"#cbd5e1\" font-size=\"12\" text-anchor=\"middle\" x=\"510\" y=\"154\">Қытай — логистика, энергетика</text>\n<text fill=\"#cbd5e1\" font-size=\"12\" text-anchor=\"middle\" x=\"510\" y=\"174\">Ресей — өңдеу өнеркәсібі, көлік</text>\n</svg>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Крупнейшим инвестором в экономику Казахстана с 2005 по 2019 гг. с объемом свыше 77,9 млрд долларов стало <b class=\"text-cyan-300 font-bold\">Королевство Нидерландов</b>. К новейшим наукоемким отраслям обрабатывающей промышленности относятся роботостроение, микроэлектроника и нанотехнологии.</p>", "test": {"passingScore": 80, "questions": [{"id": 1, "q_kz": "Латын Америкасы елдерінің интеграциялық ассоциациясын (ортақ нарығын) көрсетіңіз:", "q_ru": "Укажите интеграционное объединение (общий рынок) стран Латинской Америки:", "options_kz": ["АСЕАН", "ЕО (Еуроодақ)", "МЕРКОСУР", "ОПЕК"], "options_ru": ["АСЕАН", "ЕС (Евросоюз)", "МЕРКОСУР", "ОПЕК"], "answer": 2, "exp_kz": "МЕРКОСУР (MERCOSUR) — Оңтүстік Америка елдерінің (Аргентина, Бразилия, Парагвай, Уругвай т.б.) ортақ нарығы.", "exp_ru": "МЕРКОСУР — торгово-экономический союз стран Южной Америки (Бразилия, Аргентина, Парагвай, Уругвай)."}, {"id": 2, "q_kz": "Айналымға жаңа ақшаларды шығару арқылы ақша массасын ұлғайту қалай аталады?", "q_ru": "Как называется выпуск в обращение денежных знаков для увеличения денежной массы?", "options_kz": ["Дефляция", "Инфляция", "Эмиссия", "Инвестиция"], "options_ru": ["Дефляция", "Инфляция", "Эмиссия", "Инвестиция"], "answer": 2, "exp_kz": "Эмиссия — мемлекеттің немесе орталық банктің айналымға жаңа ақша немесе бағалы қағаздар шығару процесі.", "exp_ru": "Эмиссия — выпуск в обращение денег или ценных бумаг, приводящий к изменению объема денежной массы."}, {"id": 3, "q_kz": "Индустриялық кезеңдегі елдер экономикасына тән негізгі ерекшелікті табыңыз:", "q_ru": "Укажите отличительную особенность экономики стран индустриального этапа:", "options_kz": ["Қызмет көрсету саласының басымдығы", "Ауыл шаруашылығы үлесінің басымдығы", "Өнеркәсіп саласының үлесі басым болуы", "Ақпараттық технологиялардың негізгі рөлі"], "options_ru": ["Преобладание сферы услуг", "Преобладание сельского хозяйства", "Преобладание доли промышленности", "Ведущая роль информационных технологий"], "answer": 2, "exp_kz": "Индустриялық кезеңде экономиканың негізгі қозғаушы күші мен басты саласы өнеркәсіп (фабрика, зауыттар) болады.", "exp_ru": "В индустриальную эпоху основу хозяйства и национального богатства формирует промышленность (заводы, фабрики)."}, {"id": 4, "q_kz": "2005-2019 жылдары Қазақстанға 77,9 млрд доллар инвестиция салып, ең ірі инвестор болған ел:", "q_ru": "Какая страна стала крупнейшим инвестором в экономику Казахстана (77,9 млрд $) в 2005-2019 гг.?", "options_kz": ["Қытай", "Нидерланд", "АҚШ", "Ресей"], "options_ru": ["Китай", "Нидерланды", "США", "Россия"], "answer": 1, "exp_kz": "Нидерланд Корольдігі Қазақстанға тікелей шетелдік инвестиция құю бойынша көшбасшы ел (77,9 млрд доллар).", "exp_ru": "Королевство Нидерландов является лидером по прямым инвестициям в экономику Казахстана (свыше 77,9 млрд $)."}, {"id": 5, "q_kz": "Қылқанжапырақты ағаштарды өңдеу өнеркәсібі жоғары дамыған елді көрсетіңіз:", "q_ru": "Укажите страну с высокоразвитой промышленностью переработки хвойной древесины:", "options_kz": ["Канада", "Египет", "Аустралия", "Аргентина"], "options_ru": ["Канада", "Египет", "Австралия", "Аргентина"], "answer": 0, "exp_kz": "Канаданың солтүстік бөлігінде тайга ормандары кең көсіліп жатқандықтан, мұнда ағаш өңдеу және қағаз өндірісі зор дамыған.", "exp_ru": "Канада обладает колоссальными запасами хвойных лесов тайги и является мировым экспортером древесины и целлюлозы."}, {"id": 6, "q_kz": "Валлерстайн моделі бойынша «Ядро» (Ғаламдық орталықтар) елдеріне тән басты сипат:", "q_ru": "Характерный признак стран «Ядра» (глобальных центров) по модели Валлерстайна:", "options_kz": ["Тек арзан шикізат пен жұмыс күшін экспорттау", "Әлемдік қаржыны жинақтап, жоғары технологиялық дамуды басқару", "Ауыл шаруашылығының жалпы ЖІӨ-дегі 80% үлесі", "Өндірістік өнеркәсіптің мүлдем болмауы"], "options_ru": ["Экспорт исключительно дешевого сырья и рабочей силы", "Аккумуляция мировых финансов и лидерство в технологиях", "Доля сельского хозяйства свыше 80% ВВП", "Полное отсутствие обрабатывающей промышленности"], "answer": 1, "exp_kz": "Ғаламдық орталықтар (ядро) әлемдік қаржыны шоғырландыратын және интеллектуалды, ғылыми-техникалық дамуды басқаратын елдер.", "exp_ru": "Страны «ядра» концентрируют глобальный капитал, обладают передовыми технологиями и определяют вектор мирового развития."}, {"id": 7, "q_kz": "Елдердің халықаралық маманданған салаларын сәйкестендіріңіз: (Канада, Жапония, Аустралия, БАӘ):", "q_ru": "Соотнесите специализацию стран: (Канада, Япония, Австралия, ОАЭ):", "options_kz": ["Канада — мұнай, Жапония — бидай, Аустралия — автокөлік, БАӘ — қой", "Канада — бидай/орман, Жапония — автокөлік, Аустралия — қой шаруашылығы, БАӘ — мұнай", "Канада — қой, Жапония — мұнай, Аустралия — бидай, БАӘ — автокөлік", "Канада — кофе, Жапония — шай, Аустралия — күріш, БАӘ — мақта"], "options_ru": ["Канада — нефть, Япония — пшеница, Австралия — авто, ОАЭ — овцы", "Канада — зерно/лес, Япония — автомобили, Австралия — овцеводство, ОАЭ — нефть", "Канада — овцы, Япония — нефть, Австралия — пшеница, ОАЭ — автомобили", "Канада — кофе, Япония — чай, Австралия — рис, ОАЭ — хлопок"], "answer": 1, "exp_kz": "Канада — бидай мен ағаш, Жапония — көлік пен электроника, Аустралия — қой мен минералдар, БАӘ — мұнай мен газ экспорттаушы.", "exp_ru": "Канада специализируется на зерне и лесе, Япония — на автомобилях и технике, Австралия — на шерсти и рудах, ОАЭ — на углеводородах."}, {"id": 8, "q_kz": "Уолл-стрит көшесі орналасқан дүниежүзілік ірі қаржы орталығын белгілеңіз:", "q_ru": "Укажите крупнейший мировой финансовый центр, где расположена Уолл-стрит:", "options_kz": ["Лондон", "Париж", "Нью-Йорк", "Токио"], "options_ru": ["Лондон", "Париж", "Нью-Йорк", "Токио"], "answer": 2, "exp_kz": "Нью-Йорк (әсіресе Уолл-стриттегі қор биржасы) — әлемдегі ең ірі қаржылық капитал орталығы.", "exp_ru": "Нью-Йорк с фондовой биржей на Уолл-стрит является признанным лидером мировой финансовой системы."}, {"id": 9, "q_kz": "Латифундиялар (ірі жер иеліктері) негізінен қай аймақта шоғырланған?", "q_ru": "В каком географическом регионе сосредоточены латифундии (крупные поместья)?", "options_kz": ["Латын Америкасы", "Батыс Еуропа", "Шығыс Азия", "Солтүстік Африка"], "options_ru": ["Латинская Америка", "Западная Европа", "Восточная Азия", "Северная Африка"], "answer": 0, "exp_kz": "Латифундиялар — Латын Америкасы елдерінде (Бразилия, Аргентина) сақталған дәстүрлі ірі жекеменшік жер иеліктері.", "exp_ru": "Латифундии исторически сформировались и сохранились в качестве крупных плантационных хозяйств в Латинской Америке."}, {"id": 10, "q_kz": "Өңдеуші өнеркәсіптің ғылымды көп қажет ететін жаңа заманауи салалары:", "q_ru": "Укажите новейшие наукоемкие отрасли современной обрабатывающей промышленности:", "options_kz": ["Тас көмір өндіру және тоқыма өнеркәсібі", "Қара металлургия және орман аралау", "Микроэлектроника, робот жасау, биотехнология", "Шойын балқыту және былғары илеу"], "options_ru": ["Добыча угля и текстильная промышленность", "Черная металлургия и лесопиление", "Микроэлектроника, робототехника, биотехнологии", "Выплавка чугуна и кожевенное дело"], "answer": 2, "exp_kz": "Микроэлектроника, роботтехника және биотехнология — ҒТР (ғылыми-техникалық революция) дәуірінің ең жаңа салалары.", "exp_ru": "Микроэлектроника, робототехника, биотехнологии и аэрокосмическая индустрия представляют собой авангард новейших отраслей."}]}, "pdf_kz": "https://drive.google.com/file/d/1CE6liPQ149GrpzjnkcIlbln-nZNDpCZQ/view?usp=sharing", "pdf_ru": "https://drive.google.com/file/d/101LTythdaKk8P2vTv1cy6e1BTrKjJxdG/view?usp=drive_link", "blooket": "https://dashboard.blooket.com/set/6a84d998754a4f54132e216f"};
+    const currentLang = 'kz';
+    let userTestAnswers = {};
+    let isTestSubmitted = false;
+
+    // Render Test Questions
+    function renderTestQuestions() {
+      const container = document.getElementById('testQuestionsList');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const testObj = lessonData.test;
+      if (!testObj || !testObj.questions || testObj.questions.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-400">Тест готовится / Тест дайындалуда.</p>';
+        return;
+      }
+
+      const isRu = (currentLang === 'ru');
+      const letters = ['A', 'B', 'C', 'D', 'E'];
+
+      testObj.questions.forEach((q, idx) => {
+        const qCard = document.createElement('div');
+        qCard.className = 'p-5 rounded-2xl bg-space-850 border border-slate-800 space-y-3';
+
+        const qPrompt = isRu ? (q.q_ru || q.q_kz) : q.q_kz;
+        const options = isRu ? (q.options_ru || q.options_kz) : q.options_kz;
+        const exp = isRu ? (q.exp_ru || q.exp_kz) : q.exp_kz;
+
+        qCard.innerHTML = `
+          <div class="flex items-center justify-between gap-2 border-b border-slate-800/80 pb-2">
+            <span class="text-xs font-bold text-slate-400 uppercase">
+              ${isRu ? 'Вопрос ' + (idx + 1) : 'Сұрақ ' + (idx + 1)}
+            </span>
+            <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-bold">1 балл</span>
+          </div>
+          <p class="text-xs sm:text-sm font-semibold text-slate-100 leading-relaxed">${qPrompt}</p>
+        `;
+
+        const optContainer = document.createElement('div');
+        optContainer.className = 'space-y-2 pt-1';
+
+        const selectedAnswer = userTestAnswers[q.id];
+
+        options.forEach((optText, optIdx) => {
+          const isSelected = selectedAnswer === optIdx;
+          const isCorrect = q.answer === optIdx;
+
+          const optDiv = document.createElement('div');
+          optDiv.className = 'p-3 rounded-xl border text-xs font-medium cursor-pointer transition flex items-center space-x-2.5 ';
+
+          if (isTestSubmitted) {
+            if (isCorrect) {
+              optDiv.className += 'bg-emerald-500/15 border-emerald-500 text-emerald-200 font-bold';
+            } else if (isSelected) {
+              optDiv.className += 'bg-rose-500/15 border-rose-500 text-rose-200';
+            } else {
+              optDiv.className += 'bg-space-900/50 border-slate-800 text-slate-500';
+            }
+          } else {
+            if (isSelected) {
+              optDiv.className += 'bg-cyan-500/15 border-cyan-500 text-cyan-200 font-bold';
+            } else {
+              optDiv.className += 'bg-space-900 hover:bg-space-800 border-slate-800 hover:border-slate-700 text-slate-300';
+            }
+          }
+
+          const badge = document.createElement('span');
+          badge.className = 'w-5 h-5 rounded-md text-[10px] font-black flex items-center justify-center shrink-0 ' +
+            (isSelected ? 'bg-cyan-500 text-space-950' : 'bg-space-850 text-slate-400 border border-slate-700');
+          badge.textContent = letters[optIdx] || String(optIdx + 1);
+          optDiv.appendChild(badge);
+
+          const txt = document.createElement('span');
+          txt.className = 'flex-1';
+          txt.textContent = optText;
+          optDiv.appendChild(txt);
+
+          optDiv.onclick = () => {
+            if (isTestSubmitted) return;
+            userTestAnswers[q.id] = optIdx;
+            renderTestQuestions();
+          };
+
+          optContainer.appendChild(optDiv);
+        });
+
+        qCard.appendChild(optContainer);
+
+        // Explanation Box after submission
+        if (isTestSubmitted) {
+          const expBox = document.createElement('div');
+          expBox.className = 'p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-xs text-cyan-200 space-y-1';
+          expBox.innerHTML = `
+            <span class="font-bold text-cyan-300 block">💡 ${isRu ? 'Пояснение:' : 'Түсіндірме:'}</span>
+            <p class="text-slate-300 leading-relaxed">${exp || (isRu ? 'Авторское пояснение к вопросу.' : 'Сұраққа арналған түсіндірме.')}</p>
+          `;
+          qCard.appendChild(expBox);
+        }
+
+        container.appendChild(qCard);
+      });
+    }
+
+    function submitLessonTest() {
+      const testObj = lessonData.test;
+      if (!testObj || !testObj.questions) return;
+
+      const answeredCount = Object.keys(userTestAnswers).length;
+      const total = testObj.questions.length;
+      const isRu = (currentLang === 'ru');
+
+      if (answeredCount < total) {
+        const msg = isRu 
+          ? `Вы ответили только на ${answeredCount} из ${total} вопросов. Завершить тест?` 
+          : `Сіз ${total} сұрақтың ${answeredCount}-не жауап бердіңіз. Тестті аяқтайсыз ба?`;
+        if (!confirm(msg)) return;
+      }
+
+      isTestSubmitted = true;
+      let correct = 0;
+
+      testObj.questions.forEach(q => {
+        if (userTestAnswers[q.id] === q.answer) {
+          correct++;
+        }
+      });
+
+      const percentage = Math.round((correct / total) * 100);
+      const isPassed = percentage >= 80;
+
+      // Update badges & UI
+      const scoreBadge = document.getElementById('testScoreBadge');
+      if (scoreBadge) {
+        scoreBadge.classList.remove('hidden');
+        scoreBadge.textContent = `${correct} / ${total} (${percentage}%)`;
+        scoreBadge.className = 'px-3 py-1 rounded-xl text-xs font-bold font-mono border ' +
+          (isPassed ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-rose-500/20 text-rose-300 border-rose-500/40');
+      }
+
+      const info = document.getElementById('testProgressInfo');
+      if (info) {
+        info.textContent = isPassed 
+          ? (isRu ? `🎉 Поздравляем! Вы сдали тест на ${percentage}% (+30 XP)` : `🎉 Құттықтаймыз! Сіз тестті ${percentage}%-ға тапсырдыңыз (+30 XP)`)
+          : (isRu ? `Результат: ${percentage}%. Для зачета требуется 80%. Попробуйте еще раз.` : `Нәтиже: ${percentage}%. Өту үшін 80% қажет. Қайта тапсырып көріңіз.`);
+      }
+
+      document.getElementById('btnSubmitTest').classList.add('hidden');
+      document.getElementById('btnResetTest').classList.remove('hidden');
+
+      // Save to localStorage
+      try {
+        let scores = JSON.parse(localStorage.getItem('geotany_lesson_scores') || '{}');
+        scores[lessonData.id] = percentage;
+        localStorage.setItem('geotany_lesson_scores', JSON.stringify(scores));
+
+        if (isPassed) {
+          let completed = JSON.parse(localStorage.getItem('geotany_completed_lessons') || '[]');
+          if (!completed.includes(lessonData.id)) {
+            completed.push(lessonData.id);
+            localStorage.setItem('geotany_completed_lessons', JSON.stringify(completed));
+          }
+          let curXp = parseInt(localStorage.getItem('geotany_user_xp') || '0', 10);
+          curXp += 30;
+          localStorage.setItem('geotany_user_xp', curXp.toString());
+        }
+      } catch(e) {}
+
+      renderTestQuestions();
+      updateCompleteButtons();
+    }
+
+    function resetLessonTest() {
+      userTestAnswers = {};
+      isTestSubmitted = false;
+      document.getElementById('testScoreBadge').classList.add('hidden');
+      document.getElementById('btnSubmitTest').classList.remove('hidden');
+      document.getElementById('btnResetTest').classList.add('hidden');
+      document.getElementById('testProgressInfo').textContent = (currentLang === 'ru') 
+        ? 'Ответьте на все вопросы и проверьте свои знания.' 
+        : 'Барлық сұрақтарға жауап беріп, өзіңізді тексеріңіз.';
+      renderTestQuestions();
+    }
+
+    // Toggle Lesson Complete Status
+    function toggleLessonComplete() {
+      let completed = [];
+      try {
+        completed = JSON.parse(localStorage.getItem('geotany_completed_lessons') || '[]');
+      } catch(e) {}
+
+      const isDone = completed.includes(lessonData.id);
+      let curXp = parseInt(localStorage.getItem('geotany_user_xp') || '0', 10);
+
+      if (isDone) {
+        completed = completed.filter(id => id !== lessonData.id);
+        curXp = Math.max(0, curXp - 30);
+      } else {
+        completed.push(lessonData.id);
+        curXp += 30;
+      }
+
+      try {
+        localStorage.setItem('geotany_completed_lessons', JSON.stringify(completed));
+        localStorage.setItem('geotany_user_xp', curXp.toString());
+      } catch(e) {}
+
+      updateCompleteButtons();
+    }
+
+    function updateCompleteButtons() {
+      let completed = [];
+      try {
+        completed = JSON.parse(localStorage.getItem('geotany_completed_lessons') || '[]');
+      } catch(e) {}
+
+      const isDone = completed.includes(lessonData.id);
+      const isRu = (currentLang === 'ru');
+
+      const banner = document.getElementById('lessonCompletedBanner');
+      if (banner) banner.classList.toggle('hidden', !isDone);
+
+      const headerBtn = document.getElementById('btnHeaderComplete');
+      const headerIcon = document.getElementById('headerCheckIcon');
+      const headerText = document.getElementById('headerCompleteText');
+
+      if (headerBtn) {
+        if (isDone) {
+          headerBtn.className = 'px-3 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold transition flex items-center space-x-1.5';
+          if (headerIcon) headerIcon.textContent = '✓';
+          if (headerText) headerText.textContent = isRu ? 'Прочитано' : 'Оқылды';
+        } else {
+          headerBtn.className = 'px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-emerald-400 text-xs font-bold transition flex items-center space-x-1.5';
+          if (headerIcon) headerIcon.textContent = '○';
+          if (headerText) headerText.textContent = isRu ? 'Отметить' : 'Белгілеу';
+        }
+      }
+
+      const bottomLbl = document.getElementById('lblBottomComplete');
+      if (bottomLbl) {
+        bottomLbl.textContent = isDone 
+          ? (isRu ? '✓ Прочитано (Нажмите, чтобы отменить)' : '✓ Оқылды (Өшіру үшін басыңыз)')
+          : (isRu ? 'Отметить как прочитанное (+30 XP)' : 'Сабақты оқылды деп белгілеу (+30 XP)');
+      }
+    }
+
+    // Boot
+    window.addEventListener('DOMContentLoaded', () => {
+      renderTestQuestions();
+      updateCompleteButtons();
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="kz" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>14-сабақ. Халық географиясы. Әлеуметтік география | GEOTANY</title>
+
+  <!-- AUTH GUARD: RESTRICT DIRECT ACCESS WITHOUT VALID SESSION -->
+  <style id="authCloak">body { display: none !important; }</style>
+  <script>
+    (function() {
+      try {
+        var isAdmin = localStorage.getItem('geotany_admin_auth') === 'true';
+        var sessionStr = localStorage.getItem('geotany_user_session');
+        var isAuthorized = isAdmin;
+        if (!isAuthorized && sessionStr) {
+          var s = JSON.parse(sessionStr);
+          if (s && s.email && (s.courseCode || s.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        var profileStr = localStorage.getItem('geotany_user_profile');
+        if (!isAuthorized && profileStr) {
+          var p = JSON.parse(profileStr);
+          if (p && p.email && (p.courseCode || p.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        if (!isAuthorized) {
+          window.location.replace('../index.html?error=unauthorized_course');
+          return;
+        }
+        var cloak = document.getElementById('authCloak');
+        if (cloak) cloak.remove();
+      } catch (e) {
+        window.location.replace('../index.html?error=unauthorized_course');
+      }
+    })();
+  </script>
+
+  <!-- TAILWIND CSS & FONTS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            space: {
+              800: '#1E293B',
+              850: '#151E2E',
+              900: '#0F172A',
+              950: '#0B0F19',
+            },
+            brand: {
+              400: '#34D399',
+              500: '#10B981',
+              600: '#059669',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0B0F19;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1E293B;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+    .prose-theory h1, .prose-theory h2, .prose-theory h3, .prose-theory h4 {
+      color: #F8FAFC;
+      font-weight: 800;
+    }
+    .prose-theory p {
+      color: #CBD5E1;
+      line-height: 1.75;
+      font-size: 0.875rem;
+    }
+    .prose-theory ul {
+      list-style-type: disc;
+      margin-left: 1.25rem;
+      color: #CBD5E1;
+      font-size: 0.875rem;
+    }
+    .prose-theory table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.75rem;
+    }
+    .prose-theory th, .prose-theory td {
+      border: 1px solid #334155;
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+    }
+    .prose-theory th {
+      background: #1E293B;
+      color: #F8FAFC;
+      font-weight: 700;
+    }
+    .prose-theory tr:nth-child(even) {
+      background: rgba(15, 23, 42, 0.6);
+    }
+  </style>
+</head>
+<body class="bg-space-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-brand-500/30 selection:text-brand-400">
+
+  <!-- TOP APP BAR -->
+  <header class="sticky top-0 z-40 bg-space-950/90 backdrop-blur-xl border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+      
+      <!-- Left: Back Button & Title -->
+      <div class="flex items-center space-x-3">
+        <a href="../index.html?lang=kz#section-sabaktar_reading" class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 text-slate-300 hover:text-white border border-slate-700/80 text-xs sm:text-sm font-bold transition shadow-sm">
+          <span>←</span>
+          <span>Артқа</span>
+        </a>
+        <div class="h-6 w-px bg-slate-800 hidden sm:block"></div>
+        <div class="flex items-center space-x-2">
+          <span class="text-xs px-2.5 py-1 rounded-lg bg-cyan-500/10 text-cyan-400 font-extrabold border border-cyan-500/20">
+            14 / 20 сабақ
+          </span>
+          <span class="text-sm font-bold text-slate-200 hidden md:inline truncate max-w-xs">
+            14-сабақ. Халық географиясы. Әлеуметтік география
+          </span>
+        </div>
+      </div>
+
+      <!-- Center: Reading Time Badge -->
+      <div class="hidden sm:flex items-center space-x-1.5 bg-space-900 border border-slate-800 px-3 py-1.5 rounded-xl text-xs text-slate-400 font-medium">
+        <span>⏱️</span>
+        <span>8 мин</span>
+      </div>
+
+      <!-- Right: Direct Language Page Switcher & Complete Button -->
+      <div class="flex items-center space-x-2 sm:space-x-3">
+        
+        <!-- Language Switcher linking directly to counterpart page -->
+        <div class="flex items-center bg-space-900 p-0.5 rounded-xl border border-slate-800 text-xs font-bold">
+          <a href="lesson_14_kz.html" class="px-2.5 py-1 rounded-lg bg-brand-500 text-space-950 font-black transition">
+            🇰🇿 KZ
+          </a>
+          <a href="lesson_14_ru.html" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition">
+            🇷🇺 RU
+          </a>
+        </div>
+
+        <!-- Mark as Completed Toggle Button -->
+        <button id="btnHeaderComplete" onclick="toggleLessonComplete()" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-emerald-400 text-xs font-bold transition flex items-center space-x-1.5 shadow-sm">
+          <span id="headerCheckIcon">○</span>
+          <span id="headerCompleteText" class="hidden sm:inline">Оқылды</span>
+        </button>
+
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-8">
+
+    <!-- HERO LESSON BANNER -->
+    <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-space-900 via-space-850 to-space-900 border border-slate-800 shadow-xl relative overflow-hidden">
+      <!-- Glow decoration -->
+      <div class="absolute -right-20 -top-20 w-60 h-60 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-20 -bottom-20 w-60 h-60 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10 space-y-4">
+        
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <span class="px-3 py-1 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 font-extrabold text-xs tracking-wider uppercase">
+              📖 ҰБТ ГЕОГРАФИЯ • САБАҚ №14
+            </span>
+            <span class="px-3 py-1 rounded-xl bg-brand-500/10 border border-brand-500/30 text-brand-400 font-bold text-xs">
+              Қазақ бөлімі
+            </span>
+          </div>
+
+          <!-- Prev / Next Navigation -->
+          <div class="flex items-center space-x-2 text-xs font-bold">
+            <a href="lesson_13_kz.html" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition flex items-center space-x-1"><span>←</span><span>Алдыңғы сабақ</span></a>
+            <span class="text-slate-500">|</span>
+            <a href="lesson_15_kz.html" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition flex items-center space-x-1"><span>Келесі сабақ</span><span>→</span></a>
+          </div>
+        </div>
+
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            14-сабақ. Халық географиясы. Әлеуметтік география
+          </h1>
+          <h2 class="text-sm font-semibold text-cyan-300/80 mt-1">
+            14 урок. География населения. Социальная география
+          </h2>
+        </div>
+
+        <!-- Tags Row -->
+        <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-800/80">
+          <span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">#Халық географиясы. Әлеуметтік география</span><span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">#География населения. Социальная география</span>
+        </div>
+
+        <!-- Completed Banner -->
+        <div id="lessonCompletedBanner" class="hidden p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-xs sm:text-sm text-emerald-300 flex items-center justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <span>✅</span>
+            <span>Бұл сабақ оқылды деп белгіленген.</span>
+          </div>
+          <span class="text-xs px-2.5 py-1 rounded-xl bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40">
+            +30 XP алынды
+          </span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SECTION 1: KEY TERMS & DEFINITIONS -->
+    <section class="p-6 sm:p-7 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-base sm:text-lg font-black text-white flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center text-sm font-black">1</span>
+          <span>Негізгі терминдер мен ұғымдар</span>
+        </h3>
+        <span class="text-xs text-slate-400 font-semibold">
+          5 термин
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Демографиялық жарылыс</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Өлім-жітімнің күрт азайып, туу көрсеткішінің жоғары сақталуы нәтижесінде халық санының шапшаң өсуі.</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Ұдайы өсудің I типі</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Туу деңгейі де, өлім-жітім де төмен, табиғи өсімі баяу немесе теріс дамыған елдерге тән тип («демографиялық қыс»).</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Ұдайы өсудің II типі</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Туу көрсеткіші өте жоғары, өлім-жітім төмендеген, халық саны қарқынды өсетін дамушы елдерге тән тип («демографиялық көктем»).</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Халық тығыздығы</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Аумақтың 1 шаршы шақырымына (км²) келетін орташа тұрғындар саны (Қазақстанда шамамен 7,3 адам/км²).</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Урбанизация</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Қалалардың өсуі, қала халқының үлесінің артуы және қалалық өмір салтының кең таралу процесі.</p>
+        </div>
+        
+      </div>
+    </section>
+
+    <!-- SECTION 2: FULL COMPREHENSIVE THEORY -->
+    <section class="p-6 sm:p-8 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-5">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-base sm:text-lg font-black text-white flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-brand-500/10 border border-brand-500/20 text-brand-400 flex items-center justify-center text-sm font-black">2</span>
+          <span>Толық теориялық конспект және иллюстрациялар</span>
+        </h3>
+        <span class="text-xs text-slate-400 font-medium hidden sm:inline">
+          Интерактивті оқу
+        </span>
+      </div>
+
+      <!-- Theory Body Container -->
+      <div class="prose-theory leading-relaxed space-y-4 overflow-x-auto">
+        <h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>1. Дүниежүзі халқының саны және ұдайы өсуі</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Жер шары халқының саны:</b> 2022 жылдың қарашасында ресми түрде <b class="text-cyan-300 font-bold">8 миллиард адамнан</b> асты!</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Демография ғылымы:</b> Халықтың санын, құрамын, өсіп-өнуін және қозғалысын зерттейтін ғылым. Бұл терминді 1855 жылы француз ғалымы <b class="text-cyan-300 font-bold">Ашиль Гийяр</b> енгізді.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Халықтың ұдайы өсуі (воспроизводство):</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Туу, өлім және табиғи өсім көрсеткіштерінің жиынтығы арқылы жаңа ұрпақтың үздіксіз ауысуы.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Табиғи өсім формуласы:</b></li>
+</ul>
+<div class="my-4 p-3.5 bg-space-950 rounded-xl border border-cyan-500/50 text-center font-mono text-sm text-cyan-300 font-extrabold shadow-inner">📐 Формула: Табиғи\_өсім = Туу\_көрсеткіші - Өлім\_көрсеткіші</div>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><i class="text-slate-300">Мысалы:</i> Болгарияда туу 9‰, өлім 16‰ болса, табиғи өсім: 9 - 16 = <b class="text-cyan-300 font-bold">-7‰</b> (халықтың табиғи кемуі — депопуляция байқалады).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Ұдайы өсудің 3 тарихи типі:</b></li>
+</ul>
+<ol class="space-y-2 my-2.5 ml-6 list-none">
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">1.</span><i class="text-slate-300">Дәстүрлі тип (архетип):</i> Туу да, өлім де өте жоғары, өмір сүру жасы қысқа (бұрынғы қоғамдар).</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">2.</span><i class="text-slate-300">Өтпелі тип:</i> Медицина дамып, өлім күрт төмендейді, бірақ туу жоғары болып қалады («демографиялық жарылыс» — қазіргі Тропикалық Африка).</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">3.</span><i class="text-slate-300">Қазіргі заманғы тип:</i> Туу да, өлім де төмен, өмір сүру жасы ұзақ (Еуропа, Солтүстік Америка, Жапония).</li>
+</ol>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>👥</span>
+<span>1-СЫЗБА: ДҮНИЕЖҮЗІ ХАЛҚЫНЫҢ САНЫ ЖӘНЕ ҰДАЙЫ ӨСУ</span>
+</span>
+<span class="text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono">8 млрд адам • А. Гийяр (1855)</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 220">
+<!-- Pop count box -->
+<rect fill="#0b1329" height="170" rx="8" stroke="#38bdf8" width="200" x="25" y="25"></rect>
+<text fill="#38bdf8" font-size="11" font-weight="bold" text-anchor="middle" x="125" y="50">ЖЕР ХАЛҚЫНЫҢ САНЫ</text>
+<text fill="#f8fafc" font-family="monospace" font-size="30" font-weight="black" text-anchor="middle" x="125" y="82">&gt; 8,0</text>
+<text fill="#34d399" font-size="11" font-weight="bold" text-anchor="middle" x="125" y="105">МИЛЛИАРД АДАМ</text>
+<line stroke="#1e293b" x1="40" x2="210" y1="120" y2="120"></line>
+<text fill="#f59e0b" font-size="10" font-weight="bold" text-anchor="middle" x="125" y="145">Ашиль Гийяр (1855 ж.)</text>
+<text fill="#cbd5e1" font-size="9" text-anchor="middle" x="125" y="165">«Демография» терминін енгізді</text>
+<!-- Natural increase formulas -->
+<rect fill="#0b1329" height="170" rx="8" stroke="#1e293b" width="425" x="250" y="25"></rect>
+<text fill="#34d399" font-size="12" font-weight="bold" text-anchor="middle" x="462" y="50">ДЕМОГРАФИЯЛЫҚ ӨСІМНІҢ 2 НЕГІЗГІ ФОРМУЛАСЫ</text>
+<rect fill="#0284c7" fill-opacity="0.2" height="45" rx="4" stroke="#38bdf8" width="385" x="270" y="65"></rect>
+<text fill="#38bdf8" font-size="10" font-weight="bold" x="285" y="85">1. ТАБИҒИ ӨСІМ = ТУУ КӨРСЕТКІШІ — ӨЛІМ КӨРСЕТКІШІ</text>
+<text fill="#cbd5e1" font-size="9" x="285" y="100">Мысалы: Болгарияда Туу 9‰, Өлім 16‰ -&gt; Табиғи өсім = 9 - 16 = <tspan fill="#ef4444" font-weight="bold">-7‰ (Депопуляция)</tspan></text>
+<rect fill="#10b981" fill-opacity="0.2" height="45" rx="4" stroke="#34d399" width="385" x="270" y="120"></rect>
+<text fill="#34d399" font-size="10" font-weight="bold" x="285" y="140">2. МЕХАНИКАЛЫҚ ӨСІМ (КӨШІ-ҚОН САЛЬДОСЫ) = КЕЛГЕНДЕР — КЕТКЕНДЕР</text>
+<text fill="#cbd5e1" font-size="9" x="285" y="155">Механикалық өсім = Иммигранттар саны — Эмигранттар саны</text>
+</svg>
+</div>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>2. Халықтың жыныстық және жастық құрылымы</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Жыныстық құрамы:</b> Дүниежүзінде әр 100 қыз балаға шамамен 105–106 ұл бала дүниеге келеді. Әлем халқында ерлер саны әйелдерден шамамен <b class="text-cyan-300 font-bold">51 миллионға көп</b> (әсіресе Қытай, Үндістан және Парсы шығанағы елдерінде ерлер басым).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Жастық-жыныстық пирамидалар:</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Прогрессивті тип (Үшбұрышты):</b> Төменгі жағы (балалар саны) өте кең (45–50%-ға жетеді). Африка мен Азияның дамушы елдеріне тән.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Регрессивті тип (Құмыра тәріздес):</b> Төменгі жағы сүйірленген, яғни балалар үлесі аз, қарт адамдар үлесі көп. Бұл «ұлттың қартаюын» білдіреді (Германия, Италия, Жапония).</li>
+</ul>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>📊</span>
+<span>2-СЫЗБА: ХАЛЫҚТЫҢ ЖАСТЫҚ-ЖЫНЫСТЫҚ ПИРАМИДАСЫ</span>
+</span>
+<span class="text-[10px] bg-purple-500/10 text-purple-300 px-2.5 py-0.5 rounded-full border border-purple-500/20 font-mono">Прогрессивті (Жас) vs Регрессивті (Қартаю)</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 220">
+<!-- Left: Progressive pyramid (Africa, Niger, Mali) -->
+<rect fill="#0b1329" height="170" rx="8" stroke="#10b981" width="310" x="25" y="25"></rect>
+<text fill="#34d399" font-size="11" font-weight="bold" text-anchor="middle" x="180" y="48">ПРОГРЕССИВТІ ТИП (Африка, Нигер)</text>
+<!-- Broad base triangle -->
+<polygon fill="#10b981" fill-opacity="0.3" points="180,65 110,135 250,135" stroke="#34d399" stroke-width="2"></polygon>
+<text fill="#f8fafc" font-size="9" font-weight="bold" text-anchor="middle" x="180" y="125">Балалар үлесі өте көп (45–50%)</text>
+<text fill="#34d399" font-size="10" font-weight="bold" text-anchor="middle" x="180" y="155">Туу жоғары, жас халық</text>
+<text fill="#94a3b8" font-size="8" text-anchor="middle" x="180" y="175">Табиғи өсім өте жоғары (&gt;25–30‰)</text>
+<!-- Right: Regressive pyramid (Europe, Japan) -->
+<rect fill="#0b1329" height="170" rx="8" stroke="#ef4444" width="310" x="365" y="25"></rect>
+<text fill="#f87171" font-size="11" font-weight="bold" text-anchor="middle" x="520" y="48">РЕГРЕССИВТІ ТИП (Еуропа, Жапония)</text>
+<!-- Urn shape / narrow base -->
+<polygon fill="#ef4444" fill-opacity="0.3" points="520,65 470,95 485,135 555,135 570,95" stroke="#ef4444" stroke-width="2"></polygon>
+<text fill="#f8fafc" font-size="9" font-weight="bold" text-anchor="middle" x="520" y="125">Қарттар көбейген, балалар аз</text>
+<text fill="#f87171" font-size="10" font-weight="bold" text-anchor="middle" x="520" y="155">Туу төмен, «ұлттың қартаюы»</text>
+<text fill="#94a3b8" font-size="8" text-anchor="middle" x="520" y="175">Табиғи кему байқалады</text>
+</svg>
+</div>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>3. Халқы ең көп елдер және діни құрам</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Халқы 200 миллионнан асатын алып елдер:</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">1. <b class="text-cyan-300 font-bold">Үндістан</b> (1,43 млрд);</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">2. <b class="text-cyan-300 font-bold">Қытай</b> (1,41 млрд);</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">3. <b class="text-cyan-300 font-bold">АҚШ</b> (335 млн);</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">4. <b class="text-cyan-300 font-bold">Индонезия</b> (278 млн);</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">5. <b class="text-cyan-300 font-bold">Пәкістан</b> (240 млн);</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">6. <b class="text-cyan-300 font-bold">Нигерия</b> (225 млн);</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">7. <b class="text-cyan-300 font-bold">Бразилия</b> (216 млн).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Дүниежүзілік діндер:</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Ислам діні:</b> Мұсылмандар саны бойынша әлемдегі ең ірі мемлекет — <b class="text-cyan-300 font-bold">Индонезия</b> (халқының 87%-ы мұсылмандар).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Христиандық:</b> Дүниежүзіндегі ең көп таралған дін (2,4 млрд ұстанушы).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Австрияның мемлекеттік тілі:</b> <b class="text-cyan-300 font-bold">Неміс тілі</b>.</li>
+</ul>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>🕌</span>
+<span>3-СЫЗБА: ХАЛҚЫ ЕҢ КӨП ЕЛДЕР ЖӘНЕ ДҮНИЕЖҮЗІЛІК ДІНДЕР</span>
+</span>
+<span class="text-[10px] bg-amber-500/10 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/20 font-mono">Үндістан, Қытай • Индонезия: ең ірі мұсылман елі</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 220">
+<rect fill="#0b1329" height="170" rx="8" stroke="#1e293b" width="310" x="25" y="25"></rect>
+<text fill="#38bdf8" font-size="11" font-weight="bold" text-anchor="middle" x="180" y="48">ХАЛҚЫ 200 МЛН-НАН АСАТЫН ЕЛДЕР</text>
+<text fill="#f8fafc" font-size="10" x="45" y="75">1. Үндістан — 1,43 млрд</text>
+<text fill="#f8fafc" font-size="10" x="45" y="95">2. Қытай — 1,41 млрд</text>
+<text fill="#f8fafc" font-size="10" x="45" y="115">3. АҚШ — 335 млн</text>
+<text fill="#f8fafc" font-size="10" x="45" y="135">4. Индонезия — 278 млн (ең ірі ислам елі)</text>
+<text fill="#f8fafc" font-size="10" x="45" y="155">5. Пәкістан — 240 млн</text>
+<text fill="#f8fafc" font-size="10" x="45" y="175">6. Нигерия, 7. Бразилия (&gt;215 млн)</text>
+<!-- World religions & languages -->
+<rect fill="#0b1329" height="170" rx="8" stroke="#1e293b" width="310" x="365" y="25"></rect>
+<text fill="#f59e0b" font-size="11" font-weight="bold" text-anchor="middle" x="520" y="48">ДІНДЕР МЕН ТІЛДЕР</text>
+<text fill="#34d399" font-size="10" font-weight="bold" x="385" y="75">3 Дүниежүзілік дін:</text>
+<text fill="#cbd5e1" font-size="9" x="395" y="95">Христиандық (2,4 млрд), Ислам (1,9 млрд), Буддизм</text>
+<line stroke="#1e293b" x1="385" x2="655" y1="108" y2="108"></line>
+<text fill="#38bdf8" font-size="10" font-weight="bold" x="385" y="130">Ең ірі мұсылман мемлекеті:</text>
+<text fill="#fde047" font-size="11" font-weight="black" x="395" y="148">ИНДОНЕЗИЯ</text>
+<text fill="#cbd5e1" font-size="9" x="385" y="172">Австрияның мемлекеттік тілі: <tspan fill="#38bdf8" font-weight="bold">Неміс тілі</tspan></text>
+</svg>
+</div>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>4. Көші-қон (Миграция) және еңбек нарығы</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Механикалық өсім (Көші-қон сальдосы):</b> Белгілі бір мерзімде елге келгендер (иммигранттар) мен елден кеткендердің (эмигранттар) арасындағы айырмашылық.</li>
+</ul>
+<div class="my-4 p-3.5 bg-space-950 rounded-xl border border-cyan-500/50 text-center font-mono text-sm text-cyan-300 font-extrabold shadow-inner">📐 Формула: Механикалық\_өсім = Иммигранттар - Эмигранттар</div>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Гастарбайтер (неміс. <i class="text-slate-300">Gastarbeiter</i> — «қонақ-жұмысшы»):</b> Өзге елге жақсы табыс табу және жұмыс істеу мақсатында уақытша келген шетелдік еңбек мигранты.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">«Ақыл-ойдың жылыстауы» (Brain drain):</b> Ғалымдар мен жоғары білікті мамандардың дамушы елдерден дамыған елдерге (АҚШ, ЕО) көшуі.</li>
+</ul>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>✈️</span>
+<span>4-СЫЗБА: ХАЛЫҚТЫҢ КӨШІ-ҚОНЫ (МИГРАЦИЯ) ЖӘНЕ ГАСТАРБАЙТЕРЛЕР</span>
+</span>
+<span class="text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono">Эмиграция vs Иммиграция • Гастарбайтер</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 220">
+<rect fill="#0b1329" height="170" rx="8" stroke="#ef4444" width="200" x="25" y="25"></rect>
+<text fill="#f87171" font-size="11" font-weight="bold" text-anchor="middle" x="125" y="50">ЭМИГРАЦИЯ (КЕТУ)</text>
+<text fill="#f8fafc" font-size="10" text-anchor="middle" x="125" y="75">Өз елінен басқа елге</text>
+<text fill="#f8fafc" font-size="10" text-anchor="middle" x="125" y="92">тұрақты көшіп кету</text>
+<line stroke="#1e293b" x1="40" x2="210" y1="110" y2="110"></line>
+<text fill="#cbd5e1" font-size="8" text-anchor="middle" x="125" y="135">Итермелеуші факторлар:</text>
+<text fill="#94a3b8" font-size="8" text-anchor="middle" x="125" y="152">Жұмыссыздық, соғыс,</text>
+<text fill="#94a3b8" font-size="8" text-anchor="middle" x="125" y="170">төмен табыс</text>
+<!-- Arrow right -->
+<line stroke="#38bdf8" stroke-width="3" x1="230" x2="260" y1="110" y2="110"></line>
+<rect fill="#0b1329" height="170" rx="8" stroke="#10b981" width="200" x="265" y="25"></rect>
+<text fill="#34d399" font-size="11" font-weight="bold" text-anchor="middle" x="365" y="50">ИММИГРАЦИЯ (КЕЛУ)</text>
+<text fill="#f8fafc" font-size="10" text-anchor="middle" x="365" y="75">Басқа елден осы елге</text>
+<text fill="#f8fafc" font-size="10" text-anchor="middle" x="365" y="92">тұруға көшіп келу</text>
+<line stroke="#1e293b" x1="280" x2="450" y1="110" y2="110"></line>
+<text fill="#cbd5e1" font-size="8" text-anchor="middle" x="365" y="135">Тартушы факторлар:</text>
+<text fill="#94a3b8" font-size="8" text-anchor="middle" x="365" y="152">Жоғары жалақы, тыныштық,</text>
+<text fill="#94a3b8" font-size="8" text-anchor="middle" x="365" y="170">сапалы білім мен медицина</text>
+<!-- Gastarbeiter definition -->
+<rect fill="#0b1329" height="170" rx="8" stroke="#f59e0b" width="200" x="475" y="25"></rect>
+<text fill="#fbbf24" font-size="11" font-weight="bold" text-anchor="middle" x="575" y="50">ГАСТАРБАЙТЕР</text>
+<text fill="#f8fafc" font-size="9" text-anchor="middle" x="575" y="75">Немісше: «қонақ-жұмысшы»</text>
+<line stroke="#1e293b" x1="490" x2="660" y1="90" y2="90"></line>
+<text fill="#cbd5e1" font-size="9" text-anchor="middle" x="575" y="115">Басқа елге ақша табу</text>
+<text fill="#cbd5e1" font-size="9" text-anchor="middle" x="575" y="135">мақсатында уақытша</text>
+<text fill="#cbd5e1" font-size="9" text-anchor="middle" x="575" y="155">келген еңбек мигранты</text>
+<text fill="#fde047" font-size="9" font-weight="bold" text-anchor="middle" x="575" y="180">Еңбек көші-қоны</text>
+</svg>
+</div>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>5. Урбанизация және әлемдік мәдени мұра</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Урбанизация:</b> Қалалардың өсуі, қала халқы үлесінің артуы және қалалық өмір салтының таралуы.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Мегалополис:</b> Бір-біріне тұтасып жалғасып кеткен алып қалалар агломерацияларының жүйесі:</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Токайдо (Жапония):</b> Токио, Нагоя, Осаканы біріктіретін әлемдегі ең ірі мегалополис (70 млн адам).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Босваш (АҚШ):</b> Бостоннан Вашингтонға дейінгі Атлант жағалауындағы мегалополис.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Мачу-Пикчу:</b> Оңтүстік Американың <b class="text-cyan-300 font-bold">Перу</b> мемлекетіндегі Анд тауларының басында орналасқан ежелгі Инктер империясының ғажайып қаласы.</li>
+</ul>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>🏙️</span>
+<span>5-СЫЗБА: УРБАНИЗАЦИЯ, МЕГАЛОПОЛИСТЕР ЖӘНЕ МАЧУ-ПИКЧУ</span>
+</span>
+<span class="text-[10px] bg-purple-500/10 text-purple-300 px-2.5 py-0.5 rounded-full border border-purple-500/20 font-mono">Токайдо • Босваш • Мачу-Пикчу (Перу)</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 220">
+<rect fill="#0b1329" height="170" rx="8" stroke="#38bdf8" width="310" x="25" y="25"></rect>
+<text fill="#38bdf8" font-size="11" font-weight="bold" text-anchor="middle" x="180" y="50">ДҮНИЕЖҮЗІНІҢ АСА ІРІ МЕГАЛОПОЛИСТЕРІ</text>
+<text fill="#f8fafc" font-size="10" font-weight="bold" x="45" y="80">1. Токайдо (Жапония):</text>
+<text fill="#cbd5e1" font-size="9" x="55" y="98">Токио — Нагоя — Осака (70 млн адам)</text>
+<text fill="#f8fafc" font-size="10" font-weight="bold" x="45" y="125">2. Босваш (АҚШ):</text>
+<text fill="#cbd5e1" font-size="9" x="55" y="143">Бостон — Нью-Йорк — Филадельфия — Вашингтон</text>
+<text fill="#f8fafc" font-size="10" font-weight="bold" x="45" y="170">3. Чипитс (Ұлы көлдер) &amp; Сан-Сан (Калифорния)</text>
+<!-- Cultural heritage: Machu Picchu -->
+<rect fill="#0b1329" height="170" rx="8" stroke="#f59e0b" width="310" x="365" y="25"></rect>
+<text fill="#fbbf24" font-size="11" font-weight="bold" text-anchor="middle" x="520" y="50">ӘЛЕМДІК ТАРИХИ МҰРА: МАЧУ-ПИКЧУ</text>
+<text fill="#fde047" font-size="11" font-weight="bold" x="385" y="80">МАЧУ-ПИКЧУ (Перу мемлекеті):</text>
+<text fill="#cbd5e1" font-size="9" x="385" y="105">• Оңтүстік Америкадағы Анд тауларында (2430 м)</text>
+<text fill="#cbd5e1" font-size="9" x="385" y="125">• Ежелгі Инктер империясының жұмбақ қаласы</text>
+<text fill="#cbd5e1" font-size="9" x="385" y="145">• ЮНЕСКО Бүкіләлемдік мұрасы тізімінде</text>
+<text fill="#34d399" font-size="9" font-weight="bold" x="385" y="170">Жаңа әлемнің 7 кереметінің бірі</text>
+</svg>
+</div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: COMMON EXAM TRAPS & PITFALLS (if available) -->
+    <section class="p-6 sm:p-7 rounded-3xl bg-amber-500/5 border border-amber-500/20 shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-amber-500/20 pb-3">
+        <h3 class="text-base sm:text-lg font-black text-amber-300 flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center text-sm font-black">⚠️</span>
+          <span>ҰБТ қақпандары мен ерекше ескертулер</span>
+        </h3>
+        <span class="text-xs text-amber-400/80 font-bold">
+          Мұқият есте сақтаңыз
+        </span>
+      </div>
+
+      <div class="space-y-2.5 text-xs sm:text-sm text-slate-200">
+        <p class="leading-relaxed flex items-start space-x-2"><span class="text-amber-400 shrink-0 mt-0.5">⚠️</span><span>⚠️ Назар аударыңыз: Халық географиясы. Әлеуметтік география бойынша сұрақтар ҰБТ-ның контексттік тесттерінде жиі кездеседі.</span></p>
+      </div>
+    </section>
+
+    <!-- SECTION 4: END-OF-LESSON TEST -->
+    <section class="p-6 sm:p-8 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-6">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-brand-500/10 border border-brand-500/20 text-brand-400 flex items-center justify-center text-sm font-black">3</span>
+          <div>
+            <h3 class="text-base sm:text-lg font-black text-white">
+              Тақырыптық қорытынды тест
+            </h3>
+            <p class="text-xs text-slate-400 mt-0.5">
+              Өту шегі: 80% • Сыйлық: +30 XP
+            </p>
+          </div>
+        </div>
+
+        <div id="testScoreBadge" class="hidden px-3 py-1 rounded-xl bg-space-850 border border-slate-700 text-xs font-bold text-amber-400 font-mono">
+          0%
+        </div>
+      </div>
+
+      <!-- Test Questions Container -->
+      <div id="testQuestionsList" class="space-y-6">
+        <!-- Dynamically populated test questions via JS -->
+      </div>
+
+      <!-- Test Submit & Score Action Bar -->
+      <div class="pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="text-xs text-slate-400" id="testProgressInfo">
+          Барлық сұрақтарға жауап беріп, өзіңізді тексеріңіз.
+        </div>
+        <div class="flex items-center space-x-2.5 w-full sm:w-auto">
+          <button id="btnSubmitTest" onclick="submitLessonTest()" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-brand-500 hover:from-amber-400 hover:to-brand-400 text-space-950 font-black text-xs sm:text-sm shadow-md transition flex items-center justify-center space-x-2">
+            <span>🏁</span>
+            <span>Тестті тексеру</span>
+          </button>
+          <button id="btnResetTest" onclick="resetLessonTest()" class="hidden px-4 py-2.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-bold transition flex items-center justify-center space-x-1">
+            <span>🔄</span>
+            <span>Қайта тапсыру</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- BOTTOM NAVIGATION & FOOTER -->
+    <div class="p-6 rounded-3xl bg-space-900 border border-slate-800 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleLessonComplete()" class="px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-400 text-space-950 font-black text-xs sm:text-sm shadow-md transition flex items-center space-x-2">
+          <span>✓</span>
+          <span id="lblBottomComplete">Сабақты оқылды деп белгілеу (+30 XP)</span>
+        </button>
+      </div>
+
+      <div class="flex items-center space-x-2 text-xs font-bold">
+        <a href="lesson_13_kz.html" class="px-4 py-2 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition">← Алдыңғы сабақ</a>
+        <a href="../index.html?lang=kz#section-sabaktar_reading" class="px-4 py-2 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition">
+          Сабақтар тізімі
+        </a>
+        <a href="lesson_15_kz.html" class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-space-950 transition font-black">Келесі сабақ →</a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- LESSON SCRIPT ENGINE -->
+  <script>
+    const lessonData = {"id": 14, "title_kz": "14-сабақ. Халық географиясы. Әлеуметтік география", "title_ru": "14 урок. География населения. Социальная география", "time": "8 мин", "tags": ["Халық географиясы. Әлеуметтік география", "География населения. Социальная география"], "terms": [{"kz": "Демографиялық жарылыс", "ru": "Демографический взрыв", "desc_kz": "Өлім-жітімнің күрт азайып, туу көрсеткішінің жоғары сақталуы нәтижесінде халық санының шапшаң өсуі.", "desc_ru": "Резкое ускорение роста численности населения мира во второй половине XX века."}, {"kz": "Ұдайы өсудің I типі", "ru": "I тип воспроизводства", "desc_kz": "Туу деңгейі де, өлім-жітім де төмен, табиғи өсімі баяу немесе теріс дамыған елдерге тән тип («демографиялық қыс»).", "desc_ru": "Тип воспроизводства с низкой рождаемостью и смертностью («демографическая зима» в Европе)."}, {"kz": "Ұдайы өсудің II типі", "ru": "II тип воспроизводства", "desc_kz": "Туу көрсеткіші өте жоғары, өлім-жітім төмендеген, халық саны қарқынды өсетін дамушы елдерге тән тип («демографиялық көктем»).", "desc_ru": "Тип воспроизводства с традиционно высокой рождаемостью («демографическая весна» в Азии и Африке)."}, {"kz": "Халық тығыздығы", "ru": "Плотность населения", "desc_kz": "Аумақтың 1 шаршы шақырымына (км²) келетін орташа тұрғындар саны (Қазақстанда шамамен 7,3 адам/км²).", "desc_ru": "Число жителей, приходящееся на единицу площади (в Казахстане около 7,3 чел./км²)."}, {"kz": "Урбанизация", "ru": "Урбанизация", "desc_kz": "Қалалардың өсуі, қала халқының үлесінің артуы және қалалық өмір салтының кең таралу процесі.", "desc_ru": "Исторический процесс повышения роли городов и доли городского населения в стране."}], "theory_kz": "<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>1. Дүниежүзі халқының саны және ұдайы өсуі</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Жер шары халқының саны:</b> 2022 жылдың қарашасында ресми түрде <b class=\"text-cyan-300 font-bold\">8 миллиард адамнан</b> асты!</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Демография ғылымы:</b> Халықтың санын, құрамын, өсіп-өнуін және қозғалысын зерттейтін ғылым. Бұл терминді 1855 жылы француз ғалымы <b class=\"text-cyan-300 font-bold\">Ашиль Гийяр</b> енгізді.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Халықтың ұдайы өсуі (воспроизводство):</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Туу, өлім және табиғи өсім көрсеткіштерінің жиынтығы арқылы жаңа ұрпақтың үздіксіз ауысуы.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Табиғи өсім формуласы:</b></li>\n</ul>\n<div class=\"my-4 p-3.5 bg-space-950 rounded-xl border border-cyan-500/50 text-center font-mono text-sm text-cyan-300 font-extrabold shadow-inner\">📐 Формула: Табиғи\\_өсім = Туу\\_көрсеткіші - Өлім\\_көрсеткіші</div>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><i class=\"text-slate-300\">Мысалы:</i> Болгарияда туу 9‰, өлім 16‰ болса, табиғи өсім: 9 - 16 = <b class=\"text-cyan-300 font-bold\">-7‰</b> (халықтың табиғи кемуі — депопуляция байқалады).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Ұдайы өсудің 3 тарихи типі:</b></li>\n</ul>\n<ol class=\"space-y-2 my-2.5 ml-6 list-none\">\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><i class=\"text-slate-300\">Дәстүрлі тип (архетип):</i> Туу да, өлім де өте жоғары, өмір сүру жасы қысқа (бұрынғы қоғамдар).</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><i class=\"text-slate-300\">Өтпелі тип:</i> Медицина дамып, өлім күрт төмендейді, бірақ туу жоғары болып қалады («демографиялық жарылыс» — қазіргі Тропикалық Африка).</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><i class=\"text-slate-300\">Қазіргі заманғы тип:</i> Туу да, өлім де төмен, өмір сүру жасы ұзақ (Еуропа, Солтүстік Америка, Жапония).</li>\n</ol>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>👥</span>\n<span>1-СЫЗБА: ДҮНИЕЖҮЗІ ХАЛҚЫНЫҢ САНЫ ЖӘНЕ ҰДАЙЫ ӨСУ</span>\n</span>\n<span class=\"text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono\">8 млрд адам • А. Гийяр (1855)</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<!-- Pop count box -->\n<rect fill=\"#0b1329\" height=\"170\" rx=\"8\" stroke=\"#38bdf8\" width=\"200\" x=\"25\" y=\"25\"></rect>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"125\" y=\"50\">ЖЕР ХАЛҚЫНЫҢ САНЫ</text>\n<text fill=\"#f8fafc\" font-family=\"monospace\" font-size=\"30\" font-weight=\"black\" text-anchor=\"middle\" x=\"125\" y=\"82\">&gt; 8,0</text>\n<text fill=\"#34d399\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"125\" y=\"105\">МИЛЛИАРД АДАМ</text>\n<line stroke=\"#1e293b\" x1=\"40\" x2=\"210\" y1=\"120\" y2=\"120\"></line>\n<text fill=\"#f59e0b\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"125\" y=\"145\">Ашиль Гийяр (1855 ж.)</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" text-anchor=\"middle\" x=\"125\" y=\"165\">«Демография» терминін енгізді</text>\n<!-- Natural increase formulas -->\n<rect fill=\"#0b1329\" height=\"170\" rx=\"8\" stroke=\"#1e293b\" width=\"425\" x=\"250\" y=\"25\"></rect>\n<text fill=\"#34d399\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"462\" y=\"50\">ДЕМОГРАФИЯЛЫҚ ӨСІМНІҢ 2 НЕГІЗГІ ФОРМУЛАСЫ</text>\n<rect fill=\"#0284c7\" fill-opacity=\"0.2\" height=\"45\" rx=\"4\" stroke=\"#38bdf8\" width=\"385\" x=\"270\" y=\"65\"></rect>\n<text fill=\"#38bdf8\" font-size=\"10\" font-weight=\"bold\" x=\"285\" y=\"85\">1. ТАБИҒИ ӨСІМ = ТУУ КӨРСЕТКІШІ — ӨЛІМ КӨРСЕТКІШІ</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"285\" y=\"100\">Мысалы: Болгарияда Туу 9‰, Өлім 16‰ -&gt; Табиғи өсім = 9 - 16 = <tspan fill=\"#ef4444\" font-weight=\"bold\">-7‰ (Депопуляция)</tspan></text>\n<rect fill=\"#10b981\" fill-opacity=\"0.2\" height=\"45\" rx=\"4\" stroke=\"#34d399\" width=\"385\" x=\"270\" y=\"120\"></rect>\n<text fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\" x=\"285\" y=\"140\">2. МЕХАНИКАЛЫҚ ӨСІМ (КӨШІ-ҚОН САЛЬДОСЫ) = КЕЛГЕНДЕР — КЕТКЕНДЕР</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"285\" y=\"155\">Механикалық өсім = Иммигранттар саны — Эмигранттар саны</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>2. Халықтың жыныстық және жастық құрылымы</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Жыныстық құрамы:</b> Дүниежүзінде әр 100 қыз балаға шамамен 105–106 ұл бала дүниеге келеді. Әлем халқында ерлер саны әйелдерден шамамен <b class=\"text-cyan-300 font-bold\">51 миллионға көп</b> (әсіресе Қытай, Үндістан және Парсы шығанағы елдерінде ерлер басым).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Жастық-жыныстық пирамидалар:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Прогрессивті тип (Үшбұрышты):</b> Төменгі жағы (балалар саны) өте кең (45–50%-ға жетеді). Африка мен Азияның дамушы елдеріне тән.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Регрессивті тип (Құмыра тәріздес):</b> Төменгі жағы сүйірленген, яғни балалар үлесі аз, қарт адамдар үлесі көп. Бұл «ұлттың қартаюын» білдіреді (Германия, Италия, Жапония).</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>📊</span>\n<span>2-СЫЗБА: ХАЛЫҚТЫҢ ЖАСТЫҚ-ЖЫНЫСТЫҚ ПИРАМИДАСЫ</span>\n</span>\n<span class=\"text-[10px] bg-purple-500/10 text-purple-300 px-2.5 py-0.5 rounded-full border border-purple-500/20 font-mono\">Прогрессивті (Жас) vs Регрессивті (Қартаю)</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<!-- Left: Progressive pyramid (Africa, Niger, Mali) -->\n<rect fill=\"#0b1329\" height=\"170\" rx=\"8\" stroke=\"#10b981\" width=\"310\" x=\"25\" y=\"25\"></rect>\n<text fill=\"#34d399\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"180\" y=\"48\">ПРОГРЕССИВТІ ТИП (Африка, Нигер)</text>\n<!-- Broad base triangle -->\n<polygon fill=\"#10b981\" fill-opacity=\"0.3\" points=\"180,65 110,135 250,135\" stroke=\"#34d399\" stroke-width=\"2\"></polygon>\n<text fill=\"#f8fafc\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"180\" y=\"125\">Балалар үлесі өте көп (45–50%)</text>\n<text fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"180\" y=\"155\">Туу жоғары, жас халық</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"180\" y=\"175\">Табиғи өсім өте жоғары (&gt;25–30‰)</text>\n<!-- Right: Regressive pyramid (Europe, Japan) -->\n<rect fill=\"#0b1329\" height=\"170\" rx=\"8\" stroke=\"#ef4444\" width=\"310\" x=\"365\" y=\"25\"></rect>\n<text fill=\"#f87171\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"520\" y=\"48\">РЕГРЕССИВТІ ТИП (Еуропа, Жапония)</text>\n<!-- Urn shape / narrow base -->\n<polygon fill=\"#ef4444\" fill-opacity=\"0.3\" points=\"520,65 470,95 485,135 555,135 570,95\" stroke=\"#ef4444\" stroke-width=\"2\"></polygon>\n<text fill=\"#f8fafc\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"520\" y=\"125\">Қарттар көбейген, балалар аз</text>\n<text fill=\"#f87171\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"520\" y=\"155\">Туу төмен, «ұлттың қартаюы»</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"520\" y=\"175\">Табиғи кему байқалады</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>3. Халқы ең көп елдер және діни құрам</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Халқы 200 миллионнан асатын алып елдер:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">1. <b class=\"text-cyan-300 font-bold\">Үндістан</b> (1,43 млрд);</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">2. <b class=\"text-cyan-300 font-bold\">Қытай</b> (1,41 млрд);</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">3. <b class=\"text-cyan-300 font-bold\">АҚШ</b> (335 млн);</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">4. <b class=\"text-cyan-300 font-bold\">Индонезия</b> (278 млн);</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">5. <b class=\"text-cyan-300 font-bold\">Пәкістан</b> (240 млн);</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">6. <b class=\"text-cyan-300 font-bold\">Нигерия</b> (225 млн);</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">7. <b class=\"text-cyan-300 font-bold\">Бразилия</b> (216 млн).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Дүниежүзілік діндер:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Ислам діні:</b> Мұсылмандар саны бойынша әлемдегі ең ірі мемлекет — <b class=\"text-cyan-300 font-bold\">Индонезия</b> (халқының 87%-ы мұсылмандар).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Христиандық:</b> Дүниежүзіндегі ең көп таралған дін (2,4 млрд ұстанушы).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Австрияның мемлекеттік тілі:</b> <b class=\"text-cyan-300 font-bold\">Неміс тілі</b>.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🕌</span>\n<span>3-СЫЗБА: ХАЛҚЫ ЕҢ КӨП ЕЛДЕР ЖӘНЕ ДҮНИЕЖҮЗІЛІК ДІНДЕР</span>\n</span>\n<span class=\"text-[10px] bg-amber-500/10 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/20 font-mono\">Үндістан, Қытай • Индонезия: ең ірі мұсылман елі</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<rect fill=\"#0b1329\" height=\"170\" rx=\"8\" stroke=\"#1e293b\" width=\"310\" x=\"25\" y=\"25\"></rect>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"180\" y=\"48\">ХАЛҚЫ 200 МЛН-НАН АСАТЫН ЕЛДЕР</text>\n<text fill=\"#f8fafc\" font-size=\"10\" x=\"45\" y=\"75\">1. Үндістан — 1,43 млрд</text>\n<text fill=\"#f8fafc\" font-size=\"10\" x=\"45\" y=\"95\">2. Қытай — 1,41 млрд</text>\n<text fill=\"#f8fafc\" font-size=\"10\" x=\"45\" y=\"115\">3. АҚШ — 335 млн</text>\n<text fill=\"#f8fafc\" font-size=\"10\" x=\"45\" y=\"135\">4. Индонезия — 278 млн (ең ірі ислам елі)</text>\n<text fill=\"#f8fafc\" font-size=\"10\" x=\"45\" y=\"155\">5. Пәкістан — 240 млн</text>\n<text fill=\"#f8fafc\" font-size=\"10\" x=\"45\" y=\"175\">6. Нигерия, 7. Бразилия (&gt;215 млн)</text>\n<!-- World religions & languages -->\n<rect fill=\"#0b1329\" height=\"170\" rx=\"8\" stroke=\"#1e293b\" width=\"310\" x=\"365\" y=\"25\"></rect>\n<text fill=\"#f59e0b\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"520\" y=\"48\">ДІНДЕР МЕН ТІЛДЕР</text>\n<text fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\" x=\"385\" y=\"75\">3 Дүниежүзілік дін:</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"395\" y=\"95\">Христиандық (2,4 млрд), Ислам (1,9 млрд), Буддизм</text>\n<line stroke=\"#1e293b\" x1=\"385\" x2=\"655\" y1=\"108\" y2=\"108\"></line>\n<text fill=\"#38bdf8\" font-size=\"10\" font-weight=\"bold\" x=\"385\" y=\"130\">Ең ірі мұсылман мемлекеті:</text>\n<text fill=\"#fde047\" font-size=\"11\" font-weight=\"black\" x=\"395\" y=\"148\">ИНДОНЕЗИЯ</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"385\" y=\"172\">Австрияның мемлекеттік тілі: <tspan fill=\"#38bdf8\" font-weight=\"bold\">Неміс тілі</tspan></text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>4. Көші-қон (Миграция) және еңбек нарығы</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Механикалық өсім (Көші-қон сальдосы):</b> Белгілі бір мерзімде елге келгендер (иммигранттар) мен елден кеткендердің (эмигранттар) арасындағы айырмашылық.</li>\n</ul>\n<div class=\"my-4 p-3.5 bg-space-950 rounded-xl border border-cyan-500/50 text-center font-mono text-sm text-cyan-300 font-extrabold shadow-inner\">📐 Формула: Механикалық\\_өсім = Иммигранттар - Эмигранттар</div>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Гастарбайтер (неміс. <i class=\"text-slate-300\">Gastarbeiter</i> — «қонақ-жұмысшы»):</b> Өзге елге жақсы табыс табу және жұмыс істеу мақсатында уақытша келген шетелдік еңбек мигранты.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">«Ақыл-ойдың жылыстауы» (Brain drain):</b> Ғалымдар мен жоғары білікті мамандардың дамушы елдерден дамыған елдерге (АҚШ, ЕО) көшуі.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>✈️</span>\n<span>4-СЫЗБА: ХАЛЫҚТЫҢ КӨШІ-ҚОНЫ (МИГРАЦИЯ) ЖӘНЕ ГАСТАРБАЙТЕРЛЕР</span>\n</span>\n<span class=\"text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono\">Эмиграция vs Иммиграция • Гастарбайтер</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<rect fill=\"#0b1329\" height=\"170\" rx=\"8\" stroke=\"#ef4444\" width=\"200\" x=\"25\" y=\"25\"></rect>\n<text fill=\"#f87171\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"125\" y=\"50\">ЭМИГРАЦИЯ (КЕТУ)</text>\n<text fill=\"#f8fafc\" font-size=\"10\" text-anchor=\"middle\" x=\"125\" y=\"75\">Өз елінен басқа елге</text>\n<text fill=\"#f8fafc\" font-size=\"10\" text-anchor=\"middle\" x=\"125\" y=\"92\">тұрақты көшіп кету</text>\n<line stroke=\"#1e293b\" x1=\"40\" x2=\"210\" y1=\"110\" y2=\"110\"></line>\n<text fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\" x=\"125\" y=\"135\">Итермелеуші факторлар:</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"125\" y=\"152\">Жұмыссыздық, соғыс,</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"125\" y=\"170\">төмен табыс</text>\n<!-- Arrow right -->\n<line stroke=\"#38bdf8\" stroke-width=\"3\" x1=\"230\" x2=\"260\" y1=\"110\" y2=\"110\"></line>\n<rect fill=\"#0b1329\" height=\"170\" rx=\"8\" stroke=\"#10b981\" width=\"200\" x=\"265\" y=\"25\"></rect>\n<text fill=\"#34d399\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"365\" y=\"50\">ИММИГРАЦИЯ (КЕЛУ)</text>\n<text fill=\"#f8fafc\" font-size=\"10\" text-anchor=\"middle\" x=\"365\" y=\"75\">Басқа елден осы елге</text>\n<text fill=\"#f8fafc\" font-size=\"10\" text-anchor=\"middle\" x=\"365\" y=\"92\">тұруға көшіп келу</text>\n<line stroke=\"#1e293b\" x1=\"280\" x2=\"450\" y1=\"110\" y2=\"110\"></line>\n<text fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\" x=\"365\" y=\"135\">Тартушы факторлар:</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"365\" y=\"152\">Жоғары жалақы, тыныштық,</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"365\" y=\"170\">сапалы білім мен медицина</text>\n<!-- Gastarbeiter definition -->\n<rect fill=\"#0b1329\" height=\"170\" rx=\"8\" stroke=\"#f59e0b\" width=\"200\" x=\"475\" y=\"25\"></rect>\n<text fill=\"#fbbf24\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"575\" y=\"50\">ГАСТАРБАЙТЕР</text>\n<text fill=\"#f8fafc\" font-size=\"9\" text-anchor=\"middle\" x=\"575\" y=\"75\">Немісше: «қонақ-жұмысшы»</text>\n<line stroke=\"#1e293b\" x1=\"490\" x2=\"660\" y1=\"90\" y2=\"90\"></line>\n<text fill=\"#cbd5e1\" font-size=\"9\" text-anchor=\"middle\" x=\"575\" y=\"115\">Басқа елге ақша табу</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" text-anchor=\"middle\" x=\"575\" y=\"135\">мақсатында уақытша</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" text-anchor=\"middle\" x=\"575\" y=\"155\">келген еңбек мигранты</text>\n<text fill=\"#fde047\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"575\" y=\"180\">Еңбек көші-қоны</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>5. Урбанизация және әлемдік мәдени мұра</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Урбанизация:</b> Қалалардың өсуі, қала халқы үлесінің артуы және қалалық өмір салтының таралуы.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Мегалополис:</b> Бір-біріне тұтасып жалғасып кеткен алып қалалар агломерацияларының жүйесі:</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Токайдо (Жапония):</b> Токио, Нагоя, Осаканы біріктіретін әлемдегі ең ірі мегалополис (70 млн адам).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Босваш (АҚШ):</b> Бостоннан Вашингтонға дейінгі Атлант жағалауындағы мегалополис.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Мачу-Пикчу:</b> Оңтүстік Американың <b class=\"text-cyan-300 font-bold\">Перу</b> мемлекетіндегі Анд тауларының басында орналасқан ежелгі Инктер империясының ғажайып қаласы.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🏙️</span>\n<span>5-СЫЗБА: УРБАНИЗАЦИЯ, МЕГАЛОПОЛИСТЕР ЖӘНЕ МАЧУ-ПИКЧУ</span>\n</span>\n<span class=\"text-[10px] bg-purple-500/10 text-purple-300 px-2.5 py-0.5 rounded-full border border-purple-500/20 font-mono\">Токайдо • Босваш • Мачу-Пикчу (Перу)</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<rect fill=\"#0b1329\" height=\"170\" rx=\"8\" stroke=\"#38bdf8\" width=\"310\" x=\"25\" y=\"25\"></rect>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"180\" y=\"50\">ДҮНИЕЖҮЗІНІҢ АСА ІРІ МЕГАЛОПОЛИСТЕРІ</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" x=\"45\" y=\"80\">1. Токайдо (Жапония):</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"55\" y=\"98\">Токио — Нагоя — Осака (70 млн адам)</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" x=\"45\" y=\"125\">2. Босваш (АҚШ):</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"55\" y=\"143\">Бостон — Нью-Йорк — Филадельфия — Вашингтон</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" x=\"45\" y=\"170\">3. Чипитс (Ұлы көлдер) &amp; Сан-Сан (Калифорния)</text>\n<!-- Cultural heritage: Machu Picchu -->\n<rect fill=\"#0b1329\" height=\"170\" rx=\"8\" stroke=\"#f59e0b\" width=\"310\" x=\"365\" y=\"25\"></rect>\n<text fill=\"#fbbf24\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"520\" y=\"50\">ӘЛЕМДІК ТАРИХИ МҰРА: МАЧУ-ПИКЧУ</text>\n<text fill=\"#fde047\" font-size=\"11\" font-weight=\"bold\" x=\"385\" y=\"80\">МАЧУ-ПИКЧУ (Перу мемлекеті):</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"385\" y=\"105\">• Оңтүстік Америкадағы Анд тауларында (2430 м)</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"385\" y=\"125\">• Ежелгі Инктер империясының жұмбақ қаласы</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"385\" y=\"145\">• ЮНЕСКО Бүкіләлемдік мұрасы тізімінде</text>\n<text fill=\"#34d399\" font-size=\"9\" font-weight=\"bold\" x=\"385\" y=\"170\">Жаңа әлемнің 7 кереметінің бірі</text>\n</svg>\n</div>", "theory_ru": "<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>1. Численность населения мира и его воспроизводство</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Население Земли:</b> В ноябре 2022 года официально превысило рубеж в <b class=\"text-cyan-300 font-bold\">8 миллиардов человек</b>!</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Демография:</b> Наука о закономерностях воспроизводства населения, его численности, составе и миграциях. Термин предложил в 1855 году французский ученый <b class=\"text-cyan-300 font-bold\">Ашиль Гийяр</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Воспроизводство населения:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Совокупность процессов рождаемости, смертности и естественного прироста, обеспечивающая непрерывное возобновление поколений.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Формула естественного прироста:</b></li>\n</ul>\n<div class=\"my-4 p-3.5 bg-space-950 rounded-xl border border-cyan-500/50 text-center font-mono text-sm text-cyan-300 font-extrabold shadow-inner\">📐 Формула: Естественный\\_прирост = Рождаемость - Смертность</div>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><i class=\"text-slate-300\">Пример расчета:</i> В Болгарии рождаемость 9‰, смертность 16‰. Естественный прирост равен: 9 - 16 = <b class=\"text-cyan-300 font-bold\">-7‰</b> (происходит естественная убыль населения — депопуляция).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Типы воспроизводства:</b></li>\n</ul>\n<ol class=\"space-y-2 my-2.5 ml-6 list-none\">\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><i class=\"text-slate-300\">Традиционный:</i> Высокая рождаемость и высокая смертность (отстающие страны).</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><i class=\"text-slate-300\">Переходный:</i> Снижение смертности при сохранении высокой рождаемости («демографический взрыв» — страны Африки).</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><i class=\"text-slate-300\">Современный:</i> Низкая рождаемость, низкая смертность, старение населения (Европа, Япония).</li>\n</ol>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>👥</span>\n<span>1-СЫЗБА: ЧИСЛЕННОСТЬ НАСЕЛЕНИЯ МИРА И ВОСПРОИЗВОДСТВО</span>\n</span>\n<span class=\"text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono\">8 млрд адам • А. Гийяр (1855)</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<!-- Pop count box -->\n<rect fill=\"#0b1329\" height=\"170\" rx=\"8\" stroke=\"#38bdf8\" width=\"200\" x=\"25\" y=\"25\"></rect>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"125\" y=\"50\">ЖЕР ХАЛҚЫНЫҢ САНЫ</text>\n<text fill=\"#f8fafc\" font-family=\"monospace\" font-size=\"30\" font-weight=\"black\" text-anchor=\"middle\" x=\"125\" y=\"82\">&gt; 8,0</text>\n<text fill=\"#34d399\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"125\" y=\"105\">МИЛЛИАРД АДАМ</text>\n<line stroke=\"#1e293b\" x1=\"40\" x2=\"210\" y1=\"120\" y2=\"120\"></line>\n<text fill=\"#f59e0b\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"125\" y=\"145\">Ашиль Гийяр (1855 ж.)</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" text-anchor=\"middle\" x=\"125\" y=\"165\">«Демография» терминін енгізді</text>\n<!-- Natural increase formulas -->\n<rect fill=\"#0b1329\" height=\"170\" rx=\"8\" stroke=\"#1e293b\" width=\"425\" x=\"250\" y=\"25\"></rect>\n<text fill=\"#34d399\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"462\" y=\"50\">ДЕМОГРАФИЯЛЫҚ ӨСІМНІҢ 2 НЕГІЗГІ ФОРМУЛАСЫ</text>\n<rect fill=\"#0284c7\" fill-opacity=\"0.2\" height=\"45\" rx=\"4\" stroke=\"#38bdf8\" width=\"385\" x=\"270\" y=\"65\"></rect>\n<text fill=\"#38bdf8\" font-size=\"10\" font-weight=\"bold\" x=\"285\" y=\"85\">1. ТАБИҒИ ӨСІМ = ТУУ КӨРСЕТКІШІ — ӨЛІМ КӨРСЕТКІШІ</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"285\" y=\"100\">Мысалы: Болгарияда Туу 9‰, Өлім 16‰ -&gt; Табиғи өсім = 9 - 16 = <tspan fill=\"#ef4444\" font-weight=\"bold\">-7‰ (Депопуляция)</tspan></text>\n<rect fill=\"#10b981\" fill-opacity=\"0.2\" height=\"45\" rx=\"4\" stroke=\"#34d399\" width=\"385\" x=\"270\" y=\"120\"></rect>\n<text fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\" x=\"285\" y=\"140\">2. МЕХАНИКАЛЫҚ ӨСІМ (КӨШІ-ҚОН САЛЬДОСЫ) = КЕЛГЕНДЕР — КЕТКЕНДЕР</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"285\" y=\"155\">Механикалық өсім = Иммигранттар саны — Эмигранттар саны</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>2. Половая и возрастная структура населения</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Половой состав:</b> На 100 новорожденных девочек рождается 105–106 мальчиков. В целом в мире мужчин примерно на <b class=\"text-cyan-300 font-bold\">51 миллион больше</b>, чем женщин (за счет Китая, Индии и стран Персидского залива).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Половозрастные пирамиды:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Прогрессивная пирамида (широкое основание):</b> Огромная доля детей (до 45–50%). Характерна для развивающихся стран Африки с высоким естественным приростом.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Регрессивная пирамида (зауженное основание):</b> Доля детей мала, преобладают пожилые возраста («старение нации»). Характерна для Европы и Японии.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>📊</span>\n<span>2-СЫЗБА: ПОЛОВОЗРАСТНЫЕ ПИРАМИДЫ НАСЕЛЕНИЯ</span>\n</span>\n<span class=\"text-[10px] bg-purple-500/10 text-purple-300 px-2.5 py-0.5 rounded-full border border-purple-500/20 font-mono\">Прогрессивті (Жас) vs Регрессивті (Қартаю)</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<!-- Left: Progressive pyramid (Africa, Niger, Mali) -->\n<rect fill=\"#0b1329\" height=\"170\" rx=\"8\" stroke=\"#10b981\" width=\"310\" x=\"25\" y=\"25\"></rect>\n<text fill=\"#34d399\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"180\" y=\"48\">ПРОГРЕССИВТІ ТИП (Африка, Нигер)</text>\n<!-- Broad base triangle -->\n<polygon fill=\"#10b981\" fill-opacity=\"0.3\" points=\"180,65 110,135 250,135\" stroke=\"#34d399\" stroke-width=\"2\"></polygon>\n<text fill=\"#f8fafc\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"180\" y=\"125\">Балалар үлесі өте көп (45–50%)</text>\n<text fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"180\" y=\"155\">Туу жоғары, жас халық</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"180\" y=\"175\">Табиғи өсім өте жоғары (&gt;25–30‰)</text>\n<!-- Right: Regressive pyramid (Europe, Japan) -->\n<rect fill=\"#0b1329\" height=\"170\" rx=\"8\" stroke=\"#ef4444\" width=\"310\" x=\"365\" y=\"25\"></rect>\n<text fill=\"#f87171\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"520\" y=\"48\">РЕГРЕССИВТІ ТИП (Еуропа, Жапония)</text>\n<!-- Urn shape / narrow base -->\n<polygon fill=\"#ef4444\" fill-opacity=\"0.3\" points=\"520,65 470,95 485,135 555,135 570,95\" stroke=\"#ef4444\" stroke-width=\"2\"></polygon>\n<text fill=\"#f8fafc\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"520\" y=\"125\">Қарттар көбейген, балалар аз</text>\n<text fill=\"#f87171\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"520\" y=\"155\">Туу төмен, «ұлттың қартаюы»</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"520\" y=\"175\">Табиғи кему байқалады</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>3. Крупнейшие страны мира и религиозный состав</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Страны-гиганты с населением свыше 200 млн человек:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">1. <b class=\"text-cyan-300 font-bold\">Индия</b> (1,43 млрд);</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">2. <b class=\"text-cyan-300 font-bold\">Китай</b> (1,41 млрд);</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">3. <b class=\"text-cyan-300 font-bold\">США</b> (335 млн);</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">4. <b class=\"text-cyan-300 font-bold\">Индонезия</b> (278 млн);</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">5. <b class=\"text-cyan-300 font-bold\">Пакистан</b> (240 млн);</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">6. <b class=\"text-cyan-300 font-bold\">Нигерия</b> (225 млн);</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">7. <b class=\"text-cyan-300 font-bold\">Бразилия</b> (216 млн).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Мировые религии и народы:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Ислам:</b> Крупнейшим по численности мусульман государством мира является <b class=\"text-cyan-300 font-bold\">Индонезия</b> (около 87% мусульман).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Государственный язык Австрии — <b class=\"text-cyan-300 font-bold\">немецкий язык</b>.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🕌</span>\n<span>3-СЫЗБА: КРУПНЕЙШИЕ СТРАНЫ И МИРОВЫЕ РЕЛИГИИ</span>\n</span>\n<span class=\"text-[10px] bg-amber-500/10 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/20 font-mono\">Үндістан, Қытай • Индонезия: ең ірі мұсылман елі</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<rect fill=\"#0b1329\" height=\"170\" rx=\"8\" stroke=\"#1e293b\" width=\"310\" x=\"25\" y=\"25\"></rect>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"180\" y=\"48\">ХАЛҚЫ 200 МЛН-НАН АСАТЫН ЕЛДЕР</text>\n<text fill=\"#f8fafc\" font-size=\"10\" x=\"45\" y=\"75\">1. Үндістан — 1,43 млрд</text>\n<text fill=\"#f8fafc\" font-size=\"10\" x=\"45\" y=\"95\">2. Қытай — 1,41 млрд</text>\n<text fill=\"#f8fafc\" font-size=\"10\" x=\"45\" y=\"115\">3. АҚШ — 335 млн</text>\n<text fill=\"#f8fafc\" font-size=\"10\" x=\"45\" y=\"135\">4. Индонезия — 278 млн (ең ірі ислам елі)</text>\n<text fill=\"#f8fafc\" font-size=\"10\" x=\"45\" y=\"155\">5. Пәкістан — 240 млн</text>\n<text fill=\"#f8fafc\" font-size=\"10\" x=\"45\" y=\"175\">6. Нигерия, 7. Бразилия (&gt;215 млн)</text>\n<!-- World religions & languages -->\n<rect fill=\"#0b1329\" height=\"170\" rx=\"8\" stroke=\"#1e293b\" width=\"310\" x=\"365\" y=\"25\"></rect>\n<text fill=\"#f59e0b\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"520\" y=\"48\">ДІНДЕР МЕН ТІЛДЕР</text>\n<text fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\" x=\"385\" y=\"75\">3 Дүниежүзілік дін:</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"395\" y=\"95\">Христиандық (2,4 млрд), Ислам (1,9 млрд), Буддизм</text>\n<line stroke=\"#1e293b\" x1=\"385\" x2=\"655\" y1=\"108\" y2=\"108\"></line>\n<text fill=\"#38bdf8\" font-size=\"10\" font-weight=\"bold\" x=\"385\" y=\"130\">Ең ірі мұсылман мемлекеті:</text>\n<text fill=\"#fde047\" font-size=\"11\" font-weight=\"black\" x=\"395\" y=\"148\">ИНДОНЕЗИЯ</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"385\" y=\"172\">Австрияның мемлекеттік тілі: <tspan fill=\"#38bdf8\" font-weight=\"bold\">Неміс тілі</tspan></text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>4. Миграции населения и рынок труда</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Механический прирост (сальдо миграции):</b> Разница между числом прибывших в страну (иммигрантов) и выбывших из нее (эмигрантов).</li>\n</ul>\n<div class=\"my-4 p-3.5 bg-space-950 rounded-xl border border-cyan-500/50 text-center font-mono text-sm text-cyan-300 font-extrabold shadow-inner\">📐 Формула: Механический\\_прирост = Иммигранты - Эмигранты</div>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Гастарбайтер (нем. <i class=\"text-slate-300\">Gastarbeiter</i> — «гость-рабочий»):</b> Иностранный рабочий, временно въехавший в страну ради заработка и трудовой занятости.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>✈️</span>\n<span>4-СЫЗБА: МИГРАЦИЯ НАСЕЛЕНИЯ И ГАСТАРБАЙТЕРЫ</span>\n</span>\n<span class=\"text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono\">Эмиграция vs Иммиграция • Гастарбайтер</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<rect fill=\"#0b1329\" height=\"170\" rx=\"8\" stroke=\"#ef4444\" width=\"200\" x=\"25\" y=\"25\"></rect>\n<text fill=\"#f87171\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"125\" y=\"50\">ЭМИГРАЦИЯ (КЕТУ)</text>\n<text fill=\"#f8fafc\" font-size=\"10\" text-anchor=\"middle\" x=\"125\" y=\"75\">Өз елінен басқа елге</text>\n<text fill=\"#f8fafc\" font-size=\"10\" text-anchor=\"middle\" x=\"125\" y=\"92\">тұрақты көшіп кету</text>\n<line stroke=\"#1e293b\" x1=\"40\" x2=\"210\" y1=\"110\" y2=\"110\"></line>\n<text fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\" x=\"125\" y=\"135\">Итермелеуші факторлар:</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"125\" y=\"152\">Жұмыссыздық, соғыс,</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"125\" y=\"170\">төмен табыс</text>\n<!-- Arrow right -->\n<line stroke=\"#38bdf8\" stroke-width=\"3\" x1=\"230\" x2=\"260\" y1=\"110\" y2=\"110\"></line>\n<rect fill=\"#0b1329\" height=\"170\" rx=\"8\" stroke=\"#10b981\" width=\"200\" x=\"265\" y=\"25\"></rect>\n<text fill=\"#34d399\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"365\" y=\"50\">ИММИГРАЦИЯ (КЕЛУ)</text>\n<text fill=\"#f8fafc\" font-size=\"10\" text-anchor=\"middle\" x=\"365\" y=\"75\">Басқа елден осы елге</text>\n<text fill=\"#f8fafc\" font-size=\"10\" text-anchor=\"middle\" x=\"365\" y=\"92\">тұруға көшіп келу</text>\n<line stroke=\"#1e293b\" x1=\"280\" x2=\"450\" y1=\"110\" y2=\"110\"></line>\n<text fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\" x=\"365\" y=\"135\">Тартушы факторлар:</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"365\" y=\"152\">Жоғары жалақы, тыныштық,</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"365\" y=\"170\">сапалы білім мен медицина</text>\n<!-- Gastarbeiter definition -->\n<rect fill=\"#0b1329\" height=\"170\" rx=\"8\" stroke=\"#f59e0b\" width=\"200\" x=\"475\" y=\"25\"></rect>\n<text fill=\"#fbbf24\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"575\" y=\"50\">ГАСТАРБАЙТЕР</text>\n<text fill=\"#f8fafc\" font-size=\"9\" text-anchor=\"middle\" x=\"575\" y=\"75\">Немісше: «қонақ-жұмысшы»</text>\n<line stroke=\"#1e293b\" x1=\"490\" x2=\"660\" y1=\"90\" y2=\"90\"></line>\n<text fill=\"#cbd5e1\" font-size=\"9\" text-anchor=\"middle\" x=\"575\" y=\"115\">Басқа елге ақша табу</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" text-anchor=\"middle\" x=\"575\" y=\"135\">мақсатында уақытша</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" text-anchor=\"middle\" x=\"575\" y=\"155\">келген еңбек мигранты</text>\n<text fill=\"#fde047\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"575\" y=\"180\">Еңбек көші-қоны</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>5. Урбанизация и мировое наследие</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Урбанизация:</b> Исторический процесс роста городов, повышения доли городского населения и распространения городского образа жизни.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Мегалополисы мира:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Токайдо (Япония):</b> Крупнейший в мире сросшийся массив городов от Токио до Осаки (около 70 млн жителей).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Босваш (США):</b> Приатлантический мегалополис от Бостона до Вашингтона.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Мачу-Пикчу:</b> Знаменитый «затерянный город» цивилизации инков, расположенный высоко в Андах на территории государства <b class=\"text-cyan-300 font-bold\">Перу</b>.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🏙️</span>\n<span>5-СЫЗБА: УРБАНИЗАЦИЯ, МЕГАЛОПОЛИСЫ И МАЧУ-ПИКЧУ</span>\n</span>\n<span class=\"text-[10px] bg-purple-500/10 text-purple-300 px-2.5 py-0.5 rounded-full border border-purple-500/20 font-mono\">Токайдо • Босваш • Мачу-Пикчу (Перу)</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<rect fill=\"#0b1329\" height=\"170\" rx=\"8\" stroke=\"#38bdf8\" width=\"310\" x=\"25\" y=\"25\"></rect>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"180\" y=\"50\">ДҮНИЕЖҮЗІНІҢ АСА ІРІ МЕГАЛОПОЛИСТЕРІ</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" x=\"45\" y=\"80\">1. Токайдо (Жапония):</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"55\" y=\"98\">Токио — Нагоя — Осака (70 млн адам)</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" x=\"45\" y=\"125\">2. Босваш (АҚШ):</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"55\" y=\"143\">Бостон — Нью-Йорк — Филадельфия — Вашингтон</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" x=\"45\" y=\"170\">3. Чипитс (Ұлы көлдер) &amp; Сан-Сан (Калифорния)</text>\n<!-- Cultural heritage: Machu Picchu -->\n<rect fill=\"#0b1329\" height=\"170\" rx=\"8\" stroke=\"#f59e0b\" width=\"310\" x=\"365\" y=\"25\"></rect>\n<text fill=\"#fbbf24\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"520\" y=\"50\">ӘЛЕМДІК ТАРИХИ МҰРА: МАЧУ-ПИКЧУ</text>\n<text fill=\"#fde047\" font-size=\"11\" font-weight=\"bold\" x=\"385\" y=\"80\">МАЧУ-ПИКЧУ (Перу мемлекеті):</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"385\" y=\"105\">• Оңтүстік Америкадағы Анд тауларында (2430 м)</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"385\" y=\"125\">• Ежелгі Инктер империясының жұмбақ қаласы</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"385\" y=\"145\">• ЮНЕСКО Бүкіләлемдік мұрасы тізімінде</text>\n<text fill=\"#34d399\" font-size=\"9\" font-weight=\"bold\" x=\"385\" y=\"170\">Жаңа әлемнің 7 кереметінің бірі</text>\n</svg>\n</div>", "traps": ["⚠️ Назар аударыңыз: Халық географиясы. Әлеуметтік география бойынша сұрақтар ҰБТ-ның контексттік тесттерінде жиі кездеседі."], "quiz": [{"q": "Халық географиясы. Әлеуметтік география бойынша негізгі ұғымды атаңыз?", "options": ["Халық географиясы. Әлеуметтік география", "Жалпы ұғым", "Қосымша фактор", "Байланыссыз"], "answer": 0, "exp": "Бұл сабақтың өзегі — Халық географиясы. Әлеуметтік география заңдылықтарын түсіну."}], "blooket": "https://dashboard.blooket.com/set/6a84d91c754a4f54132e214c", "test": {"passingScore": 80, "questions": [{"id": 1, "q_kz": "Мұсылмандар саны бойынша дүниежүзіндегі ең ірі мемлекетті анықтаңыз:", "q_ru": "Крупнейшее в мире государство по численности исповедующих ислам (мусульман):", "options_kz": ["Сауд Арабиясы", "Мысыр", "Түркия", "Индонезия"], "options_ru": ["Саудовская Аравия", "Египет", "Турция", "Индонезия"], "answer": 3, "exp_kz": "Индонезия — 275 миллионнан астам халқының басым көпшілігі (87%) ислам дінін ұстанатын әлемдегі ең ірі мұсылман елі.", "exp_ru": "Индонезия — самая многонаселенная мусульманская страна мира (более 240 млн мусульман)."}, {"id": 2, "q_kz": "Неміс тілі ресми мемлекеттік тіл болып табылатын еуропалық мемлекетті табыңыз:", "q_ru": "Европейское государство, в котором официальным государственным языком является немецкий:", "options_kz": ["Ұлыбритания", "Австрия", "Франция", "Италия"], "options_ru": ["Великобритания", "Австрия", "Франция", "Италия"], "answer": 1, "exp_kz": "Австрияның мемлекеттік және ана тілі — неміс тілі болып табылады.", "exp_ru": "Государственным языком Австрийской Республики является немецкий язык."}, {"id": 3, "q_kz": "Бір жыл ішіндегі елге келген иммигранттар мен кеткен эмигранттар санының айырмасы:", "q_ru": "Разница между числом въехавших в страну иммигрантов и выехавших эмигрантов за год:", "options_kz": ["Табиғи өсім", "Механикалық өсім (сальдо)", "Демографиялық жарылыс", "Депопуляция"], "options_ru": ["Естественный прирост", "Механический прирост (сальдо миграции)", "Демографический взрыв", "Депопуляция"], "answer": 1, "exp_kz": "Келгендер мен кеткендердің айырмасы халықтың көші-қон (механикалық) сальдосы деп аталады.", "exp_ru": "Разность между иммиграцией и эмиграцией называется сальдо миграции (механическим приростом)."}, {"id": 4, "q_kz": "1855 жылы ғылымға «Демография» ұғымын алғаш рет енгізген француз ғалымы:", "q_ru": "Французский ученый, впервые предложивший и обосновавший термин «Демография» в 1855 году:", "options_kz": ["Томас Мальтус", "Ашиль Гийяр", "Александр Гумбольдт", "Жан Боден"], "options_ru": ["Томас Мальтус", "Ашиль Гийяр", "Александр Гумбольдт", "Жан Боден"], "answer": 1, "exp_kz": "Француз статигі Ашиль Гийяр 1855 жылы «Адам статистикасының элементтері немесе салыстырмалы демография» еңбегінде бұл терминді енгізді.", "exp_ru": "Ашиль Гийяр в 1855 году впервые ввел термин «демография» в научную литературу."}, {"id": 5, "q_kz": "Туу коэффициентінің ең жоғары деңгейі және «демографиялық жарылыс» байқалатын дүниежүзілік аймақ:", "q_ru": "Регион мира с максимальным уровнем рождаемости и феноменом «демографического взрыва»:", "options_kz": ["Батыс Еуропа", "Тропикалық Африка", "Шығыс Азия", "Солтүстік Америка"], "options_ru": ["Западная Европа", "Тропическая Африка", "Восточная Азия", "Северная Америка"], "answer": 1, "exp_kz": "Тропикалық Африка елдерінде туу көрсеткіші 1000 адамға 35-40-тан асатын ең жоғары деңгейде.", "exp_ru": "Тропическая Африка лидирует по коэффициентам рождаемости и темпам естественного прироста."}, {"id": 6, "q_kz": "Оңтүстік Американың Перу еліндегі Анд тауларының басында сақталған ежелгі инктердің ғажайып қаласы:", "q_ru": "Древний высокогорный город инков, расположенный в Андах на территории государства Перу:", "options_kz": ["Чичен-Ица", "Мачу-Пикчу", "Теотиуакан", "Анкор-Ват"], "options_ru": ["Чичен-Ица", "Мачу-Пикчу", "Теотиуакан", "Ангкор-Ват"], "answer": 1, "exp_kz": "Мачу-Пикчу — Перудің Анд тауларындағы (2430 м) ежелгі Инктер өркениетінің белгілі тарихи ескерткіші.", "exp_ru": "Мачу-Пикчу — знаменитая крепость инков в перуанских Андах, входящая в Новые чудеса света."}, {"id": 7, "q_kz": "Өзге елге жұмыс істеп, ақша табу мақсатында уақытша келген шетелдік еңбек мигранттары қалай аталады?", "q_ru": "Иностранные рабочие, временно въехавшие в другую страну ради трудоустройства и заработка:", "options_kz": ["Гастарбайтер", "Репатриант", "Босқын (беженец)", "Турист"], "options_ru": ["Гастарбайтер", "Репатриант", "Беженец", "Турист"], "answer": 0, "exp_kz": "Гастарбайтер (немісше «қонақ-жұмысшы») — басқа елге жұмыс істеп табыс табу үшін уақытша келген еңбек мигранты.", "exp_ru": "Гастарбайтер (от нем. Gastarbeiter — «гость-рабочий») обозначает временного трудового мигранта."}, {"id": 8, "q_kz": "Болгарияда туу 9‰, ал өлім 16‰ болғандағы халықтың табиғи өсімін анықтаңыз:", "q_ru": "Рассчитайте естественный прирост населения Болгарии при рождаемости 9‰ и смертности 16‰:", "options_kz": ["+7‰", "-7‰ (депопуляция)", "+25‰", "0‰"], "options_ru": ["+7‰", "-7‰ (депопуляция)", "+25‰", "0‰"], "answer": 1, "exp_kz": "Табиғи өсім = Туу - Өлім = 9 - 16 = -7‰. Өлім туудан жоғары болғандықтан табиғи кему байқалады.", "exp_ru": "Естественный прирост = 9 - 16 = -7‰. Смертность превышает рождаемость (естественная убыль)."}, {"id": 9, "q_kz": "Төмендегілердің ішінен халқының саны 200 миллионнан асатын мемлекетті табыңыз:", "q_ru": "Страна мира с численностью населения свыше 200 миллионов человек:", "options_kz": ["Канада", "Бразилия", "Германия", "Австралия"], "options_ru": ["Канада", "Бразилия", "Германия", "Австралия"], "answer": 1, "exp_kz": "Бразилия халқы 215 миллионнан асады. Канада мен Австралияда халық саны әлдеқайда аз (30-40 млн).", "exp_ru": "Население Бразилии превышает 215 млн человек, ставя ее в топ крупнейших стран планеты."}, {"id": 10, "q_kz": "Халықтың жастық-жыныстық пирамидасының төменгі табаны сүйірленіп тарылған регрессивті түрі нені білдіреді?", "q_ru": "Что означает регрессивная форма половозрастной пирамиды с зауженным книзу основанием?", "options_kz": ["Балалардың үлесі тым көп", "Туу көрсеткіші төмендеп, халық қартаюда", "Өлім деңгейі апатты түрде жоғары", "Халық саны өте тез өсуде"], "options_ru": ["Доля детей максимальна", "Рождаемость падает, происходит «старение нации»", "Смертность катастрофически высока", "Население растет рекордными темпами"], "answer": 1, "exp_kz": "Пирамиданың төменгі табанының тарылуы туудың аздығын және қарт адамдар үлесінің артуын (қартаюды) көрсетеді.", "exp_ru": "Зауженное основание пирамиды указывает на низкую рождаемость и прогрессирующее старение населения."}]}, "pdf_kz": "https://drive.google.com/file/d/1T_kz-bNOxrrsfnl16X_6bWlFzsbax7Qx/view?usp=sharing", "pdf_ru": "https://drive.google.com/file/d/1PDzrbI_3bQxuzlDcrt5A_Yhg9elOlvOD/view?usp=drive_link"};
+    const currentLang = 'kz';
+    let userTestAnswers = {};
+    let isTestSubmitted = false;
+
+    // Render Test Questions
+    function renderTestQuestions() {
+      const container = document.getElementById('testQuestionsList');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const testObj = lessonData.test;
+      if (!testObj || !testObj.questions || testObj.questions.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-400">Тест готовится / Тест дайындалуда.</p>';
+        return;
+      }
+
+      const isRu = (currentLang === 'ru');
+      const letters = ['A', 'B', 'C', 'D', 'E'];
+
+      testObj.questions.forEach((q, idx) => {
+        const qCard = document.createElement('div');
+        qCard.className = 'p-5 rounded-2xl bg-space-850 border border-slate-800 space-y-3';
+
+        const qPrompt = isRu ? (q.q_ru || q.q_kz) : q.q_kz;
+        const options = isRu ? (q.options_ru || q.options_kz) : q.options_kz;
+        const exp = isRu ? (q.exp_ru || q.exp_kz) : q.exp_kz;
+
+        qCard.innerHTML = `
+          <div class="flex items-center justify-between gap-2 border-b border-slate-800/80 pb-2">
+            <span class="text-xs font-bold text-slate-400 uppercase">
+              ${isRu ? 'Вопрос ' + (idx + 1) : 'Сұрақ ' + (idx + 1)}
+            </span>
+            <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-bold">1 балл</span>
+          </div>
+          <p class="text-xs sm:text-sm font-semibold text-slate-100 leading-relaxed">${qPrompt}</p>
+        `;
+
+        const optContainer = document.createElement('div');
+        optContainer.className = 'space-y-2 pt-1';
+
+        const selectedAnswer = userTestAnswers[q.id];
+
+        options.forEach((optText, optIdx) => {
+          const isSelected = selectedAnswer === optIdx;
+          const isCorrect = q.answer === optIdx;
+
+          const optDiv = document.createElement('div');
+          optDiv.className = 'p-3 rounded-xl border text-xs font-medium cursor-pointer transition flex items-center space-x-2.5 ';
+
+          if (isTestSubmitted) {
+            if (isCorrect) {
+              optDiv.className += 'bg-emerald-500/15 border-emerald-500 text-emerald-200 font-bold';
+            } else if (isSelected) {
+              optDiv.className += 'bg-rose-500/15 border-rose-500 text-rose-200';
+            } else {
+              optDiv.className += 'bg-space-900/50 border-slate-800 text-slate-500';
+            }
+          } else {
+            if (isSelected) {
+              optDiv.className += 'bg-cyan-500/15 border-cyan-500 text-cyan-200 font-bold';
+            } else {
+              optDiv.className += 'bg-space-900 hover:bg-space-800 border-slate-800 hover:border-slate-700 text-slate-300';
+            }
+          }
+
+          const badge = document.createElement('span');
+          badge.className = 'w-5 h-5 rounded-md text-[10px] font-black flex items-center justify-center shrink-0 ' +
+            (isSelected ? 'bg-cyan-500 text-space-950' : 'bg-space-850 text-slate-400 border border-slate-700');
+          badge.textContent = letters[optIdx] || String(optIdx + 1);
+          optDiv.appendChild(badge);
+
+          const txt = document.createElement('span');
+          txt.className = 'flex-1';
+          txt.textContent = optText;
+          optDiv.appendChild(txt);
+
+          optDiv.onclick = () => {
+            if (isTestSubmitted) return;
+            userTestAnswers[q.id] = optIdx;
+            renderTestQuestions();
+          };
+
+          optContainer.appendChild(optDiv);
+        });
+
+        qCard.appendChild(optContainer);
+
+        // Explanation Box after submission
+        if (isTestSubmitted) {
+          const expBox = document.createElement('div');
+          expBox.className = 'p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-xs text-cyan-200 space-y-1';
+          expBox.innerHTML = `
+            <span class="font-bold text-cyan-300 block">💡 ${isRu ? 'Пояснение:' : 'Түсіндірме:'}</span>
+            <p class="text-slate-300 leading-relaxed">${exp || (isRu ? 'Авторское пояснение к вопросу.' : 'Сұраққа арналған түсіндірме.')}</p>
+          `;
+          qCard.appendChild(expBox);
+        }
+
+        container.appendChild(qCard);
+      });
+    }
+
+    function submitLessonTest() {
+      const testObj = lessonData.test;
+      if (!testObj || !testObj.questions) return;
+
+      const answeredCount = Object.keys(userTestAnswers).length;
+      const total = testObj.questions.length;
+      const isRu = (currentLang === 'ru');
+
+      if (answeredCount < total) {
+        const msg = isRu 
+          ? `Вы ответили только на ${answeredCount} из ${total} вопросов. Завершить тест?` 
+          : `Сіз ${total} сұрақтың ${answeredCount}-не жауап бердіңіз. Тестті аяқтайсыз ба?`;
+        if (!confirm(msg)) return;
+      }
+
+      isTestSubmitted = true;
+      let correct = 0;
+
+      testObj.questions.forEach(q => {
+        if (userTestAnswers[q.id] === q.answer) {
+          correct++;
+        }
+      });
+
+      const percentage = Math.round((correct / total) * 100);
+      const isPassed = percentage >= 80;
+
+      // Update badges & UI
+      const scoreBadge = document.getElementById('testScoreBadge');
+      if (scoreBadge) {
+        scoreBadge.classList.remove('hidden');
+        scoreBadge.textContent = `${correct} / ${total} (${percentage}%)`;
+        scoreBadge.className = 'px-3 py-1 rounded-xl text-xs font-bold font-mono border ' +
+          (isPassed ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-rose-500/20 text-rose-300 border-rose-500/40');
+      }
+
+      const info = document.getElementById('testProgressInfo');
+      if (info) {
+        info.textContent = isPassed 
+          ? (isRu ? `🎉 Поздравляем! Вы сдали тест на ${percentage}% (+30 XP)` : `🎉 Құттықтаймыз! Сіз тестті ${percentage}%-ға тапсырдыңыз (+30 XP)`)
+          : (isRu ? `Результат: ${percentage}%. Для зачета требуется 80%. Попробуйте еще раз.` : `Нәтиже: ${percentage}%. Өту үшін 80% қажет. Қайта тапсырып көріңіз.`);
+      }
+
+      document.getElementById('btnSubmitTest').classList.add('hidden');
+      document.getElementById('btnResetTest').classList.remove('hidden');
+
+      // Save to localStorage
+      try {
+        let scores = JSON.parse(localStorage.getItem('geotany_lesson_scores') || '{}');
+        scores[lessonData.id] = percentage;
+        localStorage.setItem('geotany_lesson_scores', JSON.stringify(scores));
+
+        if (isPassed) {
+          let completed = JSON.parse(localStorage.getItem('geotany_completed_lessons') || '[]');
+          if (!completed.includes(lessonData.id)) {
+            completed.push(lessonData.id);
+            localStorage.setItem('geotany_completed_lessons', JSON.stringify(completed));
+          }
+          let curXp = parseInt(localStorage.getItem('geotany_user_xp') || '0', 10);
+          curXp += 30;
+          localStorage.setItem('geotany_user_xp', curXp.toString());
+        }
+      } catch(e) {}
+
+      renderTestQuestions();
+      updateCompleteButtons();
+    }
+
+    function resetLessonTest() {
+      userTestAnswers = {};
+      isTestSubmitted = false;
+      document.getElementById('testScoreBadge').classList.add('hidden');
+      document.getElementById('btnSubmitTest').classList.remove('hidden');
+      document.getElementById('btnResetTest').classList.add('hidden');
+      document.getElementById('testProgressInfo').textContent = (currentLang === 'ru') 
+        ? 'Ответьте на все вопросы и проверьте свои знания.' 
+        : 'Барлық сұрақтарға жауап беріп, өзіңізді тексеріңіз.';
+      renderTestQuestions();
+    }
+
+    // Toggle Lesson Complete Status
+    function toggleLessonComplete() {
+      let completed = [];
+      try {
+        completed = JSON.parse(localStorage.getItem('geotany_completed_lessons') || '[]');
+      } catch(e) {}
+
+      const isDone = completed.includes(lessonData.id);
+      let curXp = parseInt(localStorage.getItem('geotany_user_xp') || '0', 10);
+
+      if (isDone) {
+        completed = completed.filter(id => id !== lessonData.id);
+        curXp = Math.max(0, curXp - 30);
+      } else {
+        completed.push(lessonData.id);
+        curXp += 30;
+      }
+
+      try {
+        localStorage.setItem('geotany_completed_lessons', JSON.stringify(completed));
+        localStorage.setItem('geotany_user_xp', curXp.toString());
+      } catch(e) {}
+
+      updateCompleteButtons();
+    }
+
+    function updateCompleteButtons() {
+      let completed = [];
+      try {
+        completed = JSON.parse(localStorage.getItem('geotany_completed_lessons') || '[]');
+      } catch(e) {}
+
+      const isDone = completed.includes(lessonData.id);
+      const isRu = (currentLang === 'ru');
+
+      const banner = document.getElementById('lessonCompletedBanner');
+      if (banner) banner.classList.toggle('hidden', !isDone);
+
+      const headerBtn = document.getElementById('btnHeaderComplete');
+      const headerIcon = document.getElementById('headerCheckIcon');
+      const headerText = document.getElementById('headerCompleteText');
+
+      if (headerBtn) {
+        if (isDone) {
+          headerBtn.className = 'px-3 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold transition flex items-center space-x-1.5';
+          if (headerIcon) headerIcon.textContent = '✓';
+          if (headerText) headerText.textContent = isRu ? 'Прочитано' : 'Оқылды';
+        } else {
+          headerBtn.className = 'px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-emerald-400 text-xs font-bold transition flex items-center space-x-1.5';
+          if (headerIcon) headerIcon.textContent = '○';
+          if (headerText) headerText.textContent = isRu ? 'Отметить' : 'Белгілеу';
+        }
+      }
+
+      const bottomLbl = document.getElementById('lblBottomComplete');
+      if (bottomLbl) {
+        bottomLbl.textContent = isDone 
+          ? (isRu ? '✓ Прочитано (Нажмите, чтобы отменить)' : '✓ Оқылды (Өшіру үшін басыңыз)')
+          : (isRu ? 'Отметить как прочитанное (+30 XP)' : 'Сабақты оқылды деп белгілеу (+30 XP)');
+      }
+    }
+
+    // Boot
+    window.addEventListener('DOMContentLoaded', () => {
+      renderTestQuestions();
+      updateCompleteButtons();
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="kk" class="dark">
+<head>
+  <!-- COURSE ACCESS GUARD: RESTRICT DIRECT ACCESS WITHOUT VALID CODE -->
+  <style id="authCloak">body { display: none !important; }</style>
+  <script>
+    (function() {
+      try {
+        var isAdmin = localStorage.getItem('geotany_admin_auth') === 'true';
+        var sessionStr = localStorage.getItem('geotany_user_session');
+        var isAuthorized = isAdmin;
+        if (!isAuthorized && sessionStr) {
+          var s = JSON.parse(sessionStr);
+          if (s && s.email && (s.courseCode || s.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        var profileStr = localStorage.getItem('geotany_user_profile');
+        if (!isAuthorized && profileStr) {
+          var p = JSON.parse(profileStr);
+          if (p && p.isRegistered && p.email && p.courseCode) {
+            isAuthorized = true;
+          }
+        }
+        if (!isAuthorized) {
+          var target = window.location.pathname.split('/').pop() || 'topics.html';
+          window.location.replace('../index.html?need_course=GEOTANY&redirect=' + encodeURIComponent(target));
+          return;
+        }
+        var cloak = document.getElementById('authCloak');
+        if (cloak) cloak.remove();
+      } catch (err) {
+        window.location.replace('../index.html');
+      }
+    })();
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>#28 Биосфера (Қазақстанның топырақ жамылғысы) | GeoTany</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50: '#eef2ff', 100: '#e0e7ff', 200: '#c7d2fe', 300: '#a5b4fc', 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 800: '#3730a3', 900: '#312e81' },
+            space: { 800: '#1e293b', 850: '#172033', 900: '#0f172a', 950: '#0b1120' }
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Outfit', 'Inter', sans-serif; }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #0b1120; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+  </style>
+</head>
+<body class="bg-[#070b14] text-slate-100 min-h-screen flex flex-col selection:bg-cyan-500 selection:text-space-950">
+
+  <!-- STICKY TOP NAVBAR -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-space-950/85 border-b border-slate-800/80 px-4 sm:px-8 py-3">
+    <div class="max-w-6xl mx-auto flex items-center justify-between gap-3">
+      <!-- Left: Back Button & Badges -->
+      <div class="flex items-center space-x-2.5 sm:space-x-3 shrink-0">
+        <a href="../index.html#section-zhattau_grammar" id="btnBackToCourse" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white transition"><span>←</span><span id="btnBackToCourseText">Артқа</span></a>
+        <span class="px-2.5 py-1 rounded-full text-xs font-black bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
+          #28
+        </span>
+        <span id="navCatBadge" class="text-xs text-slate-400 font-bold hidden md:inline truncate max-w-[200px]">
+          Биосфера және топырақ географиясы
+        </span>
+      </div>
+
+      <!-- Right: Controls (Lang Switcher & Mark Complete) -->
+      <div class="flex items-center space-x-2 sm:space-x-3 shrink-0">
+        <!-- Language Switcher -->
+        <div class="inline-flex p-1 bg-space-900 border border-slate-800 rounded-xl space-x-1">
+          <button id="btnLangKz" onclick="setLang('kz')" class="px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow">
+            KZ
+          </button>
+          <button id="btnLangRu" onclick="setLang('ru')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">
+            RU
+          </button>
+        </div>
+
+        <!-- Mark as Completed Button -->
+        <button id="btnComplete" onclick="toggleComplete()" class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition border border-slate-700 bg-space-900 text-slate-300 hover:text-white hover:border-slate-600">
+          <span id="completeIcon" class="text-sm">○</span>
+          <span id="completeText" class="hidden sm:inline">Меңгерілді</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN TOPIC CONTAINER -->
+  <main class="max-w-5xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-8 space-y-6 flex-1">
+
+    <!-- HERO HEADER CARD -->
+    <div class="p-6 sm:p-7 rounded-2xl bg-space-950/90 border border-slate-800 space-y-3.5 shadow-xl relative overflow-hidden">
+      <div class="absolute -right-12 -top-12 w-48 h-48 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="flex items-center space-x-2">
+        <span id="heroCatBadge" class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-space-850 text-cyan-400 border border-cyan-500/20">
+          Биосфера және топырақ географиясы
+        </span>
+        <span class="text-xs text-slate-400">⏱️ ~8-12 мин оқу</span>
+      </div>
+      <h1 id="heroTitle" class="text-xl sm:text-2xl md:text-3xl font-black text-white tracking-tight leading-snug">
+        Биосфера (Қазақстанның топырақ жамылғысы)
+      </h1>
+      <!-- External Links Bar -->
+      <div class="flex flex-wrap items-center gap-2 pt-1">
+        <a id="btnBlooket" href="https://dashboard.blooket.com/set/6a96eb37c3103cfebb4b3090" target="_blank" class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 border border-purple-500/40 text-xs font-bold transition shadow-sm">
+          <span>🎮</span>
+          <span id="btnBlooketText">Blooket ойыны</span>
+        </a>
+        
+      </div>
+    </div>
+
+    <!-- 1. BRIEF SUMMARY CARD -->
+    <section class="p-5 rounded-2xl bg-space-950 border border-brand-500/40 text-xs sm:text-sm text-slate-200 leading-relaxed shadow-lg">
+      <div class="flex items-center space-x-2 text-brand-400 font-extrabold text-xs mb-2">
+        <span>📖</span>
+        <span id="summaryHeader">ТАҚЫРЫПҚА ҚЫСҚАША ШОЛУ</span>
+      </div>
+      <p id="summaryText" class="leading-relaxed">
+        Биосфера ілімі (Э. Зюсс, В.И. Вернадский), топырақтану негіздері (В.В. Докучаев). Қазақстанның жазықтық топырақ зоналары: қара топырақ (4-13%), қара-қоңыр (2-4%), ашық қоңыр, сұр және сұр-қоңыр топырақтар (0,7-1,2%). Мелиорация, су және жел эрозиясы, дефляция.
+      </p>
+    </section>
+
+    <!-- 2. FULL THEORY SECTION -->
+    <section class="p-5 sm:p-7 rounded-2xl bg-space-950 border border-slate-800 space-y-4 shadow-xl">
+      <div class="flex items-center space-x-2 border-b border-slate-800 pb-3">
+        <span class="text-base text-cyan-400 font-black">📚</span>
+        <h2 id="theoryHeader" class="text-xs sm:text-sm font-black text-white uppercase tracking-wider">
+          ТОЛЫҚ ТЕОРИЯЛЫҚ МАТЕРИАЛ МЕН КОНСПЕКТ
+        </h2>
+      </div>
+      <div id="theoryContent">
+        <div class="space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed">
+<div class="p-5 rounded-2xl bg-space-900/90 border border-green-500/30 space-y-4 shadow-xl">
+  <div class="flex items-center space-x-3 text-green-400">
+    <span class="text-2xl">🌍</span>
+    <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-wider">1. Биосфера туралы ілім және оның құрылымы</h3>
+  </div>
+  <div class="space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed">
+    <p class="leading-relaxed">• <b>Биосфера анықтамасы</b>: Жер шарындағы алуан түрлі тірі организмдер тіршілік ететін ерекше қабық (грек тілінен аударғанда <i>«биос»</i> — тіршілік, <i>«сфера»</i> — шар).</p><p class="leading-relaxed">• <b>Ұғымның пайда болуы</b>:</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• «Биосфера» терминін ғылымға <b>1875 жылы австриялық геолог Эдуард Зюсс</b> енгізді.</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Биосфера терминін өз еңбектерінде кеңінен қолдана отырып, оны жүйелі түрде <b>«тіршілік бесігі»</b> деп атаған және биосфера туралы тұтас ілім қалыптастырған — академик <b>В.И. Вернадский</b>.</p><p class="leading-relaxed">• <b>Биосфераның құрамы</b>: В.И. Вернадский биосфераның атмосфераның төменгі қабатынан (тропосфера), гидросферадан (дүниежүзілік мұхит пен ішкі сулар) және литосфераның жоғарғы қабатынан (жер қыртысы) тұратынын дәлелдеді.</p><p class="leading-relaxed">• <b>В.И. Вернадский бойынша биосфера бөліктерінің саны — 3</b>:</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b class="text-amber-400">1)</b> <b>Тірі зат</b>: Планетамыздағы барлық тірі организмдердің (өсімдіктер, жануарлар, микроорганизмдер, саңырауқұлақтар мен адам) жиынтығы.</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b class="text-amber-400">2)</b> <b>Биогенді зат</b>: Ежелгі биосфера организмдерінің қалдықтарынан түзілген бөлшектер: <b>таскөмір, жанатын табиғи газдар, шымтезек, батпақ, мұнай, әктас, бор</b>.</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b class="text-amber-400">3)</b> <b>Биокосты зат</b>: Тірі ағзалар мен өлі табиғаттың бірлескен ұзақ мерзімді әрекеттесуінен қалыптасқан шөгінді жыныстар, сазды минералдар және топырақ жамылғысы.</p><p class="leading-relaxed">• <b>Биосфераның шекаралары</b>:</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• В.И. Вернадский бойынша жоғарғы шекарасы: ультракүлгін сәулелерден қорғайтын <b>озон қабаты — 20 км</b> (стратосфера).</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Төменгі шекарасы: литосферада <b>3 - 3,5 км тереңдікке</b> дейін, ал Дүниежүзілік мұхитта ең терең шұңғымаларға дейін (Мариана шұңғымасы 11 км).</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b>Жер қойнауында тіршілік етуге мүмкіндік жоқ температура — +100°C</b> (мұндай тереңдікте су қайнап, нәруыз коагуляцияға ұшырайды).</p>
+  </div>
+</div>
+<div class="p-5 rounded-2xl bg-space-900/90 border border-amber-500/30 space-y-4 shadow-xl">
+  <div class="flex items-center space-x-3 text-amber-400">
+    <span class="text-2xl">🪵</span>
+    <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-wider">2. Топырақ жамылғысы және оның қасиеттері</h3>
+  </div>
+  <div class="space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed">
+    <p class="leading-relaxed">• <b>Топырақтану ғылымының негізін қалаушы</b>: Қазіргі заманғы ғылыми топырақтанудың негізін қалаған орыс ғалымы — <b>В.В. Докучаев</b>. Ол топырақтың тау жынысынан дербес, ерекше табиғи дене екенін дәлелдеді.</p><p class="leading-relaxed">• <b>Топырақ дегеніміз не?</b>: Жер бетіндегі тау жыныстарының, жер бедерінің, климаттың, микроорганизмдердің, флора мен фаунаның т.б. сан ғасырлық өзара күрделі әрекеттесуінен пайда болған құнарлы үстіңгі қабат.</p><p class="leading-relaxed">• <b>Топырақтың пайда болу уақыты</b>: Жер бетіндегі алғашқы жұқа топырақ қабаты осыдан <b>500 млн жыл бұрын кембрий дәуірінде</b> (палеозой эрасы) құрлыққа алғашқы қарапайым өсімдіктердің шығуымен пайда болды.</p><p class="leading-relaxed">• <b>Топырақтың қалыптасу жылдамдығы</b>: Топырақ өте баяу қалыптасады, жүз жылда (100 жыл ішінде) оның қалыңдығы небәрі <b>0,5 - 2 см-ге ғана жетуі мүмкін</b>.</p><p class="leading-relaxed">• <b>Топырақтың фазалық құрамы</b>: Қатты, сулы (сұйық), газтәрізді заттар мен тірі ағзалардан тұрады.</p><p class="leading-relaxed">• <b>Топырақтың тығыздығына қарай жіктелуі</b>: <b>өте тығыз, тығыз, борпылдақ, үгілгіш</b>.</p><p class="leading-relaxed">• <b>Топырақтың қасиетіне қарай бөлінуі</b>: <b>құрылымды және құрылымсыз</b>. Құрылымды топырақта ауа мен ылғал ұзақ сақталады.</p><p class="leading-relaxed">• <b>Топырақтың ең маңызды қасиеті</b>: Оның <b>құнарлылығы</b> (өсімдіктерді сумен және қоректік минералды элементтермен қамтамасыз ету қабілеті).</p><p class="leading-relaxed">• <b>Жауынқұрттың маңызы</b>: Топырақ пен органикалық өсімдік қалдықтарын асқазан шырынымен шылап өзгертіп, өңдеп, топырақтың құнарлы қарашіріндісін (гумусын) молайтатын пайдалы жәндік — <b>жауынқұрт (дождевой червь)</b>.</p>
+  </div>
+</div>
+<div class="p-5 rounded-2xl bg-space-900/90 border border-sky-500/30 space-y-4 shadow-xl">
+  <div class="flex items-center space-x-3 text-sky-400">
+    <span class="text-2xl">🌾</span>
+    <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-wider">3. Қазақстанның жазықты аймақтарының топырақ зоналары</h3>
+  </div>
+  <div class="space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed">
+    <p class="leading-relaxed">• Қазақстанның жазық бөлігінде ендік зоналылық заңына сәйкес топырақ <b>4 зонаға</b> бөлінеді:</p><p class="leading-relaxed pl-1"><b class="text-amber-400">1)</b> <b>Орманды дала зонасы</b>:</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Топырағы: <b>сілтізденген қара топырақ</b> және сұр орман топырағы.</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Алып жатқан аймағы: Қазақстанның солтүстігінде (СҚО), ауданы — <b>0,4 млн га</b>.</p><p class="leading-relaxed pl-1"><b class="text-amber-400">2)</b> <b>Дала зонасы</b>:</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Топырағы: <b>кәдімгі қара топырақ</b> және <b>оңтүстік қара топырақ</b>.</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Кәдімгі қара топырақ: орташа құрғақ далалы аймақты қамтиды, алып жатқан ауданы — <b>12,0 млн га</b>.</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Оңтүстік қара топырақ: құрғақ далалы аймақты алып жатыр, ауданы — <b>13,4 млн га</b>.</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <i>(Қара топырақты зона барлығы 25,8 млн га немесе ҚР жерінің шамамен 9,5%-ын құрайды).</i></p><p class="leading-relaxed pl-1"><b class="text-amber-400">3)</b> <b>Қуаң дала (шөлейт) зонасы</b>:</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Қоңыр топырақ зонасы 3 топқа бөлінеді:</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b class="text-amber-400">1)</b> <b>Күңгірт қара-қоңыр топырақ</b>: орташа құрғақ далада — <b>27,7 млн га</b>;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b class="text-amber-400">2)</b> <b>Кәдімгі қара-қоңыр топырақ</b>: құрғақ далада — <b>24,3 млн га</b>;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b class="text-amber-400">3)</b> <b>Ашық қара-қоңыр топырақ</b>: шөлді далада (шөлейтте) — <b>38,4 млн га</b>.</p><p class="leading-relaxed pl-1"><b class="text-amber-400">4)</b> <b>Шөл зонасы</b>:</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Сұр және сұр-қоңыр топырақ зонасы 2 топқа бөлінеді:</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b class="text-amber-400">1)</b> <b>Сұр топырақ</b>: шөлдің солтүстік аймағында — <b>57,4 млн га</b>;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b class="text-amber-400">2)</b> <b>Сұр-қоңыр топырақ</b>: шөл зонасының орта және оңтүстік бөлігінде — <b>61,8 млн га</b>.</p><p class="leading-relaxed">• <b>Биіктік белдеулік</b>: Топырақ типтерінің ауысуы тек жазықта ғана емес, тау етегінен тау басына көтерілген сайын тік бағытта да рет-ретімен байқалады (биіктік топырақ белдеулігі).</p><p class="leading-relaxed">• <b>Азональды топырақтар</b>: Тұзды грунт сулары жақын жатқан ойыстарда зонаға бағынбайтын <b>сор (солончак), кебір (солонец) және тақырлар</b> кездеседі.</p>
+  </div>
+</div>
+<div class="p-5 rounded-2xl bg-space-900/90 border border-purple-500/30 space-y-4 shadow-xl">
+  <div class="flex items-center space-x-3 text-purple-400">
+    <span class="text-2xl">🚜</span>
+    <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-wider">4. Топырақ құрамындағы қарашірінді мөлшері және қорғау шаралары</h3>
+  </div>
+  <div class="space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed">
+    <div class="overflow-x-auto my-3 rounded-xl border border-slate-800 bg-space-950/90">
+<table class="w-full text-left text-xs border-collapse">
+<thead><tr class="border-b border-slate-800 text-slate-400 font-bold bg-space-900/60">
+<th class="p-2.5 text-cyan-300">Топырақ түрлері</th>
+<th class="p-2.5 text-cyan-300">Құрамындағы қарашірінді (гумус), %</th>
+<th class="p-2.5 text-cyan-300">Қарашірінді қабатының қалыңдығы, см</th>
+</tr></thead><tbody class="divide-y divide-slate-800/60">
+<tr class="hover:bg-space-900/40 transition">
+<td class="p-2.5 font-bold text-white"><b>Қара топырақ</b></td>
+<td class="p-2.5 text-slate-300"><b>4 - 13 %</b></td>
+<td class="p-2.5 text-slate-300"><b>40 - 80 см</b></td>
+</tr>
+<tr class="hover:bg-space-900/40 transition">
+<td class="p-2.5 font-bold text-white"><b>Күңгірт қара-қоңыр</b></td>
+<td class="p-2.5 text-slate-300"><b>3 - 4 %</b></td>
+<td class="p-2.5 text-slate-300"><b>40 - 50 см</b></td>
+</tr>
+<tr class="hover:bg-space-900/40 transition">
+<td class="p-2.5 font-bold text-white"><b>Қара-қоңыр</b></td>
+<td class="p-2.5 text-slate-300"><b>2 - 3 %</b></td>
+<td class="p-2.5 text-slate-300"><b>30 - 40 см</b></td>
+</tr>
+<tr class="hover:bg-space-900/40 transition">
+<td class="p-2.5 font-bold text-white"><b>Ашық қара қоңыр</b></td>
+<td class="p-2.5 text-slate-300"><b>1 - 2 %</b></td>
+<td class="p-2.5 text-slate-300"><b>25 - 35 см</b></td>
+</tr>
+<tr class="hover:bg-space-900/40 transition">
+<td class="p-2.5 font-bold text-white"><b>Қоңыр және сұр-қоңыр</b></td>
+<td class="p-2.5 text-slate-300"><b>0,7 - 1,2 %</b></td>
+<td class="p-2.5 text-slate-300"><b>25 - 30 см</b></td>
+</tr>
+</tbody></table></div><p class="leading-relaxed">• <b>Мелиорация</b>: Құрғату (батпақтан арылту), суару (суару каналдары), гипстеу немесе әктеу арқылы жердің құнарлылығы мен өнімділігін арттыруға бағытталған шаралар жүйесі.</p><p class="leading-relaxed">• <b>Топырақ эрозиясы</b>: Топырақтың құнарлы беткі қабатының бұзылуы және шайылып/ұшып кетуі. Ол екіге бөлінеді: <b>су эрозиясы</b> және <b>жел эрозиясы</b>.</p><p class="leading-relaxed">• <b>Дефляция</b>: Механикалық құрамы жеңіл құмды және құмдақ топырақтардың жел эрозиясына ұшырап, желмен ұшып үгілу үдерісі — <b>дефляция</b> деп аталады.</p>
+  </div>
+</div>
+</div>
+      </div>
+    </section>
+
+    <!-- 3. VISUAL SVG DIAGRAM / ILLUSTRATION -->
+    <section id="svgSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl">
+      <div class="flex items-center space-x-2 text-amber-400 font-extrabold text-xs">
+        <span>🎨</span>
+        <span id="svgHeader">КӨРНЕКІ СХЕМА МЕН ИНФОГРАФИКА</span>
+      </div>
+      <div id="svgContainer" class="w-full flex justify-center overflow-x-auto">
+        <svg viewBox="0 0 800 480" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg" style="background:#0b1120; border-radius:16px;">
+  <defs>
+    <linearGradient id="topG28" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#15803d"/><stop offset="100%" stop-color="#166534"/></linearGradient>
+    <linearGradient id="cg28" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1e293b"/><stop offset="100%" stop-color="#0f172a"/></linearGradient>
+    <filter id="sh28" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.5"/></filter>
+  </defs>
+  <rect width="800" height="480" fill="#0b1120" rx="16"/>
+  <rect x="30" y="20" width="740" height="55" rx="12" fill="url(#topG28)" filter="url(#sh28)"/>
+  <text x="400" y="45" fill="#fff" font-size="17" font-weight="bold" text-anchor="middle" font-family="system-ui, sans-serif">БИОСФЕРА ЖӘНЕ ҚАЗАҚСТАННЫҢ ТОПЫРАҚ ЖАМЫЛҒЫСЫ</text>
+  <text x="400" y="64" fill="#dcfce7" font-size="12" text-anchor="middle" font-family="system-ui, sans-serif">Э. Зюсс (1875), В.И. Вернадский, В.В. Докучаев • Қарашірінді (гумус) • Топырақ зоналары мен эрозия</text>
+  
+  <!-- Col 1: Biosphere Concept & Vernadsky -->
+  <g transform="translate(30, 95)" filter="url(#sh28)">
+    <rect width="235" height="175" rx="12" fill="url(#cg28)" stroke="#22c55e" stroke-width="1.5"/>
+    <text x="15" y="26" fill="#22c55e" font-size="12" font-weight="bold">БИОСФЕРА ІЛІМІ</text>
+    <text x="15" y="48" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• Ұғым:</tspan> 1875 ж. Э. Зюсс енгізді. В.И. Вернадский «тіршілік бесігі» деп атады.</text>
+    <text x="15" y="82" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• 3 бөлігі:</tspan> Тірі зат (барлық ағзалар), биогенді (көмір, мұнай, шымтезек), биокосты (шөгінді, саз).</text>
+    <text x="15" y="126" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• Шекаралары:</tspan> Жоғары — озон қабаты (20 км), төменгі — 3-3,5 км. +100°C-та тіршілік жоқ.</text>
+  </g>
+
+  <!-- Col 2: Soil Formation & Humus -->
+  <g transform="translate(282, 95)" filter="url(#sh28)">
+    <rect width="235" height="175" rx="12" fill="url(#cg28)" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="15" y="26" fill="#f59e0b" font-size="12" font-weight="bold">ТОПЫРАҚ ЖӘНЕ ҚАРАШІРІНДІ</text>
+    <text x="15" y="48" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• В.В. Докучаев:</tspan> Топырақтану ғылымының негізін салды. Кембрийде (500 млн ж.) пайда болды.</text>
+    <text x="15" y="88" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• Қалыптасуы:</tspan> 100 жылда 0,5-2 см ғана түзіледі. Жауынқұрт өңдеп құнарландырады.</text>
+    <text x="15" y="126" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• Құрамы:</tspan> Қатты, сулы, газтәрізді заттар және тірі ағзалар. Қасиеті: құнарлылық.</text>
+  </g>
+
+  <!-- Col 3: Soil Types of Kazakhstan -->
+  <g transform="translate(535, 95)" filter="url(#sh28)">
+    <rect width="235" height="175" rx="12" fill="url(#cg28)" stroke="#38bdf8" stroke-width="1.5"/>
+    <text x="15" y="26" fill="#38bdf8" font-size="12" font-weight="bold">ЗОНАЛЫҚ ТОПЫРАҚТАР</text>
+    <text x="15" y="48" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• Қара топырақ (4-13%):</tspan> Сілтізденген (0,4 млн га), кәдімгі (12 млн га), оңтүстік (13,4 млн га).</text>
+    <text x="15" y="92" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• Қоңыр топырақ:</tspan> Күңгірт (3-4%), кәдімгі (2-3%), ашық қоңыр (1-2%). Барлығы 90,4 млн га.</text>
+    <text x="15" y="136" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• Сұр, сұр-қоңыр:</tspan> Шөлде 119,2 млн га (0,7-1,2% қарашірінді). Тақыр, сор, кебір.</text>
+  </g>
+
+  <!-- Bottom Panel: Humus Table & Soil Protection -->
+  <g transform="translate(30, 285)" filter="url(#sh28)">
+    <rect width="740" height="175" rx="12" fill="url(#cg28)" stroke="#a855f7" stroke-width="1.5"/>
+    <text x="20" y="24" fill="#a855f7" font-size="12" font-weight="bold">ҚАРАШІРІНДІ ҚАБАТЫ, ЭРОЗИЯ ЖӘНЕ МЕЛИОРАЦИЯ:</text>
+    <text x="20" y="48" fill="#e2e8f0" font-size="11"><tspan font-weight="bold" fill="#fde047">Қара топырақ:</tspan> 4-13% қарашірінді, қалыңдығы 40-80 см (Солтүстік Қазақстан, ең құнарлы).</text>
+    <text x="20" y="70" fill="#e2e8f0" font-size="11"><tspan font-weight="bold" fill="#fde047">Күңгірт қара-қоңыр:</tspan> 3-4% қарашірінді, қабаты 40-50 см | <tspan font-weight="bold" fill="#fde047">Қара-қоңыр:</tspan> 2-3%, қабаты 30-40 см.</text>
+    <text x="20" y="92" fill="#e2e8f0" font-size="11"><tspan font-weight="bold" fill="#fde047">Ашық қара қоңыр:</tspan> 1-2%, қабаты 25-35 см | <tspan font-weight="bold" fill="#fde047">Қоңыр және сұр-қоңыр:</tspan> 0,7-1,2%, қабаты 25-30 см.</text>
+    <text x="20" y="116" fill="#e2e8f0" font-size="11"><tspan font-weight="bold" fill="#38bdf8">Мелиорация:</tspan> Құрғату немесе суару арқылы топырақ құнарлылығын арттыру шаралары.</text>
+    <text x="20" y="138" fill="#e2e8f0" font-size="11"><tspan font-weight="bold" fill="#f43f5e">Эрозия және Дефляция:</tspan> Су және жел эрозиясы. Құмды жеңіл топырақтың желге ұшуы — <tspan font-weight="bold" fill="#fde047">дефляция</tspan> деп аталады.</text>
+    <text x="20" y="158" fill="#94a3b8" font-size="10.5">⛰️ Биіктік белдеулік: тау етегінен шыңына дейін топырақ типтері рет-ретімен өзгереді.</text>
+  </g>
+</svg>
+      </div>
+    </section>
+
+    <!-- 4. STRUCTURED DATA TABLE -->
+    <section id="tableSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl overflow-x-auto">
+      <h3 class="text-xs font-black text-cyan-400 flex items-center space-x-2">
+        <span>📊</span>
+        <span id="tableHeader">НАҚТЫ КӨРСЕТКІШТЕР МЕН КЛАССИФИКАЦИЯ КЕСТЕСІ</span>
+      </h3>
+      <div id="tableContainer">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- 5. KEY FACTS FOR UNT / ЕНТ -->
+    <section id="factsSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl">
+      <h3 class="text-xs font-black text-amber-400 flex items-center space-x-2">
+        <span>⚡</span>
+        <span id="factsHeader">ҰБТ-ҒА ҚАЖЕТТІ НЕГІЗГІ ЕРЕЖЕЛЕР МЕН ФАКТІЛЕР</span>
+      </h3>
+      <ul id="factsList" class="space-y-2 text-xs text-slate-300">
+        <!-- Rendered via JS -->
+      </ul>
+    </section>
+
+    <!-- 6. TRAPS AND HACKS -->
+    <section id="trapsSection" class="p-5 rounded-2xl bg-gradient-to-r from-amber-950/40 via-space-950 to-space-950 border border-amber-500/40 space-y-3 shadow-xl">
+      <h3 class="text-xs font-black text-amber-400 flex items-center space-x-2">
+        <span>💡</span>
+        <span id="trapsHeader">ҰБТ ҚАҚПАНДАРЫ МЕН ЛАЙФХАКТАР</span>
+      </h3>
+      <div id="trapsList" class="space-y-2 text-xs text-slate-200">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- FOOTER NAVIGATION -->
+    <nav class="pt-4 pb-8 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3 text-xs">
+      <a href="topic_27.html" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white transition shadow-sm">
+      <span>←</span>
+      <span>#27 Алдыңғы тақырып</span>
+    </a>
+      <a href="../index.html#section-zhattau_grammar" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-400 hover:text-white transition">
+        <span>🏠</span>
+        <span>Барлық тақырыптар</span>
+      </a>
+      <a href="topic_29.html" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-xs font-bold text-cyan-300 hover:text-white transition shadow-sm">
+      <span>Келесі тақырып #29</span>
+      <span>→</span>
+    </a>
+    </nav>
+
+  </main>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="xpToast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300 flex items-center space-x-2 px-4 py-3 rounded-2xl bg-space-900 border border-cyan-500/40 shadow-2xl text-xs font-bold text-white">
+    <span class="text-cyan-400 text-base">✨</span>
+    <span id="toastMsg">+20 XP! Тақырып меңгерілді</span>
+  </div>
+
+  <script>
+    const topicData = {"num": 28, "title_kz": "Биосфера (Қазақстанның топырақ жамылғысы)", "title_ru": "Биосфера и почвы Казахстана", "category_kz": "Биосфера және топырақ географиясы", "category_ru": "Биосфера и география почв", "summary_kz": "Биосфера ілімі (Э. Зюсс, В.И. Вернадский), топырақтану негіздері (В.В. Докучаев). Қазақстанның жазықтық топырақ зоналары: қара топырақ (4-13%), қара-қоңыр (2-4%), ашық қоңыр, сұр және сұр-қоңыр топырақтар (0,7-1,2%). Мелиорация, су және жел эрозиясы, дефляция.", "summary_ru": "Учение о биосфере (Э. Зюсс, В.И. Вернадский), генетическое почвоведение (В.В. Докучаев). Почвенные зоны Казахстана: черноземы (4-13% гумуса), каштановые (2-4%), бурые и серо-бурые (0,7-1,2%). Мелиорация, водная и ветровая эрозия, дефляция.", "full_theory_kz": "<div class=\"space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed\">\n<div class=\"p-5 rounded-2xl bg-space-900/90 border border-green-500/30 space-y-4 shadow-xl\">\n  <div class=\"flex items-center space-x-3 text-green-400\">\n    <span class=\"text-2xl\">🌍</span>\n    <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">1. Биосфера туралы ілім және оның құрылымы</h3>\n  </div>\n  <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n    <p class=\"leading-relaxed\">• <b>Биосфера анықтамасы</b>: Жер шарындағы алуан түрлі тірі организмдер тіршілік ететін ерекше қабық (грек тілінен аударғанда <i>«биос»</i> — тіршілік, <i>«сфера»</i> — шар).</p><p class=\"leading-relaxed\">• <b>Ұғымның пайда болуы</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• «Биосфера» терминін ғылымға <b>1875 жылы австриялық геолог Эдуард Зюсс</b> енгізді.</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Биосфера терминін өз еңбектерінде кеңінен қолдана отырып, оны жүйелі түрде <b>«тіршілік бесігі»</b> деп атаған және биосфера туралы тұтас ілім қалыптастырған — академик <b>В.И. Вернадский</b>.</p><p class=\"leading-relaxed\">• <b>Биосфераның құрамы</b>: В.И. Вернадский биосфераның атмосфераның төменгі қабатынан (тропосфера), гидросферадан (дүниежүзілік мұхит пен ішкі сулар) және литосфераның жоғарғы қабатынан (жер қыртысы) тұратынын дәлелдеді.</p><p class=\"leading-relaxed\">• <b>В.И. Вернадский бойынша биосфера бөліктерінің саны — 3</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">1)</b> <b>Тірі зат</b>: Планетамыздағы барлық тірі организмдердің (өсімдіктер, жануарлар, микроорганизмдер, саңырауқұлақтар мен адам) жиынтығы.</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">2)</b> <b>Биогенді зат</b>: Ежелгі биосфера организмдерінің қалдықтарынан түзілген бөлшектер: <b>таскөмір, жанатын табиғи газдар, шымтезек, батпақ, мұнай, әктас, бор</b>.</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">3)</b> <b>Биокосты зат</b>: Тірі ағзалар мен өлі табиғаттың бірлескен ұзақ мерзімді әрекеттесуінен қалыптасқан шөгінді жыныстар, сазды минералдар және топырақ жамылғысы.</p><p class=\"leading-relaxed\">• <b>Биосфераның шекаралары</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• В.И. Вернадский бойынша жоғарғы шекарасы: ультракүлгін сәулелерден қорғайтын <b>озон қабаты — 20 км</b> (стратосфера).</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Төменгі шекарасы: литосферада <b>3 - 3,5 км тереңдікке</b> дейін, ал Дүниежүзілік мұхитта ең терең шұңғымаларға дейін (Мариана шұңғымасы 11 км).</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Жер қойнауында тіршілік етуге мүмкіндік жоқ температура — +100°C</b> (мұндай тереңдікте су қайнап, нәруыз коагуляцияға ұшырайды).</p>\n  </div>\n</div>\n<div class=\"p-5 rounded-2xl bg-space-900/90 border border-amber-500/30 space-y-4 shadow-xl\">\n  <div class=\"flex items-center space-x-3 text-amber-400\">\n    <span class=\"text-2xl\">🪵</span>\n    <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">2. Топырақ жамылғысы және оның қасиеттері</h3>\n  </div>\n  <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n    <p class=\"leading-relaxed\">• <b>Топырақтану ғылымының негізін қалаушы</b>: Қазіргі заманғы ғылыми топырақтанудың негізін қалаған орыс ғалымы — <b>В.В. Докучаев</b>. Ол топырақтың тау жынысынан дербес, ерекше табиғи дене екенін дәлелдеді.</p><p class=\"leading-relaxed\">• <b>Топырақ дегеніміз не?</b>: Жер бетіндегі тау жыныстарының, жер бедерінің, климаттың, микроорганизмдердің, флора мен фаунаның т.б. сан ғасырлық өзара күрделі әрекеттесуінен пайда болған құнарлы үстіңгі қабат.</p><p class=\"leading-relaxed\">• <b>Топырақтың пайда болу уақыты</b>: Жер бетіндегі алғашқы жұқа топырақ қабаты осыдан <b>500 млн жыл бұрын кембрий дәуірінде</b> (палеозой эрасы) құрлыққа алғашқы қарапайым өсімдіктердің шығуымен пайда болды.</p><p class=\"leading-relaxed\">• <b>Топырақтың қалыптасу жылдамдығы</b>: Топырақ өте баяу қалыптасады, жүз жылда (100 жыл ішінде) оның қалыңдығы небәрі <b>0,5 - 2 см-ге ғана жетуі мүмкін</b>.</p><p class=\"leading-relaxed\">• <b>Топырақтың фазалық құрамы</b>: Қатты, сулы (сұйық), газтәрізді заттар мен тірі ағзалардан тұрады.</p><p class=\"leading-relaxed\">• <b>Топырақтың тығыздығына қарай жіктелуі</b>: <b>өте тығыз, тығыз, борпылдақ, үгілгіш</b>.</p><p class=\"leading-relaxed\">• <b>Топырақтың қасиетіне қарай бөлінуі</b>: <b>құрылымды және құрылымсыз</b>. Құрылымды топырақта ауа мен ылғал ұзақ сақталады.</p><p class=\"leading-relaxed\">• <b>Топырақтың ең маңызды қасиеті</b>: Оның <b>құнарлылығы</b> (өсімдіктерді сумен және қоректік минералды элементтермен қамтамасыз ету қабілеті).</p><p class=\"leading-relaxed\">• <b>Жауынқұрттың маңызы</b>: Топырақ пен органикалық өсімдік қалдықтарын асқазан шырынымен шылап өзгертіп, өңдеп, топырақтың құнарлы қарашіріндісін (гумусын) молайтатын пайдалы жәндік — <b>жауынқұрт (дождевой червь)</b>.</p>\n  </div>\n</div>\n<div class=\"p-5 rounded-2xl bg-space-900/90 border border-sky-500/30 space-y-4 shadow-xl\">\n  <div class=\"flex items-center space-x-3 text-sky-400\">\n    <span class=\"text-2xl\">🌾</span>\n    <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">3. Қазақстанның жазықты аймақтарының топырақ зоналары</h3>\n  </div>\n  <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n    <p class=\"leading-relaxed\">• Қазақстанның жазық бөлігінде ендік зоналылық заңына сәйкес топырақ <b>4 зонаға</b> бөлінеді:</p><p class=\"leading-relaxed pl-1\"><b class=\"text-amber-400\">1)</b> <b>Орманды дала зонасы</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Топырағы: <b>сілтізденген қара топырақ</b> және сұр орман топырағы.</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Алып жатқан аймағы: Қазақстанның солтүстігінде (СҚО), ауданы — <b>0,4 млн га</b>.</p><p class=\"leading-relaxed pl-1\"><b class=\"text-amber-400\">2)</b> <b>Дала зонасы</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Топырағы: <b>кәдімгі қара топырақ</b> және <b>оңтүстік қара топырақ</b>.</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Кәдімгі қара топырақ: орташа құрғақ далалы аймақты қамтиды, алып жатқан ауданы — <b>12,0 млн га</b>.</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Оңтүстік қара топырақ: құрғақ далалы аймақты алып жатыр, ауданы — <b>13,4 млн га</b>.</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <i>(Қара топырақты зона барлығы 25,8 млн га немесе ҚР жерінің шамамен 9,5%-ын құрайды).</i></p><p class=\"leading-relaxed pl-1\"><b class=\"text-amber-400\">3)</b> <b>Қуаң дала (шөлейт) зонасы</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Қоңыр топырақ зонасы 3 топқа бөлінеді:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">1)</b> <b>Күңгірт қара-қоңыр топырақ</b>: орташа құрғақ далада — <b>27,7 млн га</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">2)</b> <b>Кәдімгі қара-қоңыр топырақ</b>: құрғақ далада — <b>24,3 млн га</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">3)</b> <b>Ашық қара-қоңыр топырақ</b>: шөлді далада (шөлейтте) — <b>38,4 млн га</b>.</p><p class=\"leading-relaxed pl-1\"><b class=\"text-amber-400\">4)</b> <b>Шөл зонасы</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Сұр және сұр-қоңыр топырақ зонасы 2 топқа бөлінеді:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">1)</b> <b>Сұр топырақ</b>: шөлдің солтүстік аймағында — <b>57,4 млн га</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">2)</b> <b>Сұр-қоңыр топырақ</b>: шөл зонасының орта және оңтүстік бөлігінде — <b>61,8 млн га</b>.</p><p class=\"leading-relaxed\">• <b>Биіктік белдеулік</b>: Топырақ типтерінің ауысуы тек жазықта ғана емес, тау етегінен тау басына көтерілген сайын тік бағытта да рет-ретімен байқалады (биіктік топырақ белдеулігі).</p><p class=\"leading-relaxed\">• <b>Азональды топырақтар</b>: Тұзды грунт сулары жақын жатқан ойыстарда зонаға бағынбайтын <b>сор (солончак), кебір (солонец) және тақырлар</b> кездеседі.</p>\n  </div>\n</div>\n<div class=\"p-5 rounded-2xl bg-space-900/90 border border-purple-500/30 space-y-4 shadow-xl\">\n  <div class=\"flex items-center space-x-3 text-purple-400\">\n    <span class=\"text-2xl\">🚜</span>\n    <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">4. Топырақ құрамындағы қарашірінді мөлшері және қорғау шаралары</h3>\n  </div>\n  <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n    <div class=\"overflow-x-auto my-3 rounded-xl border border-slate-800 bg-space-950/90\">\n<table class=\"w-full text-left text-xs border-collapse\">\n<thead><tr class=\"border-b border-slate-800 text-slate-400 font-bold bg-space-900/60\">\n<th class=\"p-2.5 text-cyan-300\">Топырақ түрлері</th>\n<th class=\"p-2.5 text-cyan-300\">Құрамындағы қарашірінді (гумус), %</th>\n<th class=\"p-2.5 text-cyan-300\">Қарашірінді қабатының қалыңдығы, см</th>\n</tr></thead><tbody class=\"divide-y divide-slate-800/60\">\n<tr class=\"hover:bg-space-900/40 transition\">\n<td class=\"p-2.5 font-bold text-white\"><b>Қара топырақ</b></td>\n<td class=\"p-2.5 text-slate-300\"><b>4 - 13 %</b></td>\n<td class=\"p-2.5 text-slate-300\"><b>40 - 80 см</b></td>\n</tr>\n<tr class=\"hover:bg-space-900/40 transition\">\n<td class=\"p-2.5 font-bold text-white\"><b>Күңгірт қара-қоңыр</b></td>\n<td class=\"p-2.5 text-slate-300\"><b>3 - 4 %</b></td>\n<td class=\"p-2.5 text-slate-300\"><b>40 - 50 см</b></td>\n</tr>\n<tr class=\"hover:bg-space-900/40 transition\">\n<td class=\"p-2.5 font-bold text-white\"><b>Қара-қоңыр</b></td>\n<td class=\"p-2.5 text-slate-300\"><b>2 - 3 %</b></td>\n<td class=\"p-2.5 text-slate-300\"><b>30 - 40 см</b></td>\n</tr>\n<tr class=\"hover:bg-space-900/40 transition\">\n<td class=\"p-2.5 font-bold text-white\"><b>Ашық қара қоңыр</b></td>\n<td class=\"p-2.5 text-slate-300\"><b>1 - 2 %</b></td>\n<td class=\"p-2.5 text-slate-300\"><b>25 - 35 см</b></td>\n</tr>\n<tr class=\"hover:bg-space-900/40 transition\">\n<td class=\"p-2.5 font-bold text-white\"><b>Қоңыр және сұр-қоңыр</b></td>\n<td class=\"p-2.5 text-slate-300\"><b>0,7 - 1,2 %</b></td>\n<td class=\"p-2.5 text-slate-300\"><b>25 - 30 см</b></td>\n</tr>\n</tbody></table></div><p class=\"leading-relaxed\">• <b>Мелиорация</b>: Құрғату (батпақтан арылту), суару (суару каналдары), гипстеу немесе әктеу арқылы жердің құнарлылығы мен өнімділігін арттыруға бағытталған шаралар жүйесі.</p><p class=\"leading-relaxed\">• <b>Топырақ эрозиясы</b>: Топырақтың құнарлы беткі қабатының бұзылуы және шайылып/ұшып кетуі. Ол екіге бөлінеді: <b>су эрозиясы</b> және <b>жел эрозиясы</b>.</p><p class=\"leading-relaxed\">• <b>Дефляция</b>: Механикалық құрамы жеңіл құмды және құмдақ топырақтардың жел эрозиясына ұшырап, желмен ұшып үгілу үдерісі — <b>дефляция</b> деп аталады.</p>\n  </div>\n</div>\n</div>", "full_theory_ru": "<div class=\"space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed\">\n<div class=\"p-5 rounded-2xl bg-space-900/90 border border-green-500/30 space-y-4 shadow-xl\">\n  <div class=\"flex items-center space-x-3 text-green-400\">\n    <span class=\"text-2xl\">🌍</span>\n    <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">1. Учение о биосфере и ее структура</h3>\n  </div>\n  <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n    <p class=\"leading-relaxed\">• <b>Определение биосферы</b>: Оболочка Земли, заселенная живыми организмами и находящаяся под их непрерывным воздействием (от греч. <i>«биос»</i> — жизнь, <i>«сфера»</i> — шар).</p><p class=\"leading-relaxed\">• <b>История термина и учения</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Термин «биосфера» впервые ввел в научный оборот в <b>1875 году австрийский геолог Эдуард Зюсс</b>.</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Широко развил термин в фундаментальных трудах, назвал биосферу <b>«колыбелью жизни»</b> и создал законченное научное учение о биосфере академик <b>В.И. Вернадский</b>.</p><p class=\"leading-relaxed\">• <b>Строение биосферы</b>: В.И. Вернадский обосновал, что биосфера охватывает нижние слои атмосферы (тропосферу до озонового экрана), всю гидросферу и верхнюю толщу литосферы.</p><p class=\"leading-relaxed\">• <b>3 категории вещества биосферы по В.И. Вернадскому</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">1)</b> <b>Живое вещество</b>: Вся совокупность живых организмов планеты (растения, животные, грибы, бактерии, человечество).</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">2)</b> <b>Биогенное вещество</b>: Продукты жизнедеятельности древних живых организмов: <b>каменный уголь, горючие газы, торф, сапропель, нефть, известняк, мел</b>.</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">3)</b> <b>Биокосное вещество</b>: Совместный продукт взаимодействия живых и неживых компонентов: осадочные породы, глинистые минералы, природные воды и почвенный покров.</p><p class=\"leading-relaxed\">• <b>Границы биосферы</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Верхняя граница: <b>озоновый экран на высоте 20 км</b> (задерживает смертоносное жесткое ультрафиолетовое излучение).</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Нижняя граница: в литосфере на глубине <b>3 - 3,5 км</b>, в гидросфере — до дна Мирового океана (11 км).</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Температурный предел жизни в недрах — +100°C</b> (порог денатурации белка и кипения воды).</p>\n  </div>\n</div>\n<div class=\"p-5 rounded-2xl bg-space-900/90 border border-amber-500/30 space-y-4 shadow-xl\">\n  <div class=\"flex items-center space-x-3 text-amber-400\">\n    <span class=\"text-2xl\">🪵</span>\n    <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">2. Почвенный покров и свойства почв</h3>\n  </div>\n  <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n    <p class=\"leading-relaxed\">• <b>Основоположник докучаевского почвоведения</b>: Основатель современного генетического почвоведения — выдающийся естествоиспытатель <b>В.В. Докучаев</b>.</p><p class=\"leading-relaxed\">• <b>Что такое почва?</b>: Особое сложное природное тело, образовавшееся на поверхности Земли в результате многовекового совместного взаимодействия горных пород, рельефа, климата, микроорганизмов, растительности и животных.</p><p class=\"leading-relaxed\">• <b>Время появления первых почв</b>: Первые маломощные почвы возникли около <b>500 млн лет назад в кембрийском периоде</b> палеозойской эры с выходом жизни на сушу.</p><p class=\"leading-relaxed\">• <b>Скорость почвообразования</b>: Почва формируется крайне медленно: за сто лет (100 лет) ее мощность увеличивается всего на <b>0,5 - 2 см</b>.</p><p class=\"leading-relaxed\">• <b>Фазовый состав почвы</b>: Твердая минерально-органическая основа, почвенный раствор (жидкая фаза), почвенный воздух (газ) и живые почвенные обитатели.</p><p class=\"leading-relaxed\">• <b>Плотность почв</b>: <b>очень плотные, плотные, рыхлые, рассыпчатые</b>.</p><p class=\"leading-relaxed\">• <b>Структура</b>: <b>структурные и бесструктурные</b> почвы.</p><p class=\"leading-relaxed\">• <b>Главное фундаментальное свойство почвы</b>: Ее <b>плодородие</b> — способность обеспечивать растения влагой и питательными веществами.</p><p class=\"leading-relaxed\">• <b>Роль дождевых червей</b>: Беспозвоночные, перерабатывающие минеральные частицы и органический опад в пищеварительном тракте, обогащающие почву биогумусом — <b>дождевые черви</b>.</p>\n  </div>\n</div>\n<div class=\"p-5 rounded-2xl bg-space-900/90 border border-sky-500/30 space-y-4 shadow-xl\">\n  <div class=\"flex items-center space-x-3 text-sky-400\">\n    <span class=\"text-2xl\">🌾</span>\n    <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">3. Почвенные зоны равнинного Казахстана</h3>\n  </div>\n  <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n    <p class=\"leading-relaxed\">• В равнинной части Казахстана выражена широтная зональность почв (4 зоны):</p><p class=\"leading-relaxed pl-1\"><b class=\"text-amber-400\">1)</b> <b>Лесостепная зона</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Почвы: <b>выщелоченные черноземы</b> и серые лесные почвы.</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Площадь: север Казахстана (СКО), занимает <b>0,4 млн га</b>.</p><p class=\"leading-relaxed pl-1\"><b class=\"text-amber-400\">2)</b> <b>Степная зона</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Почвы: <b>обыкновенные черноземы</b> и <b>южные черноземы</b>.</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Обыкновенные черноземы: умеренно-засушливая степь — <b>12,0 млн га</b>.</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Южные черноземы: засушливая степь — <b>13,4 млн га</b>.</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <i>(Всего черноземная зона занимает 25,8 млн га, или 9,5% территории страны).</i></p><p class=\"leading-relaxed pl-1\"><b class=\"text-amber-400\">3)</b> <b>Зона сухой степи и полупустыни</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Каштановые почвы подразделяются на 3 подтипа:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">1)</b> <b>Темно-каштановые почвы</b>: умеренно-сухая степь — <b>27,7 млн га</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">2)</b> <b>Каштановые почвы</b>: сухая степь — <b>24,3 млн га</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">3)</b> <b>Светло-каштановые почвы</b>: полупустынная зона — <b>38,4 млн га</b>.</p><p class=\"leading-relaxed pl-1\"><b class=\"text-amber-400\">4)</b> <b>Пустынная зона</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Зона сероземов и серо-бурых почв делится на 2 группы:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">1)</b> <b>Серые почвы (сероземы)</b>: северная полоса пустынь и предгорья — <b>57,4 млн га</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">2)</b> <b>Серо-бурые почвы</b>: центральные и южные массивы пустынь — <b>61,8 млн га</b>.</p><p class=\"leading-relaxed\">• <b>Высотная поясность</b>: В горах равнинная зональность сменяется вертикальной: от предгорий к снежным вершинам почвы закономерно меняются от пустынно-степных до горно-луговых.</p><p class=\"leading-relaxed\">• <b>Азональные почвы</b>: Пятнами встречаются интразональные засоленные почвы: <b>солончаки (сор), солонцы (кебір) и глинистые такыры</b>.</p>\n  </div>\n</div>\n<div class=\"p-5 rounded-2xl bg-space-900/90 border border-purple-500/30 space-y-4 shadow-xl\">\n  <div class=\"flex items-center space-x-3 text-purple-400\">\n    <span class=\"text-2xl\">🚜</span>\n    <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">4. Содержание гумуса, эрозия и мелиорация</h3>\n  </div>\n  <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n    <div class=\"overflow-x-auto my-3 rounded-xl border border-slate-800 bg-space-950/90\">\n<table class=\"w-full text-left text-xs border-collapse\">\n<thead><tr class=\"border-b border-slate-800 text-slate-400 font-bold bg-space-900/60\">\n<th class=\"p-2.5 text-cyan-300\">Типы почв</th>\n<th class=\"p-2.5 text-cyan-300\">Содержание гумуса (қарашірінді), %</th>\n<th class=\"p-2.5 text-cyan-300\">Мощность гумусового горизонта, см</th>\n</tr></thead><tbody class=\"divide-y divide-slate-800/60\">\n<tr class=\"hover:bg-space-900/40 transition\">\n<td class=\"p-2.5 font-bold text-white\"><b>Черноземы (қара топырақ)</b></td>\n<td class=\"p-2.5 text-slate-300\"><b>4 - 13 %</b></td>\n<td class=\"p-2.5 text-slate-300\"><b>40 - 80 см</b></td>\n</tr>\n<tr class=\"hover:bg-space-900/40 transition\">\n<td class=\"p-2.5 font-bold text-white\"><b>Темно-каштановые</b></td>\n<td class=\"p-2.5 text-slate-300\"><b>3 - 4 %</b></td>\n<td class=\"p-2.5 text-slate-300\"><b>40 - 50 см</b></td>\n</tr>\n<tr class=\"hover:bg-space-900/40 transition\">\n<td class=\"p-2.5 font-bold text-white\"><b>Каштановые</b></td>\n<td class=\"p-2.5 text-slate-300\"><b>2 - 3 %</b></td>\n<td class=\"p-2.5 text-slate-300\"><b>30 - 40 см</b></td>\n</tr>\n<tr class=\"hover:bg-space-900/40 transition\">\n<td class=\"p-2.5 font-bold text-white\"><b>Светло-каштановые</b></td>\n<td class=\"p-2.5 text-slate-300\"><b>1 - 2 %</b></td>\n<td class=\"p-2.5 text-slate-300\"><b>25 - 35 см</b></td>\n</tr>\n<tr class=\"hover:bg-space-900/40 transition\">\n<td class=\"p-2.5 font-bold text-white\"><b>Бурые и серо-бурые</b></td>\n<td class=\"p-2.5 text-slate-300\"><b>0,7 - 1,2 %</b></td>\n<td class=\"p-2.5 text-slate-300\"><b>25 - 30 см</b></td>\n</tr>\n</tbody></table></div><p class=\"leading-relaxed\">• <b>Мелиорация</b>: Комплекс агротехнических и гидротехнических мероприятий (орошение, осушение, гипсование) по коренному улучшению почвенного плодородия.</p><p class=\"leading-relaxed\">• <b>Эрозия почв</b>: Разрушение и снос верхнего плодородного слоя под воздействием воды (<b>водная эрозия</b>) или ветра (<b>ветровая эрозия</b>).</p><p class=\"leading-relaxed\">• <b>Дефляция</b>: Развевание ветром песчаных и супесчаных легких почв пустынь и полупустынь.</p>\n  </div>\n</div>\n</div>", "svg_diagram": "<svg viewBox=\"0 0 800 480\" width=\"100%\" height=\"auto\" xmlns=\"http://www.w3.org/2000/svg\" style=\"background:#0b1120; border-radius:16px;\">\n  <defs>\n    <linearGradient id=\"topG28\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" stop-color=\"#15803d\"/><stop offset=\"100%\" stop-color=\"#166534\"/></linearGradient>\n    <linearGradient id=\"cg28\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" stop-color=\"#1e293b\"/><stop offset=\"100%\" stop-color=\"#0f172a\"/></linearGradient>\n    <filter id=\"sh28\" x=\"-10%\" y=\"-10%\" width=\"120%\" height=\"120%\"><feDropShadow dx=\"0\" dy=\"4\" stdDeviation=\"6\" flood-color=\"#000\" flood-opacity=\"0.5\"/></filter>\n  </defs>\n  <rect width=\"800\" height=\"480\" fill=\"#0b1120\" rx=\"16\"/>\n  <rect x=\"30\" y=\"20\" width=\"740\" height=\"55\" rx=\"12\" fill=\"url(#topG28)\" filter=\"url(#sh28)\"/>\n  <text x=\"400\" y=\"45\" fill=\"#fff\" font-size=\"17\" font-weight=\"bold\" text-anchor=\"middle\" font-family=\"system-ui, sans-serif\">БИОСФЕРА ЖӘНЕ ҚАЗАҚСТАННЫҢ ТОПЫРАҚ ЖАМЫЛҒЫСЫ</text>\n  <text x=\"400\" y=\"64\" fill=\"#dcfce7\" font-size=\"12\" text-anchor=\"middle\" font-family=\"system-ui, sans-serif\">Э. Зюсс (1875), В.И. Вернадский, В.В. Докучаев • Қарашірінді (гумус) • Топырақ зоналары мен эрозия</text>\n  \n  <!-- Col 1: Biosphere Concept & Vernadsky -->\n  <g transform=\"translate(30, 95)\" filter=\"url(#sh28)\">\n    <rect width=\"235\" height=\"175\" rx=\"12\" fill=\"url(#cg28)\" stroke=\"#22c55e\" stroke-width=\"1.5\"/>\n    <text x=\"15\" y=\"26\" fill=\"#22c55e\" font-size=\"12\" font-weight=\"bold\">БИОСФЕРА ІЛІМІ</text>\n    <text x=\"15\" y=\"48\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Ұғым:</tspan> 1875 ж. Э. Зюсс енгізді. В.И. Вернадский «тіршілік бесігі» деп атады.</text>\n    <text x=\"15\" y=\"82\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• 3 бөлігі:</tspan> Тірі зат (барлық ағзалар), биогенді (көмір, мұнай, шымтезек), биокосты (шөгінді, саз).</text>\n    <text x=\"15\" y=\"126\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Шекаралары:</tspan> Жоғары — озон қабаты (20 км), төменгі — 3-3,5 км. +100°C-та тіршілік жоқ.</text>\n  </g>\n\n  <!-- Col 2: Soil Formation & Humus -->\n  <g transform=\"translate(282, 95)\" filter=\"url(#sh28)\">\n    <rect width=\"235\" height=\"175\" rx=\"12\" fill=\"url(#cg28)\" stroke=\"#f59e0b\" stroke-width=\"1.5\"/>\n    <text x=\"15\" y=\"26\" fill=\"#f59e0b\" font-size=\"12\" font-weight=\"bold\">ТОПЫРАҚ ЖӘНЕ ҚАРАШІРІНДІ</text>\n    <text x=\"15\" y=\"48\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• В.В. Докучаев:</tspan> Топырақтану ғылымының негізін салды. Кембрийде (500 млн ж.) пайда болды.</text>\n    <text x=\"15\" y=\"88\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Қалыптасуы:</tspan> 100 жылда 0,5-2 см ғана түзіледі. Жауынқұрт өңдеп құнарландырады.</text>\n    <text x=\"15\" y=\"126\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Құрамы:</tspan> Қатты, сулы, газтәрізді заттар және тірі ағзалар. Қасиеті: құнарлылық.</text>\n  </g>\n\n  <!-- Col 3: Soil Types of Kazakhstan -->\n  <g transform=\"translate(535, 95)\" filter=\"url(#sh28)\">\n    <rect width=\"235\" height=\"175\" rx=\"12\" fill=\"url(#cg28)\" stroke=\"#38bdf8\" stroke-width=\"1.5\"/>\n    <text x=\"15\" y=\"26\" fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\">ЗОНАЛЫҚ ТОПЫРАҚТАР</text>\n    <text x=\"15\" y=\"48\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Қара топырақ (4-13%):</tspan> Сілтізденген (0,4 млн га), кәдімгі (12 млн га), оңтүстік (13,4 млн га).</text>\n    <text x=\"15\" y=\"92\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Қоңыр топырақ:</tspan> Күңгірт (3-4%), кәдімгі (2-3%), ашық қоңыр (1-2%). Барлығы 90,4 млн га.</text>\n    <text x=\"15\" y=\"136\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Сұр, сұр-қоңыр:</tspan> Шөлде 119,2 млн га (0,7-1,2% қарашірінді). Тақыр, сор, кебір.</text>\n  </g>\n\n  <!-- Bottom Panel: Humus Table & Soil Protection -->\n  <g transform=\"translate(30, 285)\" filter=\"url(#sh28)\">\n    <rect width=\"740\" height=\"175\" rx=\"12\" fill=\"url(#cg28)\" stroke=\"#a855f7\" stroke-width=\"1.5\"/>\n    <text x=\"20\" y=\"24\" fill=\"#a855f7\" font-size=\"12\" font-weight=\"bold\">ҚАРАШІРІНДІ ҚАБАТЫ, ЭРОЗИЯ ЖӘНЕ МЕЛИОРАЦИЯ:</text>\n    <text x=\"20\" y=\"48\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#fde047\">Қара топырақ:</tspan> 4-13% қарашірінді, қалыңдығы 40-80 см (Солтүстік Қазақстан, ең құнарлы).</text>\n    <text x=\"20\" y=\"70\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#fde047\">Күңгірт қара-қоңыр:</tspan> 3-4% қарашірінді, қабаты 40-50 см | <tspan font-weight=\"bold\" fill=\"#fde047\">Қара-қоңыр:</tspan> 2-3%, қабаты 30-40 см.</text>\n    <text x=\"20\" y=\"92\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#fde047\">Ашық қара қоңыр:</tspan> 1-2%, қабаты 25-35 см | <tspan font-weight=\"bold\" fill=\"#fde047\">Қоңыр және сұр-қоңыр:</tspan> 0,7-1,2%, қабаты 25-30 см.</text>\n    <text x=\"20\" y=\"116\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#38bdf8\">Мелиорация:</tspan> Құрғату немесе суару арқылы топырақ құнарлылығын арттыру шаралары.</text>\n    <text x=\"20\" y=\"138\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#f43f5e\">Эрозия және Дефляция:</tspan> Су және жел эрозиясы. Құмды жеңіл топырақтың желге ұшуы — <tspan font-weight=\"bold\" fill=\"#fde047\">дефляция</tspan> деп аталады.</text>\n    <text x=\"20\" y=\"158\" fill=\"#94a3b8\" font-size=\"10.5\">⛰️ Биіктік белдеулік: тау етегінен шыңына дейін топырақ типтері рет-ретімен өзгереді.</text>\n  </g>\n</svg>", "svg_diagram_ru": "<svg viewBox=\"0 0 800 480\" width=\"100%\" height=\"auto\" xmlns=\"http://www.w3.org/2000/svg\" style=\"background:#0b1120; border-radius:16px;\">\n  <defs>\n    <linearGradient id=\"topG28\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" stop-color=\"#15803d\"/><stop offset=\"100%\" stop-color=\"#166534\"/></linearGradient>\n    <linearGradient id=\"cg28\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" stop-color=\"#1e293b\"/><stop offset=\"100%\" stop-color=\"#0f172a\"/></linearGradient>\n    <filter id=\"sh28\" x=\"-10%\" y=\"-10%\" width=\"120%\" height=\"120%\"><feDropShadow dx=\"0\" dy=\"4\" stdDeviation=\"6\" flood-color=\"#000\" flood-opacity=\"0.5\"/></filter>\n  </defs>\n  <rect width=\"800\" height=\"480\" fill=\"#0b1120\" rx=\"16\"/>\n  <rect x=\"30\" y=\"20\" width=\"740\" height=\"55\" rx=\"12\" fill=\"url(#topG28)\" filter=\"url(#sh28)\"/>\n  <text x=\"400\" y=\"45\" fill=\"#fff\" font-size=\"17\" font-weight=\"bold\" text-anchor=\"middle\" font-family=\"system-ui, sans-serif\">БИОСФЕРА И ПОЧВЕННЫЙ ПОКРОВ КАЗАХСТАНА</text>\n  <text x=\"400\" y=\"64\" fill=\"#dcfce7\" font-size=\"12\" text-anchor=\"middle\" font-family=\"system-ui, sans-serif\">Э. Зюсс (1875), В.И. Вернадский, В.В. Докучаев • Гумус • Почвенные зоны и эрозия</text>\n  \n  <!-- Col 1: Biosphere Concept & Vernadsky -->\n  <g transform=\"translate(30, 95)\" filter=\"url(#sh28)\">\n    <rect width=\"235\" height=\"175\" rx=\"12\" fill=\"url(#cg28)\" stroke=\"#22c55e\" stroke-width=\"1.5\"/>\n    <text x=\"15\" y=\"26\" fill=\"#22c55e\" font-size=\"12\" font-weight=\"bold\">УЧЕНИЕ О БИОСФЕРЕ</text>\n    <text x=\"15\" y=\"48\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Понятие:</tspan> Ввел Э. Зюсс в 1875 г. В.И. Вернадский назвал «колыбелью жизни».</text>\n    <text x=\"15\" y=\"82\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• 3 части:</tspan> Живое в-во (организмы), биогенное (уголь, нефть, торф), биокосное (глины, осадки).</text>\n    <text x=\"15\" y=\"126\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Границы:</tspan> Верхняя — озон (20 км), нижняя — 3-3,5 км. При +100°C жизнь невозможна.</text>\n  </g>\n\n  <!-- Col 2: Soil Formation & Humus -->\n  <g transform=\"translate(282, 95)\" filter=\"url(#sh28)\">\n    <rect width=\"235\" height=\"175\" rx=\"12\" fill=\"url(#cg28)\" stroke=\"#f59e0b\" stroke-width=\"1.5\"/>\n    <text x=\"15\" y=\"26\" fill=\"#f59e0b\" font-size=\"12\" font-weight=\"bold\">ПОЧВЫ И ГУМУС</text>\n    <text x=\"15\" y=\"48\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• В.В. Докучаев:</tspan> Основатель почвоведения. Первые почвы возникли в кембрии (500 млн лет назад).</text>\n    <text x=\"15\" y=\"88\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Формирование:</tspan> За 100 лет образуется всего 0,5-2 см. Дождевые черви обогащают гумусом.</text>\n    <text x=\"15\" y=\"126\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Состав:</tspan> Твердая, жидкая, газовая фазы и микроорганизмы. Свойство: плодородие.</text>\n  </g>\n\n  <!-- Col 3: Soil Types of Kazakhstan -->\n  <g transform=\"translate(535, 95)\" filter=\"url(#sh28)\">\n    <rect width=\"235\" height=\"175\" rx=\"12\" fill=\"url(#cg28)\" stroke=\"#38bdf8\" stroke-width=\"1.5\"/>\n    <text x=\"15\" y=\"26\" fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\">ЗОНАЛЬНЫЕ ПОЧВЫ</text>\n    <text x=\"15\" y=\"48\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Черноземы (4-13%):</tspan> Выщелоченные (0,4 млн га), обыкновенные (12 млн га), южные (13,4 млн га).</text>\n    <text x=\"15\" y=\"92\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Каштановые почвы:</tspan> Темно-каштановые (3-4%), каштановые (2-3%), светло-каштановые (1-2%). 90,4 млн га.</text>\n    <text x=\"15\" y=\"136\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Сероземы и бурые:</tspan> В пустынях 119,2 млн га (0,7-1,2% гумуса). Такыры, солончаки, солонцы.</text>\n  </g>\n\n  <!-- Bottom Panel: Humus Table & Soil Protection -->\n  <g transform=\"translate(30, 285)\" filter=\"url(#sh28)\">\n    <rect width=\"740\" height=\"175\" rx=\"12\" fill=\"url(#cg28)\" stroke=\"#a855f7\" stroke-width=\"1.5\"/>\n    <text x=\"20\" y=\"24\" fill=\"#a855f7\" font-size=\"12\" font-weight=\"bold\">ГУМУСОВЫЙ СЛОЙ, ЭРОЗИЯ И МЕЛИОРАЦИЯ:</text>\n    <text x=\"20\" y=\"48\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#fde047\">Черноземы:</tspan> 4-13% гумуса, мощность 40-80 см (Северный Казахстан, наивысшее плодородие).</text>\n    <text x=\"20\" y=\"70\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#fde047\">Темно-каштановые:</tspan> 3-4% гумуса, слой 40-50 см | <tspan font-weight=\"bold\" fill=\"#fde047\">Каштановые:</tspan> 2-3%, слой 30-40 см.</text>\n    <text x=\"20\" y=\"92\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#fde047\">Светло-каштановые:</tspan> 1-2%, слой 25-35 см | <tspan font-weight=\"bold\" fill=\"#fde047\">Бурые и серо-бурые:</tspan> 0,7-1,2%, слой 25-30 см.</text>\n    <text x=\"20\" y=\"116\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#38bdf8\">Мелиорация:</tspan> Комплекс мер (осушение, орошение) по улучшению плодородия земель.</text>\n    <text x=\"20\" y=\"138\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#f43f5e\">Эрозия и дефляция:</tspan> Водная и ветровая эрозия. Развевание легких песчаных почв ветром — <tspan font-weight=\"bold\" fill=\"#fde047\">дефляция</tspan> .</text>\n    <text x=\"20\" y=\"158\" fill=\"#94a3b8\" font-size=\"10.5\">⛰️ Высотная поясность: последовательная смена почв от подножия к вершинам гор.</text>\n  </g>\n</svg>", "table_kz": {"cols": ["Топырақ түрлері", "Құрамындағы қарашірінді (гумус), %", "Қарашірінді қабатының қалыңдығы, см", "Алып жатқан ауданы (млн га)", "Табиғат зонасы және географиялық орны"], "rows": [["Сілтізденген қара топырақ", "6 - 13 %", "60 - 80 см", "0,4 млн га", "Орманды дала (Солтүстік Қазақстан)"], ["Кәдімгі қара топырақ", "5 - 9 %", "45 - 60 см", "12,0 млн га", "Орташа құрғақ дала зонасы"], ["Оңтүстік қара топырақ", "4 - 6 %", "40 - 50 см", "13,4 млн га", "Құрғақ дала зонасы"], ["Күңгірт қара-қоңыр", "3 - 4 %", "40 - 50 см", "27,7 млн га", "Құрғақ даланың оңтүстік бөлігі"], ["Қара-қоңыр (кәдімгі)", "2 - 3 %", "30 - 40 см", "24,3 млн га", "Құрғақ дала мен шөлейттің түйіскен жері"], ["Ашық қара-қоңыр", "1 - 2 %", "25 - 35 см", "38,4 млн га", "Шөлейт (қуаң дала) зонасы (48°-50° с.е.)"], ["Сұр топырақ (серозем)", "1 - 1,5 %", "25 - 30 см", "57,4 млн га", "Шөлдің солтүстік бөлігі және тау етектері"], ["Сұр-қоңыр топырақ", "0,7 - 1,2 %", "20 - 25 см", "61,8 млн га", "Шөл зонасының орта және оңтүстік бөлігі"]]}, "table_ru": {"cols": ["Тип почвы", "Содержание гумуса, %", "Мощность гумусового слоя, см", "Площадь (млн га)", "Природная зона и распространение"], "rows": [["Выщелоченный чернозем", "6 - 13 %", "60 - 80 см", "0,4 млн га", "Лесостепь (Северный Казахстан)"], ["Обыкновенный чернозем", "5 - 9 %", "45 - 60 см", "12,0 млн га", "Умеренно-засушливая степная зона"], ["Южный чернозем", "4 - 6 %", "40 - 50 см", "13,4 млн га", "Засушливая степная зона"], ["Темно-каштановая", "3 - 4 %", "40 - 50 см", "27,7 млн га", "Южная полоса сухих степей"], ["Каштановая (обыкновенная)", "2 - 3 %", "30 - 40 см", "24,3 млн га", "Переходная полоса сухой степи к полупустыне"], ["Светло-каштановая", "1 - 2 %", "25 - 35 см", "38,4 млн га", "Полупустынная зона (между 48° и 50° с.ш.)"], ["Серозем (сұр топырақ)", "1 - 1,5 %", "25 - 30 см", "57,4 млн га", "Северная пустыня и предгорья Тянь-Шаня"], ["Серо-бурая пустынная", "0,7 - 1,2 %", "20 - 25 см", "61,8 млн га", "Центральные и южные массивы пустынь"]]}, "key_facts_kz": ["«Биосфера» ұғымын 1875 жылы Э. Зюсс енгізді, ал оны «тіршілік бесігі» деп атап ілімге айналдырған — В.И. Вернадский.", "В.И. Вернадский бойынша биосфера 3 заттан тұрады: тірі зат, биогенді зат (көмір, мұнай) және биокосты зат (шөгінді, топырақ).", "Биосфераның жоғарғы шекарасы озон қабаты (20 км), төменгісі — 3-3,5 км тереңдік; жер қойнауында +100°C-та тіршілік жоқ.", "Қазіргі топырақтану ғылымының негізін В.В. Докучаев қалады; алғашқы топырақ 500 млн жыл бұрын кембрий дәуірінде пайда болған.", "Топырақ 100 жылда бар болғаны 0,5 - 2 см қалыңдықта баяу түзіледі.", "Топырақ пен органикалық қалдықтарды өңдеп, құнарлылығын арттыратын басты жәндік — жауынқұрт.", "Қазақстанда қара топырақ 25,8 млн га аумақты алып жатыр (сілтізденген 0,4 млн, кәдімгі 12 млн, оңтүстік 13,4 млн га).", "Қара топырақта қарашірінді мөлшері 4-13%, ал гумус қабатының қалыңдығы 40-80 см жетеді.", "Қуаң даланың қоңыр топырағында қарашірінді 1-4%, шөлдің қоңыр және сұр-қоңыр топырағында 0,7-1,2% құрайды.", "Жазықтарда топырақтың ендік зоналылығы, ал тауларда етектен биікке дейін биіктік белдеулігі байқалады.", "Құрғату немесе суару арқылы жердің құнарлылығын арттыру шаралары мелиорация деп аталады.", "Механикалық құрамы жеңіл құмды топырақтардың желге ұшып үгілуін дефляция деп атайды."], "key_facts_ru": ["Термин «биосфера» ввел в 1875 г. Э. Зюсс, а фундаментальное учение создал В.И. Вернадский, назвав ее «колыбелью жизни».", "По В.И. Вернадскому биосфера включает 3 компонента: живое вещество, биогенное вещество (уголь, нефть) и биокосное (почва, глины).", "Верхняя граница биосферы — озоновый слой (20 км), нижняя — глубина 3-3,5 км; при температуре +100°C жизнь невозможна.", "Основатель научного генетического почвоведения — В.В. Докучаев; первые почвы возникли 500 млн лет назад в кембрии.", "Почва формируется крайне медленно: за 100 лет ее слой нарастает всего на 0,5 - 2 см.", "Главный биологический фактор плодородия, перерабатывающий органику с выделением гумуса — дождевые черви.", "Черноземы в РК занимают 25,8 млн га (выщелоченные 0,4 млн, обыкновенные 12 млн, южные 13,4 млн га).", "В черноземах содержится 4-13% гумуса при мощности плодородного слоя 40-80 см.", "В каштановых почвах сухих степей гумуса 1-4%, в бурых и серо-бурых пустынных почвах — всего 0,7-1,2%.", "На равнинах почвы сменяются по закону широтной зональности, в горных областях — по закону высотной поясности.", "Мелиорация — комплекс мер по орошению или осушению для резкого повышения плодородия земель.", "Дефляция — разрушение и развевание ветром легких песчаных и супесчаных почв пустынь."], "traps_kz": ["⚠️ «Биосфера» термині мен ілімін шатастырмаңыз: Терминді 1875 жылы алғаш енгізген — Э. ЗЮСС. Ал биосфера туралы ғылыми ілімді қалыптастырып, оны «тіршілік бесігі» деп атаған — В.И. ВЕРНАДСКИЙ!", "⚠️ Топырақ типтерінің қарашірінді (гумус) мөлшері: Қара топырақ — 4-13% (қалыңдығы 40-80 см). Күңгірт қара-қоңыр — 3-4%. Қара-қоңыр — 2-3%. Ашық қара-қоңыр — 1-2%. Қоңыр және сұр-қоңыр — 0,7-1,2%. ҰБТ-да осы сандар сәйкестендіруде келеді!", "⚠️ Эрозия және Дефляция: Кез келген топырақтың сумен шайылуы немесе желмен ұшуы — ЭРОЗИЯ. Ал механикалық құрамы жеңіл ҚҰМДЫ топырақтың желге ұшуы нақты ДЕФЛЯЦИЯ деп аталады.", "⚠️ Қара топырақтың түрлері: Орманды далада — сілтізденген қара топырақ (0,4 млн га); Орташа құрғақ далада — кәдімгі қара топырақ (12 млн га); Құрғақ далада — оңтүстік қара топырақ (13,4 млн га)."], "traps_ru": ["⚠️ Э. Зюсс vs В.И. Вернадский: Термин «биосфера» ввел в 1875 году геолог Э. ЗЮСС. Но учение о биосфере и определение «колыбель жизни» создал академик В.И. ВЕРНАДСКИЙ!", "⚠️ Содержание гумуса в почвах Казахстана: Черноземы — 4-13% (слой 40-80 см); Темно-каштановые — 3-4%; Каштановые — 2-3%; Светло-каштановые — 1-2%; Бурые и серо-бурые — 0,7-1,2%. Запомните эти градации для тестов ЕНТ!", "⚠️ Эрозия vs Дефляция: Общее разрушение почв водой и ветром — это ЭРОЗИЯ. А ветровое развевание легких песчаных почв пустынь называется строго ДЕФЛЯЦИЯ.", "⚠️ Подтипы черноземов: В лесостепи — выщелоченные черноземы (0,4 млн га); В умеренно-сухой степи — обыкновенные (12 млн га); В засушливой степи — южные черноземы (13,4 млн га)."]};
+    const blooketData = {"kz": "https://dashboard.blooket.com/set/6a96eb37c3103cfebb4b3090", "ru": "https://dashboard.blooket.com/set/6a95eac40f5018fdc207303a", "doc_kz": "https://docs.google.com/document/d/1dCaMgcLHbeRD-68SZj2Lm0cSid-oUtFBsn1UTyyn1ec/edit?usp=sharing", "doc_ru": "https://drive.google.com/file/d/1_gUQlV-63yq6oKTciv_Cl4YgN8ke7V6N/view?usp=drive_link"};
+    let currentLang = 'kz';
+
+    // Safe localStorage helper
+    const safeStorage = {
+      getItem(k) {
+        try { return localStorage.getItem(k); } catch (e) { return null; }
+      },
+      setItem(k, v) {
+        try { localStorage.setItem(k, v); } catch (e) {}
+      }
+    };
+
+    function getCompletedSet() {
+      try {
+        return new Set(JSON.parse(safeStorage.getItem('geotany_grammar_completed') || '[]'));
+      } catch (e) {
+        return new Set();
+      }
+    }
+
+    function saveCompletedSet(setObj) {
+      safeStorage.setItem('geotany_grammar_completed', JSON.stringify(Array.from(setObj)));
+    }
+
+    function updateCompleteButton() {
+      const setObj = getCompletedSet();
+      const isDone = setObj.has(topicData.num);
+      const btn = document.getElementById('btnComplete');
+      const icon = document.getElementById('completeIcon');
+      const text = document.getElementById('completeText');
+
+      if (isDone) {
+        btn.className = "inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black transition border border-emerald-500/50 bg-emerald-500/20 text-emerald-300 shadow-md shadow-emerald-500/10";
+        icon.textContent = "✓";
+        text.textContent = (currentLang === 'ru') ? "Изучено" : "Меңгерілді";
+      } else {
+        btn.className = "inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition border border-slate-700 bg-space-900 text-slate-300 hover:text-white hover:border-slate-600";
+        icon.textContent = "○";
+        text.textContent = (currentLang === 'ru') ? "Отметить изученным" : "Меңгерілді деп белгілеу";
+      }
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('xpToast');
+      const m = document.getElementById('toastMsg');
+      m.textContent = msg;
+      t.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        t.classList.add('translate-y-20', 'opacity-0');
+      }, 2500);
+    }
+
+    function toggleComplete() {
+      const setObj = getCompletedSet();
+      const isDone = setObj.has(topicData.num);
+      let xp = parseInt(safeStorage.getItem('geotany_user_xp') || '0', 10);
+
+      if (isDone) {
+        setObj.delete(topicData.num);
+        xp = Math.max(0, xp - 20);
+        showToast((currentLang === 'ru') ? "-20 XP. Отметка снята" : "-20 XP. Белгі алынды");
+      } else {
+        setObj.add(topicData.num);
+        xp += 20;
+        showToast((currentLang === 'ru') ? "+20 XP! Тема изучена" : "+20 XP! Тақырып меңгерілді");
+      }
+
+      saveCompletedSet(setObj);
+      safeStorage.setItem('geotany_user_xp', xp.toString());
+      updateCompleteButton();
+    }
+
+    function renderTable(isRu) {
+      const tbl = isRu ? (topicData.table_ru || topicData.table_kz) : topicData.table_kz;
+      const container = document.getElementById('tableContainer');
+      if (!tbl || !tbl.cols || !tbl.rows || tbl.rows.length === 0) {
+        document.getElementById('tableSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('tableSection').classList.remove('hidden');
+
+      let html = '<table class="w-full text-left text-xs border-collapse">';
+      html += '<thead><tr class="border-b border-slate-800 text-slate-400 font-bold">';
+      tbl.cols.forEach(col => {
+        html += `<th class="p-2.5 sm:p-3 bg-space-900/60 rounded-lg whitespace-nowrap text-cyan-300 font-bold">${col}</th>`;
+      });
+      html += '</tr></thead><tbody class="divide-y divide-slate-800/60">';
+      tbl.rows.forEach(row => {
+        html += '<tr class="hover:bg-space-900/40 transition">';
+        row.forEach((cell, idx) => {
+          const cls = idx === 0 ? "font-bold text-white whitespace-nowrap" : (idx === 1 ? "text-cyan-300 font-medium" : "text-slate-300");
+          html += `<td class="p-2.5 sm:p-3 ${cls}">${cell}</td>`;
+        });
+        html += '</tr>';
+      });
+      html += '</tbody></table>';
+      container.innerHTML = html;
+    }
+
+    function renderFacts(isRu) {
+      const facts = isRu ? (topicData.key_facts_ru || topicData.key_facts_kz) : topicData.key_facts_kz;
+      const list = document.getElementById('factsList');
+      if (!facts || facts.length === 0) {
+        document.getElementById('factsSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('factsSection').classList.remove('hidden');
+      list.innerHTML = facts.map(f => `<li class="flex items-start space-x-2"><span class="text-amber-400 font-bold shrink-0 mt-0.5">•</span><span>${f}</span></li>`).join('');
+    }
+
+    function renderTraps(isRu) {
+      const traps = isRu ? (topicData.traps_ru || topicData.traps_kz) : topicData.traps_kz;
+      const list = document.getElementById('trapsList');
+      if (!traps || traps.length === 0) {
+        document.getElementById('trapsSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('trapsSection').classList.remove('hidden');
+      list.innerHTML = traps.map(tr => {
+        const str = String(tr);
+        const icon = str.startsWith('⚠️') ? '' : '<span class="text-amber-400 shrink-0 mt-0.5">⚠️</span> ';
+        return `<p class="leading-relaxed flex items-start space-x-2">${icon}<span>${str}</span></p>`;
+      }).join('');
+    }
+
+    function setLang(lang) {
+      currentLang = lang;
+      safeStorage.setItem('geotany_lang', lang);
+      const isRu = (lang === 'ru');
+
+      // Update lang buttons
+      const btnKz = document.getElementById('btnLangKz');
+      const btnRu = document.getElementById('btnLangRu');
+      if (isRu) {
+        btnRu.className = "px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow";
+        btnKz.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+      } else {
+        btnKz.className = "px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow";
+        btnRu.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+      }
+
+      // Update text fields
+      document.getElementById('navCatBadge').textContent = isRu ? (topicData.category_ru || 'География') : (topicData.category_kz || 'География');
+      document.getElementById('heroCatBadge').textContent = isRu ? (topicData.category_ru || 'География') : (topicData.category_kz || 'География');
+      document.getElementById('heroTitle').textContent = isRu ? topicData.title_ru : topicData.title_kz;
+
+      // Summary
+      document.getElementById('summaryHeader').textContent = isRu ? "КРАТКИЙ ОБЗОР ТЕМЫ" : "ТАҚЫРЫПҚА ҚЫСҚАША ШОЛУ";
+      document.getElementById('summaryText').textContent = isRu ? topicData.summary_ru : topicData.summary_kz;
+
+      // Theory
+      document.getElementById('theoryHeader').textContent = isRu ? "ПОЛНЫЙ ТЕОРЕТИЧЕСКИЙ МАТЕРИАЛ И КОНСПЕКТ" : "ТОЛЫҚ ТЕОРИЯЛЫҚ МАТЕРИАЛ МЕН КОНСПЕКТ";
+      document.getElementById('theoryContent').innerHTML = isRu ? topicData.full_theory_ru : topicData.full_theory_kz;
+
+      // SVG
+      document.getElementById('svgHeader').textContent = isRu ? "НАГЛЯДНАЯ СХЕМА И ИНФОГРАФИКА" : "КӨРНЕКІ СХЕМА МЕН ИНФОГРАФИКА";
+      const svgCode = isRu ? (topicData.svg_diagram_ru || topicData.svg_diagram) : topicData.svg_diagram;
+      document.getElementById('svgContainer').innerHTML = svgCode || '';
+
+      // Table, Facts, Traps
+      document.getElementById('tableHeader').textContent = isRu ? "СТРУКТУРИРОВАННАЯ ТАБЛИЦА ПОКАЗАТЕЛЕЙ И КЛАССИФИКАЦИИ" : "НАҚТЫ КӨРСЕТКІШТЕР МЕН КЛАССИФИКАЦИЯ КЕСТЕСІ";
+      renderTable(isRu);
+
+      document.getElementById('factsHeader').textContent = isRu ? "ГЛАВНЫЕ ФАКТЫ ДЛЯ ЕНТ И ЗАПОМИНАНИЯ" : "ҰБТ-ҒА ҚАЖЕТТІ НЕГІЗГІ ЕРЕЖЕЛЕР МЕН ФАКТІЛЕР";
+      renderFacts(isRu);
+
+      document.getElementById('trapsHeader').textContent = isRu ? "ЛОВУШКИ И ЛАЙФХАКИ ЕНТ" : "ҰБТ ҚАҚПАНДАРЫ МЕН ЛАЙФХАКТАР";
+      renderTraps(isRu);
+
+      // Blooket & Doc links
+      const btnB = document.getElementById('btnBlooket');
+      const bUrl = isRu ? (blooketData.ru || blooketData.kz) : (blooketData.kz || blooketData.ru);
+      if (bUrl) {
+        btnB.href = bUrl;
+        btnB.classList.remove('hidden');
+      } else {
+        btnB.classList.add('hidden');
+      }
+
+      const btnD = document.getElementById('btnDoc');
+      if (btnD) { const dUrl = isRu ? (blooketData.doc_ru || blooketData.doc_kz) : (blooketData.doc_kz || blooketData.doc_ru); if (dUrl) { btnD.href = dUrl; btnD.classList.remove('hidden'); } else { btnD.classList.add('hidden'); } }
+
+      updateCompleteButton();
+    }
+
+    // Initialization on page load with URL param and localStorage sync
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const queryLang = urlParams.get('lang');
+      let langToSet = 'kz';
+      if (queryLang === 'ru' || queryLang === 'kz') {
+        langToSet = queryLang;
+        safeStorage.setItem('geotany_lang', queryLang);
+      } else {
+        const savedLang = safeStorage.getItem('geotany_lang');
+        if (savedLang === 'ru') langToSet = 'ru';
+        else langToSet = 'kz';
+      }
+      setLang(langToSet);
+    });
+  </script>
+</body>
+</html>

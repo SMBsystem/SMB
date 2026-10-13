@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="kk" class="dark">
+<head>
+  <!-- COURSE ACCESS GUARD: RESTRICT DIRECT ACCESS WITHOUT VALID CODE -->
+  <style id="authCloak">body { display: none !important; }</style>
+  <script>
+    (function() {
+      try {
+        var isAdmin = localStorage.getItem('geotany_admin_auth') === 'true';
+        var sessionStr = localStorage.getItem('geotany_user_session');
+        var isAuthorized = isAdmin;
+        if (!isAuthorized && sessionStr) {
+          var s = JSON.parse(sessionStr);
+          if (s && s.email && (s.courseCode || s.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        var profileStr = localStorage.getItem('geotany_user_profile');
+        if (!isAuthorized && profileStr) {
+          var p = JSON.parse(profileStr);
+          if (p && p.isRegistered && p.email && p.courseCode) {
+            isAuthorized = true;
+          }
+        }
+        if (!isAuthorized) {
+          var target = window.location.pathname.split('/').pop() || 'topics.html';
+          window.location.replace('../index.html?need_course=GEOTANY&redirect=' + encodeURIComponent(target));
+          return;
+        }
+        var cloak = document.getElementById('authCloak');
+        if (cloak) cloak.remove();
+      } catch (err) {
+        window.location.replace('../index.html');
+      }
+    })();
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>#22 Физикалық география | GeoTany</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50: '#eef2ff', 100: '#e0e7ff', 200: '#c7d2fe', 300: '#a5b4fc', 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 800: '#3730a3', 900: '#312e81' },
+            space: { 800: '#1e293b', 850: '#172033', 900: '#0f172a', 950: '#0b1120' }
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Outfit', 'Inter', sans-serif; }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #0b1120; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+  </style>
+</head>
+<body class="bg-[#070b14] text-slate-100 min-h-screen flex flex-col selection:bg-cyan-500 selection:text-space-950">
+
+  <!-- STICKY TOP NAVBAR -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-space-950/85 border-b border-slate-800/80 px-4 sm:px-8 py-3">
+    <div class="max-w-6xl mx-auto flex items-center justify-between gap-3">
+      <!-- Left: Back Button & Badges -->
+      <div class="flex items-center space-x-2.5 sm:space-x-3 shrink-0">
+        <a href="../index.html#section-zhattau_grammar" id="btnBackToCourse" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white transition"><span>←</span><span id="btnBackToCourseText">Артқа</span></a>
+        <span class="px-2.5 py-1 rounded-full text-xs font-black bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
+          #22
+        </span>
+        <span id="navCatBadge" class="text-xs text-slate-400 font-bold hidden md:inline truncate max-w-[200px]">
+          Геология және геохронология
+        </span>
+      </div>
+
+      <!-- Right: Controls (Lang Switcher & Mark Complete) -->
+      <div class="flex items-center space-x-2 sm:space-x-3 shrink-0">
+        <!-- Language Switcher -->
+        <div class="inline-flex p-1 bg-space-900 border border-slate-800 rounded-xl space-x-1">
+          <button id="btnLangKz" onclick="setLang('kz')" class="px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow">
+            KZ
+          </button>
+          <button id="btnLangRu" onclick="setLang('ru')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">
+            RU
+          </button>
+        </div>
+
+        <!-- Mark as Completed Button -->
+        <button id="btnComplete" onclick="toggleComplete()" class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition border border-slate-700 bg-space-900 text-slate-300 hover:text-white hover:border-slate-600">
+          <span id="completeIcon" class="text-sm">○</span>
+          <span id="completeText" class="hidden sm:inline">Меңгерілді</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN TOPIC CONTAINER -->
+  <main class="max-w-5xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-8 space-y-6 flex-1">
+
+    <!-- HERO HEADER CARD -->
+    <div class="p-6 sm:p-7 rounded-2xl bg-space-950/90 border border-slate-800 space-y-3.5 shadow-xl relative overflow-hidden">
+      <div class="absolute -right-12 -top-12 w-48 h-48 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="flex items-center space-x-2">
+        <span id="heroCatBadge" class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-space-850 text-cyan-400 border border-cyan-500/20">
+          Геология және геохронология
+        </span>
+        <span class="text-xs text-slate-400">⏱️ ~8-12 мин оқу</span>
+      </div>
+      <h1 id="heroTitle" class="text-xl sm:text-2xl md:text-3xl font-black text-white tracking-tight leading-snug">
+        Физикалық география
+      </h1>
+      <!-- External Links Bar -->
+      <div class="flex flex-wrap items-center gap-2 pt-1">
+        <a id="btnBlooket" href="https://dashboard.blooket.com/set/6a96ea957d889e67477e4504" target="_blank" class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 border border-purple-500/40 text-xs font-bold transition shadow-sm">
+          <span>🎮</span>
+          <span id="btnBlooketText">Blooket ойыны</span>
+        </a>
+        
+      </div>
+    </div>
+
+    <!-- 1. BRIEF SUMMARY CARD -->
+    <section class="p-5 rounded-2xl bg-space-950 border border-brand-500/40 text-xs sm:text-sm text-slate-200 leading-relaxed shadow-lg">
+      <div class="flex items-center space-x-2 text-brand-400 font-extrabold text-xs mb-2">
+        <span>📖</span>
+        <span id="summaryHeader">ТАҚЫРЫПҚА ҚЫСҚАША ШОЛУ</span>
+      </div>
+      <p id="summaryText" class="leading-relaxed">
+        Жердің даму тарихы (планеталық және геологиялық кезеңдер, жасы 4,5-4,6 млрд жыл), геология ғылымының салалары (тарихи геология, палеонтология, геотектоника, минералогия, петрография), тау жыныстарының салыстырмалы және абсолюттік жасы (уран радиометриясы: 100 г уран 75 млн жылда 1 г қорғасын бөледі) және Қазақстанның геохронологиялық даму тарихы (Кайнозой, Мезозой, Палеозой, Докембрий және олардың қатпарланулары).
+      </p>
+    </section>
+
+    <!-- 2. FULL THEORY SECTION -->
+    <section class="p-5 sm:p-7 rounded-2xl bg-space-950 border border-slate-800 space-y-4 shadow-xl">
+      <div class="flex items-center space-x-2 border-b border-slate-800 pb-3">
+        <span class="text-base text-cyan-400 font-black">📚</span>
+        <h2 id="theoryHeader" class="text-xs sm:text-sm font-black text-white uppercase tracking-wider">
+          ТОЛЫҚ ТЕОРИЯЛЫҚ МАТЕРИАЛ МЕН КОНСПЕКТ
+        </h2>
+      </div>
+      <div id="theoryContent">
+        <div class="space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed">
+  <div class="p-5 rounded-2xl bg-space-900/90 border border-emerald-500/30 space-y-4 shadow-xl">
+    <div class="flex items-center space-x-3 text-emerald-400">
+      <span class="text-2xl">🌍</span>
+      <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-wider">1. Жердің даму кезеңдері және геология ғылымының салалары</h3>
+    </div>
+    <div class="space-y-3 pt-2">
+      <p class="text-xs text-slate-300">
+        <b>Жердің даму тарихының кезеңдерге бөлінуі:</b><br/>
+        <b>1) планеталық (геологияға дейінгі) кезеңге</b>;<br/>
+        <b>2) геологиялық кезеңге бөлінеді</b>.<br/>
+        • <b>Жердің геологиялық жасы:</b> <b>4,5–4,6 млрд жыл</b>.<br/>
+        • <b>Жердің даму тарихы мен оның құрылымын зерттейтін ғылым саласы:</b> <b>геология</b>.
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-2">
+        <div class="p-3.5 rounded-xl bg-space-950/80 border border-slate-800 space-y-1">
+          <div class="font-bold text-emerald-300 text-xs sm:text-sm">Тарихи геология</div>
+          <p class="text-xs text-slate-300">Жер қыртысының алғашқы қалыптасу кезеңінен бастап барлық құрылымын зерттейді.</p>
+        </div>
+        <div class="p-3.5 rounded-xl bg-space-950/80 border border-slate-800 space-y-1">
+          <div class="font-bold text-cyan-300 text-xs sm:text-sm">Палеонтология</div>
+          <p class="text-xs text-slate-300">Жойылып кеткен және қазба қалдықтары ретінде ғана сақталып қалған ағзаларды зерттейді.</p>
+        </div>
+        <div class="p-3.5 rounded-xl bg-space-950/80 border border-slate-800 space-y-1">
+          <div class="font-bold text-amber-300 text-xs sm:text-sm">Геотектоника</div>
+          <p class="text-xs text-slate-300">Жер қыртысының құрылымы мен дамуын, тектоникалық құрылысын зерттейді.</p>
+        </div>
+        <div class="p-3.5 rounded-xl bg-space-950/80 border border-slate-800 space-y-1">
+          <div class="font-bold text-sky-300 text-xs sm:text-sm">Минералогия</div>
+          <p class="text-xs text-slate-300">Минералдардың пайда болу үдерістерін, олардың құрамын және қасиеттерін зерттейді.</p>
+        </div>
+        <div class="p-3.5 rounded-xl bg-space-950/80 border border-slate-800 space-y-1">
+          <div class="font-bold text-rose-300 text-xs sm:text-sm">Петрография</div>
+          <p class="text-xs text-slate-300">Тау жыныстарының құрылымын, минералдық және химиялық құрамын зерттейді.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-5 rounded-2xl bg-space-900/90 border border-amber-500/30 space-y-4 shadow-xl">
+    <div class="flex items-center space-x-3 text-amber-400">
+      <span class="text-2xl">⏳</span>
+      <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-wider">2. Тау жыныстарының жасын анықтау тәсілдері</h3>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+      <div class="p-4 rounded-xl bg-space-950/80 border border-slate-800 space-y-2">
+        <h4 class="font-bold text-amber-300 text-sm">Салыстырмалы жасы</h4>
+        <p class="text-xs text-slate-300 leading-relaxed">
+          Тау жыныстарының <b>жату қабатына қарай</b> анықталады: тау жынысының қабаты қаншалықты төмен болса, ол тау жынысының жасы соншалықты <b>үлкен</b> болады.
+        </p>
+      </div>
+
+      <div class="p-4 rounded-xl bg-space-950/80 border border-slate-800 space-y-2">
+        <h4 class="font-bold text-emerald-300 text-sm">Абсолюттік жасы</h4>
+        <p class="text-xs text-slate-300 leading-relaxed">
+          Тау жынысының пайда болған кезінен бергі геологиялық уақыт.
+          <br/><b>Анықтайтын радиоактивті элемент:</b> <b>уран</b>.
+          <br/><b>Формуласы:</b> <b>100 гр уран 75 млн жылда 1 гр қорғасын бөледі</b>.
+        </p>
+      </div>
+    </div>
+    <svg viewBox="0 0 700 220" class="w-full h-auto max-w-full my-4 rounded-xl shadow-lg border border-slate-800" xmlns="http://www.w3.org/2000/svg">
+  <rect width="700" height="220" fill="#0b1120" rx="12"/>
+  <rect x="20" y="12" width="660" height="32" rx="8" fill="#059669" opacity="0.8"/>
+  <text x="350" y="33" fill="#ffffff" font-size="12.5" font-weight="bold" text-anchor="middle" font-family="system-ui, sans-serif">ТАУ ЖЫНЫСТАРЫНЫҢ ЖАСЫН АНЫҚТАУ: САЛЫСТЫРМАЛЫ ЖӘНЕ АБСОЛЮТТІК</text>
+  
+  <!-- Left Box: Relative age (Stratigraphy) -->
+  <g transform="translate(30, 58)">
+    <rect x="0" y="0" width="310" height="145" rx="10" fill="#1e293b" stroke="#fbbf24" stroke-width="1.5"/>
+    <text x="15" y="24" fill="#fbbf24" font-size="12" font-weight="bold">1. САЛЫСТЫРМАЛЫ ЖАС (ҚАБАТТАР):</text>
+    <rect x="20" y="38" width="270" height="22" rx="4" fill="#0284c7" opacity="0.7"/>
+    <text x="155" y="53" fill="#fff" font-size="10" font-weight="bold" text-anchor="middle">Үстіңгі қабат (ЖАСЫРАҚ ЖЫНЫСТАР)</text>
+    <rect x="20" y="66" width="270" height="22" rx="4" fill="#d97706" opacity="0.7"/>
+    <text x="155" y="81" fill="#fff" font-size="10" font-weight="bold" text-anchor="middle">Ортаңғы қабат (Аралық уақыт)</text>
+    <rect x="20" y="94" width="270" height="22" rx="4" fill="#7c3aed" opacity="0.7"/>
+    <text x="155" y="109" fill="#fff" font-size="10" font-weight="bold" text-anchor="middle">Төменгі қабат (ЕҢ ЕЖЕЛГІ ЖЫНЫСТАР)</text>
+    <text x="20" y="132" fill="#94a3b8" font-size="9.5">Ереже: Қабат неғұрлым төмен болса, жасы соғұрлым үлкен.</text>
+  </g>
+
+  <!-- Right Box: Absolute age (Radioactivity) -->
+  <g transform="translate(360, 58)">
+    <rect x="0" y="0" width="310" height="145" rx="10" fill="#1e293b" stroke="#34d399" stroke-width="1.5"/>
+    <text x="15" y="24" fill="#34d399" font-size="12" font-weight="bold">2. АБСОЛЮТТІК ЖАС (РАДИОМЕТРИЯ):</text>
+    <circle cx="50" cy="65" r="22" fill="#059669"/>
+    <text x="50" y="70" fill="#fff" font-size="11" font-weight="bold" text-anchor="middle">U</text>
+    <text x="85" y="58" fill="#e2e8f0" font-size="11" font-weight="bold">УРАН ЭЛЕМЕНТІ</text>
+    <text x="85" y="74" fill="#94a3b8" font-size="10">Бастапқы массасы: 100 грамм</text>
+    <line x1="20" y1="96" x2="290" y2="96" stroke="#334155" stroke-width="1"/>
+    <text x="20" y="114" fill="#fde047" font-size="11" font-weight="bold">⏱️ 75 000 000 жылда → 1 грамм Қорғасын (Pb)</text>
+    <text x="20" y="132" fill="#cbd5e1" font-size="9.5">Осы қатынас бойынша минералдың нақты жасы анықталады.</text>
+  </g>
+</svg>
+  </div>
+
+  <div class="p-5 rounded-2xl bg-space-900/90 border border-sky-500/30 space-y-4 shadow-xl">
+    <div class="flex items-center space-x-3 text-sky-400">
+      <span class="text-2xl">⛰️</span>
+      <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-wider">3. Қазақстанның геологиялық даму тарихы (Геохронологиялық кесте)</h3>
+    </div>
+    <svg viewBox="0 0 700 240" class="w-full h-auto max-w-full my-4 rounded-xl shadow-lg border border-slate-800" xmlns="http://www.w3.org/2000/svg">
+  <rect width="700" height="240" fill="#0b1120" rx="12"/>
+  <rect x="20" y="10" width="660" height="30" rx="6" fill="#065f46" opacity="0.8"/>
+  <text x="350" y="30" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle" font-family="system-ui, sans-serif">ҚАЗАҚСТАННЫҢ ГЕОХРОНОЛОГИЯЛЫҚ ЭРАЛАРЫ ЖӘНЕ ҚАТПАРЛАНУ ОҚИҒАЛАРЫ</text>
+  
+  <g transform="translate(25, 48)">
+    <rect x="0" y="0" width="150" height="180" rx="8" fill="#1e293b" stroke="#34d399" stroke-width="1.5"/>
+    <text x="75" y="22" fill="#34d399" font-size="11.5" font-weight="bold" text-anchor="middle">КАЙНОЗОЙ (67 млн)</text>
+    <text x="10" y="42" fill="#fde047" font-size="10" font-weight="bold">Альпі қатпарлануы</text>
+    <text x="10" y="60" fill="#cbd5e1" font-size="9.5">• Палеоген, Неоген,</text>
+    <text x="10" y="75" fill="#cbd5e1" font-size="9.5">  Антропоген</text>
+    <text x="10" y="98" fill="#e2e8f0" font-size="9.5" font-weight="bold">• Биік таулар 2-рет</text>
+    <text x="10" y="113" fill="#e2e8f0" font-size="9.5" font-weight="bold">  көтерілді (Алтай,</text>
+    <text x="10" y="128" fill="#e2e8f0" font-size="9.5">  Тянь-Шань, Жетісу)</text>
+    <text x="10" y="150" fill="#94a3b8" font-size="9">• Мұз басу жүрді</text>
+    <text x="10" y="166" fill="#94a3b8" font-size="9">• Адам пайда болды</text>
+  </g>
+
+  <g transform="translate(190, 48)">
+    <rect x="0" y="0" width="150" height="180" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5"/>
+    <text x="75" y="22" fill="#38bdf8" font-size="11.5" font-weight="bold" text-anchor="middle">МЕЗОЗОЙ (165 млн)</text>
+    <text x="10" y="42" fill="#fde047" font-size="10" font-weight="bold">Киммерий қатпарл.</text>
+    <text x="10" y="60" fill="#cbd5e1" font-size="9.5">• Триас, Юра, Бор</text>
+    <text x="10" y="80" fill="#cbd5e1" font-size="9.5">• Тыныш кезең</text>
+    <text x="10" y="102" fill="#e2e8f0" font-size="9.5" font-weight="bold">• Тұран, Батыс Сібір</text>
+    <text x="10" y="117" fill="#e2e8f0" font-size="9.5">  судан босады</text>
+    <text x="10" y="138" fill="#f43f5e" font-size="9.5" font-weight="bold">• Маңғыстау тауы</text>
+    <text x="10" y="153" fill="#f43f5e" font-size="9.5">  көтерілді</text>
+    <text x="10" y="169" fill="#94a3b8" font-size="9">• Таулар үгілді</text>
+  </g>
+
+  <g transform="translate(355, 48)">
+    <rect x="0" y="0" width="160" height="180" rx="8" fill="#1e293b" stroke="#fbbf24" stroke-width="1.5"/>
+    <text x="80" y="22" fill="#fbbf24" font-size="11.5" font-weight="bold" text-anchor="middle">ПАЛЕОЗОЙ (330 млн)</text>
+    <text x="10" y="42" fill="#fde047" font-size="10" font-weight="bold">Каледон &amp; Герцин</text>
+    <text x="10" y="58" fill="#cbd5e1" font-size="9">Кембрий, Ордовик, Силур,</text>
+    <text x="10" y="72" fill="#cbd5e1" font-size="9">Девон, Карбон, Пермь</text>
+    <text x="10" y="92" fill="#34d399" font-size="9.5" font-weight="bold">• Каледон: Сарыарқа</text>
+    <text x="10" y="106" fill="#34d399" font-size="9">  СБ, Солт. Тянь-Шань</text>
+    <text x="10" y="126" fill="#38bdf8" font-size="9.5" font-weight="bold">• Герцин: Алтай, Жетісу,</text>
+    <text x="10" y="140" fill="#38bdf8" font-size="9">  Сарыарқа Ш, Мұғалжар</text>
+    <text x="10" y="160" fill="#94a3b8" font-size="9">• Карбонда көмір түзілді</text>
+  </g>
+
+  <g transform="translate(530, 48)">
+    <rect x="0" y="0" width="145" height="180" rx="8" fill="#1e293b" stroke="#c084fc" stroke-width="1.5"/>
+    <text x="72" y="22" fill="#c084fc" font-size="11" font-weight="bold" text-anchor="middle">ДОКЕМБРИЙ</text>
+    <text x="8" y="40" fill="#f43f5e" font-size="9.5" font-weight="bold">Байкал (өткен жоқ!)</text>
+    <text x="8" y="58" fill="#cbd5e1" font-size="9">Архей: 1 млрд ж.</text>
+    <text x="8" y="72" fill="#cbd5e1" font-size="9">Протерозой: 2,1 млрд</text>
+    <text x="8" y="94" fill="#e2e8f0" font-size="9.5">• ҚР аумағын түгел</text>
+    <text x="8" y="108" fill="#e2e8f0" font-size="9.5">  су басқан геосинклиналь</text>
+    <text x="8" y="130" fill="#38bdf8" font-size="9.5" font-weight="bold">• Шығыс Еуропа пл.</text>
+    <text x="8" y="146" fill="#cbd5e1" font-size="9">  қалыптасты</text>
+    <text x="8" y="165" fill="#94a3b8" font-size="9">Шөгінді: 22 км</text>
+  </g>
+</svg>
+    <div class="space-y-3 pt-2 text-xs text-slate-300">
+      <div class="p-3.5 rounded-xl bg-space-950/80 border border-slate-800">
+        <div class="font-bold text-emerald-400 text-sm mb-1">1. Кайнозой эрасы (67 млн жыл) | Дәуір: Палеоген, Неоген, Антропоген | Қатпарлану: Альпі</div>
+        <p><b>Негізгі геологиялық оқиғалар:</b> Альпі орогенезі нәтижесінде биік таулар (Алтай, Сауыр-Тарбағатай, Жетісу Алатауы, Тянь-Шань) <b>екінші рет көтерілді</b>. Биік тауларда төрттік мұз басу жүрді. Адам пайда болды.</p>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-space-950/80 border border-slate-800">
+        <div class="font-bold text-sky-400 text-sm mb-1">2. Мезозой эрасы (165 млн жыл) | Дәуір: Триас, Юра, Бор | Қатпарлану: Мезозой (киммериялық)</div>
+        <p><b>Негізгі геологиялық оқиғалар:</b> Ерекше геологиялық оқиғалар болған жоқ. Тұран мен Батыс Сібір плитасы судан босады. Таулар үгілді. Маңғыстау таулары мезозойдың киммериялық орогенезі нәтижесінде көтерілді.</p>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-space-950/80 border border-slate-800">
+        <div class="font-bold text-amber-400 text-sm mb-1">3. Палеозой эрасы (330 млн жыл) | Дәуір: Кембрий, Ордовик, Силур, Девон, Карбон (көмір), Пермь | Қатпарлану: Каледон, Герцин</div>
+        <p><b>Негізгі геологиялық оқиғалар:</b> Сарыарқаның солтүстік-батысы мен Тянь-Шаньның солтүстігіндегі тау жүйелері түзілді (Каледон). Алтай, Жетісу Алатауы, Сарыарқаның шығыс бөлігі, Мұғалжар өңірлері көтерілді (Герцин).</p>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-space-950/80 border border-slate-800">
+        <div class="font-bold text-purple-400 text-sm mb-1">4. Архей (1 млрд ж.) және Протерозой (2 млрд 100 млн ж.) | Қатпарлану: Байкал (Қазақстанда жүрген жоқ)</div>
+        <p><b>Негізгі геологиялық оқиғалар:</b> Қазақстан аумағын түгелдей дерлік су басып жатқан геосинклинальды аймақ болды. Кембрийге дейінгі кезеңде Шығыс Еуропа (орыс) платформасы қалыптасты. Шөгінді жыныстардың қалыңдығы 22 км.</p>
+      </div>
+    </div>
+  </div>
+</div>
+      </div>
+    </section>
+
+    <!-- 3. VISUAL SVG DIAGRAM / ILLUSTRATION -->
+    <section id="svgSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl">
+      <div class="flex items-center space-x-2 text-amber-400 font-extrabold text-xs">
+        <span>🎨</span>
+        <span id="svgHeader">КӨРНЕКІ СХЕМА МЕН ИНФОГРАФИКА</span>
+      </div>
+      <div id="svgContainer" class="w-full flex justify-center overflow-x-auto">
+        <svg viewBox="0 0 800 480" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg" style="background:#0b1120; border-radius:16px;">
+  <defs>
+    <linearGradient id="topG22" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#059669"/><stop offset="100%" stop-color="#047857"/></linearGradient>
+    <linearGradient id="bg22" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#064e3b"/><stop offset="100%" stop-color="#0f172a"/></linearGradient>
+    <filter id="sh22" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.5"/></filter>
+  </defs>
+  <rect width="800" height="480" fill="#0b1120" rx="16"/>
+  <rect x="30" y="20" width="740" height="55" rx="12" fill="url(#topG22)" filter="url(#sh22)"/>
+  <text x="400" y="45" fill="#fff" font-size="17" font-weight="bold" text-anchor="middle" font-family="system-ui, sans-serif">ҚАЗАҚСТАННЫҢ ГЕОХРОНОЛОГИЯЛЫҚ ДАМУ ТАРИХЫ ЖӘНЕ ҚАТПАРЛАНУЛАРЫ</text>
+  <text x="400" y="64" fill="#a7f3d0" font-size="12" text-anchor="middle" font-family="system-ui, sans-serif">Жердің жасы: 4,5–4,6 млрд жыл • Геологиялық эралар, қатпарланулар және жер бедері</text>
+  <g transform="translate(30, 95)" filter="url(#sh22)">
+    <rect width="740" height="75" rx="10" fill="url(#bg22)" stroke="#34d399" stroke-width="1.5"/>
+    <rect x="15" y="15" width="110" height="45" rx="8" fill="#059669"/>
+    <text x="70" y="34" fill="#fff" font-size="12" font-weight="bold" text-anchor="middle">КАЙНОЗОЙ</text>
+    <text x="70" y="50" fill="#d1fae5" font-size="10" text-anchor="middle">67 млн жыл</text>
+    <text x="140" y="28" fill="#34d399" font-size="11" font-weight="bold"><tspan fill="#facc15">Альпі қатпарлануы</tspan> • Палеоген, Неоген, Антропоген</text>
+    <text x="140" y="46" fill="#e2e8f0" font-size="11">• Биік таулар (Алтай, Сауыр-Тарбағатай, Жетісу Алатауы, Тянь-Шань) <tspan font-weight="bold" fill="#38bdf8">екінші рет көтерілді</tspan>.</text>
+    <text x="140" y="62" fill="#cbd5e1" font-size="10.5">• Биік тауларда төрттік мұз басу жүрді. Антропогенде адам пайда болды.</text>
+  </g>
+  <g transform="translate(30, 180)" filter="url(#sh22)">
+    <rect width="740" height="75" rx="10" fill="url(#bg22)" stroke="#38bdf8" stroke-width="1.5"/>
+    <rect x="15" y="15" width="110" height="45" rx="8" fill="#0284c7"/>
+    <text x="70" y="34" fill="#fff" font-size="12" font-weight="bold" text-anchor="middle">МЕЗОЗОЙ</text>
+    <text x="70" y="50" fill="#e0f2fe" font-size="10" text-anchor="middle">165 млн жыл</text>
+    <text x="140" y="28" fill="#38bdf8" font-size="11" font-weight="bold"><tspan fill="#facc15">Мезозой (Киммерий)</tspan> • Триас, Юра, Бор</text>
+    <text x="140" y="46" fill="#e2e8f0" font-size="11">• Тұран мен Батыс Сібір плиталары судан босады. Ежелгі таулар үгіліп, тегістелді.</text>
+    <text x="140" y="62" fill="#cbd5e1" font-size="10.5">• <tspan font-weight="bold" fill="#f43f5e">Маңғыстау таулары</tspan> Мезозойдың киммериялық орогенезінде көтерілді.</text>
+  </g>
+  <g transform="translate(30, 265)" filter="url(#sh22)">
+    <rect width="740" height="85" rx="10" fill="url(#bg22)" stroke="#f59e0b" stroke-width="1.5"/>
+    <rect x="15" y="18" width="110" height="48" rx="8" fill="#d97706"/>
+    <text x="70" y="38" fill="#fff" font-size="12" font-weight="bold" text-anchor="middle">ПАЛЕОЗОЙ</text>
+    <text x="70" y="54" fill="#fef3c7" font-size="10" text-anchor="middle">330 млн жыл</text>
+    <text x="140" y="28" fill="#f59e0b" font-size="11" font-weight="bold"><tspan fill="#facc15">Каледон &amp; Герцин</tspan> • Кембрий, Ордовик, Силур, Девон, Карбон, Пермь</text>
+    <text x="140" y="46" fill="#e2e8f0" font-size="11">• <tspan font-weight="bold" fill="#34d399">Каледон:</tspan> Сарыарқаның СБ және Солтүстік Тянь-Шань түзілді.</text>
+    <text x="140" y="62" fill="#e2e8f0" font-size="11">• <tspan font-weight="bold" fill="#38bdf8">Герцин:</tspan> Алтай, Жетісу Алатауы, Сарыарқаның шығысы, Мұғалжар көтерілді.</text>
+    <text x="140" y="78" fill="#cbd5e1" font-size="10">• Тас көмір дәуірінде (Карбон) Қазақстанның алып көмір алаптары қалыптасты.</text>
+  </g>
+  <g transform="translate(30, 360)" filter="url(#sh22)">
+    <rect width="740" height="95" rx="10" fill="url(#bg22)" stroke="#a855f7" stroke-width="1.5"/>
+    <rect x="15" y="18" width="110" height="55" rx="8" fill="#7e22ce"/>
+    <text x="70" y="38" fill="#fff" font-size="11" font-weight="bold" text-anchor="middle">ДОКЕМБРИЙ</text>
+    <text x="70" y="52" fill="#f3e8ff" font-size="9" text-anchor="middle">Архей: 1 млрд ж.</text>
+    <text x="70" y="64" fill="#f3e8ff" font-size="9" text-anchor="middle">Протерозой: 2,1 млрд</text>
+    <text x="140" y="28" fill="#c084fc" font-size="11" font-weight="bold"><tspan fill="#facc15">Байкал қатпарлануы</tspan> (Қазақстанда жүрген жоқ)</text>
+    <text x="140" y="46" fill="#e2e8f0" font-size="11">• Қазақстан аумағын түгелдей дерлік су басып жатқан геосинклинальды аймақ болды.</text>
+    <text x="140" y="62" fill="#e2e8f0" font-size="11">• Шығыс Еуропа (Орыс) платформасы түзілді. Шөгінді жыныс қалыңдығы: 22 км.</text>
+    <text x="140" y="80" fill="#fde047" font-size="10.5">⚛️ Радиоактивті заң: 100 г уран 75 млн жылда 1 г қорғасын бөледі (абсолюттік жас).</text>
+  </g>
+</svg>
+      </div>
+    </section>
+
+    <!-- 4. STRUCTURED DATA TABLE -->
+    <section id="tableSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl overflow-x-auto">
+      <h3 class="text-xs font-black text-cyan-400 flex items-center space-x-2">
+        <span>📊</span>
+        <span id="tableHeader">НАҚТЫ КӨРСЕТКІШТЕР МЕН КЛАССИФИКАЦИЯ КЕСТЕСІ</span>
+      </h3>
+      <div id="tableContainer">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- 5. KEY FACTS FOR UNT / ЕНТ -->
+    <section id="factsSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl">
+      <h3 class="text-xs font-black text-amber-400 flex items-center space-x-2">
+        <span>⚡</span>
+        <span id="factsHeader">ҰБТ-ҒА ҚАЖЕТТІ НЕГІЗГІ ЕРЕЖЕЛЕР МЕН ФАКТІЛЕР</span>
+      </h3>
+      <ul id="factsList" class="space-y-2 text-xs text-slate-300">
+        <!-- Rendered via JS -->
+      </ul>
+    </section>
+
+    <!-- 6. TRAPS AND HACKS -->
+    <section id="trapsSection" class="p-5 rounded-2xl bg-gradient-to-r from-amber-950/40 via-space-950 to-space-950 border border-amber-500/40 space-y-3 shadow-xl">
+      <h3 class="text-xs font-black text-amber-400 flex items-center space-x-2">
+        <span>💡</span>
+        <span id="trapsHeader">ҰБТ ҚАҚПАНДАРЫ МЕН ЛАЙФХАКТАР</span>
+      </h3>
+      <div id="trapsList" class="space-y-2 text-xs text-slate-200">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- FOOTER NAVIGATION -->
+    <nav class="pt-4 pb-8 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3 text-xs">
+      <a href="topic_21.html" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white transition shadow-sm">
+      <span>←</span>
+      <span>#21 Алдыңғы тақырып</span>
+    </a>
+      <a href="../index.html#section-zhattau_grammar" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-400 hover:text-white transition">
+        <span>🏠</span>
+        <span>Барлық тақырыптар</span>
+      </a>
+      <a href="topic_23.html" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-xs font-bold text-cyan-300 hover:text-white transition shadow-sm">
+      <span>Келесі тақырып #23</span>
+      <span>→</span>
+    </a>
+    </nav>
+
+  </main>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="xpToast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300 flex items-center space-x-2 px-4 py-3 rounded-2xl bg-space-900 border border-cyan-500/40 shadow-2xl text-xs font-bold text-white">
+    <span class="text-cyan-400 text-base">✨</span>
+    <span id="toastMsg">+20 XP! Тақырып меңгерілді</span>
+  </div>
+
+  <script>
+    const topicData = {"num": 22, "title_kz": "Физикалық география", "title_ru": "Физическая география", "category_kz": "Геология және геохронология", "category_ru": "Геология и геохронология", "summary_kz": "Жердің даму тарихы (планеталық және геологиялық кезеңдер, жасы 4,5-4,6 млрд жыл), геология ғылымының салалары (тарихи геология, палеонтология, геотектоника, минералогия, петрография), тау жыныстарының салыстырмалы және абсолюттік жасы (уран радиометриясы: 100 г уран 75 млн жылда 1 г қорғасын бөледі) және Қазақстанның геохронологиялық даму тарихы (Кайнозой, Мезозой, Палеозой, Докембрий және олардың қатпарланулары).", "summary_ru": "История развития Земли (планетарный и геологический этапы, возраст 4,5-4,6 млрд лет), отрасли геологии (историческая геология, палеонтология, геотектоника, минералогия, петрография), методы определения возраста пород (относительный и абсолютный радиометрический: 100 г урана за 75 млн лет дают 1 г свинца) и геохронологическая история Казахстана (кайнозой, мезозой, палеозой, докембрий и соответствующие складчатости).", "full_theory_kz": "<div class=\"space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed\">\n  <div class=\"p-5 rounded-2xl bg-space-900/90 border border-emerald-500/30 space-y-4 shadow-xl\">\n    <div class=\"flex items-center space-x-3 text-emerald-400\">\n      <span class=\"text-2xl\">🌍</span>\n      <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">1. Жердің даму кезеңдері және геология ғылымының салалары</h3>\n    </div>\n    <div class=\"space-y-3 pt-2\">\n      <p class=\"text-xs text-slate-300\">\n        <b>Жердің даму тарихының кезеңдерге бөлінуі:</b><br/>\n        <b>1) планеталық (геологияға дейінгі) кезеңге</b>;<br/>\n        <b>2) геологиялық кезеңге бөлінеді</b>.<br/>\n        • <b>Жердің геологиялық жасы:</b> <b>4,5–4,6 млрд жыл</b>.<br/>\n        • <b>Жердің даму тарихы мен оның құрылымын зерттейтін ғылым саласы:</b> <b>геология</b>.\n      </p>\n\n      <div class=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-2\">\n        <div class=\"p-3.5 rounded-xl bg-space-950/80 border border-slate-800 space-y-1\">\n          <div class=\"font-bold text-emerald-300 text-xs sm:text-sm\">Тарихи геология</div>\n          <p class=\"text-xs text-slate-300\">Жер қыртысының алғашқы қалыптасу кезеңінен бастап барлық құрылымын зерттейді.</p>\n        </div>\n        <div class=\"p-3.5 rounded-xl bg-space-950/80 border border-slate-800 space-y-1\">\n          <div class=\"font-bold text-cyan-300 text-xs sm:text-sm\">Палеонтология</div>\n          <p class=\"text-xs text-slate-300\">Жойылып кеткен және қазба қалдықтары ретінде ғана сақталып қалған ағзаларды зерттейді.</p>\n        </div>\n        <div class=\"p-3.5 rounded-xl bg-space-950/80 border border-slate-800 space-y-1\">\n          <div class=\"font-bold text-amber-300 text-xs sm:text-sm\">Геотектоника</div>\n          <p class=\"text-xs text-slate-300\">Жер қыртысының құрылымы мен дамуын, тектоникалық құрылысын зерттейді.</p>\n        </div>\n        <div class=\"p-3.5 rounded-xl bg-space-950/80 border border-slate-800 space-y-1\">\n          <div class=\"font-bold text-sky-300 text-xs sm:text-sm\">Минералогия</div>\n          <p class=\"text-xs text-slate-300\">Минералдардың пайда болу үдерістерін, олардың құрамын және қасиеттерін зерттейді.</p>\n        </div>\n        <div class=\"p-3.5 rounded-xl bg-space-950/80 border border-slate-800 space-y-1\">\n          <div class=\"font-bold text-rose-300 text-xs sm:text-sm\">Петрография</div>\n          <p class=\"text-xs text-slate-300\">Тау жыныстарының құрылымын, минералдық және химиялық құрамын зерттейді.</p>\n        </div>\n      </div>\n    </div>\n  </div>\n\n  <div class=\"p-5 rounded-2xl bg-space-900/90 border border-amber-500/30 space-y-4 shadow-xl\">\n    <div class=\"flex items-center space-x-3 text-amber-400\">\n      <span class=\"text-2xl\">⏳</span>\n      <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">2. Тау жыныстарының жасын анықтау тәсілдері</h3>\n    </div>\n    <div class=\"grid grid-cols-1 md:grid-cols-2 gap-4 pt-2\">\n      <div class=\"p-4 rounded-xl bg-space-950/80 border border-slate-800 space-y-2\">\n        <h4 class=\"font-bold text-amber-300 text-sm\">Салыстырмалы жасы</h4>\n        <p class=\"text-xs text-slate-300 leading-relaxed\">\n          Тау жыныстарының <b>жату қабатына қарай</b> анықталады: тау жынысының қабаты қаншалықты төмен болса, ол тау жынысының жасы соншалықты <b>үлкен</b> болады.\n        </p>\n      </div>\n\n      <div class=\"p-4 rounded-xl bg-space-950/80 border border-slate-800 space-y-2\">\n        <h4 class=\"font-bold text-emerald-300 text-sm\">Абсолюттік жасы</h4>\n        <p class=\"text-xs text-slate-300 leading-relaxed\">\n          Тау жынысының пайда болған кезінен бергі геологиялық уақыт.\n          <br/><b>Анықтайтын радиоактивті элемент:</b> <b>уран</b>.\n          <br/><b>Формуласы:</b> <b>100 гр уран 75 млн жылда 1 гр қорғасын бөледі</b>.\n        </p>\n      </div>\n    </div>\n    <svg viewBox=\"0 0 700 220\" class=\"w-full h-auto max-w-full my-4 rounded-xl shadow-lg border border-slate-800\" xmlns=\"http://www.w3.org/2000/svg\">\n  <rect width=\"700\" height=\"220\" fill=\"#0b1120\" rx=\"12\"/>\n  <rect x=\"20\" y=\"12\" width=\"660\" height=\"32\" rx=\"8\" fill=\"#059669\" opacity=\"0.8\"/>\n  <text x=\"350\" y=\"33\" fill=\"#ffffff\" font-size=\"12.5\" font-weight=\"bold\" text-anchor=\"middle\" font-family=\"system-ui, sans-serif\">ТАУ ЖЫНЫСТАРЫНЫҢ ЖАСЫН АНЫҚТАУ: САЛЫСТЫРМАЛЫ ЖӘНЕ АБСОЛЮТТІК</text>\n  \n  <!-- Left Box: Relative age (Stratigraphy) -->\n  <g transform=\"translate(30, 58)\">\n    <rect x=\"0\" y=\"0\" width=\"310\" height=\"145\" rx=\"10\" fill=\"#1e293b\" stroke=\"#fbbf24\" stroke-width=\"1.5\"/>\n    <text x=\"15\" y=\"24\" fill=\"#fbbf24\" font-size=\"12\" font-weight=\"bold\">1. САЛЫСТЫРМАЛЫ ЖАС (ҚАБАТТАР):</text>\n    <rect x=\"20\" y=\"38\" width=\"270\" height=\"22\" rx=\"4\" fill=\"#0284c7\" opacity=\"0.7\"/>\n    <text x=\"155\" y=\"53\" fill=\"#fff\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">Үстіңгі қабат (ЖАСЫРАҚ ЖЫНЫСТАР)</text>\n    <rect x=\"20\" y=\"66\" width=\"270\" height=\"22\" rx=\"4\" fill=\"#d97706\" opacity=\"0.7\"/>\n    <text x=\"155\" y=\"81\" fill=\"#fff\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">Ортаңғы қабат (Аралық уақыт)</text>\n    <rect x=\"20\" y=\"94\" width=\"270\" height=\"22\" rx=\"4\" fill=\"#7c3aed\" opacity=\"0.7\"/>\n    <text x=\"155\" y=\"109\" fill=\"#fff\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">Төменгі қабат (ЕҢ ЕЖЕЛГІ ЖЫНЫСТАР)</text>\n    <text x=\"20\" y=\"132\" fill=\"#94a3b8\" font-size=\"9.5\">Ереже: Қабат неғұрлым төмен болса, жасы соғұрлым үлкен.</text>\n  </g>\n\n  <!-- Right Box: Absolute age (Radioactivity) -->\n  <g transform=\"translate(360, 58)\">\n    <rect x=\"0\" y=\"0\" width=\"310\" height=\"145\" rx=\"10\" fill=\"#1e293b\" stroke=\"#34d399\" stroke-width=\"1.5\"/>\n    <text x=\"15\" y=\"24\" fill=\"#34d399\" font-size=\"12\" font-weight=\"bold\">2. АБСОЛЮТТІК ЖАС (РАДИОМЕТРИЯ):</text>\n    <circle cx=\"50\" cy=\"65\" r=\"22\" fill=\"#059669\"/>\n    <text x=\"50\" y=\"70\" fill=\"#fff\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\">U</text>\n    <text x=\"85\" y=\"58\" fill=\"#e2e8f0\" font-size=\"11\" font-weight=\"bold\">УРАН ЭЛЕМЕНТІ</text>\n    <text x=\"85\" y=\"74\" fill=\"#94a3b8\" font-size=\"10\">Бастапқы массасы: 100 грамм</text>\n    <line x1=\"20\" y1=\"96\" x2=\"290\" y2=\"96\" stroke=\"#334155\" stroke-width=\"1\"/>\n    <text x=\"20\" y=\"114\" fill=\"#fde047\" font-size=\"11\" font-weight=\"bold\">⏱️ 75 000 000 жылда → 1 грамм Қорғасын (Pb)</text>\n    <text x=\"20\" y=\"132\" fill=\"#cbd5e1\" font-size=\"9.5\">Осы қатынас бойынша минералдың нақты жасы анықталады.</text>\n  </g>\n</svg>\n  </div>\n\n  <div class=\"p-5 rounded-2xl bg-space-900/90 border border-sky-500/30 space-y-4 shadow-xl\">\n    <div class=\"flex items-center space-x-3 text-sky-400\">\n      <span class=\"text-2xl\">⛰️</span>\n      <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">3. Қазақстанның геологиялық даму тарихы (Геохронологиялық кесте)</h3>\n    </div>\n    <svg viewBox=\"0 0 700 240\" class=\"w-full h-auto max-w-full my-4 rounded-xl shadow-lg border border-slate-800\" xmlns=\"http://www.w3.org/2000/svg\">\n  <rect width=\"700\" height=\"240\" fill=\"#0b1120\" rx=\"12\"/>\n  <rect x=\"20\" y=\"10\" width=\"660\" height=\"30\" rx=\"6\" fill=\"#065f46\" opacity=\"0.8\"/>\n  <text x=\"350\" y=\"30\" fill=\"#ffffff\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" font-family=\"system-ui, sans-serif\">ҚАЗАҚСТАННЫҢ ГЕОХРОНОЛОГИЯЛЫҚ ЭРАЛАРЫ ЖӘНЕ ҚАТПАРЛАНУ ОҚИҒАЛАРЫ</text>\n  \n  <g transform=\"translate(25, 48)\">\n    <rect x=\"0\" y=\"0\" width=\"150\" height=\"180\" rx=\"8\" fill=\"#1e293b\" stroke=\"#34d399\" stroke-width=\"1.5\"/>\n    <text x=\"75\" y=\"22\" fill=\"#34d399\" font-size=\"11.5\" font-weight=\"bold\" text-anchor=\"middle\">КАЙНОЗОЙ (67 млн)</text>\n    <text x=\"10\" y=\"42\" fill=\"#fde047\" font-size=\"10\" font-weight=\"bold\">Альпі қатпарлануы</text>\n    <text x=\"10\" y=\"60\" fill=\"#cbd5e1\" font-size=\"9.5\">• Палеоген, Неоген,</text>\n    <text x=\"10\" y=\"75\" fill=\"#cbd5e1\" font-size=\"9.5\">  Антропоген</text>\n    <text x=\"10\" y=\"98\" fill=\"#e2e8f0\" font-size=\"9.5\" font-weight=\"bold\">• Биік таулар 2-рет</text>\n    <text x=\"10\" y=\"113\" fill=\"#e2e8f0\" font-size=\"9.5\" font-weight=\"bold\">  көтерілді (Алтай,</text>\n    <text x=\"10\" y=\"128\" fill=\"#e2e8f0\" font-size=\"9.5\">  Тянь-Шань, Жетісу)</text>\n    <text x=\"10\" y=\"150\" fill=\"#94a3b8\" font-size=\"9\">• Мұз басу жүрді</text>\n    <text x=\"10\" y=\"166\" fill=\"#94a3b8\" font-size=\"9\">• Адам пайда болды</text>\n  </g>\n\n  <g transform=\"translate(190, 48)\">\n    <rect x=\"0\" y=\"0\" width=\"150\" height=\"180\" rx=\"8\" fill=\"#1e293b\" stroke=\"#38bdf8\" stroke-width=\"1.5\"/>\n    <text x=\"75\" y=\"22\" fill=\"#38bdf8\" font-size=\"11.5\" font-weight=\"bold\" text-anchor=\"middle\">МЕЗОЗОЙ (165 млн)</text>\n    <text x=\"10\" y=\"42\" fill=\"#fde047\" font-size=\"10\" font-weight=\"bold\">Киммерий қатпарл.</text>\n    <text x=\"10\" y=\"60\" fill=\"#cbd5e1\" font-size=\"9.5\">• Триас, Юра, Бор</text>\n    <text x=\"10\" y=\"80\" fill=\"#cbd5e1\" font-size=\"9.5\">• Тыныш кезең</text>\n    <text x=\"10\" y=\"102\" fill=\"#e2e8f0\" font-size=\"9.5\" font-weight=\"bold\">• Тұран, Батыс Сібір</text>\n    <text x=\"10\" y=\"117\" fill=\"#e2e8f0\" font-size=\"9.5\">  судан босады</text>\n    <text x=\"10\" y=\"138\" fill=\"#f43f5e\" font-size=\"9.5\" font-weight=\"bold\">• Маңғыстау тауы</text>\n    <text x=\"10\" y=\"153\" fill=\"#f43f5e\" font-size=\"9.5\">  көтерілді</text>\n    <text x=\"10\" y=\"169\" fill=\"#94a3b8\" font-size=\"9\">• Таулар үгілді</text>\n  </g>\n\n  <g transform=\"translate(355, 48)\">\n    <rect x=\"0\" y=\"0\" width=\"160\" height=\"180\" rx=\"8\" fill=\"#1e293b\" stroke=\"#fbbf24\" stroke-width=\"1.5\"/>\n    <text x=\"80\" y=\"22\" fill=\"#fbbf24\" font-size=\"11.5\" font-weight=\"bold\" text-anchor=\"middle\">ПАЛЕОЗОЙ (330 млн)</text>\n    <text x=\"10\" y=\"42\" fill=\"#fde047\" font-size=\"10\" font-weight=\"bold\">Каледон &amp; Герцин</text>\n    <text x=\"10\" y=\"58\" fill=\"#cbd5e1\" font-size=\"9\">Кембрий, Ордовик, Силур,</text>\n    <text x=\"10\" y=\"72\" fill=\"#cbd5e1\" font-size=\"9\">Девон, Карбон, Пермь</text>\n    <text x=\"10\" y=\"92\" fill=\"#34d399\" font-size=\"9.5\" font-weight=\"bold\">• Каледон: Сарыарқа</text>\n    <text x=\"10\" y=\"106\" fill=\"#34d399\" font-size=\"9\">  СБ, Солт. Тянь-Шань</text>\n    <text x=\"10\" y=\"126\" fill=\"#38bdf8\" font-size=\"9.5\" font-weight=\"bold\">• Герцин: Алтай, Жетісу,</text>\n    <text x=\"10\" y=\"140\" fill=\"#38bdf8\" font-size=\"9\">  Сарыарқа Ш, Мұғалжар</text>\n    <text x=\"10\" y=\"160\" fill=\"#94a3b8\" font-size=\"9\">• Карбонда көмір түзілді</text>\n  </g>\n\n  <g transform=\"translate(530, 48)\">\n    <rect x=\"0\" y=\"0\" width=\"145\" height=\"180\" rx=\"8\" fill=\"#1e293b\" stroke=\"#c084fc\" stroke-width=\"1.5\"/>\n    <text x=\"72\" y=\"22\" fill=\"#c084fc\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\">ДОКЕМБРИЙ</text>\n    <text x=\"8\" y=\"40\" fill=\"#f43f5e\" font-size=\"9.5\" font-weight=\"bold\">Байкал (өткен жоқ!)</text>\n    <text x=\"8\" y=\"58\" fill=\"#cbd5e1\" font-size=\"9\">Архей: 1 млрд ж.</text>\n    <text x=\"8\" y=\"72\" fill=\"#cbd5e1\" font-size=\"9\">Протерозой: 2,1 млрд</text>\n    <text x=\"8\" y=\"94\" fill=\"#e2e8f0\" font-size=\"9.5\">• ҚР аумағын түгел</text>\n    <text x=\"8\" y=\"108\" fill=\"#e2e8f0\" font-size=\"9.5\">  су басқан геосинклиналь</text>\n    <text x=\"8\" y=\"130\" fill=\"#38bdf8\" font-size=\"9.5\" font-weight=\"bold\">• Шығыс Еуропа пл.</text>\n    <text x=\"8\" y=\"146\" fill=\"#cbd5e1\" font-size=\"9\">  қалыптасты</text>\n    <text x=\"8\" y=\"165\" fill=\"#94a3b8\" font-size=\"9\">Шөгінді: 22 км</text>\n  </g>\n</svg>\n    <div class=\"space-y-3 pt-2 text-xs text-slate-300\">\n      <div class=\"p-3.5 rounded-xl bg-space-950/80 border border-slate-800\">\n        <div class=\"font-bold text-emerald-400 text-sm mb-1\">1. Кайнозой эрасы (67 млн жыл) | Дәуір: Палеоген, Неоген, Антропоген | Қатпарлану: Альпі</div>\n        <p><b>Негізгі геологиялық оқиғалар:</b> Альпі орогенезі нәтижесінде биік таулар (Алтай, Сауыр-Тарбағатай, Жетісу Алатауы, Тянь-Шань) <b>екінші рет көтерілді</b>. Биік тауларда төрттік мұз басу жүрді. Адам пайда болды.</p>\n      </div>\n\n      <div class=\"p-3.5 rounded-xl bg-space-950/80 border border-slate-800\">\n        <div class=\"font-bold text-sky-400 text-sm mb-1\">2. Мезозой эрасы (165 млн жыл) | Дәуір: Триас, Юра, Бор | Қатпарлану: Мезозой (киммериялық)</div>\n        <p><b>Негізгі геологиялық оқиғалар:</b> Ерекше геологиялық оқиғалар болған жоқ. Тұран мен Батыс Сібір плитасы судан босады. Таулар үгілді. Маңғыстау таулары мезозойдың киммериялық орогенезі нәтижесінде көтерілді.</p>\n      </div>\n\n      <div class=\"p-3.5 rounded-xl bg-space-950/80 border border-slate-800\">\n        <div class=\"font-bold text-amber-400 text-sm mb-1\">3. Палеозой эрасы (330 млн жыл) | Дәуір: Кембрий, Ордовик, Силур, Девон, Карбон (көмір), Пермь | Қатпарлану: Каледон, Герцин</div>\n        <p><b>Негізгі геологиялық оқиғалар:</b> Сарыарқаның солтүстік-батысы мен Тянь-Шаньның солтүстігіндегі тау жүйелері түзілді (Каледон). Алтай, Жетісу Алатауы, Сарыарқаның шығыс бөлігі, Мұғалжар өңірлері көтерілді (Герцин).</p>\n      </div>\n\n      <div class=\"p-3.5 rounded-xl bg-space-950/80 border border-slate-800\">\n        <div class=\"font-bold text-purple-400 text-sm mb-1\">4. Архей (1 млрд ж.) және Протерозой (2 млрд 100 млн ж.) | Қатпарлану: Байкал (Қазақстанда жүрген жоқ)</div>\n        <p><b>Негізгі геологиялық оқиғалар:</b> Қазақстан аумағын түгелдей дерлік су басып жатқан геосинклинальды аймақ болды. Кембрийге дейінгі кезеңде Шығыс Еуропа (орыс) платформасы қалыптасты. Шөгінді жыныстардың қалыңдығы 22 км.</p>\n      </div>\n    </div>\n  </div>\n</div>", "full_theory_ru": "<div class=\"space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed\">\n  <div class=\"p-5 rounded-2xl bg-space-900/90 border border-emerald-500/30 space-y-4 shadow-xl\">\n    <div class=\"flex items-center space-x-3 text-emerald-400\">\n      <span class=\"text-2xl\">🌍</span>\n      <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">1. Этапы развития Земли и разделы геологической науки</h3>\n    </div>\n    <div class=\"space-y-3 pt-2\">\n      <p class=\"text-xs text-slate-300\">\n        <b>Этапы развития планеты Земля:</b><br/>\n        <b>1) планетарный (догеологический) этап</b>;<br/>\n        <b>2) геологический этап</b>.<br/>\n        • <b>Геологический возраст Земли:</b> <b>4,5–4,6 млрд лет</b>.<br/>\n        • <b>Наука о строении и развитии Земли:</b> <b>геология</b>.\n      </p>\n\n      <div class=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-2\">\n        <div class=\"p-3.5 rounded-xl bg-space-950/80 border border-slate-800 space-y-1\">\n          <div class=\"font-bold text-emerald-300 text-xs sm:text-sm\">Историческая геология</div>\n          <p class=\"text-xs text-slate-300\">Изучает структуру земной коры от ее зарождения до современного состояния.</p>\n        </div>\n        <div class=\"p-3.5 rounded-xl bg-space-950/80 border border-slate-800 space-y-1\">\n          <div class=\"font-bold text-cyan-300 text-xs sm:text-sm\">Палеонтология</div>\n          <p class=\"text-xs text-slate-300\">Изучает вымершие организмы прошлых геологических эпох по ископаемым остаткам.</p>\n        </div>\n        <div class=\"p-3.5 rounded-xl bg-space-950/80 border border-slate-800 space-y-1\">\n          <div class=\"font-bold text-amber-300 text-xs sm:text-sm\">Геотектоника</div>\n          <p class=\"text-xs text-slate-300\">Изучает тектоническое строение, динамику и деформации земной коры.</p>\n        </div>\n        <div class=\"p-3.5 rounded-xl bg-space-950/80 border border-slate-800 space-y-1\">\n          <div class=\"font-bold text-sky-300 text-xs sm:text-sm\">Минералогия</div>\n          <p class=\"text-xs text-slate-300\">Изучает процессы образования минералов, их кристаллическую решетку и свойства.</p>\n        </div>\n        <div class=\"p-3.5 rounded-xl bg-space-950/80 border border-slate-800 space-y-1\">\n          <div class=\"font-bold text-rose-300 text-xs sm:text-sm\">Петрография</div>\n          <p class=\"text-xs text-slate-300\">Изучает структуру, минералогический и химический состав горных пород.</p>\n        </div>\n      </div>\n    </div>\n  </div>\n\n  <div class=\"p-5 rounded-2xl bg-space-900/90 border border-amber-500/30 space-y-4 shadow-xl\">\n    <div class=\"flex items-center space-x-3 text-amber-400\">\n      <span class=\"text-2xl\">⏳</span>\n      <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">2. Методы определения возраста горных пород</h3>\n    </div>\n    <div class=\"grid grid-cols-1 md:grid-cols-2 gap-4 pt-2\">\n      <div class=\"p-4 rounded-xl bg-space-950/80 border border-slate-800 space-y-2\">\n        <h4 class=\"font-bold text-amber-300 text-sm\">Относительный возраст (Стратиграфия)</h4>\n        <p class=\"text-xs text-slate-300 leading-relaxed\">\n          Определяется <b>по залеганию пластов</b>: чем глубже залегает пласт осадочной породы, тем <b>старше</b> его геологический возраст.\n        </p>\n      </div>\n\n      <div class=\"p-4 rounded-xl bg-space-950/80 border border-slate-800 space-y-2\">\n        <h4 class=\"font-bold text-emerald-300 text-sm\">Абсолютный возраст (Радиометрия)</h4>\n        <p class=\"text-xs text-slate-300 leading-relaxed\">\n          Время, прошедшее с момента образования породы в годах.\n          <br/><b>Определяющий радиоактивный элемент:</b> <b>уран</b>.\n          <br/><b>Закон распада:</b> <b>100 г урана за 75 млн лет выделяют 1 г свинца (Pb)</b>.\n        </p>\n      </div>\n    </div>\n    <svg viewBox=\"0 0 700 220\" class=\"w-full h-auto max-w-full my-4 rounded-xl shadow-lg border border-slate-800\" xmlns=\"http://www.w3.org/2000/svg\">\n  <rect width=\"700\" height=\"220\" fill=\"#0b1120\" rx=\"12\"/>\n  <rect x=\"20\" y=\"12\" width=\"660\" height=\"32\" rx=\"8\" fill=\"#059669\" opacity=\"0.8\"/>\n  <text x=\"350\" y=\"33\" fill=\"#ffffff\" font-size=\"12.5\" font-weight=\"bold\" text-anchor=\"middle\" font-family=\"system-ui, sans-serif\">ОПРЕДЕЛЕНИЕ ВОЗРАСТА ПОРОД: ОТНОСИТЕЛЬНЫЙ И АБСОЛЮТНЫЙ</text>\n  \n  <!-- Left Box: Relative age (Stratigraphy) -->\n  <g transform=\"translate(30, 58)\">\n    <rect x=\"0\" y=\"0\" width=\"310\" height=\"145\" rx=\"10\" fill=\"#1e293b\" stroke=\"#fbbf24\" stroke-width=\"1.5\"/>\n    <text x=\"15\" y=\"24\" fill=\"#fbbf24\" font-size=\"12\" font-weight=\"bold\">1. ОТНОСИТЕЛЬНЫЙ ВОЗРАСТ (СЛОИ):</text>\n    <rect x=\"20\" y=\"38\" width=\"270\" height=\"22\" rx=\"4\" fill=\"#0284c7\" opacity=\"0.7\"/>\n    <text x=\"155\" y=\"53\" fill=\"#fff\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">Верхний слой (МОЛОДЫЕ ПОРОДЫ)</text>\n    <rect x=\"20\" y=\"66\" width=\"270\" height=\"22\" rx=\"4\" fill=\"#d97706\" opacity=\"0.7\"/>\n    <text x=\"155\" y=\"81\" fill=\"#fff\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">Средний слой (Промежуточный возраст)</text>\n    <rect x=\"20\" y=\"94\" width=\"270\" height=\"22\" rx=\"4\" fill=\"#7c3aed\" opacity=\"0.7\"/>\n    <text x=\"155\" y=\"109\" fill=\"#fff\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">Нижний слой (НАИБОЛЕЕ ДРЕВНИЕ ПОРОДЫ)</text>\n    <text x=\"20\" y=\"132\" fill=\"#94a3b8\" font-size=\"9.5\">Закон: чем глубже пласт, тем древнее его возраст.</text>\n  </g>\n\n  <!-- Right Box: Absolute age (Radioactivity) -->\n  <g transform=\"translate(360, 58)\">\n    <rect x=\"0\" y=\"0\" width=\"310\" height=\"145\" rx=\"10\" fill=\"#1e293b\" stroke=\"#34d399\" stroke-width=\"1.5\"/>\n    <text x=\"15\" y=\"24\" fill=\"#34d399\" font-size=\"12\" font-weight=\"bold\">2. АБСОЛЮТНЫЙ ВОЗРАСТ (РАДИОМЕТРИЯ):</text>\n    <circle cx=\"50\" cy=\"65\" r=\"22\" fill=\"#059669\"/>\n    <text x=\"50\" y=\"70\" fill=\"#fff\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\">U</text>\n    <text x=\"85\" y=\"58\" fill=\"#e2e8f0\" font-size=\"11\" font-weight=\"bold\">ЭЛЕМЕНТ УРАН (U)</text>\n    <text x=\"85\" y=\"74\" fill=\"#94a3b8\" font-size=\"10\">Исходная масса: 100 граммов</text>\n    <line x1=\"20\" y1=\"96\" x2=\"290\" y2=\"96\" stroke=\"#334155\" stroke-width=\"1\"/>\n    <text x=\"20\" y=\"114\" fill=\"#fde047\" font-size=\"11\" font-weight=\"bold\">⏱️ За 75 млн лет → 1 грамм свинца (Pb)</text>\n    <text x=\"20\" y=\"132\" fill=\"#cbd5e1\" font-size=\"9.5\">По этому распаду точно вычисляется возраст минерала.</text>\n  </g>\n</svg>\n  </div>\n\n  <div class=\"p-5 rounded-2xl bg-space-900/90 border border-sky-500/30 space-y-4 shadow-xl\">\n    <div class=\"flex items-center space-x-3 text-sky-400\">\n      <span class=\"text-2xl\">⛰️</span>\n      <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">3. Геохронологическая таблица Казахстана</h3>\n    </div>\n    <svg viewBox=\"0 0 700 240\" class=\"w-full h-auto max-w-full my-4 rounded-xl shadow-lg border border-slate-800\" xmlns=\"http://www.w3.org/2000/svg\">\n  <rect width=\"700\" height=\"240\" fill=\"#0b1120\" rx=\"12\"/>\n  <rect x=\"20\" y=\"10\" width=\"660\" height=\"30\" rx=\"6\" fill=\"#065f46\" opacity=\"0.8\"/>\n  <text x=\"350\" y=\"30\" fill=\"#ffffff\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" font-family=\"system-ui, sans-serif\">ГЕОХРОНОЛОГИЧЕСКИЕ ЭРЫ И СКЛАДЧАТОСТИ В КАЗАХСТАНЕ</text>\n  \n  <g transform=\"translate(25, 48)\">\n    <rect x=\"0\" y=\"0\" width=\"150\" height=\"180\" rx=\"8\" fill=\"#1e293b\" stroke=\"#34d399\" stroke-width=\"1.5\"/>\n    <text x=\"75\" y=\"22\" fill=\"#34d399\" font-size=\"11.5\" font-weight=\"bold\" text-anchor=\"middle\">КАЙНОЗОЙ (67 млн л.)</text>\n    <text x=\"10\" y=\"42\" fill=\"#fde047\" font-size=\"10\" font-weight=\"bold\">Альпийская складчатость</text>\n    <text x=\"10\" y=\"60\" fill=\"#cbd5e1\" font-size=\"9.5\">• Палеоген, Неоген,</text>\n    <text x=\"10\" y=\"75\" fill=\"#cbd5e1\" font-size=\"9.5\">  Антропоген</text>\n    <text x=\"10\" y=\"98\" fill=\"#e2e8f0\" font-size=\"9.5\" font-weight=\"bold\">• Горы поднялись</text>\n    <text x=\"10\" y=\"113\" fill=\"#e2e8f0\" font-size=\"9.5\" font-weight=\"bold\">  вторично (Алтай,</text>\n    <text x=\"10\" y=\"128\" fill=\"#e2e8f0\" font-size=\"9.5\">  Тянь-Шань, Жетысу)</text>\n    <text x=\"10\" y=\"150\" fill=\"#94a3b8\" font-size=\"9\">• Оледенение в горах</text>\n    <text x=\"10\" y=\"166\" fill=\"#94a3b8\" font-size=\"9\">• Появился человек</text>\n  </g>\n\n  <g transform=\"translate(190, 48)\">\n    <rect x=\"0\" y=\"0\" width=\"150\" height=\"180\" rx=\"8\" fill=\"#1e293b\" stroke=\"#38bdf8\" stroke-width=\"1.5\"/>\n    <text x=\"75\" y=\"22\" fill=\"#38bdf8\" font-size=\"11.5\" font-weight=\"bold\" text-anchor=\"middle\">МЕЗОЗОЙ (165 млн л.)</text>\n    <text x=\"10\" y=\"42\" fill=\"#fde047\" font-size=\"10\" font-weight=\"bold\">Киммерийская складч.</text>\n    <text x=\"10\" y=\"60\" fill=\"#cbd5e1\" font-size=\"9.5\">• Триас, Юра, Мел</text>\n    <text x=\"10\" y=\"80\" fill=\"#cbd5e1\" font-size=\"9.5\">• Тектонический покой</text>\n    <text x=\"10\" y=\"102\" fill=\"#e2e8f0\" font-size=\"9.5\" font-weight=\"bold\">• Туран и Зап. Сибирь</text>\n    <text x=\"10\" y=\"117\" fill=\"#e2e8f0\" font-size=\"9.5\">  вышли из-под моря</text>\n    <text x=\"10\" y=\"138\" fill=\"#f43f5e\" font-size=\"9.5\" font-weight=\"bold\">• Горы Мангыстау</text>\n    <text x=\"10\" y=\"153\" fill=\"#f43f5e\" font-size=\"9.5\">  поднялись</text>\n    <text x=\"10\" y=\"169\" fill=\"#94a3b8\" font-size=\"9\">• Горы разрушались</text>\n  </g>\n\n  <g transform=\"translate(355, 48)\">\n    <rect x=\"0\" y=\"0\" width=\"160\" height=\"180\" rx=\"8\" fill=\"#1e293b\" stroke=\"#fbbf24\" stroke-width=\"1.5\"/>\n    <text x=\"80\" y=\"22\" fill=\"#fbbf24\" font-size=\"11.5\" font-weight=\"bold\" text-anchor=\"middle\">ПАЛЕОЗОЙ (330 млн л.)</text>\n    <text x=\"10\" y=\"42\" fill=\"#fde047\" font-size=\"10\" font-weight=\"bold\">Каледон &amp; Герцин</text>\n    <text x=\"10\" y=\"58\" fill=\"#cbd5e1\" font-size=\"9\">Кембрий, Ордовик, Силур,</text>\n    <text x=\"10\" y=\"72\" fill=\"#cbd5e1\" font-size=\"9\">Девон, Карбон, Пермь</text>\n    <text x=\"10\" y=\"92\" fill=\"#34d399\" font-size=\"9.5\" font-weight=\"bold\">• Каледон: с-з Сарыарки,</text>\n    <text x=\"10\" y=\"106\" fill=\"#34d399\" font-size=\"9\">  Сев. Тянь-Шань</text>\n    <text x=\"10\" y=\"126\" fill=\"#38bdf8\" font-size=\"9.5\" font-weight=\"bold\">• Герцин: Алтай, Жетысу,</text>\n    <text x=\"10\" y=\"140\" fill=\"#38bdf8\" font-size=\"9\">  восток Сарыарки, Мугалжары</text>\n    <text x=\"10\" y=\"160\" fill=\"#94a3b8\" font-size=\"9\">• В карбоне возникли угли</text>\n  </g>\n\n  <g transform=\"translate(530, 48)\">\n    <rect x=\"0\" y=\"0\" width=\"145\" height=\"180\" rx=\"8\" fill=\"#1e293b\" stroke=\"#c084fc\" stroke-width=\"1.5\"/>\n    <text x=\"72\" y=\"22\" fill=\"#c084fc\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\">ДОКЕМБРИЙ</text>\n    <text x=\"8\" y=\"40\" fill=\"#f43f5e\" font-size=\"9.5\" font-weight=\"bold\">Байкал (не было в РК!)</text>\n    <text x=\"8\" y=\"58\" fill=\"#cbd5e1\" font-size=\"9\">Архей: 1 млрд л.</text>\n    <text x=\"8\" y=\"72\" fill=\"#cbd5e1\" font-size=\"9\">Протерозой: 2,1 млрд</text>\n    <text x=\"8\" y=\"94\" fill=\"#e2e8f0\" font-size=\"9.5\">• Территория РК —</text>\n    <text x=\"8\" y=\"108\" fill=\"#e2e8f0\" font-size=\"9.5\">  геосинклинальное море</text>\n    <text x=\"8\" y=\"130\" fill=\"#38bdf8\" font-size=\"9.5\" font-weight=\"bold\">• Вост.-Европейская пл.</text>\n    <text x=\"8\" y=\"146\" fill=\"#cbd5e1\" font-size=\"9\">  сформировалась</text>\n    <text x=\"8\" y=\"165\" fill=\"#94a3b8\" font-size=\"9\">Осадки: 22 км</text>\n  </g>\n</svg>\n    <div class=\"space-y-3 pt-2 text-xs text-slate-300\">\n      <div class=\"p-3.5 rounded-xl bg-space-950/80 border border-slate-800\">\n        <div class=\"font-bold text-emerald-400 text-sm mb-1\">1. Кайнозой (67 млн лет) | Периоды: Палеоген, Неоген, Антропоген | Складчатость: Альпийская</div>\n        <p><b>События:</b> В альпийский орогенез высокие горы (Алтай, Саур-Тарбагатай, Жетысуский Алатау, Тянь-Шань) <b>поднялись вторично</b>. Четвертичное оледенение в горах. Появился человек.</p>\n      </div>\n\n      <div class=\"p-3.5 rounded-xl bg-space-950/80 border border-slate-800\">\n        <div class=\"font-bold text-sky-400 text-sm mb-1\">2. Мезозой (165 млн лет) | Периоды: Триас, Юра, Мел | Складчатость: Мезозойская (киммерийская)</div>\n        <p><b>События:</b> Особых событий не происходило. Туранская и Западно-Сибирская плиты вышли из-под моря. Горы разрушались. Горы Мангыстау поднялись в киммерийский орогенез.</p>\n      </div>\n\n      <div class=\"p-3.5 rounded-xl bg-space-950/80 border border-slate-800\">\n        <div class=\"font-bold text-amber-400 text-sm mb-1\">3. Палеозой (330 млн лет) | Кембрий, Ордовик, Силур, Девон, Карбон (уголь), Пермь | Каледон и Герцин</div>\n        <p><b>События:</b> В каледон: с-з Сарыарки и Северный Тянь-Шань. В герцин: Алтай, Жетысуский Алатау, восток Сарыарки, Мугалжары. В каменноугольный период образовались угли.</p>\n      </div>\n\n      <div class=\"p-3.5 rounded-xl bg-space-950/80 border border-slate-800\">\n        <div class=\"font-bold text-purple-400 text-sm mb-1\">4. Архей (1 млрд л.) и Протерозой (2,1 млрд л.) | Байкальская складчатость (в РК не происходила)</div>\n        <p><b>События:</b> Казахстан был геосинклинальным морем. Сформировалась Восточно-Европейская платформа (осадки до 22 км).</p>\n      </div>\n    </div>\n  </div>\n</div>", "svg_diagram": "<svg viewBox=\"0 0 800 480\" width=\"100%\" height=\"auto\" xmlns=\"http://www.w3.org/2000/svg\" style=\"background:#0b1120; border-radius:16px;\">\n  <defs>\n    <linearGradient id=\"topG22\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" stop-color=\"#059669\"/><stop offset=\"100%\" stop-color=\"#047857\"/></linearGradient>\n    <linearGradient id=\"bg22\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" stop-color=\"#064e3b\"/><stop offset=\"100%\" stop-color=\"#0f172a\"/></linearGradient>\n    <filter id=\"sh22\" x=\"-10%\" y=\"-10%\" width=\"120%\" height=\"120%\"><feDropShadow dx=\"0\" dy=\"4\" stdDeviation=\"6\" flood-color=\"#000\" flood-opacity=\"0.5\"/></filter>\n  </defs>\n  <rect width=\"800\" height=\"480\" fill=\"#0b1120\" rx=\"16\"/>\n  <rect x=\"30\" y=\"20\" width=\"740\" height=\"55\" rx=\"12\" fill=\"url(#topG22)\" filter=\"url(#sh22)\"/>\n  <text x=\"400\" y=\"45\" fill=\"#fff\" font-size=\"17\" font-weight=\"bold\" text-anchor=\"middle\" font-family=\"system-ui, sans-serif\">ҚАЗАҚСТАННЫҢ ГЕОХРОНОЛОГИЯЛЫҚ ДАМУ ТАРИХЫ ЖӘНЕ ҚАТПАРЛАНУЛАРЫ</text>\n  <text x=\"400\" y=\"64\" fill=\"#a7f3d0\" font-size=\"12\" text-anchor=\"middle\" font-family=\"system-ui, sans-serif\">Жердің жасы: 4,5–4,6 млрд жыл • Геологиялық эралар, қатпарланулар және жер бедері</text>\n  <g transform=\"translate(30, 95)\" filter=\"url(#sh22)\">\n    <rect width=\"740\" height=\"75\" rx=\"10\" fill=\"url(#bg22)\" stroke=\"#34d399\" stroke-width=\"1.5\"/>\n    <rect x=\"15\" y=\"15\" width=\"110\" height=\"45\" rx=\"8\" fill=\"#059669\"/>\n    <text x=\"70\" y=\"34\" fill=\"#fff\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\">КАЙНОЗОЙ</text>\n    <text x=\"70\" y=\"50\" fill=\"#d1fae5\" font-size=\"10\" text-anchor=\"middle\">67 млн жыл</text>\n    <text x=\"140\" y=\"28\" fill=\"#34d399\" font-size=\"11\" font-weight=\"bold\"><tspan fill=\"#facc15\">Альпі қатпарлануы</tspan> • Палеоген, Неоген, Антропоген</text>\n    <text x=\"140\" y=\"46\" fill=\"#e2e8f0\" font-size=\"11\">• Биік таулар (Алтай, Сауыр-Тарбағатай, Жетісу Алатауы, Тянь-Шань) <tspan font-weight=\"bold\" fill=\"#38bdf8\">екінші рет көтерілді</tspan>.</text>\n    <text x=\"140\" y=\"62\" fill=\"#cbd5e1\" font-size=\"10.5\">• Биік тауларда төрттік мұз басу жүрді. Антропогенде адам пайда болды.</text>\n  </g>\n  <g transform=\"translate(30, 180)\" filter=\"url(#sh22)\">\n    <rect width=\"740\" height=\"75\" rx=\"10\" fill=\"url(#bg22)\" stroke=\"#38bdf8\" stroke-width=\"1.5\"/>\n    <rect x=\"15\" y=\"15\" width=\"110\" height=\"45\" rx=\"8\" fill=\"#0284c7\"/>\n    <text x=\"70\" y=\"34\" fill=\"#fff\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\">МЕЗОЗОЙ</text>\n    <text x=\"70\" y=\"50\" fill=\"#e0f2fe\" font-size=\"10\" text-anchor=\"middle\">165 млн жыл</text>\n    <text x=\"140\" y=\"28\" fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\"><tspan fill=\"#facc15\">Мезозой (Киммерий)</tspan> • Триас, Юра, Бор</text>\n    <text x=\"140\" y=\"46\" fill=\"#e2e8f0\" font-size=\"11\">• Тұран мен Батыс Сібір плиталары судан босады. Ежелгі таулар үгіліп, тегістелді.</text>\n    <text x=\"140\" y=\"62\" fill=\"#cbd5e1\" font-size=\"10.5\">• <tspan font-weight=\"bold\" fill=\"#f43f5e\">Маңғыстау таулары</tspan> Мезозойдың киммериялық орогенезінде көтерілді.</text>\n  </g>\n  <g transform=\"translate(30, 265)\" filter=\"url(#sh22)\">\n    <rect width=\"740\" height=\"85\" rx=\"10\" fill=\"url(#bg22)\" stroke=\"#f59e0b\" stroke-width=\"1.5\"/>\n    <rect x=\"15\" y=\"18\" width=\"110\" height=\"48\" rx=\"8\" fill=\"#d97706\"/>\n    <text x=\"70\" y=\"38\" fill=\"#fff\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\">ПАЛЕОЗОЙ</text>\n    <text x=\"70\" y=\"54\" fill=\"#fef3c7\" font-size=\"10\" text-anchor=\"middle\">330 млн жыл</text>\n    <text x=\"140\" y=\"28\" fill=\"#f59e0b\" font-size=\"11\" font-weight=\"bold\"><tspan fill=\"#facc15\">Каледон &amp; Герцин</tspan> • Кембрий, Ордовик, Силур, Девон, Карбон, Пермь</text>\n    <text x=\"140\" y=\"46\" fill=\"#e2e8f0\" font-size=\"11\">• <tspan font-weight=\"bold\" fill=\"#34d399\">Каледон:</tspan> Сарыарқаның СБ және Солтүстік Тянь-Шань түзілді.</text>\n    <text x=\"140\" y=\"62\" fill=\"#e2e8f0\" font-size=\"11\">• <tspan font-weight=\"bold\" fill=\"#38bdf8\">Герцин:</tspan> Алтай, Жетісу Алатауы, Сарыарқаның шығысы, Мұғалжар көтерілді.</text>\n    <text x=\"140\" y=\"78\" fill=\"#cbd5e1\" font-size=\"10\">• Тас көмір дәуірінде (Карбон) Қазақстанның алып көмір алаптары қалыптасты.</text>\n  </g>\n  <g transform=\"translate(30, 360)\" filter=\"url(#sh22)\">\n    <rect width=\"740\" height=\"95\" rx=\"10\" fill=\"url(#bg22)\" stroke=\"#a855f7\" stroke-width=\"1.5\"/>\n    <rect x=\"15\" y=\"18\" width=\"110\" height=\"55\" rx=\"8\" fill=\"#7e22ce\"/>\n    <text x=\"70\" y=\"38\" fill=\"#fff\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\">ДОКЕМБРИЙ</text>\n    <text x=\"70\" y=\"52\" fill=\"#f3e8ff\" font-size=\"9\" text-anchor=\"middle\">Архей: 1 млрд ж.</text>\n    <text x=\"70\" y=\"64\" fill=\"#f3e8ff\" font-size=\"9\" text-anchor=\"middle\">Протерозой: 2,1 млрд</text>\n    <text x=\"140\" y=\"28\" fill=\"#c084fc\" font-size=\"11\" font-weight=\"bold\"><tspan fill=\"#facc15\">Байкал қатпарлануы</tspan> (Қазақстанда жүрген жоқ)</text>\n    <text x=\"140\" y=\"46\" fill=\"#e2e8f0\" font-size=\"11\">• Қазақстан аумағын түгелдей дерлік су басып жатқан геосинклинальды аймақ болды.</text>\n    <text x=\"140\" y=\"62\" fill=\"#e2e8f0\" font-size=\"11\">• Шығыс Еуропа (Орыс) платформасы түзілді. Шөгінді жыныс қалыңдығы: 22 км.</text>\n    <text x=\"140\" y=\"80\" fill=\"#fde047\" font-size=\"10.5\">⚛️ Радиоактивті заң: 100 г уран 75 млн жылда 1 г қорғасын бөледі (абсолюттік жас).</text>\n  </g>\n</svg>", "svg_diagram_ru": "<svg viewBox=\"0 0 800 480\" width=\"100%\" height=\"auto\" xmlns=\"http://www.w3.org/2000/svg\" style=\"background:#0b1120; border-radius:16px;\">\n  <defs>\n    <linearGradient id=\"topG22\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" stop-color=\"#059669\"/><stop offset=\"100%\" stop-color=\"#047857\"/></linearGradient>\n    <linearGradient id=\"bg22\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" stop-color=\"#064e3b\"/><stop offset=\"100%\" stop-color=\"#0f172a\"/></linearGradient>\n    <filter id=\"sh22\" x=\"-10%\" y=\"-10%\" width=\"120%\" height=\"120%\"><feDropShadow dx=\"0\" dy=\"4\" stdDeviation=\"6\" flood-color=\"#000\" flood-opacity=\"0.5\"/></filter>\n  </defs>\n  <rect width=\"800\" height=\"480\" fill=\"#0b1120\" rx=\"16\"/>\n  <rect x=\"30\" y=\"20\" width=\"740\" height=\"55\" rx=\"12\" fill=\"url(#topG22)\" filter=\"url(#sh22)\"/>\n  <text x=\"400\" y=\"45\" fill=\"#fff\" font-size=\"17\" font-weight=\"bold\" text-anchor=\"middle\" font-family=\"system-ui, sans-serif\">ГЕОХРОНОЛОГИЧЕСКАЯ ИСТОРИЯ И СКЛАДЧАТОСТИ КАЗАХСТАНА</text>\n  <text x=\"400\" y=\"64\" fill=\"#a7f3d0\" font-size=\"12\" text-anchor=\"middle\" font-family=\"system-ui, sans-serif\">Возраст Земли: 4,5–4,6 млрд лет • Геологические эры и складчатости</text>\n  <g transform=\"translate(30, 95)\" filter=\"url(#sh22)\">\n    <rect width=\"740\" height=\"75\" rx=\"10\" fill=\"url(#bg22)\" stroke=\"#34d399\" stroke-width=\"1.5\"/>\n    <rect x=\"15\" y=\"15\" width=\"110\" height=\"45\" rx=\"8\" fill=\"#059669\"/>\n    <text x=\"70\" y=\"34\" fill=\"#fff\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\">КАЙНОЗОЙ</text>\n    <text x=\"70\" y=\"50\" fill=\"#d1fae5\" font-size=\"10\" text-anchor=\"middle\">67 млн лет</text>\n    <text x=\"140\" y=\"28\" fill=\"#34d399\" font-size=\"11\" font-weight=\"bold\"><tspan fill=\"#facc15\">Альпийская складчатость</tspan> • Палеоген, Неоген, Антропоген</text>\n    <text x=\"140\" y=\"46\" fill=\"#e2e8f0\" font-size=\"11\">• Горы (Алтай, Саур-Тарбагатай, Жетысуский Алатау, Тянь-Шань) <tspan font-weight=\"bold\" fill=\"#38bdf8\">поднялись вторично</tspan>.</text>\n    <text x=\"140\" y=\"62\" fill=\"#cbd5e1\" font-size=\"10.5\">• Четвертичное оледенение в горах. В антропогене появился человек.</text>\n  </g>\n  <g transform=\"translate(30, 180)\" filter=\"url(#sh22)\">\n    <rect width=\"740\" height=\"75\" rx=\"10\" fill=\"url(#bg22)\" stroke=\"#38bdf8\" stroke-width=\"1.5\"/>\n    <rect x=\"15\" y=\"15\" width=\"110\" height=\"45\" rx=\"8\" fill=\"#0284c7\"/>\n    <text x=\"70\" y=\"34\" fill=\"#fff\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\">МЕЗОЗОЙ</text>\n    <text x=\"70\" y=\"50\" fill=\"#e0f2fe\" font-size=\"10\" text-anchor=\"middle\">165 млн лет</text>\n    <text x=\"140\" y=\"28\" fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\"><tspan fill=\"#facc15\">Мезозой (Киммерий)</tspan> • Триас, Юра, Мел</text>\n    <text x=\"140\" y=\"46\" fill=\"#e2e8f0\" font-size=\"11\">• Туранская и Западно-Сибирская плиты освободились от моря. Горы разрушались.</text>\n    <text x=\"140\" y=\"62\" fill=\"#cbd5e1\" font-size=\"10.5\">• <tspan font-weight=\"bold\" fill=\"#f43f5e\">Маңғыстау таулары</tspan> Мезозойдың киммериялық орогенезінде көтерілді.</text>\n  </g>\n  <g transform=\"translate(30, 265)\" filter=\"url(#sh22)\">\n    <rect width=\"740\" height=\"85\" rx=\"10\" fill=\"url(#bg22)\" stroke=\"#f59e0b\" stroke-width=\"1.5\"/>\n    <rect x=\"15\" y=\"18\" width=\"110\" height=\"48\" rx=\"8\" fill=\"#d97706\"/>\n    <text x=\"70\" y=\"38\" fill=\"#fff\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\">ПАЛЕОЗОЙ</text>\n    <text x=\"70\" y=\"54\" fill=\"#fef3c7\" font-size=\"10\" text-anchor=\"middle\">330 млн лет</text>\n    <text x=\"140\" y=\"28\" fill=\"#f59e0b\" font-size=\"11\" font-weight=\"bold\"><tspan fill=\"#facc15\">Каледон &amp; Герцин</tspan> • Кембрий, Ордовик, Силур, Девон, Карбон, Пермь</text>\n    <text x=\"140\" y=\"46\" fill=\"#e2e8f0\" font-size=\"11\">• <tspan font-weight=\"bold\" fill=\"#34d399\">Каледон:</tspan> Сформировались с-з Сарыарки и Северный Тянь-Шань.</text>\n    <text x=\"140\" y=\"62\" fill=\"#e2e8f0\" font-size=\"11\">• <tspan font-weight=\"bold\" fill=\"#38bdf8\">Герцин:</tspan> Поднялись Алтай, Жетысуский Алатау, восток Сарыарки, Мугалжары.</text>\n    <text x=\"140\" y=\"78\" fill=\"#cbd5e1\" font-size=\"10\">• В каменноугольный период (карбон) образовались бассейны углей.</text>\n  </g>\n  <g transform=\"translate(30, 360)\" filter=\"url(#sh22)\">\n    <rect width=\"740\" height=\"95\" rx=\"10\" fill=\"url(#bg22)\" stroke=\"#a855f7\" stroke-width=\"1.5\"/>\n    <rect x=\"15\" y=\"18\" width=\"110\" height=\"55\" rx=\"8\" fill=\"#7e22ce\"/>\n    <text x=\"70\" y=\"38\" fill=\"#fff\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\">ДОКЕМБРИЙ</text>\n    <text x=\"70\" y=\"52\" fill=\"#f3e8ff\" font-size=\"9\" text-anchor=\"middle\">Архей: 1 млрд л.</text>\n    <text x=\"70\" y=\"64\" fill=\"#f3e8ff\" font-size=\"9\" text-anchor=\"middle\">Протерозой: 2,1 млрд</text>\n    <text x=\"140\" y=\"28\" fill=\"#c084fc\" font-size=\"11\" font-weight=\"bold\"><tspan fill=\"#facc15\">Байкал қатпарлануы</tspan> (Қазақстанда жүрген жоқ)</text>\n    <text x=\"140\" y=\"46\" fill=\"#e2e8f0\" font-size=\"11\">• Казахстан представлял собой сплошную геосинклинальную морскую область.</text>\n    <text x=\"140\" y=\"62\" fill=\"#e2e8f0\" font-size=\"11\">• Сформировалась Восточно-Европейская платформа (осадочный чехол 22 км).</text>\n    <text x=\"140\" y=\"80\" fill=\"#fde047\" font-size=\"10.5\">⚛️ Радиометрический закон: 100 г урана за 75 млн лет дают 1 г свинца (Pb).</text>\n  </g>\n</svg>", "table_kz": {"cols": ["Эра, ұзақтығы (млн жыл)", "Дәуірлері және Қатпарлануы", "Қазақстандағы негізгі геологиялық оқиғалар"], "rows": [["Кайнозой (67 млн жыл)", "Палеоген, Неоген, Антропоген • Альпі қатпарлануы", "Альпі орогенезінде биік таулар (Алтай, Сауыр-Тарбағатай, Жетісу Алатауы, Тянь-Шань) 2-рет көтерілді. Төрттік мұз басу жүрді. Адам пайда болды."], ["Мезозой (165 млн жыл)", "Триас, Юра, Бор • Мезозой (Киммерий)", "Тектоникалық тыныштық. Тұран мен Батыс Сібір судан босады. Таулар үгілді. Маңғыстау таулары киммериялық орогенезде көтерілді."], ["Палеозой (330 млн жыл)", "Кембрий, Ордовик, Силур, Девон, Карбон, Пермь • Каледон & Герцин", "Каледонда: Сарыарқаның СБ мен Солтүстік Тянь-Шань түзілді. Герцинде: Алтай, Жетісу Алатауы, Сарыарқаның шығысы, Мұғалжар көтерілді."], ["Докембрий (Архей 1 млрд, Протерозой 2,1 млрд жыл)", "Кембрийге дейінгі дәуір • Байкал қатпарлануы (Қазақстанда жүрген жоқ)", "Қазақстан аумағын түгелдей дерлік су басып жатқан геосинклинальды аймақ болды. Шығыс Еуропа платформасы қалыптасты. Шөгінді жыныс қалыңдығы 22 км."]]}, "table_ru": {"cols": ["Эра, длительность (млн лет)", "Периоды и Складчатость", "Главные геологические события в Казахстане"], "rows": [["Кайнозой (67 млн лет)", "Палеоген, Неоген, Антропоген • Альпийская складчатость", "Альпийский орогенез: горы Алтай, Саур-Тарбагатай, Жетысуский Алатау, Тянь-Шань поднялись вторично. Оледенение в горах. Появился человек."], ["Мезозой (165 млн лет)", "Триас, Юра, Мел • Киммерийская складчатость", "Тектонический покой. Туран и Зап. Сибирь освободились от воды. Горы разрушались. Горы Мангыстау поднялись в киммерийский орогенез."], ["Палеозой (330 млн лет)", "Кембрий, Ордовик, Силур, Девон, Карбон, Пермь • Каледон и Герцин", "В каледон: с-з Сарыарки и Сев. Тянь-Шань. В герцин: Алтай, Жетысуский Алатау, восток Сарыарки, Мугалжары. Каменноугольные бассейны."], ["Докембрий (Архей 1 млрд, Протерозой 2,1 млрд лет)", "Докембрийский период • Байкальская складчатость (в Казахстане не происходила)", "Казахстан представлял собой сплошную геосинклинальную морскую область. Образовалась Восточно-Европейская платформа (осадки до 22 км)."]]}, "key_facts_kz": ["Жердің геологиялық жасы — 4,5–4,6 млрд жыл.", "Жер тарихы 2 кезеңге бөлінеді: планеталық (геологияға дейінгі) және геологиялық кезең.", "Геология салалары: тарихи геология, палеонтология, геотектоника, минералогия, петрография.", "Тау жыныстарының салыстырмалы жасы қабаттың жатысына қарай анықталады (төменгі қабат — егде).", "Абсолюттік жас — тау жынысы пайда болғаннан бергі уақыт, ол уран радиоактивті элементімен анықталады.", "Радиометриялық қағида: 100 г уран 75 миллион жылда 1 г қорғасын бөледі.", "Кайнозойда (67 млн ж., Альпі қатпарлануы) Алтай, Сауыр-Тарбағатай, Жетісу Алатауы, Тянь-Шань екінші рет көтерілді.", "Мезозойда (165 млн ж.) Тұран мен Батыс Сібір плиталары судан босады, ал Маңғыстау таулары киммериялық қатпарлануда түзілді.", "Палеозойда (330 млн ж.) Каледон (Сарыарқаның СБ, Солт. Тянь-Шань) және Герцин (Алтай, Жетісу Алатауы, Мұғалжар) қатпарланулары өтті.", "Байкал қатпарлануы (Докембрий) Қазақстан аумағында жүрген жоқ; ол кезде Қазақстан түгелдей су астындағы геосинклиналь болды.", "Шығыс Еуропа платформасы кембрийге дейін қалыптасты, шөгінді жыныстарының қалыңдығы 22 км-ге жетеді."], "key_facts_ru": ["Геологический возраст Земли составляет 4,5–4,6 миллиарда лет.", "Развитие Земли включает 2 этапа: планетарный (догеологический) и геологический.", "Ключевые отрасли геологии: историческая геология, палеонтология, геотектоника, минералогия, петрография.", "Относительный возраст определяется законом напластования (чем глубже слой, тем он древнее).", "Абсолютный возраст выражается в миллионах лет и определяется радиометрическим распадом урана.", "Закон радиоактивного распада: 100 г урана за 75 миллионов лет распадаются с выделением 1 г свинца (Pb).", "В кайнозое (67 млн лет, альпийская складчатость) горы Алтай, Саур-Тарбагатай, Жетысуский Алатау и Тянь-Шань поднялись вторично.", "В мезозое (165 млн лет) Туранская и Западно-Сибирская плиты освободились от воды, а горы Мангыстау поднялись в киммерийский орогенез.", "В палеозое (330 млн лет) действовали каледонская (с-з Сарыарки, Сев. Тянь-Шань) и герцинская складчатости (Алтай, Мугалжары, Жетысуский Алатау).", "Байкальская складчатость (докембрий) на территории Казахстана не происходила; территория была геосинклинальным морем.", "Восточно-Европейская платформа сформировалась в докембрии; мощность осадочного чехла достигает 22 км."], "traps_kz": ["⚠️ Байкал қатпарлануы Қазақстанда ЖҮРГЕН ЖОҚ!: ҰБТ-да «Қазақстанда өткен қатпарланулар» сұрағында Байкал қатпарлануы қате жауап болып табылады. Докембрийде Қазақстан жері түгелдей су астындағы геосинклиналь аймақ болған!", "⚠️ Биік таулардың «екінші рет көтерілуі»: Алтай, Сауыр-Тарбағатай, Жетісу Алатауы, Тянь-Шань палеозойда пайда болып, кейін үгіліп тегістелген, ал ҚАЗІРГІ биік қалпына Кайнозойдың Альпі қатпарлануында ЕКІНШІ РЕТ көтерілген! Олар жас таулар емес, жаңғырған (қайта көтерілген) таулар.", "⚠️ Сарыарқаның солтүстік-батысы мен шығысының қатпарлануы: Сарыарқаның солтүстік-батысы — КАЛЕДОНДА, ал шығыс бөлігі (Қызыларай, Қарқаралы) — ГЕРЦИН қатпарлануында көтерілген. Осы екеуін шатастырмаңыз!", "⚠️ Уран мен қорғасын қатынасы: 100 г уран 75 МЛН ЖЫЛДА 1 г қорғасын бөледі. Тестте «100 млн жыл» немесе «10 г қорғасын» деп жаңылыстыратын сандар жиі беріледі."], "traps_ru": ["⚠️ Байкальская складчатость в Казахстане НЕ ПРОИСХОДИЛА!: В вопросах ЕНТ о складчатостях Казахстана Байкальская является ложным вариантом. В докембрии территория Казахстана была непрерывным геосинклинальным морем!", "⚠️ Вторичное возрождение гор: Алтай, Тянь-Шань, Жетысуский Алатау и Саур-Тарбагатай зародились в палеозое, затем разрушились до пенеплена, и лишь в кайнозое (альпийский орогенез) поднялись ВТОРИЧНО! Они являются возрожденными глыбово-складчатыми горами.", "⚠️ Разновозрастность Сарыарки: Северо-запад Сарыарки сформировался в КАЛЕДОНСКУЮ складчатость, а восточная часть (Каркаралы, Кызыларай) — в ГЕРЦИНСКУЮ. Не объединяйте всю Сарыарку в одну складчатость!", "⚠️ Формула радиометрического распада урана: 100 г урана за 75 МЛН ЛЕТ выделяют ровно 1 г свинца (Pb). Обращайте внимание на цифры в вариантах ответов: 75 млн лет — ключевая константа теста."]};
+    const blooketData = {"kz": "https://dashboard.blooket.com/set/6a96ea957d889e67477e4504", "ru": "https://dashboard.blooket.com/set/6a95e9e30f5018fdc2073015", "doc_kz": "https://docs.google.com/document/d/1DBxPngiN2C2T6ryB6tcXnZsn7rGgUBV99ubVuAQImSE/edit?usp=sharing", "doc_ru": "https://drive.google.com/file/d/12iLAMWaD5MBousNpCJk4uJEXdibRg8ap/view?usp=sharing"};
+    let currentLang = 'kz';
+
+    // Safe localStorage helper
+    const safeStorage = {
+      getItem(k) {
+        try { return localStorage.getItem(k); } catch (e) { return null; }
+      },
+      setItem(k, v) {
+        try { localStorage.setItem(k, v); } catch (e) {}
+      }
+    };
+
+    function getCompletedSet() {
+      try {
+        return new Set(JSON.parse(safeStorage.getItem('geotany_grammar_completed') || '[]'));
+      } catch (e) {
+        return new Set();
+      }
+    }
+
+    function saveCompletedSet(setObj) {
+      safeStorage.setItem('geotany_grammar_completed', JSON.stringify(Array.from(setObj)));
+    }
+
+    function updateCompleteButton() {
+      const setObj = getCompletedSet();
+      const isDone = setObj.has(topicData.num);
+      const btn = document.getElementById('btnComplete');
+      const icon = document.getElementById('completeIcon');
+      const text = document.getElementById('completeText');
+
+      if (isDone) {
+        btn.className = "inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black transition border border-emerald-500/50 bg-emerald-500/20 text-emerald-300 shadow-md shadow-emerald-500/10";
+        icon.textContent = "✓";
+        text.textContent = (currentLang === 'ru') ? "Изучено" : "Меңгерілді";
+      } else {
+        btn.className = "inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition border border-slate-700 bg-space-900 text-slate-300 hover:text-white hover:border-slate-600";
+        icon.textContent = "○";
+        text.textContent = (currentLang === 'ru') ? "Отметить изученным" : "Меңгерілді деп белгілеу";
+      }
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('xpToast');
+      const m = document.getElementById('toastMsg');
+      m.textContent = msg;
+      t.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        t.classList.add('translate-y-20', 'opacity-0');
+      }, 2500);
+    }
+
+    function toggleComplete() {
+      const setObj = getCompletedSet();
+      const isDone = setObj.has(topicData.num);
+      let xp = parseInt(safeStorage.getItem('geotany_user_xp') || '0', 10);
+
+      if (isDone) {
+        setObj.delete(topicData.num);
+        xp = Math.max(0, xp - 20);
+        showToast((currentLang === 'ru') ? "-20 XP. Отметка снята" : "-20 XP. Белгі алынды");
+      } else {
+        setObj.add(topicData.num);
+        xp += 20;
+        showToast((currentLang === 'ru') ? "+20 XP! Тема изучена" : "+20 XP! Тақырып меңгерілді");
+      }
+
+      saveCompletedSet(setObj);
+      safeStorage.setItem('geotany_user_xp', xp.toString());
+      updateCompleteButton();
+    }
+
+    function renderTable(isRu) {
+      const tbl = isRu ? (topicData.table_ru || topicData.table_kz) : topicData.table_kz;
+      const container = document.getElementById('tableContainer');
+      if (!tbl || !tbl.cols || !tbl.rows || tbl.rows.length === 0) {
+        document.getElementById('tableSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('tableSection').classList.remove('hidden');
+
+      let html = '<table class="w-full text-left text-xs border-collapse">';
+      html += '<thead><tr class="border-b border-slate-800 text-slate-400 font-bold">';
+      tbl.cols.forEach(col => {
+        html += `<th class="p-2.5 sm:p-3 bg-space-900/60 rounded-lg whitespace-nowrap text-cyan-300 font-bold">${col}</th>`;
+      });
+      html += '</tr></thead><tbody class="divide-y divide-slate-800/60">';
+      tbl.rows.forEach(row => {
+        html += '<tr class="hover:bg-space-900/40 transition">';
+        row.forEach((cell, idx) => {
+          const cls = idx === 0 ? "font-bold text-white whitespace-nowrap" : (idx === 1 ? "text-cyan-300 font-medium" : "text-slate-300");
+          html += `<td class="p-2.5 sm:p-3 ${cls}">${cell}</td>`;
+        });
+        html += '</tr>';
+      });
+      html += '</tbody></table>';
+      container.innerHTML = html;
+    }
+
+    function renderFacts(isRu) {
+      const facts = isRu ? (topicData.key_facts_ru || topicData.key_facts_kz) : topicData.key_facts_kz;
+      const list = document.getElementById('factsList');
+      if (!facts || facts.length === 0) {
+        document.getElementById('factsSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('factsSection').classList.remove('hidden');
+      list.innerHTML = facts.map(f => `<li class="flex items-start space-x-2"><span class="text-amber-400 font-bold shrink-0 mt-0.5">•</span><span>${f}</span></li>`).join('');
+    }
+
+    function renderTraps(isRu) {
+      const traps = isRu ? (topicData.traps_ru || topicData.traps_kz) : topicData.traps_kz;
+      const list = document.getElementById('trapsList');
+      if (!traps || traps.length === 0) {
+        document.getElementById('trapsSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('trapsSection').classList.remove('hidden');
+      list.innerHTML = traps.map(tr => {
+        const str = String(tr);
+        const icon = str.startsWith('⚠️') ? '' : '<span class="text-amber-400 shrink-0 mt-0.5">⚠️</span> ';
+        return `<p class="leading-relaxed flex items-start space-x-2">${icon}<span>${str}</span></p>`;
+      }).join('');
+    }
+
+    function setLang(lang) {
+      currentLang = lang;
+      safeStorage.setItem('geotany_lang', lang);
+      const isRu = (lang === 'ru');
+
+      // Update lang buttons
+      const btnKz = document.getElementById('btnLangKz');
+      const btnRu = document.getElementById('btnLangRu');
+      if (isRu) {
+        btnRu.className = "px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow";
+        btnKz.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+      } else {
+        btnKz.className = "px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow";
+        btnRu.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+      }
+
+      // Update text fields
+      document.getElementById('navCatBadge').textContent = isRu ? (topicData.category_ru || 'География') : (topicData.category_kz || 'География');
+      document.getElementById('heroCatBadge').textContent = isRu ? (topicData.category_ru || 'География') : (topicData.category_kz || 'География');
+      document.getElementById('heroTitle').textContent = isRu ? topicData.title_ru : topicData.title_kz;
+
+      // Summary
+      document.getElementById('summaryHeader').textContent = isRu ? "КРАТКИЙ ОБЗОР ТЕМЫ" : "ТАҚЫРЫПҚА ҚЫСҚАША ШОЛУ";
+      document.getElementById('summaryText').textContent = isRu ? topicData.summary_ru : topicData.summary_kz;
+
+      // Theory
+      document.getElementById('theoryHeader').textContent = isRu ? "ПОЛНЫЙ ТЕОРЕТИЧЕСКИЙ МАТЕРИАЛ И КОНСПЕКТ" : "ТОЛЫҚ ТЕОРИЯЛЫҚ МАТЕРИАЛ МЕН КОНСПЕКТ";
+      document.getElementById('theoryContent').innerHTML = isRu ? topicData.full_theory_ru : topicData.full_theory_kz;
+
+      // SVG
+      document.getElementById('svgHeader').textContent = isRu ? "НАГЛЯДНАЯ СХЕМА И ИНФОГРАФИКА" : "КӨРНЕКІ СХЕМА МЕН ИНФОГРАФИКА";
+      const svgCode = isRu ? (topicData.svg_diagram_ru || topicData.svg_diagram) : topicData.svg_diagram;
+      document.getElementById('svgContainer').innerHTML = svgCode || '';
+
+      // Table, Facts, Traps
+      document.getElementById('tableHeader').textContent = isRu ? "СТРУКТУРИРОВАННАЯ ТАБЛИЦА ПОКАЗАТЕЛЕЙ И КЛАССИФИКАЦИИ" : "НАҚТЫ КӨРСЕТКІШТЕР МЕН КЛАССИФИКАЦИЯ КЕСТЕСІ";
+      renderTable(isRu);
+
+      document.getElementById('factsHeader').textContent = isRu ? "ГЛАВНЫЕ ФАКТЫ ДЛЯ ЕНТ И ЗАПОМИНАНИЯ" : "ҰБТ-ҒА ҚАЖЕТТІ НЕГІЗГІ ЕРЕЖЕЛЕР МЕН ФАКТІЛЕР";
+      renderFacts(isRu);
+
+      document.getElementById('trapsHeader').textContent = isRu ? "ЛОВУШКИ И ЛАЙФХАКИ ЕНТ" : "ҰБТ ҚАҚПАНДАРЫ МЕН ЛАЙФХАКТАР";
+      renderTraps(isRu);
+
+      // Blooket & Doc links
+      const btnB = document.getElementById('btnBlooket');
+      const bUrl = isRu ? (blooketData.ru || blooketData.kz) : (blooketData.kz || blooketData.ru);
+      if (bUrl) {
+        btnB.href = bUrl;
+        btnB.classList.remove('hidden');
+      } else {
+        btnB.classList.add('hidden');
+      }
+
+      const btnD = document.getElementById('btnDoc');
+      if (btnD) { const dUrl = isRu ? (blooketData.doc_ru || blooketData.doc_kz) : (blooketData.doc_kz || blooketData.doc_ru); if (dUrl) { btnD.href = dUrl; btnD.classList.remove('hidden'); } else { btnD.classList.add('hidden'); } }
+
+      updateCompleteButton();
+    }
+
+    // Initialization on page load with URL param and localStorage sync
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const queryLang = urlParams.get('lang');
+      let langToSet = 'kz';
+      if (queryLang === 'ru' || queryLang === 'kz') {
+        langToSet = queryLang;
+        safeStorage.setItem('geotany_lang', queryLang);
+      } else {
+        const savedLang = safeStorage.getItem('geotany_lang');
+        if (savedLang === 'ru') langToSet = 'ru';
+        else langToSet = 'kz';
+      }
+      setLang(langToSet);
+    });
+  </script>
+</body>
+</html>

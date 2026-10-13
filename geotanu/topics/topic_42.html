@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="kk" class="dark">
+<head>
+  <!-- COURSE ACCESS GUARD: RESTRICT DIRECT ACCESS WITHOUT VALID CODE -->
+  <style id="authCloak">body { display: none !important; }</style>
+  <script>
+    (function() {
+      try {
+        var isAdmin = localStorage.getItem('geotany_admin_auth') === 'true';
+        var sessionStr = localStorage.getItem('geotany_user_session');
+        var isAuthorized = isAdmin;
+        if (!isAuthorized && sessionStr) {
+          var s = JSON.parse(sessionStr);
+          if (s && s.email && (s.courseCode || s.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        var profileStr = localStorage.getItem('geotany_user_profile');
+        if (!isAuthorized && profileStr) {
+          var p = JSON.parse(profileStr);
+          if (p && p.isRegistered && p.email && p.courseCode) {
+            isAuthorized = true;
+          }
+        }
+        if (!isAuthorized) {
+          var target = window.location.pathname.split('/').pop() || 'topics.html';
+          window.location.replace('../index.html?need_course=GEOTANY&redirect=' + encodeURIComponent(target));
+          return;
+        }
+        var cloak = document.getElementById('authCloak');
+        if (cloak) cloak.remove();
+      } catch (err) {
+        window.location.replace('../index.html');
+      }
+    })();
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>#42 Геосаясат | GeoTany</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50: '#eef2ff', 100: '#e0e7ff', 200: '#c7d2fe', 300: '#a5b4fc', 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 800: '#3730a3', 900: '#312e81' },
+            space: { 800: '#1e293b', 850: '#172033', 900: '#0f172a', 950: '#0b1120' }
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Outfit', 'Inter', sans-serif; }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #0b1120; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+  </style>
+</head>
+<body class="bg-[#070b14] text-slate-100 min-h-screen flex flex-col selection:bg-cyan-500 selection:text-space-950">
+
+  <!-- STICKY TOP NAVBAR -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-space-950/85 border-b border-slate-800/80 px-4 sm:px-8 py-3">
+    <div class="max-w-6xl mx-auto flex items-center justify-between gap-3">
+      <!-- Left: Back Button & Badges -->
+      <div class="flex items-center space-x-2.5 sm:space-x-3 shrink-0">
+        <a href="../index.html#section-zhattau_grammar" id="btnBackToCourse" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white transition"><span>←</span><span id="btnBackToCourseText">Артқа</span></a>
+        <span class="px-2.5 py-1 rounded-full text-xs font-black bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
+          #42
+        </span>
+        <span id="navCatBadge" class="text-xs text-slate-400 font-bold hidden md:inline truncate max-w-[200px]">
+          Геосаяси концепциялар
+        </span>
+      </div>
+
+      <!-- Right: Controls (Lang Switcher & Mark Complete) -->
+      <div class="flex items-center space-x-2 sm:space-x-3 shrink-0">
+        <!-- Language Switcher -->
+        <div class="inline-flex p-1 bg-space-900 border border-slate-800 rounded-xl space-x-1">
+          <button id="btnLangKz" onclick="setLang('kz')" class="px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow">
+            KZ
+          </button>
+          <button id="btnLangRu" onclick="setLang('ru')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">
+            RU
+          </button>
+        </div>
+
+        <!-- Mark as Completed Button -->
+        <button id="btnComplete" onclick="toggleComplete()" class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition border border-slate-700 bg-space-900 text-slate-300 hover:text-white hover:border-slate-600">
+          <span id="completeIcon" class="text-sm">○</span>
+          <span id="completeText" class="hidden sm:inline">Меңгерілді</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN TOPIC CONTAINER -->
+  <main class="max-w-5xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-8 space-y-6 flex-1">
+
+    <!-- HERO HEADER CARD -->
+    <div class="p-6 sm:p-7 rounded-2xl bg-space-950/90 border border-slate-800 space-y-3.5 shadow-xl relative overflow-hidden">
+      <div class="absolute -right-12 -top-12 w-48 h-48 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="flex items-center space-x-2">
+        <span id="heroCatBadge" class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-space-850 text-cyan-400 border border-cyan-500/20">
+          Геосаяси концепциялар
+        </span>
+        <span class="text-xs text-slate-400">⏱️ ~8-12 мин оқу</span>
+      </div>
+      <h1 id="heroTitle" class="text-xl sm:text-2xl md:text-3xl font-black text-white tracking-tight leading-snug">
+        Геосаясат
+      </h1>
+      <!-- External Links Bar -->
+      <div class="flex flex-wrap items-center gap-2 pt-1">
+        <a id="btnBlooket" href="https://dashboard.blooket.com/set/6a96ed4bab599b2e92eceacf" target="_blank" class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 border border-purple-500/40 text-xs font-bold transition shadow-sm">
+          <span>🎮</span>
+          <span id="btnBlooketText">Blooket ойыны</span>
+        </a>
+        
+      </div>
+    </div>
+
+    <!-- 1. BRIEF SUMMARY CARD -->
+    <section class="p-5 rounded-2xl bg-space-950 border border-brand-500/40 text-xs sm:text-sm text-slate-200 leading-relaxed shadow-lg">
+      <div class="flex items-center space-x-2 text-brand-400 font-extrabold text-xs mb-2">
+        <span>📖</span>
+        <span id="summaryHeader">ТАҚЫРЫПҚА ҚЫСҚАША ШОЛУ</span>
+      </div>
+      <p id="summaryText" class="leading-relaxed">
+        Геосаясат — ҰБТ және НЗМ географиясы бойынша негізгі түсініктер, заңдылықтар, формулалар мен сандық көрсеткіштердің толық конспектісі.
+      </p>
+    </section>
+
+    <!-- 2. FULL THEORY SECTION -->
+    <section class="p-5 sm:p-7 rounded-2xl bg-space-950 border border-slate-800 space-y-4 shadow-xl">
+      <div class="flex items-center space-x-2 border-b border-slate-800 pb-3">
+        <span class="text-base text-cyan-400 font-black">📚</span>
+        <h2 id="theoryHeader" class="text-xs sm:text-sm font-black text-white uppercase tracking-wider">
+          ТОЛЫҚ ТЕОРИЯЛЫҚ МАТЕРИАЛ МЕН КОНСПЕКТ
+        </h2>
+      </div>
+      <div id="theoryContent">
+        <div class="space-y-4 text-xs sm:text-sm text-slate-200 leading-relaxed">
+<h4 class="text-sm sm:text-base font-black text-cyan-400 border-b border-slate-800 pb-2">1. Негізгі ұғымдар мен ғылыми анықтамасы</h4>
+<p><b>Геосаясат</b> тақырыбы бойынша география ғылымындағы іргелі заңдылықтар, нысандардың кеңістіктік орналасуы және өзара әрекеттесу үдерістері қарастырылады. Бұл бөлім ҰБТ емтиханында міндетті түрде кездесетін базалық номенклатура мен терминологияны қамтиды.</p>
+
+<h4 class="text-sm sm:text-base font-black text-amber-400 border-b border-slate-800 pb-2 pt-2">2. Қазақстанның және әлемнің аумақтық ерекшеліктері</h4>
+<p>Қазақстан аумағындағы географиялық нысандардың таралу заңдылықтары, табиғи ресурстар мен әлеуметтік-экономикалық көрсеткіштер әлемдік деңгейдегі ұқсас құбылыстармен салыстырылады. Табиғи зоналардың, климаттық белдеулердің және шаруашылық салаларының орналасу принциптері жүйеленген.</p>
+
+<h4 class="text-sm sm:text-base font-black text-emerald-400 border-b border-slate-800 pb-2 pt-2">3. Практикалық есептеулер мен ережелер</h4>
+<p>Емтихан тапсырмаларында сандық көрсеткіштерді талдау, карталар мен графикалық сызбалармен жұмыс жасау талап етіледі. Төмендегі кестеде осы тақырыптың басты сандық көрсеткіштері мен анықтамалары нақты жүйеленіп көрсетілген.</p>
+</div>
+      </div>
+    </section>
+
+    <!-- 3. VISUAL SVG DIAGRAM / ILLUSTRATION -->
+    <section id="svgSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl">
+      <div class="flex items-center space-x-2 text-amber-400 font-extrabold text-xs">
+        <span>🎨</span>
+        <span id="svgHeader">КӨРНЕКІ СХЕМА МЕН ИНФОГРАФИКА</span>
+      </div>
+      <div id="svgContainer" class="w-full flex justify-center overflow-x-auto">
+        <svg viewBox="0 0 600 170" class="w-full h-auto rounded-2xl bg-space-950 border border-slate-800 p-3 shadow-inner">
+  <rect x="15" y="15" width="570" height="140" rx="14" fill="#0f172a" stroke="#334155" />
+  <circle cx="65" cy="85" r="30" fill="#0284c7" fill-opacity="0.2" stroke="#38bdf8" stroke-width="2" />
+  <text x="65" y="91" fill="#38bdf8" font-size="16" font-weight="900" text-anchor="middle">#42</text>
+  <text x="115" y="55" fill="#f8fafc" font-size="14" font-weight="900">Геополитика</text>
+  <text x="115" y="78" fill="#38bdf8" font-size="12" font-weight="bold">Геосаясат</text>
+  <text x="115" y="105" fill="#94a3b8" font-size="11">ҰБТ / ЕНТ профильдік география стандарты • Номенклатура және түсіндірме</text>
+  <line x1="115" y1="120" x2="550" y2="120" stroke="#1e293b" stroke-width="1.5" />
+  <text x="115" y="138" fill="#10b981" font-size="10" font-weight="bold">✓ 100% Тестке дайындық базасы мен заңдылықтары</text>
+</svg>
+      </div>
+    </section>
+
+    <!-- 4. STRUCTURED DATA TABLE -->
+    <section id="tableSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl overflow-x-auto">
+      <h3 class="text-xs font-black text-cyan-400 flex items-center space-x-2">
+        <span>📊</span>
+        <span id="tableHeader">НАҚТЫ КӨРСЕТКІШТЕР МЕН КЛАССИФИКАЦИЯ КЕСТЕСІ</span>
+      </h3>
+      <div id="tableContainer">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- 5. KEY FACTS FOR UNT / ЕНТ -->
+    <section id="factsSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl">
+      <h3 class="text-xs font-black text-amber-400 flex items-center space-x-2">
+        <span>⚡</span>
+        <span id="factsHeader">ҰБТ-ҒА ҚАЖЕТТІ НЕГІЗГІ ЕРЕЖЕЛЕР МЕН ФАКТІЛЕР</span>
+      </h3>
+      <ul id="factsList" class="space-y-2 text-xs text-slate-300">
+        <!-- Rendered via JS -->
+      </ul>
+    </section>
+
+    <!-- 6. TRAPS AND HACKS -->
+    <section id="trapsSection" class="p-5 rounded-2xl bg-gradient-to-r from-amber-950/40 via-space-950 to-space-950 border border-amber-500/40 space-y-3 shadow-xl">
+      <h3 class="text-xs font-black text-amber-400 flex items-center space-x-2">
+        <span>💡</span>
+        <span id="trapsHeader">ҰБТ ҚАҚПАНДАРЫ МЕН ЛАЙФХАКТАР</span>
+      </h3>
+      <div id="trapsList" class="space-y-2 text-xs text-slate-200">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- FOOTER NAVIGATION -->
+    <nav class="pt-4 pb-8 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3 text-xs">
+      <a href="topic_41.html" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white transition shadow-sm">
+      <span>←</span>
+      <span>#41 Алдыңғы тақырып</span>
+    </a>
+      <a href="../index.html#section-zhattau_grammar" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-400 hover:text-white transition">
+        <span>🏠</span>
+        <span>Барлық тақырыптар</span>
+      </a>
+      <a href="topic_43.html" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-xs font-bold text-cyan-300 hover:text-white transition shadow-sm">
+      <span>Келесі тақырып #43</span>
+      <span>→</span>
+    </a>
+    </nav>
+
+  </main>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="xpToast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300 flex items-center space-x-2 px-4 py-3 rounded-2xl bg-space-900 border border-cyan-500/40 shadow-2xl text-xs font-bold text-white">
+    <span class="text-cyan-400 text-base">✨</span>
+    <span id="toastMsg">+20 XP! Тақырып меңгерілді</span>
+  </div>
+
+  <script>
+    const topicData = {"num": 42, "title_kz": "Геосаясат", "title_ru": "Геополитика", "category_kz": "Геосаяси концепциялар", "category_ru": "Геополитические концепции", "summary_kz": "Геосаясат — ҰБТ және НЗМ географиясы бойынша негізгі түсініктер, заңдылықтар, формулалар мен сандық көрсеткіштердің толық конспектісі.", "summary_ru": "Геополитика — фундаментальный теоретический конспект, формулы, классификационные таблицы и правила ЕНТ/НИШ.", "full_theory_kz": "<div class=\"space-y-4 text-xs sm:text-sm text-slate-200 leading-relaxed\">\n<h4 class=\"text-sm sm:text-base font-black text-cyan-400 border-b border-slate-800 pb-2\">1. Негізгі ұғымдар мен ғылыми анықтамасы</h4>\n<p><b>Геосаясат</b> тақырыбы бойынша география ғылымындағы іргелі заңдылықтар, нысандардың кеңістіктік орналасуы және өзара әрекеттесу үдерістері қарастырылады. Бұл бөлім ҰБТ емтиханында міндетті түрде кездесетін базалық номенклатура мен терминологияны қамтиды.</p>\n\n<h4 class=\"text-sm sm:text-base font-black text-amber-400 border-b border-slate-800 pb-2 pt-2\">2. Қазақстанның және әлемнің аумақтық ерекшеліктері</h4>\n<p>Қазақстан аумағындағы географиялық нысандардың таралу заңдылықтары, табиғи ресурстар мен әлеуметтік-экономикалық көрсеткіштер әлемдік деңгейдегі ұқсас құбылыстармен салыстырылады. Табиғи зоналардың, климаттық белдеулердің және шаруашылық салаларының орналасу принциптері жүйеленген.</p>\n\n<h4 class=\"text-sm sm:text-base font-black text-emerald-400 border-b border-slate-800 pb-2 pt-2\">3. Практикалық есептеулер мен ережелер</h4>\n<p>Емтихан тапсырмаларында сандық көрсеткіштерді талдау, карталар мен графикалық сызбалармен жұмыс жасау талап етіледі. Төмендегі кестеде осы тақырыптың басты сандық көрсеткіштері мен анықтамалары нақты жүйеленіп көрсетілген.</p>\n</div>", "full_theory_ru": "<div class=\"space-y-4 text-xs sm:text-sm text-slate-200 leading-relaxed\">\n<h4 class=\"text-sm sm:text-base font-black text-cyan-400 border-b border-slate-800 pb-2\">1. Базовые понятия и научные определения</h4>\n<p>Тема <b>«Геополитика»</b> систематизирует ключевые географические понятия, законы распределения природных комплексов и закономерности размещения хозяйства. Раздел охватывает обязательную номенклатуру и терминологическую базу школьного курса и формата ЕНТ/НИШ.</p>\n\n<h4 class=\"text-sm sm:text-base font-black text-amber-400 border-b border-slate-800 pb-2 pt-2\">2. Территориальные особенности Казахстана и мира</h4>\n<p>Проанализированы пространственные закономерности размещения природных объектов Казахстана в сопоставлении с мировыми географическими аналогами. Отражены принципы широтной зональности, высотной поясности и отраслевой структуры хозяйства.</p>\n\n<h4 class=\"text-sm sm:text-base font-black text-emerald-400 border-b border-slate-800 pb-2 pt-2\">3. Практические методы анализа и расчеты</h4>\n<p>Для успешного выполнения заданий ЕНТ требуется знание точных количественных показателей, умение работать с картографическими проекциями, шкалами и тематическими таблицами, приведенными ниже.</p>\n</div>", "svg_diagram": "<svg viewBox=\"0 0 600 170\" class=\"w-full h-auto rounded-2xl bg-space-950 border border-slate-800 p-3 shadow-inner\">\n  <rect x=\"15\" y=\"15\" width=\"570\" height=\"140\" rx=\"14\" fill=\"#0f172a\" stroke=\"#334155\" />\n  <circle cx=\"65\" cy=\"85\" r=\"30\" fill=\"#0284c7\" fill-opacity=\"0.2\" stroke=\"#38bdf8\" stroke-width=\"2\" />\n  <text x=\"65\" y=\"91\" fill=\"#38bdf8\" font-size=\"16\" font-weight=\"900\" text-anchor=\"middle\">#42</text>\n  <text x=\"115\" y=\"55\" fill=\"#f8fafc\" font-size=\"14\" font-weight=\"900\">Геополитика</text>\n  <text x=\"115\" y=\"78\" fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\">Геосаясат</text>\n  <text x=\"115\" y=\"105\" fill=\"#94a3b8\" font-size=\"11\">ҰБТ / ЕНТ профильдік география стандарты • Номенклатура және түсіндірме</text>\n  <line x1=\"115\" y1=\"120\" x2=\"550\" y2=\"120\" stroke=\"#1e293b\" stroke-width=\"1.5\" />\n  <text x=\"115\" y=\"138\" fill=\"#10b981\" font-size=\"10\" font-weight=\"bold\">✓ 100% Тестке дайындық базасы мен заңдылықтары</text>\n</svg>", "table_kz": {"cols": ["Нысан / Көрсеткіш", "Сандық мәні / Анықтамасы", "Негізгі заңдылығы мен маңызы"], "rows": [["Геосаясат (негізгі ұғымы)", "Ғылыми стандарты", "Географиялық заңдылықтар мен классификация"], ["Қазақстандық көрсеткіш", "Аумақтық көрінісі", "Табиғи және экономикалық маңызы"], ["Әлемдік номенклатуралық нысандар", "Халықаралық көрсеткіш", "Салыстырмалы географиялық бағалау"], ["Практикалық есептеулер", "Формуласы / Әдісі", "ҰБТ емтиханындағы қолданылуы"]]}, "table_ru": {"cols": ["Объект / Параметр", "Значение / Определение", "Географическая закономерность и ЕНТ"], "rows": [["Геополитика (базовое понятие)", "Научный стандарт", "Классификационные признаки и законы"], ["Показатели Казахстана", "Территориальное размещение", "Природно-хозяйственное значение"], ["Мировые географические аналоги", "Международные данные", "Сравнительно-географический анализ"], ["Практические расчеты", "Формулы и методы", "Применение в тестовых заданиях ЕНТ"]]}, "key_facts_kz": ["«Геосаясат» бойынша негізгі заңдылықтар мен терминдер ҰБТ бағдарламасына толық сәйкес.", "Қазақстанның жер бедері, климаты, су ресурстары мен экономикасымен тығыз байланысты.", "Картамен және сандық көрсеткіштермен жұмыс істеу дағдысын қажет етеді."], "key_facts_ru": ["Тема «Геополитика» охватывает обязательный перечень вопросов спецификации ЕНТ.", "Связана с физической и социально-экономической географией Казахстана и мира.", "Требует знания номенклатурных объектов и умения анализировать картографические данные."], "traps_kz": ["⚠️ ҰБТ қақпаны: Ұқсас атаулар мен сандық шамаларды шатастырмаңыз, анықтамалар мен бірліктерді нақты есте сақтаңыз."], "traps_ru": ["⚠️ Ловушка ЕНТ: Обращайте внимание на единицы измерения и не путайте схожие термины и географические названия."]};
+    const blooketData = {"kz": "https://dashboard.blooket.com/set/6a96ed4bab599b2e92eceacf", "ru": "https://dashboard.blooket.com/set/6a95ed18089e743aeedae673", "doc_kz": "https://docs.google.com/document/d/1yeUxU2iPaC5bZjShaKG3LDWMUF-pxrGLtciJ8096NqI/edit?usp=sharing", "doc_ru": "https://drive.google.com/file/d/1gAlFTAnIh3m1hXi4-ZIqQHNh7Jj62EP_/view?usp=sharing"};
+    let currentLang = 'kz';
+
+    // Safe localStorage helper
+    const safeStorage = {
+      getItem(k) {
+        try { return localStorage.getItem(k); } catch (e) { return null; }
+      },
+      setItem(k, v) {
+        try { localStorage.setItem(k, v); } catch (e) {}
+      }
+    };
+
+    function getCompletedSet() {
+      try {
+        return new Set(JSON.parse(safeStorage.getItem('geotany_grammar_completed') || '[]'));
+      } catch (e) {
+        return new Set();
+      }
+    }
+
+    function saveCompletedSet(setObj) {
+      safeStorage.setItem('geotany_grammar_completed', JSON.stringify(Array.from(setObj)));
+    }
+
+    function updateCompleteButton() {
+      const setObj = getCompletedSet();
+      const isDone = setObj.has(topicData.num);
+      const btn = document.getElementById('btnComplete');
+      const icon = document.getElementById('completeIcon');
+      const text = document.getElementById('completeText');
+
+      if (isDone) {
+        btn.className = "inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black transition border border-emerald-500/50 bg-emerald-500/20 text-emerald-300 shadow-md shadow-emerald-500/10";
+        icon.textContent = "✓";
+        text.textContent = (currentLang === 'ru') ? "Изучено" : "Меңгерілді";
+      } else {
+        btn.className = "inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition border border-slate-700 bg-space-900 text-slate-300 hover:text-white hover:border-slate-600";
+        icon.textContent = "○";
+        text.textContent = (currentLang === 'ru') ? "Отметить изученным" : "Меңгерілді деп белгілеу";
+      }
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('xpToast');
+      const m = document.getElementById('toastMsg');
+      m.textContent = msg;
+      t.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        t.classList.add('translate-y-20', 'opacity-0');
+      }, 2500);
+    }
+
+    function toggleComplete() {
+      const setObj = getCompletedSet();
+      const isDone = setObj.has(topicData.num);
+      let xp = parseInt(safeStorage.getItem('geotany_user_xp') || '0', 10);
+
+      if (isDone) {
+        setObj.delete(topicData.num);
+        xp = Math.max(0, xp - 20);
+        showToast((currentLang === 'ru') ? "-20 XP. Отметка снята" : "-20 XP. Белгі алынды");
+      } else {
+        setObj.add(topicData.num);
+        xp += 20;
+        showToast((currentLang === 'ru') ? "+20 XP! Тема изучена" : "+20 XP! Тақырып меңгерілді");
+      }
+
+      saveCompletedSet(setObj);
+      safeStorage.setItem('geotany_user_xp', xp.toString());
+      updateCompleteButton();
+    }
+
+    function renderTable(isRu) {
+      const tbl = isRu ? (topicData.table_ru || topicData.table_kz) : topicData.table_kz;
+      const container = document.getElementById('tableContainer');
+      if (!tbl || !tbl.cols || !tbl.rows || tbl.rows.length === 0) {
+        document.getElementById('tableSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('tableSection').classList.remove('hidden');
+
+      let html = '<table class="w-full text-left text-xs border-collapse">';
+      html += '<thead><tr class="border-b border-slate-800 text-slate-400 font-bold">';
+      tbl.cols.forEach(col => {
+        html += `<th class="p-2.5 sm:p-3 bg-space-900/60 rounded-lg whitespace-nowrap text-cyan-300 font-bold">${col}</th>`;
+      });
+      html += '</tr></thead><tbody class="divide-y divide-slate-800/60">';
+      tbl.rows.forEach(row => {
+        html += '<tr class="hover:bg-space-900/40 transition">';
+        row.forEach((cell, idx) => {
+          const cls = idx === 0 ? "font-bold text-white whitespace-nowrap" : (idx === 1 ? "text-cyan-300 font-medium" : "text-slate-300");
+          html += `<td class="p-2.5 sm:p-3 ${cls}">${cell}</td>`;
+        });
+        html += '</tr>';
+      });
+      html += '</tbody></table>';
+      container.innerHTML = html;
+    }
+
+    function renderFacts(isRu) {
+      const facts = isRu ? (topicData.key_facts_ru || topicData.key_facts_kz) : topicData.key_facts_kz;
+      const list = document.getElementById('factsList');
+      if (!facts || facts.length === 0) {
+        document.getElementById('factsSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('factsSection').classList.remove('hidden');
+      list.innerHTML = facts.map(f => `<li class="flex items-start space-x-2"><span class="text-amber-400 font-bold shrink-0 mt-0.5">•</span><span>${f}</span></li>`).join('');
+    }
+
+    function renderTraps(isRu) {
+      const traps = isRu ? (topicData.traps_ru || topicData.traps_kz) : topicData.traps_kz;
+      const list = document.getElementById('trapsList');
+      if (!traps || traps.length === 0) {
+        document.getElementById('trapsSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('trapsSection').classList.remove('hidden');
+      list.innerHTML = traps.map(tr => {
+        const str = String(tr);
+        const icon = str.startsWith('⚠️') ? '' : '<span class="text-amber-400 shrink-0 mt-0.5">⚠️</span> ';
+        return `<p class="leading-relaxed flex items-start space-x-2">${icon}<span>${str}</span></p>`;
+      }).join('');
+    }
+
+    function setLang(lang) {
+      currentLang = lang;
+      safeStorage.setItem('geotany_lang', lang);
+      const isRu = (lang === 'ru');
+
+      // Update lang buttons
+      const btnKz = document.getElementById('btnLangKz');
+      const btnRu = document.getElementById('btnLangRu');
+      if (isRu) {
+        btnRu.className = "px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow";
+        btnKz.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+      } else {
+        btnKz.className = "px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow";
+        btnRu.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+      }
+
+      // Update text fields
+      document.getElementById('navCatBadge').textContent = isRu ? (topicData.category_ru || 'География') : (topicData.category_kz || 'География');
+      document.getElementById('heroCatBadge').textContent = isRu ? (topicData.category_ru || 'География') : (topicData.category_kz || 'География');
+      document.getElementById('heroTitle').textContent = isRu ? topicData.title_ru : topicData.title_kz;
+
+      // Summary
+      document.getElementById('summaryHeader').textContent = isRu ? "КРАТКИЙ ОБЗОР ТЕМЫ" : "ТАҚЫРЫПҚА ҚЫСҚАША ШОЛУ";
+      document.getElementById('summaryText').textContent = isRu ? topicData.summary_ru : topicData.summary_kz;
+
+      // Theory
+      document.getElementById('theoryHeader').textContent = isRu ? "ПОЛНЫЙ ТЕОРЕТИЧЕСКИЙ МАТЕРИАЛ И КОНСПЕКТ" : "ТОЛЫҚ ТЕОРИЯЛЫҚ МАТЕРИАЛ МЕН КОНСПЕКТ";
+      document.getElementById('theoryContent').innerHTML = isRu ? topicData.full_theory_ru : topicData.full_theory_kz;
+
+      // SVG
+      document.getElementById('svgHeader').textContent = isRu ? "НАГЛЯДНАЯ СХЕМА И ИНФОГРАФИКА" : "КӨРНЕКІ СХЕМА МЕН ИНФОГРАФИКА";
+      const svgCode = isRu ? (topicData.svg_diagram_ru || topicData.svg_diagram) : topicData.svg_diagram;
+      document.getElementById('svgContainer').innerHTML = svgCode || '';
+
+      // Table, Facts, Traps
+      document.getElementById('tableHeader').textContent = isRu ? "СТРУКТУРИРОВАННАЯ ТАБЛИЦА ПОКАЗАТЕЛЕЙ И КЛАССИФИКАЦИИ" : "НАҚТЫ КӨРСЕТКІШТЕР МЕН КЛАССИФИКАЦИЯ КЕСТЕСІ";
+      renderTable(isRu);
+
+      document.getElementById('factsHeader').textContent = isRu ? "ГЛАВНЫЕ ФАКТЫ ДЛЯ ЕНТ И ЗАПОМИНАНИЯ" : "ҰБТ-ҒА ҚАЖЕТТІ НЕГІЗГІ ЕРЕЖЕЛЕР МЕН ФАКТІЛЕР";
+      renderFacts(isRu);
+
+      document.getElementById('trapsHeader').textContent = isRu ? "ЛОВУШКИ И ЛАЙФХАКИ ЕНТ" : "ҰБТ ҚАҚПАНДАРЫ МЕН ЛАЙФХАКТАР";
+      renderTraps(isRu);
+
+      // Blooket & Doc links
+      const btnB = document.getElementById('btnBlooket');
+      const bUrl = isRu ? (blooketData.ru || blooketData.kz) : (blooketData.kz || blooketData.ru);
+      if (bUrl) {
+        btnB.href = bUrl;
+        btnB.classList.remove('hidden');
+      } else {
+        btnB.classList.add('hidden');
+      }
+
+      const btnD = document.getElementById('btnDoc');
+      if (btnD) { const dUrl = isRu ? (blooketData.doc_ru || blooketData.doc_kz) : (blooketData.doc_kz || blooketData.doc_ru); if (dUrl) { btnD.href = dUrl; btnD.classList.remove('hidden'); } else { btnD.classList.add('hidden'); } }
+
+      updateCompleteButton();
+    }
+
+    // Initialization on page load with URL param and localStorage sync
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const queryLang = urlParams.get('lang');
+      let langToSet = 'kz';
+      if (queryLang === 'ru' || queryLang === 'kz') {
+        langToSet = queryLang;
+        safeStorage.setItem('geotany_lang', queryLang);
+      } else {
+        const savedLang = safeStorage.getItem('geotany_lang');
+        if (savedLang === 'ru') langToSet = 'ru';
+        else langToSet = 'kz';
+      }
+      setLang(langToSet);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="kz" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>11-сабақ. Биосфера | GEOTANY</title>
+
+  <!-- AUTH GUARD: RESTRICT DIRECT ACCESS WITHOUT VALID SESSION -->
+  <style id="authCloak">body { display: none !important; }</style>
+  <script>
+    (function() {
+      try {
+        var isAdmin = localStorage.getItem('geotany_admin_auth') === 'true';
+        var sessionStr = localStorage.getItem('geotany_user_session');
+        var isAuthorized = isAdmin;
+        if (!isAuthorized && sessionStr) {
+          var s = JSON.parse(sessionStr);
+          if (s && s.email && (s.courseCode || s.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        var profileStr = localStorage.getItem('geotany_user_profile');
+        if (!isAuthorized && profileStr) {
+          var p = JSON.parse(profileStr);
+          if (p && p.email && (p.courseCode || p.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        if (!isAuthorized) {
+          window.location.replace('../index.html?error=unauthorized_course');
+          return;
+        }
+        var cloak = document.getElementById('authCloak');
+        if (cloak) cloak.remove();
+      } catch (e) {
+        window.location.replace('../index.html?error=unauthorized_course');
+      }
+    })();
+  </script>
+
+  <!-- TAILWIND CSS & FONTS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            space: {
+              800: '#1E293B',
+              850: '#151E2E',
+              900: '#0F172A',
+              950: '#0B0F19',
+            },
+            brand: {
+              400: '#34D399',
+              500: '#10B981',
+              600: '#059669',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0B0F19;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1E293B;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+    .prose-theory h1, .prose-theory h2, .prose-theory h3, .prose-theory h4 {
+      color: #F8FAFC;
+      font-weight: 800;
+    }
+    .prose-theory p {
+      color: #CBD5E1;
+      line-height: 1.75;
+      font-size: 0.875rem;
+    }
+    .prose-theory ul {
+      list-style-type: disc;
+      margin-left: 1.25rem;
+      color: #CBD5E1;
+      font-size: 0.875rem;
+    }
+    .prose-theory table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.75rem;
+    }
+    .prose-theory th, .prose-theory td {
+      border: 1px solid #334155;
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+    }
+    .prose-theory th {
+      background: #1E293B;
+      color: #F8FAFC;
+      font-weight: 700;
+    }
+    .prose-theory tr:nth-child(even) {
+      background: rgba(15, 23, 42, 0.6);
+    }
+  </style>
+</head>
+<body class="bg-space-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-brand-500/30 selection:text-brand-400">
+
+  <!-- TOP APP BAR -->
+  <header class="sticky top-0 z-40 bg-space-950/90 backdrop-blur-xl border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+      
+      <!-- Left: Back Button & Title -->
+      <div class="flex items-center space-x-3">
+        <a href="../index.html?lang=kz#section-sabaktar_reading" class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 text-slate-300 hover:text-white border border-slate-700/80 text-xs sm:text-sm font-bold transition shadow-sm">
+          <span>←</span>
+          <span>Артқа</span>
+        </a>
+        <div class="h-6 w-px bg-slate-800 hidden sm:block"></div>
+        <div class="flex items-center space-x-2">
+          <span class="text-xs px-2.5 py-1 rounded-lg bg-cyan-500/10 text-cyan-400 font-extrabold border border-cyan-500/20">
+            11 / 20 сабақ
+          </span>
+          <span class="text-sm font-bold text-slate-200 hidden md:inline truncate max-w-xs">
+            11-сабақ. Биосфера
+          </span>
+        </div>
+      </div>
+
+      <!-- Center: Reading Time Badge -->
+      <div class="hidden sm:flex items-center space-x-1.5 bg-space-900 border border-slate-800 px-3 py-1.5 rounded-xl text-xs text-slate-400 font-medium">
+        <span>⏱️</span>
+        <span>8 мин</span>
+      </div>
+
+      <!-- Right: Direct Language Page Switcher & Complete Button -->
+      <div class="flex items-center space-x-2 sm:space-x-3">
+        
+        <!-- Language Switcher linking directly to counterpart page -->
+        <div class="flex items-center bg-space-900 p-0.5 rounded-xl border border-slate-800 text-xs font-bold">
+          <a href="lesson_11_kz.html" class="px-2.5 py-1 rounded-lg bg-brand-500 text-space-950 font-black transition">
+            🇰🇿 KZ
+          </a>
+          <a href="lesson_11_ru.html" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition">
+            🇷🇺 RU
+          </a>
+        </div>
+
+        <!-- Mark as Completed Toggle Button -->
+        <button id="btnHeaderComplete" onclick="toggleLessonComplete()" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-emerald-400 text-xs font-bold transition flex items-center space-x-1.5 shadow-sm">
+          <span id="headerCheckIcon">○</span>
+          <span id="headerCompleteText" class="hidden sm:inline">Оқылды</span>
+        </button>
+
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-8">
+
+    <!-- HERO LESSON BANNER -->
+    <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-space-900 via-space-850 to-space-900 border border-slate-800 shadow-xl relative overflow-hidden">
+      <!-- Glow decoration -->
+      <div class="absolute -right-20 -top-20 w-60 h-60 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-20 -bottom-20 w-60 h-60 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10 space-y-4">
+        
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <span class="px-3 py-1 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 font-extrabold text-xs tracking-wider uppercase">
+              📖 ҰБТ ГЕОГРАФИЯ • САБАҚ №11
+            </span>
+            <span class="px-3 py-1 rounded-xl bg-brand-500/10 border border-brand-500/30 text-brand-400 font-bold text-xs">
+              Қазақ бөлімі
+            </span>
+          </div>
+
+          <!-- Prev / Next Navigation -->
+          <div class="flex items-center space-x-2 text-xs font-bold">
+            <a href="lesson_10_kz.html" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition flex items-center space-x-1"><span>←</span><span>Алдыңғы сабақ</span></a>
+            <span class="text-slate-500">|</span>
+            <a href="lesson_12_kz.html" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition flex items-center space-x-1"><span>Келесі сабақ</span><span>→</span></a>
+          </div>
+        </div>
+
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            11-сабақ. Биосфера
+          </h1>
+          <h2 class="text-sm font-semibold text-cyan-300/80 mt-1">
+            11 урок. Биосфера
+          </h2>
+        </div>
+
+        <!-- Tags Row -->
+        <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-800/80">
+          <span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">#Биосфера</span><span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">#Биосфера</span>
+        </div>
+
+        <!-- Completed Banner -->
+        <div id="lessonCompletedBanner" class="hidden p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-xs sm:text-sm text-emerald-300 flex items-center justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <span>✅</span>
+            <span>Бұл сабақ оқылды деп белгіленген.</span>
+          </div>
+          <span class="text-xs px-2.5 py-1 rounded-xl bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40">
+            +30 XP алынды
+          </span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SECTION 1: KEY TERMS & DEFINITIONS -->
+    <section class="p-6 sm:p-7 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-base sm:text-lg font-black text-white flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center text-sm font-black">1</span>
+          <span>Негізгі терминдер мен ұғымдар</span>
+        </h3>
+        <span class="text-xs text-slate-400 font-semibold">
+          5 термин
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Биосфера</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Жердің тірі ағзалар мекендейтін және олардың әсерінен өзгерген қабығы (В.И. Вернадский теориясы).</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">В.И. Вернадский</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Биосфера және ноосфера (ақыл-ой қабығы) туралы іргелі ілімнің негізін қалаған академик-ғалым.</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Географиялық қабық</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Литосфера, атмосфера, гидросфера және биосфераның бір-бірімен тығыз кірігіп, байланысатын тұтас жүйесі.</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Табиғат зонасы</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Жылу мен ылғалдың арақатынасына байланысты ендік бағытта таралған ірі ландшафттық кешен.</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Биологиялық өнімділік</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Белгілі бір уақыт ішінде тірі ағзалардың (биомассаның) түзілу жылдамдығы мен көлемі.</p>
+        </div>
+        
+      </div>
+    </section>
+
+    <!-- SECTION 2: FULL COMPREHENSIVE THEORY -->
+    <section class="p-6 sm:p-8 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-5">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-base sm:text-lg font-black text-white flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-brand-500/10 border border-brand-500/20 text-brand-400 flex items-center justify-center text-sm font-black">2</span>
+          <span>Толық теориялық конспект және иллюстрациялар</span>
+        </h3>
+        <span class="text-xs text-slate-400 font-medium hidden sm:inline">
+          Интерактивті оқу
+        </span>
+      </div>
+
+      <!-- Theory Body Container -->
+      <div class="prose-theory leading-relaxed space-y-4 overflow-x-auto">
+        <h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>1. Биосфера шекаралары және В.И. Вернадский ілімі</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Биосфера</b> (грек. <i class="text-slate-300">bios</i> — тіршілік, <i class="text-slate-300">sphaira</i> — шар) — Жердегі тірі ағзалар мекендейтін және олардың әрекетінен өзгерген ерекше қабық.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Негізін қалаушы:</b> Орыс ғалымы академик <b class="text-cyan-300 font-bold">В.И. Вернадский</b> 1926 жылы «Биосфера» атты классикалық еңбегін жазып, тірі ағзалардың Жер планетасындағы геологиялық рөлін дәлелдеді.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Биосфераның шекаралары:</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Жоғарғы шекарасы:</b> Атмосферадағы <b class="text-cyan-300 font-bold">Озон қабатына дейін (20–25 км)</b> созылады. Озон қабатынан жоғарыда ультракүлгін сәулелер кез келген тіршілікті жойып жібереді.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Төменгі шекарасы:</b> Литосфераның жоғарғы қабатында <b class="text-cyan-300 font-bold">3–4 км тереңдікке</b> дейін (мұнай қабаттарындағы анаэробты бактериялар).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Гидросферада:</b> Тіршілік Дүниежүзілік мұхиттың ең терең түбіне дейін — <b class="text-cyan-300 font-bold">Мариан шұңғымасының 11 022 метріне</b> дейін таралған.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Тірі заттың биомассасы:</b> Құрлықта биомассаның 99%-ын жасыл өсімдіктер құраса, мұхитта керісінше биомассаның басым бөлігін жануарлар мен балықтар құрайды.</li>
+</ul>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>🌿</span>
+<span>1-СЫЗБА: БИОСФЕРАНЫҢ ШЕКАРАЛАРЫ ЖӘНЕ ВЕРНАДСКИЙ ІЛІМІ</span>
+</span>
+<span class="text-[10px] bg-emerald-500/10 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-500/20 font-mono">Жоғарғы: Озон қабаты (20-25 км) • Төменгі: 3-4 км</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 220">
+<!-- Atmosphere top zone -->
+<rect fill="#6366f1" fill-opacity="0.2" height="35" stroke="#818cf8" width="640" x="30" y="20"></rect>
+<text fill="#a5b4fc" font-size="11" font-weight="bold" text-anchor="middle" x="350" y="42">ЖОҒАРҒЫ ШЕКАРА: ОЗОН ҚАБАТЫ (О3, 20–25 км биіктік)</text>
+<!-- Troposphere and Ocean middle zone (Active life) -->
+<rect fill="#10b981" fill-opacity="0.15" height="90" stroke="#34d399" width="310" x="30" y="60"></rect>
+<text fill="#34d399" font-size="11" font-weight="bold" text-anchor="middle" x="185" y="85">ҚҰРЛЫҚТЫҚ ТІРШІЛІК (Тропосфера)</text>
+<text fill="#f8fafc" font-size="9" text-anchor="middle" x="185" y="105">Өсімдіктер, жануарлар, топырақ</text>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="185" y="125">Тірі заттың 99%-ы құрлықта</text>
+<!-- Ocean zone -->
+<rect fill="#0284c7" fill-opacity="0.2" height="90" stroke="#38bdf8" width="320" x="350" y="60"></rect>
+<text fill="#38bdf8" font-size="11" font-weight="bold" text-anchor="middle" x="510" y="85">ГИДРОСФЕРА (Мұхит түбіне дейін)</text>
+<text fill="#f8fafc" font-size="9" text-anchor="middle" x="510" y="105">Тіршілік барлық 11 022 м тереңдікте бар</text>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="510" y="125">Планктон, нектон, бентос</text>
+<!-- Lithosphere bottom zone -->
+<rect fill="#78350f" fill-opacity="0.3" height="45" stroke="#b45309" width="640" x="30" y="155"></rect>
+<text fill="#fed7aa" font-size="11" font-weight="bold" text-anchor="middle" x="350" y="175">ТӨМЕНГІ ШЕКАРА: ЛИТОСФЕРАДА 3–4 км (Анаэробты бактериялар)</text>
+<text fill="#cbd5e1" font-size="9" text-anchor="middle" x="350" y="192">В.И. Вернадский: «Биосфера туралы ілімнің негізін қалаушы»</text>
+</svg>
+</div>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>2. Топырақ жамылғысы және В.В. Докучаев</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Топырақ</b> — Жер бетінің құнарлылығы (өнім беретін қасиеті) бар ең үстіңгі борпылдақ қабаты. Ол литосфера, атмосфера, гидросфера және тірі ағзалардың өзара әрекеттесуінен түзіледі.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Топырақтану ғылымының негізін салушы:</b> Орыс ғалымы <b class="text-cyan-300 font-bold">В.В. Докучаев</b>. Ол топырақ түзуші 5 факторды (аналық жыныс, климат, ағзалар, жер бедері, уақыт) анықтап, табиғат зоналылығы заңын ашты.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Қара топырақ (Чернозем):</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Әлемдегі <b class="text-cyan-300 font-bold">қарашіріндісі (гумусы) ең мол әрі ең құнарлы топырақ түрі</b> (гумус үлесі 6–9%-ға, кейде 12%-ға жетеді).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Дала зонасында мол шөптесін өсімдіктердің жыл сайын шіруінен қалыптасады.</li>
+</ul>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>🌱</span>
+<span>2-СЫЗБА: ДОКУЧАЕВТЫҢ ТОПЫРАҚ ЗОНАЛЫЛЫҒЫ ЖӘНЕ ҚАРА ТОПЫРАҚ</span>
+</span>
+<span class="text-[10px] bg-emerald-500/10 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-500/20 font-mono">Қара топырақ: 6-9% гумус • В.В. Докучаев</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 220">
+<!-- Soil profile column -->
+<rect fill="#1e293b" height="50" stroke="#334155" width="140" x="40" y="30"></rect>
+<text fill="#f8fafc" font-size="10" font-weight="bold" text-anchor="middle" x="110" y="55">A ҚАБАТЫ (Гумус)</text>
+<text fill="#34d399" font-size="9" text-anchor="middle" x="110" y="70">Қарашірінді (6–9%)</text>
+<rect fill="#78350f" height="50" stroke="#b45309" width="140" x="40" y="80"></rect>
+<text fill="#fed7aa" font-size="10" font-weight="bold" text-anchor="middle" x="110" y="105">B ҚАБАТЫ (Шайылу)</text>
+<text fill="#cbd5e1" font-size="8" text-anchor="middle" x="110" y="120">Саз, минералдар</text>
+<rect fill="#334155" height="50" stroke="#475569" width="140" x="40" y="130"></rect>
+<text fill="#94a3b8" font-size="10" font-weight="bold" text-anchor="middle" x="110" y="155">C ҚАБАТЫ (Аналық тау жынысы)</text>
+<!-- Side theory card -->
+<rect fill="#0b1329" height="175" rx="8" stroke="#1e293b" width="460" x="210" y="25"></rect>
+<text fill="#34d399" font-size="12" font-weight="bold" text-anchor="middle" x="440" y="50">В.В. ДОКУЧАЕВ — ТОПЫРАҚТАНУ ҒЫЛЫМЫНЫҢ АТАСЫ</text>
+<text fill="#f8fafc" font-size="10" font-weight="bold" x="230" y="80">1. Қара топырақ (Чернозем):</text>
+<text fill="#cbd5e1" font-size="9" x="240" y="98">Дала зонасында шөптесін өсімдіктердің шіруінен түзіледі. Гумус мөлшері ең жоғары құнарлы топырақ.</text>
+<text fill="#fbbf24" font-size="10" font-weight="bold" x="230" y="125">2. Топырақ түзуші 5 фактор:</text>
+<text fill="#cbd5e1" font-size="9" x="240" y="143">Аналық жыныс + Климат + Тірі ағзалар + Рельеф + Уақыт</text>
+<text fill="#38bdf8" font-size="10" font-weight="bold" text-anchor="middle" x="440" y="180">Ендік зоналық заңы бойынша экватордан полюске өзгереді</text>
+</svg>
+</div>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>3. Жер шарының негізгі табиғат зоналары</span></h4>
+<ol class="space-y-3 my-2.5 ml-6 list-none"><li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">1.</span><b class="text-emerald-300 font-bold">Ылғалды мәңгі жасыл экваторлық ормандар (гилея, сельва):</b><ul class="space-y-1.5 my-2 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Көпқабатты қалың ормандар, ағаш діңіне оратылған лианалар мен эпифиттер өте көп.</li>
+</ul></li><li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">2.</span><b class="text-emerald-300 font-bold">Саванналар мен сирек ормандар:</b><ul class="space-y-1.5 my-2 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Субэкваторлық белдеудегі биік шөптесін өсімдіктер, алып баобабтар, пілдер мен керіктер аймағы.</li>
+</ul></li><li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">3.</span><b class="text-emerald-300 font-bold">Шөлдер мен шөлейттер:</b><ul class="space-y-1.5 my-2 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Тропиктік және қоңыржай белдеулердегі ылғалы тым аз аридті аумақтар (Сахара, Атакама, Қызылқұм).</li>
+</ul></li><li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">4.</span><b class="text-emerald-300 font-bold">Далалар мен орманды далалар:</b><ul class="space-y-1.5 my-2 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Солтүстік Америкада — <b class="text-cyan-300 font-bold">Прерий</b>, Оңтүстік Америкада — <b class="text-cyan-300 font-bold">Пампа</b> деп аталады.</li>
+</ul></li><li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">5.</span><b class="text-emerald-300 font-bold">Тайга:</b><ul class="space-y-1.5 my-2 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Солтүстік жартышардың қоңыржай белдеуіндегі шырша, қарағай, самырсын сияқты қылқан жапырақты ормандар зонасы.</li>
+</ul></li><li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">6.</span><b class="text-emerald-300 font-bold">Тундра және Арктикалық шөлдер:</b><ul class="space-y-1.5 my-2 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Мүк, қына өсетін, ағашсыз мәңгі тоң аймағы. Ақ аюлар мен морждар мекендейді.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Мұхиттағы табиғат зоналары:</b> Құрлықтағыдай өсімдік жамылғысы тұтас болмағандықтан, олар <b class="text-cyan-300 font-bold">климаттық белдеулердің атауымен</b> (мысалы, экваторлық, қоңыржай сулар) аталады.</li>
+</ul></li></ol>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>🌲</span>
+<span>3-СЫЗБА: ЖЕР ШАРЫНЫҢ НЕГІЗГІ ТАБИҒАТ ЗОНАЛАРЫ</span>
+</span>
+<span class="text-[10px] bg-purple-500/10 text-purple-300 px-2.5 py-0.5 rounded-full border border-purple-500/20 font-mono">Ылғалды орман • Саванна • Шөл • Прерий • Тайга • Тундра</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 220">
+<!-- Zone strips -->
+<rect fill="#047857" fill-opacity="0.3" height="40" rx="4" stroke="#10b981" width="200" x="25" y="25"></rect>
+<text fill="#34d399" font-size="10" font-weight="bold" x="35" y="42">ЫЛҒАЛДЫ ЭКВАТОРЛЫҚ ОРМАН</text>
+<text fill="#cbd5e1" font-size="8" x="35" y="56">Көпқабатты, лианалар, эпифиттер</text>
+<rect fill="#ca8a04" fill-opacity="0.3" height="40" rx="4" stroke="#f59e0b" width="200" x="250" y="25"></rect>
+<text fill="#fbbf24" font-size="10" font-weight="bold" x="260" y="42">САВАННАЛАР МЕН СИРЕК ОРМАН</text>
+<text fill="#cbd5e1" font-size="8" x="260" y="56">Баобаб, акация, пілдер, керіктер</text>
+<rect fill="#b45309" fill-opacity="0.3" height="40" rx="4" stroke="#f97316" width="200" x="475" y="25"></rect>
+<text fill="#fb923c" font-size="10" font-weight="bold" x="485" y="42">ТРОПИКТІК ШӨЛДЕР</text>
+<text fill="#cbd5e1" font-size="8" x="485" y="56">Сахара, Атакама (аридті климат)</text>
+<rect fill="#15803d" fill-opacity="0.3" height="40" rx="4" stroke="#22c55e" width="200" x="25" y="80"></rect>
+<text fill="#86efac" font-size="10" font-weight="bold" x="35" y="97">ДАЛАЛАР (ПРЕРИЙ, ПАМПА)</text>
+<text fill="#cbd5e1" font-size="8" x="35" y="111">Солт. Америка: Прерий • Оңт: Пампа</text>
+<rect fill="#0f766e" fill-opacity="0.3" height="40" rx="4" stroke="#14b8a6" width="200" x="250" y="80"></rect>
+<text fill="#2dd4bf" font-size="10" font-weight="bold" x="260" y="97">ТАЙГА (Қылқан жапырақты)</text>
+<text fill="#cbd5e1" font-size="8" x="260" y="111">Шырша, қарағай, күзен, қоңыр аю</text>
+<rect fill="#0284c7" fill-opacity="0.3" height="40" rx="4" stroke="#38bdf8" width="200" x="475" y="80"></rect>
+<text fill="#38bdf8" font-size="10" font-weight="bold" x="485" y="97">ТУНДРА ЖӘНЕ АРКТИКА</text>
+<text fill="#cbd5e1" font-size="8" x="485" y="111">Мүк, қына, мәңгі тоң, ақ аю, морж</text>
+<!-- Oceanic nature zones explanation -->
+<rect fill="#0b1329" height="60" rx="6" stroke="#1e293b" width="650" x="25" y="140"></rect>
+<text fill="#38bdf8" font-size="11" font-weight="bold" text-anchor="middle" x="350" y="162">МҰХИТТАҒЫ ТАБИҒАТ ЗОНАЛАРЫ КЛИМАТТЫҚ БЕЛДЕУЛЕРМЕН АТАЛАДЫ</text>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="350" y="182">Себебі мұхитта өсімдіктер құрлықтағыдай біркелкі тұтас өспейді (Экваторлық, Қоңыржай, Полярлық сулар)</text>
+</svg>
+</div>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>4. Биіктік белдеулік (А. Гумбольдт заңы)</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Биіктік белдеулік</b> — тау етегінен шыңына қарай климаттың суып, табиғат зоналарының заңды түрде ауысуы.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Белдеулер саны:</b></li>
+</ul>
+<ol class="space-y-2 my-2.5 ml-6 list-none">
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">1.</span>Таудың абсолюттік биіктігіне (тау неғұрлым биік болса, белдеулер көп болады);</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">2.</span>Таудың географиялық орнына (экваторға неғұрлым жақын болса, белдеулер спектрі соғұрлым толық болады) байланысты.</li>
+</ol>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>🏔️</span>
+<span>4-СЫЗБА: ТАУЛАРДАҒЫ БИІКТІК БЕЛДЕУЛІК (ГУМБОЛЬДТ ЗАҢЫ)</span>
+</span>
+<span class="text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono">Дала -&gt; Орман -&gt; Субальпі -&gt; Альпі -&gt; Мұздық</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 220">
+<!-- Mountain triangle with tiers -->
+<polygon fill="#1e293b" points="60,195 240,30 420,195" stroke="#475569" stroke-width="2"></polygon>
+<!-- Tiers lines -->
+<!-- Tier 5: Glaciers >3800m -->
+<polygon fill="#f8fafc" points="215,65 240,30 265,65"></polygon>
+<text fill="#0b1329" font-size="8" font-weight="black" text-anchor="middle" x="240" y="55">Нивальды</text>
+<!-- Tier 4: Alpine meadows 3000-3800m -->
+<polygon fill="#10b981" fill-opacity="0.4" points="185,100 295,100 265,65 215,65"></polygon>
+<text fill="#86efac" font-size="8" text-anchor="middle" x="240" y="88">Альпі шалғындары</text>
+<!-- Tier 3: Coniferous forests 1800-3000m -->
+<polygon fill="#047857" fill-opacity="0.5" points="150,140 330,140 295,100 185,100"></polygon>
+<text fill="#a7f3d0" font-size="9" font-weight="bold" text-anchor="middle" x="240" y="125">Қылқан жапырақты (Шырша)</text>
+<!-- Tier 2: Deciduous / steppe foothills <1800m -->
+<polygon fill="#ca8a04" fill-opacity="0.3" points="60,195 420,195 330,140 150,140"></polygon>
+<text fill="#fde047" font-size="9" text-anchor="middle" x="240" y="170">Жалпақ жапырақты / Дала етегі</text>
+<!-- Side rules -->
+<rect fill="#0b1329" height="175" rx="8" stroke="#1e293b" width="240" x="440" y="25"></rect>
+<text fill="#38bdf8" font-size="11" font-weight="bold" text-anchor="middle" x="560" y="50">БЕЛДЕУЛЕР САНЫ ТӘУЕЛДІ:</text>
+<text fill="#f8fafc" font-size="10" font-weight="bold" x="455" y="80">1. Таудың биіктігіне</text>
+<text fill="#cbd5e1" font-size="8" x="465" y="98">Тау неғұрлым биік болса, белдеу көбейеді</text>
+<text fill="#f8fafc" font-size="10" font-weight="bold" x="455" y="125">2. Географиялық ендігіне</text>
+<text fill="#cbd5e1" font-size="8" x="465" y="143">Экваторға жақын тауларда ең толық спектр</text>
+<text fill="#34d399" font-size="9" font-weight="bold" text-anchor="middle" x="560" y="180">Заңды ашқан: А. Гумбольдт</text>
+</svg>
+</div>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>5. Географиялық қабықтың тұтастығы мен ырғақтылығы</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Географиялық қабық</b> — литосфераның үстіңгі, гидросфераның барлық, атмосфераның тропосфералық және биосфераның барлық бөліктерін қамтитын Жердің ең алып табиғи кешені.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Қабық компоненттеріне ЖАТПАЙДЫ:</b> <b class="text-cyan-300 font-bold">АЙ (Луна)</b> — өйткені Ай Жерден тыс орналасқан ғарыштық аспан денесі.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Табиғаттағы ырғақтылық:</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Тәуліктік ырғақ:</b> Күн мен түннің ауысуы, тәуліктік температураның тербелісі, фотосинтез процесі.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Жылдық (маусымдық) ырғақ:</b> Жыл мезгілдерінің алмасуы, ағаштардың жапырақ тастауы, <b class="text-cyan-300 font-bold">құстардың жылы жаққа қайтуы</b>, жануарлардың қысқы ұйқысы.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Табиғат кешендерінің иерархиясы:</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Ғаламдық: Географиялық қабық;</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Аймақтық: Материктер мен мұхиттар, таулар мен жазықтар;</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Жергілікті (кіші кешендер): Тоғай, шалғын, көл, жыра.</li>
+</ul>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>🔄</span>
+<span>5-СЫЗБА: ГЕОГРАФИЯЛЫҚ ҚАБЫҚ ЖӘНЕ ТАБИҒАТТАҒЫ ЫРҒАҚТЫЛЫҚ</span>
+</span>
+<span class="text-[10px] bg-amber-500/10 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/20 font-mono">Тұтастық • Заңдылықтар • Жылдық ырғақ</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 220">
+<rect fill="#0b1329" height="180" rx="8" stroke="#1e293b" width="315" x="20" y="20"></rect>
+<text fill="#38bdf8" font-size="11" font-weight="bold" text-anchor="middle" x="177" y="45">ТАБИҒАТТАҒЫ ЫРҒАҚТЫЛЫҚ (Ритмичность)</text>
+<rect fill="#0284c7" fill-opacity="0.2" height="40" rx="4" stroke="#38bdf8" width="285" x="35" y="60"></rect>
+<text fill="#38bdf8" font-size="10" font-weight="bold" x="45" y="78">1. Тәуліктік ырғақ:</text>
+<text fill="#cbd5e1" font-size="8" x="45" y="93">Күн мен түннің ауысуы, температура тербелісі, фотосинтез</text>
+<rect fill="#10b981" fill-opacity="0.2" height="40" rx="4" stroke="#34d399" width="285" x="35" y="110"></rect>
+<text fill="#34d399" font-size="10" font-weight="bold" x="45" y="128">2. Жылдық (маусымдық) ырғақ:</text>
+<text fill="#cbd5e1" font-size="8" x="45" y="143">Жыл мезгілдері, жапырақ түсу, құстардың жылы жаққа қайтуы</text>
+<text fill="#f59e0b" font-size="9" text-anchor="middle" x="177" y="180">Себебі: Жердің өз білігі мен Күнді айналуы</text>
+<!-- Geographic Envelope Components -->
+<rect fill="#0b1329" height="180" rx="8" stroke="#1e293b" width="315" x="365" y="20"></rect>
+<text fill="#34d399" font-size="11" font-weight="bold" text-anchor="middle" x="522" y="45">ГЕОГРАФИЯЛЫҚ ҚАБЫҚ ҚҰРАУШЫЛАРЫ</text>
+<text fill="#f8fafc" font-size="9" x="385" y="75">• Литосфера (Жер қыртысы, рельеф)</text>
+<text fill="#f8fafc" font-size="9" x="385" y="95">• Атмосфера (Тропосфера ауасы)</text>
+<text fill="#f8fafc" font-size="9" x="385" y="115">• Гидросфера (Сулар)</text>
+<text fill="#f8fafc" font-size="9" x="385" y="135">• Биосфера (Тірі ағзалар және топырақ)</text>
+<line stroke="#1e293b" x1="385" x2="660" y1="145" y2="145"></line>
+<text fill="#ef4444" font-size="9" font-weight="bold" text-anchor="middle" x="522" y="165">⚠️ АЙ — ГЕОГРАФИЯЛЫҚ ҚАБЫҚҚА ЖАТПАЙДЫ!</text>
+<text fill="#94a3b8" font-size="8" text-anchor="middle" x="522" y="185">Өйткені ол Жерден тыс ғарыштық дене</text>
+</svg>
+</div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: COMMON EXAM TRAPS & PITFALLS (if available) -->
+    <section class="p-6 sm:p-7 rounded-3xl bg-amber-500/5 border border-amber-500/20 shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-amber-500/20 pb-3">
+        <h3 class="text-base sm:text-lg font-black text-amber-300 flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center text-sm font-black">⚠️</span>
+          <span>ҰБТ қақпандары мен ерекше ескертулер</span>
+        </h3>
+        <span class="text-xs text-amber-400/80 font-bold">
+          Мұқият есте сақтаңыз
+        </span>
+      </div>
+
+      <div class="space-y-2.5 text-xs sm:text-sm text-slate-200">
+        <p class="leading-relaxed flex items-start space-x-2"><span class="text-amber-400 shrink-0 mt-0.5">⚠️</span><span>⚠️ Назар аударыңыз: Биосфера бойынша сұрақтар ҰБТ-ның контексттік тесттерінде жиі кездеседі.</span></p>
+      </div>
+    </section>
+
+    <!-- SECTION 4: END-OF-LESSON TEST -->
+    <section class="p-6 sm:p-8 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-6">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-brand-500/10 border border-brand-500/20 text-brand-400 flex items-center justify-center text-sm font-black">3</span>
+          <div>
+            <h3 class="text-base sm:text-lg font-black text-white">
+              Тақырыптық қорытынды тест
+            </h3>
+            <p class="text-xs text-slate-400 mt-0.5">
+              Өту шегі: 80% • Сыйлық: +30 XP
+            </p>
+          </div>
+        </div>
+
+        <div id="testScoreBadge" class="hidden px-3 py-1 rounded-xl bg-space-850 border border-slate-700 text-xs font-bold text-amber-400 font-mono">
+          0%
+        </div>
+      </div>
+
+      <!-- Test Questions Container -->
+      <div id="testQuestionsList" class="space-y-6">
+        <!-- Dynamically populated test questions via JS -->
+      </div>
+
+      <!-- Test Submit & Score Action Bar -->
+      <div class="pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="text-xs text-slate-400" id="testProgressInfo">
+          Барлық сұрақтарға жауап беріп, өзіңізді тексеріңіз.
+        </div>
+        <div class="flex items-center space-x-2.5 w-full sm:w-auto">
+          <button id="btnSubmitTest" onclick="submitLessonTest()" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-brand-500 hover:from-amber-400 hover:to-brand-400 text-space-950 font-black text-xs sm:text-sm shadow-md transition flex items-center justify-center space-x-2">
+            <span>🏁</span>
+            <span>Тестті тексеру</span>
+          </button>
+          <button id="btnResetTest" onclick="resetLessonTest()" class="hidden px-4 py-2.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-bold transition flex items-center justify-center space-x-1">
+            <span>🔄</span>
+            <span>Қайта тапсыру</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- BOTTOM NAVIGATION & FOOTER -->
+    <div class="p-6 rounded-3xl bg-space-900 border border-slate-800 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleLessonComplete()" class="px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-400 text-space-950 font-black text-xs sm:text-sm shadow-md transition flex items-center space-x-2">
+          <span>✓</span>
+          <span id="lblBottomComplete">Сабақты оқылды деп белгілеу (+30 XP)</span>
+        </button>
+      </div>
+
+      <div class="flex items-center space-x-2 text-xs font-bold">
+        <a href="lesson_10_kz.html" class="px-4 py-2 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition">← Алдыңғы сабақ</a>
+        <a href="../index.html?lang=kz#section-sabaktar_reading" class="px-4 py-2 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition">
+          Сабақтар тізімі
+        </a>
+        <a href="lesson_12_kz.html" class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-space-950 transition font-black">Келесі сабақ →</a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- LESSON SCRIPT ENGINE -->
+  <script>
+    const lessonData = {"id": 11, "title_kz": "11-сабақ. Биосфера", "title_ru": "11 урок. Биосфера", "time": "8 мин", "tags": ["Биосфера", "Биосфера"], "terms": [{"kz": "Биосфера", "ru": "Биосфера", "desc_kz": "Жердің тірі ағзалар мекендейтін және олардың әсерінен өзгерген қабығы (В.И. Вернадский теориясы).", "desc_ru": "Оболочка Земли, заселенная живыми организмами и преобразованная их деятельностью."}, {"kz": "В.И. Вернадский", "ru": "В.И. Вернадский", "desc_kz": "Биосфера және ноосфера (ақыл-ой қабығы) туралы іргелі ілімнің негізін қалаған академик-ғалым.", "desc_ru": "Выдающийся ученый-естествоиспытатель, создатель учения о биосфере и ноосфере."}, {"kz": "Географиялық қабық", "ru": "Географическая оболочка", "desc_kz": "Литосфера, атмосфера, гидросфера және биосфераның бір-бірімен тығыз кірігіп, байланысатын тұтас жүйесі.", "desc_ru": "Целостная непрерывная оболочка Земли, где смыкаются литосфера, гидросфера, атмосфера и биосфера."}, {"kz": "Табиғат зонасы", "ru": "Природная зона", "desc_kz": "Жылу мен ылғалдың арақатынасына байланысты ендік бағытта таралған ірі ландшафттық кешен.", "desc_ru": "Крупный природный комплекс, характеризующийся однородными климатическими условиями, почвами и флорой."}, {"kz": "Биологиялық өнімділік", "ru": "Биологическая продуктивность", "desc_kz": "Белгілі бір уақыт ішінде тірі ағзалардың (биомассаның) түзілу жылдамдығы мен көлемі.", "desc_ru": "Способность живых организмов воспроизводить биомассу за единицу времени."}], "theory_kz": "<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>1. Биосфера шекаралары және В.И. Вернадский ілімі</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Биосфера</b> (грек. <i class=\"text-slate-300\">bios</i> — тіршілік, <i class=\"text-slate-300\">sphaira</i> — шар) — Жердегі тірі ағзалар мекендейтін және олардың әрекетінен өзгерген ерекше қабық.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Негізін қалаушы:</b> Орыс ғалымы академик <b class=\"text-cyan-300 font-bold\">В.И. Вернадский</b> 1926 жылы «Биосфера» атты классикалық еңбегін жазып, тірі ағзалардың Жер планетасындағы геологиялық рөлін дәлелдеді.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Биосфераның шекаралары:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Жоғарғы шекарасы:</b> Атмосферадағы <b class=\"text-cyan-300 font-bold\">Озон қабатына дейін (20–25 км)</b> созылады. Озон қабатынан жоғарыда ультракүлгін сәулелер кез келген тіршілікті жойып жібереді.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Төменгі шекарасы:</b> Литосфераның жоғарғы қабатында <b class=\"text-cyan-300 font-bold\">3–4 км тереңдікке</b> дейін (мұнай қабаттарындағы анаэробты бактериялар).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Гидросферада:</b> Тіршілік Дүниежүзілік мұхиттың ең терең түбіне дейін — <b class=\"text-cyan-300 font-bold\">Мариан шұңғымасының 11 022 метріне</b> дейін таралған.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Тірі заттың биомассасы:</b> Құрлықта биомассаның 99%-ын жасыл өсімдіктер құраса, мұхитта керісінше биомассаның басым бөлігін жануарлар мен балықтар құрайды.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🌿</span>\n<span>1-СЫЗБА: БИОСФЕРАНЫҢ ШЕКАРАЛАРЫ ЖӘНЕ ВЕРНАДСКИЙ ІЛІМІ</span>\n</span>\n<span class=\"text-[10px] bg-emerald-500/10 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-500/20 font-mono\">Жоғарғы: Озон қабаты (20-25 км) • Төменгі: 3-4 км</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<!-- Atmosphere top zone -->\n<rect fill=\"#6366f1\" fill-opacity=\"0.2\" height=\"35\" stroke=\"#818cf8\" width=\"640\" x=\"30\" y=\"20\"></rect>\n<text fill=\"#a5b4fc\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"42\">ЖОҒАРҒЫ ШЕКАРА: ОЗОН ҚАБАТЫ (О3, 20–25 км биіктік)</text>\n<!-- Troposphere and Ocean middle zone (Active life) -->\n<rect fill=\"#10b981\" fill-opacity=\"0.15\" height=\"90\" stroke=\"#34d399\" width=\"310\" x=\"30\" y=\"60\"></rect>\n<text fill=\"#34d399\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"185\" y=\"85\">ҚҰРЛЫҚТЫҚ ТІРШІЛІК (Тропосфера)</text>\n<text fill=\"#f8fafc\" font-size=\"9\" text-anchor=\"middle\" x=\"185\" y=\"105\">Өсімдіктер, жануарлар, топырақ</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"185\" y=\"125\">Тірі заттың 99%-ы құрлықта</text>\n<!-- Ocean zone -->\n<rect fill=\"#0284c7\" fill-opacity=\"0.2\" height=\"90\" stroke=\"#38bdf8\" width=\"320\" x=\"350\" y=\"60\"></rect>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"510\" y=\"85\">ГИДРОСФЕРА (Мұхит түбіне дейін)</text>\n<text fill=\"#f8fafc\" font-size=\"9\" text-anchor=\"middle\" x=\"510\" y=\"105\">Тіршілік барлық 11 022 м тереңдікте бар</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"510\" y=\"125\">Планктон, нектон, бентос</text>\n<!-- Lithosphere bottom zone -->\n<rect fill=\"#78350f\" fill-opacity=\"0.3\" height=\"45\" stroke=\"#b45309\" width=\"640\" x=\"30\" y=\"155\"></rect>\n<text fill=\"#fed7aa\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"175\">ТӨМЕНГІ ШЕКАРА: ЛИТОСФЕРАДА 3–4 км (Анаэробты бактериялар)</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" text-anchor=\"middle\" x=\"350\" y=\"192\">В.И. Вернадский: «Биосфера туралы ілімнің негізін қалаушы»</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>2. Топырақ жамылғысы және В.В. Докучаев</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Топырақ</b> — Жер бетінің құнарлылығы (өнім беретін қасиеті) бар ең үстіңгі борпылдақ қабаты. Ол литосфера, атмосфера, гидросфера және тірі ағзалардың өзара әрекеттесуінен түзіледі.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Топырақтану ғылымының негізін салушы:</b> Орыс ғалымы <b class=\"text-cyan-300 font-bold\">В.В. Докучаев</b>. Ол топырақ түзуші 5 факторды (аналық жыныс, климат, ағзалар, жер бедері, уақыт) анықтап, табиғат зоналылығы заңын ашты.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Қара топырақ (Чернозем):</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Әлемдегі <b class=\"text-cyan-300 font-bold\">қарашіріндісі (гумусы) ең мол әрі ең құнарлы топырақ түрі</b> (гумус үлесі 6–9%-ға, кейде 12%-ға жетеді).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Дала зонасында мол шөптесін өсімдіктердің жыл сайын шіруінен қалыптасады.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🌱</span>\n<span>2-СЫЗБА: ДОКУЧАЕВТЫҢ ТОПЫРАҚ ЗОНАЛЫЛЫҒЫ ЖӘНЕ ҚАРА ТОПЫРАҚ</span>\n</span>\n<span class=\"text-[10px] bg-emerald-500/10 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-500/20 font-mono\">Қара топырақ: 6-9% гумус • В.В. Докучаев</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<!-- Soil profile column -->\n<rect fill=\"#1e293b\" height=\"50\" stroke=\"#334155\" width=\"140\" x=\"40\" y=\"30\"></rect>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"110\" y=\"55\">A ҚАБАТЫ (Гумус)</text>\n<text fill=\"#34d399\" font-size=\"9\" text-anchor=\"middle\" x=\"110\" y=\"70\">Қарашірінді (6–9%)</text>\n<rect fill=\"#78350f\" height=\"50\" stroke=\"#b45309\" width=\"140\" x=\"40\" y=\"80\"></rect>\n<text fill=\"#fed7aa\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"110\" y=\"105\">B ҚАБАТЫ (Шайылу)</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\" x=\"110\" y=\"120\">Саз, минералдар</text>\n<rect fill=\"#334155\" height=\"50\" stroke=\"#475569\" width=\"140\" x=\"40\" y=\"130\"></rect>\n<text fill=\"#94a3b8\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"110\" y=\"155\">C ҚАБАТЫ (Аналық тау жынысы)</text>\n<!-- Side theory card -->\n<rect fill=\"#0b1329\" height=\"175\" rx=\"8\" stroke=\"#1e293b\" width=\"460\" x=\"210\" y=\"25\"></rect>\n<text fill=\"#34d399\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"440\" y=\"50\">В.В. ДОКУЧАЕВ — ТОПЫРАҚТАНУ ҒЫЛЫМЫНЫҢ АТАСЫ</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" x=\"230\" y=\"80\">1. Қара топырақ (Чернозем):</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"240\" y=\"98\">Дала зонасында шөптесін өсімдіктердің шіруінен түзіледі. Гумус мөлшері ең жоғары құнарлы топырақ.</text>\n<text fill=\"#fbbf24\" font-size=\"10\" font-weight=\"bold\" x=\"230\" y=\"125\">2. Топырақ түзуші 5 фактор:</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"240\" y=\"143\">Аналық жыныс + Климат + Тірі ағзалар + Рельеф + Уақыт</text>\n<text fill=\"#38bdf8\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"440\" y=\"180\">Ендік зоналық заңы бойынша экватордан полюске өзгереді</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>3. Жер шарының негізгі табиғат зоналары</span></h4>\n<ol class=\"space-y-3 my-2.5 ml-6 list-none\"><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Ылғалды мәңгі жасыл экваторлық ормандар (гилея, сельва):</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Көпқабатты қалың ормандар, ағаш діңіне оратылған лианалар мен эпифиттер өте көп.</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Саванналар мен сирек ормандар:</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Субэкваторлық белдеудегі биік шөптесін өсімдіктер, алып баобабтар, пілдер мен керіктер аймағы.</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Шөлдер мен шөлейттер:</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Тропиктік және қоңыржай белдеулердегі ылғалы тым аз аридті аумақтар (Сахара, Атакама, Қызылқұм).</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">4.</span><b class=\"text-emerald-300 font-bold\">Далалар мен орманды далалар:</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Солтүстік Америкада — <b class=\"text-cyan-300 font-bold\">Прерий</b>, Оңтүстік Америкада — <b class=\"text-cyan-300 font-bold\">Пампа</b> деп аталады.</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">5.</span><b class=\"text-emerald-300 font-bold\">Тайга:</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Солтүстік жартышардың қоңыржай белдеуіндегі шырша, қарағай, самырсын сияқты қылқан жапырақты ормандар зонасы.</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">6.</span><b class=\"text-emerald-300 font-bold\">Тундра және Арктикалық шөлдер:</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Мүк, қына өсетін, ағашсыз мәңгі тоң аймағы. Ақ аюлар мен морждар мекендейді.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Мұхиттағы табиғат зоналары:</b> Құрлықтағыдай өсімдік жамылғысы тұтас болмағандықтан, олар <b class=\"text-cyan-300 font-bold\">климаттық белдеулердің атауымен</b> (мысалы, экваторлық, қоңыржай сулар) аталады.</li>\n</ul></li></ol>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🌲</span>\n<span>3-СЫЗБА: ЖЕР ШАРЫНЫҢ НЕГІЗГІ ТАБИҒАТ ЗОНАЛАРЫ</span>\n</span>\n<span class=\"text-[10px] bg-purple-500/10 text-purple-300 px-2.5 py-0.5 rounded-full border border-purple-500/20 font-mono\">Ылғалды орман • Саванна • Шөл • Прерий • Тайга • Тундра</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<!-- Zone strips -->\n<rect fill=\"#047857\" fill-opacity=\"0.3\" height=\"40\" rx=\"4\" stroke=\"#10b981\" width=\"200\" x=\"25\" y=\"25\"></rect>\n<text fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\" x=\"35\" y=\"42\">ЫЛҒАЛДЫ ЭКВАТОРЛЫҚ ОРМАН</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" x=\"35\" y=\"56\">Көпқабатты, лианалар, эпифиттер</text>\n<rect fill=\"#ca8a04\" fill-opacity=\"0.3\" height=\"40\" rx=\"4\" stroke=\"#f59e0b\" width=\"200\" x=\"250\" y=\"25\"></rect>\n<text fill=\"#fbbf24\" font-size=\"10\" font-weight=\"bold\" x=\"260\" y=\"42\">САВАННАЛАР МЕН СИРЕК ОРМАН</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" x=\"260\" y=\"56\">Баобаб, акация, пілдер, керіктер</text>\n<rect fill=\"#b45309\" fill-opacity=\"0.3\" height=\"40\" rx=\"4\" stroke=\"#f97316\" width=\"200\" x=\"475\" y=\"25\"></rect>\n<text fill=\"#fb923c\" font-size=\"10\" font-weight=\"bold\" x=\"485\" y=\"42\">ТРОПИКТІК ШӨЛДЕР</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" x=\"485\" y=\"56\">Сахара, Атакама (аридті климат)</text>\n<rect fill=\"#15803d\" fill-opacity=\"0.3\" height=\"40\" rx=\"4\" stroke=\"#22c55e\" width=\"200\" x=\"25\" y=\"80\"></rect>\n<text fill=\"#86efac\" font-size=\"10\" font-weight=\"bold\" x=\"35\" y=\"97\">ДАЛАЛАР (ПРЕРИЙ, ПАМПА)</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" x=\"35\" y=\"111\">Солт. Америка: Прерий • Оңт: Пампа</text>\n<rect fill=\"#0f766e\" fill-opacity=\"0.3\" height=\"40\" rx=\"4\" stroke=\"#14b8a6\" width=\"200\" x=\"250\" y=\"80\"></rect>\n<text fill=\"#2dd4bf\" font-size=\"10\" font-weight=\"bold\" x=\"260\" y=\"97\">ТАЙГА (Қылқан жапырақты)</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" x=\"260\" y=\"111\">Шырша, қарағай, күзен, қоңыр аю</text>\n<rect fill=\"#0284c7\" fill-opacity=\"0.3\" height=\"40\" rx=\"4\" stroke=\"#38bdf8\" width=\"200\" x=\"475\" y=\"80\"></rect>\n<text fill=\"#38bdf8\" font-size=\"10\" font-weight=\"bold\" x=\"485\" y=\"97\">ТУНДРА ЖӘНЕ АРКТИКА</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" x=\"485\" y=\"111\">Мүк, қына, мәңгі тоң, ақ аю, морж</text>\n<!-- Oceanic nature zones explanation -->\n<rect fill=\"#0b1329\" height=\"60\" rx=\"6\" stroke=\"#1e293b\" width=\"650\" x=\"25\" y=\"140\"></rect>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"162\">МҰХИТТАҒЫ ТАБИҒАТ ЗОНАЛАРЫ КЛИМАТТЫҚ БЕЛДЕУЛЕРМЕН АТАЛАДЫ</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"350\" y=\"182\">Себебі мұхитта өсімдіктер құрлықтағыдай біркелкі тұтас өспейді (Экваторлық, Қоңыржай, Полярлық сулар)</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>4. Биіктік белдеулік (А. Гумбольдт заңы)</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Биіктік белдеулік</b> — тау етегінен шыңына қарай климаттың суып, табиғат зоналарының заңды түрде ауысуы.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Белдеулер саны:</b></li>\n</ul>\n<ol class=\"space-y-2 my-2.5 ml-6 list-none\">\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span>Таудың абсолюттік биіктігіне (тау неғұрлым биік болса, белдеулер көп болады);</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span>Таудың географиялық орнына (экваторға неғұрлым жақын болса, белдеулер спектрі соғұрлым толық болады) байланысты.</li>\n</ol>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🏔️</span>\n<span>4-СЫЗБА: ТАУЛАРДАҒЫ БИІКТІК БЕЛДЕУЛІК (ГУМБОЛЬДТ ЗАҢЫ)</span>\n</span>\n<span class=\"text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono\">Дала -&gt; Орман -&gt; Субальпі -&gt; Альпі -&gt; Мұздық</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<!-- Mountain triangle with tiers -->\n<polygon fill=\"#1e293b\" points=\"60,195 240,30 420,195\" stroke=\"#475569\" stroke-width=\"2\"></polygon>\n<!-- Tiers lines -->\n<!-- Tier 5: Glaciers >3800m -->\n<polygon fill=\"#f8fafc\" points=\"215,65 240,30 265,65\"></polygon>\n<text fill=\"#0b1329\" font-size=\"8\" font-weight=\"black\" text-anchor=\"middle\" x=\"240\" y=\"55\">Нивальды</text>\n<!-- Tier 4: Alpine meadows 3000-3800m -->\n<polygon fill=\"#10b981\" fill-opacity=\"0.4\" points=\"185,100 295,100 265,65 215,65\"></polygon>\n<text fill=\"#86efac\" font-size=\"8\" text-anchor=\"middle\" x=\"240\" y=\"88\">Альпі шалғындары</text>\n<!-- Tier 3: Coniferous forests 1800-3000m -->\n<polygon fill=\"#047857\" fill-opacity=\"0.5\" points=\"150,140 330,140 295,100 185,100\"></polygon>\n<text fill=\"#a7f3d0\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"240\" y=\"125\">Қылқан жапырақты (Шырша)</text>\n<!-- Tier 2: Deciduous / steppe foothills <1800m -->\n<polygon fill=\"#ca8a04\" fill-opacity=\"0.3\" points=\"60,195 420,195 330,140 150,140\"></polygon>\n<text fill=\"#fde047\" font-size=\"9\" text-anchor=\"middle\" x=\"240\" y=\"170\">Жалпақ жапырақты / Дала етегі</text>\n<!-- Side rules -->\n<rect fill=\"#0b1329\" height=\"175\" rx=\"8\" stroke=\"#1e293b\" width=\"240\" x=\"440\" y=\"25\"></rect>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"560\" y=\"50\">БЕЛДЕУЛЕР САНЫ ТӘУЕЛДІ:</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" x=\"455\" y=\"80\">1. Таудың биіктігіне</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" x=\"465\" y=\"98\">Тау неғұрлым биік болса, белдеу көбейеді</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" x=\"455\" y=\"125\">2. Географиялық ендігіне</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" x=\"465\" y=\"143\">Экваторға жақын тауларда ең толық спектр</text>\n<text fill=\"#34d399\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"560\" y=\"180\">Заңды ашқан: А. Гумбольдт</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>5. Географиялық қабықтың тұтастығы мен ырғақтылығы</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Географиялық қабық</b> — литосфераның үстіңгі, гидросфераның барлық, атмосфераның тропосфералық және биосфераның барлық бөліктерін қамтитын Жердің ең алып табиғи кешені.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Қабық компоненттеріне ЖАТПАЙДЫ:</b> <b class=\"text-cyan-300 font-bold\">АЙ (Луна)</b> — өйткені Ай Жерден тыс орналасқан ғарыштық аспан денесі.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Табиғаттағы ырғақтылық:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Тәуліктік ырғақ:</b> Күн мен түннің ауысуы, тәуліктік температураның тербелісі, фотосинтез процесі.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Жылдық (маусымдық) ырғақ:</b> Жыл мезгілдерінің алмасуы, ағаштардың жапырақ тастауы, <b class=\"text-cyan-300 font-bold\">құстардың жылы жаққа қайтуы</b>, жануарлардың қысқы ұйқысы.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Табиғат кешендерінің иерархиясы:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Ғаламдық: Географиялық қабық;</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Аймақтық: Материктер мен мұхиттар, таулар мен жазықтар;</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Жергілікті (кіші кешендер): Тоғай, шалғын, көл, жыра.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🔄</span>\n<span>5-СЫЗБА: ГЕОГРАФИЯЛЫҚ ҚАБЫҚ ЖӘНЕ ТАБИҒАТТАҒЫ ЫРҒАҚТЫЛЫҚ</span>\n</span>\n<span class=\"text-[10px] bg-amber-500/10 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/20 font-mono\">Тұтастық • Заңдылықтар • Жылдық ырғақ</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"315\" x=\"20\" y=\"20\"></rect>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"45\">ТАБИҒАТТАҒЫ ЫРҒАҚТЫЛЫҚ (Ритмичность)</text>\n<rect fill=\"#0284c7\" fill-opacity=\"0.2\" height=\"40\" rx=\"4\" stroke=\"#38bdf8\" width=\"285\" x=\"35\" y=\"60\"></rect>\n<text fill=\"#38bdf8\" font-size=\"10\" font-weight=\"bold\" x=\"45\" y=\"78\">1. Тәуліктік ырғақ:</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" x=\"45\" y=\"93\">Күн мен түннің ауысуы, температура тербелісі, фотосинтез</text>\n<rect fill=\"#10b981\" fill-opacity=\"0.2\" height=\"40\" rx=\"4\" stroke=\"#34d399\" width=\"285\" x=\"35\" y=\"110\"></rect>\n<text fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\" x=\"45\" y=\"128\">2. Жылдық (маусымдық) ырғақ:</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" x=\"45\" y=\"143\">Жыл мезгілдері, жапырақ түсу, құстардың жылы жаққа қайтуы</text>\n<text fill=\"#f59e0b\" font-size=\"9\" text-anchor=\"middle\" x=\"177\" y=\"180\">Себебі: Жердің өз білігі мен Күнді айналуы</text>\n<!-- Geographic Envelope Components -->\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"315\" x=\"365\" y=\"20\"></rect>\n<text fill=\"#34d399\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"522\" y=\"45\">ГЕОГРАФИЯЛЫҚ ҚАБЫҚ ҚҰРАУШЫЛАРЫ</text>\n<text fill=\"#f8fafc\" font-size=\"9\" x=\"385\" y=\"75\">• Литосфера (Жер қыртысы, рельеф)</text>\n<text fill=\"#f8fafc\" font-size=\"9\" x=\"385\" y=\"95\">• Атмосфера (Тропосфера ауасы)</text>\n<text fill=\"#f8fafc\" font-size=\"9\" x=\"385\" y=\"115\">• Гидросфера (Сулар)</text>\n<text fill=\"#f8fafc\" font-size=\"9\" x=\"385\" y=\"135\">• Биосфера (Тірі ағзалар және топырақ)</text>\n<line stroke=\"#1e293b\" x1=\"385\" x2=\"660\" y1=\"145\" y2=\"145\"></line>\n<text fill=\"#ef4444\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"522\" y=\"165\">⚠️ АЙ — ГЕОГРАФИЯЛЫҚ ҚАБЫҚҚА ЖАТПАЙДЫ!</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"522\" y=\"185\">Өйткені ол Жерден тыс ғарыштық дене</text>\n</svg>\n</div>", "theory_ru": "<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>1. Границы биосферы и учение В.И. Вернадского</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Биосфера</b> (греч. <i class=\"text-slate-300\">bios</i> — жизнь, <i class=\"text-slate-300\">sphaira</i> — шар) — оболочка Земли, населенная живыми организмами и преобразованная ими.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Основатель учения:</b> Русский академик <b class=\"text-cyan-300 font-bold\">В.И. Вернадский</b> в 1926 году в труде «Биосфера» доказал планетарную преобразующую геологическую роль живого вещества.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Границы биосферы:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Верхняя граница:</b> В атмосфере ограничена <b class=\"text-cyan-300 font-bold\">Озоновым слоем (20–25 км)</b>, выше которого губительное ультрафиолетовое излучение стерилизует пространство.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Нижняя граница:</b> В земной коре до глубин <b class=\"text-cyan-300 font-bold\">3–4 км</b> (анаэробные бактерии в нефтяных пластах).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">В гидросфере:</b> Охватывает всю толщу Мирового океана до дна Марианской впадины (<b class=\"text-cyan-300 font-bold\">11 022 м</b>).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Биомасса:</b> 99% биомассы суши составляют зеленые растения, тогда как в океане более 90% биомассы приходится на животных.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🌿</span>\n<span>1-СЫЗБА: ГРАНИЦЫ БИОСФЕРЫ И УЧЕНИЕ ВЕРНАДСКОГО</span>\n</span>\n<span class=\"text-[10px] bg-emerald-500/10 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-500/20 font-mono\">Жоғарғы: Озон қабаты (20-25 км) • Төменгі: 3-4 км</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<!-- Atmosphere top zone -->\n<rect fill=\"#6366f1\" fill-opacity=\"0.2\" height=\"35\" stroke=\"#818cf8\" width=\"640\" x=\"30\" y=\"20\"></rect>\n<text fill=\"#a5b4fc\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"42\">ВЕРХНЯЯ ГРАНИЦА: ОЗОНОВЫЙ СЛОЙ (20–25 км)</text>\n<!-- Troposphere and Ocean middle zone (Active life) -->\n<rect fill=\"#10b981\" fill-opacity=\"0.15\" height=\"90\" stroke=\"#34d399\" width=\"310\" x=\"30\" y=\"60\"></rect>\n<text fill=\"#34d399\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"185\" y=\"85\">СУША И ТРОПОСФЕРА</text>\n<text fill=\"#f8fafc\" font-size=\"9\" text-anchor=\"middle\" x=\"185\" y=\"105\">Растения, животные, почва</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"185\" y=\"125\">99% биомассы суши — растения</text>\n<!-- Ocean zone -->\n<rect fill=\"#0284c7\" fill-opacity=\"0.2\" height=\"90\" stroke=\"#38bdf8\" width=\"320\" x=\"350\" y=\"60\"></rect>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"510\" y=\"85\">ГИДРОСФЕРА (До дна желобов)</text>\n<text fill=\"#f8fafc\" font-size=\"9\" text-anchor=\"middle\" x=\"510\" y=\"105\">Жизнь проникает на всю глубину 11 022 м</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"510\" y=\"125\">Планктон, нектон, бентос</text>\n<!-- Lithosphere bottom zone -->\n<rect fill=\"#78350f\" fill-opacity=\"0.3\" height=\"45\" stroke=\"#b45309\" width=\"640\" x=\"30\" y=\"155\"></rect>\n<text fill=\"#fed7aa\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"175\">НИЖНЯЯ ГРАНИЦА: 3–4 км В ЗЕМНОЙ КОРЕ (Бактерии)</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" text-anchor=\"middle\" x=\"350\" y=\"192\">В.И. Вернадский — создатель учения о биосфере и ноосфере</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>2. Почвенный покров и учение В.В. Докучаева</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Почва</b> — верхний плодородный слой земной коры, обладающий уникальным свойством плодородия. Возникает на стыке всех геосфер.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Основатель почвоведения:</b> Русский ученый <b class=\"text-cyan-300 font-bold\">В.В. Докучаев</b>. Сформулировал закон широтной зональности почв и выделил 5 факторов почвообразования.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Чернозем:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Самая плодородная почва на планете с максимальным содержанием <b class=\"text-cyan-300 font-bold\">гумуса (перегноя)</b> от 6 до 9% и более.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Формируется в зоне степей при разложении богатой травянистой растительности.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🌱</span>\n<span>2-СЫЗБА: ЗОНАЛЬНОСТЬ ПОЧВ ДОКУЧАЕВА И ЧЕРНОЗЕМЫ</span>\n</span>\n<span class=\"text-[10px] bg-emerald-500/10 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-500/20 font-mono\">Қара топырақ: 6-9% гумус • В.В. Докучаев</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<!-- Soil profile column -->\n<rect fill=\"#1e293b\" height=\"50\" stroke=\"#334155\" width=\"140\" x=\"40\" y=\"30\"></rect>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"110\" y=\"55\">A ҚАБАТЫ (Гумус)</text>\n<text fill=\"#34d399\" font-size=\"9\" text-anchor=\"middle\" x=\"110\" y=\"70\">Қарашірінді (6–9%)</text>\n<rect fill=\"#78350f\" height=\"50\" stroke=\"#b45309\" width=\"140\" x=\"40\" y=\"80\"></rect>\n<text fill=\"#fed7aa\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"110\" y=\"105\">B ҚАБАТЫ (Шайылу)</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\" x=\"110\" y=\"120\">Саз, минералдар</text>\n<rect fill=\"#334155\" height=\"50\" stroke=\"#475569\" width=\"140\" x=\"40\" y=\"130\"></rect>\n<text fill=\"#94a3b8\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"110\" y=\"155\">C ҚАБАТЫ (Аналық тау жынысы)</text>\n<!-- Side theory card -->\n<rect fill=\"#0b1329\" height=\"175\" rx=\"8\" stroke=\"#1e293b\" width=\"460\" x=\"210\" y=\"25\"></rect>\n<text fill=\"#34d399\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"440\" y=\"50\">В.В. ДОКУЧАЕВ — ОСНОВАТЕЛЬ ПОЧВОВЕДЕНИЯ</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" x=\"230\" y=\"80\">1. Чернозем:</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"240\" y=\"98\">Формируется под степной растительностью, богат гумусом (6-9%), царь почв.</text>\n<text fill=\"#fbbf24\" font-size=\"10\" font-weight=\"bold\" x=\"230\" y=\"125\">2. 5 факторов почвообразования:</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"240\" y=\"143\">Материнская порода + Климат + Организмы + Рельеф + Время</text>\n<text fill=\"#38bdf8\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"440\" y=\"180\">Закон широтной зональности управляет сменой почв</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>3. Природные зоны Земли</span></h4>\n<ol class=\"space-y-3 my-2.5 ml-6 list-none\"><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Влажные экваториальные леса (гилея, сельва):</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Многоярусные вечнозеленые леса, изобилие древесных лиан и эпифитов.</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Саванны и редколесья:</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Субэкваториальный пояс с травами в рост человека, баобабами и крупными стадами копытных.</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Пустыни:</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Аридные области тропиков и умеренного пояса (Сахара, Атакама).</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">4.</span><b class=\"text-emerald-300 font-bold\">Степи:</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">В Северной Америке называются <b class=\"text-cyan-300 font-bold\">Прериями</b>, в Южной Америке — <b class=\"text-cyan-300 font-bold\">Пампой</b>.</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">5.</span><b class=\"text-emerald-300 font-bold\">Тайга:</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Зона хвойных бореальных лесов (ель, сосна, лиственница, кедр) умеренного пояса.</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">6.</span><b class=\"text-emerald-300 font-bold\">Тундра и арктические пустыни:</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Безлесные ландшафты мхов, лишайников и вечной мерзлоты.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Природные зоны океана:</b> Называются <b class=\"text-cyan-300 font-bold\">по климатическим поясам</b>, так как водная растительность не образует сплошного ковра.</li>\n</ul></li></ol>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🌲</span>\n<span>3-СЫЗБА: ПРИРОДНЫЕ ЗОНЫ ЗЕМНОГО ШАРА</span>\n</span>\n<span class=\"text-[10px] bg-purple-500/10 text-purple-300 px-2.5 py-0.5 rounded-full border border-purple-500/20 font-mono\">Ылғалды орман • Саванна • Шөл • Прерий • Тайга • Тундра</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<!-- Zone strips -->\n<rect fill=\"#047857\" fill-opacity=\"0.3\" height=\"40\" rx=\"4\" stroke=\"#10b981\" width=\"200\" x=\"25\" y=\"25\"></rect>\n<text fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\" x=\"35\" y=\"42\">ВЛАЖНЫЕ ЭКВАТОРИАЛЬНЫЕ</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" x=\"35\" y=\"56\">Көпқабатты, лианалар, эпифиттер</text>\n<rect fill=\"#ca8a04\" fill-opacity=\"0.3\" height=\"40\" rx=\"4\" stroke=\"#f59e0b\" width=\"200\" x=\"250\" y=\"25\"></rect>\n<text fill=\"#fbbf24\" font-size=\"10\" font-weight=\"bold\" x=\"260\" y=\"42\">САВАННЫ И РЕДКОЛЕСЬЯ</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" x=\"260\" y=\"56\">Баобаб, акация, пілдер, керіктер</text>\n<rect fill=\"#b45309\" fill-opacity=\"0.3\" height=\"40\" rx=\"4\" stroke=\"#f97316\" width=\"200\" x=\"475\" y=\"25\"></rect>\n<text fill=\"#fb923c\" font-size=\"10\" font-weight=\"bold\" x=\"485\" y=\"42\">ТРОПИЧЕСКИЕ ПУСТЫНИ</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" x=\"485\" y=\"56\">Сахара, Атакама (аридті климат)</text>\n<rect fill=\"#15803d\" fill-opacity=\"0.3\" height=\"40\" rx=\"4\" stroke=\"#22c55e\" width=\"200\" x=\"25\" y=\"80\"></rect>\n<text fill=\"#86efac\" font-size=\"10\" font-weight=\"bold\" x=\"35\" y=\"97\">СТЕПИ (ПРЕРИИ, ПАМПА)</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" x=\"35\" y=\"111\">Солт. Америка: Прерий • Оңт: Пампа</text>\n<rect fill=\"#0f766e\" fill-opacity=\"0.3\" height=\"40\" rx=\"4\" stroke=\"#14b8a6\" width=\"200\" x=\"250\" y=\"80\"></rect>\n<text fill=\"#2dd4bf\" font-size=\"10\" font-weight=\"bold\" x=\"260\" y=\"97\">ТАЙГА (Хвойные леса)</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" x=\"260\" y=\"111\">Шырша, қарағай, күзен, қоңыр аю</text>\n<rect fill=\"#0284c7\" fill-opacity=\"0.3\" height=\"40\" rx=\"4\" stroke=\"#38bdf8\" width=\"200\" x=\"475\" y=\"80\"></rect>\n<text fill=\"#38bdf8\" font-size=\"10\" font-weight=\"bold\" x=\"485\" y=\"97\">ТУНДРА И АРКТИКА</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" x=\"485\" y=\"111\">Мүк, қына, мәңгі тоң, ақ аю, морж</text>\n<!-- Oceanic nature zones explanation -->\n<rect fill=\"#0b1329\" height=\"60\" rx=\"6\" stroke=\"#1e293b\" width=\"650\" x=\"25\" y=\"140\"></rect>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"162\">ПРИРОДНЫЕ ЗОНЫ ОКЕАНА НАЗЫВАЮТСЯ ПО КЛИМАТИЧЕСКИМ ПОЯСАМ</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"350\" y=\"182\">Потому что в океане растительность не образует сплошного покрова, как на суше</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>4. Высотная поясность (Закон А. Гумбольдта)</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Высотная поясность</b> — закономерная смена природных комплексов от подножия к вершинам гор по мере падения температуры.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Число высотных поясов зависит от:</b></li>\n</ul>\n<ol class=\"space-y-2 my-2.5 ml-6 list-none\">\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span>Абсолютной высоты горного массива;</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span>Географической широты (ближе к экватору спектр поясов полнее).</li>\n</ol>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🏔️</span>\n<span>4-СЫЗБА: ВЫСОТНАЯ ПОЯСНОСТЬ В ГОРАХ (ЗАКОН ГУМБОЛЬДТА)</span>\n</span>\n<span class=\"text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono\">Дала -&gt; Орман -&gt; Субальпі -&gt; Альпі -&gt; Мұздық</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<!-- Mountain triangle with tiers -->\n<polygon fill=\"#1e293b\" points=\"60,195 240,30 420,195\" stroke=\"#475569\" stroke-width=\"2\"></polygon>\n<!-- Tiers lines -->\n<!-- Tier 5: Glaciers >3800m -->\n<polygon fill=\"#f8fafc\" points=\"215,65 240,30 265,65\"></polygon>\n<text fill=\"#0b1329\" font-size=\"8\" font-weight=\"black\" text-anchor=\"middle\" x=\"240\" y=\"55\">Нивальды</text>\n<!-- Tier 4: Alpine meadows 3000-3800m -->\n<polygon fill=\"#10b981\" fill-opacity=\"0.4\" points=\"185,100 295,100 265,65 215,65\"></polygon>\n<text fill=\"#86efac\" font-size=\"8\" text-anchor=\"middle\" x=\"240\" y=\"88\">Альпі шалғындары</text>\n<!-- Tier 3: Coniferous forests 1800-3000m -->\n<polygon fill=\"#047857\" fill-opacity=\"0.5\" points=\"150,140 330,140 295,100 185,100\"></polygon>\n<text fill=\"#a7f3d0\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"240\" y=\"125\">Қылқан жапырақты (Шырша)</text>\n<!-- Tier 2: Deciduous / steppe foothills <1800m -->\n<polygon fill=\"#ca8a04\" fill-opacity=\"0.3\" points=\"60,195 420,195 330,140 150,140\"></polygon>\n<text fill=\"#fde047\" font-size=\"9\" text-anchor=\"middle\" x=\"240\" y=\"170\">Жалпақ жапырақты / Дала етегі</text>\n<!-- Side rules -->\n<rect fill=\"#0b1329\" height=\"175\" rx=\"8\" stroke=\"#1e293b\" width=\"240\" x=\"440\" y=\"25\"></rect>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"560\" y=\"50\">ЧИСЛО ПОЯСОВ ЗАВИСИТ ОТ:</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" x=\"455\" y=\"80\">1. Высоты горы</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" x=\"465\" y=\"98\">Чем выше гора, тем богаче спектр</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" x=\"455\" y=\"125\">2. Географической широты</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" x=\"465\" y=\"143\">У экватора поясов больше всего</text>\n<text fill=\"#34d399\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"560\" y=\"180\">Закон открыл А. Гумбольдт</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>5. Географическая оболочка и ритмичность в природе</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Географическая оболочка</b> — глобальный природный комплекс Земли, где взаимопроникают и взаимодействуют нижняя атмосфера, верхняя литосфера, вся гидросфера и биосфера.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">НЕ входит в состав географической оболочки:</b> <b class=\"text-cyan-300 font-bold\">ЛУНА</b> — внешнее космическое тело.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Ритмичность природных процессов:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Суточная:</b> Смена дня и ночи, суточный ход температур, фотосинтез.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Сезонная (годовая):</b> Смена времен года, листопад, <b class=\"text-cyan-300 font-bold\">сезонная миграция (перелет) птиц</b>, зимняя спячка.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Иерархия природных комплексов:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Планетарный: Географическая оболочка;</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Региональные: Материки, океаны, природные зоны;</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Локальные (микроландшафты): Роща (тоғай), балка, озеро, поляна.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🔄</span>\n<span>5-СЫЗБА: ГЕОГРАФИЧЕСКАЯ ОБОЛОЧКА И РИТМИЧНОСТЬ</span>\n</span>\n<span class=\"text-[10px] bg-amber-500/10 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/20 font-mono\">Тұтастық • Заңдылықтар • Жылдық ырғақ</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"315\" x=\"20\" y=\"20\"></rect>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"45\">РИТМИЧНОСТЬ В ПРИРОДЕ</text>\n<rect fill=\"#0284c7\" fill-opacity=\"0.2\" height=\"40\" rx=\"4\" stroke=\"#38bdf8\" width=\"285\" x=\"35\" y=\"60\"></rect>\n<text fill=\"#38bdf8\" font-size=\"10\" font-weight=\"bold\" x=\"45\" y=\"78\">1. Суточные ритмы:</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" x=\"45\" y=\"93\">Күн мен түннің ауысуы, температура тербелісі, фотосинтез</text>\n<rect fill=\"#10b981\" fill-opacity=\"0.2\" height=\"40\" rx=\"4\" stroke=\"#34d399\" width=\"285\" x=\"35\" y=\"110\"></rect>\n<text fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\" x=\"45\" y=\"128\">2. Сезонные (годовые) ритмы:</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" x=\"45\" y=\"143\">Жыл мезгілдері, жапырақ түсу, құстардың жылы жаққа қайтуы</text>\n<text fill=\"#f59e0b\" font-size=\"9\" text-anchor=\"middle\" x=\"177\" y=\"180\">Причина: вращение Земли вокруг оси и Солнца</text>\n<!-- Geographic Envelope Components -->\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"315\" x=\"365\" y=\"20\"></rect>\n<text fill=\"#34d399\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"522\" y=\"45\">КОМПОНЕНТЫ ГЕОГРАФИЧЕСКОЙ ОБОЛОЧКИ</text>\n<text fill=\"#f8fafc\" font-size=\"9\" x=\"385\" y=\"75\">• Литосфера (земная кора и рельеф)</text>\n<text fill=\"#f8fafc\" font-size=\"9\" x=\"385\" y=\"95\">• Атмосфера (воздух тропосферы)</text>\n<text fill=\"#f8fafc\" font-size=\"9\" x=\"385\" y=\"115\">• Гидросфера (воды Земли)</text>\n<text fill=\"#f8fafc\" font-size=\"9\" x=\"385\" y=\"135\">• Биосфера (организмы и почвы)</text>\n<line stroke=\"#1e293b\" x1=\"385\" x2=\"660\" y1=\"145\" y2=\"145\"></line>\n<text fill=\"#ef4444\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"522\" y=\"165\">⚠️ ЛУНА НЕ ВХОДИТ В ГЕОГРАФИЧЕСКУЮ ОБОЛОЧКУ!</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"522\" y=\"185\">Так как Луна — внешнее космическое тело</text>\n</svg>\n</div>", "traps": ["⚠️ Назар аударыңыз: Биосфера бойынша сұрақтар ҰБТ-ның контексттік тесттерінде жиі кездеседі."], "quiz": [{"q": "Биосфера бойынша негізгі ұғымды атаңыз?", "options": ["Биосфера", "Жалпы ұғым", "Қосымша фактор", "Байланыссыз"], "answer": 0, "exp": "Бұл сабақтың өзегі — Биосфера заңдылықтарын түсіну."}], "blooket": "https://dashboard.blooket.com/set/6a84d8514251940f2584c946", "test": {"passingScore": 80, "questions": [{"id": 1, "q_kz": "Дала зонасының қалың шөптесін өсімдіктері шірігенде түзілетін, қарашіріндісі ең мол әрі құнарлы топырақ түрі:", "q_ru": "Наиболее плодородный тип почвы с максимальным содержанием перегноя (гумуса), формирующийся в степях:", "options_kz": ["Күлгін топырақ", "Қара топырақ (чернозем)", "Қоңыр топырақ", "Қызыл-сары топырақ"], "options_ru": ["Подзолистая почва", "Чернозем", "Бурая почва", "Красно-желтая ферраллитная"], "answer": 1, "exp_kz": "Қара топырақ — гумус мөлшері 6-9%-ға жететін, шөптесін өсімдіктердің шіруінен түзілетін ең құнарлы топырақ.", "exp_ru": "Черноземы обладают самым мощным гумусовым горизонтом и служат эталоном естественного плодородия."}, {"id": 2, "q_kz": "Тропик және поляр шеңберлерінің аралығында орналасқан жер шарындағы ең үлкен жылу белдеуі:", "q_ru": "Тепловой пояс Земли, расположенный между тропиками и полярными кругами:", "options_kz": ["Экваторлық белдеу", "Қоңыржай белдеу", "Арктикалық белдеу", "Субтропиктік"], "options_ru": ["Экваториальный пояс", "Умеренный пояс", "Арктический пояс", "Субтропический"], "answer": 1, "exp_kz": "Тропик пен поляр шеңбері арасында қоңыржай белдеу орналасқан, ол құрлықтың ең үлкен ауданын алып жатыр.", "exp_ru": "Умеренный пояс расположен между тропиками и полярными кругами в обоих полушариях."}, {"id": 3, "q_kz": "Дүниежүзілік мұхиттағы табиғат зоналары неліктен климаттық белдеулердің атауымен аталады?", "q_ru": "Почему природные зоны в Мировом океане именуются по названиям климатических поясов?", "options_kz": ["Тек балықтар мекендейтіндіктен", "Мұхитта өсімдіктер құрлықтағыдай біркелкі тұтас жамылғы құрамайтындықтан", "Мұхит тұзды болғандықтан", "Мұз басқандықтан"], "options_ru": ["Из-за обитания только рыб", "Из-за отсутствия сплошного растительного покрова, как на суше", "Из-за солености воды", "Из-за ледяного покрова"], "answer": 1, "exp_kz": "Құрлықта зоналар өсімдікпен (орман, дала) аталса, мұхитта біркелкі өсімдік жамылғысы болмағандықтан, климат белдеуімен аталады.", "exp_ru": "В океане нет сплошного сомкнутого растительного покрова, поэтому водные комплексы выделяют по климатическим поясам."}, {"id": 4, "q_kz": "Солтүстік жартышардың қоңыржай белдеуіндегі қылқан жапырақты (шырша, қарағай) ормандар зонасы:", "q_ru": "Зона бореальных хвойных лесов (ель, сосна, пихта, лиственница) умеренного пояса Северного полушария:", "options_kz": ["Сельва", "Тайга", "Саванна", "Прерий"], "options_ru": ["Сельва", "Тайга", "Саванна", "Прерия"], "answer": 1, "exp_kz": "Тайга — қоңыржай белдеудің суық климатына бейімделген қылқан жапырақты ормандар зонасы.", "exp_ru": "Тайга представляет собой пояс хвойных лесов умеренного пояса Евразии и Северной Америки."}, {"id": 5, "q_kz": "Биосфераның атмосферадағы жоғарғы таралу шекарасын көрсетіңіз:", "q_ru": "Укажите верхнюю границу распространения биосферы в атмосфере:", "options_kz": ["Тропопауза (10–12 км)", "Озон қабатына дейін (20–25 км)", "Мезосфера (50 км)", "Ай беті"], "options_ru": ["Тропопауза (10–12 км)", "До озонового слоя (20–25 км)", "Мезосфера (50 км)", "Поверхность Луны"], "answer": 1, "exp_kz": "Биосфераның жоғарғы шекарасы озон қабатымен (20-25 км) шектеледі, одан әрі қарай өлтіргіш ультракүлгін сәулелер басталады.", "exp_ru": "Жизнь в атмосфере простирается до озонового экрана (20–25 км), задерживающего смертоносный ультрафиолет."}, {"id": 6, "q_kz": "Жыл бойы күн сайын нөсер жаңбыр жауатын және қалың мәңгі жасыл ормандар алып жатқан белдеу:", "q_ru": "Географический пояс с ежедневными ливнями и пышными многоярусными вечнозелеными лесами:", "options_kz": ["Тропиктік белдеу", "Экваторлық белдеу", "Арктикалық белдеу", "Қоңыржай белдеу"], "options_ru": ["Тропический пояс", "Экваториальный пояс", "Арктический пояс", "Умеренный пояс"], "answer": 1, "exp_kz": "Экваторлық белдеуде жыл бойы күн сайын нөсер жаңбыр жауып, ылғалды мәңгі жасыл ормандар қалыптасады.", "exp_ru": "В экваториальном поясе круглый год господствуют высокие температуры и ежедневные ливни, питающие влажные леса."}, {"id": 7, "q_kz": "Табиғаттағы жылдық (маусымдық) ырғақтылықтың айқын мысалын белгілеңіз:", "q_ru": "Укажите яркий пример сезонной (годовой) ритмичности в географической оболочке:", "options_kz": ["Күн мен түннің ауысуы", "Құстардың күзде жылы жаққа қайтуы", "Толысу мен қайту", "Бриз желінің соғуы"], "options_ru": ["Смена дня и ночи", "Осенний перелет птиц на юг", "Прилив и отлив", "Движение бриза"], "answer": 1, "exp_kz": "Құстардың күзде қайтып, көктемде оралуы — Жердің Күнді айналуынан туындайтын маусымдық жылдық ырғақ.", "exp_ru": "Сезонная миграция перелетных птиц — наглядное проявление годовой ритмичности процессов в биосфере."}, {"id": 8, "q_kz": "Солтүстік Америкадағы Кордильера тауларының шығысындағы ұлан-ғайыр дала зонасы қалай аталады?", "q_ru": "Как называются бескрайние травянистые степи Северной Америки к востоку от Кордильер?", "options_kz": ["Сельва", "Пампа", "Прерий", "Пампастар"], "options_ru": ["Сельва", "Пампа", "Прерия", "Валд"], "answer": 2, "exp_kz": "Солтүстік Американың далалары — прерий деп, ал Оңтүстік Американың далалары — пампа деп аталады.", "exp_ru": "Степи Северной Америки в бассейнах Миссисипи и Миссури называют прериями (в Южной Америке — пампа)."}, {"id": 9, "q_kz": "Төмендегілердің қайсысы Жердің географиялық қабығының құрамдас бөлігіне ЖАТПАЙДЫ?", "q_ru": "Что из перечисленного НЕ входит в состав географической оболочки Земли?", "options_kz": ["Жер қыртысы (литосфера)", "Тропосфера ауасы", "Ай (Луна)", "Дүниежүзілік мұхит (гидросфера)"], "options_ru": ["Земная кора (литосфера)", "Воздух тропосферы", "Луна", "Мировой океан (гидросфера)"], "answer": 2, "exp_kz": "Ай — Жердің табиғи серігі, бірақ ол ғарыштық дене болғандықтан Жердің географиялық қабығына кірмейді.", "exp_ru": "Луна — космический спутник Земли, она не входит во внутреннюю структуру географической оболочки нашей планеты."}, {"id": 10, "q_kz": "Географиялық қабықтағы ең кіші (жергілікті) табиғи кешенді (фация/урочище) белгілеңіз:", "q_ru": "Укажите локальный (микромасштабный) природный комплекс среди перечисленных:", "options_kz": ["Еуразия материгі", "Тынық мұхиты", "Тоғай (өзен бойындағы орман)", "Тайга зонасы"], "options_ru": ["Материк Евразия", "Тихий океан", "Роща / тугайный лес", "Зона тайги"], "answer": 2, "exp_kz": "Материктер мен зоналар — ғаламдық және ірі кешендер. Ал тоғай, көл, жыра — шағын жергілікті табиғат кешендері.", "exp_ru": "Роща (тугай) — локальный микрокомплекс (урочище/фация) в отличие от планетарных материков и зон."}]}, "pdf_kz": "https://drive.google.com/file/d/1uYn8hDmGWiNgdeWjSn6aJ2UuaeNcnjDS/view?usp=sharing", "pdf_ru": "https://drive.google.com/file/d/1Lyj8NcA16UPLhtOvDRHpTzUjjJjc9sQV/view?usp=drive_link"};
+    const currentLang = 'kz';
+    let userTestAnswers = {};
+    let isTestSubmitted = false;
+
+    // Render Test Questions
+    function renderTestQuestions() {
+      const container = document.getElementById('testQuestionsList');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const testObj = lessonData.test;
+      if (!testObj || !testObj.questions || testObj.questions.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-400">Тест готовится / Тест дайындалуда.</p>';
+        return;
+      }
+
+      const isRu = (currentLang === 'ru');
+      const letters = ['A', 'B', 'C', 'D', 'E'];
+
+      testObj.questions.forEach((q, idx) => {
+        const qCard = document.createElement('div');
+        qCard.className = 'p-5 rounded-2xl bg-space-850 border border-slate-800 space-y-3';
+
+        const qPrompt = isRu ? (q.q_ru || q.q_kz) : q.q_kz;
+        const options = isRu ? (q.options_ru || q.options_kz) : q.options_kz;
+        const exp = isRu ? (q.exp_ru || q.exp_kz) : q.exp_kz;
+
+        qCard.innerHTML = `
+          <div class="flex items-center justify-between gap-2 border-b border-slate-800/80 pb-2">
+            <span class="text-xs font-bold text-slate-400 uppercase">
+              ${isRu ? 'Вопрос ' + (idx + 1) : 'Сұрақ ' + (idx + 1)}
+            </span>
+            <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-bold">1 балл</span>
+          </div>
+          <p class="text-xs sm:text-sm font-semibold text-slate-100 leading-relaxed">${qPrompt}</p>
+        `;
+
+        const optContainer = document.createElement('div');
+        optContainer.className = 'space-y-2 pt-1';
+
+        const selectedAnswer = userTestAnswers[q.id];
+
+        options.forEach((optText, optIdx) => {
+          const isSelected = selectedAnswer === optIdx;
+          const isCorrect = q.answer === optIdx;
+
+          const optDiv = document.createElement('div');
+          optDiv.className = 'p-3 rounded-xl border text-xs font-medium cursor-pointer transition flex items-center space-x-2.5 ';
+
+          if (isTestSubmitted) {
+            if (isCorrect) {
+              optDiv.className += 'bg-emerald-500/15 border-emerald-500 text-emerald-200 font-bold';
+            } else if (isSelected) {
+              optDiv.className += 'bg-rose-500/15 border-rose-500 text-rose-200';
+            } else {
+              optDiv.className += 'bg-space-900/50 border-slate-800 text-slate-500';
+            }
+          } else {
+            if (isSelected) {
+              optDiv.className += 'bg-cyan-500/15 border-cyan-500 text-cyan-200 font-bold';
+            } else {
+              optDiv.className += 'bg-space-900 hover:bg-space-800 border-slate-800 hover:border-slate-700 text-slate-300';
+            }
+          }
+
+          const badge = document.createElement('span');
+          badge.className = 'w-5 h-5 rounded-md text-[10px] font-black flex items-center justify-center shrink-0 ' +
+            (isSelected ? 'bg-cyan-500 text-space-950' : 'bg-space-850 text-slate-400 border border-slate-700');
+          badge.textContent = letters[optIdx] || String(optIdx + 1);
+          optDiv.appendChild(badge);
+
+          const txt = document.createElement('span');
+          txt.className = 'flex-1';
+          txt.textContent = optText;
+          optDiv.appendChild(txt);
+
+          optDiv.onclick = () => {
+            if (isTestSubmitted) return;
+            userTestAnswers[q.id] = optIdx;
+            renderTestQuestions();
+          };
+
+          optContainer.appendChild(optDiv);
+        });
+
+        qCard.appendChild(optContainer);
+
+        // Explanation Box after submission
+        if (isTestSubmitted) {
+          const expBox = document.createElement('div');
+          expBox.className = 'p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-xs text-cyan-200 space-y-1';
+          expBox.innerHTML = `
+            <span class="font-bold text-cyan-300 block">💡 ${isRu ? 'Пояснение:' : 'Түсіндірме:'}</span>
+            <p class="text-slate-300 leading-relaxed">${exp || (isRu ? 'Авторское пояснение к вопросу.' : 'Сұраққа арналған түсіндірме.')}</p>
+          `;
+          qCard.appendChild(expBox);
+        }
+
+        container.appendChild(qCard);
+      });
+    }
+
+    function submitLessonTest() {
+      const testObj = lessonData.test;
+      if (!testObj || !testObj.questions) return;
+
+      const answeredCount = Object.keys(userTestAnswers).length;
+      const total = testObj.questions.length;
+      const isRu = (currentLang === 'ru');
+
+      if (answeredCount < total) {
+        const msg = isRu 
+          ? `Вы ответили только на ${answeredCount} из ${total} вопросов. Завершить тест?` 
+          : `Сіз ${total} сұрақтың ${answeredCount}-не жауап бердіңіз. Тестті аяқтайсыз ба?`;
+        if (!confirm(msg)) return;
+      }
+
+      isTestSubmitted = true;
+      let correct = 0;
+
+      testObj.questions.forEach(q => {
+        if (userTestAnswers[q.id] === q.answer) {
+          correct++;
+        }
+      });
+
+      const percentage = Math.round((correct / total) * 100);
+      const isPassed = percentage >= 80;
+
+      // Update badges & UI
+      const scoreBadge = document.getElementById('testScoreBadge');
+      if (scoreBadge) {
+        scoreBadge.classList.remove('hidden');
+        scoreBadge.textContent = `${correct} / ${total} (${percentage}%)`;
+        scoreBadge.className = 'px-3 py-1 rounded-xl text-xs font-bold font-mono border ' +
+          (isPassed ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-rose-500/20 text-rose-300 border-rose-500/40');
+      }
+
+      const info = document.getElementById('testProgressInfo');
+      if (info) {
+        info.textContent = isPassed 
+          ? (isRu ? `🎉 Поздравляем! Вы сдали тест на ${percentage}% (+30 XP)` : `🎉 Құттықтаймыз! Сіз тестті ${percentage}%-ға тапсырдыңыз (+30 XP)`)
+          : (isRu ? `Результат: ${percentage}%. Для зачета требуется 80%. Попробуйте еще раз.` : `Нәтиже: ${percentage}%. Өту үшін 80% қажет. Қайта тапсырып көріңіз.`);
+      }
+
+      document.getElementById('btnSubmitTest').classList.add('hidden');
+      document.getElementById('btnResetTest').classList.remove('hidden');
+
+      // Save to localStorage
+      try {
+        let scores = JSON.parse(localStorage.getItem('geotany_lesson_scores') || '{}');
+        scores[lessonData.id] = percentage;
+        localStorage.setItem('geotany_lesson_scores', JSON.stringify(scores));
+
+        if (isPassed) {
+          let completed = JSON.parse(localStorage.getItem('geotany_completed_lessons') || '[]');
+          if (!completed.includes(lessonData.id)) {
+            completed.push(lessonData.id);
+            localStorage.setItem('geotany_completed_lessons', JSON.stringify(completed));
+          }
+          let curXp = parseInt(localStorage.getItem('geotany_user_xp') || '0', 10);
+          curXp += 30;
+          localStorage.setItem('geotany_user_xp', curXp.toString());
+        }
+      } catch(e) {}
+
+      renderTestQuestions();
+      updateCompleteButtons();
+    }
+
+    function resetLessonTest() {
+      userTestAnswers = {};
+      isTestSubmitted = false;
+      document.getElementById('testScoreBadge').classList.add('hidden');
+      document.getElementById('btnSubmitTest').classList.remove('hidden');
+      document.getElementById('btnResetTest').classList.add('hidden');
+      document.getElementById('testProgressInfo').textContent = (currentLang === 'ru') 
+        ? 'Ответьте на все вопросы и проверьте свои знания.' 
+        : 'Барлық сұрақтарға жауап беріп, өзіңізді тексеріңіз.';
+      renderTestQuestions();
+    }
+
+    // Toggle Lesson Complete Status
+    function toggleLessonComplete() {
+      let completed = [];
+      try {
+        completed = JSON.parse(localStorage.getItem('geotany_completed_lessons') || '[]');
+      } catch(e) {}
+
+      const isDone = completed.includes(lessonData.id);
+      let curXp = parseInt(localStorage.getItem('geotany_user_xp') || '0', 10);
+
+      if (isDone) {
+        completed = completed.filter(id => id !== lessonData.id);
+        curXp = Math.max(0, curXp - 30);
+      } else {
+        completed.push(lessonData.id);
+        curXp += 30;
+      }
+
+      try {
+        localStorage.setItem('geotany_completed_lessons', JSON.stringify(completed));
+        localStorage.setItem('geotany_user_xp', curXp.toString());
+      } catch(e) {}
+
+      updateCompleteButtons();
+    }
+
+    function updateCompleteButtons() {
+      let completed = [];
+      try {
+        completed = JSON.parse(localStorage.getItem('geotany_completed_lessons') || '[]');
+      } catch(e) {}
+
+      const isDone = completed.includes(lessonData.id);
+      const isRu = (currentLang === 'ru');
+
+      const banner = document.getElementById('lessonCompletedBanner');
+      if (banner) banner.classList.toggle('hidden', !isDone);
+
+      const headerBtn = document.getElementById('btnHeaderComplete');
+      const headerIcon = document.getElementById('headerCheckIcon');
+      const headerText = document.getElementById('headerCompleteText');
+
+      if (headerBtn) {
+        if (isDone) {
+          headerBtn.className = 'px-3 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold transition flex items-center space-x-1.5';
+          if (headerIcon) headerIcon.textContent = '✓';
+          if (headerText) headerText.textContent = isRu ? 'Прочитано' : 'Оқылды';
+        } else {
+          headerBtn.className = 'px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-emerald-400 text-xs font-bold transition flex items-center space-x-1.5';
+          if (headerIcon) headerIcon.textContent = '○';
+          if (headerText) headerText.textContent = isRu ? 'Отметить' : 'Белгілеу';
+        }
+      }
+
+      const bottomLbl = document.getElementById('lblBottomComplete');
+      if (bottomLbl) {
+        bottomLbl.textContent = isDone 
+          ? (isRu ? '✓ Прочитано (Нажмите, чтобы отменить)' : '✓ Оқылды (Өшіру үшін басыңыз)')
+          : (isRu ? 'Отметить как прочитанное (+30 XP)' : 'Сабақты оқылды деп белгілеу (+30 XP)');
+      }
+    }
+
+    // Boot
+    window.addEventListener('DOMContentLoaded', () => {
+      renderTestQuestions();
+      updateCompleteButtons();
+    });
+  </script>
+
+</body>
+</html>

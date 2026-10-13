@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GeoTany • Номенклатура (ГеоКвест)</title>
+  <script>
+    (function() {
+      var urlParams = new URLSearchParams(window.location.search);
+      var lang = urlParams.get('lang') || localStorage.getItem('geotany_lang') || localStorage.getItem('geo_app_lang') || 'kz';
+      var target = (lang === 'kz') ? 'world_geography_game_kz.html' : 'world_geography_game.html';
+      var query = window.location.search;
+      if (!query && lang) {
+        query = '?lang=' + lang;
+      }
+      window.location.replace(target + query);
+    })();
+  </script>
+</head>
+<body style="background:#090d16; color:#fff; font-family:sans-serif; display:flex; align-items:center; justify-content:center; height:100vh; margin:0;">
+  <p>Жүктелуде / Загрузка ГеоКвест...</p>
+</body>
+</html>

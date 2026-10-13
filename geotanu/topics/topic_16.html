@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="kk" class="dark">
+<head>
+  <!-- COURSE ACCESS GUARD: RESTRICT DIRECT ACCESS WITHOUT VALID CODE -->
+  <style id="authCloak">body { display: none !important; }</style>
+  <script>
+    (function() {
+      try {
+        var isAdmin = localStorage.getItem('geotany_admin_auth') === 'true';
+        var sessionStr = localStorage.getItem('geotany_user_session');
+        var isAuthorized = isAdmin;
+        if (!isAuthorized && sessionStr) {
+          var s = JSON.parse(sessionStr);
+          if (s && s.email && (s.courseCode || s.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        var profileStr = localStorage.getItem('geotany_user_profile');
+        if (!isAuthorized && profileStr) {
+          var p = JSON.parse(profileStr);
+          if (p && p.isRegistered && p.email && p.courseCode) {
+            isAuthorized = true;
+          }
+        }
+        if (!isAuthorized) {
+          var target = window.location.pathname.split('/').pop() || 'topics.html';
+          window.location.replace('../index.html?need_course=GEOTANY&redirect=' + encodeURIComponent(target));
+          return;
+        }
+        var cloak = document.getElementById('authCloak');
+        if (cloak) cloak.remove();
+      } catch (err) {
+        window.location.replace('../index.html');
+      }
+    })();
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>#16 Экономикалық география | GeoTany</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50: '#eef2ff', 100: '#e0e7ff', 200: '#c7d2fe', 300: '#a5b4fc', 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 800: '#3730a3', 900: '#312e81' },
+            space: { 800: '#1e293b', 850: '#172033', 900: '#0f172a', 950: '#0b1120' }
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Outfit', 'Inter', sans-serif; }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #0b1120; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+  </style>
+</head>
+<body class="bg-[#070b14] text-slate-100 min-h-screen flex flex-col selection:bg-cyan-500 selection:text-space-950">
+
+  <!-- STICKY TOP NAVBAR -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-space-950/85 border-b border-slate-800/80 px-4 sm:px-8 py-3">
+    <div class="max-w-6xl mx-auto flex items-center justify-between gap-3">
+      <!-- Left: Back Button & Badges -->
+      <div class="flex items-center space-x-2.5 sm:space-x-3 shrink-0">
+        <a href="../index.html#section-zhattau_grammar" id="btnBackToCourse" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white transition"><span>←</span><span id="btnBackToCourseText">Артқа</span></a>
+        <span class="px-2.5 py-1 rounded-full text-xs font-black bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
+          #16
+        </span>
+        <span id="navCatBadge" class="text-xs text-slate-400 font-bold hidden md:inline truncate max-w-[200px]">
+          Экономика
+        </span>
+      </div>
+
+      <!-- Right: Controls (Lang Switcher & Mark Complete) -->
+      <div class="flex items-center space-x-2 sm:space-x-3 shrink-0">
+        <!-- Language Switcher -->
+        <div class="inline-flex p-1 bg-space-900 border border-slate-800 rounded-xl space-x-1">
+          <button id="btnLangKz" onclick="setLang('kz')" class="px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow">
+            KZ
+          </button>
+          <button id="btnLangRu" onclick="setLang('ru')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">
+            RU
+          </button>
+        </div>
+
+        <!-- Mark as Completed Button -->
+        <button id="btnComplete" onclick="toggleComplete()" class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition border border-slate-700 bg-space-900 text-slate-300 hover:text-white hover:border-slate-600">
+          <span id="completeIcon" class="text-sm">○</span>
+          <span id="completeText" class="hidden sm:inline">Меңгерілді</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN TOPIC CONTAINER -->
+  <main class="max-w-5xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-8 space-y-6 flex-1">
+
+    <!-- HERO HEADER CARD -->
+    <div class="p-6 sm:p-7 rounded-2xl bg-space-950/90 border border-slate-800 space-y-3.5 shadow-xl relative overflow-hidden">
+      <div class="absolute -right-12 -top-12 w-48 h-48 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="flex items-center space-x-2">
+        <span id="heroCatBadge" class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-space-850 text-cyan-400 border border-cyan-500/20">
+          Экономика
+        </span>
+        <span class="text-xs text-slate-400">⏱️ ~8-12 мин оқу</span>
+      </div>
+      <h1 id="heroTitle" class="text-xl sm:text-2xl md:text-3xl font-black text-white tracking-tight leading-snug">
+        Экономикалық география
+      </h1>
+      <!-- External Links Bar -->
+      <div class="flex flex-wrap items-center gap-2 pt-1">
+        <a id="btnBlooket" href="https://dashboard.blooket.com/set/6a95f3cec923faa1d82d4004" target="_blank" class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 border border-purple-500/40 text-xs font-bold transition shadow-sm">
+          <span>🎮</span>
+          <span id="btnBlooketText">Blooket ойыны</span>
+        </a>
+        
+      </div>
+    </div>
+
+    <!-- 1. BRIEF SUMMARY CARD -->
+    <section class="p-5 rounded-2xl bg-space-950 border border-brand-500/40 text-xs sm:text-sm text-slate-200 leading-relaxed shadow-lg">
+      <div class="flex items-center space-x-2 text-brand-400 font-extrabold text-xs mb-2">
+        <span>📖</span>
+        <span id="summaryHeader">ТАҚЫРЫПҚА ҚЫСҚАША ШОЛУ</span>
+      </div>
+      <p id="summaryText" class="leading-relaxed">
+        Экономикалық география: табиғат ресурстары мен табиғи-ресурстық әлеует, ресурстардың жіктелуі, ресурспен қамтамасыз етілуді бағалау формулалары, металлургия («Мыс белдеуі», ірі темір кен орындары), отын-энергетика кешені (мұнай фракциялары, газ, ірі көмір алаптары) және электр энергетикасының (ЖЭС, СЭС, АЭС, баламалы көздер) толық базасы.
+      </p>
+    </section>
+
+    <!-- 2. FULL THEORY SECTION -->
+    <section class="p-5 sm:p-7 rounded-2xl bg-space-950 border border-slate-800 space-y-4 shadow-xl">
+      <div class="flex items-center space-x-2 border-b border-slate-800 pb-3">
+        <span class="text-base text-cyan-400 font-black">📚</span>
+        <h2 id="theoryHeader" class="text-xs sm:text-sm font-black text-white uppercase tracking-wider">
+          ТОЛЫҚ ТЕОРИЯЛЫҚ МАТЕРИАЛ МЕН КОНСПЕКТ
+        </h2>
+      </div>
+      <div id="theoryContent">
+        <div class="space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed">
+
+  <!-- 1. НЕГІЗГІ ҰҒЫМДАР МЕН ТАБИҒАТ РЕСУРСТАРЫНЫҢ ЖІКТЕЛУІ -->
+  <div class="p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3">
+    <h4 class="text-sm sm:text-base font-black text-cyan-400 flex items-center space-x-2 border-b border-slate-800 pb-2">
+      <span>🌿</span>
+      <span>1. Негізгі ұғымдар және табиғат ресурстарының жіктелуі</span>
+    </h4>
+    <p>• <b>Табиғат ресурстары</b> — шаруашылықта қолданылатын немесе қолданылуы мүмкін табиғаттың құрамдас бөліктері.</p>
+    <p>• <b>Табиғи-ресурстық әлеует</b> — аумақтағы шаруашылықта пайдаланылатын немесе пайдаланылуы мүмкін табиғи ресурстардың жиынтығы.</p>
+
+    <!-- СХЕМА ЖІКТЕЛУІ (SVG ИНФОГРАФИКА) -->
+    <div class="my-4">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 240" class="w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2">
+  <rect x="250" y="10" width="200" height="35" rx="8" fill="#0284c7" />
+  <text x="350" y="32" fill="#ffffff" font-size="11.5" font-weight="900" text-anchor="middle">ТАБИҒАТ РЕСУРСТАРЫ</text>
+
+  <path d="M 350 45 L 350 65 L 180 65 L 180 85" fill="none" stroke="#64748b" stroke-width="2" />
+  <path d="M 350 45 L 350 65 L 530 65 L 530 85" fill="none" stroke="#64748b" stroke-width="2" />
+
+  <rect x="80" y="85" width="200" height="32" rx="8" fill="#065f46" stroke="#10b981" stroke-width="1.5" />
+  <text x="180" y="105" fill="#34d399" font-size="11" font-weight="800" text-anchor="middle">1. САРҚЫЛМАЙТЫН</text>
+  
+  <rect x="45" y="125" width="270" height="100" rx="8" fill="#0f172a" stroke="#334155" />
+  <text x="60" y="148" fill="#e2e8f0" font-size="9.5">• <tspan font-weight="bold" fill="#34d399">Климаттық ресурстар</tspan> (ауа, жауын)</text>
+  <text x="60" y="170" fill="#e2e8f0" font-size="9.5">• <tspan font-weight="bold" fill="#34d399">Күн энергиясы</tspan> (жарық, жылу)</text>
+  <text x="60" y="192" fill="#e2e8f0" font-size="9.5">• <tspan font-weight="bold" fill="#34d399">Қозғалыс энергиясы:</tspan> жел, судың</text>
+  <text x="70" y="208" fill="#94a3b8" font-size="9">құлау күші, толысу және қайту күші</text>
+
+  <rect x="430" y="85" width="200" height="32" rx="8" fill="#7f1d1d" stroke="#ef4444" stroke-width="1.5" />
+  <text x="530" y="105" fill="#f87171" font-size="11" font-weight="800" text-anchor="middle">2. САРҚЫЛАТЫН</text>
+
+  <rect x="375" y="125" width="145" height="100" rx="8" fill="#0f172a" stroke="#334155" />
+  <text x="447" y="144" fill="#38bdf8" font-size="10" font-weight="bold" text-anchor="middle">Қалпына келетін:</text>
+  <text x="385" y="166" fill="#cbd5e1" font-size="9.5">• Су ресурстары</text>
+  <text x="385" y="186" fill="#cbd5e1" font-size="9.5">• Жер ресурстары</text>
+  <text x="385" y="206" fill="#cbd5e1" font-size="9.5">• Биологиялық</text>
+
+  <rect x="530" y="125" width="155" height="100" rx="8" fill="#0f172a" stroke="#334155" />
+  <text x="607" y="144" fill="#f87171" font-size="10" font-weight="bold" text-anchor="middle">Қалпына келмейтін:</text>
+  <text x="538" y="165" fill="#cbd5e1" font-size="9">• <tspan font-weight="bold" fill="#fbbf24">Отын:</tspan> мұнай, газ, көмір</text>
+  <text x="538" y="183" fill="#cbd5e1" font-size="9">• <tspan font-weight="bold" fill="#fbbf24">Металл:</tspan> темір, түсті</text>
+  <text x="538" y="201" fill="#cbd5e1" font-size="9">• <tspan font-weight="bold" fill="#fbbf24">Химиялық:</tspan> фосфорит, тұз</text>
+</svg>
+    </div>
+
+    <!-- ТАБИҒАТ РЕСУРСТАРЫНЫҢ ТОПТАРЫ КЕСТЕСІ -->
+    <div class="overflow-x-auto mt-3">
+      <table class="w-full text-left text-xs border border-slate-800 rounded-xl overflow-hidden">
+        <thead>
+          <tr class="bg-space-950 text-cyan-400 font-bold border-b border-slate-800">
+            <th class="p-2.5">Минералды ресурстар</th>
+            <th class="p-2.5">Жер ресурстары</th>
+            <th class="p-2.5">Су ресурстары</th>
+            <th class="p-2.5">Биологиялық ресурстар</th>
+            <th class="p-2.5">Агроклиматтық ресурстар</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-800 text-[11px] text-slate-300">
+          <tr>
+            <td class="p-2.5">Кенді (металдар), химиялық, жылу энергетикалық (таскөмір, мұнай, газ)</td>
+            <td class="p-2.5">Жер қоры: өңделетін жер, құнарлы топырақ, шабындық, жайылым</td>
+            <td class="p-2.5">Дүниежүзілік мұхит және құрлық суы (өзен, көл, мұздық)</td>
+            <td class="p-2.5">Жануарлар мен өсімдіктер қоры (орман ресурсы), мұхит биотасы</td>
+            <td class="p-2.5">Белгілі бір жердегі 10°С жоғары температура жиынтығы мен жауын-шашын мөлшері</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 2. РЕСУРСТАРДЫ ЭКОНОМИКАЛЫҚ БАҒАЛАУ МЕН ҚАМТАМАСЫЗ ЕТІЛУ ФОРМУЛАЛАРЫ -->
+  <div class="p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3">
+    <h4 class="text-sm sm:text-base font-black text-amber-400 flex items-center space-x-2 border-b border-slate-800 pb-2">
+      <span>📐</span>
+      <span>2. Экономикалық бағалау және Ресурспен қамтамасыз етілу есептері</span>
+    </h4>
+    <p>• <b>Нақты өлшемдер:</b> тонна (т), гектар (га), текше метр (м³), баррель.</p>
+    <p>• <b>Балдық көрсеткіштер (5 балдық жүйе):</b><br/>
+      &nbsp;&nbsp;<b>0 балл</b> — ресурс мүлде жоқ;<br/>
+      &nbsp;&nbsp;<b>1 балл</b> — ресурстың тек жергілікті маңызы бар;<br/>
+      &nbsp;&nbsp;<b>2 балл</b> — ресурстың аймақтық маңызы бар;<br/>
+      &nbsp;&nbsp;<b>3 балл</b> — ресурстың ұлттық (мемлекеттік) маңызы бар;<br/>
+      &nbsp;&nbsp;<b>4 балл</b> — ресурстың халықаралық маңызы бар.</p>
+    <p>• <b>Қаржылық бағамдар:</b> нақты құны, ресурсты пайдаланғаны үшін төлем.</p>
+    <p>• <b>Ресурспен қамтамасыз етілу</b> — елдің ұлттық байлығының маңызды көрсеткіші. Ол 2 түрлі тәсілмен есептеледі:</p>
+
+    <svg viewBox="0 0 700 190" class="w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2">
+  <text x="350" y="20" fill="#38bdf8" font-size="11" font-weight="900" text-anchor="middle">ТАБИҒИ РЕСУРСТАРДЫ ЭКОНОМИКАЛЫҚ БАҒАЛАУ: 5 БАЛДЫҚ ЖҮЙЕ ЖӘНЕ ФОРМУЛАЛАР</text>
+  
+  <g transform="translate(20, 35)">
+    <rect x="0" y="0" width="125" height="60" rx="8" fill="#1e293b" stroke="#ef4444" stroke-width="1.2"/>
+    <rect x="6" y="6" width="32" height="18" rx="4" fill="#ef4444"/>
+    <text x="22" y="19" fill="#ffffff" font-size="10" font-weight="900" text-anchor="middle">0 б</text>
+    <text x="44" y="19" fill="#f87171" font-size="9" font-weight="bold">Мүлде жоқ</text>
+    <text x="8" y="38" fill="#94a3b8" font-size="8.5">Ресурс қоры</text>
+    <text x="8" y="50" fill="#94a3b8" font-size="8.5">анықталмаған</text>
+
+    <rect x="135" y="0" width="125" height="60" rx="8" fill="#1e293b" stroke="#f59e0b" stroke-width="1.2"/>
+    <rect x="141" y="6" width="32" height="18" rx="4" fill="#f59e0b"/>
+    <text x="157" y="19" fill="#ffffff" font-size="10" font-weight="900" text-anchor="middle">1 б</text>
+    <text x="179" y="19" fill="#fbbf24" font-size="9" font-weight="bold">Жергілікті</text>
+    <text x="143" y="38" fill="#94a3b8" font-size="8.5">Тек бір аудан/</text>
+    <text x="143" y="50" fill="#94a3b8" font-size="8.5">елді мекенге жетеді</text>
+
+    <rect x="270" y="0" width="125" height="60" rx="8" fill="#1e293b" stroke="#10b981" stroke-width="1.2"/>
+    <rect x="276" y="6" width="32" height="18" rx="4" fill="#10b981"/>
+    <text x="292" y="19" fill="#ffffff" font-size="10" font-weight="900" text-anchor="middle">2 б</text>
+    <text x="314" y="19" fill="#34d399" font-size="9" font-weight="bold">Аймақтық</text>
+    <text x="278" y="38" fill="#94a3b8" font-size="8.5">Бірнеше облыс/</text>
+    <text x="278" y="50" fill="#94a3b8" font-size="8.5">аймақ көлемінде</text>
+
+    <rect x="405" y="0" width="125" height="60" rx="8" fill="#1e293b" stroke="#06b6d4" stroke-width="1.2"/>
+    <rect x="411" y="6" width="32" height="18" rx="4" fill="#06b6d4"/>
+    <text x="427" y="19" fill="#ffffff" font-size="10" font-weight="900" text-anchor="middle">3 б</text>
+    <text x="449" y="19" fill="#22d3ee" font-size="9" font-weight="bold">Ұлттық</text>
+    <text x="413" y="38" fill="#94a3b8" font-size="8.5">Мемлекеттік маңызы</text>
+    <text x="413" y="50" fill="#94a3b8" font-size="8.5">зор қорлар</text>
+
+    <rect x="540" y="0" width="120" height="60" rx="8" fill="#1e293b" stroke="#8b5cf6" stroke-width="1.2"/>
+    <rect x="546" y="6" width="32" height="18" rx="4" fill="#8b5cf6"/>
+    <text x="562" y="19" fill="#ffffff" font-size="10" font-weight="900" text-anchor="middle">4 б</text>
+    <text x="584" y="19" fill="#a78bfa" font-size="9" font-weight="bold">Халықаралық</text>
+    <text x="548" y="38" fill="#94a3b8" font-size="8.5">Әлемдік нарыққа</text>
+    <text x="548" y="50" fill="#94a3b8" font-size="8.5">экспортталады</text>
+  </g>
+
+  <g transform="translate(20, 105)">
+    <rect x="0" y="0" width="320" height="70" rx="8" fill="#0f172a" stroke="#0ea5e9" stroke-width="1"/>
+    <text x="160" y="20" fill="#38bdf8" font-size="10" font-weight="bold" text-anchor="middle">1-ФОРМУЛА: ЖЫЛДЫҚ МЕРЗІМГЕ ЕСЕПТЕУ</text>
+    <rect x="15" y="28" width="290" height="24" rx="4" fill="#1e293b"/>
+    <text x="160" y="44" fill="#ffffff" font-size="10.5" font-family="monospace" font-weight="bold" text-anchor="middle">Р = Қор (млрд т) / Өндіру (млрд т/жыл)</text>
+    <text x="160" y="62" fill="#94a3b8" font-size="8.5" text-anchor="middle">Мысалы: 1000 млрд т / 8 млрд т = 125 жылға жетеді</text>
+
+    <rect x="340" y="0" width="320" height="70" rx="8" fill="#0f172a" stroke="#10b981" stroke-width="1"/>
+    <text x="500" y="20" fill="#34d399" font-size="10" font-weight="bold" text-anchor="middle">2-ФОРМУЛА: ЖАН БАСЫНА ШАҚҚАНДАҒЫ ҚОР</text>
+    <rect x="355" y="28" width="290" height="24" rx="4" fill="#1e293b"/>
+    <text x="500" y="44" fill="#ffffff" font-size="10.5" font-family="monospace" font-weight="bold" text-anchor="middle">Р = Қор / Халық саны (адам)</text>
+    <text x="500" y="62" fill="#94a3b8" font-size="8.5" text-anchor="middle">Мысалы: ҚР жері 2 724 900 км² / 20 млн = 13,6 га/адам</text>
+  </g>
+</svg>
+
+    <!-- FORMULA BOXES (SVG/CARDS) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 my-2">
+      <div class="p-3.5 bg-space-950 rounded-xl border border-cyan-500/40">
+        <span class="text-xs font-black text-cyan-300 block mb-1">1-формула: Жылмен есептеу</span>
+        <div class="p-2 bg-space-900 rounded-lg text-center font-mono font-bold text-white text-xs my-1">
+          Қамтамасыз етілу (жыл) = Қор / Жылдық өндіру
+        </div>
+        <span class="text-[11px] text-slate-400 block mt-1">Ресурстың сарқылуға дейінгі мерзімін көрсетеді (мыс., 1000 млрд т / 8 млрд т = 125 жыл).</span>
+      </div>
+
+      <div class="p-3.5 bg-space-950 rounded-xl border border-emerald-500/40">
+        <span class="text-xs font-black text-emerald-300 block mb-1">2-формула: Жан басына шаққанда</span>
+        <div class="p-2 bg-space-900 rounded-lg text-center font-mono font-bold text-white text-xs my-1">
+          Қамтамасыз етілу = Қор / Халық саны
+        </div>
+        <span class="text-[11px] text-slate-400 block mt-1">Бір тұрғынға келетін ресурстың көлемі (га/адам, м³/адам, т/адам).</span>
+      </div>
+    </div>
+
+    
+    <!-- РЕСМИ ҚҰЖАТТАҒЫ 2 БАСТЫ ТАПСЫРМА ЖӘНЕ ЕСЕПТЕУ ТӘСІЛДЕРІ -->
+    <div class="bg-space-950 p-4 rounded-xl border border-cyan-500/50 space-y-3 my-3">
+      <h5 class="text-xs font-black text-cyan-300 uppercase tracking-wider flex items-center space-x-1.5">
+        <span>📌</span>
+        <span>Ресми құжаттағы 2 басты есеп және олардың қадамдық шешуі:</span>
+      </h5>
+
+      <!-- 1-ресми есеп: Мыс қоры -->
+      <div class="p-3 bg-space-900 rounded-lg border border-slate-800 space-y-1.5">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-amber-300">1-ресми мысал (Мыс қорының сарқылу мерзімі):</span>
+          <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-amber-500/20 text-amber-300 border border-amber-500/40">Р = Қ / Т</span>
+        </div>
+        <p class="text-xs text-slate-300"><b>Есеп шарты:</b> 2018 жылы дүниежүзіндегі мыс қоры <b>830 млн т</b>, егер жылына <b>21 млн т</b> мыс өндірілетін болса, мыс қоры қанша жылға жетер еді?</p>
+        <div class="p-2 bg-space-950 rounded border border-slate-800 text-xs font-mono space-y-1">
+          <div class="text-slate-400">Р = Қор / Жылдық тұтыну (өндіру) = 830 млн т / 21 млн т/жыл</div>
+          <div class="text-emerald-400 font-bold">Жауабы: Р = 830 / 21 = 39,5 жыл. Демек, дүниежүзілік мыс қоры 39,5 жылға жетеді!</div>
+        </div>
+      </div>
+
+      <!-- 2-ресми есеп: Канада орманы -->
+      <div class="p-3 bg-space-900 rounded-lg border border-slate-800 space-y-1.5">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-emerald-300">2-ресми мысал (Канаданың жан басына шаққандағы ормандылығы):</span>
+          <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">Р = Қ / Х</span>
+        </div>
+        <p class="text-xs text-slate-300"><b>Есеп шарты:</b> 2021 жылы Канадада <b>3 469 281 км²</b> аумақты орман алып жатыр. Ал халқы <b>36 991 981 адам</b> болса, жан басына шаққандағы ормандылық көрсеткішін есептеңіз.</p>
+        <div class="p-2 bg-space-950 rounded border border-slate-800 text-xs font-mono space-y-1">
+          <div class="text-slate-400">Р = Қор (Орман ауданы) / Халық саны = 3 469 281 км² / 36 991 981 адам</div>
+          <div class="text-emerald-400 font-bold">Жауабы: Р = 3 469 281 / 36 991 981 = 0,09 км²/адам (шамамен 9 га/адам). Демек, жан басына шаққанда 0,09 км²!</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 ЕСЕПТІҢ ТОЛЫҚ ШЫҒАРЫЛУЫ -->
+    <div class="bg-space-950 p-4 rounded-xl border border-slate-800 space-y-2.5 mt-3">
+      <h5 class="text-xs font-bold text-amber-300 uppercase tracking-wider">📝 Оқушыларға арналған 5 есептің толық шешімі:</h5>
+      <div class="space-y-2 text-xs divide-y divide-slate-800/80">
+        <div class="pt-1.5">
+          <span class="font-bold text-white">1-есеп:</span> Дүниежүзінде көмір қоры 1000 млрд т, жылдық өндіру 8 млрд т. Қанша жылға жетеді?<br/>
+          <span class="text-emerald-400 font-mono font-bold">Шешуі: 1000 / 8 = 125 жыл.</span>
+        </div>
+        <div class="pt-1.5">
+          <span class="font-bold text-white">2-есеп:</span> Қазақстан аумағы 2 724 900 км², халық саны 20 000 000 адам. Жан басына жермен қамтамасыз етілуі?<br/>
+          <span class="text-emerald-400 font-mono font-bold">Шешуі: 2 724 900 / 20 000 000 = 0,136 км²/адам = 13,6 га/адам.</span>
+        </div>
+        <div class="pt-1.5">
+          <span class="font-bold text-white">3-есеп:</span> Ресейде орман аумағы 8 150 000 км², халық саны 146 000 000 адам. Жан басына ормандылық?<br/>
+          <span class="text-emerald-400 font-mono font-bold">Шешуі: 8 150 000 / 146 000 000 ≈ 0,056 км²/адам (шамамен 5,58 га/адам).</span>
+        </div>
+        <div class="pt-1.5">
+          <span class="font-bold text-white">4-есеп:</span> Газ қоры 40 жылға жетеді, жалпы қор 120 млрд м³. Жылына қанша өндіріледі?<br/>
+          <span class="text-emerald-400 font-mono font-bold">Шешуі: 120 / 40 = 3 млрд м³/жыл.</span>
+        </div>
+        <div class="pt-1.5">
+          <span class="font-bold text-white">5-есеп:</span> «А» елі алтын қоры 8000 т, өндіруі 200 т/жыл. «Б» елі қоры 5000 т, өндіруі 100 т/жыл. Қай елдің мерзімі ұзағырақ?<br/>
+          <span class="text-emerald-400 font-mono font-bold">Шешуі: А елі: 8000 / 200 = 40 жыл; Б елі: 5000 / 100 = 50 жыл. Б елінің мерзімі 10 жылға ұзағырақ (50 - 40 = 10 жыл).</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. ТАУ-КЕН ӨНЕРКӘСІБІ ЖӘНЕ МЕТАЛЛУРГИЯ -->
+  <div class="p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3">
+    <h4 class="text-sm sm:text-base font-black text-rose-400 flex items-center space-x-2 border-b border-slate-800 pb-2">
+      <span>⛏️</span>
+      <span>3. Тау-кен өнеркәсібі және Металлургия</span>
+    </h4>
+    <p>• <b>Металлургия</b> — құрастырмалы материалдар мен химия өнеркәсібі үшін шикізат өндіретін өнеркәсіптің кешенді саласы.</p>
+    <p>• <b>Тау-кен өнеркәсібі</b> — минералды шикізатты өндіруші сала.</p>
+    <p>• <b>Ірі тау-кен өнеркәсібі дамыған 8 ел:</b> АҚШ, Канада, Аустралия, ОАР (Оңтүстік Африка Республикасы), Бразилия, Үндістан, Қытай, Ресей.</p>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+      <div class="p-3 bg-space-950 rounded-xl border border-slate-800 space-y-1">
+        <span class="font-bold text-cyan-300 block text-xs">Қара металлургия (Темір):</span>
+        <p class="text-[11px] text-slate-300">• Темір өндіретін елдер саны: <b>50 ел</b>.</p>
+        <p class="text-[11px] text-slate-300">• Темір кенін өндіруден көшбасшылар: <b>Қытай, Бразилия, Аустралия, Ресей, Үндістан</b>.</p>
+        <p class="text-[11px] text-slate-300">• Темірді ірі өндірушілер: <b>Қытай, Жапония, АҚШ, Ресей, Германия</b>.</p>
+        <p class="text-[11px] text-slate-300">• Ірі экспорттаушылар: <b>ЕО елдері, Жапония, ТМД елдері</b>.</p>
+      </div>
+
+      <div class="p-3 bg-space-950 rounded-xl border border-slate-800 space-y-1">
+        <span class="font-bold text-amber-300 block text-xs">Түсті металлургия:</span>
+        <p class="text-[11px] text-slate-300">• <b>Мыс қорытудан:</b> Чили, АҚШ, Индонезия, Ресей, Канада.</p>
+        <p class="text-[11px] text-slate-300">• <b>«Мыс белдеуі»:</b> Анд тау елдері және Орталық Африка (Конго, Замбия, Зимбабве).</p>
+        <p class="text-[11px] text-slate-300">• <b>Рафинатталған мыс шығару:</b> Еуропа елдері (Германия, Италия).</p>
+        <p class="text-[11px] text-slate-300">• <b>Алюминий:</b> Қытай, Ресей, Канада, АҚШ, Аустралия, Бразилия, Норвегия.</p>
+        <p class="text-[11px] text-slate-300">• <b>Қалайы:</b> Қытай, Индонезия, Перу, Бразилия, Боливия, Малайзия.</p>
+        <p class="text-[11px] text-slate-300">• <b>Қорғасын-мырыш:</b> АҚШ, Жапония, Канада, Аустралия, Бразилия.</p>
+      </div>
+    </div>
+
+    <!-- ТҮСТІ МЕТАЛДАР ҚАСИЕТТЕРІ -->
+    <div class="p-3 bg-space-950 rounded-xl border border-purple-500/30 text-xs">
+      <span class="font-black text-purple-300 block mb-1">Түсті металдар құймаларының ерекше қасиеттері:</span>
+      <p>• <b>Ыстыққа төзімді:</b> никель, кобальт құймалары.</p>
+      <p>• <b>Жеңіл салмақты:</b> алюминий, магний құймалары.</p>
+      <p>• <b>Берік әрі коррозияға төзімді:</b> титан құймалары.</p>
+    </div>
+
+    <svg viewBox="0 0 700 250" class="w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2">
+  <text x="350" y="20" fill="#38bdf8" font-size="11" font-weight="900" text-anchor="middle">ДҮНИЕЖҮЗІНІҢ БАСТЫ КЕН ОРЫНДАРЫ, КӨМІР АЛАПТАРЫ ЖӘНЕ «МЫС БЕЛДЕУІ»</text>
+  
+  <g transform="translate(15, 35)">
+    <rect x="0" y="0" width="215" height="200" rx="8" fill="#0f172a" stroke="#ef4444" stroke-width="1.2"/>
+    <rect x="8" y="8" width="199" height="22" rx="4" fill="#ef4444" fill-opacity="0.15"/>
+    <text x="107" y="23" fill="#f87171" font-size="10" font-weight="bold" text-anchor="middle">🏗️ ТЕМІР КЕН ОРЫНДАРЫ</text>
+    <text x="10" y="46" fill="#ffffff" font-size="9">• <tspan font-weight="bold" fill="#38bdf8">Каражас</tspan> (Бразилия — 1-орын)</text>
+    <text x="10" y="63" fill="#ffffff" font-size="9">• <tspan font-weight="bold">Питсбург</tspan> (АҚШ)</text>
+    <text x="10" y="80" fill="#ffffff" font-size="9">• <tspan font-weight="bold">Лотарингия</tspan> (Франция)</text>
+    <text x="10" y="97" fill="#ffffff" font-size="9">• <tspan font-weight="bold" fill="#fbbf24">Роданж-Дифферданж</tspan></text>
+    <text x="18" y="110" fill="#94a3b8" font-size="8">Люксембург («Темір герцогы»)</text>
+    <text x="10" y="127" fill="#ffffff" font-size="9">• <tspan font-weight="bold">Кривой Рог</tspan> (Украина)</text>
+    <text x="10" y="144" fill="#ffffff" font-size="9">• <tspan font-weight="bold">Аньшань</tspan> (Қытай)</text>
+    <text x="10" y="161" fill="#ffffff" font-size="9">• <tspan font-weight="bold">КМА</tspan> (Ресей)</text>
+    <text x="10" y="178" fill="#ffffff" font-size="9">• <tspan font-weight="bold" fill="#34d399">Соколов-Сарыбай, Лисаков,</tspan></text>
+    <text x="18" y="191" fill="#34d399" font-size="8">Әйет, Қашар (ҚР — 8-орын)</text>
+  </g>
+
+  <g transform="translate(242, 35)">
+    <rect x="0" y="0" width="215" height="200" rx="8" fill="#0f172a" stroke="#f59e0b" stroke-width="1.2"/>
+    <rect x="8" y="8" width="199" height="22" rx="4" fill="#f59e0b" fill-opacity="0.15"/>
+    <text x="107" y="23" fill="#fbbf24" font-size="10" font-weight="bold" text-anchor="middle">⛏️ 12 ІРІ КӨМІР АЛАБЫ</text>
+    <text x="10" y="46" fill="#ffffff" font-size="8.5">• <tspan font-weight="bold">Аппалач</tspan> (АҚШ)</text>
+    <text x="10" y="61" fill="#ffffff" font-size="8.5">• <tspan font-weight="bold" fill="#38bdf8">Датун 50%</tspan> (Қытай)</text>
+    <text x="10" y="76" fill="#ffffff" font-size="8.5">• <tspan font-weight="bold">Кузбасс 40%, Канск-Ачинск</tspan> (РФ)</text>
+    <text x="10" y="91" fill="#ffffff" font-size="8.5">• <tspan font-weight="bold">Донбасс</tspan> (Украина)</text>
+    <text x="10" y="106" fill="#ffffff" font-size="8.5">• <tspan font-weight="bold">Жаңа Оңт. Уэльс</tspan> (Аустралия)</text>
+    <text x="10" y="121" fill="#ffffff" font-size="8.5">• <tspan font-weight="bold">Рур, Ахен, Саар</tspan> (Германия)</text>
+    <text x="10" y="136" fill="#ffffff" font-size="8.5">• <tspan font-weight="bold">Острава Карвин</tspan> (Чехия)</text>
+    <text x="10" y="151" fill="#ffffff" font-size="8.5">• <tspan font-weight="bold">Шығыс Марица</tspan> (Болгария)</text>
+    <text x="10" y="166" fill="#ffffff" font-size="8.5">• <tspan font-weight="bold">Жоғарғы Силезия</tspan> (Польша)</text>
+    <text x="10" y="181" fill="#ffffff" font-size="8.5">• <tspan font-weight="bold" fill="#f87171">Дамодар</tspan> («Үндістан Руры»)</text>
+    <text x="10" y="195" fill="#ffffff" font-size="8.5">• <tspan font-weight="bold" fill="#34d399">Қарағанды, Екібастұз</tspan> (ҚР)</text>
+  </g>
+
+  <g transform="translate(470, 35)">
+    <rect x="0" y="0" width="215" height="200" rx="8" fill="#0f172a" stroke="#8b5cf6" stroke-width="1.2"/>
+    <rect x="8" y="8" width="199" height="22" rx="4" fill="#8b5cf6" fill-opacity="0.15"/>
+    <text x="107" y="23" fill="#a78bfa" font-size="10" font-weight="bold" text-anchor="middle">🥉 «МЫС БЕЛДЕУІ» &amp; МЕТАЛДАР</text>
+    <text x="10" y="46" fill="#ffffff" font-size="8.5">• <tspan font-weight="bold" fill="#fbbf24">«Мыс белдеуі»:</tspan></text>
+    <text x="18" y="60" fill="#cbd5e1" font-size="8">1. Анд елдері (Чили, Перу)</text>
+    <text x="18" y="74" fill="#cbd5e1" font-size="8">2. Орталық Африка (Конго, Замбия)</text>
+    <text x="10" y="92" fill="#ffffff" font-size="8.5">• <tspan font-weight="bold">Рафинатталған мыс:</tspan> Германия</text>
+    <text x="10" y="109" fill="#ffffff" font-size="8.5">• <tspan font-weight="bold">Алюминий:</tspan> Қытай, Ресей, АҚШ</text>
+    <text x="10" y="126" fill="#ffffff" font-size="8.5">• <tspan font-weight="bold">Қалайы:</tspan> Қытай, Индонезия, Перу</text>
+    <text x="10" y="145" fill="#ffffff" font-size="8.5">• <tspan font-weight="bold" fill="#34d399">Құймалар қасиеттері:</tspan></text>
+    <text x="18" y="160" fill="#cbd5e1" font-size="8">- Ыстыққа төзімді: <tspan font-weight="bold">Ni, Co</tspan></text>
+    <text x="18" y="174" fill="#cbd5e1" font-size="8">- Жеңіл салмақты: <tspan font-weight="bold">Al, Mg</tspan></text>
+    <text x="18" y="188" fill="#cbd5e1" font-size="8">- Коррозияға төзімді: <tspan font-weight="bold">Ti (титан)</tspan></text>
+  </g>
+</svg>
+
+    <!-- ДҮНИЕЖҮЗІНІҢ ІРІ ТЕМІР КЕН ОРЫНДАРЫ КЕСТЕСІ -->
+    <div class="overflow-x-auto mt-2">
+      <h5 class="text-xs font-bold text-white mb-1.5">Дүниежүзі бойынша ірі темір кен орындары:</h5>
+      <table class="w-full text-left text-xs border border-slate-800 rounded-xl overflow-hidden">
+        <thead class="bg-space-950 text-slate-400 border-b border-slate-800">
+          <tr>
+            <th class="p-2">#</th>
+            <th class="p-2">Мемлекет / Аймақ</th>
+            <th class="p-2">Кен орны атауы</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-800 text-[11px] text-slate-300">
+          <tr><td class="p-2">1</td><td class="p-2 font-bold text-white">Бразилия (I орын)</td><td class="p-2 text-cyan-300 font-mono">Каражас</td></tr>
+          <tr><td class="p-2">2</td><td class="p-2 font-bold text-white">АҚШ</td><td class="p-2 text-cyan-300 font-mono">Питсбург</td></tr>
+          <tr><td class="p-2">3</td><td class="p-2 font-bold text-white">Франция</td><td class="p-2 text-cyan-300 font-mono">Лотарингия</td></tr>
+          <tr><td class="p-2">4</td><td class="p-2 font-bold text-white">Люксембург («Темір герцогы»)</td><td class="p-2 text-cyan-300 font-mono">Роданж — Дифферданж</td></tr>
+          <tr><td class="p-2">5</td><td class="p-2 font-bold text-white">Украина</td><td class="p-2 text-cyan-300 font-mono">Кривой Рог</td></tr>
+          <tr><td class="p-2">6</td><td class="p-2 font-bold text-white">Африка елдері</td><td class="p-2 text-cyan-300 font-mono">Гвинея, Габон, Либерия, Мавритания</td></tr>
+          <tr><td class="p-2">7</td><td class="p-2 font-bold text-white">Қытай</td><td class="p-2 text-cyan-300 font-mono">Аньшань</td></tr>
+          <tr><td class="p-2">8</td><td class="p-2 font-bold text-white">Ресей</td><td class="p-2 text-cyan-300 font-mono">КМА (Курск магниттік аномалиясы)</td></tr>
+          <tr><td class="p-2">9</td><td class="p-2 font-bold text-white">Қазақстан (8-орын)</td><td class="p-2 text-emerald-300 font-mono">Соколов-Сарыбай, Лисаков, Әйет, Қашар</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 4. ОТЫН-ЭНЕРГЕТИКА КЕШЕНІ (МҰНАЙ ФРАКЦИЯЛАРЫ, ГАЗ, КӨМІР) -->
+  <div class="p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-4">
+    <h4 class="text-sm sm:text-base font-black text-amber-400 flex items-center space-x-2 border-b border-slate-800 pb-2">
+      <span>🛢️</span>
+      <span>4. Отын-энергетика кешені және Мұнай фракциялары</span>
+    </h4>
+    
+    <!-- МҰНАЙ ЖӘНЕ ОНЫҢ 6 ФРАКЦИЯСЫ -->
+    <div class="space-y-2">
+      <p>• <b>Мұнай</b> — екінші дүниежүзілік соғыстан кейін қарқынды дами бастады. Басты мұнай алаптары дамушы елдерде орналасқан.</p>
+      <p>• <b>Фракция</b> — мұнайдағы қайнау температурасы бірдей заттар тобы. <b>6 топқа бөлінеді:</b></p>
+      
+      <!-- SVG ФРАКЦИЯЛЫҚ МҰНАЙ БАҒАНАСЫ -->
+      <div class="my-3">
+        <svg viewBox="0 0 700 240" class="w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner">
+          <text x="350" y="20" fill="#f59e0b" font-size="11" font-weight="900" text-anchor="middle">МҰНАЙДЫҢ ТЕМПЕРАТУРАЛЫҚ 6 ФРАКЦИЯСЫ</text>
+          
+          <rect x="50" y="35" width="600" height="28" rx="6" fill="#0284c7" />
+          <text x="65" y="53" fill="#ffffff" font-size="10" font-weight="bold">1. Қайнау нүктесі 40°C дейін: ГАЗ (метан, пропан, бутан)</text>
+
+          <rect x="50" y="68" width="600" height="28" rx="6" fill="#0369a1" />
+          <text x="65" y="86" fill="#ffffff" font-size="10" font-weight="bold">2. Қайнау нүктесі 40°–180°C: БЕНЗИН (авиация және автомобиль жанармайы)</text>
+
+          <rect x="50" y="101" width="600" height="28" rx="6" fill="#047857" />
+          <text x="65" y="119" fill="#ffffff" font-size="10" font-weight="bold">3. Қайнау нүктесі 180°–270°C: КЕРОСИН (зымыран және реактивті жанармай)</text>
+
+          <rect x="50" y="134" width="600" height="28" rx="6" fill="#b45309" />
+          <text x="65" y="152" fill="#ffffff" font-size="10" font-weight="bold">4. Қайнау нүктесі 270°–360°C: СОЛЯР МАЙЫ (дизель жанармайы, майлайтын майлар)</text>
+
+          <rect x="50" y="167" width="600" height="28" rx="6" fill="#b91c1c" />
+          <text x="65" y="185" fill="#ffffff" font-size="10" font-weight="bold">5. Қайнау нүктесі 360°–550°C: МАЗУТ (минералдық майлар, вазелин, парафин)</text>
+
+          <rect x="50" y="200" width="600" height="28" rx="6" fill="#334155" />
+          <text x="65" y="218" fill="#ffffff" font-size="10" font-weight="bold">6. Қайнау нүктесі 550°C жоғары: АСФАЛЬТ / ГУДРОН (жартылай қатты және қатты материалдар)</text>
+        </svg>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs pt-1">
+        <div class="p-3 bg-space-950 rounded-xl border border-slate-800">
+          <span class="font-bold text-amber-300 block mb-1">Мұнай өндірісі мен саудасы:</span>
+          <p class="text-[11px] text-slate-300">• Өндіретін елдер саны: <b>75 ел</b>.</p>
+          <p class="text-[11px] text-slate-300">• Ең маңызды жеткізушілері: <b>Таяу және Орта Шығыс елдері</b>.</p>
+          <p class="text-[11px] text-slate-300">• Көшбасшылар: <b>Сауд Арабиясы, Ресей, АҚШ, Мексика, БАӘ, Иран, Ирак, Қытай</b>.</p>
+          <p class="text-[11px] text-slate-300">• Тұтынушылар: АҚШ — <b>21%</b>, Батыс Еуропа — <b>20%</b>, Ресей — <b>17%</b>, Жапония — <b>6%</b>.</p>
+        </div>
+
+        <div class="p-3 bg-space-950 rounded-xl border border-slate-800">
+          <span class="font-bold text-cyan-300 block mb-1">Табиғи газ және Көмір:</span>
+          <p class="text-[11px] text-slate-300">• <b>Газ:</b> XX ғ. ортасынан бері өндіріс көлемі <b>10 есеге артты</b>.</p>
+          <p class="text-[11px] text-slate-300">• Газ көшбасшылары: <b>Ресей, АҚШ, Канада, Түркіменстан, Нидерланды, Ұлыбритания</b>.</p>
+          <p class="text-[11px] text-slate-300">• <b>Көмір:</b> 60 елде өндіріледі. Жылына 10 млн тоннадан астам өндіретін елдер: <b>Қытай, АҚШ, Ресей, Германия, Польша, Украина, Қазақстан</b>.</p>
+          <p class="text-[11px] text-slate-300">• Экспорттаушылар: <b>АҚШ, Аустралия, ОАР</b>; Импорттаушылар: <b>Жапония, Батыс Еуропа</b>.</p>
+        </div>
+      </div>
+
+      <!-- КӨМІР КЕН ОРЫНДАРЫ КЕСТЕСІ -->
+      <div class="overflow-x-auto mt-2">
+        <h5 class="text-xs font-bold text-white mb-1.5">Дүниежүзі бойынша 12 ірі көмір кен орындары мен алаптары:</h5>
+        <table class="w-full text-left text-xs border border-slate-800 rounded-xl overflow-hidden">
+          <thead class="bg-space-950 text-slate-400 border-b border-slate-800">
+            <tr>
+              <th class="p-2">#</th>
+              <th class="p-2">Мемлекет</th>
+              <th class="p-2">Көмір алабы / Кен орны</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800 text-[11px] text-slate-300">
+            <tr><td class="p-2">1</td><td class="p-2 font-bold text-white">АҚШ</td><td class="p-2 text-cyan-300 font-mono">Аппалач тауы (Кентукки, Пенсильвания, Вайоминг, Батыс Виргиния)</td></tr>
+            <tr><td class="p-2">2</td><td class="p-2 font-bold text-white">Қытай</td><td class="p-2 text-cyan-300 font-mono">Датун (ел көмірінің 50%-ы)</td></tr>
+            <tr><td class="p-2">3</td><td class="p-2 font-bold text-white">Ресей</td><td class="p-2 text-cyan-300 font-mono">Кузбасс (40%), Канск-Ачинск, Печора, Якут бассейні</td></tr>
+            <tr><td class="p-2">4</td><td class="p-2 font-bold text-white">Украина</td><td class="p-2 text-cyan-300 font-mono">Донбасс</td></tr>
+            <tr><td class="p-2">5</td><td class="p-2 font-bold text-white">Аустралия</td><td class="p-2 text-cyan-300 font-mono">Жаңа Оңтүстік Уэльс, Квинсленд</td></tr>
+            <tr><td class="p-2">6</td><td class="p-2 font-bold text-white">Германия</td><td class="p-2 text-cyan-300 font-mono">Рур, Ахен, Саар</td></tr>
+            <tr><td class="p-2">7</td><td class="p-2 font-bold text-white">Чехия</td><td class="p-2 text-cyan-300 font-mono">Острава Карвин</td></tr>
+            <tr><td class="p-2">8</td><td class="p-2 font-bold text-white">Болгария</td><td class="p-2 text-cyan-300 font-mono">Шығыс Марица</td></tr>
+            <tr><td class="p-2">9</td><td class="p-2 font-bold text-white">Польша</td><td class="p-2 text-cyan-300 font-mono">Жоғарғы Силезия</td></tr>
+            <tr><td class="p-2">10</td><td class="p-2 font-bold text-white">Үндістан</td><td class="p-2 text-cyan-300 font-mono">Дамодар («Үндістан Руры»)</td></tr>
+            <tr><td class="p-2">11</td><td class="p-2 font-bold text-white">Ұлыбритания</td><td class="p-2 text-cyan-300 font-mono">Жаңа Уэльс, Йоркшир</td></tr>
+            <tr><td class="p-2">12</td><td class="p-2 font-bold text-white">Қазақстан</td><td class="p-2 text-emerald-300 font-mono">Қарағанды, Екібастұз («Богатырь» кеніші)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. ЭЛЕКТР ЭНЕРГЕТИКАСЫ ЖӘНЕ БАЛАМАЛЫ ЭНЕРГИЯ КӨЗДЕРІ -->
+  <div class="p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3">
+    <h4 class="text-sm sm:text-base font-black text-cyan-400 flex items-center space-x-2 border-b border-slate-800 pb-2">
+      <span>⚡</span>
+      <span>5. Электр энергетикасы және Баламалы көздер</span>
+    </h4>
+    <p>• <b>Электр энергиясын өндіру құрылымы:</b><br/>
+      &nbsp;&nbsp;<b>1-орын:</b> ЖЭС (Жылу электр станциялары) — <b>60%</b><br/>
+      &nbsp;&nbsp;<b>2-орын:</b> СЭС (Су электр станциялары) — <b>20%</b><br/>
+      &nbsp;&nbsp;<b>3-орын:</b> АЭС (Атом электр станциялары) — <b>17%</b></p>
+    <p>• <b>АЭС өндіретін басты елдер:</b> АҚШ, Ресей, Қытай, Жапония, Германия, Канада, Франция, Ұлыбритания.</p>
+    <p>• <b>АЭС үлесі жиынтық өндірісте:</b> Францияда — <b>73%</b>, Жапонияда — <b>28%</b>, АҚШ-та — <b>20%</b>.</p>
+
+    <svg viewBox="0 0 700 170" class="w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2">
+  <text x="350" y="20" fill="#38bdf8" font-size="11" font-weight="900" text-anchor="middle">ДҮНИЕЖҮЗІЛІК ЭЛЕКТР ЭНЕРГИЯСЫНЫҢ ҚҰРЫЛЫМЫ ЖӘНЕ АЭС ҮЛЕСІ</text>
+  
+  <g transform="translate(30, 35)">
+    <text x="0" y="15" fill="#f87171" font-size="9.5" font-weight="bold">1. ЖЭС (ТЭС): 60%</text>
+    <rect x="0" y="22" width="280" height="14" rx="3" fill="#1e293b"/>
+    <rect x="0" y="22" width="168" height="14" rx="3" fill="#ef4444"/>
+
+    <text x="0" y="52" fill="#38bdf8" font-size="9.5" font-weight="bold">2. СЭС (ГЭС): 20%</text>
+    <rect x="0" y="59" width="280" height="14" rx="3" fill="#1e293b"/>
+    <rect x="0" y="59" width="56" height="14" rx="3" fill="#0284c7"/>
+
+    <text x="0" y="89" fill="#fbbf24" font-size="9.5" font-weight="bold">3. АЭС: 17%</text>
+    <rect x="0" y="96" width="280" height="14" rx="3" fill="#1e293b"/>
+    <rect x="0" y="96" width="47.6" height="14" rx="3" fill="#f59e0b"/>
+
+    <text x="0" y="124" fill="#34d399" font-size="9.5" font-weight="bold">4. Баламалы станциялар: 3%</text>
+    <rect x="0" y="128" width="280" height="8" rx="2" fill="#10b981"/>
+  </g>
+
+  <g transform="translate(370, 35)">
+    <rect x="0" y="0" width="300" height="125" rx="8" fill="#0f172a" stroke="#f59e0b" stroke-width="1"/>
+    <text x="150" y="20" fill="#fbbf24" font-size="10" font-weight="bold" text-anchor="middle">⚛️ АЭС ҮЛЕСІ ЕЛДЕРДІҢ ЭНЕРГИЯСЫНДА</text>
+    
+    <text x="15" y="45" fill="#cbd5e1" font-size="9.5">🇫🇷 Франция: <tspan fill="#38bdf8" font-weight="bold">73%</tspan> (Дүниежүзіндегі ең жоғары)</text>
+    <rect x="15" y="50" width="270" height="8" rx="2" fill="#1e293b"/>
+    <rect x="15" y="50" width="197" height="8" rx="2" fill="#0ea5e9"/>
+
+    <text x="15" y="75" fill="#cbd5e1" font-size="9.5">🇯🇵 Жапония: <tspan fill="#fbbf24" font-weight="bold">28%</tspan></text>
+    <rect x="15" y="80" width="270" height="8" rx="2" fill="#1e293b"/>
+    <rect x="15" y="80" width="75.6" height="8" rx="2" fill="#f59e0b"/>
+
+    <text x="15" y="105" fill="#cbd5e1" font-size="9.5">🇺🇸 АҚШ: <tspan fill="#34d399" font-weight="bold">20%</tspan> (Өндіру көлемі ең үлкен)</text>
+    <rect x="15" y="110" width="270" height="8" rx="2" fill="#1e293b"/>
+    <rect x="15" y="110" width="54" height="8" rx="2" fill="#10b981"/>
+  </g>
+</svg>
+    <p>• <b>Айырықша АЭС дамыған елдер:</b> Жапония, Франция.</p>
+
+    <!-- БАЛАМАЛЫ ЭНЕРГИЯ КӨЗДЕРІ КӨШБАСШЫЛАРЫ -->
+    <div class="p-3 bg-space-950 rounded-xl border border-emerald-500/40 text-xs space-y-1.5 mt-2">
+      <span class="font-black text-emerald-300 block mb-1">Дүниежүзінің баламалы энергия көшбасшы елдері:</span>
+      <p>• <b>Геотермальды:</b> Исландия, Италия, Франция, Венгрия, Жапония, АҚШ.</p>
+      <p>• <b>Гелиостанция (Күн):</b> Франция, Испания, Италия, Жапония, АҚШ.</p>
+      <p>• <b>Толысу электр станциялары:</b> Франция, Ресей, Қытай, Канада, АҚШ.</p>
+      <p>• <b>Жел энергетикасы:</b> Дания, Швеция, Германия, Ұлыбритания, Нидерланды.</p>
+    </div>
+  </div>
+
+</div>
+      </div>
+    </section>
+
+    <!-- 3. VISUAL SVG DIAGRAM / ILLUSTRATION -->
+    <section id="svgSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl">
+      <div class="flex items-center space-x-2 text-amber-400 font-extrabold text-xs">
+        <span>🎨</span>
+        <span id="svgHeader">КӨРНЕКІ СХЕМА МЕН ИНФОГРАФИКА</span>
+      </div>
+      <div id="svgContainer" class="w-full flex justify-center overflow-x-auto">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 250" class="w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner">
+  <text x="350" y="24" fill="#38bdf8" font-size="12" font-weight="900" text-anchor="middle">ЭКОНОМИКАЛЫҚ ГЕОГРАФИЯ: РЕСУРСТАР МЕН ЭНЕРГЕТИКА КЕШЕНІ</text>
+  
+  <rect x="15" y="40" width="210" height="195" rx="10" fill="#0f172a" stroke="#ef4444" stroke-width="1.5" />
+  <rect x="25" y="50" width="190" height="24" rx="6" fill="#ef4444" fill-opacity="0.15" />
+  <text x="120" y="66" fill="#f87171" font-size="10.5" font-weight="900" text-anchor="middle">ТАУ-КЕН &amp; МЕТАЛЛУРГИЯ</text>
+  <text x="26" y="92" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#ffffff">8 ірі ел:</tspan> АҚШ, Канада,</text>
+  <text x="34" y="106" fill="#94a3b8" font-size="9">Аустралия, ОАР, Бразилия,</text>
+  <text x="34" y="120" fill="#94a3b8" font-size="9">Үндістан, Қытай, Ресей</text>
+  <text x="26" y="140" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#ffffff">Темір:</tspan> Каражас (I орын),</text>
+  <text x="34" y="154" fill="#94a3b8" font-size="9">КМА (РФ), ҚР (8-орын)</text>
+  <text x="26" y="174" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#ffffff">«Мыс белдеуі»:</tspan> Анд,</text>
+  <text x="34" y="188" fill="#94a3b8" font-size="9">Конго, Замбия, Зимбабве</text>
+  <text x="26" y="210" fill="#34d399" font-size="9.5" font-weight="bold">• Темір герцогы: Люксембург</text>
+
+  <rect x="245" y="40" width="210" height="195" rx="10" fill="#0f172a" stroke="#f59e0b" stroke-width="1.5" />
+  <rect x="255" y="50" width="190" height="24" rx="6" fill="#f59e0b" fill-opacity="0.15" />
+  <text x="350" y="66" fill="#fbbf24" font-size="10.5" font-weight="900" text-anchor="middle">ОТЫН-ЭНЕРГЕТИКА</text>
+  <text x="256" y="92" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#ffffff">Мұнай (75 ел):</tspan> Сауд Арабия,</text>
+  <text x="264" y="106" fill="#94a3b8" font-size="9">Ресей, АҚШ, БАӘ, Иран, Ирак</text>
+  <text x="256" y="126" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#ffffff">Газ:</tspan> Ресей, АҚШ, Канада,</text>
+  <text x="264" y="140" fill="#94a3b8" font-size="9">Түркіменстан (өндіріс 10 есе ↑)</text>
+  <text x="256" y="160" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#ffffff">Көмір:</tspan> Аппалач (АҚШ),</text>
+  <text x="264" y="174" fill="#94a3b8" font-size="9">Датун (Қытай 50%), Кузбасс,</text>
+  <text x="264" y="188" fill="#94a3b8" font-size="9">Дамодар («Үндістан Руры»)</text>
+  <text x="256" y="210" fill="#38bdf8" font-size="9.5" font-weight="bold">• ҚР: Қарағанды, Екібастұз</text>
+
+  <rect x="475" y="40" width="210" height="195" rx="10" fill="#0f172a" stroke="#10b981" stroke-width="1.5" />
+  <rect x="485" y="50" width="190" height="24" rx="6" fill="#10b981" fill-opacity="0.15" />
+  <text x="580" y="66" fill="#34d399" font-size="10.5" font-weight="900" text-anchor="middle">ЭЛЕКТР ЭНЕРГИЯСЫ</text>
+  <text x="486" y="92" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#f87171">1. ЖЭС (ТЭС):</tspan> 60%</text>
+  <text x="486" y="109" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#38bdf8">2. СЭС (ГЭС):</tspan> 20%</text>
+  <text x="486" y="126" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#fbbf24">3. АЭС:</tspan> 17%</text>
+  <text x="494" y="142" fill="#94a3b8" font-size="9">Франция (73%), Жапония (28%),</text>
+  <text x="494" y="156" fill="#94a3b8" font-size="9">АҚШ (20% үлесі)</text>
+  <text x="486" y="176" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#34d399">Баламалы көздер:</tspan></text>
+  <text x="494" y="192" fill="#94a3b8" font-size="9">Геотермальды: Исландия</text>
+  <text x="494" y="206" fill="#94a3b8" font-size="9">Күн: Испания; Жел: Дания</text>
+</svg>
+      </div>
+    </section>
+
+    <!-- 4. STRUCTURED DATA TABLE -->
+    <section id="tableSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl overflow-x-auto">
+      <h3 class="text-xs font-black text-cyan-400 flex items-center space-x-2">
+        <span>📊</span>
+        <span id="tableHeader">НАҚТЫ КӨРСЕТКІШТЕР МЕН КЛАССИФИКАЦИЯ КЕСТЕСІ</span>
+      </h3>
+      <div id="tableContainer">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- 5. KEY FACTS FOR UNT / ЕНТ -->
+    <section id="factsSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl">
+      <h3 class="text-xs font-black text-amber-400 flex items-center space-x-2">
+        <span>⚡</span>
+        <span id="factsHeader">ҰБТ-ҒА ҚАЖЕТТІ НЕГІЗГІ ЕРЕЖЕЛЕР МЕН ФАКТІЛЕР</span>
+      </h3>
+      <ul id="factsList" class="space-y-2 text-xs text-slate-300">
+        <!-- Rendered via JS -->
+      </ul>
+    </section>
+
+    <!-- 6. TRAPS AND HACKS -->
+    <section id="trapsSection" class="p-5 rounded-2xl bg-gradient-to-r from-amber-950/40 via-space-950 to-space-950 border border-amber-500/40 space-y-3 shadow-xl">
+      <h3 class="text-xs font-black text-amber-400 flex items-center space-x-2">
+        <span>💡</span>
+        <span id="trapsHeader">ҰБТ ҚАҚПАНДАРЫ МЕН ЛАЙФХАКТАР</span>
+      </h3>
+      <div id="trapsList" class="space-y-2 text-xs text-slate-200">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- FOOTER NAVIGATION -->
+    <nav class="pt-4 pb-8 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3 text-xs">
+      <a href="topic_15.html" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white transition shadow-sm">
+      <span>←</span>
+      <span>#15 Алдыңғы тақырып</span>
+    </a>
+      <a href="../index.html#section-zhattau_grammar" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-400 hover:text-white transition">
+        <span>🏠</span>
+        <span>Барлық тақырыптар</span>
+      </a>
+      <a href="topic_17.html" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-xs font-bold text-cyan-300 hover:text-white transition shadow-sm">
+      <span>Келесі тақырып #17</span>
+      <span>→</span>
+    </a>
+    </nav>
+
+  </main>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="xpToast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300 flex items-center space-x-2 px-4 py-3 rounded-2xl bg-space-900 border border-cyan-500/40 shadow-2xl text-xs font-bold text-white">
+    <span class="text-cyan-400 text-base">✨</span>
+    <span id="toastMsg">+20 XP! Тақырып меңгерілді</span>
+  </div>
+
+  <script>
+    const topicData = {"num": 16, "title_kz": "Экономикалық география", "title_ru": "Экономическая география", "category_kz": "Экономика", "category_ru": "Экономика", "summary_kz": "Экономикалық география: табиғат ресурстары мен табиғи-ресурстық әлеует, ресурстардың жіктелуі, ресурспен қамтамасыз етілуді бағалау формулалары, металлургия («Мыс белдеуі», ірі темір кен орындары), отын-энергетика кешені (мұнай фракциялары, газ, ірі көмір алаптары) және электр энергетикасының (ЖЭС, СЭС, АЭС, баламалы көздер) толық базасы.", "summary_ru": "Экономическая география: природные ресурсы и природно-ресурсный потенциал, классификация ресурсов, расчет ресурсообеспеченности, металлургия («Медный пояс», месторождения железа), топливно-энергетический комплекс (фракции нефти, газ, крупнейшие угольные бассейны) и структура мировой электроэнергетики (ТЭС, ГЭС, АЭС, альтернативные источники).", "full_theory_kz": "<div class=\"space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed\">\n\n  <!-- 1. НЕГІЗГІ ҰҒЫМДАР МЕН ТАБИҒАТ РЕСУРСТАРЫНЫҢ ЖІКТЕЛУІ -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-cyan-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🌿</span>\n      <span>1. Негізгі ұғымдар және табиғат ресурстарының жіктелуі</span>\n    </h4>\n    <p>• <b>Табиғат ресурстары</b> — шаруашылықта қолданылатын немесе қолданылуы мүмкін табиғаттың құрамдас бөліктері.</p>\n    <p>• <b>Табиғи-ресурстық әлеует</b> — аумақтағы шаруашылықта пайдаланылатын немесе пайдаланылуы мүмкін табиғи ресурстардың жиынтығы.</p>\n\n    <!-- СХЕМА ЖІКТЕЛУІ (SVG ИНФОГРАФИКА) -->\n    <div class=\"my-4\">\n      <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 700 240\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2\">\n  <rect x=\"250\" y=\"10\" width=\"200\" height=\"35\" rx=\"8\" fill=\"#0284c7\" />\n  <text x=\"350\" y=\"32\" fill=\"#ffffff\" font-size=\"11.5\" font-weight=\"900\" text-anchor=\"middle\">ТАБИҒАТ РЕСУРСТАРЫ</text>\n\n  <path d=\"M 350 45 L 350 65 L 180 65 L 180 85\" fill=\"none\" stroke=\"#64748b\" stroke-width=\"2\" />\n  <path d=\"M 350 45 L 350 65 L 530 65 L 530 85\" fill=\"none\" stroke=\"#64748b\" stroke-width=\"2\" />\n\n  <rect x=\"80\" y=\"85\" width=\"200\" height=\"32\" rx=\"8\" fill=\"#065f46\" stroke=\"#10b981\" stroke-width=\"1.5\" />\n  <text x=\"180\" y=\"105\" fill=\"#34d399\" font-size=\"11\" font-weight=\"800\" text-anchor=\"middle\">1. САРҚЫЛМАЙТЫН</text>\n  \n  <rect x=\"45\" y=\"125\" width=\"270\" height=\"100\" rx=\"8\" fill=\"#0f172a\" stroke=\"#334155\" />\n  <text x=\"60\" y=\"148\" fill=\"#e2e8f0\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#34d399\">Климаттық ресурстар</tspan> (ауа, жауын)</text>\n  <text x=\"60\" y=\"170\" fill=\"#e2e8f0\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#34d399\">Күн энергиясы</tspan> (жарық, жылу)</text>\n  <text x=\"60\" y=\"192\" fill=\"#e2e8f0\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#34d399\">Қозғалыс энергиясы:</tspan> жел, судың</text>\n  <text x=\"70\" y=\"208\" fill=\"#94a3b8\" font-size=\"9\">құлау күші, толысу және қайту күші</text>\n\n  <rect x=\"430\" y=\"85\" width=\"200\" height=\"32\" rx=\"8\" fill=\"#7f1d1d\" stroke=\"#ef4444\" stroke-width=\"1.5\" />\n  <text x=\"530\" y=\"105\" fill=\"#f87171\" font-size=\"11\" font-weight=\"800\" text-anchor=\"middle\">2. САРҚЫЛАТЫН</text>\n\n  <rect x=\"375\" y=\"125\" width=\"145\" height=\"100\" rx=\"8\" fill=\"#0f172a\" stroke=\"#334155\" />\n  <text x=\"447\" y=\"144\" fill=\"#38bdf8\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">Қалпына келетін:</text>\n  <text x=\"385\" y=\"166\" fill=\"#cbd5e1\" font-size=\"9.5\">• Су ресурстары</text>\n  <text x=\"385\" y=\"186\" fill=\"#cbd5e1\" font-size=\"9.5\">• Жер ресурстары</text>\n  <text x=\"385\" y=\"206\" fill=\"#cbd5e1\" font-size=\"9.5\">• Биологиялық</text>\n\n  <rect x=\"530\" y=\"125\" width=\"155\" height=\"100\" rx=\"8\" fill=\"#0f172a\" stroke=\"#334155\" />\n  <text x=\"607\" y=\"144\" fill=\"#f87171\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">Қалпына келмейтін:</text>\n  <text x=\"538\" y=\"165\" fill=\"#cbd5e1\" font-size=\"9\">• <tspan font-weight=\"bold\" fill=\"#fbbf24\">Отын:</tspan> мұнай, газ, көмір</text>\n  <text x=\"538\" y=\"183\" fill=\"#cbd5e1\" font-size=\"9\">• <tspan font-weight=\"bold\" fill=\"#fbbf24\">Металл:</tspan> темір, түсті</text>\n  <text x=\"538\" y=\"201\" fill=\"#cbd5e1\" font-size=\"9\">• <tspan font-weight=\"bold\" fill=\"#fbbf24\">Химиялық:</tspan> фосфорит, тұз</text>\n</svg>\n    </div>\n\n    <!-- ТАБИҒАТ РЕСУРСТАРЫНЫҢ ТОПТАРЫ КЕСТЕСІ -->\n    <div class=\"overflow-x-auto mt-3\">\n      <table class=\"w-full text-left text-xs border border-slate-800 rounded-xl overflow-hidden\">\n        <thead>\n          <tr class=\"bg-space-950 text-cyan-400 font-bold border-b border-slate-800\">\n            <th class=\"p-2.5\">Минералды ресурстар</th>\n            <th class=\"p-2.5\">Жер ресурстары</th>\n            <th class=\"p-2.5\">Су ресурстары</th>\n            <th class=\"p-2.5\">Биологиялық ресурстар</th>\n            <th class=\"p-2.5\">Агроклиматтық ресурстар</th>\n          </tr>\n        </thead>\n        <tbody class=\"divide-y divide-slate-800 text-[11px] text-slate-300\">\n          <tr>\n            <td class=\"p-2.5\">Кенді (металдар), химиялық, жылу энергетикалық (таскөмір, мұнай, газ)</td>\n            <td class=\"p-2.5\">Жер қоры: өңделетін жер, құнарлы топырақ, шабындық, жайылым</td>\n            <td class=\"p-2.5\">Дүниежүзілік мұхит және құрлық суы (өзен, көл, мұздық)</td>\n            <td class=\"p-2.5\">Жануарлар мен өсімдіктер қоры (орман ресурсы), мұхит биотасы</td>\n            <td class=\"p-2.5\">Белгілі бір жердегі 10°С жоғары температура жиынтығы мен жауын-шашын мөлшері</td>\n          </tr>\n        </tbody>\n      </table>\n    </div>\n  </div>\n\n  <!-- 2. РЕСУРСТАРДЫ ЭКОНОМИКАЛЫҚ БАҒАЛАУ МЕН ҚАМТАМАСЫЗ ЕТІЛУ ФОРМУЛАЛАРЫ -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-amber-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>📐</span>\n      <span>2. Экономикалық бағалау және Ресурспен қамтамасыз етілу есептері</span>\n    </h4>\n    <p>• <b>Нақты өлшемдер:</b> тонна (т), гектар (га), текше метр (м³), баррель.</p>\n    <p>• <b>Балдық көрсеткіштер (5 балдық жүйе):</b><br/>\n      &nbsp;&nbsp;<b>0 балл</b> — ресурс мүлде жоқ;<br/>\n      &nbsp;&nbsp;<b>1 балл</b> — ресурстың тек жергілікті маңызы бар;<br/>\n      &nbsp;&nbsp;<b>2 балл</b> — ресурстың аймақтық маңызы бар;<br/>\n      &nbsp;&nbsp;<b>3 балл</b> — ресурстың ұлттық (мемлекеттік) маңызы бар;<br/>\n      &nbsp;&nbsp;<b>4 балл</b> — ресурстың халықаралық маңызы бар.</p>\n    <p>• <b>Қаржылық бағамдар:</b> нақты құны, ресурсты пайдаланғаны үшін төлем.</p>\n    <p>• <b>Ресурспен қамтамасыз етілу</b> — елдің ұлттық байлығының маңызды көрсеткіші. Ол 2 түрлі тәсілмен есептеледі:</p>\n\n    <svg viewBox=\"0 0 700 190\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2\">\n  <text x=\"350\" y=\"20\" fill=\"#38bdf8\" font-size=\"11\" font-weight=\"900\" text-anchor=\"middle\">ТАБИҒИ РЕСУРСТАРДЫ ЭКОНОМИКАЛЫҚ БАҒАЛАУ: 5 БАЛДЫҚ ЖҮЙЕ ЖӘНЕ ФОРМУЛАЛАР</text>\n  \n  <g transform=\"translate(20, 35)\">\n    <rect x=\"0\" y=\"0\" width=\"125\" height=\"60\" rx=\"8\" fill=\"#1e293b\" stroke=\"#ef4444\" stroke-width=\"1.2\"/>\n    <rect x=\"6\" y=\"6\" width=\"32\" height=\"18\" rx=\"4\" fill=\"#ef4444\"/>\n    <text x=\"22\" y=\"19\" fill=\"#ffffff\" font-size=\"10\" font-weight=\"900\" text-anchor=\"middle\">0 б</text>\n    <text x=\"44\" y=\"19\" fill=\"#f87171\" font-size=\"9\" font-weight=\"bold\">Мүлде жоқ</text>\n    <text x=\"8\" y=\"38\" fill=\"#94a3b8\" font-size=\"8.5\">Ресурс қоры</text>\n    <text x=\"8\" y=\"50\" fill=\"#94a3b8\" font-size=\"8.5\">анықталмаған</text>\n\n    <rect x=\"135\" y=\"0\" width=\"125\" height=\"60\" rx=\"8\" fill=\"#1e293b\" stroke=\"#f59e0b\" stroke-width=\"1.2\"/>\n    <rect x=\"141\" y=\"6\" width=\"32\" height=\"18\" rx=\"4\" fill=\"#f59e0b\"/>\n    <text x=\"157\" y=\"19\" fill=\"#ffffff\" font-size=\"10\" font-weight=\"900\" text-anchor=\"middle\">1 б</text>\n    <text x=\"179\" y=\"19\" fill=\"#fbbf24\" font-size=\"9\" font-weight=\"bold\">Жергілікті</text>\n    <text x=\"143\" y=\"38\" fill=\"#94a3b8\" font-size=\"8.5\">Тек бір аудан/</text>\n    <text x=\"143\" y=\"50\" fill=\"#94a3b8\" font-size=\"8.5\">елді мекенге жетеді</text>\n\n    <rect x=\"270\" y=\"0\" width=\"125\" height=\"60\" rx=\"8\" fill=\"#1e293b\" stroke=\"#10b981\" stroke-width=\"1.2\"/>\n    <rect x=\"276\" y=\"6\" width=\"32\" height=\"18\" rx=\"4\" fill=\"#10b981\"/>\n    <text x=\"292\" y=\"19\" fill=\"#ffffff\" font-size=\"10\" font-weight=\"900\" text-anchor=\"middle\">2 б</text>\n    <text x=\"314\" y=\"19\" fill=\"#34d399\" font-size=\"9\" font-weight=\"bold\">Аймақтық</text>\n    <text x=\"278\" y=\"38\" fill=\"#94a3b8\" font-size=\"8.5\">Бірнеше облыс/</text>\n    <text x=\"278\" y=\"50\" fill=\"#94a3b8\" font-size=\"8.5\">аймақ көлемінде</text>\n\n    <rect x=\"405\" y=\"0\" width=\"125\" height=\"60\" rx=\"8\" fill=\"#1e293b\" stroke=\"#06b6d4\" stroke-width=\"1.2\"/>\n    <rect x=\"411\" y=\"6\" width=\"32\" height=\"18\" rx=\"4\" fill=\"#06b6d4\"/>\n    <text x=\"427\" y=\"19\" fill=\"#ffffff\" font-size=\"10\" font-weight=\"900\" text-anchor=\"middle\">3 б</text>\n    <text x=\"449\" y=\"19\" fill=\"#22d3ee\" font-size=\"9\" font-weight=\"bold\">Ұлттық</text>\n    <text x=\"413\" y=\"38\" fill=\"#94a3b8\" font-size=\"8.5\">Мемлекеттік маңызы</text>\n    <text x=\"413\" y=\"50\" fill=\"#94a3b8\" font-size=\"8.5\">зор қорлар</text>\n\n    <rect x=\"540\" y=\"0\" width=\"120\" height=\"60\" rx=\"8\" fill=\"#1e293b\" stroke=\"#8b5cf6\" stroke-width=\"1.2\"/>\n    <rect x=\"546\" y=\"6\" width=\"32\" height=\"18\" rx=\"4\" fill=\"#8b5cf6\"/>\n    <text x=\"562\" y=\"19\" fill=\"#ffffff\" font-size=\"10\" font-weight=\"900\" text-anchor=\"middle\">4 б</text>\n    <text x=\"584\" y=\"19\" fill=\"#a78bfa\" font-size=\"9\" font-weight=\"bold\">Халықаралық</text>\n    <text x=\"548\" y=\"38\" fill=\"#94a3b8\" font-size=\"8.5\">Әлемдік нарыққа</text>\n    <text x=\"548\" y=\"50\" fill=\"#94a3b8\" font-size=\"8.5\">экспортталады</text>\n  </g>\n\n  <g transform=\"translate(20, 105)\">\n    <rect x=\"0\" y=\"0\" width=\"320\" height=\"70\" rx=\"8\" fill=\"#0f172a\" stroke=\"#0ea5e9\" stroke-width=\"1\"/>\n    <text x=\"160\" y=\"20\" fill=\"#38bdf8\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">1-ФОРМУЛА: ЖЫЛДЫҚ МЕРЗІМГЕ ЕСЕПТЕУ</text>\n    <rect x=\"15\" y=\"28\" width=\"290\" height=\"24\" rx=\"4\" fill=\"#1e293b\"/>\n    <text x=\"160\" y=\"44\" fill=\"#ffffff\" font-size=\"10.5\" font-family=\"monospace\" font-weight=\"bold\" text-anchor=\"middle\">Р = Қор (млрд т) / Өндіру (млрд т/жыл)</text>\n    <text x=\"160\" y=\"62\" fill=\"#94a3b8\" font-size=\"8.5\" text-anchor=\"middle\">Мысалы: 1000 млрд т / 8 млрд т = 125 жылға жетеді</text>\n\n    <rect x=\"340\" y=\"0\" width=\"320\" height=\"70\" rx=\"8\" fill=\"#0f172a\" stroke=\"#10b981\" stroke-width=\"1\"/>\n    <text x=\"500\" y=\"20\" fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">2-ФОРМУЛА: ЖАН БАСЫНА ШАҚҚАНДАҒЫ ҚОР</text>\n    <rect x=\"355\" y=\"28\" width=\"290\" height=\"24\" rx=\"4\" fill=\"#1e293b\"/>\n    <text x=\"500\" y=\"44\" fill=\"#ffffff\" font-size=\"10.5\" font-family=\"monospace\" font-weight=\"bold\" text-anchor=\"middle\">Р = Қор / Халық саны (адам)</text>\n    <text x=\"500\" y=\"62\" fill=\"#94a3b8\" font-size=\"8.5\" text-anchor=\"middle\">Мысалы: ҚР жері 2 724 900 км² / 20 млн = 13,6 га/адам</text>\n  </g>\n</svg>\n\n    <!-- FORMULA BOXES (SVG/CARDS) -->\n    <div class=\"grid grid-cols-1 md:grid-cols-2 gap-3 my-2\">\n      <div class=\"p-3.5 bg-space-950 rounded-xl border border-cyan-500/40\">\n        <span class=\"text-xs font-black text-cyan-300 block mb-1\">1-формула: Жылмен есептеу</span>\n        <div class=\"p-2 bg-space-900 rounded-lg text-center font-mono font-bold text-white text-xs my-1\">\n          Қамтамасыз етілу (жыл) = Қор / Жылдық өндіру\n        </div>\n        <span class=\"text-[11px] text-slate-400 block mt-1\">Ресурстың сарқылуға дейінгі мерзімін көрсетеді (мыс., 1000 млрд т / 8 млрд т = 125 жыл).</span>\n      </div>\n\n      <div class=\"p-3.5 bg-space-950 rounded-xl border border-emerald-500/40\">\n        <span class=\"text-xs font-black text-emerald-300 block mb-1\">2-формула: Жан басына шаққанда</span>\n        <div class=\"p-2 bg-space-900 rounded-lg text-center font-mono font-bold text-white text-xs my-1\">\n          Қамтамасыз етілу = Қор / Халық саны\n        </div>\n        <span class=\"text-[11px] text-slate-400 block mt-1\">Бір тұрғынға келетін ресурстың көлемі (га/адам, м³/адам, т/адам).</span>\n      </div>\n    </div>\n\n    \n    <!-- РЕСМИ ҚҰЖАТТАҒЫ 2 БАСТЫ ТАПСЫРМА ЖӘНЕ ЕСЕПТЕУ ТӘСІЛДЕРІ -->\n    <div class=\"bg-space-950 p-4 rounded-xl border border-cyan-500/50 space-y-3 my-3\">\n      <h5 class=\"text-xs font-black text-cyan-300 uppercase tracking-wider flex items-center space-x-1.5\">\n        <span>📌</span>\n        <span>Ресми құжаттағы 2 басты есеп және олардың қадамдық шешуі:</span>\n      </h5>\n\n      <!-- 1-ресми есеп: Мыс қоры -->\n      <div class=\"p-3 bg-space-900 rounded-lg border border-slate-800 space-y-1.5\">\n        <div class=\"flex items-center justify-between\">\n          <span class=\"text-xs font-bold text-amber-300\">1-ресми мысал (Мыс қорының сарқылу мерзімі):</span>\n          <span class=\"px-2 py-0.5 rounded text-[10px] font-mono bg-amber-500/20 text-amber-300 border border-amber-500/40\">Р = Қ / Т</span>\n        </div>\n        <p class=\"text-xs text-slate-300\"><b>Есеп шарты:</b> 2018 жылы дүниежүзіндегі мыс қоры <b>830 млн т</b>, егер жылына <b>21 млн т</b> мыс өндірілетін болса, мыс қоры қанша жылға жетер еді?</p>\n        <div class=\"p-2 bg-space-950 rounded border border-slate-800 text-xs font-mono space-y-1\">\n          <div class=\"text-slate-400\">Р = Қор / Жылдық тұтыну (өндіру) = 830 млн т / 21 млн т/жыл</div>\n          <div class=\"text-emerald-400 font-bold\">Жауабы: Р = 830 / 21 = 39,5 жыл. Демек, дүниежүзілік мыс қоры 39,5 жылға жетеді!</div>\n        </div>\n      </div>\n\n      <!-- 2-ресми есеп: Канада орманы -->\n      <div class=\"p-3 bg-space-900 rounded-lg border border-slate-800 space-y-1.5\">\n        <div class=\"flex items-center justify-between\">\n          <span class=\"text-xs font-bold text-emerald-300\">2-ресми мысал (Канаданың жан басына шаққандағы ормандылығы):</span>\n          <span class=\"px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/40\">Р = Қ / Х</span>\n        </div>\n        <p class=\"text-xs text-slate-300\"><b>Есеп шарты:</b> 2021 жылы Канадада <b>3 469 281 км²</b> аумақты орман алып жатыр. Ал халқы <b>36 991 981 адам</b> болса, жан басына шаққандағы ормандылық көрсеткішін есептеңіз.</p>\n        <div class=\"p-2 bg-space-950 rounded border border-slate-800 text-xs font-mono space-y-1\">\n          <div class=\"text-slate-400\">Р = Қор (Орман ауданы) / Халық саны = 3 469 281 км² / 36 991 981 адам</div>\n          <div class=\"text-emerald-400 font-bold\">Жауабы: Р = 3 469 281 / 36 991 981 = 0,09 км²/адам (шамамен 9 га/адам). Демек, жан басына шаққанда 0,09 км²!</div>\n        </div>\n      </div>\n    </div>\n\n    <!-- 5 ЕСЕПТІҢ ТОЛЫҚ ШЫҒАРЫЛУЫ -->\n    <div class=\"bg-space-950 p-4 rounded-xl border border-slate-800 space-y-2.5 mt-3\">\n      <h5 class=\"text-xs font-bold text-amber-300 uppercase tracking-wider\">📝 Оқушыларға арналған 5 есептің толық шешімі:</h5>\n      <div class=\"space-y-2 text-xs divide-y divide-slate-800/80\">\n        <div class=\"pt-1.5\">\n          <span class=\"font-bold text-white\">1-есеп:</span> Дүниежүзінде көмір қоры 1000 млрд т, жылдық өндіру 8 млрд т. Қанша жылға жетеді?<br/>\n          <span class=\"text-emerald-400 font-mono font-bold\">Шешуі: 1000 / 8 = 125 жыл.</span>\n        </div>\n        <div class=\"pt-1.5\">\n          <span class=\"font-bold text-white\">2-есеп:</span> Қазақстан аумағы 2 724 900 км², халық саны 20 000 000 адам. Жан басына жермен қамтамасыз етілуі?<br/>\n          <span class=\"text-emerald-400 font-mono font-bold\">Шешуі: 2 724 900 / 20 000 000 = 0,136 км²/адам = 13,6 га/адам.</span>\n        </div>\n        <div class=\"pt-1.5\">\n          <span class=\"font-bold text-white\">3-есеп:</span> Ресейде орман аумағы 8 150 000 км², халық саны 146 000 000 адам. Жан басына ормандылық?<br/>\n          <span class=\"text-emerald-400 font-mono font-bold\">Шешуі: 8 150 000 / 146 000 000 ≈ 0,056 км²/адам (шамамен 5,58 га/адам).</span>\n        </div>\n        <div class=\"pt-1.5\">\n          <span class=\"font-bold text-white\">4-есеп:</span> Газ қоры 40 жылға жетеді, жалпы қор 120 млрд м³. Жылына қанша өндіріледі?<br/>\n          <span class=\"text-emerald-400 font-mono font-bold\">Шешуі: 120 / 40 = 3 млрд м³/жыл.</span>\n        </div>\n        <div class=\"pt-1.5\">\n          <span class=\"font-bold text-white\">5-есеп:</span> «А» елі алтын қоры 8000 т, өндіруі 200 т/жыл. «Б» елі қоры 5000 т, өндіруі 100 т/жыл. Қай елдің мерзімі ұзағырақ?<br/>\n          <span class=\"text-emerald-400 font-mono font-bold\">Шешуі: А елі: 8000 / 200 = 40 жыл; Б елі: 5000 / 100 = 50 жыл. Б елінің мерзімі 10 жылға ұзағырақ (50 - 40 = 10 жыл).</span>\n        </div>\n      </div>\n    </div>\n  </div>\n\n  <!-- 3. ТАУ-КЕН ӨНЕРКӘСІБІ ЖӘНЕ МЕТАЛЛУРГИЯ -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-rose-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>⛏️</span>\n      <span>3. Тау-кен өнеркәсібі және Металлургия</span>\n    </h4>\n    <p>• <b>Металлургия</b> — құрастырмалы материалдар мен химия өнеркәсібі үшін шикізат өндіретін өнеркәсіптің кешенді саласы.</p>\n    <p>• <b>Тау-кен өнеркәсібі</b> — минералды шикізатты өндіруші сала.</p>\n    <p>• <b>Ірі тау-кен өнеркәсібі дамыған 8 ел:</b> АҚШ, Канада, Аустралия, ОАР (Оңтүстік Африка Республикасы), Бразилия, Үндістан, Қытай, Ресей.</p>\n    \n    <div class=\"grid grid-cols-1 md:grid-cols-2 gap-3 pt-1\">\n      <div class=\"p-3 bg-space-950 rounded-xl border border-slate-800 space-y-1\">\n        <span class=\"font-bold text-cyan-300 block text-xs\">Қара металлургия (Темір):</span>\n        <p class=\"text-[11px] text-slate-300\">• Темір өндіретін елдер саны: <b>50 ел</b>.</p>\n        <p class=\"text-[11px] text-slate-300\">• Темір кенін өндіруден көшбасшылар: <b>Қытай, Бразилия, Аустралия, Ресей, Үндістан</b>.</p>\n        <p class=\"text-[11px] text-slate-300\">• Темірді ірі өндірушілер: <b>Қытай, Жапония, АҚШ, Ресей, Германия</b>.</p>\n        <p class=\"text-[11px] text-slate-300\">• Ірі экспорттаушылар: <b>ЕО елдері, Жапония, ТМД елдері</b>.</p>\n      </div>\n\n      <div class=\"p-3 bg-space-950 rounded-xl border border-slate-800 space-y-1\">\n        <span class=\"font-bold text-amber-300 block text-xs\">Түсті металлургия:</span>\n        <p class=\"text-[11px] text-slate-300\">• <b>Мыс қорытудан:</b> Чили, АҚШ, Индонезия, Ресей, Канада.</p>\n        <p class=\"text-[11px] text-slate-300\">• <b>«Мыс белдеуі»:</b> Анд тау елдері және Орталық Африка (Конго, Замбия, Зимбабве).</p>\n        <p class=\"text-[11px] text-slate-300\">• <b>Рафинатталған мыс шығару:</b> Еуропа елдері (Германия, Италия).</p>\n        <p class=\"text-[11px] text-slate-300\">• <b>Алюминий:</b> Қытай, Ресей, Канада, АҚШ, Аустралия, Бразилия, Норвегия.</p>\n        <p class=\"text-[11px] text-slate-300\">• <b>Қалайы:</b> Қытай, Индонезия, Перу, Бразилия, Боливия, Малайзия.</p>\n        <p class=\"text-[11px] text-slate-300\">• <b>Қорғасын-мырыш:</b> АҚШ, Жапония, Канада, Аустралия, Бразилия.</p>\n      </div>\n    </div>\n\n    <!-- ТҮСТІ МЕТАЛДАР ҚАСИЕТТЕРІ -->\n    <div class=\"p-3 bg-space-950 rounded-xl border border-purple-500/30 text-xs\">\n      <span class=\"font-black text-purple-300 block mb-1\">Түсті металдар құймаларының ерекше қасиеттері:</span>\n      <p>• <b>Ыстыққа төзімді:</b> никель, кобальт құймалары.</p>\n      <p>• <b>Жеңіл салмақты:</b> алюминий, магний құймалары.</p>\n      <p>• <b>Берік әрі коррозияға төзімді:</b> титан құймалары.</p>\n    </div>\n\n    <svg viewBox=\"0 0 700 250\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2\">\n  <text x=\"350\" y=\"20\" fill=\"#38bdf8\" font-size=\"11\" font-weight=\"900\" text-anchor=\"middle\">ДҮНИЕЖҮЗІНІҢ БАСТЫ КЕН ОРЫНДАРЫ, КӨМІР АЛАПТАРЫ ЖӘНЕ «МЫС БЕЛДЕУІ»</text>\n  \n  <g transform=\"translate(15, 35)\">\n    <rect x=\"0\" y=\"0\" width=\"215\" height=\"200\" rx=\"8\" fill=\"#0f172a\" stroke=\"#ef4444\" stroke-width=\"1.2\"/>\n    <rect x=\"8\" y=\"8\" width=\"199\" height=\"22\" rx=\"4\" fill=\"#ef4444\" fill-opacity=\"0.15\"/>\n    <text x=\"107\" y=\"23\" fill=\"#f87171\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">🏗️ ТЕМІР КЕН ОРЫНДАРЫ</text>\n    <text x=\"10\" y=\"46\" fill=\"#ffffff\" font-size=\"9\">• <tspan font-weight=\"bold\" fill=\"#38bdf8\">Каражас</tspan> (Бразилия — 1-орын)</text>\n    <text x=\"10\" y=\"63\" fill=\"#ffffff\" font-size=\"9\">• <tspan font-weight=\"bold\">Питсбург</tspan> (АҚШ)</text>\n    <text x=\"10\" y=\"80\" fill=\"#ffffff\" font-size=\"9\">• <tspan font-weight=\"bold\">Лотарингия</tspan> (Франция)</text>\n    <text x=\"10\" y=\"97\" fill=\"#ffffff\" font-size=\"9\">• <tspan font-weight=\"bold\" fill=\"#fbbf24\">Роданж-Дифферданж</tspan></text>\n    <text x=\"18\" y=\"110\" fill=\"#94a3b8\" font-size=\"8\">Люксембург («Темір герцогы»)</text>\n    <text x=\"10\" y=\"127\" fill=\"#ffffff\" font-size=\"9\">• <tspan font-weight=\"bold\">Кривой Рог</tspan> (Украина)</text>\n    <text x=\"10\" y=\"144\" fill=\"#ffffff\" font-size=\"9\">• <tspan font-weight=\"bold\">Аньшань</tspan> (Қытай)</text>\n    <text x=\"10\" y=\"161\" fill=\"#ffffff\" font-size=\"9\">• <tspan font-weight=\"bold\">КМА</tspan> (Ресей)</text>\n    <text x=\"10\" y=\"178\" fill=\"#ffffff\" font-size=\"9\">• <tspan font-weight=\"bold\" fill=\"#34d399\">Соколов-Сарыбай, Лисаков,</tspan></text>\n    <text x=\"18\" y=\"191\" fill=\"#34d399\" font-size=\"8\">Әйет, Қашар (ҚР — 8-орын)</text>\n  </g>\n\n  <g transform=\"translate(242, 35)\">\n    <rect x=\"0\" y=\"0\" width=\"215\" height=\"200\" rx=\"8\" fill=\"#0f172a\" stroke=\"#f59e0b\" stroke-width=\"1.2\"/>\n    <rect x=\"8\" y=\"8\" width=\"199\" height=\"22\" rx=\"4\" fill=\"#f59e0b\" fill-opacity=\"0.15\"/>\n    <text x=\"107\" y=\"23\" fill=\"#fbbf24\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">⛏️ 12 ІРІ КӨМІР АЛАБЫ</text>\n    <text x=\"10\" y=\"46\" fill=\"#ffffff\" font-size=\"8.5\">• <tspan font-weight=\"bold\">Аппалач</tspan> (АҚШ)</text>\n    <text x=\"10\" y=\"61\" fill=\"#ffffff\" font-size=\"8.5\">• <tspan font-weight=\"bold\" fill=\"#38bdf8\">Датун 50%</tspan> (Қытай)</text>\n    <text x=\"10\" y=\"76\" fill=\"#ffffff\" font-size=\"8.5\">• <tspan font-weight=\"bold\">Кузбасс 40%, Канск-Ачинск</tspan> (РФ)</text>\n    <text x=\"10\" y=\"91\" fill=\"#ffffff\" font-size=\"8.5\">• <tspan font-weight=\"bold\">Донбасс</tspan> (Украина)</text>\n    <text x=\"10\" y=\"106\" fill=\"#ffffff\" font-size=\"8.5\">• <tspan font-weight=\"bold\">Жаңа Оңт. Уэльс</tspan> (Аустралия)</text>\n    <text x=\"10\" y=\"121\" fill=\"#ffffff\" font-size=\"8.5\">• <tspan font-weight=\"bold\">Рур, Ахен, Саар</tspan> (Германия)</text>\n    <text x=\"10\" y=\"136\" fill=\"#ffffff\" font-size=\"8.5\">• <tspan font-weight=\"bold\">Острава Карвин</tspan> (Чехия)</text>\n    <text x=\"10\" y=\"151\" fill=\"#ffffff\" font-size=\"8.5\">• <tspan font-weight=\"bold\">Шығыс Марица</tspan> (Болгария)</text>\n    <text x=\"10\" y=\"166\" fill=\"#ffffff\" font-size=\"8.5\">• <tspan font-weight=\"bold\">Жоғарғы Силезия</tspan> (Польша)</text>\n    <text x=\"10\" y=\"181\" fill=\"#ffffff\" font-size=\"8.5\">• <tspan font-weight=\"bold\" fill=\"#f87171\">Дамодар</tspan> («Үндістан Руры»)</text>\n    <text x=\"10\" y=\"195\" fill=\"#ffffff\" font-size=\"8.5\">• <tspan font-weight=\"bold\" fill=\"#34d399\">Қарағанды, Екібастұз</tspan> (ҚР)</text>\n  </g>\n\n  <g transform=\"translate(470, 35)\">\n    <rect x=\"0\" y=\"0\" width=\"215\" height=\"200\" rx=\"8\" fill=\"#0f172a\" stroke=\"#8b5cf6\" stroke-width=\"1.2\"/>\n    <rect x=\"8\" y=\"8\" width=\"199\" height=\"22\" rx=\"4\" fill=\"#8b5cf6\" fill-opacity=\"0.15\"/>\n    <text x=\"107\" y=\"23\" fill=\"#a78bfa\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">🥉 «МЫС БЕЛДЕУІ» &amp; МЕТАЛДАР</text>\n    <text x=\"10\" y=\"46\" fill=\"#ffffff\" font-size=\"8.5\">• <tspan font-weight=\"bold\" fill=\"#fbbf24\">«Мыс белдеуі»:</tspan></text>\n    <text x=\"18\" y=\"60\" fill=\"#cbd5e1\" font-size=\"8\">1. Анд елдері (Чили, Перу)</text>\n    <text x=\"18\" y=\"74\" fill=\"#cbd5e1\" font-size=\"8\">2. Орталық Африка (Конго, Замбия)</text>\n    <text x=\"10\" y=\"92\" fill=\"#ffffff\" font-size=\"8.5\">• <tspan font-weight=\"bold\">Рафинатталған мыс:</tspan> Германия</text>\n    <text x=\"10\" y=\"109\" fill=\"#ffffff\" font-size=\"8.5\">• <tspan font-weight=\"bold\">Алюминий:</tspan> Қытай, Ресей, АҚШ</text>\n    <text x=\"10\" y=\"126\" fill=\"#ffffff\" font-size=\"8.5\">• <tspan font-weight=\"bold\">Қалайы:</tspan> Қытай, Индонезия, Перу</text>\n    <text x=\"10\" y=\"145\" fill=\"#ffffff\" font-size=\"8.5\">• <tspan font-weight=\"bold\" fill=\"#34d399\">Құймалар қасиеттері:</tspan></text>\n    <text x=\"18\" y=\"160\" fill=\"#cbd5e1\" font-size=\"8\">- Ыстыққа төзімді: <tspan font-weight=\"bold\">Ni, Co</tspan></text>\n    <text x=\"18\" y=\"174\" fill=\"#cbd5e1\" font-size=\"8\">- Жеңіл салмақты: <tspan font-weight=\"bold\">Al, Mg</tspan></text>\n    <text x=\"18\" y=\"188\" fill=\"#cbd5e1\" font-size=\"8\">- Коррозияға төзімді: <tspan font-weight=\"bold\">Ti (титан)</tspan></text>\n  </g>\n</svg>\n\n    <!-- ДҮНИЕЖҮЗІНІҢ ІРІ ТЕМІР КЕН ОРЫНДАРЫ КЕСТЕСІ -->\n    <div class=\"overflow-x-auto mt-2\">\n      <h5 class=\"text-xs font-bold text-white mb-1.5\">Дүниежүзі бойынша ірі темір кен орындары:</h5>\n      <table class=\"w-full text-left text-xs border border-slate-800 rounded-xl overflow-hidden\">\n        <thead class=\"bg-space-950 text-slate-400 border-b border-slate-800\">\n          <tr>\n            <th class=\"p-2\">#</th>\n            <th class=\"p-2\">Мемлекет / Аймақ</th>\n            <th class=\"p-2\">Кен орны атауы</th>\n          </tr>\n        </thead>\n        <tbody class=\"divide-y divide-slate-800 text-[11px] text-slate-300\">\n          <tr><td class=\"p-2\">1</td><td class=\"p-2 font-bold text-white\">Бразилия (I орын)</td><td class=\"p-2 text-cyan-300 font-mono\">Каражас</td></tr>\n          <tr><td class=\"p-2\">2</td><td class=\"p-2 font-bold text-white\">АҚШ</td><td class=\"p-2 text-cyan-300 font-mono\">Питсбург</td></tr>\n          <tr><td class=\"p-2\">3</td><td class=\"p-2 font-bold text-white\">Франция</td><td class=\"p-2 text-cyan-300 font-mono\">Лотарингия</td></tr>\n          <tr><td class=\"p-2\">4</td><td class=\"p-2 font-bold text-white\">Люксембург («Темір герцогы»)</td><td class=\"p-2 text-cyan-300 font-mono\">Роданж — Дифферданж</td></tr>\n          <tr><td class=\"p-2\">5</td><td class=\"p-2 font-bold text-white\">Украина</td><td class=\"p-2 text-cyan-300 font-mono\">Кривой Рог</td></tr>\n          <tr><td class=\"p-2\">6</td><td class=\"p-2 font-bold text-white\">Африка елдері</td><td class=\"p-2 text-cyan-300 font-mono\">Гвинея, Габон, Либерия, Мавритания</td></tr>\n          <tr><td class=\"p-2\">7</td><td class=\"p-2 font-bold text-white\">Қытай</td><td class=\"p-2 text-cyan-300 font-mono\">Аньшань</td></tr>\n          <tr><td class=\"p-2\">8</td><td class=\"p-2 font-bold text-white\">Ресей</td><td class=\"p-2 text-cyan-300 font-mono\">КМА (Курск магниттік аномалиясы)</td></tr>\n          <tr><td class=\"p-2\">9</td><td class=\"p-2 font-bold text-white\">Қазақстан (8-орын)</td><td class=\"p-2 text-emerald-300 font-mono\">Соколов-Сарыбай, Лисаков, Әйет, Қашар</td></tr>\n        </tbody>\n      </table>\n    </div>\n  </div>\n\n  <!-- 4. ОТЫН-ЭНЕРГЕТИКА КЕШЕНІ (МҰНАЙ ФРАКЦИЯЛАРЫ, ГАЗ, КӨМІР) -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-4\">\n    <h4 class=\"text-sm sm:text-base font-black text-amber-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🛢️</span>\n      <span>4. Отын-энергетика кешені және Мұнай фракциялары</span>\n    </h4>\n    \n    <!-- МҰНАЙ ЖӘНЕ ОНЫҢ 6 ФРАКЦИЯСЫ -->\n    <div class=\"space-y-2\">\n      <p>• <b>Мұнай</b> — екінші дүниежүзілік соғыстан кейін қарқынды дами бастады. Басты мұнай алаптары дамушы елдерде орналасқан.</p>\n      <p>• <b>Фракция</b> — мұнайдағы қайнау температурасы бірдей заттар тобы. <b>6 топқа бөлінеді:</b></p>\n      \n      <!-- SVG ФРАКЦИЯЛЫҚ МҰНАЙ БАҒАНАСЫ -->\n      <div class=\"my-3\">\n        <svg viewBox=\"0 0 700 240\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner\">\n          <text x=\"350\" y=\"20\" fill=\"#f59e0b\" font-size=\"11\" font-weight=\"900\" text-anchor=\"middle\">МҰНАЙДЫҢ ТЕМПЕРАТУРАЛЫҚ 6 ФРАКЦИЯСЫ</text>\n          \n          <rect x=\"50\" y=\"35\" width=\"600\" height=\"28\" rx=\"6\" fill=\"#0284c7\" />\n          <text x=\"65\" y=\"53\" fill=\"#ffffff\" font-size=\"10\" font-weight=\"bold\">1. Қайнау нүктесі 40°C дейін: ГАЗ (метан, пропан, бутан)</text>\n\n          <rect x=\"50\" y=\"68\" width=\"600\" height=\"28\" rx=\"6\" fill=\"#0369a1\" />\n          <text x=\"65\" y=\"86\" fill=\"#ffffff\" font-size=\"10\" font-weight=\"bold\">2. Қайнау нүктесі 40°–180°C: БЕНЗИН (авиация және автомобиль жанармайы)</text>\n\n          <rect x=\"50\" y=\"101\" width=\"600\" height=\"28\" rx=\"6\" fill=\"#047857\" />\n          <text x=\"65\" y=\"119\" fill=\"#ffffff\" font-size=\"10\" font-weight=\"bold\">3. Қайнау нүктесі 180°–270°C: КЕРОСИН (зымыран және реактивті жанармай)</text>\n\n          <rect x=\"50\" y=\"134\" width=\"600\" height=\"28\" rx=\"6\" fill=\"#b45309\" />\n          <text x=\"65\" y=\"152\" fill=\"#ffffff\" font-size=\"10\" font-weight=\"bold\">4. Қайнау нүктесі 270°–360°C: СОЛЯР МАЙЫ (дизель жанармайы, майлайтын майлар)</text>\n\n          <rect x=\"50\" y=\"167\" width=\"600\" height=\"28\" rx=\"6\" fill=\"#b91c1c\" />\n          <text x=\"65\" y=\"185\" fill=\"#ffffff\" font-size=\"10\" font-weight=\"bold\">5. Қайнау нүктесі 360°–550°C: МАЗУТ (минералдық майлар, вазелин, парафин)</text>\n\n          <rect x=\"50\" y=\"200\" width=\"600\" height=\"28\" rx=\"6\" fill=\"#334155\" />\n          <text x=\"65\" y=\"218\" fill=\"#ffffff\" font-size=\"10\" font-weight=\"bold\">6. Қайнау нүктесі 550°C жоғары: АСФАЛЬТ / ГУДРОН (жартылай қатты және қатты материалдар)</text>\n        </svg>\n      </div>\n\n      <div class=\"grid grid-cols-1 md:grid-cols-2 gap-3 text-xs pt-1\">\n        <div class=\"p-3 bg-space-950 rounded-xl border border-slate-800\">\n          <span class=\"font-bold text-amber-300 block mb-1\">Мұнай өндірісі мен саудасы:</span>\n          <p class=\"text-[11px] text-slate-300\">• Өндіретін елдер саны: <b>75 ел</b>.</p>\n          <p class=\"text-[11px] text-slate-300\">• Ең маңызды жеткізушілері: <b>Таяу және Орта Шығыс елдері</b>.</p>\n          <p class=\"text-[11px] text-slate-300\">• Көшбасшылар: <b>Сауд Арабиясы, Ресей, АҚШ, Мексика, БАӘ, Иран, Ирак, Қытай</b>.</p>\n          <p class=\"text-[11px] text-slate-300\">• Тұтынушылар: АҚШ — <b>21%</b>, Батыс Еуропа — <b>20%</b>, Ресей — <b>17%</b>, Жапония — <b>6%</b>.</p>\n        </div>\n\n        <div class=\"p-3 bg-space-950 rounded-xl border border-slate-800\">\n          <span class=\"font-bold text-cyan-300 block mb-1\">Табиғи газ және Көмір:</span>\n          <p class=\"text-[11px] text-slate-300\">• <b>Газ:</b> XX ғ. ортасынан бері өндіріс көлемі <b>10 есеге артты</b>.</p>\n          <p class=\"text-[11px] text-slate-300\">• Газ көшбасшылары: <b>Ресей, АҚШ, Канада, Түркіменстан, Нидерланды, Ұлыбритания</b>.</p>\n          <p class=\"text-[11px] text-slate-300\">• <b>Көмір:</b> 60 елде өндіріледі. Жылына 10 млн тоннадан астам өндіретін елдер: <b>Қытай, АҚШ, Ресей, Германия, Польша, Украина, Қазақстан</b>.</p>\n          <p class=\"text-[11px] text-slate-300\">• Экспорттаушылар: <b>АҚШ, Аустралия, ОАР</b>; Импорттаушылар: <b>Жапония, Батыс Еуропа</b>.</p>\n        </div>\n      </div>\n\n      <!-- КӨМІР КЕН ОРЫНДАРЫ КЕСТЕСІ -->\n      <div class=\"overflow-x-auto mt-2\">\n        <h5 class=\"text-xs font-bold text-white mb-1.5\">Дүниежүзі бойынша 12 ірі көмір кен орындары мен алаптары:</h5>\n        <table class=\"w-full text-left text-xs border border-slate-800 rounded-xl overflow-hidden\">\n          <thead class=\"bg-space-950 text-slate-400 border-b border-slate-800\">\n            <tr>\n              <th class=\"p-2\">#</th>\n              <th class=\"p-2\">Мемлекет</th>\n              <th class=\"p-2\">Көмір алабы / Кен орны</th>\n            </tr>\n          </thead>\n          <tbody class=\"divide-y divide-slate-800 text-[11px] text-slate-300\">\n            <tr><td class=\"p-2\">1</td><td class=\"p-2 font-bold text-white\">АҚШ</td><td class=\"p-2 text-cyan-300 font-mono\">Аппалач тауы (Кентукки, Пенсильвания, Вайоминг, Батыс Виргиния)</td></tr>\n            <tr><td class=\"p-2\">2</td><td class=\"p-2 font-bold text-white\">Қытай</td><td class=\"p-2 text-cyan-300 font-mono\">Датун (ел көмірінің 50%-ы)</td></tr>\n            <tr><td class=\"p-2\">3</td><td class=\"p-2 font-bold text-white\">Ресей</td><td class=\"p-2 text-cyan-300 font-mono\">Кузбасс (40%), Канск-Ачинск, Печора, Якут бассейні</td></tr>\n            <tr><td class=\"p-2\">4</td><td class=\"p-2 font-bold text-white\">Украина</td><td class=\"p-2 text-cyan-300 font-mono\">Донбасс</td></tr>\n            <tr><td class=\"p-2\">5</td><td class=\"p-2 font-bold text-white\">Аустралия</td><td class=\"p-2 text-cyan-300 font-mono\">Жаңа Оңтүстік Уэльс, Квинсленд</td></tr>\n            <tr><td class=\"p-2\">6</td><td class=\"p-2 font-bold text-white\">Германия</td><td class=\"p-2 text-cyan-300 font-mono\">Рур, Ахен, Саар</td></tr>\n            <tr><td class=\"p-2\">7</td><td class=\"p-2 font-bold text-white\">Чехия</td><td class=\"p-2 text-cyan-300 font-mono\">Острава Карвин</td></tr>\n            <tr><td class=\"p-2\">8</td><td class=\"p-2 font-bold text-white\">Болгария</td><td class=\"p-2 text-cyan-300 font-mono\">Шығыс Марица</td></tr>\n            <tr><td class=\"p-2\">9</td><td class=\"p-2 font-bold text-white\">Польша</td><td class=\"p-2 text-cyan-300 font-mono\">Жоғарғы Силезия</td></tr>\n            <tr><td class=\"p-2\">10</td><td class=\"p-2 font-bold text-white\">Үндістан</td><td class=\"p-2 text-cyan-300 font-mono\">Дамодар («Үндістан Руры»)</td></tr>\n            <tr><td class=\"p-2\">11</td><td class=\"p-2 font-bold text-white\">Ұлыбритания</td><td class=\"p-2 text-cyan-300 font-mono\">Жаңа Уэльс, Йоркшир</td></tr>\n            <tr><td class=\"p-2\">12</td><td class=\"p-2 font-bold text-white\">Қазақстан</td><td class=\"p-2 text-emerald-300 font-mono\">Қарағанды, Екібастұз («Богатырь» кеніші)</td></tr>\n          </tbody>\n        </table>\n      </div>\n    </div>\n  </div>\n\n  <!-- 5. ЭЛЕКТР ЭНЕРГЕТИКАСЫ ЖӘНЕ БАЛАМАЛЫ ЭНЕРГИЯ КӨЗДЕРІ -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-cyan-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>⚡</span>\n      <span>5. Электр энергетикасы және Баламалы көздер</span>\n    </h4>\n    <p>• <b>Электр энергиясын өндіру құрылымы:</b><br/>\n      &nbsp;&nbsp;<b>1-орын:</b> ЖЭС (Жылу электр станциялары) — <b>60%</b><br/>\n      &nbsp;&nbsp;<b>2-орын:</b> СЭС (Су электр станциялары) — <b>20%</b><br/>\n      &nbsp;&nbsp;<b>3-орын:</b> АЭС (Атом электр станциялары) — <b>17%</b></p>\n    <p>• <b>АЭС өндіретін басты елдер:</b> АҚШ, Ресей, Қытай, Жапония, Германия, Канада, Франция, Ұлыбритания.</p>\n    <p>• <b>АЭС үлесі жиынтық өндірісте:</b> Францияда — <b>73%</b>, Жапонияда — <b>28%</b>, АҚШ-та — <b>20%</b>.</p>\n\n    <svg viewBox=\"0 0 700 170\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2\">\n  <text x=\"350\" y=\"20\" fill=\"#38bdf8\" font-size=\"11\" font-weight=\"900\" text-anchor=\"middle\">ДҮНИЕЖҮЗІЛІК ЭЛЕКТР ЭНЕРГИЯСЫНЫҢ ҚҰРЫЛЫМЫ ЖӘНЕ АЭС ҮЛЕСІ</text>\n  \n  <g transform=\"translate(30, 35)\">\n    <text x=\"0\" y=\"15\" fill=\"#f87171\" font-size=\"9.5\" font-weight=\"bold\">1. ЖЭС (ТЭС): 60%</text>\n    <rect x=\"0\" y=\"22\" width=\"280\" height=\"14\" rx=\"3\" fill=\"#1e293b\"/>\n    <rect x=\"0\" y=\"22\" width=\"168\" height=\"14\" rx=\"3\" fill=\"#ef4444\"/>\n\n    <text x=\"0\" y=\"52\" fill=\"#38bdf8\" font-size=\"9.5\" font-weight=\"bold\">2. СЭС (ГЭС): 20%</text>\n    <rect x=\"0\" y=\"59\" width=\"280\" height=\"14\" rx=\"3\" fill=\"#1e293b\"/>\n    <rect x=\"0\" y=\"59\" width=\"56\" height=\"14\" rx=\"3\" fill=\"#0284c7\"/>\n\n    <text x=\"0\" y=\"89\" fill=\"#fbbf24\" font-size=\"9.5\" font-weight=\"bold\">3. АЭС: 17%</text>\n    <rect x=\"0\" y=\"96\" width=\"280\" height=\"14\" rx=\"3\" fill=\"#1e293b\"/>\n    <rect x=\"0\" y=\"96\" width=\"47.6\" height=\"14\" rx=\"3\" fill=\"#f59e0b\"/>\n\n    <text x=\"0\" y=\"124\" fill=\"#34d399\" font-size=\"9.5\" font-weight=\"bold\">4. Баламалы станциялар: 3%</text>\n    <rect x=\"0\" y=\"128\" width=\"280\" height=\"8\" rx=\"2\" fill=\"#10b981\"/>\n  </g>\n\n  <g transform=\"translate(370, 35)\">\n    <rect x=\"0\" y=\"0\" width=\"300\" height=\"125\" rx=\"8\" fill=\"#0f172a\" stroke=\"#f59e0b\" stroke-width=\"1\"/>\n    <text x=\"150\" y=\"20\" fill=\"#fbbf24\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">⚛️ АЭС ҮЛЕСІ ЕЛДЕРДІҢ ЭНЕРГИЯСЫНДА</text>\n    \n    <text x=\"15\" y=\"45\" fill=\"#cbd5e1\" font-size=\"9.5\">🇫🇷 Франция: <tspan fill=\"#38bdf8\" font-weight=\"bold\">73%</tspan> (Дүниежүзіндегі ең жоғары)</text>\n    <rect x=\"15\" y=\"50\" width=\"270\" height=\"8\" rx=\"2\" fill=\"#1e293b\"/>\n    <rect x=\"15\" y=\"50\" width=\"197\" height=\"8\" rx=\"2\" fill=\"#0ea5e9\"/>\n\n    <text x=\"15\" y=\"75\" fill=\"#cbd5e1\" font-size=\"9.5\">🇯🇵 Жапония: <tspan fill=\"#fbbf24\" font-weight=\"bold\">28%</tspan></text>\n    <rect x=\"15\" y=\"80\" width=\"270\" height=\"8\" rx=\"2\" fill=\"#1e293b\"/>\n    <rect x=\"15\" y=\"80\" width=\"75.6\" height=\"8\" rx=\"2\" fill=\"#f59e0b\"/>\n\n    <text x=\"15\" y=\"105\" fill=\"#cbd5e1\" font-size=\"9.5\">🇺🇸 АҚШ: <tspan fill=\"#34d399\" font-weight=\"bold\">20%</tspan> (Өндіру көлемі ең үлкен)</text>\n    <rect x=\"15\" y=\"110\" width=\"270\" height=\"8\" rx=\"2\" fill=\"#1e293b\"/>\n    <rect x=\"15\" y=\"110\" width=\"54\" height=\"8\" rx=\"2\" fill=\"#10b981\"/>\n  </g>\n</svg>\n    <p>• <b>Айырықша АЭС дамыған елдер:</b> Жапония, Франция.</p>\n\n    <!-- БАЛАМАЛЫ ЭНЕРГИЯ КӨЗДЕРІ КӨШБАСШЫЛАРЫ -->\n    <div class=\"p-3 bg-space-950 rounded-xl border border-emerald-500/40 text-xs space-y-1.5 mt-2\">\n      <span class=\"font-black text-emerald-300 block mb-1\">Дүниежүзінің баламалы энергия көшбасшы елдері:</span>\n      <p>• <b>Геотермальды:</b> Исландия, Италия, Франция, Венгрия, Жапония, АҚШ.</p>\n      <p>• <b>Гелиостанция (Күн):</b> Франция, Испания, Италия, Жапония, АҚШ.</p>\n      <p>• <b>Толысу электр станциялары:</b> Франция, Ресей, Қытай, Канада, АҚШ.</p>\n      <p>• <b>Жел энергетикасы:</b> Дания, Швеция, Германия, Ұлыбритания, Нидерланды.</p>\n    </div>\n  </div>\n\n</div>", "full_theory_ru": "<div class=\"space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed\">\n\n  <!-- 1. ПОНЯТИЯ И КЛАССИФИКАЦИЯ ПРИРОДНЫХ РЕСУРСОВ -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-cyan-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🌿</span>\n      <span>1. Основные понятия и классификация природных ресурсов</span>\n    </h4>\n    <p>• <b>Природные ресурсы</b> — компоненты природы, используемые или пригодные для использования в хозяйственной деятельности человека.</p>\n    <p>• <b>Природно-ресурсный потенциал</b> — совокупность всех природных ресурсов территории, которые могут быть вовлечены в хозяйство.</p>\n\n    <!-- ИНФОГРАФИКА КЛАССИФИКАЦИИ (SVG) -->\n    <div class=\"my-4\">\n      <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 700 240\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2\">\n  <rect x=\"250\" y=\"10\" width=\"200\" height=\"35\" rx=\"8\" fill=\"#0284c7\" />\n  <text x=\"350\" y=\"32\" fill=\"#ffffff\" font-size=\"11.5\" font-weight=\"900\" text-anchor=\"middle\">ПРИРОДНЫЕ РЕСУРСЫ</text>\n\n  <path d=\"M 350 45 L 350 65 L 180 65 L 180 85\" fill=\"none\" stroke=\"#64748b\" stroke-width=\"2\" />\n  <path d=\"M 350 45 L 350 65 L 530 65 L 530 85\" fill=\"none\" stroke=\"#64748b\" stroke-width=\"2\" />\n\n  <rect x=\"80\" y=\"85\" width=\"200\" height=\"32\" rx=\"8\" fill=\"#065f46\" stroke=\"#10b981\" stroke-width=\"1.5\" />\n  <text x=\"180\" y=\"105\" fill=\"#34d399\" font-size=\"11\" font-weight=\"800\" text-anchor=\"middle\">1. НЕИСЧЕРПАЕМЫЕ</text>\n  \n  <rect x=\"45\" y=\"125\" width=\"270\" height=\"100\" rx=\"8\" fill=\"#0f172a\" stroke=\"#334155\" />\n  <text x=\"60\" y=\"148\" fill=\"#e2e8f0\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#34d399\">Климатические ресурсы</tspan> (воздух, осадки)</text>\n  <text x=\"60\" y=\"170\" fill=\"#e2e8f0\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#34d399\">Солнечная энергия</tspan> (свет, тепло)</text>\n  <text x=\"60\" y=\"192\" fill=\"#e2e8f0\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#34d399\">Энергия движения:</tspan> ветер, гидро-</text>\n  <text x=\"70\" y=\"208\" fill=\"#94a3b8\" font-size=\"9\">энергия, приливы и отливы</text>\n\n  <rect x=\"430\" y=\"85\" width=\"200\" height=\"32\" rx=\"8\" fill=\"#7f1d1d\" stroke=\"#ef4444\" stroke-width=\"1.5\" />\n  <text x=\"530\" y=\"105\" fill=\"#f87171\" font-size=\"11\" font-weight=\"800\" text-anchor=\"middle\">2. ИСЧЕРПАЕМЫЕ</text>\n\n  <rect x=\"375\" y=\"125\" width=\"145\" height=\"100\" rx=\"8\" fill=\"#0f172a\" stroke=\"#334155\" />\n  <text x=\"447\" y=\"144\" fill=\"#38bdf8\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">Возобновимые:</text>\n  <text x=\"385\" y=\"166\" fill=\"#cbd5e1\" font-size=\"9.5\">• Водные ресурсы</text>\n  <text x=\"385\" y=\"186\" fill=\"#cbd5e1\" font-size=\"9.5\">• Земельные ресурсы</text>\n  <text x=\"385\" y=\"206\" fill=\"#cbd5e1\" font-size=\"9.5\">• Биологические</text>\n\n  <rect x=\"530\" y=\"125\" width=\"155\" height=\"100\" rx=\"8\" fill=\"#0f172a\" stroke=\"#334155\" />\n  <text x=\"607\" y=\"144\" fill=\"#f87171\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">Невозобновимые:</text>\n  <text x=\"538\" y=\"165\" fill=\"#cbd5e1\" font-size=\"9\">• <tspan font-weight=\"bold\" fill=\"#fbbf24\">Топливные:</tspan> нефть, газ, уголь</text>\n  <text x=\"538\" y=\"183\" fill=\"#cbd5e1\" font-size=\"9\">• <tspan font-weight=\"bold\" fill=\"#fbbf24\">Металлы:</tspan> руды черных/цветных</text>\n  <text x=\"538\" y=\"201\" fill=\"#cbd5e1\" font-size=\"9\">• <tspan font-weight=\"bold\" fill=\"#fbbf24\">Химические:</tspan> фосфориты, соли</text>\n</svg>\n    </div>\n\n    <!-- ТАБЛИЦА ВИДОВ РЕСУРСОВ -->\n    <div class=\"overflow-x-auto mt-3\">\n      <table class=\"w-full text-left text-xs border border-slate-800 rounded-xl overflow-hidden\">\n        <thead>\n          <tr class=\"bg-space-950 text-cyan-400 font-bold border-b border-slate-800\">\n            <th class=\"p-2.5\">Минеральные ресурсы</th>\n            <th class=\"p-2.5\">Земельные ресурсы</th>\n            <th class=\"p-2.5\">Водные ресурсы</th>\n            <th class=\"p-2.5\">Биологические ресурсы</th>\n            <th class=\"p-2.5\">Агроклиматические</th>\n          </tr>\n        </thead>\n        <tbody class=\"divide-y divide-slate-800 text-[11px] text-slate-300\">\n          <tr>\n            <td class=\"p-2.5\">Рудные (металлы), химические, топливные (уголь, нефть, природный газ)</td>\n            <td class=\"p-2.5\">Земельный фонд: пашня, плодородные почвы, луга, пастбища</td>\n            <td class=\"p-2.5\">Воды Мирового океана и суши (реки, озера, ледники)</td>\n            <td class=\"p-2.5\">Растительный (леса) и животный мир, органический мир океана</td>\n            <td class=\"p-2.5\">Сумма активных температур выше +10°С и количество осадков</td>\n          </tr>\n        </tbody>\n      </table>\n    </div>\n  </div>\n\n  <!-- 2. ЭКОНОМИЧЕСКАЯ ОЦЕНКА И РАСЧЕТ РЕСУРСООБЕСПЕЧЕННОСТИ -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-amber-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>📐</span>\n      <span>2. Экономическая оценка и Решение задач на ресурсообеспеченность</span>\n    </h4>\n    <p>• <b>Натуральные единицы:</b> тонны (т), гектары (га), кубические метры (м³), баррели.</p>\n    <p>• <b>Балльная оценка обеспеченности (5-балльная шкала):</b><br/>\n      &nbsp;&nbsp;<b>0 баллов</b> — ресурс полностью отсутствует;<br/>\n      &nbsp;&nbsp;<b>1 балл</b> — ресурс имеет только локальное (местное) значение;<br/>\n      &nbsp;&nbsp;<b>2 балла</b> — ресурс имеет региональное значение;<br/>\n      &nbsp;&nbsp;<b>3 балла</b> — ресурс имеет национальное (общегосударственное) значение;<br/>\n      &nbsp;&nbsp;<b>4 балла</b> — ресурс имеет международное (мировое) значение.</p>\n    <p>• <b>Стоимостные показатели:</b> себестоимость добычи, плата за природопользование.</p>\n    <p>• <b>Ресурсообеспеченность</b> — соотношение между величиной природных запасов и масштабами их использования. Рассчитывается двумя способами:</p>\n\n    <svg viewBox=\"0 0 700 190\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2\">\n  <text x=\"350\" y=\"20\" fill=\"#38bdf8\" font-size=\"11\" font-weight=\"900\" text-anchor=\"middle\">ЭКОНОМИЧЕСКАЯ ОЦЕНКА ПРИРОДНЫХ РЕСУРСОВ: 5-БАЛЛЬНАЯ ШКАЛА И ФОРМУЛЫ</text>\n  \n  <g transform=\"translate(20, 35)\">\n    <rect x=\"0\" y=\"0\" width=\"125\" height=\"60\" rx=\"8\" fill=\"#1e293b\" stroke=\"#ef4444\" stroke-width=\"1.2\"/>\n    <rect x=\"6\" y=\"6\" width=\"32\" height=\"18\" rx=\"4\" fill=\"#ef4444\"/>\n    <text x=\"22\" y=\"19\" fill=\"#ffffff\" font-size=\"10\" font-weight=\"900\" text-anchor=\"middle\">0 б</text>\n    <text x=\"44\" y=\"19\" fill=\"#f87171\" font-size=\"9\" font-weight=\"bold\">Отсутствует</text>\n    <text x=\"8\" y=\"38\" fill=\"#94a3b8\" font-size=\"8.5\">Ресурс полностью</text>\n    <text x=\"8\" y=\"50\" fill=\"#94a3b8\" font-size=\"8.5\">не выявлен</text>\n\n    <rect x=\"135\" y=\"0\" width=\"125\" height=\"60\" rx=\"8\" fill=\"#1e293b\" stroke=\"#f59e0b\" stroke-width=\"1.2\"/>\n    <rect x=\"141\" y=\"6\" width=\"32\" height=\"18\" rx=\"4\" fill=\"#f59e0b\"/>\n    <text x=\"157\" y=\"19\" fill=\"#ffffff\" font-size=\"10\" font-weight=\"900\" text-anchor=\"middle\">1 б</text>\n    <text x=\"179\" y=\"19\" fill=\"#fbbf24\" font-size=\"9\" font-weight=\"bold\">Местное</text>\n    <text x=\"143\" y=\"38\" fill=\"#94a3b8\" font-size=\"8.5\">Хватает для одного</text>\n    <text x=\"143\" y=\"50\" fill=\"#94a3b8\" font-size=\"8.5\">района / поселка</text>\n\n    <rect x=\"270\" y=\"0\" width=\"125\" height=\"60\" rx=\"8\" fill=\"#1e293b\" stroke=\"#10b981\" stroke-width=\"1.2\"/>\n    <rect x=\"276\" y=\"6\" width=\"32\" height=\"18\" rx=\"4\" fill=\"#10b981\"/>\n    <text x=\"292\" y=\"19\" fill=\"#ffffff\" font-size=\"10\" font-weight=\"900\" text-anchor=\"middle\">2 б</text>\n    <text x=\"314\" y=\"19\" fill=\"#34d399\" font-size=\"9\" font-weight=\"bold\">Региональное</text>\n    <text x=\"278\" y=\"38\" fill=\"#94a3b8\" font-size=\"8.5\">В масштабах</text>\n    <text x=\"278\" y=\"50\" fill=\"#94a3b8\" font-size=\"8.5\">нескольких областей</text>\n\n    <rect x=\"405\" y=\"0\" width=\"125\" height=\"60\" rx=\"8\" fill=\"#1e293b\" stroke=\"#06b6d4\" stroke-width=\"1.2\"/>\n    <rect x=\"411\" y=\"6\" width=\"32\" height=\"18\" rx=\"4\" fill=\"#06b6d4\"/>\n    <text x=\"427\" y=\"19\" fill=\"#ffffff\" font-size=\"10\" font-weight=\"900\" text-anchor=\"middle\">3 б</text>\n    <text x=\"449\" y=\"19\" fill=\"#22d3ee\" font-size=\"9\" font-weight=\"bold\">Национальное</text>\n    <text x=\"413\" y=\"38\" fill=\"#94a3b8\" font-size=\"8.5\">Крупное значение</text>\n    <text x=\"413\" y=\"50\" fill=\"#94a3b8\" font-size=\"8.5\">для государства</text>\n\n    <rect x=\"540\" y=\"0\" width=\"120\" height=\"60\" rx=\"8\" fill=\"#1e293b\" stroke=\"#8b5cf6\" stroke-width=\"1.2\"/>\n    <rect x=\"546\" y=\"6\" width=\"32\" height=\"18\" rx=\"4\" fill=\"#8b5cf6\"/>\n    <text x=\"562\" y=\"19\" fill=\"#ffffff\" font-size=\"10\" font-weight=\"900\" text-anchor=\"middle\">4 б</text>\n    <text x=\"584\" y=\"19\" fill=\"#a78bfa\" font-size=\"9\" font-weight=\"bold\">Мировое</text>\n    <text x=\"548\" y=\"38\" fill=\"#94a3b8\" font-size=\"8.5\">Экспортируется</text>\n    <text x=\"548\" y=\"50\" fill=\"#94a3b8\" font-size=\"8.5\">на мировой рынок</text>\n  </g>\n\n  <g transform=\"translate(20, 105)\">\n    <rect x=\"0\" y=\"0\" width=\"320\" height=\"70\" rx=\"8\" fill=\"#0f172a\" stroke=\"#0ea5e9\" stroke-width=\"1\"/>\n    <text x=\"160\" y=\"20\" fill=\"#38bdf8\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">ФОРМУЛА 1: РАСЧЕТ РЕСУРСООБЕСПЕЧЕННОСТИ В ГОДАХ</text>\n    <rect x=\"15\" y=\"28\" width=\"290\" height=\"24\" rx=\"4\" fill=\"#1e293b\"/>\n    <text x=\"160\" y=\"44\" fill=\"#ffffff\" font-size=\"10.5\" font-family=\"monospace\" font-weight=\"bold\" text-anchor=\"middle\">Р = Запасы (млрд т) / Добыча (млрд т/год)</text>\n    <text x=\"160\" y=\"62\" fill=\"#94a3b8\" font-size=\"8.5\" text-anchor=\"middle\">Пример: 1000 млрд т / 8 млрд т = 125 лет</text>\n\n    <rect x=\"340\" y=\"0\" width=\"320\" height=\"70\" rx=\"8\" fill=\"#0f172a\" stroke=\"#10b981\" stroke-width=\"1\"/>\n    <text x=\"500\" y=\"20\" fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">ФОРМУЛА 2: НА ДУШУ НАСЕЛЕНИЯ</text>\n    <rect x=\"355\" y=\"28\" width=\"290\" height=\"24\" rx=\"4\" fill=\"#1e293b\"/>\n    <text x=\"500\" y=\"44\" fill=\"#ffffff\" font-size=\"10.5\" font-family=\"monospace\" font-weight=\"bold\" text-anchor=\"middle\">Р = Запасы / Численность населения (чел)</text>\n    <text x=\"500\" y=\"62\" fill=\"#94a3b8\" font-size=\"8.5\" text-anchor=\"middle\">Пример: Площадь РК 2 724 900 км² / 20 млн = 13,6 га/чел</text>\n  </g>\n</svg>\n\n    <div class=\"grid grid-cols-1 md:grid-cols-2 gap-3 my-2\">\n      <div class=\"p-3.5 bg-space-950 rounded-xl border border-cyan-500/40\">\n        <span class=\"text-xs font-black text-cyan-300 block mb-1\">Способ 1: В годах (срок исчерпания)</span>\n        <div class=\"p-2 bg-space-900 rounded-lg text-center font-mono font-bold text-white text-xs my-1\">\n          Ресурсообеспеченность (лет) = Запасы / Годовая добыча\n        </div>\n        <span class=\"text-[11px] text-slate-400 block mt-1\">Показывает, на сколько лет хватит запасов (например, 1000 млрд т / 8 млрд т = 125 лет).</span>\n      </div>\n\n      <div class=\"p-3.5 bg-space-950 rounded-xl border border-emerald-500/40\">\n        <span class=\"text-xs font-black text-emerald-300 block mb-1\">Способ 2: На душу населения</span>\n        <div class=\"p-2 bg-space-900 rounded-lg text-center font-mono font-bold text-white text-xs my-1\">\n          Ресурсообеспеченность = Запасы / Численность населения\n        </div>\n        <span class=\"text-[11px] text-slate-400 block mt-1\">Показывает количество ресурсов на одного жителя (га/чел, м³/чел, т/чел).</span>\n      </div>\n    </div>\n\n    <!-- РАЗБОР 5 ЗАДАЧ -->\n    <div class=\"bg-space-950 p-4 rounded-xl border border-slate-800 space-y-2.5 mt-3\">\n      <h5 class=\"text-xs font-bold text-amber-300 uppercase tracking-wider\">📝 Подробное решение 5 типовых задач:</h5>\n      <div class=\"space-y-2 text-xs divide-y divide-slate-800/80\">\n        <div class=\"pt-1.5\">\n          <span class=\"font-bold text-white\">Задача 1:</span> Разведанные запасы каменного угля в мире — 1000 млрд т. Добыча — 8 млрд т/год. На сколько лет хватит угля?<br/>\n          <span class=\"text-emerald-400 font-mono font-bold\">Решение: 1000 / 8 = 125 лет.</span>\n        </div>\n        <div class=\"pt-1.5\">\n          <span class=\"font-bold text-white\">Задача 2:</span> Территория Казахстана 2 724 900 км², население 20 000 000 чел. Какова обеспеченность землей на душу населения?<br/>\n          <span class=\"text-emerald-400 font-mono font-bold\">Решение: 2 724 900 / 20 000 000 = 0,136 км²/чел = 13,6 га/чел.</span>\n        </div>\n        <div class=\"pt-1.5\">\n          <span class=\"font-bold text-white\">Задача 3:</span> Площадь лесов России 8 150 000 км², население 146 000 000 чел. Обеспеченность лесом на душу населения?<br/>\n          <span class=\"text-emerald-400 font-mono font-bold\">Решение: 8 150 000 / 146 000 000 ≈ 0,056 км²/чел (или 5,58 га/чел).</span>\n        </div>\n        <div class=\"pt-1.5\">\n          <span class=\"font-bold text-white\">Задача 4:</span> Запасов газа хватает на 40 лет, общий объем — 120 млрд м³. Каков годовой объем добычи?<br/>\n          <span class=\"text-emerald-400 font-mono font-bold\">Решение: 120 / 40 = 3 млрд м³/год.</span>\n        </div>\n        <div class=\"pt-1.5\">\n          <span class=\"font-bold text-white\">Задача 5:</span> Страна «А» имеет 8000 т золота и добывает 200 т/год. Страна «Б» — 5000 т и добывает 100 т/год. У кого срок обеспеченности дольше и на сколько?<br/>\n          <span class=\"text-emerald-400 font-mono font-bold\">Решение: Страна А: 8000 / 200 = 40 лет; Страна Б: 5000 / 100 = 50 лет. У страны «Б» срок больше на 10 лет (50 - 40 = 10 лет).</span>\n        </div>\n      </div>\n    </div>\n  </div>\n\n  <!-- 3. ГОРНОДОБЫВАЮЩАЯ ПРОМЫШЛЕННОСТЬ И МЕТАЛЛУРГИЯ -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-rose-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>⛏️</span>\n      <span>3. Горнодобывающая промышленность и Металлургия</span>\n    </h4>\n    <p>• <b>Металлургия</b> — комплексная отрасль промышленности, производящая конструкционные материалы и сырье для машиностроения и химии.</p>\n    <p>• <b>Горнодобывающая промышленность</b> — базовая отрасль по добыче минерального сырья.</p>\n    <p>• <b>8 ведущих горнодобывающих стран мира:</b> США, Канада, Австралия, ЮАР, Бразилия, Индия, Китай, Россия.</p>\n\n    <div class=\"grid grid-cols-1 md:grid-cols-2 gap-3 pt-1\">\n      <div class=\"p-3 bg-space-950 rounded-xl border border-slate-800 space-y-1\">\n        <span class=\"font-bold text-cyan-300 block text-xs\">Черная металлургия (Железо):</span>\n        <p class=\"text-[11px] text-slate-300\">• Число стран, добывающих железную руду: <b>50 стран</b>.</p>\n        <p class=\"text-[11px] text-slate-300\">• Лидеры добычи железной руды: <b>Китай, Бразилия, Австралия, Россия, Индия</b>.</p>\n        <p class=\"text-[11px] text-slate-300\">• Крупнейшие производители стали/чугуна: <b>Китай, Япония, США, Россия, Германия</b>.</p>\n        <p class=\"text-[11px] text-slate-300\">• Крупные экспортеры: <b>страны ЕС, Япония, страны СНГ</b>.</p>\n      </div>\n\n      <div class=\"p-3 bg-space-950 rounded-xl border border-slate-800 space-y-1\">\n        <span class=\"font-bold text-amber-300 block text-xs\">Цветная металлургия:</span>\n        <p class=\"text-[11px] text-slate-300\">• <b>Выплавка меди:</b> Чили, США, Индонезия, Россия, Канада.</p>\n        <p class=\"text-[11px] text-slate-300\">• <b>«Медный пояс»:</b> страны Анд и Центральной Африки (Конго, Замбия, Зимбабве).</p>\n        <p class=\"text-[11px] text-slate-300\">• <b>Рафинированная медь:</b> страны Европы (Германия, Италия).</p>\n        <p class=\"text-[11px] text-slate-300\">• <b>Алюминий:</b> Китай, Россия, Канада, США, Австралия, Бразилия, Норвегия.</p>\n        <p class=\"text-[11px] text-slate-300\">• <b>Олово:</b> Китай, Индонезия, Перу, Бразилия, Боливия, Малайзия.</p>\n        <p class=\"text-[11px] text-slate-300\">• <b>Свинец и цинк:</b> США, Япония, Канада, Австралия, Бразилия.</p>\n      </div>\n    </div>\n\n    <div class=\"p-3 bg-space-950 rounded-xl border border-purple-500/30 text-xs\">\n      <span class=\"font-black text-purple-300 block mb-1\">Свойства сплавов цветных металлов:</span>\n      <p>• <b>Жаропрочные:</b> сплавы никеля, кобальта.</p>\n      <p>• <b>Легкие:</b> сплавы алюминия, магния.</p>\n      <p>• <b>Высокопрочные и коррозионностойкие:</b> сплавы титана.</p>\n    </div>\n\n    <svg viewBox=\"0 0 700 250\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2\">\n  <text x=\"350\" y=\"20\" fill=\"#38bdf8\" font-size=\"11\" font-weight=\"900\" text-anchor=\"middle\">ГЛАВНЫЕ МЕСТОРОЖДЕНИЯ, УГОЛЬНЫЕ БАССЕЙНЫ И «МЕДНЫЙ ПОЯС» МИРА</text>\n  \n  <g transform=\"translate(15, 35)\">\n    <rect x=\"0\" y=\"0\" width=\"215\" height=\"200\" rx=\"8\" fill=\"#0f172a\" stroke=\"#ef4444\" stroke-width=\"1.2\"/>\n    <rect x=\"8\" y=\"8\" width=\"199\" height=\"22\" rx=\"4\" fill=\"#ef4444\" fill-opacity=\"0.15\"/>\n    <text x=\"107\" y=\"23\" fill=\"#f87171\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">🏗️ МЕСТОРОЖДЕНИЯ ЖЕЛЕЗА</text>\n    <text x=\"10\" y=\"46\" fill=\"#ffffff\" font-size=\"9\">• <tspan font-weight=\"bold\" fill=\"#38bdf8\">Каражас</tspan> (Бразилия — 1-е место)</text>\n    <text x=\"10\" y=\"63\" fill=\"#ffffff\" font-size=\"9\">• <tspan font-weight=\"bold\">Питтсбург</tspan> (США)</text>\n    <text x=\"10\" y=\"80\" fill=\"#ffffff\" font-size=\"9\">• <tspan font-weight=\"bold\">Лотарингия</tspan> (Франция)</text>\n    <text x=\"10\" y=\"97\" fill=\"#ffffff\" font-size=\"9\">• <tspan font-weight=\"bold\" fill=\"#fbbf24\">Роданж-Дифферданж</tspan></text>\n    <text x=\"18\" y=\"110\" fill=\"#94a3b8\" font-size=\"8\">Люксембург («Железный герцог»)</text>\n    <text x=\"10\" y=\"127\" fill=\"#ffffff\" font-size=\"9\">• <tspan font-weight=\"bold\">Кривой Рог</tspan> (Украина)</text>\n    <text x=\"10\" y=\"144\" fill=\"#ffffff\" font-size=\"9\">• <tspan font-weight=\"bold\">Аньшань</tspan> (Китай)</text>\n    <text x=\"10\" y=\"161\" fill=\"#ffffff\" font-size=\"9\">• <tspan font-weight=\"bold\">КМА</tspan> (Россия)</text>\n    <text x=\"10\" y=\"178\" fill=\"#ffffff\" font-size=\"9\">• <tspan font-weight=\"bold\" fill=\"#34d399\">Соколовско-Сарбайское,</tspan></text>\n    <text x=\"18\" y=\"191\" fill=\"#34d399\" font-size=\"8\">Лисаковское, Аятское (РК — 8 место)</text>\n  </g>\n\n  <g transform=\"translate(242, 35)\">\n    <rect x=\"0\" y=\"0\" width=\"215\" height=\"200\" rx=\"8\" fill=\"#0f172a\" stroke=\"#f59e0b\" stroke-width=\"1.2\"/>\n    <rect x=\"8\" y=\"8\" width=\"199\" height=\"22\" rx=\"4\" fill=\"#f59e0b\" fill-opacity=\"0.15\"/>\n    <text x=\"107\" y=\"23\" fill=\"#fbbf24\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">⛏️ 12 КРУПНЫХ УГОЛЬНЫХ БАССЕЙНОВ</text>\n    <text x=\"10\" y=\"46\" fill=\"#ffffff\" font-size=\"8.5\">• <tspan font-weight=\"bold\">Аппалачский</tspan> (США)</text>\n    <text x=\"10\" y=\"61\" fill=\"#ffffff\" font-size=\"8.5\">• <tspan font-weight=\"bold\" fill=\"#38bdf8\">Датун 50%</tspan> (Китай)</text>\n    <text x=\"10\" y=\"76\" fill=\"#ffffff\" font-size=\"8.5\">• <tspan font-weight=\"bold\">Кузбасс 40%, Канско-Ачинский</tspan> (РФ)</text>\n    <text x=\"10\" y=\"91\" fill=\"#ffffff\" font-size=\"8.5\">• <tspan font-weight=\"bold\">Донбасс</tspan> (Украина)</text>\n    <text x=\"10\" y=\"106\" fill=\"#ffffff\" font-size=\"8.5\">• <tspan font-weight=\"bold\">Новый Юж. Уэльс</tspan> (Австралия)</text>\n    <text x=\"10\" y=\"121\" fill=\"#ffffff\" font-size=\"8.5\">• <tspan font-weight=\"bold\">Рур, Ахен, Саар</tspan> (Германия)</text>\n    <text x=\"10\" y=\"136\" fill=\"#ffffff\" font-size=\"8.5\">• <tspan font-weight=\"bold\">Острава-Карвина</tspan> (Чехия)</text>\n    <text x=\"10\" y=\"151\" fill=\"#ffffff\" font-size=\"8.5\">• <tspan font-weight=\"bold\">Восточная Марица</tspan> (Болгария)</text>\n    <text x=\"10\" y=\"166\" fill=\"#ffffff\" font-size=\"8.5\">• <tspan font-weight=\"bold\">Верхняя Силезия</tspan> (Польша)</text>\n    <text x=\"10\" y=\"181\" fill=\"#ffffff\" font-size=\"8.5\">• <tspan font-weight=\"bold\" fill=\"#f87171\">Дамодар</tspan> («Индийский Рур»)</text>\n    <text x=\"10\" y=\"195\" fill=\"#ffffff\" font-size=\"8.5\">• <tspan font-weight=\"bold\" fill=\"#34d399\">Караганда, Экибастуз</tspan> (РК)</text>\n  </g>\n\n  <g transform=\"translate(470, 35)\">\n    <rect x=\"0\" y=\"0\" width=\"215\" height=\"200\" rx=\"8\" fill=\"#0f172a\" stroke=\"#8b5cf6\" stroke-width=\"1.2\"/>\n    <rect x=\"8\" y=\"8\" width=\"199\" height=\"22\" rx=\"4\" fill=\"#8b5cf6\" fill-opacity=\"0.15\"/>\n    <text x=\"107\" y=\"23\" fill=\"#a78bfa\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">🥉 «МЕДНЫЙ ПОЯС» &amp; МЕТАЛЛЫ</text>\n    <text x=\"10\" y=\"46\" fill=\"#ffffff\" font-size=\"8.5\">• <tspan font-weight=\"bold\" fill=\"#fbbf24\">«Медный пояс»:</tspan></text>\n    <text x=\"18\" y=\"60\" fill=\"#cbd5e1\" font-size=\"8\">1. Анды (Чили, Перу)</text>\n    <text x=\"18\" y=\"74\" fill=\"#cbd5e1\" font-size=\"8\">2. Центр. Африка (Конго, Замбия)</text>\n    <text x=\"10\" y=\"92\" fill=\"#ffffff\" font-size=\"8.5\">• <tspan font-weight=\"bold\">Рафинированная медь:</tspan> Германия</text>\n    <text x=\"10\" y=\"109\" fill=\"#ffffff\" font-size=\"8.5\">• <tspan font-weight=\"bold\">Алюминий:</tspan> Китай, Россия, США</text>\n    <text x=\"10\" y=\"126\" fill=\"#ffffff\" font-size=\"8.5\">• <tspan font-weight=\"bold\">Олово:</tspan> Китай, Индонезия, Перу</text>\n    <text x=\"10\" y=\"145\" fill=\"#ffffff\" font-size=\"8.5\">• <tspan font-weight=\"bold\" fill=\"#34d399\">Свойства сплавов:</tspan></text>\n    <text x=\"18\" y=\"160\" fill=\"#cbd5e1\" font-size=\"8\">- Жаропрочные: <tspan font-weight=\"bold\">Ni, Co</tspan></text>\n    <text x=\"18\" y=\"174\" fill=\"#cbd5e1\" font-size=\"8\">- Легкие по весу: <tspan font-weight=\"bold\">Al, Mg</tspan></text>\n    <text x=\"18\" y=\"188\" fill=\"#cbd5e1\" font-size=\"8\">- Стойкие к коррозии: <tspan font-weight=\"bold\">Ti (титан)</tspan></text>\n  </g>\n</svg>\n\n    <div class=\"overflow-x-auto mt-2\">\n      <h5 class=\"text-xs font-bold text-white mb-1.5\">Крупнейшие железорудные месторождения мира:</h5>\n      <table class=\"w-full text-left text-xs border border-slate-800 rounded-xl overflow-hidden\">\n        <thead class=\"bg-space-950 text-slate-400 border-b border-slate-800\">\n          <tr>\n            <th class=\"p-2\">#</th>\n            <th class=\"p-2\">Страна / Регион</th>\n            <th class=\"p-2\">Название месторождения</th>\n          </tr>\n        </thead>\n        <tbody class=\"divide-y divide-slate-800 text-[11px] text-slate-300\">\n          <tr><td class=\"p-2\">1</td><td class=\"p-2 font-bold text-white\">Бразилия (I место)</td><td class=\"p-2 text-cyan-300 font-mono\">Каражас</td></tr>\n          <tr><td class=\"p-2\">2</td><td class=\"p-2 font-bold text-white\">США</td><td class=\"p-2 text-cyan-300 font-mono\">Питтсбург</td></tr>\n          <tr><td class=\"p-2\">3</td><td class=\"p-2 font-bold text-white\">Франция</td><td class=\"p-2 text-cyan-300 font-mono\">Лотарингия</td></tr>\n          <tr><td class=\"p-2\">4</td><td class=\"p-2 font-bold text-white\">Люксембург («Железный герцог»)</td><td class=\"p-2 text-cyan-300 font-mono\">Роданж — Дифферданж</td></tr>\n          <tr><td class=\"p-2\">5</td><td class=\"p-2 font-bold text-white\">Украина</td><td class=\"p-2 text-cyan-300 font-mono\">Кривой Рог</td></tr>\n          <tr><td class=\"p-2\">6</td><td class=\"p-2 font-bold text-white\">Африка</td><td class=\"p-2 text-cyan-300 font-mono\">Гвинея, Габон, Либерия, Мавритания</td></tr>\n          <tr><td class=\"p-2\">7</td><td class=\"p-2 font-bold text-white\">Китай</td><td class=\"p-2 text-cyan-300 font-mono\">Аньшань</td></tr>\n          <tr><td class=\"p-2\">8</td><td class=\"p-2 font-bold text-white\">Россия</td><td class=\"p-2 text-cyan-300 font-mono\">КМА (Курская магнитная аномалия)</td></tr>\n          <tr><td class=\"p-2\">9</td><td class=\"p-2 font-bold text-white\">Казахстан (8 место)</td><td class=\"p-2 text-emerald-300 font-mono\">Соколовско-Сарбайское, Лисаковское, Аятское, Качарское</td></tr>\n        </tbody>\n      </table>\n    </div>\n  </div>\n\n  <!-- 4. ТОПЛИВНО-ЭНЕРГЕТИЧЕСКИЙ КОМПЛЕКС И 6 ФРАКЦИЙ НЕФТИ -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-4\">\n    <h4 class=\"text-sm sm:text-base font-black text-amber-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🛢️</span>\n      <span>4. Топливно-энергетический комплекс и Фракции нефти</span>\n    </h4>\n    \n    <div class=\"space-y-2\">\n      <p>• <b>Нефть</b> — ведущее углеводородное сырье, бурное развитие отрасли началось после Второй мировой войны. Основные бассейны сосредоточены в развивающихся странах.</p>\n      <p>• <b>Фракция</b> — группа химических соединений в нефти с одинаковой температурой кипения. <b>Выделяют 6 основных фракций:</b></p>\n      \n      <div class=\"my-3\">\n        <svg viewBox=\"0 0 700 240\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner\">\n          <text x=\"350\" y=\"20\" fill=\"#f59e0b\" font-size=\"11\" font-weight=\"900\" text-anchor=\"middle\">6 ТЕМПЕРАТУРНЫХ ФРАКЦИЙ ПЕРЕГОНКИ НЕФТИ</text>\n          \n          <rect x=\"50\" y=\"35\" width=\"600\" height=\"28\" rx=\"6\" fill=\"#0284c7\" />\n          <text x=\"65\" y=\"53\" fill=\"#ffffff\" font-size=\"10\" font-weight=\"bold\">1. Температура кипения до 40°C: ГАЗ (метан, пропан, бутан)</text>\n\n          <rect x=\"50\" y=\"68\" width=\"600\" height=\"28\" rx=\"6\" fill=\"#0369a1\" />\n          <text x=\"65\" y=\"86\" fill=\"#ffffff\" font-size=\"10\" font-weight=\"bold\">2. Температура кипения 40°–180°C: БЕНЗИН (авиационное и автомобильное топливо)</text>\n\n          <rect x=\"50\" y=\"101\" width=\"600\" height=\"28\" rx=\"6\" fill=\"#047857\" />\n          <text x=\"65\" y=\"119\" fill=\"#ffffff\" font-size=\"10\" font-weight=\"bold\">3. Температура кипения 180°–270°C: КЕРОСИН (ракетное и реактивное топливо)</text>\n\n          <rect x=\"50\" y=\"134\" width=\"600\" height=\"28\" rx=\"6\" fill=\"#b45309\" />\n          <text x=\"65\" y=\"152\" fill=\"#ffffff\" font-size=\"10\" font-weight=\"bold\">4. Температура кипения 270°–360°C: СОЛЯРОВОЕ МАСЛО (дизельное топливо, смазка)</text>\n\n          <rect x=\"50\" y=\"167\" width=\"600\" height=\"28\" rx=\"6\" fill=\"#b91c1c\" />\n          <text x=\"65\" y=\"185\" fill=\"#ffffff\" font-size=\"10\" font-weight=\"bold\">5. Температура кипения 360°–550°C: МАЗУТ (минеральные масла, вазелин, парафин)</text>\n\n          <rect x=\"50\" y=\"200\" width=\"600\" height=\"28\" rx=\"6\" fill=\"#334155\" />\n          <text x=\"65\" y=\"218\" fill=\"#ffffff\" font-size=\"10\" font-weight=\"bold\">6. Температура кипения выше 550°C: АСФАЛЬТ / ГУДРОН (полутвердые и твердые битумы)</text>\n        </svg>\n      </div>\n\n      <div class=\"grid grid-cols-1 md:grid-cols-2 gap-3 text-xs pt-1\">\n        <div class=\"p-3 bg-space-950 rounded-xl border border-slate-800\">\n          <span class=\"font-bold text-amber-300 block mb-1\">Добыча и торговля нефтью:</span>\n          <p class=\"text-[11px] text-slate-300\">• Число нефтедобывающих стран: <b>75 стран</b>.</p>\n          <p class=\"text-[11px] text-slate-300\">• Главные поставщики: <b>страны Ближнего и Среднего Востока</b>.</p>\n          <p class=\"text-[11px] text-slate-300\">• Лидеры добычи: <b>Саудовская Аравия, Россия, США, Мексика, ОАЭ, Иран, Ирак, Китай</b>.</p>\n          <p class=\"text-[11px] text-slate-300\">• Потребители: США — <b>21%</b>, Западная Европа — <b>20%</b>, Россия — <b>17%</b>, Япония — <b>6%</b>.</p>\n        </div>\n\n        <div class=\"p-3 bg-space-950 rounded-xl border border-slate-800\">\n          <span class=\"font-bold text-cyan-300 block mb-1\">Газ и Уголь:</span>\n          <p class=\"text-[11px] text-slate-300\">• <b>Газ:</b> с середины XX века добыча выросла в <b>10 раз</b>.</p>\n          <p class=\"text-[11px] text-slate-300\">• Лидеры по газу: <b>Россия, США, Канада, Туркменистан, Нидерланды, Великобритания</b>.</p>\n          <p class=\"text-[11px] text-slate-300\">• <b>Уголь:</b> добывается в 60 странах. Свыше 10 млн т/год: <b>Китай, США, Россия, Германия, Польша, Украина, Казахстан</b>.</p>\n          <p class=\"text-[11px] text-slate-300\">• Экспортеры: <b>США, Австралия, ЮАР</b>; Импортеры: <b>Япония, Западная Европа</b>.</p>\n        </div>\n      </div>\n\n      <div class=\"overflow-x-auto mt-2\">\n        <h5 class=\"text-xs font-bold text-white mb-1.5\">12 крупнейших угольных бассейнов мира:</h5>\n        <table class=\"w-full text-left text-xs border border-slate-800 rounded-xl overflow-hidden\">\n          <thead class=\"bg-space-950 text-slate-400 border-b border-slate-800\">\n            <tr>\n              <th class=\"p-2\">#</th>\n              <th class=\"p-2\">Страна</th>\n              <th class=\"p-2\">Угольный бассейн / Месторождение</th>\n            </tr>\n          </thead>\n          <tbody class=\"divide-y divide-slate-800 text-[11px] text-slate-300\">\n            <tr><td class=\"p-2\">1</td><td class=\"p-2 font-bold text-white\">США</td><td class=\"p-2 text-cyan-300 font-mono\">Аппалачский бассейн (Кентукки, Пенсильвания, Вайоминг, Зап. Виргиния)</td></tr>\n            <tr><td class=\"p-2\">2</td><td class=\"p-2 font-bold text-white\">Китай</td><td class=\"p-2 text-cyan-300 font-mono\">Датун (50% добычи страны)</td></tr>\n            <tr><td class=\"p-2\">3</td><td class=\"p-2 font-bold text-white\">Россия</td><td class=\"p-2 text-cyan-300 font-mono\">Кузбасс (40%), Канско-Ачинский, Печорский, Якутский бассейны</td></tr>\n            <tr><td class=\"p-2\">4</td><td class=\"p-2 font-bold text-white\">Украина</td><td class=\"p-2 text-cyan-300 font-mono\">Донбасс</td></tr>\n            <tr><td class=\"p-2\">5</td><td class=\"p-2 font-bold text-white\">Австралия</td><td class=\"p-2 text-cyan-300 font-mono\">Новый Южный Уэльс, Квинсленд</td></tr>\n            <tr><td class=\"p-2\">6</td><td class=\"p-2 font-bold text-white\">Германия</td><td class=\"p-2 text-cyan-300 font-mono\">Рурский, Ахенский, Саарский</td></tr>\n            <tr><td class=\"p-2\">7</td><td class=\"p-2 font-bold text-white\">Чехия</td><td class=\"p-2 text-cyan-300 font-mono\">Острава-Карвина</td></tr>\n            <tr><td class=\"p-2\">8</td><td class=\"p-2 font-bold text-white\">Болгария</td><td class=\"p-2 text-cyan-300 font-mono\">Восточная Марица</td></tr>\n            <tr><td class=\"p-2\">9</td><td class=\"p-2 font-bold text-white\">Польша</td><td class=\"p-2 text-cyan-300 font-mono\">Верхнесилезский бассейн</td></tr>\n            <tr><td class=\"p-2\">10</td><td class=\"p-2 font-bold text-white\">Индия</td><td class=\"p-2 text-cyan-300 font-mono\">Дамодар («Индийский Рур»)</td></tr>\n            <tr><td class=\"p-2\">11</td><td class=\"p-2 font-bold text-white\">Великобритания</td><td class=\"p-2 text-cyan-300 font-mono\">Южный Уэльс, Йоркшир</td></tr>\n            <tr><td class=\"p-2\">12</td><td class=\"p-2 font-bold text-white\">Казахстан</td><td class=\"p-2 text-emerald-300 font-mono\">Карагандинский, Экибастузский (разрез «Богатырь»)</td></tr>\n          </tbody>\n        </table>\n      </div>\n    </div>\n  </div>\n\n  <!-- 5. СТРУКТУРА ЭЛЕКТРОЭНЕРГЕТИКИ И ВОЗОБНОВЛЯЕМЫЕ ИСТОЧНИКИ -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-cyan-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>⚡</span>\n      <span>5. Мировая электроэнергетика и Альтернативные источники</span>\n    </h4>\n    <p>• <b>Структура выработки электроэнергии в мире:</b><br/>\n      &nbsp;&nbsp;<b>1-е место:</b> ТЭС (Тепловые электростанции) — <b>60%</b><br/>\n      &nbsp;&nbsp;<b>2-е место:</b> ГЭС (Гидроэлектростанции) — <b>20%</b><br/>\n      &nbsp;&nbsp;<b>3-е место:</b> АЭС (Атомные электростанции) — <b>17%</b></p>\n    <p>• <b>Главные страны по выработке на АЭС:</b> США, Россия, Китай, Япония, Германия, Канада, Франция, Великобритания.</p>\n    <p>• <b>Доля АЭС в энергобалансе страны:</b> во Франции — <b>73%</b>, в Японии — <b>28%</b>, в США — <b>20%</b>.</p>\n\n    <svg viewBox=\"0 0 700 170\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2\">\n  <text x=\"350\" y=\"20\" fill=\"#38bdf8\" font-size=\"11\" font-weight=\"900\" text-anchor=\"middle\">СТРУКТУРА МИРОВОЙ ЭЛЕКТРОЭНЕРГЕТИКИ И ДОЛЯ АЭС ПО СТРАНАМ</text>\n  \n  <g transform=\"translate(30, 35)\">\n    <text x=\"0\" y=\"15\" fill=\"#f87171\" font-size=\"9.5\" font-weight=\"bold\">1. ТЭС (ЖЭС): 60%</text>\n    <rect x=\"0\" y=\"22\" width=\"280\" height=\"14\" rx=\"3\" fill=\"#1e293b\"/>\n    <rect x=\"0\" y=\"22\" width=\"168\" height=\"14\" rx=\"3\" fill=\"#ef4444\"/>\n\n    <text x=\"0\" y=\"52\" fill=\"#38bdf8\" font-size=\"9.5\" font-weight=\"bold\">2. ГЭС (СЭС): 20%</text>\n    <rect x=\"0\" y=\"59\" width=\"280\" height=\"14\" rx=\"3\" fill=\"#1e293b\"/>\n    <rect x=\"0\" y=\"59\" width=\"56\" height=\"14\" rx=\"3\" fill=\"#0284c7\"/>\n\n    <text x=\"0\" y=\"89\" fill=\"#fbbf24\" font-size=\"9.5\" font-weight=\"bold\">3. АЭС: 17%</text>\n    <rect x=\"0\" y=\"96\" width=\"280\" height=\"14\" rx=\"3\" fill=\"#1e293b\"/>\n    <rect x=\"0\" y=\"96\" width=\"47.6\" height=\"14\" rx=\"3\" fill=\"#f59e0b\"/>\n\n    <text x=\"0\" y=\"124\" fill=\"#34d399\" font-size=\"9.5\" font-weight=\"bold\">4. Альтернативные станции: 3%</text>\n    <rect x=\"0\" y=\"128\" width=\"280\" height=\"8\" rx=\"2\" fill=\"#10b981\"/>\n  </g>\n\n  <g transform=\"translate(370, 35)\">\n    <rect x=\"0\" y=\"0\" width=\"300\" height=\"125\" rx=\"8\" fill=\"#0f172a\" stroke=\"#f59e0b\" stroke-width=\"1\"/>\n    <text x=\"150\" y=\"20\" fill=\"#fbbf24\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">⚛️ ДОЛЯ АЭС В ВЫРАБОТКЕ ЭЛЕКТРОЭНЕРГИИ</text>\n    \n    <text x=\"15\" y=\"45\" fill=\"#cbd5e1\" font-size=\"9.5\">🇫🇷 Франция: <tspan fill=\"#38bdf8\" font-weight=\"bold\">73%</tspan> (Высший мировой показатель)</text>\n    <rect x=\"15\" y=\"50\" width=\"270\" height=\"8\" rx=\"2\" fill=\"#1e293b\"/>\n    <rect x=\"15\" y=\"50\" width=\"197\" height=\"8\" rx=\"2\" fill=\"#0ea5e9\"/>\n\n    <text x=\"15\" y=\"75\" fill=\"#cbd5e1\" font-size=\"9.5\">🇯🇵 Япония: <tspan fill=\"#fbbf24\" font-weight=\"bold\">28%</tspan></text>\n    <rect x=\"15\" y=\"80\" width=\"270\" height=\"8\" rx=\"2\" fill=\"#1e293b\"/>\n    <rect x=\"15\" y=\"80\" width=\"75.6\" height=\"8\" rx=\"2\" fill=\"#f59e0b\"/>\n\n    <text x=\"15\" y=\"105\" fill=\"#cbd5e1\" font-size=\"9.5\">🇺🇸 США: <tspan fill=\"#34d399\" font-weight=\"bold\">20%</tspan> (Крупнейший объем выработки)</text>\n    <rect x=\"15\" y=\"110\" width=\"270\" height=\"8\" rx=\"2\" fill=\"#1e293b\"/>\n    <rect x=\"15\" y=\"110\" width=\"54\" height=\"8\" rx=\"2\" fill=\"#10b981\"/>\n  </g>\n</svg>\n    <p>• <b>Страны с уникальной ролью АЭС:</b> Франция, Япония.</p>\n\n    <div class=\"p-3 bg-space-950 rounded-xl border border-emerald-500/40 text-xs space-y-1.5 mt-2\">\n      <span class=\"font-black text-emerald-300 block mb-1\">Мировые лидеры альтернативной энергетики:</span>\n      <p>• <b>Геотермальная:</b> Исландия, Италия, Франция, Венгрия, Япония, США.</p>\n      <p>• <b>Гелиостанции (Солнечные СЭС):</b> Франция, Испания, Италия, Япония, США.</p>\n      <p>• <b>Приливные электростанции (ПЭС):</b> Франция, Россия, Китай, Канада, США.</p>\n      <p>• <b>Ветровые электростанции (ВЭС):</b> Дания, Швеция, Германия, Великобритания, Нидерланды.</p>\n    </div>\n  </div>\n\n</div>", "svg_diagram": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 700 250\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner\">\n  <text x=\"350\" y=\"24\" fill=\"#38bdf8\" font-size=\"12\" font-weight=\"900\" text-anchor=\"middle\">ЭКОНОМИКАЛЫҚ ГЕОГРАФИЯ: РЕСУРСТАР МЕН ЭНЕРГЕТИКА КЕШЕНІ</text>\n  \n  <rect x=\"15\" y=\"40\" width=\"210\" height=\"195\" rx=\"10\" fill=\"#0f172a\" stroke=\"#ef4444\" stroke-width=\"1.5\" />\n  <rect x=\"25\" y=\"50\" width=\"190\" height=\"24\" rx=\"6\" fill=\"#ef4444\" fill-opacity=\"0.15\" />\n  <text x=\"120\" y=\"66\" fill=\"#f87171\" font-size=\"10.5\" font-weight=\"900\" text-anchor=\"middle\">ТАУ-КЕН &amp; МЕТАЛЛУРГИЯ</text>\n  <text x=\"26\" y=\"92\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">8 ірі ел:</tspan> АҚШ, Канада,</text>\n  <text x=\"34\" y=\"106\" fill=\"#94a3b8\" font-size=\"9\">Аустралия, ОАР, Бразилия,</text>\n  <text x=\"34\" y=\"120\" fill=\"#94a3b8\" font-size=\"9\">Үндістан, Қытай, Ресей</text>\n  <text x=\"26\" y=\"140\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Темір:</tspan> Каражас (I орын),</text>\n  <text x=\"34\" y=\"154\" fill=\"#94a3b8\" font-size=\"9\">КМА (РФ), ҚР (8-орын)</text>\n  <text x=\"26\" y=\"174\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">«Мыс белдеуі»:</tspan> Анд,</text>\n  <text x=\"34\" y=\"188\" fill=\"#94a3b8\" font-size=\"9\">Конго, Замбия, Зимбабве</text>\n  <text x=\"26\" y=\"210\" fill=\"#34d399\" font-size=\"9.5\" font-weight=\"bold\">• Темір герцогы: Люксембург</text>\n\n  <rect x=\"245\" y=\"40\" width=\"210\" height=\"195\" rx=\"10\" fill=\"#0f172a\" stroke=\"#f59e0b\" stroke-width=\"1.5\" />\n  <rect x=\"255\" y=\"50\" width=\"190\" height=\"24\" rx=\"6\" fill=\"#f59e0b\" fill-opacity=\"0.15\" />\n  <text x=\"350\" y=\"66\" fill=\"#fbbf24\" font-size=\"10.5\" font-weight=\"900\" text-anchor=\"middle\">ОТЫН-ЭНЕРГЕТИКА</text>\n  <text x=\"256\" y=\"92\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Мұнай (75 ел):</tspan> Сауд Арабия,</text>\n  <text x=\"264\" y=\"106\" fill=\"#94a3b8\" font-size=\"9\">Ресей, АҚШ, БАӘ, Иран, Ирак</text>\n  <text x=\"256\" y=\"126\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Газ:</tspan> Ресей, АҚШ, Канада,</text>\n  <text x=\"264\" y=\"140\" fill=\"#94a3b8\" font-size=\"9\">Түркіменстан (өндіріс 10 есе ↑)</text>\n  <text x=\"256\" y=\"160\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Көмір:</tspan> Аппалач (АҚШ),</text>\n  <text x=\"264\" y=\"174\" fill=\"#94a3b8\" font-size=\"9\">Датун (Қытай 50%), Кузбасс,</text>\n  <text x=\"264\" y=\"188\" fill=\"#94a3b8\" font-size=\"9\">Дамодар («Үндістан Руры»)</text>\n  <text x=\"256\" y=\"210\" fill=\"#38bdf8\" font-size=\"9.5\" font-weight=\"bold\">• ҚР: Қарағанды, Екібастұз</text>\n\n  <rect x=\"475\" y=\"40\" width=\"210\" height=\"195\" rx=\"10\" fill=\"#0f172a\" stroke=\"#10b981\" stroke-width=\"1.5\" />\n  <rect x=\"485\" y=\"50\" width=\"190\" height=\"24\" rx=\"6\" fill=\"#10b981\" fill-opacity=\"0.15\" />\n  <text x=\"580\" y=\"66\" fill=\"#34d399\" font-size=\"10.5\" font-weight=\"900\" text-anchor=\"middle\">ЭЛЕКТР ЭНЕРГИЯСЫ</text>\n  <text x=\"486\" y=\"92\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#f87171\">1. ЖЭС (ТЭС):</tspan> 60%</text>\n  <text x=\"486\" y=\"109\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#38bdf8\">2. СЭС (ГЭС):</tspan> 20%</text>\n  <text x=\"486\" y=\"126\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#fbbf24\">3. АЭС:</tspan> 17%</text>\n  <text x=\"494\" y=\"142\" fill=\"#94a3b8\" font-size=\"9\">Франция (73%), Жапония (28%),</text>\n  <text x=\"494\" y=\"156\" fill=\"#94a3b8\" font-size=\"9\">АҚШ (20% үлесі)</text>\n  <text x=\"486\" y=\"176\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#34d399\">Баламалы көздер:</tspan></text>\n  <text x=\"494\" y=\"192\" fill=\"#94a3b8\" font-size=\"9\">Геотермальды: Исландия</text>\n  <text x=\"494\" y=\"206\" fill=\"#94a3b8\" font-size=\"9\">Күн: Испания; Жел: Дания</text>\n</svg>", "table_kz": {"cols": ["Сала / Көрсеткіш / Нысан", "Көшбасшы елдер / Мәні / Сипаттамасы", "Негізгі кен орындары / Алаптары / Формуласы"], "rows": [["Табиғат ресурстары мен Табиғи-ресурстық әлеует", "Шаруашылықта қолданылатын табиғат бөлшектері мен аумақтағы барлық ресурстар жиынтығы", "Ұлттық байлық пен мемлекет экономикасының тұрақты даму негізі"], ["Экономикалық бағалау өлшемдері", "Нақты өлшемдер (т, га, м³, баррель), қаржылық бағамдар (нақты құны, пайдалану төлемі)", "Ресурстардың қорын, сапасын, құнын кешенді сипаттайтын көрсеткіштер"], ["Бағалаудың 5 балдық жүйесі (0 және 1 балл)", "0 балл — ресурс мүлде жоқ; 1 балл — ресурстың тек жергілікті маңызы бар", "Жергілікті деңгей: бір аудан немесе елді мекен көлемінде ғана пайдаланылады"], ["Бағалаудың 5 балдық жүйесі (2, 3 және 4 балл)", "2 балл — аймақтық; 3 балл — ұлттық (мемлекеттік); 4 балл — халықаралық маңызы бар", "Халықаралық маңызы бар ресурстар әлемдік нарыққа экспортталады"], ["Ресурспен қамтамасыз етілу (Жылдық мерзім)", "Ресурстың сарқылуға дейінгі мерзімін көрсетеді (жылдар саны)", "Р = Қ / Т (Қор / Жылдық тұтыну немесе өндіру мөлшері)"], ["Ресурспен қамтамасыз етілу (Жан басына)", "Бір тұрғынға шаққандағы ресурстың үлесін көрсетеді (га/адам, м³/адам, т/адам)", "Р = Қ / Х (Қор / Халық саны)"], ["Ресми есеп 1: Дүниежүзілік мыс қоры (2018 ж.)", "Қор — 830 млн т, жылдық өндіру — 21 млн т/жыл", "Р = 830 / 21 = 39,5 жыл. Мыс қоры 39,5 жылға жетеді"], ["Ресми есеп 2: Канаданың орман ресурсы (2021 ж.)", "Орман аумағы — 3 469 281 км², халық саны — 36 991 981 адам", "Р = 3 469 281 / 36 991 981 = 0,09 км²/адам (шамамен 9 га/адам)"], ["Сарқылмайтын табиғат ресурстары", "Күн энергиясы, климаттық ресурстар, жел, судың құлау күші, толысу-қайту", "Табиғи процестер нәтижесінде үздіксіз түзілетін шексіз қуат көздері"], ["Сарқылатын қалпына келетін ресурстар", "Биологиялық (өсімдік, жануар), жер ресурстары (топырақ, жайылым), су ресурстары", "Тиімді пайдаланғанда және қорғағанда өздігінен жаңғыратын ресурстар"], ["Сарқылатын қалпына келмейтін ресурстар", "Металлургиялық (темір, түсті металл), химиялық (фосфорит, калий), отын (мұнай, газ, көмір)", "Геологиялық дәуірлерде түзілген, қоры шектеулі пайдалы қазбалар"], ["Табиғат ресурстарының 5 негізгі тобы", "Минералды, Жер, Су, Биологиялық, Агроклиматтық ресурстар", "Агроклиматтық: аумақтағы +10°C-тан жоғары температура жиынтығы мен жауын-шашын"], ["Тау-кен өнеркәсібінің ірі 8 елі", "АҚШ, Канада, Аустралия, ОАР, Бразилия, Үндістан, Қытай, Ресей", "Минералды шикізат пен кен өндіруде әлемдік көшбасшы мемлекеттер"], ["Қара металлургия: Темір кені өндірісі", "50 ел өндіреді. Көшбасшылар: Қытай, Бразилия, Аустралия, Ресей, Үндістан", "Ірі өндірушілер: Қытай, Жапония, АҚШ, Ресей, Германия; Экспорт: ЕО, Жапония, ТМД"], ["Темір кен орны 1: Бразилия", "Әлемдегі ең ірі темір кен орны (Дүниежүзі бойынша I орын)", "Каражас (Carajás) кен орны"], ["Темір кен орындары 2–3: АҚШ және Франция", "АҚШ және Батыс Еуропаның ірі қара металлургия орталықтары", "Питсбург (АҚШ) және Лотарингия бассейні (Франция)"], ["Темір кен орындары 4–5: Люксембург және Украина", "Люксембург: «Темір герцогы»; Украина: ірі байыту кешені", "Роданж — Дифферданж (Люксембург) және Кривой Рог бассейні (Украина)"], ["Темір кен орындары 6–7: Африка және Қытай", "Африка елдері және Қытайдың ірі металлургия базасы", "Гвинея, Габон, Либерия, Мавритания (Африка) және Аньшань (Қытай)"], ["Темір кен орындары 8–9: Ресей және Қазақстан", "Ресей — алып магниттік аномалия; Қазақстан — әлемде 8-орын", "КМА (Ресей) және Соколов-Сарыбай, Лисаков, Әйет, Қашар (Қазақстан)"], ["Түсті металлургия: Мыс қорыту", "Чили, АҚШ, Индонезия, Ресей, Канада (көшбасшы елдер)", "«Мыс белдеуі»: Анд тау елдері (Чили, Перу) және Орталық Африка (Конго, Замбия, Зимбабве)"], ["Рафинатталған мыс және Алюминий", "Тазартылған мыс: Германия, Италия; Алюминий: Қытай, Ресей, Канада, АҚШ, Аустралия, Бразилия, Норвегия", "Энергияны көп қажет ететін жеңіл әрі бағалы түсті металдар өндірісі"], ["Қалайы және Қорғасын-мырыш өндірісі", "Қалайы: Қытай, Индонезия, Перу, Бразилия, Боливия, Малайзия", "Қорғасын-мырыш: АҚШ, Жапония, Канада, Аустралия, Бразилия"], ["Түсті металдар құймаларының қасиеттері", "Ыстыққа төзімді — никель, кобальт; Жеңіл — алюминий, магний; Берік әрі коррозияға төзімді — титан", "Авиация, ғарыш, химия, машина жасаудың басты конструктивтік материалдары"], ["Мұнай өнеркәсібі: Өндіріс және сауда", "75 ел өндіреді. Сауд Арабиясы, Ресей, АҚШ, Мексика, БАӘ, Иран, Ирак, Қытай", "Таяу және Орта Шығыс — басты экспорттаушылар. Тұтынушылар: АҚШ (21%), Б. Еуропа (20%), Ресей (17%), Жапония (6%)"], ["Мұнайдың қайнау фракциялары 1–3", "1. <40°C: Газ (метан, пропан, бутан); 2. 40°–180°C: Бензин; 3. 180°–270°C: Керосин", "Бензин — автомобиль/авиация жанармайы; Керосин — реактивті және зымыран отыны"], ["Мұнайдың қайнау фракциялары 4–6", "4. 270°–360°C: Соляр майы; 5. 360°–550°C: Мазут; 6. >550°C: Асфальт (гудрон)", "Соляр — дизель отыны мен майлар; Мазут — парафин, вазелин; Асфальт — қатты битум"], ["Табиғи газ өндірісі", "XX ғ. ортасынан бастап өндіру көлемі 10 есеге артты", "Көшбасшылар: Ресей, АҚШ, Канада, Түркіменстан, Нидерланды, Ұлыбритания"], ["Тас көмір өнеркәсібі", "60 елде өндіріледі; Жылына >10 млн т өндіретін 7 ел: Қытай, АҚШ, Ресей, Германия, Польша, Украина, ҚР", "Экспорт: АҚШ, Аустралия, ОАР; Импорт: Жапония, Батыс Еуропа елдері"], ["Көмір алаптары 1–3: АҚШ, Қытай, Ресей", "АҚШ: Аппалач; Қытай: Датун (елдің 50%-ы); Ресей: Кузбасс (40%), Канск-Ачинск, Печора, Якут", "Әлемдік көмір өндіру көлемінің негізгі бөлігі шоғырланған ірі алаптар"], ["Көмір алаптары 4–6: Украина, Аустралия, Германия", "Украина: Донбасс; Аустралия: Жаңа Оңтүстік Уэльс, Квинсленд; Германия: Рур, Ахен, Саар", "Еуропа және Азия-Тынық мұхит аймағының тарихи индустриялық көмір базалары"], ["Көмір алаптары 7–9: Чехия, Болгария, Польша", "Чехия: Острава-Карвина; Болгария: Шығыс Марица; Польша: Жоғарғы Силезия", "Орталық және Шығыс Еуропаның маңызды тас көмір және қоңыр көмір алаптары"], ["Көмір алаптары 10–12: Үндістан, Ұлыбритания, Қазақстан", "Үндістан: Дамодар («Үндістан Руры»); Ұлыбритания: Жаңа Уэльс, Йоркшир; ҚР: Қарағанды, Екібастұз", "Екібастұзда әлемдегі ең ірі ашық көмір кеніші — «Богатырь» орналасқан"], ["Электр энергиясының дүниежүзілік құрылымы", "1-орын: ЖЭС — 60%; 2-орын: СЭС — 20%; 3-орын: АЭС — 17%; Баламалы көздер — 3%", "Жылу электр станциялары (ЖЭС) әлемдік энергетиканың негізгі өзегі"], ["Атом электр стансалары (АЭС)", "Көшбасшылар: АҚШ, Ресей, Қытай, Жапония, Германия, Канада, Франция, Ұлыбритания", "АЭС үлесі: Франция — 73% (әлемде 1-орын), Жапония — 28%, АҚШ — 20%"], ["Баламалы энергия көздері 1: Геотермалды және Күн", "Геотермалды: Исландия, Италия, Франция, Венгрия, Жапония, АҚШ", "Гелиостанциялар (Күн): Франция, Испания, Италия, Жапония, АҚШ"], ["Баламалы энергия көздері 2: Толысу және Жел", "Толысу СЭС: Франция (Ранс), Ресей, Қытай, Канада, АҚШ", "Жел энергетикасы: Дания, Швеция, Германия, Ұлыбритания, Нидерланды"]]}, "table_ru": {"cols": ["Отрасль / Показатель / Объект", "Страны-лидеры / Значение / Характеристика", "Основные месторождения / Бассейны / Формула"], "rows": [["Природные ресурсы и Природно-ресурсный потенциал", "Компоненты природы, используемые в хозяйстве, и совокупность всех ресурсов территории", "Фундамент национального богатства и устойчивого социально-экономического развития"], ["Показатели экономической оценки", "Натуральные единицы (т, га, м³, баррели), стоимостные оценки (себестоимость, плата за пользование)", "Комплексные параметры учета запасов, качества и рыночной ценности ресурсов"], ["5-балльная шкала оценки (0 и 1 балл)", "0 баллов — ресурс полностью отсутствует; 1 балл — ресурс имеет только местное значение", "Локальный масштаб: удовлетворяет потребности лишь одного района или населенного пункта"], ["5-балльная шкала оценки (2, 3 и 4 балла)", "2 балла — региональное; 3 балла — национальное; 4 балла — международное (мировое)", "Международное значение: сырье экспортируется на мировой рынок и формирует валютную выручку"], ["Ресурсообеспеченность (Срок исчерпания в годах)", "Показывает количество лет, на которое хватит ресурса при текущей добыче", "Р = З / Д (Запасы / Годовое потребление или добыча)"], ["Ресурсообеспеченность (На душу населения)", "Показывает объем природного ресурса, приходящийся на одного жителя страны (га/чел, м³/чел, т/чел)", "Р = З / Н (Запасы / Численность населения)"], ["Официальная задача 1: Мировые запасы меди (2018 г.)", "Запасы — 830 млн т, ежегодная добыча — 21 млн т/год", "Р = 830 / 21 = 39,5 лет. Запасов меди хватит на 39,5 лет"], ["Официальная задача 2: Лесные ресурсы Канады (2021 г.)", "Площадь лесов — 3 469 281 км², население — 36 991 981 человек", "Р = 3 469 281 / 36 991 981 = 0,09 км²/чел (около 9 га/чел)"], ["Исчерпаемые невозобновимые ресурсы", "Металлургические (железо, марганец, медь), химические (фосфориты, калий), топливные (нефть, газ, уголь)", "Ископаемые богатства недр, образованные в геологические эпохи"], ["Исчерпаемые возобновимые ресурсы", "Биологические (растительный и животный мир), земельные (почва, пастбища), водные ресурсы", "Ресурсы, способные к естественному воспроизводству при рациональном использовании"], ["Неисчерпаемые природные ресурсы", "Солнечная энергия, климатические ресурсы, ветровая энергия, энергия падающей воды, приливы и отливы", "Экологически чистые источники энергии непрерывного природного круговорота"], ["5 основных групп природных ресурсов", "Минеральные, Земельные, Водные, Биологические, Агроклиматические ресурсы", "Агроклиматические: сумма активных температур выше +10°C и количество осадков"], ["8 крупнейших горнодобывающих стран мира", "США, Канада, Австралия, ЮАР, Бразилия, Индия, Китай, Россия", "Ведущие государства по добыче и первичной переработке минерального сырья"], ["Добыча железной руды и черная металлургия", "Добывают 50 стран. Лидеры: Китай, Бразилия, Австралия, Россия, Индия", "Крупные производители: Китай, Япония, США, Россия, ФРГ; Экспорт: страны ЕС, Япония, СНГ"], ["Месторождение железа 1: Бразилия", "Крупнейшее в мире месторождение высококачественной руды (I место в мире)", "Каражас (Carajás)"], ["Месторождения железа 2–3: США и Франция", "Традиционные металлургические базы Северной Америки и Западной Европы", "Питтсбург (США) и Лотарингский бассейн (Франция)"], ["Месторождения железа 4–5: Люксембург и Украина", "Люксембург: бассейн «Железный герцог»; Украина: крупнейший ГОК", "Роданж — Дифферданж (Люксембург) и Кривой Рог (Украина)"], ["Месторождения железа 6–7: Африка и Китай", "Богатые рудные провинции Африки и тяжелая индустрия Китая", "Гвинея, Габон, Либерия, Мавритания (Африка) и Аньшань (Китай)"], ["Месторождения железа 8–9: Россия и Казахстан", "Россия: гигантская аномалия; Казахстан: 8-е место в мире", "КМА (Курская магнитная аномалия, Россия) и Соколовско-Сарбайское, Лисаковское, Аятское, Качарское (РК)"], ["Цветная металлургия: Выплавка меди", "Чили, США, Индонезия, Россия, Канада (мировые лидеры)", "«Медный пояс»: страны Анд (Чили, Перу) и Центральная Африка (Конго, Замбия, Зимбабве)"], ["Рафинированная медь и Алюминий", "Рафинированная медь: Германия, Италия; Алюминий: Китай, Россия, Канада, США, Австралия, Норвегия", "Высокотехнологичные и энергоемкие производства цветных металлов"], ["Добыча олова и Свинцово-цинковая промышленность", "Олово: Китай, Индонезия, Перу, Бразилия, Боливия, Малайзия", "Свинец и цинк: США, Япония, Канада, Австралия, Бразилия"], ["Свойства сплавов цветных металлов", "Жаропрочные — никель, кобальт; Легкие — алюминий, магний; Коррозионностойкие — титан", "Конструкционные материалы аэрокосмического, химического и транспортного машиностроения"], ["Нефтяная промышленность: Добыча и рынок", "Добывают 75 стран. Саудовская Аравия, Россия, США, Мексика, ОАЭ, Иран, Ирак, Китай", "Ближний Восток — главный поставщик. Потребители: США (21%), Зап. Европа (20%), Россия (17%), Япония (6%)"], ["Температурные фракции нефти 1–3", "1. <40°C: Газ (метан, пропан, бутан); 2. 40°–180°C: Бензин; 3. 180°–270°C: Керосин", "Бензин — автомобильное и авиационное топливо; Керосин — реактивное и ракетное топливо"], ["Температурные фракции нефти 4–6", "4. 270°–360°C: Соляровое масло; 5. 360°–550°C: Мазут; 6. >550°C: Асфальт (гудрон)", "Соляровое — дизельное топливо и смазки; Мазут — парафин, вазелин; Асфальт — твердые битумы"], ["Добыча природного газа", "С середины XX века мировая добыча газа увеличилась более чем в 10 раз", "Лидеры: Россия, США, Канада, Туркменистан, Нидерланды, Великобритания"], ["Угольная промышленность мира", "Добывают 60 стран; Более 10 млн т/год добывают 7 стран: Китай, США, Россия, ФРГ, Польша, Украина, РК", "Экспортеры: США, Австралия, ЮАР; Импортеры: Япония, страны Западной Европы"], ["Угольные бассейны 1–3: США, Китай, Россия", "США: Аппалачский; Китай: Датун (50% угля страны); Россия: Кузбасс (40%), Канско-Ачинский, Печорский, Якутский", "Бассейны с колоссальными запасами коксующегося и энергетического угля"], ["Угольные бассейны 4–6: Украина, Австралия, Германия", "Украина: Донбасс; Австралия: Новый Южный Уэльс, Квинсленд; Германия: Рур, Ахен, Саар", "Исторические центры металлургии и тяжелой индустрии Евразии и Океании"], ["Угольные бассейны 7–9: Чехия, Болгария, Польша", "Чехия: Острава-Карвина; Болгария: Восточная Марица; Польша: Верхняя Силезия", "Ключевые каменноугольные и буроугольные бассейны Центральной и Восточной Европы"], ["Угольные бассейны 10–12: Индия, Великобритания, Казахстан", "Индия: Дамодар («Индийский Рур»); Великобритания: Южный Уэльс, Йоркшир; Казахстан: Караганда, Экибастуз", "В Экибастузе действует крупнейший в мире угольный разрез открытой добычи — «Богатырь»"], ["Мировая структура производства электроэнергии", "1-е место: ТЭС — 60%; 2-е место: ГЭС — 20%; 3-е место: АЭС — 17%; Альтернативные — 3%", "Тепловые электростанции (ТЭС) остаются основой глобальной энергетики"], ["Атомная энергетика (АЭС)", "Лидеры по выработке: США, Россия, Китай, Япония, Германия, Канада, Франция, Великобритания", "Доля АЭС в энергобалансе: Франция — 73% (1-е место в мире), Япония — 28%, США — 20%"], ["Альтернативная энергетика 1: Геотермальная и Солнечная", "Геотермальные станции: Исландия, Италия, Франция, Венгрия, Япония, США", "Гелиостанции (СЭС): Франция, Испания, Италия, Япония, США"], ["Альтернативная энергетика 2: Приливная и Ветровая", "Приливные ПЭС: Франция (Ля Ранс), Россия, Китай, Канада, США", "Ветроэнергетика (ВЭС): Дания, Швеция, Германия, Великобритания, Нидерланды"]]}, "key_facts_kz": ["Табиғат ресурстары — шаруашылықта қолданылатын табиғат бөлшектері; Табиғи-ресурстық әлеует — аумақтағы пайдаланылатын және пайдаланылуы мүмкін барлық табиғи ресурстар жиынтығы.", "Экономикалық бағалаудың 5 балдық жүйесі: 0 балл — мүлде жоқ, 1 балл — жергілікті, 2 балл — аймақтық, 3 балл — ұлттық (мемлекеттік), 4 балл — халықаралық маңызы бар.", "Ресурспен қамтамасыз етілу формуласы: Р = Қ / Т (жылмен: Қор / Тұтыну не өндіру) немесе Р = Қ / Х (жан басына: Қор / Халық саны).", "Ресми есептер: 2018 ж. дүниежүзілік мыс қоры 830 млн т / 21 млн т = 39,5 жыл; 2021 ж. Канада орманы 3 469 281 км² / 36 991 981 адам = 0,09 км²/адам (шамамен 9 га/адам).", "Табиғат ресурстарының жіктелуі: Сарқылмайтын (күн, климаттық, жел, су құлауы, толысу/қайту); Сарқылатын қалпына келетін (су, жер, биологиялық); Сарқылатын қалпына келмейтін (отын, металл, химиялық).", "Агроклиматтық ресурстар — белгілі бір аумақтағы +10°C-тан жоғары температура жиынтығы мен жауын-шашын мөлшері.", "Тау-кен өнеркәсібі дамыған ірі 8 ел: АҚШ, Канада, Аустралия, ОАР, Бразилия, Үндістан, Қытай, Ресей.", "Темір кені: 50 ел өндіреді. Ірі кен орындары: Каражас (Бразилия — І орын), Питсбург (АҚШ), Лотарингия (Франция), Роданж-Дифферданж (Люксембург — «Темір герцогы»), Кривой Рог (Украина), КМА (Ресей), Қазақстан — 8-орын (Соколов-Сарыбай, Лисаков, Әйет, Қашар).", "Түсті металлургия және «Мыс белдеуі»: Анд тау елдері (Чили, Перу) және Орталық Африка (Конго, Замбия, Зимбабве). Құймалар: ыстыққа төзімді — никель, кобальт; жеңіл — алюминий, магний; коррозияға төзімді — титан.", "Мұнайдың 6 қайнау фракциясы: Газ (<40°C), Бензин (40–180°C), Керосин (180–270°C), Соляр майы (270–360°C), Мазут (360–550°C), Асфальт (>550°C). 75 ел өндіреді; басты тұтынушылар: АҚШ 21%, Б. Еуропа 20%, Ресей 17%, Жапония 6%.", "Газ және Көмір: Газ өндірісі XX ғ. ортасынан 10 есе өсті. Көмірді жылына >10 млн т өндіретін 7 ел: Қытай, АҚШ, Ресей, Германия, Польша, Украина, ҚР. Алаптар: Аппалач (АҚШ), Датун (Қытай, 50%), Кузбасс (РФ, 40%), Донбасс (Украина), Дамодар («Үндістан Руры»), Екібастұз («Богатырь» кеніші).", "Электр энергетикасы құрылымы: 1-орын ЖЭС (60%), 2-орын СЭС (20%), 3-орын АЭС (17%). АЭС үлесі: Франция — 73% (әлемде 1-орын), Жапония — 28%, АҚШ — 20%. Баламалы: геотермалды (Исландия, Италия), күн (Франция, Испания), толысу (Франция — Ранс, Ресей), жел (Дания, Швеция, Германия)."], "key_facts_ru": ["Природные ресурсы — компоненты природы, используемые в хозяйстве; Природно-ресурсный потенциал — совокупность всех естественных ресурсов территории, доступных для освоения.", "5-балльная шкала экономической оценки: 0 — полностью отсутствует, 1 — местное значение, 2 — региональное, 3 — национальное (государственное), 4 — международное (мировое) значение.", "Формула ресурсообеспеченности: Р = З / Д (в годах: Запасы / Годовая добыча) или Р = З / Н (на душу населения: Запасы / Численность населения).", "Официальные задачи: в 2018 г. мировые запасы меди 830 млн т / 21 млн т = 39,5 лет; в 2021 г. леса Канады 3 469 281 км² / 36 991 981 чел = 0,09 км²/чел (около 9 га/чел).", "Классификация ресурсов: Неисчерпаемые (солнечная, климатическая, ветровая, энергия падающей воды, приливы); Исчерпаемые возобновимые (вода, почва, биоресурсы); Исчерпаемые невозобновимые (топливо, руды, химическое сырье).", "Агроклиматические ресурсы — сумма активных температур воздуха выше +10°C и годовое количество атмосферных осадков на определенной территории.", "8 крупнейших горнодобывающих стран мира: США, Канада, Австралия, ЮАР, Бразилия, Индия, Китай, Россия.", "Добыча железа: 50 стран. Крупнейшие месторождения: Каражас (Бразилия — 1-е место), Питтсбург (США), Лотарингия (Франция), Роданж-Дифферданж (Люксембург — «Железный герцог»), Кривой Рог (Украина), КМА (Россия), Казахстан — 8-е место (Соколовско-Сарбайское, Лисаковское, Аятское, Качарское).", "Цветная металлургия и «Медный пояс»: страны Анд (Чили, Перу) и Центральная Африка (Конго, Замбия, Зимбабве). Свойства сплавов: жаропрочные — никель, кобальт; легкие — алюминий, магний; коррозионностойкие — титан.", "6 температурных фракций нефти: Газ (<40°C), Бензин (40–180°C), Керосин (180–270°C), Соляровое масло (270–360°C), Мазут (360–550°C), Асфальт (>550°C). Добывают 75 стран; потребители: США 21%, Зап. Европа 20%, Россия 17%, Япония 6%.", "Газ и Уголь: добыча газа с середины XX века выросла в 10 раз. Более 10 млн т угля в год добывают 7 стран: Китай, США, Россия, ФРГ, Польша, Украина, Казахстан. Бассейны: Аппалачский (США), Датун (Китай, 50%), Кузбасс (РФ, 40%), Донбасс (Украина), Дамодар («Индийский Рур»), Экибастуз (разрез «Богатырь»).", "Структура электроэнергетики: 1-е ТЭС (60%), 2-е ГЭС (20%), 3-е АЭС (17%). Доля АЭС: Франция — 73% (1-е место в мире), Япония — 28%, США — 20%. Альтернативная энергетика: геотермальная (Исландия, Италия), солнечная (Франция, Испания), приливная (Франция — Ля Ранс, Россия), ветровая (Дания, Швеция, Германия)."], "traps_kz": ["⚠️ ЖЭС, СЭС, АЭС және елдердің үлестерін шатастырмаңыз!: Дүниежүзілік электр өндірісінде 1-орынды ЖЭС (60%), 2-орынды СЭС (20%), 3-орынды АЭС (17%) алады. Электр балансындағы АЭС үлесі бойынша Франция 1-орында (73%), ал АЭС-тен өндірілген электрдің физикалық жалпы көлемі бойынша АҚШ көшбасшы (бірақ АҚШ ішкі балансында АЭС үлесі небәрі 20%).", "⚠️ Ресурспен қамтамасыз етілу есептерін шатастырмаңыз!: Мерзімді (жылдар санын) табу үшін: Қор / Өндіру (мыс қоры: 830 млн т / 21 млн т = 39,5 жыл; көмір: 1000 / 8 = 125 жыл). Жан басына шаққандағы көрсеткішті табу үшін: Қор / Халық саны (Канада орманы: 3 469 281 км² / 36 991 981 адам = 0,09 км²/адам; ҚР жері: 2 724 900 км² / 20 млн = 13,6 га/адам).", "⚠️ Темір мен көмір кен орындарын бір-бірімен шатастырмаңыз!: Люксембургтегі Роданж-Дифферданж — темір кен орны («Темір герцогы» деп аталады). Ал Германиядағы Рур, Саар, Үндістандағы Дамодар («Үндістан Руры» деп аталса да!) — көмір алаптары! Мұнай фракцияларында: керосин 180–270°C (зымыран отыны), ал соляр майы 270–360°C (дизель отыны)."], "traps_ru": ["⚠️ Не путайте доли ТЭС, ГЭС, АЭС и долю стран в атомной энергетике!: В глобальной выработке электроэнергии: 1-е место ТЭС (60%), 2-е место ГЭС (20%), 3-е место АЭС (17%). По доле АЭС в национальном энергобалансе лидирует Франция (73%), а по общему физическому объему выработки на АЭС лидируют США (хотя доля АЭС в энергобалансе США составляет всего 20%).", "⚠️ Не путайте формулы расчета ресурсообеспеченности!: Для нахождения срока исчерпания (в годах): Запасы / Годовая добыча (медь: 830 млн т / 21 млн т = 39,5 лет; уголь: 1000 / 8 = 125 лет). Для нахождения обеспеченности на душу населения: Запасы / Численность населения (леса Канады: 3 469 281 км² / 36 991 981 чел = 0,09 км²/чел; земельный фонд РК: 2 724 900 км² / 20 млн = 13,6 га/чел).", "⚠️ Не путайте железные и угольные бассейны!: Роданж-Дифферданж в Люксембурге — это железная руда («Железный герцог»). А Рур и Саар в Германии, Дамодар в Индии (хотя и зовется «Индийским Руром»!) — это угольные бассейны! Во фракциях нефти: керосин выкипает при 180–270°C (реактивное/ракетное топливо), а соляровое масло при 270–360°C (дизельное топливо)."], "svg_diagram_ru": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 700 250\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner\">\n  <text x=\"350\" y=\"24\" fill=\"#38bdf8\" font-size=\"12\" font-weight=\"900\" text-anchor=\"middle\">ЭКОНОМИЧЕСКАЯ ГЕОГРАФИЯ: РЕСУРСЫ И ЭНЕРГЕТИКА МИРА</text>\n  \n  <rect x=\"15\" y=\"40\" width=\"210\" height=\"195\" rx=\"10\" fill=\"#0f172a\" stroke=\"#ef4444\" stroke-width=\"1.5\" />\n  <rect x=\"25\" y=\"50\" width=\"190\" height=\"24\" rx=\"6\" fill=\"#ef4444\" fill-opacity=\"0.15\" />\n  <text x=\"120\" y=\"66\" fill=\"#f87171\" font-size=\"10.5\" font-weight=\"900\" text-anchor=\"middle\">ГОРНОДОБЫВАЮЩАЯ &amp; МЕТАЛЛУРГИЯ</text>\n  <text x=\"26\" y=\"92\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">8 стран-лидеров:</tspan> США, Канада,</text>\n  <text x=\"34\" y=\"106\" fill=\"#94a3b8\" font-size=\"9\">Австралия, ЮАР, Бразилия,</text>\n  <text x=\"34\" y=\"120\" fill=\"#94a3b8\" font-size=\"9\">Индия, Китай, Россия</text>\n  <text x=\"26\" y=\"140\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Железная руда:</tspan> Каражас (I),</text>\n  <text x=\"34\" y=\"154\" fill=\"#94a3b8\" font-size=\"9\">КМА (РФ), РК (8-е место)</text>\n  <text x=\"26\" y=\"174\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">«Медный пояс»:</tspan> Анды,</text>\n  <text x=\"34\" y=\"188\" fill=\"#94a3b8\" font-size=\"9\">Конго, Замбия, Зимбабве</text>\n  <text x=\"26\" y=\"210\" fill=\"#34d399\" font-size=\"9.5\" font-weight=\"bold\">• Железный герцог: Люксембург</text>\n\n  <rect x=\"245\" y=\"40\" width=\"210\" height=\"195\" rx=\"10\" fill=\"#0f172a\" stroke=\"#f59e0b\" stroke-width=\"1.5\" />\n  <rect x=\"255\" y=\"50\" width=\"190\" height=\"24\" rx=\"6\" fill=\"#f59e0b\" fill-opacity=\"0.15\" />\n  <text x=\"350\" y=\"66\" fill=\"#fbbf24\" font-size=\"10.5\" font-weight=\"900\" text-anchor=\"middle\">ТОПЛИВНО-ЭНЕРГЕТИЧЕСКИЙ</text>\n  <text x=\"256\" y=\"92\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Нефть (75 стран):</tspan> Сауд. Аравия,</text>\n  <text x=\"264\" y=\"106\" fill=\"#94a3b8\" font-size=\"9\">Россия, США, ОАЭ, Иран, Ирак</text>\n  <text x=\"256\" y=\"126\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Газ:</tspan> Россия, США, Канада,</text>\n  <text x=\"264\" y=\"140\" fill=\"#94a3b8\" font-size=\"9\">Туркменистан (рост в 10 раз ↑)</text>\n  <text x=\"256\" y=\"160\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Уголь:</tspan> Аппалачский (США),</text>\n  <text x=\"264\" y=\"174\" fill=\"#94a3b8\" font-size=\"9\">Датун (Китай 50%), Кузбасс,</text>\n  <text x=\"264\" y=\"188\" fill=\"#94a3b8\" font-size=\"9\">Дамодар («Индийский Рур»)</text>\n  <text x=\"256\" y=\"210\" fill=\"#38bdf8\" font-size=\"9.5\" font-weight=\"bold\">• РК: Караганда, Экибастуз</text>\n\n  <rect x=\"475\" y=\"40\" width=\"210\" height=\"195\" rx=\"10\" fill=\"#0f172a\" stroke=\"#10b981\" stroke-width=\"1.5\" />\n  <rect x=\"485\" y=\"50\" width=\"190\" height=\"24\" rx=\"6\" fill=\"#10b981\" fill-opacity=\"0.15\" />\n  <text x=\"580\" y=\"66\" fill=\"#34d399\" font-size=\"10.5\" font-weight=\"900\" text-anchor=\"middle\">ЭЛЕКТРОЭНЕРГЕТИКА</text>\n  <text x=\"486\" y=\"92\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#f87171\">1. ТЭС:</tspan> 60%</text>\n  <text x=\"486\" y=\"109\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#38bdf8\">2. ГЭС:</tspan> 20%</text>\n  <text x=\"486\" y=\"126\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#fbbf24\">3. АЭС:</tspan> 17%</text>\n  <text x=\"494\" y=\"142\" fill=\"#94a3b8\" font-size=\"9\">Франция (73%), Япония (28%),</text>\n  <text x=\"494\" y=\"156\" fill=\"#94a3b8\" font-size=\"9\">США (20% выработки)</text>\n  <text x=\"486\" y=\"176\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#34d399\">Альтернативные:</tspan></text>\n  <text x=\"494\" y=\"192\" fill=\"#94a3b8\" font-size=\"9\">Геотерм.: Исландия</text>\n  <text x=\"494\" y=\"206\" fill=\"#94a3b8\" font-size=\"9\">СЭС: Испания; ВЭС: Дания</text>\n</svg>"};
+    const blooketData = {"kz": "https://dashboard.blooket.com/set/6a95f3cec923faa1d82d4004", "ru": "https://dashboard.blooket.com/set/6a94d47d4a716c9ea2dc161b", "doc_kz": "https://docs.google.com/document/d/1vF0jqGlsMI71oadfFEpa26MeFvXcNjfe2NwBCUDa2-g/edit?usp=sharing", "doc_ru": "https://drive.google.com/file/d/1VGatsrm-cYxEpcZuH7N0UfGLyc988r8B/view?usp=sharing"};
+    let currentLang = 'kz';
+
+    // Safe localStorage helper
+    const safeStorage = {
+      getItem(k) {
+        try { return localStorage.getItem(k); } catch (e) { return null; }
+      },
+      setItem(k, v) {
+        try { localStorage.setItem(k, v); } catch (e) {}
+      }
+    };
+
+    function getCompletedSet() {
+      try {
+        return new Set(JSON.parse(safeStorage.getItem('geotany_grammar_completed') || '[]'));
+      } catch (e) {
+        return new Set();
+      }
+    }
+
+    function saveCompletedSet(setObj) {
+      safeStorage.setItem('geotany_grammar_completed', JSON.stringify(Array.from(setObj)));
+    }
+
+    function updateCompleteButton() {
+      const setObj = getCompletedSet();
+      const isDone = setObj.has(topicData.num);
+      const btn = document.getElementById('btnComplete');
+      const icon = document.getElementById('completeIcon');
+      const text = document.getElementById('completeText');
+
+      if (isDone) {
+        btn.className = "inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black transition border border-emerald-500/50 bg-emerald-500/20 text-emerald-300 shadow-md shadow-emerald-500/10";
+        icon.textContent = "✓";
+        text.textContent = (currentLang === 'ru') ? "Изучено" : "Меңгерілді";
+      } else {
+        btn.className = "inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition border border-slate-700 bg-space-900 text-slate-300 hover:text-white hover:border-slate-600";
+        icon.textContent = "○";
+        text.textContent = (currentLang === 'ru') ? "Отметить изученным" : "Меңгерілді деп белгілеу";
+      }
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('xpToast');
+      const m = document.getElementById('toastMsg');
+      m.textContent = msg;
+      t.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        t.classList.add('translate-y-20', 'opacity-0');
+      }, 2500);
+    }
+
+    function toggleComplete() {
+      const setObj = getCompletedSet();
+      const isDone = setObj.has(topicData.num);
+      let xp = parseInt(safeStorage.getItem('geotany_user_xp') || '0', 10);
+
+      if (isDone) {
+        setObj.delete(topicData.num);
+        xp = Math.max(0, xp - 20);
+        showToast((currentLang === 'ru') ? "-20 XP. Отметка снята" : "-20 XP. Белгі алынды");
+      } else {
+        setObj.add(topicData.num);
+        xp += 20;
+        showToast((currentLang === 'ru') ? "+20 XP! Тема изучена" : "+20 XP! Тақырып меңгерілді");
+      }
+
+      saveCompletedSet(setObj);
+      safeStorage.setItem('geotany_user_xp', xp.toString());
+      updateCompleteButton();
+    }
+
+    function renderTable(isRu) {
+      const tbl = isRu ? (topicData.table_ru || topicData.table_kz) : topicData.table_kz;
+      const container = document.getElementById('tableContainer');
+      if (!tbl || !tbl.cols || !tbl.rows || tbl.rows.length === 0) {
+        document.getElementById('tableSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('tableSection').classList.remove('hidden');
+
+      let html = '<table class="w-full text-left text-xs border-collapse">';
+      html += '<thead><tr class="border-b border-slate-800 text-slate-400 font-bold">';
+      tbl.cols.forEach(col => {
+        html += `<th class="p-2.5 sm:p-3 bg-space-900/60 rounded-lg whitespace-nowrap text-cyan-300 font-bold">${col}</th>`;
+      });
+      html += '</tr></thead><tbody class="divide-y divide-slate-800/60">';
+      tbl.rows.forEach(row => {
+        html += '<tr class="hover:bg-space-900/40 transition">';
+        row.forEach((cell, idx) => {
+          const cls = idx === 0 ? "font-bold text-white whitespace-nowrap" : (idx === 1 ? "text-cyan-300 font-medium" : "text-slate-300");
+          html += `<td class="p-2.5 sm:p-3 ${cls}">${cell}</td>`;
+        });
+        html += '</tr>';
+      });
+      html += '</tbody></table>';
+      container.innerHTML = html;
+    }
+
+    function renderFacts(isRu) {
+      const facts = isRu ? (topicData.key_facts_ru || topicData.key_facts_kz) : topicData.key_facts_kz;
+      const list = document.getElementById('factsList');
+      if (!facts || facts.length === 0) {
+        document.getElementById('factsSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('factsSection').classList.remove('hidden');
+      list.innerHTML = facts.map(f => `<li class="flex items-start space-x-2"><span class="text-amber-400 font-bold shrink-0 mt-0.5">•</span><span>${f}</span></li>`).join('');
+    }
+
+    function renderTraps(isRu) {
+      const traps = isRu ? (topicData.traps_ru || topicData.traps_kz) : topicData.traps_kz;
+      const list = document.getElementById('trapsList');
+      if (!traps || traps.length === 0) {
+        document.getElementById('trapsSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('trapsSection').classList.remove('hidden');
+      list.innerHTML = traps.map(tr => {
+        const str = String(tr);
+        const icon = str.startsWith('⚠️') ? '' : '<span class="text-amber-400 shrink-0 mt-0.5">⚠️</span> ';
+        return `<p class="leading-relaxed flex items-start space-x-2">${icon}<span>${str}</span></p>`;
+      }).join('');
+    }
+
+    function setLang(lang) {
+      currentLang = lang;
+      safeStorage.setItem('geotany_lang', lang);
+      const isRu = (lang === 'ru');
+
+      // Update lang buttons
+      const btnKz = document.getElementById('btnLangKz');
+      const btnRu = document.getElementById('btnLangRu');
+      if (isRu) {
+        btnRu.className = "px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow";
+        btnKz.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+      } else {
+        btnKz.className = "px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow";
+        btnRu.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+      }
+
+      // Update text fields
+      document.getElementById('navCatBadge').textContent = isRu ? (topicData.category_ru || 'География') : (topicData.category_kz || 'География');
+      document.getElementById('heroCatBadge').textContent = isRu ? (topicData.category_ru || 'География') : (topicData.category_kz || 'География');
+      document.getElementById('heroTitle').textContent = isRu ? topicData.title_ru : topicData.title_kz;
+
+      // Summary
+      document.getElementById('summaryHeader').textContent = isRu ? "КРАТКИЙ ОБЗОР ТЕМЫ" : "ТАҚЫРЫПҚА ҚЫСҚАША ШОЛУ";
+      document.getElementById('summaryText').textContent = isRu ? topicData.summary_ru : topicData.summary_kz;
+
+      // Theory
+      document.getElementById('theoryHeader').textContent = isRu ? "ПОЛНЫЙ ТЕОРЕТИЧЕСКИЙ МАТЕРИАЛ И КОНСПЕКТ" : "ТОЛЫҚ ТЕОРИЯЛЫҚ МАТЕРИАЛ МЕН КОНСПЕКТ";
+      document.getElementById('theoryContent').innerHTML = isRu ? topicData.full_theory_ru : topicData.full_theory_kz;
+
+      // SVG
+      document.getElementById('svgHeader').textContent = isRu ? "НАГЛЯДНАЯ СХЕМА И ИНФОГРАФИКА" : "КӨРНЕКІ СХЕМА МЕН ИНФОГРАФИКА";
+      const svgCode = isRu ? (topicData.svg_diagram_ru || topicData.svg_diagram) : topicData.svg_diagram;
+      document.getElementById('svgContainer').innerHTML = svgCode || '';
+
+      // Table, Facts, Traps
+      document.getElementById('tableHeader').textContent = isRu ? "СТРУКТУРИРОВАННАЯ ТАБЛИЦА ПОКАЗАТЕЛЕЙ И КЛАССИФИКАЦИИ" : "НАҚТЫ КӨРСЕТКІШТЕР МЕН КЛАССИФИКАЦИЯ КЕСТЕСІ";
+      renderTable(isRu);
+
+      document.getElementById('factsHeader').textContent = isRu ? "ГЛАВНЫЕ ФАКТЫ ДЛЯ ЕНТ И ЗАПОМИНАНИЯ" : "ҰБТ-ҒА ҚАЖЕТТІ НЕГІЗГІ ЕРЕЖЕЛЕР МЕН ФАКТІЛЕР";
+      renderFacts(isRu);
+
+      document.getElementById('trapsHeader').textContent = isRu ? "ЛОВУШКИ И ЛАЙФХАКИ ЕНТ" : "ҰБТ ҚАҚПАНДАРЫ МЕН ЛАЙФХАКТАР";
+      renderTraps(isRu);
+
+      // Blooket & Doc links
+      const btnB = document.getElementById('btnBlooket');
+      const bUrl = isRu ? (blooketData.ru || blooketData.kz) : (blooketData.kz || blooketData.ru);
+      if (bUrl) {
+        btnB.href = bUrl;
+        btnB.classList.remove('hidden');
+      } else {
+        btnB.classList.add('hidden');
+      }
+
+      const btnD = document.getElementById('btnDoc');
+      if (btnD) { const dUrl = isRu ? (blooketData.doc_ru || blooketData.doc_kz) : (blooketData.doc_kz || blooketData.doc_ru); if (dUrl) { btnD.href = dUrl; btnD.classList.remove('hidden'); } else { btnD.classList.add('hidden'); } }
+
+      updateCompleteButton();
+    }
+
+    // Initialization on page load with URL param and localStorage sync
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const queryLang = urlParams.get('lang');
+      let langToSet = 'kz';
+      if (queryLang === 'ru' || queryLang === 'kz') {
+        langToSet = queryLang;
+        safeStorage.setItem('geotany_lang', queryLang);
+      } else {
+        const savedLang = safeStorage.getItem('geotany_lang');
+        if (savedLang === 'ru') langToSet = 'ru';
+        else langToSet = 'kz';
+      }
+      setLang(langToSet);
+    });
+  </script>
+</body>
+</html>

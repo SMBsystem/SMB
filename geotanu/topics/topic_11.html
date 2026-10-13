@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="kk" class="dark">
+<head>
+  <!-- COURSE ACCESS GUARD: RESTRICT DIRECT ACCESS WITHOUT VALID CODE -->
+  <style id="authCloak">body { display: none !important; }</style>
+  <script>
+    (function() {
+      try {
+        var isAdmin = localStorage.getItem('geotany_admin_auth') === 'true';
+        var sessionStr = localStorage.getItem('geotany_user_session');
+        var isAuthorized = isAdmin;
+        if (!isAuthorized && sessionStr) {
+          var s = JSON.parse(sessionStr);
+          if (s && s.email && (s.courseCode || s.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        var profileStr = localStorage.getItem('geotany_user_profile');
+        if (!isAuthorized && profileStr) {
+          var p = JSON.parse(profileStr);
+          if (p && p.isRegistered && p.email && p.courseCode) {
+            isAuthorized = true;
+          }
+        }
+        if (!isAuthorized) {
+          var target = window.location.pathname.split('/').pop() || 'topics.html';
+          window.location.replace('../index.html?need_course=GEOTANY&redirect=' + encodeURIComponent(target));
+          return;
+        }
+        var cloak = document.getElementById('authCloak');
+        if (cloak) cloak.remove();
+      } catch (err) {
+        window.location.replace('../index.html');
+      }
+    })();
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>#11 Табиғат зоналары | GeoTany</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50: '#eef2ff', 100: '#e0e7ff', 200: '#c7d2fe', 300: '#a5b4fc', 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 800: '#3730a3', 900: '#312e81' },
+            space: { 800: '#1e293b', 850: '#172033', 900: '#0f172a', 950: '#0b1120' }
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Outfit', 'Inter', sans-serif; }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #0b1120; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+  </style>
+</head>
+<body class="bg-[#070b14] text-slate-100 min-h-screen flex flex-col selection:bg-cyan-500 selection:text-space-950">
+
+  <!-- STICKY TOP NAVBAR -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-space-950/85 border-b border-slate-800/80 px-4 sm:px-8 py-3">
+    <div class="max-w-6xl mx-auto flex items-center justify-between gap-3">
+      <!-- Left: Back Button & Badges -->
+      <div class="flex items-center space-x-2.5 sm:space-x-3 shrink-0">
+        <a href="../index.html#section-zhattau_grammar" id="btnBackToCourse" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white transition"><span>←</span><span id="btnBackToCourseText">Артқа</span></a>
+        <span class="px-2.5 py-1 rounded-full text-xs font-black bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
+          #11
+        </span>
+        <span id="navCatBadge" class="text-xs text-slate-400 font-bold hidden md:inline truncate max-w-[200px]">
+          Биосфера және Табиғат кешендері
+        </span>
+      </div>
+
+      <!-- Right: Controls (Lang Switcher & Mark Complete) -->
+      <div class="flex items-center space-x-2 sm:space-x-3 shrink-0">
+        <!-- Language Switcher -->
+        <div class="inline-flex p-1 bg-space-900 border border-slate-800 rounded-xl space-x-1">
+          <button id="btnLangKz" onclick="setLang('kz')" class="px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow">
+            KZ
+          </button>
+          <button id="btnLangRu" onclick="setLang('ru')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">
+            RU
+          </button>
+        </div>
+
+        <!-- Mark as Completed Button -->
+        <button id="btnComplete" onclick="toggleComplete()" class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition border border-slate-700 bg-space-900 text-slate-300 hover:text-white hover:border-slate-600">
+          <span id="completeIcon" class="text-sm">○</span>
+          <span id="completeText" class="hidden sm:inline">Меңгерілді</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN TOPIC CONTAINER -->
+  <main class="max-w-5xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-8 space-y-6 flex-1">
+
+    <!-- HERO HEADER CARD -->
+    <div class="p-6 sm:p-7 rounded-2xl bg-space-950/90 border border-slate-800 space-y-3.5 shadow-xl relative overflow-hidden">
+      <div class="absolute -right-12 -top-12 w-48 h-48 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="flex items-center space-x-2">
+        <span id="heroCatBadge" class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-space-850 text-cyan-400 border border-cyan-500/20">
+          Биосфера және Табиғат кешендері
+        </span>
+        <span class="text-xs text-slate-400">⏱️ ~8-12 мин оқу</span>
+      </div>
+      <h1 id="heroTitle" class="text-xl sm:text-2xl md:text-3xl font-black text-white tracking-tight leading-snug">
+        Табиғат зоналары
+      </h1>
+      <!-- External Links Bar -->
+      <div class="flex flex-wrap items-center gap-2 pt-1">
+        <a id="btnBlooket" href="https://dashboard.blooket.com/set/6a95f32cbf8b5b050f4c1d4e" target="_blank" class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 border border-purple-500/40 text-xs font-bold transition shadow-sm">
+          <span>🎮</span>
+          <span id="btnBlooketText">Blooket ойыны</span>
+        </a>
+        
+      </div>
+    </div>
+
+    <!-- 1. BRIEF SUMMARY CARD -->
+    <section class="p-5 rounded-2xl bg-space-950 border border-brand-500/40 text-xs sm:text-sm text-slate-200 leading-relaxed shadow-lg">
+      <div class="flex items-center space-x-2 text-brand-400 font-extrabold text-xs mb-2">
+        <span>📖</span>
+        <span id="summaryHeader">ТАҚЫРЫПҚА ҚЫСҚАША ШОЛУ</span>
+      </div>
+      <p id="summaryText" class="leading-relaxed">
+        Табиғат зоналары — 6 материктің (Еуразия, Солтүстік Америка, Оңтүстік Америка, Африка, Аустралия, Антарктида) табиғат кешендері: топырақтары (күлгін, шымды-күлгін, қара топырақ, ферралитті), флорасы мен фаунасы, эндемиктері (вельвичия, эвкалипт, кенгуру, секвойя), бейімделу түрлері (ксерофиттер, суккуленттер, эфемерлер), саванна мен дала түрлері (Прерий, Пампа, Льянос, Кампос) және ұлттық саябақтары (Йеллоустон 1872, Редвуд, Серенгети, Улуру) бойынша толық конспект.
+      </p>
+    </section>
+
+    <!-- 2. FULL THEORY SECTION -->
+    <section class="p-5 sm:p-7 rounded-2xl bg-space-950 border border-slate-800 space-y-4 shadow-xl">
+      <div class="flex items-center space-x-2 border-b border-slate-800 pb-3">
+        <span class="text-base text-cyan-400 font-black">📚</span>
+        <h2 id="theoryHeader" class="text-xs sm:text-sm font-black text-white uppercase tracking-wider">
+          ТОЛЫҚ ТЕОРИЯЛЫҚ МАТЕРИАЛ МЕН КОНСПЕКТ
+        </h2>
+      </div>
+      <div id="theoryContent">
+        <div class="space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed">
+
+  <!-- 1. ТАБИҒАТ ЗОНАЛАРЫ ҰҒЫМЫ ЖӘНЕ СОЛТҮСТІК ЖАРТЫШАР (ЕУРАЗИЯ) -->
+  <div class="p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3">
+    <h4 class="text-sm sm:text-base font-black text-emerald-400 flex items-center space-x-2 border-b border-slate-800 pb-2">
+      <span>🌲</span>
+      <span>1. ЕУРАЗИЯ МАТЕРИГІНІҢ ТАБИҒАТ ЗОНАЛАРЫ</span>
+    </h4>
+    <p>
+      Жер шарында жылу мен ылғалдың арақатынасына байланысты экватордан полюстерге қарай табиғат кешендері заңды түрде ауысады. Еуразия материгінде әлемдегі барлық табиғат зоналары кездеседі:
+    </p>
+
+    <div class="space-y-2 text-xs">
+      <div class="p-3 rounded-xl bg-space-950 border border-slate-800">
+        <strong class="text-sky-300 font-bold block mb-1">1. Арктикалық шөл және 2. Тундра:</strong>
+        <p class="text-slate-300">• <strong class="text-white">Топырағы:</strong> арктикалық шөлде топырақ жетілмеген, көп жерін мұз басып жатыр. Тундрада — шымтезекті-батпақты, толық жетілмеген топырақ.</p>
+        <p class="text-slate-300">• <strong class="text-white">Флора мен фауна:</strong> бұғы мүгі (ягель), мүк, қына, балдырлар. Бұлан, қоңыр аю, ақ түлкі (песец), қоян, саңырауқұр, поляр жапалағы.</p>
+      </div>
+
+      <div class="p-3 rounded-xl bg-space-950 border border-slate-800">
+        <strong class="text-emerald-300 font-bold block mb-1">3. Тайга (Қоңыржай белдеу, күлгін топырақ):</strong>
+        <p class="text-slate-300">• <strong class="text-white">Өсімдіктері:</strong> Еуропалық бөлігінде — қарағай, шырша; Азиялық бөлігінде — майқарағай, самырсын (кедр), балқарағай (лиственница).</p>
+        <p class="text-slate-300">• <strong class="text-white">Жануарлары:</strong> қоңыр аю, қабан, бұлан, бұлғын, сілеусін, ал Қиыр Шығыста — әйгілі <strong class="text-amber-300 font-bold">уссурий жолбарысы</strong>.</p>
+      </div>
+
+      <div class="p-3 rounded-xl bg-space-950 border border-slate-800">
+        <strong class="text-teal-300 font-bold block mb-1">4. Аралас және жалпақ жапырақты ормандар:</strong>
+        <p class="text-slate-300">• <strong class="text-white">Топырағы:</strong> шымды-күлгін топырақ. Еуропада тұтас алапты алып жатыр, Қиыр Шығыста қайта жалғасады.</p>
+        <p class="text-slate-300">• <strong class="text-white">Флорасы:</strong> батыста — шамшат (бук), емен, жөке, шырша; шығыста — амур барқыт ағашы, жабайы жүзім, лианалар, корей самырсыны.</p>
+        <p class="text-slate-300">• <strong class="text-white">Фаунасы:</strong> зубр, бұлан, марал, елік, қоңыр аю, қабан, терісі бағалы аңдар.</p>
+      </div>
+
+      <div class="p-3 rounded-xl bg-space-950 border border-slate-800">
+        <strong class="text-amber-300 font-bold block mb-1">5. Орманды дала және Дала зонасы (Қара топырақ):</strong>
+        <p class="text-slate-300">• <strong class="text-white">Топырағы:</strong> дүние жүзіндегі ең құнарлы қара топырақ.</p>
+        <p class="text-slate-300">• <strong class="text-white">Өсімдіктері:</strong> Еуропада — емен, жөке, үйеңкі; Азияда — қайың, көктерек. Астық тұқымдастар: селеу, боз, бидайық.</p>
+        <p class="text-slate-300">• <strong class="text-white">Жануарлары:</strong> қасқыр, қарсақ, түлкі; кемірушілерден — саршұнақ, дала күзені, тышқандар.</p>
+      </div>
+
+      <div class="p-3 rounded-xl bg-space-950 border border-slate-800">
+        <strong class="text-orange-300 font-bold block mb-1">6. Шөлейт және Шөл зоналары:</strong>
+        <p class="text-slate-300">• <strong class="text-white">Топырағы:</strong> күңгірт қара-қоңыр, сұр-қоңыр топырақ, сор мен сортаңдар.</p>
+        <p class="text-slate-300">• <strong class="text-white">Бейімделу түрлері:</strong> жусан, селеу, бұйырғын. Құрғақшылыққа төзімді — <strong class="text-amber-300 font-bold">ксерофиттер</strong> (сексеуіл), ерте көктемде гүлдейтін — <strong class="text-amber-300 font-bold">эфемерлер</strong>. Жер асты суы жақын орындар — <strong class="text-cyan-300 font-bold">шұраттар (оазистер)</strong>.</p>
+        <p class="text-slate-300">• <strong class="text-white">Фаунасы:</strong> жабайы түйе, құлан, ақбөкен, қарақұйрық, кесірткелер, жыландар.</p>
+      </div>
+
+      <div class="p-3 rounded-xl bg-space-950 border border-purple-500/30">
+        <strong class="text-purple-300 font-bold block mb-1">7–14. Субтропиктер, Экватор және Биіктік белдеу:</strong>
+        <p class="text-slate-300">• <strong class="text-white">Жерорта теңізі:</strong> қатты жапырақты мәңгі жасыл ормандар (құнарлы қоңыр топырақ, тас емен, зәйтүн, лавр шиесі, кипарис, пиния, мирта, грек жаңғағы).</p>
+        <p class="text-slate-300">• <strong class="text-white">Муссондық субтропиктер:</strong> магнолия, бамбук, камфора; Гималай аюы, <strong class="text-amber-300 font-bold">бамбук аюы — панда</strong>, гиббон, жолбарыс.</p>
+        <p class="text-slate-300">• <strong class="text-white">Тропиктік шөлдер (Арабия, Тар):</strong> дромедар (бір өркешті түйе), онагр (жабайы есек), желаяқ бөкендер.</p>
+        <p class="text-slate-300">• <strong class="text-white">Ылғалды экваторлық орман:</strong> қызыл-сары ферралитті топырақ, ротанг пальмасы (ұзындығы 200–300 м), орхидея, бамбук; мүйізтұмсық, орангутан, тауыс құсы.</p>
+        <p class="text-slate-300">• <strong class="text-white">Биіктік белдеу (Тибет, Памир):</strong> қодас (як), қар барысы, ұлар құсы, арқар.</p>
+      </div>
+    </div>
+
+    <!-- Embedded SVG 1: North Continents -->
+    <div class="my-3">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 740 330" class="w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2">
+  <text x="370" y="22" fill="#38bdf8" font-size="12" font-weight="900" text-anchor="middle" letter-spacing="1">СОЛТҮСТІК ЖАРТЫШАР МАТЕРИКТЕРІНІҢ ТАБИҒАТ ЗОНАЛАРЫ (ЕУРАЗИЯ ЖӘНЕ С. АМЕРИКА)</text>
+
+  <!-- Left: Eurasia Zones Card -->
+  <g transform="translate(15, 36)">
+    <rect width="350" height="275" rx="10" fill="#18181b" stroke="#3b82f6" stroke-width="1.2"/>
+    <rect width="350" height="26" rx="10" fill="#1e3a8a"/>
+    <text x="175" y="17" fill="#ffffff" font-size="9.5" font-weight="bold" text-anchor="middle">ЕУРАЗИЯ МАТЕРИГІНІҢ ЗОНАЛАРЫ</text>
+
+    <g transform="translate(12, 34)">
+      <!-- Zone 1-2: Tundra -->
+      <rect x="0" y="0" width="326" height="42" rx="5" fill="#1e293b" stroke="#0284c7" stroke-width="0.8"/>
+      <text x="8" y="13" fill="#38bdf8" font-size="8.5" font-weight="bold">1. Арктикалық шөл және 2. Тундра:</text>
+      <text x="8" y="25" fill="#ffffff" font-size="7.5">• Топырағы: батпақты тундралық, дамымаған. Бұғы мүгі, қына, балдырлар.</text>
+      <text x="8" y="36" fill="#94a3b8" font-size="7.5">• Жануарлары: бұлан, қоңыр аю, ақ түлкі, саңырауқұр, ақ аю.</text>
+
+      <!-- Zone 3: Taiga -->
+      <rect x="0" y="46" width="326" height="50" rx="5" fill="#1e293b" stroke="#059669" stroke-width="0.8"/>
+      <text x="8" y="59" fill="#34d399" font-size="8.5" font-weight="bold">3. Тайга (Қоңыржай белдеу, күлгін топырақ):</text>
+      <text x="8" y="71" fill="#ffffff" font-size="7.5">• Еуропада: қарағай, шырша | Азияда: майқарағай, самырсын, балқарағай.</text>
+      <text x="8" y="83" fill="#a7f3d0" font-size="7.5">• Жануарлары: қоңыр аю, бұлғын, бұлан, <tspan fill="#fef08a" font-weight="bold">уссурий жолбарысы</tspan> (Қиыр Шығыс).</text>
+
+      <!-- Zone 4-5: Steppe & Deserts -->
+      <rect x="0" y="100" width="326" height="60" rx="5" fill="#1e293b" stroke="#f59e0b" stroke-width="0.8"/>
+      <text x="8" y="113" fill="#facc15" font-size="8.5" font-weight="bold">4. Ормандар және 5. Дала (қара топырақ):</text>
+      <text x="8" y="125" fill="#ffffff" font-size="7.5">• Аралас ормандар: шымды-күлгін, шамшат, емен, амур барқыт ағашы, зубр.</text>
+      <text x="8" y="137" fill="#ffffff" font-size="7.5">• Дала зонасы: ең құнарлы қара топырақ, селеу, боз, бидайық, саршұнақ, күзен.</text>
+      <text x="8" y="149" fill="#fef08a" font-size="7">Шөлдер: ксерофиттер (сексеуіл), эфемерлер, оазистер; ақбөкен, құлан, қарақұйрық.</text>
+
+      <!-- Zone 6: Subtropics & Tropics -->
+      <rect x="0" y="164" width="326" height="70" rx="5" fill="#0f172a" stroke="#a855f7" stroke-width="0.8"/>
+      <text x="8" y="177" fill="#c084fc" font-size="8.5" font-weight="bold">Субтропиктер және Экваторлық ормандар:</text>
+      <text x="8" y="189" fill="#ffffff" font-size="7.5">• Жерорта теңізі: қатты жапырақты (зәйтүн, тас емен, лавр, кипарис).</text>
+      <text x="8" y="201" fill="#ffffff" font-size="7.5">• Муссондық: магнолия, бамбук, камфора; <tspan fill="#fef08a" font-weight="bold">бамбук аюы — панда</tspan>, гиббон.</text>
+      <text x="8" y="213" fill="#ffffff" font-size="7.5">• Экваторлық: ротанг пальмасы (200-300 м), орхидея, орангутан, мүйізтұмсық.</text>
+      <text x="8" y="226" fill="#cbd5e1" font-size="7">Биіктік белдеу (Тибет, Памир): қодас (як), қар барысы, ұлар құсы, арқар.</text>
+    </g>
+  </g>
+
+  <!-- Right: North America Zones Card -->
+  <g transform="translate(375, 36)">
+    <rect width="350" height="275" rx="10" fill="#18181b" stroke="#10b981" stroke-width="1.2"/>
+    <rect width="350" height="26" rx="10" fill="#065f46"/>
+    <text x="175" y="17" fill="#ffffff" font-size="9.5" font-weight="bold" text-anchor="middle">СОЛТҮСТІК АМЕРИКА ЗОНАЛАРЫ ЖӘНЕ САЯБАҚТАРЫ</text>
+
+    <g transform="translate(12, 34)">
+      <!-- Arctic & Tundra -->
+      <rect x="0" y="0" width="326" height="42" rx="5" fill="#1e293b" stroke="#0ea5e9" stroke-width="0.8"/>
+      <text x="8" y="13" fill="#38bdf8" font-size="8.5" font-weight="bold">Арктика және Тундра:</text>
+      <text x="8" y="25" fill="#ffffff" font-size="7.5">• <tspan fill="#fef08a" font-weight="bold">Қойөгіз (овцебык):</tspan> мұз дәуірінен сақталған реликт (Гренландия, Канада).</text>
+      <text x="8" y="36" fill="#ffffff" font-size="7.5">• <tspan fill="#7dd3fc" font-weight="bold">Карибу:</tspan> солтүстік бұғыларының айрықша түрі (Лабрадор, Гудзон).</text>
+
+      <!-- Taiga & Sequoia -->
+      <rect x="0" y="46" width="326" height="52" rx="5" fill="#1e293b" stroke="#059669" stroke-width="0.8"/>
+      <text x="8" y="59" fill="#34d399" font-size="8.5" font-weight="bold">Тайга (Күлгін топырақ, алып секвойя):</text>
+      <text x="8" y="71" fill="#ffffff" font-size="7.5">• <tspan fill="#fef08a" font-weight="bold">Алып секвойя (мамонт ағашы):</tspan> биіктігі 100 м, 4000 жыл өмір сүреді.</text>
+      <text x="8" y="83" fill="#ffffff" font-size="7.5">• Жануарлары: барибал, гризли аюы, канада сілеусіні, орман бизоны, вапити.</text>
+      <text x="8" y="94" fill="#a7f3d0" font-size="7">Флоридада: Эверглейдс батпағы мен ұлттық саябағы орналасқан.</text>
+
+      <!-- Prairies & Deserts -->
+      <rect x="0" y="102" width="326" height="54" rx="5" fill="#1e293b" stroke="#f59e0b" stroke-width="0.8"/>
+      <text x="8" y="115" fill="#facc15" font-size="8.5" font-weight="bold">Прерий (Дала — французша «шалғын»):</text>
+      <text x="8" y="127" fill="#ffffff" font-size="7.5">• Меридиан бойымен созылған; қара және каштан топырақ, бизон шөбі (1,5 м).</text>
+      <text x="8" y="139" fill="#ffffff" font-size="7.5">• Жануарлары: бизон, дала қасқыры — койот, түлкі.</text>
+      <text x="8" y="151" fill="#fde047" font-size="7">Шөлдер (Мексика): кактус, юкка — суккуленттер («шырынды өсімдіктер»).</text>
+
+      <!-- Famous National Parks -->
+      <rect x="0" y="160" width="326" height="74" rx="6" fill="#0f172a" stroke="#10b981" stroke-width="0.8"/>
+      <text x="8" y="174" fill="#34d399" font-size="8.5" font-weight="bold">ӘЙГІЛІ ҰЛТТЫҚ САЯБАҚТАР (ҰБТ):</text>
+      <text x="8" y="188" fill="#ffffff" font-size="7.5">• <tspan fill="#fef08a" font-weight="bold">Йеллоустон (1872 ж.):</tspan> дүниежүзіндегі тұңғыш құрылған ұлттық саябақ.</text>
+      <text x="8" y="201" fill="#ffffff" font-size="7.5">• <tspan fill="#fef08a" font-weight="bold">Редвуд (Redwood):</tspan> Калифорния штатында (Тынық мұхит жағалауы),</text>
+      <text x="16" y="212" fill="#cbd5e1" font-size="7.5">алып қылқан жапырақты секвойяларды қорғау үшін құрылған.</text>
+      <text x="8" y="226" fill="#38bdf8" font-size="7">Орталық Америка саваннасы: қан сорғыш жарқанат (вампир), скунс, ягуар.</text>
+    </g>
+  </g>
+</svg>
+    </div>
+  </div>
+
+  <!-- 2. СОЛТҮСТІК АМЕРИКА ЖӘНЕ САЯБАҚТАР -->
+  <div class="p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3">
+    <h4 class="text-sm sm:text-base font-black text-cyan-400 flex items-center space-x-2 border-b border-slate-800 pb-2">
+      <span>🌲</span>
+      <span>2. СОЛТҮСТІК АМЕРИКА ТАБИҒАТ ЗОНАЛАРЫ ЖӘНЕ САЯБАҚТАРЫ</span>
+    </h4>
+    <div class="space-y-2 text-xs">
+      <div class="p-3 rounded-xl bg-space-950 border border-slate-800">
+        <strong class="text-sky-300 font-bold block mb-1">Арктика, Тундра және Тайга:</strong>
+        <p class="text-slate-300">• <strong class="text-white">Арктикалық шөл:</strong> Гренландия мен Канадалық Арктикалық архипелаг. Мұз басу дәуірінен сақталған реликт жануар — <strong class="text-amber-300 font-bold">қойөгіз (овцебык)</strong>, Қызыл кітапқа енген.</p>
+        <p class="text-slate-300">• <strong class="text-white">Тундра:</strong> солтүстік бұғыларының айрықша түрі — <strong class="text-cyan-300 font-bold">карибу</strong> мекендейді (Лабрадор түбегі, Гудзон).</p>
+        <p class="text-slate-300">• <strong class="text-white">Тайга (Күлгін топырақ):</strong> алып <strong class="text-amber-300 font-bold">секвойя ағашы (мамонт ағашы)</strong> өседі (биіктігі 100 м, 4000 жыл өмір сүреді). Жануарлары: барибал (қара аю), гризли, канада сілеусіні, америка қара күзені, орман бизоны, вапити бұғысы.</p>
+      </div>
+
+      <div class="p-3 rounded-xl bg-space-950 border border-slate-800">
+        <strong class="text-amber-300 font-bold block mb-1">Прерий (Дала), Шөлдер және Саванна:</strong>
+        <p class="text-slate-300">• <strong class="text-white">Прерий</strong> (французша «шалғын»): меридиан бағытында созылған дала зонасы. Қара және каштан топырақ, биіктігі 1,5 м бизон шөбі, бозшалғын, бидайық. Жануарлары: дала қасқыры — койот, бизон, түлкі.</p>
+        <p class="text-slate-300">• <strong class="text-white">Шөлдер (Мексика қыраты):</strong> кактустар мен суккуленттердің екінші отаны (алоэ, сүттіген, юкка, опунция). Суккулент — латынша «шырынды өсімдік».</p>
+        <p class="text-slate-300">• <strong class="text-white">Саванна (Орталық Америка):</strong> қызыл топырақ, кең танаулы маймылдар, ягуар, қан сорғыш жарқанат (вампир), скунс, опоссумдар.</p>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-space-950 border border-emerald-500/30">
+        <strong class="text-emerald-400 font-bold block mb-1">ҰБТ Басты саябақтары:</strong>
+        <p class="text-slate-300">• <strong class="text-white">Йеллоустон (1872 ж.):</strong> дүниежүзіндегі ең тұңғыш құрылған ұлттық саябақ (гейзерлерімен әйгілі).</p>
+        <p class="text-slate-300">• <strong class="text-white">Редвуд (Redwood):</strong> Калифорния штатында (Тынық мұхит жағалауында), алып қылқан жапырақты секвойяларды қорғау үшін құрылған.</p>
+        <p class="text-slate-300">• <strong class="text-white">Эверглейдс:</strong> Флорида түбегінде субтропиктік батпақ экожүйесін қорғайтын саябақ.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. ОҢТҮСТІК АМЕРИКА МАТЕРИГІ -->
+  <div class="p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3">
+    <h4 class="text-sm sm:text-base font-black text-rose-400 flex items-center space-x-2 border-b border-slate-800 pb-2">
+      <span>🦜</span>
+      <span>3. ОҢТҮСТІК АМЕРИКА ТАБИҒАТ ЗОНАЛАРЫ</span>
+    </h4>
+    <div class="space-y-2 text-xs">
+      <div class="p-3 rounded-xl bg-space-950 border border-slate-800">
+        <strong class="text-rose-300 font-bold block mb-1">1. Сельвас / Гилея (Амазонка ойпаты):</strong>
+        <p class="text-slate-300">• <strong class="text-white">Топырағы:</strong> қызыл-сары ферралитті топырақ. Трансамазония тас жолы 8,5 мың км-ге созылған.</p>
+        <p class="text-slate-300">• <strong class="text-white">Флорасы:</strong> гевея (табиғи каучук алынады), бальс ағашы, хина ағашы (дәрілік шикізат), сейба, қауын ағашы, ағаш тәрізді папоротник.</p>
+        <p class="text-slate-300">• <strong class="text-white">Фаунасы:</strong> тапир, опоссум, пекари шошқасы, капибара (ең ірі су шошқасы/кеміргіш), ягуар, пума; колибри (ең кішкентай құс), анаконда (12 метрлік ең ұзын жылан).</p>
+      </div>
+
+      <div class="p-3 rounded-xl bg-space-950 border border-slate-800">
+        <strong class="text-amber-300 font-bold block mb-1">2. Саванналар: Льянос және Кампос:</strong>
+        <p class="text-slate-300">• Ориноко саваннасы — <strong class="text-amber-300 font-bold">Льянос</strong> (пальмалар, акациялар); Бразилия саваннасы — <strong class="text-amber-300 font-bold">Кампос</strong> (кактус, мимоза, бөтелке ағашы).</p>
+        <p class="text-slate-300">• Бразилия — кактустың отаны; ағашы өте қатты <strong class="text-amber-300 font-bold">кебрачо («балта сынар»)</strong> өседі.</p>
+        <p class="text-slate-300">• Фаунасы: сауыттылар (броненосец), құмырсқажегіш, нанду түйеқұсы, жалды қасқыр, ергежейлі бұғы.</p>
+      </div>
+
+      <div class="p-3 rounded-xl bg-space-950 border border-slate-800">
+        <strong class="text-purple-300 font-bold block mb-1">3. Пампа, Патагония және Анд таулары:</strong>
+        <p class="text-slate-300">• <strong class="text-white">Пампа:</strong> субтропиктік «жазық дала» (Ла-Плата ойпаты), құнарлы қызғылт-қара топырақ, пампа бұғысы, саз құндызы (нутрия).</p>
+        <p class="text-slate-300">• <strong class="text-white">Патагония:</strong> қоңыржай шөлейт үстірт, гуанако ламасы, магеллан түлкісі, сауыттылар.</p>
+        <p class="text-slate-300">• <strong class="text-white">Анд биіктік белдеуі:</strong> Раймонд пуйясы; жабайы ламалар — <strong class="text-purple-300 font-bold">викунья, гуанако</strong>, қолға үйретілген — <strong class="text-purple-300 font-bold">альпака</strong>; Анд символы — <strong class="text-white font-bold">лама және кондор</strong> (ең ірі жыртқыш құс), көзілдірікті аю, шиншилла (бағалы тері), Магеллан пингвині.</p>
+        <p class="text-slate-300">• Оңтүстік Америка — картоп, батат, қызанақ, жүгері, үрмебұршақ, бұрыш, күнбағыс, темекі, какаоның отаны.</p>
+      </div>
+    </div>
+
+    <!-- Embedded SVG 2: South Continents -->
+    <div class="my-3">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 740 330" class="w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2">
+  <text x="370" y="22" fill="#38bdf8" font-size="12" font-weight="900" text-anchor="middle" letter-spacing="1">ОҢТҮСТІК ЖАРТЫШАР МАТЕРИКТЕРІ: О. АМЕРИКА, АФРИКА ЖӘНЕ АУСТРАЛИЯ</text>
+
+  <!-- Left: South America Zones Card -->
+  <g transform="translate(15, 36)">
+    <rect width="225" height="275" rx="10" fill="#18181b" stroke="#ef4444" stroke-width="1.2"/>
+    <rect width="225" height="26" rx="10" fill="#991b1b"/>
+    <text x="112" y="17" fill="#ffffff" font-size="9.5" font-weight="bold" text-anchor="middle">ОҢТҮСТІК АМЕРИКА</text>
+
+    <g transform="translate(10, 32)">
+      <text x="0" y="11" fill="#f87171" font-size="8.5" font-weight="bold">Сельвас (Гилея, Амазонка):</text>
+      <text x="0" y="23" fill="#ffffff" font-size="7.5">• Гевея (каучук), сейба, хина,</text>
+      <text x="0" y="34" fill="#ffffff" font-size="7.5">бальс, қауын ағашы.</text>
+      <text x="0" y="46" fill="#cbd5e1" font-size="7.5">• <tspan fill="#fef08a" font-weight="bold">Анаконда (12 м)</tspan>, капибара (су</text>
+      <text x="0" y="57" fill="#cbd5e1" font-size="7.5">шошқасы), колибри, ягуар, тапир.</text>
+      <text x="0" y="68" fill="#94a3b8" font-size="7">Трансамазония тас жолы: 8,5 мың км.</text>
+
+      <text x="0" y="86" fill="#f87171" font-size="8.5" font-weight="bold">Саванналары:</text>
+      <text x="0" y="98" fill="#ffffff" font-size="7.5">• Ориноко саваннасы: <tspan fill="#fef08a" font-weight="bold">Льянос</tspan></text>
+      <text x="0" y="109" fill="#ffffff" font-size="7.5">• Бразилия саваннасы: <tspan fill="#fef08a" font-weight="bold">Кампос</tspan></text>
+      <text x="0" y="120" fill="#cbd5e1" font-size="7.5">Кебрачо («балта сынар»), бөтелке ағашы,</text>
+      <text x="0" y="131" fill="#cbd5e1" font-size="7.5">сауыттылар, нанду түйеқұсы.</text>
+
+      <text x="0" y="149" fill="#f87171" font-size="8.5" font-weight="bold">Пампа және Анд таулары:</text>
+      <text x="0" y="161" fill="#ffffff" font-size="7.5">• <tspan fill="#fef08a" font-weight="bold">Пампа:</tspan> субтропиктік жазық дала,</text>
+      <text x="0" y="172" fill="#cbd5e1" font-size="7.5">қызғылт-қара топырақ, пампа бұғысы.</text>
+      <text x="0" y="184" fill="#ffffff" font-size="7.5">• <tspan fill="#38bdf8" font-weight="bold">Анд таулары:</tspan> лама (викунья,</text>
+      <text x="0" y="195" fill="#cbd5e1" font-size="7.5">гуанако, альпака), <tspan fill="#fef08a" font-weight="bold">кондор</tspan> (алып құс),</text>
+      <text x="0" y="206" fill="#cbd5e1" font-size="7.5">көзілдірікті аю, шиншилла.</text>
+      <text x="0" y="218" fill="#a7f3d0" font-size="7">Картоп, қызанақ, жүгері, какао отаны.</text>
+    </g>
+  </g>
+
+  <!-- Middle: Africa Zones Card -->
+  <g transform="translate(257, 36)">
+    <rect width="225" height="275" rx="10" fill="#18181b" stroke="#f59e0b" stroke-width="1.2"/>
+    <rect width="225" height="26" rx="10" fill="#b45309"/>
+    <text x="112" y="17" fill="#ffffff" font-size="9.5" font-weight="bold" text-anchor="middle">АФРИКА МАТЕРИГІ</text>
+
+    <g transform="translate(10, 32)">
+      <text x="0" y="11" fill="#fbbf24" font-size="8.5" font-weight="bold">Экваторлық ормандар (Конго):</text>
+      <text x="0" y="23" fill="#ffffff" font-size="7.5">• 80 м ағаштар: фикус, сейба, рафия.</text>
+      <text x="0" y="34" fill="#ffffff" font-size="7.5">• <tspan fill="#fca5a5" font-weight="bold">Цеце шыбыны:</tspan> ұйқы ауруын таратады.</text>
+
+      <text x="0" y="52" fill="#fbbf24" font-size="8.5" font-weight="bold">Саванналары (Африканың 40%-ы):</text>
+      <text x="0" y="64" fill="#ffffff" font-size="7.5">• Баобаб, майлы пальма, акация.</text>
+      <text x="0" y="75" fill="#ffffff" font-size="7.5">• 40-тан астам бөкен, керік, зебра,</text>
+      <text x="0" y="86" fill="#cbd5e1" font-size="7.5">арыстан, гепард, Ніл қолтырауыны (5-6 м),</text>
+      <text x="0" y="97" fill="#cbd5e1" font-size="7.5">хатшы құс (жылан аулайтын), марабу.</text>
+      <text x="0" y="109" fill="#fde047" font-size="7.5">• Мадагаскар: лемур (26 түрі), саяхатшы ағашы.</text>
+      <text x="0" y="121" fill="#fca5a5" font-size="7">Сахараның саваннаға жылжуы: 650 км².</text>
+
+      <text x="0" y="139" fill="#fbbf24" font-size="8.5" font-weight="bold">Намиб шөлі және эндемиктер:</text>
+      <text x="0" y="151" fill="#ffffff" font-size="7.5">• <tspan fill="#fef08a" font-weight="bold">Вельвичия:</tspan> биіктігі 50 см, жапырағы</text>
+      <text x="0" y="162" fill="#cbd5e1" font-size="7.5">2-3 м болатын ерекше өсімдік.</text>
+      <text x="0" y="174" fill="#ffffff" font-size="7.5">• Бір өркешті дромедар, фенек түлкісі.</text>
+
+      <rect x="0" y="186" width="205" height="46" rx="5" fill="#0f172a" stroke="#ca8a04" stroke-width="0.8"/>
+      <text x="6" y="199" fill="#facc15" font-size="7.5" font-weight="bold">Ұлттық парктері (Шығыс Африка):</text>
+      <text x="6" y="211" fill="#ffffff" font-size="7.5">Серенгети, Киву, Вирунга, Кагера.</text>
+      <text x="6" y="223" fill="#38bdf8" font-size="7">Жасыл белдеу: 1500 км орман отырғызылуда.</text>
+    </g>
+  </g>
+
+  <!-- Right: Australia & Antarctica Card -->
+  <g transform="translate(500, 36)">
+    <rect width="225" height="275" rx="10" fill="#18181b" stroke="#10b981" stroke-width="1.2"/>
+    <rect width="225" height="26" rx="10" fill="#065f46"/>
+    <text x="112" y="17" fill="#ffffff" font-size="9.5" font-weight="bold" text-anchor="middle">АУСТРАЛИЯ ЖӘНЕ АНТАРКТИДА</text>
+
+    <g transform="translate(10, 32)">
+      <text x="0" y="11" fill="#34d399" font-size="8.5" font-weight="bold">Аустралия шөлдерінің ерекшелігі:</text>
+      <text x="0" y="23" fill="#fef08a" font-size="7.5">• Шұраттардың (оазистердің) болмауы!</text>
+      <text x="0" y="34" fill="#ffffff" font-size="7.5">• <tspan fill="#a7f3d0" font-weight="bold">Скрэб:</tspan> тікенекті акация мен аласа</text>
+      <text x="0" y="45" fill="#cbd5e1" font-size="7.5">эвкалипттерден тұратын қалың тоғай.</text>
+
+      <text x="0" y="63" fill="#34d399" font-size="8.5" font-weight="bold">Аустралия эндемиктері:</text>
+      <text x="0" y="75" fill="#ffffff" font-size="7.5">• Өсімдіктер: <tspan fill="#fef08a" font-weight="bold">эвкалипт (100 м), казуарин</tspan>.</text>
+      <text x="0" y="87" fill="#ffffff" font-size="7.5">• Жануарлар: <tspan fill="#fef08a" font-weight="bold">кенгуру, үйректұмсық, ехидна</tspan>,</text>
+      <text x="0" y="98" fill="#cbd5e1" font-size="7.5">коала, вомбат, динго иті, эму түйеқұсы.</text>
+      <text x="0" y="110" fill="#67e8f9" font-size="7.5">• Елтаңбада: <tspan fill="#ffffff" font-weight="bold">эму мен кенгуру</tspan>.</text>
+      <text x="0" y="121" fill="#67e8f9" font-size="7.5">• Монетада: <tspan fill="#ffffff" font-weight="bold">ехидна, үйректұмсық, лирақұйрық</tspan>.</text>
+      <text x="0" y="132" fill="#94a3b8" font-size="7">Парктері: Улуру, Үлкен Тосқауыл рифі, Какаду.</text>
+
+      <text x="0" y="150" fill="#38bdf8" font-size="8.5" font-weight="bold">Антарктида материгі:</text>
+      <text x="0" y="162" fill="#ffffff" font-size="7.5">• Полюс суығы: -91,2°С (Восток), альбедо 90%.</text>
+      <text x="0" y="174" fill="#ffffff" font-size="7.5">• Пингвиннің 17 түрі (Адели, Император &gt;1м).</text>
+      <text x="0" y="185" fill="#ffffff" font-size="7.5">• Көк кит (1967 ж. қорғауға алынды), итбалық.</text>
+      <text x="0" y="197" fill="#ffffff" font-size="7.5">• Альбатрос құсы (қанаты 3,5 метрге жетеді).</text>
+      <text x="0" y="210" fill="#cbd5e1" font-size="7">Озон қабаты жұқаруы: 2000 ж. рекорд 29,9 млн км².</text>
+    </g>
+  </g>
+</svg>
+    </div>
+  </div>
+
+  <!-- 4. АФРИКА, АУСТРАЛИЯ ЖӘНЕ АНТАРКТИДА -->
+  <div class="p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3">
+    <h4 class="text-sm sm:text-base font-black text-amber-400 flex items-center space-x-2 border-b border-slate-800 pb-2">
+      <span>🦒</span>
+      <span>4. АФРИКА, АУСТРАЛИЯ ЖӘНЕ АНТАРКТИДА ТАБИҒАТ ЗОНАЛАРЫ</span>
+    </h4>
+    <div class="space-y-2 text-xs">
+      <div class="p-3 rounded-xl bg-space-950 border border-slate-800">
+        <strong class="text-amber-300 font-bold block mb-1">Африка материгі:</strong>
+        <p class="text-slate-300">• <strong class="text-white">Экваторлық ормандар (Конго):</strong> 80 м ағаштар (фикус, сейба, рафия, майлы пальма), цеце шыбыны (ұйқы ауруы).</p>
+        <p class="text-slate-300">• <strong class="text-white">Саванналар (Африканың 40%-ы):</strong> баобаб, акация; 40-тан аса бөкен түрі, зебра, керік (жираф), арыстан, гепард, Ніл қолтырауыны (5-6 м), хатшы құс (жылан аулайды), марабу. Мадагаскар аралында: лемур (26 түрі), саяхатшы ағашы. Шөлге айналу: Сахара саваннаға қарай 650 км² жылжуда, 1500 км Жасыл белдеу отырғызылуда.</p>
+        <p class="text-slate-300">• <strong class="text-white">Намиб шөлі:</strong> эндемик өсімдігі — <strong class="text-amber-300 font-bold">вельвичия</strong> (биіктігі 50 см, жапырағы 2-3 м). Бір өркешті дромедар, фенек түлкісі.</p>
+        <p class="text-slate-300">• <strong class="text-white">Шығыс Африка ұлттық парктері:</strong> Серенгети, Киву, Вирунга, Кагера.</p>
+      </div>
+
+      <div class="p-3 rounded-xl bg-space-950 border border-slate-800">
+        <strong class="text-emerald-300 font-bold block mb-1">Аустралия материгі:</strong>
+        <p class="text-slate-300">• Шөлдерінің ерекшелігі — <strong class="text-emerald-300 font-bold">шұраттардың (оазистердің) болмауы</strong>! Қалың мәңгі жасыл бұталар — <strong class="text-emerald-300 font-bold">скрэб</strong> (тікенекті акация, аласа эвкалипт).</p>
+        <p class="text-slate-300">• <strong class="text-white">Эндемик флорасы:</strong> эвкалипт (биіктігі 100 м, тамыры 30 м тереңде, коала қоректенеді), казуарин.</p>
+        <p class="text-slate-300">• <strong class="text-white">Эндемик фаунасы:</strong> кенгуру, үйректұмсық, ехидна, коала, вомбат, динго иті, эму түйеқұсы. 1975 ж. өзге материктен түрлерді әкелуге тыйым салынды.</p>
+        <p class="text-slate-300">• <strong class="text-white">Рәміздері:</strong> елтаңбасында — <strong class="text-white font-bold">эму мен кенгуру</strong>; монеталарында — <strong class="text-white font-bold">ехидна, үйректұмсық, лирақұйрық</strong>.</p>
+        <p class="text-slate-300">• <strong class="text-white">Ұлттық парктері:</strong> Улуру, Үлкен Тосқауыл рифі, Какаду.</p>
+      </div>
+
+      <div class="p-3 rounded-xl bg-space-950 border border-slate-800">
+        <strong class="text-blue-300 font-bold block mb-1">Антарктида материгі:</strong>
+        <p class="text-slate-300">• Климаты өте қатал, ең төменгі Т° — <strong class="text-white">-91,2°С («Восток»)</strong>, күн сәулесінің 90%-ын шағылдырады (альбедо). Антарктикалық шұраттарда балдыр, мүк, қына өседі.</p>
+        <p class="text-slate-300">• Жануарлары: Уэдделл итбалығы, теңіз пілі, көк кит (1967 ж. қорғауда), пингвиннің 17 түрі (Адели, Император &gt;1м), альбатрос (3,5 м қанат).</p>
+        <p class="text-slate-300">• Озон тесігі рекорды: 2000 жылы 29,9 млн км², 2012 жылы 21,2 млн км² (кішірейіп келеді).</p>
+      </div>
+    </div>
+
+    <!-- Embedded SVG 3: Summary & Soils -->
+    <div class="my-3">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 740 330" class="w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2">
+  <text x="370" y="22" fill="#38bdf8" font-size="12" font-weight="900" text-anchor="middle" letter-spacing="1">ТАБИҒАТ ЗОНАЛАРЫНЫҢ ТОПЫРАҚТАРЫ, ӨСІМДІКТЕРІ МЕН РЕКОРДТАРЫ</text>
+
+  <!-- Left: Soils & Vegetation Sequence -->
+  <g transform="translate(15, 36)">
+    <rect width="350" height="275" rx="10" fill="#18181b" stroke="#a855f7" stroke-width="1.2"/>
+    <rect width="350" height="26" rx="10" fill="#6b21a8"/>
+    <text x="175" y="17" fill="#ffffff" font-size="9.5" font-weight="bold" text-anchor="middle">ЗОНАЛАР БОЙЫНША ТОПЫРАҚ ЖӘНЕ ФЛОРА</text>
+
+    <g transform="translate(12, 34)">
+      <!-- Soil ladder -->
+      <rect x="0" y="0" width="326" height="34" rx="4" fill="#1e293b" stroke="#71717a" stroke-width="0.8"/>
+      <text x="8" y="13" fill="#38bdf8" font-size="8" font-weight="bold">Арктикалық / Тундралық:</text>
+      <text x="8" y="25" fill="#e2e8f0" font-size="7.5">Толық жетілмеген батпақты топырақ | Мүк, қына, бұғы мүгі</text>
+
+      <rect x="0" y="38" width="326" height="34" rx="4" fill="#1e293b" stroke="#71717a" stroke-width="0.8"/>
+      <text x="8" y="51" fill="#34d399" font-size="8" font-weight="bold">Тайга зонасы:</text>
+      <text x="8" y="63" fill="#e2e8f0" font-size="7.5">Күлгін (подзолистые) топырақ | Қарағай, шырша, майқарағай, самырсын</text>
+
+      <rect x="0" y="76" width="326" height="34" rx="4" fill="#1e293b" stroke="#71717a" stroke-width="0.8"/>
+      <text x="8" y="89" fill="#a7f3d0" font-size="8" font-weight="bold">Аралас және жалпақ жапырақты:</text>
+      <text x="8" y="101" fill="#e2e8f0" font-size="7.5">Шымды-күлгін топырақ | Емен, шамшат, жөке, амур барқыт ағашы</text>
+
+      <rect x="0" y="114" width="326" height="34" rx="4" fill="#1e293b" stroke="#71717a" stroke-width="0.8"/>
+      <text x="8" y="127" fill="#facc15" font-size="8" font-weight="bold">Орманды дала және Дала (Прерий):</text>
+      <text x="8" y="139" fill="#fde047" font-size="7.5">Қара және күрең (каштан) топырақ | Боз, селеу, бидайық, бизон шөбі</text>
+
+      <rect x="0" y="152" width="326" height="34" rx="4" fill="#1e293b" stroke="#71717a" stroke-width="0.8"/>
+      <text x="8" y="165" fill="#fb923c" font-size="8" font-weight="bold">Шөлейт және Шөл:</text>
+      <text x="8" y="177" fill="#e2e8f0" font-size="7.5">Сұр-қоңыр, сортаң топырақ | Сексеуіл (ксерофиттер), кактустар (суккулент)</text>
+
+      <rect x="0" y="190" width="326" height="42" rx="4" fill="#1e293b" stroke="#71717a" stroke-width="0.8"/>
+      <text x="8" y="203" fill="#f87171" font-size="8" font-weight="bold">Ылғалды экваторлық орман (Гилея, Сельвас):</text>
+      <text x="8" y="215" fill="#fecaca" font-size="7.5">Қызыл-сары ферралитті топырақ | Ротанг пальмасы (300 м), гевея, сейба, лианалар</text>
+    </g>
+  </g>
+
+  <!-- Right: UNT High-Yield Matching & Terms -->
+  <g transform="translate(375, 36)">
+    <rect width="350" height="275" rx="10" fill="#18181b" stroke="#f59e0b" stroke-width="1.2"/>
+    <rect width="350" height="26" rx="10" fill="#b45309"/>
+    <text x="175" y="17" fill="#ffffff" font-size="9.5" font-weight="bold" text-anchor="middle">ҰБТ БАЗАСЫ: НЕГІЗГІ ТЕРМИНДЕР МЕН АТАУЛАР</text>
+
+    <g transform="translate(12, 34)">
+      <rect x="0" y="0" width="326" height="50" rx="5" fill="#1e293b" stroke="#f59e0b" stroke-width="0.8"/>
+      <text x="8" y="14" fill="#facc15" font-size="8.5" font-weight="bold">ӨСІМДІКТЕРДІҢ БЕЙІМДЕЛУ ТҮРЛЕРІ:</text>
+      <text x="8" y="27" fill="#ffffff" font-size="7.5">• <tspan fill="#fde047" font-weight="bold">Ксерофиттер:</tspan> құрғақшылыққа төзімді шөл өсімдіктері (сексеуіл).</text>
+      <text x="8" y="39" fill="#ffffff" font-size="7.5">• <tspan fill="#fde047" font-weight="bold">Суккуленттер (латынша «шырынды»):</tspan> бойына ылғал жинайтын (кактус, алоэ).</text>
+      <text x="8" y="50" fill="#ffffff" font-size="7.5">• <tspan fill="#fde047" font-weight="bold">Эфемерлер:</tspan> ерте көктемде тез гүлдеп, тұқымын шашып үлгеретін өсімдіктер.</text>
+
+      <rect x="0" y="56" width="326" height="58" rx="5" fill="#1e293b" stroke="#3b82f6" stroke-width="0.8"/>
+      <text x="8" y="70" fill="#38bdf8" font-size="8.5" font-weight="bold">МАТЕРИКТЕР БОЙЫНША САВАННА ЖӘНЕ ДАЛАЛАР:</text>
+      <text x="8" y="83" fill="#ffffff" font-size="7.5">• <tspan fill="#60a5fa" font-weight="bold">Прерий:</tspan> Солтүстік Америка даласы (французша «шалғын»).</text>
+      <text x="8" y="95" fill="#ffffff" font-size="7.5">• <tspan fill="#60a5fa" font-weight="bold">Пампа:</tspan> Оңтүстік Америка (Ла-Плата) субтропиктік даласы («жазық дала»).</text>
+      <text x="8" y="107" fill="#ffffff" font-size="7.5">• <tspan fill="#60a5fa" font-weight="bold">Льянос:</tspan> Ориноко саваннасы | <tspan fill="#60a5fa" font-weight="bold">Кампос:</tspan> Бразилия саваннасы.</text>
+
+      <rect x="0" y="120" width="326" height="114" rx="6" fill="#0f172a" stroke="#10b981" stroke-width="0.8"/>
+      <text x="8" y="134" fill="#34d399" font-size="8.5" font-weight="bold">РЕКОРДТАР МЕН ЭНДЕМИКТЕР ШОЛУЫ:</text>
+      <text x="8" y="148" fill="#ffffff" font-size="7.5">• <tspan fill="#fef08a" font-weight="bold">Алып секвойя (Redwood):</tspan> биіктігі 100 м, 4000 жыл өмір сүреді (Калифорния).</text>
+      <text x="8" y="161" fill="#ffffff" font-size="7.5">• <tspan fill="#fef08a" font-weight="bold">Вельвичия:</tspan> Намиб шөлінің эндемигі (биіктігі 50 см, жапырағы 2-3 м).</text>
+      <text x="8" y="174" fill="#ffffff" font-size="7.5">• <tspan fill="#fef08a" font-weight="bold">Эвкалипт:</tspan> Аустралияның 100 м ағашы (тамыры 30 м, коала қоректенеді).</text>
+      <text x="8" y="187" fill="#ffffff" font-size="7.5">• <tspan fill="#fef08a" font-weight="bold">Кебрачо:</tspan> Оңтүстік Америка саваннасындағы «балта сынар» қатты ағаш.</text>
+      <text x="8" y="200" fill="#ffffff" font-size="7.5">• <tspan fill="#fef08a" font-weight="bold">Анаконда (12 м) &amp; Капибара:</tspan> Амазонка ормандарының фаунасы.</text>
+      <text x="8" y="213" fill="#ffffff" font-size="7.5">• <tspan fill="#fef08a" font-weight="bold">Цеце шыбыны:</tspan> Африканың экваторлық орманындағы ұйқы ауруы тасымалдаушысы.</text>
+      <text x="8" y="226" fill="#cbd5e1" font-size="7">Йеллоустон — 1872 ж. тұңғыш саябақ; Серенгети, Улуру — әлемдік парктер.</text>
+    </g>
+  </g>
+</svg>
+    </div>
+  </div>
+
+</div>
+      </div>
+    </section>
+
+    <!-- 3. VISUAL SVG DIAGRAM / ILLUSTRATION -->
+    <section id="svgSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl">
+      <div class="flex items-center space-x-2 text-amber-400 font-extrabold text-xs">
+        <span>🎨</span>
+        <span id="svgHeader">КӨРНЕКІ СХЕМА МЕН ИНФОГРАФИКА</span>
+      </div>
+      <div id="svgContainer" class="w-full flex justify-center overflow-x-auto">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 740 330" class="w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2">
+  <text x="370" y="22" fill="#38bdf8" font-size="12" font-weight="900" text-anchor="middle" letter-spacing="1">ТАБИҒАТ ЗОНАЛАРЫНЫҢ ТОПЫРАҚТАРЫ, ӨСІМДІКТЕРІ МЕН РЕКОРДТАРЫ</text>
+
+  <!-- Left: Soils & Vegetation Sequence -->
+  <g transform="translate(15, 36)">
+    <rect width="350" height="275" rx="10" fill="#18181b" stroke="#a855f7" stroke-width="1.2"/>
+    <rect width="350" height="26" rx="10" fill="#6b21a8"/>
+    <text x="175" y="17" fill="#ffffff" font-size="9.5" font-weight="bold" text-anchor="middle">ЗОНАЛАР БОЙЫНША ТОПЫРАҚ ЖӘНЕ ФЛОРА</text>
+
+    <g transform="translate(12, 34)">
+      <!-- Soil ladder -->
+      <rect x="0" y="0" width="326" height="34" rx="4" fill="#1e293b" stroke="#71717a" stroke-width="0.8"/>
+      <text x="8" y="13" fill="#38bdf8" font-size="8" font-weight="bold">Арктикалық / Тундралық:</text>
+      <text x="8" y="25" fill="#e2e8f0" font-size="7.5">Толық жетілмеген батпақты топырақ | Мүк, қына, бұғы мүгі</text>
+
+      <rect x="0" y="38" width="326" height="34" rx="4" fill="#1e293b" stroke="#71717a" stroke-width="0.8"/>
+      <text x="8" y="51" fill="#34d399" font-size="8" font-weight="bold">Тайга зонасы:</text>
+      <text x="8" y="63" fill="#e2e8f0" font-size="7.5">Күлгін (подзолистые) топырақ | Қарағай, шырша, майқарағай, самырсын</text>
+
+      <rect x="0" y="76" width="326" height="34" rx="4" fill="#1e293b" stroke="#71717a" stroke-width="0.8"/>
+      <text x="8" y="89" fill="#a7f3d0" font-size="8" font-weight="bold">Аралас және жалпақ жапырақты:</text>
+      <text x="8" y="101" fill="#e2e8f0" font-size="7.5">Шымды-күлгін топырақ | Емен, шамшат, жөке, амур барқыт ағашы</text>
+
+      <rect x="0" y="114" width="326" height="34" rx="4" fill="#1e293b" stroke="#71717a" stroke-width="0.8"/>
+      <text x="8" y="127" fill="#facc15" font-size="8" font-weight="bold">Орманды дала және Дала (Прерий):</text>
+      <text x="8" y="139" fill="#fde047" font-size="7.5">Қара және күрең (каштан) топырақ | Боз, селеу, бидайық, бизон шөбі</text>
+
+      <rect x="0" y="152" width="326" height="34" rx="4" fill="#1e293b" stroke="#71717a" stroke-width="0.8"/>
+      <text x="8" y="165" fill="#fb923c" font-size="8" font-weight="bold">Шөлейт және Шөл:</text>
+      <text x="8" y="177" fill="#e2e8f0" font-size="7.5">Сұр-қоңыр, сортаң топырақ | Сексеуіл (ксерофиттер), кактустар (суккулент)</text>
+
+      <rect x="0" y="190" width="326" height="42" rx="4" fill="#1e293b" stroke="#71717a" stroke-width="0.8"/>
+      <text x="8" y="203" fill="#f87171" font-size="8" font-weight="bold">Ылғалды экваторлық орман (Гилея, Сельвас):</text>
+      <text x="8" y="215" fill="#fecaca" font-size="7.5">Қызыл-сары ферралитті топырақ | Ротанг пальмасы (300 м), гевея, сейба, лианалар</text>
+    </g>
+  </g>
+
+  <!-- Right: UNT High-Yield Matching & Terms -->
+  <g transform="translate(375, 36)">
+    <rect width="350" height="275" rx="10" fill="#18181b" stroke="#f59e0b" stroke-width="1.2"/>
+    <rect width="350" height="26" rx="10" fill="#b45309"/>
+    <text x="175" y="17" fill="#ffffff" font-size="9.5" font-weight="bold" text-anchor="middle">ҰБТ БАЗАСЫ: НЕГІЗГІ ТЕРМИНДЕР МЕН АТАУЛАР</text>
+
+    <g transform="translate(12, 34)">
+      <rect x="0" y="0" width="326" height="50" rx="5" fill="#1e293b" stroke="#f59e0b" stroke-width="0.8"/>
+      <text x="8" y="14" fill="#facc15" font-size="8.5" font-weight="bold">ӨСІМДІКТЕРДІҢ БЕЙІМДЕЛУ ТҮРЛЕРІ:</text>
+      <text x="8" y="27" fill="#ffffff" font-size="7.5">• <tspan fill="#fde047" font-weight="bold">Ксерофиттер:</tspan> құрғақшылыққа төзімді шөл өсімдіктері (сексеуіл).</text>
+      <text x="8" y="39" fill="#ffffff" font-size="7.5">• <tspan fill="#fde047" font-weight="bold">Суккуленттер (латынша «шырынды»):</tspan> бойына ылғал жинайтын (кактус, алоэ).</text>
+      <text x="8" y="50" fill="#ffffff" font-size="7.5">• <tspan fill="#fde047" font-weight="bold">Эфемерлер:</tspan> ерте көктемде тез гүлдеп, тұқымын шашып үлгеретін өсімдіктер.</text>
+
+      <rect x="0" y="56" width="326" height="58" rx="5" fill="#1e293b" stroke="#3b82f6" stroke-width="0.8"/>
+      <text x="8" y="70" fill="#38bdf8" font-size="8.5" font-weight="bold">МАТЕРИКТЕР БОЙЫНША САВАННА ЖӘНЕ ДАЛАЛАР:</text>
+      <text x="8" y="83" fill="#ffffff" font-size="7.5">• <tspan fill="#60a5fa" font-weight="bold">Прерий:</tspan> Солтүстік Америка даласы (французша «шалғын»).</text>
+      <text x="8" y="95" fill="#ffffff" font-size="7.5">• <tspan fill="#60a5fa" font-weight="bold">Пампа:</tspan> Оңтүстік Америка (Ла-Плата) субтропиктік даласы («жазық дала»).</text>
+      <text x="8" y="107" fill="#ffffff" font-size="7.5">• <tspan fill="#60a5fa" font-weight="bold">Льянос:</tspan> Ориноко саваннасы | <tspan fill="#60a5fa" font-weight="bold">Кампос:</tspan> Бразилия саваннасы.</text>
+
+      <rect x="0" y="120" width="326" height="114" rx="6" fill="#0f172a" stroke="#10b981" stroke-width="0.8"/>
+      <text x="8" y="134" fill="#34d399" font-size="8.5" font-weight="bold">РЕКОРДТАР МЕН ЭНДЕМИКТЕР ШОЛУЫ:</text>
+      <text x="8" y="148" fill="#ffffff" font-size="7.5">• <tspan fill="#fef08a" font-weight="bold">Алып секвойя (Redwood):</tspan> биіктігі 100 м, 4000 жыл өмір сүреді (Калифорния).</text>
+      <text x="8" y="161" fill="#ffffff" font-size="7.5">• <tspan fill="#fef08a" font-weight="bold">Вельвичия:</tspan> Намиб шөлінің эндемигі (биіктігі 50 см, жапырағы 2-3 м).</text>
+      <text x="8" y="174" fill="#ffffff" font-size="7.5">• <tspan fill="#fef08a" font-weight="bold">Эвкалипт:</tspan> Аустралияның 100 м ағашы (тамыры 30 м, коала қоректенеді).</text>
+      <text x="8" y="187" fill="#ffffff" font-size="7.5">• <tspan fill="#fef08a" font-weight="bold">Кебрачо:</tspan> Оңтүстік Америка саваннасындағы «балта сынар» қатты ағаш.</text>
+      <text x="8" y="200" fill="#ffffff" font-size="7.5">• <tspan fill="#fef08a" font-weight="bold">Анаконда (12 м) &amp; Капибара:</tspan> Амазонка ормандарының фаунасы.</text>
+      <text x="8" y="213" fill="#ffffff" font-size="7.5">• <tspan fill="#fef08a" font-weight="bold">Цеце шыбыны:</tspan> Африканың экваторлық орманындағы ұйқы ауруы тасымалдаушысы.</text>
+      <text x="8" y="226" fill="#cbd5e1" font-size="7">Йеллоустон — 1872 ж. тұңғыш саябақ; Серенгети, Улуру — әлемдік парктер.</text>
+    </g>
+  </g>
+</svg>
+      </div>
+    </section>
+
+    <!-- 4. STRUCTURED DATA TABLE -->
+    <section id="tableSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl overflow-x-auto">
+      <h3 class="text-xs font-black text-cyan-400 flex items-center space-x-2">
+        <span>📊</span>
+        <span id="tableHeader">НАҚТЫ КӨРСЕТКІШТЕР МЕН КЛАССИФИКАЦИЯ КЕСТЕСІ</span>
+      </h3>
+      <div id="tableContainer">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- 5. KEY FACTS FOR UNT / ЕНТ -->
+    <section id="factsSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl">
+      <h3 class="text-xs font-black text-amber-400 flex items-center space-x-2">
+        <span>⚡</span>
+        <span id="factsHeader">ҰБТ-ҒА ҚАЖЕТТІ НЕГІЗГІ ЕРЕЖЕЛЕР МЕН ФАКТІЛЕР</span>
+      </h3>
+      <ul id="factsList" class="space-y-2 text-xs text-slate-300">
+        <!-- Rendered via JS -->
+      </ul>
+    </section>
+
+    <!-- 6. TRAPS AND HACKS -->
+    <section id="trapsSection" class="p-5 rounded-2xl bg-gradient-to-r from-amber-950/40 via-space-950 to-space-950 border border-amber-500/40 space-y-3 shadow-xl">
+      <h3 class="text-xs font-black text-amber-400 flex items-center space-x-2">
+        <span>💡</span>
+        <span id="trapsHeader">ҰБТ ҚАҚПАНДАРЫ МЕН ЛАЙФХАКТАР</span>
+      </h3>
+      <div id="trapsList" class="space-y-2 text-xs text-slate-200">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- FOOTER NAVIGATION -->
+    <nav class="pt-4 pb-8 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3 text-xs">
+      <a href="topic_10.html" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white transition shadow-sm">
+      <span>←</span>
+      <span>#10 Алдыңғы тақырып</span>
+    </a>
+      <a href="../index.html#section-zhattau_grammar" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-400 hover:text-white transition">
+        <span>🏠</span>
+        <span>Барлық тақырыптар</span>
+      </a>
+      <a href="topic_12.html" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-xs font-bold text-cyan-300 hover:text-white transition shadow-sm">
+      <span>Келесі тақырып #12</span>
+      <span>→</span>
+    </a>
+    </nav>
+
+  </main>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="xpToast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300 flex items-center space-x-2 px-4 py-3 rounded-2xl bg-space-900 border border-cyan-500/40 shadow-2xl text-xs font-bold text-white">
+    <span class="text-cyan-400 text-base">✨</span>
+    <span id="toastMsg">+20 XP! Тақырып меңгерілді</span>
+  </div>
+
+  <script>
+    const topicData = {"num": 11, "title_kz": "Табиғат зоналары", "title_ru": "Природные зоны", "category_kz": "Биосфера және Табиғат кешендері", "category_ru": "Биосфера и природные комплексы", "summary_kz": "Табиғат зоналары — 6 материктің (Еуразия, Солтүстік Америка, Оңтүстік Америка, Африка, Аустралия, Антарктида) табиғат кешендері: топырақтары (күлгін, шымды-күлгін, қара топырақ, ферралитті), флорасы мен фаунасы, эндемиктері (вельвичия, эвкалипт, кенгуру, секвойя), бейімделу түрлері (ксерофиттер, суккуленттер, эфемерлер), саванна мен дала түрлері (Прерий, Пампа, Льянос, Кампос) және ұлттық саябақтары (Йеллоустон 1872, Редвуд, Серенгети, Улуру) бойынша толық конспект.", "summary_ru": "Природные зоны — природные комплексы 6 материков Земли (Евразия, Северная и Южная Америка, Африка, Австралия, Антарктида): почвенный покров (подзолистые, черноземы, ферраллитные), флора и фауна, эндемики (вельвичия, эвкалипт, кенгуру, секвойя), адаптации растений (ксерофиты, суккуленты, эфемеры), степи и саванны (Прерии, Пампа, Льянос, Кампос) и национальные парки мира (Йеллоустон 1872, Редвуд, Серенгети, Улуру).", "full_theory_kz": "<div class=\"space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed\">\n\n  <!-- 1. ТАБИҒАТ ЗОНАЛАРЫ ҰҒЫМЫ ЖӘНЕ СОЛТҮСТІК ЖАРТЫШАР (ЕУРАЗИЯ) -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-emerald-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🌲</span>\n      <span>1. ЕУРАЗИЯ МАТЕРИГІНІҢ ТАБИҒАТ ЗОНАЛАРЫ</span>\n    </h4>\n    <p>\n      Жер шарында жылу мен ылғалдың арақатынасына байланысты экватордан полюстерге қарай табиғат кешендері заңды түрде ауысады. Еуразия материгінде әлемдегі барлық табиғат зоналары кездеседі:\n    </p>\n\n    <div class=\"space-y-2 text-xs\">\n      <div class=\"p-3 rounded-xl bg-space-950 border border-slate-800\">\n        <strong class=\"text-sky-300 font-bold block mb-1\">1. Арктикалық шөл және 2. Тундра:</strong>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Топырағы:</strong> арктикалық шөлде топырақ жетілмеген, көп жерін мұз басып жатыр. Тундрада — шымтезекті-батпақты, толық жетілмеген топырақ.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Флора мен фауна:</strong> бұғы мүгі (ягель), мүк, қына, балдырлар. Бұлан, қоңыр аю, ақ түлкі (песец), қоян, саңырауқұр, поляр жапалағы.</p>\n      </div>\n\n      <div class=\"p-3 rounded-xl bg-space-950 border border-slate-800\">\n        <strong class=\"text-emerald-300 font-bold block mb-1\">3. Тайга (Қоңыржай белдеу, күлгін топырақ):</strong>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Өсімдіктері:</strong> Еуропалық бөлігінде — қарағай, шырша; Азиялық бөлігінде — майқарағай, самырсын (кедр), балқарағай (лиственница).</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Жануарлары:</strong> қоңыр аю, қабан, бұлан, бұлғын, сілеусін, ал Қиыр Шығыста — әйгілі <strong class=\"text-amber-300 font-bold\">уссурий жолбарысы</strong>.</p>\n      </div>\n\n      <div class=\"p-3 rounded-xl bg-space-950 border border-slate-800\">\n        <strong class=\"text-teal-300 font-bold block mb-1\">4. Аралас және жалпақ жапырақты ормандар:</strong>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Топырағы:</strong> шымды-күлгін топырақ. Еуропада тұтас алапты алып жатыр, Қиыр Шығыста қайта жалғасады.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Флорасы:</strong> батыста — шамшат (бук), емен, жөке, шырша; шығыста — амур барқыт ағашы, жабайы жүзім, лианалар, корей самырсыны.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Фаунасы:</strong> зубр, бұлан, марал, елік, қоңыр аю, қабан, терісі бағалы аңдар.</p>\n      </div>\n\n      <div class=\"p-3 rounded-xl bg-space-950 border border-slate-800\">\n        <strong class=\"text-amber-300 font-bold block mb-1\">5. Орманды дала және Дала зонасы (Қара топырақ):</strong>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Топырағы:</strong> дүние жүзіндегі ең құнарлы қара топырақ.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Өсімдіктері:</strong> Еуропада — емен, жөке, үйеңкі; Азияда — қайың, көктерек. Астық тұқымдастар: селеу, боз, бидайық.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Жануарлары:</strong> қасқыр, қарсақ, түлкі; кемірушілерден — саршұнақ, дала күзені, тышқандар.</p>\n      </div>\n\n      <div class=\"p-3 rounded-xl bg-space-950 border border-slate-800\">\n        <strong class=\"text-orange-300 font-bold block mb-1\">6. Шөлейт және Шөл зоналары:</strong>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Топырағы:</strong> күңгірт қара-қоңыр, сұр-қоңыр топырақ, сор мен сортаңдар.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Бейімделу түрлері:</strong> жусан, селеу, бұйырғын. Құрғақшылыққа төзімді — <strong class=\"text-amber-300 font-bold\">ксерофиттер</strong> (сексеуіл), ерте көктемде гүлдейтін — <strong class=\"text-amber-300 font-bold\">эфемерлер</strong>. Жер асты суы жақын орындар — <strong class=\"text-cyan-300 font-bold\">шұраттар (оазистер)</strong>.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Фаунасы:</strong> жабайы түйе, құлан, ақбөкен, қарақұйрық, кесірткелер, жыландар.</p>\n      </div>\n\n      <div class=\"p-3 rounded-xl bg-space-950 border border-purple-500/30\">\n        <strong class=\"text-purple-300 font-bold block mb-1\">7–14. Субтропиктер, Экватор және Биіктік белдеу:</strong>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Жерорта теңізі:</strong> қатты жапырақты мәңгі жасыл ормандар (құнарлы қоңыр топырақ, тас емен, зәйтүн, лавр шиесі, кипарис, пиния, мирта, грек жаңғағы).</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Муссондық субтропиктер:</strong> магнолия, бамбук, камфора; Гималай аюы, <strong class=\"text-amber-300 font-bold\">бамбук аюы — панда</strong>, гиббон, жолбарыс.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Тропиктік шөлдер (Арабия, Тар):</strong> дромедар (бір өркешті түйе), онагр (жабайы есек), желаяқ бөкендер.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Ылғалды экваторлық орман:</strong> қызыл-сары ферралитті топырақ, ротанг пальмасы (ұзындығы 200–300 м), орхидея, бамбук; мүйізтұмсық, орангутан, тауыс құсы.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Биіктік белдеу (Тибет, Памир):</strong> қодас (як), қар барысы, ұлар құсы, арқар.</p>\n      </div>\n    </div>\n\n    <!-- Embedded SVG 1: North Continents -->\n    <div class=\"my-3\">\n      <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 740 330\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2\">\n  <text x=\"370\" y=\"22\" fill=\"#38bdf8\" font-size=\"12\" font-weight=\"900\" text-anchor=\"middle\" letter-spacing=\"1\">СОЛТҮСТІК ЖАРТЫШАР МАТЕРИКТЕРІНІҢ ТАБИҒАТ ЗОНАЛАРЫ (ЕУРАЗИЯ ЖӘНЕ С. АМЕРИКА)</text>\n\n  <!-- Left: Eurasia Zones Card -->\n  <g transform=\"translate(15, 36)\">\n    <rect width=\"350\" height=\"275\" rx=\"10\" fill=\"#18181b\" stroke=\"#3b82f6\" stroke-width=\"1.2\"/>\n    <rect width=\"350\" height=\"26\" rx=\"10\" fill=\"#1e3a8a\"/>\n    <text x=\"175\" y=\"17\" fill=\"#ffffff\" font-size=\"9.5\" font-weight=\"bold\" text-anchor=\"middle\">ЕУРАЗИЯ МАТЕРИГІНІҢ ЗОНАЛАРЫ</text>\n\n    <g transform=\"translate(12, 34)\">\n      <!-- Zone 1-2: Tundra -->\n      <rect x=\"0\" y=\"0\" width=\"326\" height=\"42\" rx=\"5\" fill=\"#1e293b\" stroke=\"#0284c7\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"13\" fill=\"#38bdf8\" font-size=\"8.5\" font-weight=\"bold\">1. Арктикалық шөл және 2. Тундра:</text>\n      <text x=\"8\" y=\"25\" fill=\"#ffffff\" font-size=\"7.5\">• Топырағы: батпақты тундралық, дамымаған. Бұғы мүгі, қына, балдырлар.</text>\n      <text x=\"8\" y=\"36\" fill=\"#94a3b8\" font-size=\"7.5\">• Жануарлары: бұлан, қоңыр аю, ақ түлкі, саңырауқұр, ақ аю.</text>\n\n      <!-- Zone 3: Taiga -->\n      <rect x=\"0\" y=\"46\" width=\"326\" height=\"50\" rx=\"5\" fill=\"#1e293b\" stroke=\"#059669\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"59\" fill=\"#34d399\" font-size=\"8.5\" font-weight=\"bold\">3. Тайга (Қоңыржай белдеу, күлгін топырақ):</text>\n      <text x=\"8\" y=\"71\" fill=\"#ffffff\" font-size=\"7.5\">• Еуропада: қарағай, шырша | Азияда: майқарағай, самырсын, балқарағай.</text>\n      <text x=\"8\" y=\"83\" fill=\"#a7f3d0\" font-size=\"7.5\">• Жануарлары: қоңыр аю, бұлғын, бұлан, <tspan fill=\"#fef08a\" font-weight=\"bold\">уссурий жолбарысы</tspan> (Қиыр Шығыс).</text>\n\n      <!-- Zone 4-5: Steppe & Deserts -->\n      <rect x=\"0\" y=\"100\" width=\"326\" height=\"60\" rx=\"5\" fill=\"#1e293b\" stroke=\"#f59e0b\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"113\" fill=\"#facc15\" font-size=\"8.5\" font-weight=\"bold\">4. Ормандар және 5. Дала (қара топырақ):</text>\n      <text x=\"8\" y=\"125\" fill=\"#ffffff\" font-size=\"7.5\">• Аралас ормандар: шымды-күлгін, шамшат, емен, амур барқыт ағашы, зубр.</text>\n      <text x=\"8\" y=\"137\" fill=\"#ffffff\" font-size=\"7.5\">• Дала зонасы: ең құнарлы қара топырақ, селеу, боз, бидайық, саршұнақ, күзен.</text>\n      <text x=\"8\" y=\"149\" fill=\"#fef08a\" font-size=\"7\">Шөлдер: ксерофиттер (сексеуіл), эфемерлер, оазистер; ақбөкен, құлан, қарақұйрық.</text>\n\n      <!-- Zone 6: Subtropics & Tropics -->\n      <rect x=\"0\" y=\"164\" width=\"326\" height=\"70\" rx=\"5\" fill=\"#0f172a\" stroke=\"#a855f7\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"177\" fill=\"#c084fc\" font-size=\"8.5\" font-weight=\"bold\">Субтропиктер және Экваторлық ормандар:</text>\n      <text x=\"8\" y=\"189\" fill=\"#ffffff\" font-size=\"7.5\">• Жерорта теңізі: қатты жапырақты (зәйтүн, тас емен, лавр, кипарис).</text>\n      <text x=\"8\" y=\"201\" fill=\"#ffffff\" font-size=\"7.5\">• Муссондық: магнолия, бамбук, камфора; <tspan fill=\"#fef08a\" font-weight=\"bold\">бамбук аюы — панда</tspan>, гиббон.</text>\n      <text x=\"8\" y=\"213\" fill=\"#ffffff\" font-size=\"7.5\">• Экваторлық: ротанг пальмасы (200-300 м), орхидея, орангутан, мүйізтұмсық.</text>\n      <text x=\"8\" y=\"226\" fill=\"#cbd5e1\" font-size=\"7\">Биіктік белдеу (Тибет, Памир): қодас (як), қар барысы, ұлар құсы, арқар.</text>\n    </g>\n  </g>\n\n  <!-- Right: North America Zones Card -->\n  <g transform=\"translate(375, 36)\">\n    <rect width=\"350\" height=\"275\" rx=\"10\" fill=\"#18181b\" stroke=\"#10b981\" stroke-width=\"1.2\"/>\n    <rect width=\"350\" height=\"26\" rx=\"10\" fill=\"#065f46\"/>\n    <text x=\"175\" y=\"17\" fill=\"#ffffff\" font-size=\"9.5\" font-weight=\"bold\" text-anchor=\"middle\">СОЛТҮСТІК АМЕРИКА ЗОНАЛАРЫ ЖӘНЕ САЯБАҚТАРЫ</text>\n\n    <g transform=\"translate(12, 34)\">\n      <!-- Arctic & Tundra -->\n      <rect x=\"0\" y=\"0\" width=\"326\" height=\"42\" rx=\"5\" fill=\"#1e293b\" stroke=\"#0ea5e9\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"13\" fill=\"#38bdf8\" font-size=\"8.5\" font-weight=\"bold\">Арктика және Тундра:</text>\n      <text x=\"8\" y=\"25\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Қойөгіз (овцебык):</tspan> мұз дәуірінен сақталған реликт (Гренландия, Канада).</text>\n      <text x=\"8\" y=\"36\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#7dd3fc\" font-weight=\"bold\">Карибу:</tspan> солтүстік бұғыларының айрықша түрі (Лабрадор, Гудзон).</text>\n\n      <!-- Taiga & Sequoia -->\n      <rect x=\"0\" y=\"46\" width=\"326\" height=\"52\" rx=\"5\" fill=\"#1e293b\" stroke=\"#059669\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"59\" fill=\"#34d399\" font-size=\"8.5\" font-weight=\"bold\">Тайга (Күлгін топырақ, алып секвойя):</text>\n      <text x=\"8\" y=\"71\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Алып секвойя (мамонт ағашы):</tspan> биіктігі 100 м, 4000 жыл өмір сүреді.</text>\n      <text x=\"8\" y=\"83\" fill=\"#ffffff\" font-size=\"7.5\">• Жануарлары: барибал, гризли аюы, канада сілеусіні, орман бизоны, вапити.</text>\n      <text x=\"8\" y=\"94\" fill=\"#a7f3d0\" font-size=\"7\">Флоридада: Эверглейдс батпағы мен ұлттық саябағы орналасқан.</text>\n\n      <!-- Prairies & Deserts -->\n      <rect x=\"0\" y=\"102\" width=\"326\" height=\"54\" rx=\"5\" fill=\"#1e293b\" stroke=\"#f59e0b\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"115\" fill=\"#facc15\" font-size=\"8.5\" font-weight=\"bold\">Прерий (Дала — французша «шалғын»):</text>\n      <text x=\"8\" y=\"127\" fill=\"#ffffff\" font-size=\"7.5\">• Меридиан бойымен созылған; қара және каштан топырақ, бизон шөбі (1,5 м).</text>\n      <text x=\"8\" y=\"139\" fill=\"#ffffff\" font-size=\"7.5\">• Жануарлары: бизон, дала қасқыры — койот, түлкі.</text>\n      <text x=\"8\" y=\"151\" fill=\"#fde047\" font-size=\"7\">Шөлдер (Мексика): кактус, юкка — суккуленттер («шырынды өсімдіктер»).</text>\n\n      <!-- Famous National Parks -->\n      <rect x=\"0\" y=\"160\" width=\"326\" height=\"74\" rx=\"6\" fill=\"#0f172a\" stroke=\"#10b981\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"174\" fill=\"#34d399\" font-size=\"8.5\" font-weight=\"bold\">ӘЙГІЛІ ҰЛТТЫҚ САЯБАҚТАР (ҰБТ):</text>\n      <text x=\"8\" y=\"188\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Йеллоустон (1872 ж.):</tspan> дүниежүзіндегі тұңғыш құрылған ұлттық саябақ.</text>\n      <text x=\"8\" y=\"201\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Редвуд (Redwood):</tspan> Калифорния штатында (Тынық мұхит жағалауы),</text>\n      <text x=\"16\" y=\"212\" fill=\"#cbd5e1\" font-size=\"7.5\">алып қылқан жапырақты секвойяларды қорғау үшін құрылған.</text>\n      <text x=\"8\" y=\"226\" fill=\"#38bdf8\" font-size=\"7\">Орталық Америка саваннасы: қан сорғыш жарқанат (вампир), скунс, ягуар.</text>\n    </g>\n  </g>\n</svg>\n    </div>\n  </div>\n\n  <!-- 2. СОЛТҮСТІК АМЕРИКА ЖӘНЕ САЯБАҚТАР -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-cyan-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🌲</span>\n      <span>2. СОЛТҮСТІК АМЕРИКА ТАБИҒАТ ЗОНАЛАРЫ ЖӘНЕ САЯБАҚТАРЫ</span>\n    </h4>\n    <div class=\"space-y-2 text-xs\">\n      <div class=\"p-3 rounded-xl bg-space-950 border border-slate-800\">\n        <strong class=\"text-sky-300 font-bold block mb-1\">Арктика, Тундра және Тайга:</strong>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Арктикалық шөл:</strong> Гренландия мен Канадалық Арктикалық архипелаг. Мұз басу дәуірінен сақталған реликт жануар — <strong class=\"text-amber-300 font-bold\">қойөгіз (овцебык)</strong>, Қызыл кітапқа енген.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Тундра:</strong> солтүстік бұғыларының айрықша түрі — <strong class=\"text-cyan-300 font-bold\">карибу</strong> мекендейді (Лабрадор түбегі, Гудзон).</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Тайга (Күлгін топырақ):</strong> алып <strong class=\"text-amber-300 font-bold\">секвойя ағашы (мамонт ағашы)</strong> өседі (биіктігі 100 м, 4000 жыл өмір сүреді). Жануарлары: барибал (қара аю), гризли, канада сілеусіні, америка қара күзені, орман бизоны, вапити бұғысы.</p>\n      </div>\n\n      <div class=\"p-3 rounded-xl bg-space-950 border border-slate-800\">\n        <strong class=\"text-amber-300 font-bold block mb-1\">Прерий (Дала), Шөлдер және Саванна:</strong>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Прерий</strong> (французша «шалғын»): меридиан бағытында созылған дала зонасы. Қара және каштан топырақ, биіктігі 1,5 м бизон шөбі, бозшалғын, бидайық. Жануарлары: дала қасқыры — койот, бизон, түлкі.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Шөлдер (Мексика қыраты):</strong> кактустар мен суккуленттердің екінші отаны (алоэ, сүттіген, юкка, опунция). Суккулент — латынша «шырынды өсімдік».</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Саванна (Орталық Америка):</strong> қызыл топырақ, кең танаулы маймылдар, ягуар, қан сорғыш жарқанат (вампир), скунс, опоссумдар.</p>\n      </div>\n\n      <div class=\"p-3.5 rounded-xl bg-space-950 border border-emerald-500/30\">\n        <strong class=\"text-emerald-400 font-bold block mb-1\">ҰБТ Басты саябақтары:</strong>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Йеллоустон (1872 ж.):</strong> дүниежүзіндегі ең тұңғыш құрылған ұлттық саябақ (гейзерлерімен әйгілі).</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Редвуд (Redwood):</strong> Калифорния штатында (Тынық мұхит жағалауында), алып қылқан жапырақты секвойяларды қорғау үшін құрылған.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Эверглейдс:</strong> Флорида түбегінде субтропиктік батпақ экожүйесін қорғайтын саябақ.</p>\n      </div>\n    </div>\n  </div>\n\n  <!-- 3. ОҢТҮСТІК АМЕРИКА МАТЕРИГІ -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-rose-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🦜</span>\n      <span>3. ОҢТҮСТІК АМЕРИКА ТАБИҒАТ ЗОНАЛАРЫ</span>\n    </h4>\n    <div class=\"space-y-2 text-xs\">\n      <div class=\"p-3 rounded-xl bg-space-950 border border-slate-800\">\n        <strong class=\"text-rose-300 font-bold block mb-1\">1. Сельвас / Гилея (Амазонка ойпаты):</strong>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Топырағы:</strong> қызыл-сары ферралитті топырақ. Трансамазония тас жолы 8,5 мың км-ге созылған.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Флорасы:</strong> гевея (табиғи каучук алынады), бальс ағашы, хина ағашы (дәрілік шикізат), сейба, қауын ағашы, ағаш тәрізді папоротник.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Фаунасы:</strong> тапир, опоссум, пекари шошқасы, капибара (ең ірі су шошқасы/кеміргіш), ягуар, пума; колибри (ең кішкентай құс), анаконда (12 метрлік ең ұзын жылан).</p>\n      </div>\n\n      <div class=\"p-3 rounded-xl bg-space-950 border border-slate-800\">\n        <strong class=\"text-amber-300 font-bold block mb-1\">2. Саванналар: Льянос және Кампос:</strong>\n        <p class=\"text-slate-300\">• Ориноко саваннасы — <strong class=\"text-amber-300 font-bold\">Льянос</strong> (пальмалар, акациялар); Бразилия саваннасы — <strong class=\"text-amber-300 font-bold\">Кампос</strong> (кактус, мимоза, бөтелке ағашы).</p>\n        <p class=\"text-slate-300\">• Бразилия — кактустың отаны; ағашы өте қатты <strong class=\"text-amber-300 font-bold\">кебрачо («балта сынар»)</strong> өседі.</p>\n        <p class=\"text-slate-300\">• Фаунасы: сауыттылар (броненосец), құмырсқажегіш, нанду түйеқұсы, жалды қасқыр, ергежейлі бұғы.</p>\n      </div>\n\n      <div class=\"p-3 rounded-xl bg-space-950 border border-slate-800\">\n        <strong class=\"text-purple-300 font-bold block mb-1\">3. Пампа, Патагония және Анд таулары:</strong>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Пампа:</strong> субтропиктік «жазық дала» (Ла-Плата ойпаты), құнарлы қызғылт-қара топырақ, пампа бұғысы, саз құндызы (нутрия).</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Патагония:</strong> қоңыржай шөлейт үстірт, гуанако ламасы, магеллан түлкісі, сауыттылар.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Анд биіктік белдеуі:</strong> Раймонд пуйясы; жабайы ламалар — <strong class=\"text-purple-300 font-bold\">викунья, гуанако</strong>, қолға үйретілген — <strong class=\"text-purple-300 font-bold\">альпака</strong>; Анд символы — <strong class=\"text-white font-bold\">лама және кондор</strong> (ең ірі жыртқыш құс), көзілдірікті аю, шиншилла (бағалы тері), Магеллан пингвині.</p>\n        <p class=\"text-slate-300\">• Оңтүстік Америка — картоп, батат, қызанақ, жүгері, үрмебұршақ, бұрыш, күнбағыс, темекі, какаоның отаны.</p>\n      </div>\n    </div>\n\n    <!-- Embedded SVG 2: South Continents -->\n    <div class=\"my-3\">\n      <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 740 330\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2\">\n  <text x=\"370\" y=\"22\" fill=\"#38bdf8\" font-size=\"12\" font-weight=\"900\" text-anchor=\"middle\" letter-spacing=\"1\">ОҢТҮСТІК ЖАРТЫШАР МАТЕРИКТЕРІ: О. АМЕРИКА, АФРИКА ЖӘНЕ АУСТРАЛИЯ</text>\n\n  <!-- Left: South America Zones Card -->\n  <g transform=\"translate(15, 36)\">\n    <rect width=\"225\" height=\"275\" rx=\"10\" fill=\"#18181b\" stroke=\"#ef4444\" stroke-width=\"1.2\"/>\n    <rect width=\"225\" height=\"26\" rx=\"10\" fill=\"#991b1b\"/>\n    <text x=\"112\" y=\"17\" fill=\"#ffffff\" font-size=\"9.5\" font-weight=\"bold\" text-anchor=\"middle\">ОҢТҮСТІК АМЕРИКА</text>\n\n    <g transform=\"translate(10, 32)\">\n      <text x=\"0\" y=\"11\" fill=\"#f87171\" font-size=\"8.5\" font-weight=\"bold\">Сельвас (Гилея, Амазонка):</text>\n      <text x=\"0\" y=\"23\" fill=\"#ffffff\" font-size=\"7.5\">• Гевея (каучук), сейба, хина,</text>\n      <text x=\"0\" y=\"34\" fill=\"#ffffff\" font-size=\"7.5\">бальс, қауын ағашы.</text>\n      <text x=\"0\" y=\"46\" fill=\"#cbd5e1\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Анаконда (12 м)</tspan>, капибара (су</text>\n      <text x=\"0\" y=\"57\" fill=\"#cbd5e1\" font-size=\"7.5\">шошқасы), колибри, ягуар, тапир.</text>\n      <text x=\"0\" y=\"68\" fill=\"#94a3b8\" font-size=\"7\">Трансамазония тас жолы: 8,5 мың км.</text>\n\n      <text x=\"0\" y=\"86\" fill=\"#f87171\" font-size=\"8.5\" font-weight=\"bold\">Саванналары:</text>\n      <text x=\"0\" y=\"98\" fill=\"#ffffff\" font-size=\"7.5\">• Ориноко саваннасы: <tspan fill=\"#fef08a\" font-weight=\"bold\">Льянос</tspan></text>\n      <text x=\"0\" y=\"109\" fill=\"#ffffff\" font-size=\"7.5\">• Бразилия саваннасы: <tspan fill=\"#fef08a\" font-weight=\"bold\">Кампос</tspan></text>\n      <text x=\"0\" y=\"120\" fill=\"#cbd5e1\" font-size=\"7.5\">Кебрачо («балта сынар»), бөтелке ағашы,</text>\n      <text x=\"0\" y=\"131\" fill=\"#cbd5e1\" font-size=\"7.5\">сауыттылар, нанду түйеқұсы.</text>\n\n      <text x=\"0\" y=\"149\" fill=\"#f87171\" font-size=\"8.5\" font-weight=\"bold\">Пампа және Анд таулары:</text>\n      <text x=\"0\" y=\"161\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Пампа:</tspan> субтропиктік жазық дала,</text>\n      <text x=\"0\" y=\"172\" fill=\"#cbd5e1\" font-size=\"7.5\">қызғылт-қара топырақ, пампа бұғысы.</text>\n      <text x=\"0\" y=\"184\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#38bdf8\" font-weight=\"bold\">Анд таулары:</tspan> лама (викунья,</text>\n      <text x=\"0\" y=\"195\" fill=\"#cbd5e1\" font-size=\"7.5\">гуанако, альпака), <tspan fill=\"#fef08a\" font-weight=\"bold\">кондор</tspan> (алып құс),</text>\n      <text x=\"0\" y=\"206\" fill=\"#cbd5e1\" font-size=\"7.5\">көзілдірікті аю, шиншилла.</text>\n      <text x=\"0\" y=\"218\" fill=\"#a7f3d0\" font-size=\"7\">Картоп, қызанақ, жүгері, какао отаны.</text>\n    </g>\n  </g>\n\n  <!-- Middle: Africa Zones Card -->\n  <g transform=\"translate(257, 36)\">\n    <rect width=\"225\" height=\"275\" rx=\"10\" fill=\"#18181b\" stroke=\"#f59e0b\" stroke-width=\"1.2\"/>\n    <rect width=\"225\" height=\"26\" rx=\"10\" fill=\"#b45309\"/>\n    <text x=\"112\" y=\"17\" fill=\"#ffffff\" font-size=\"9.5\" font-weight=\"bold\" text-anchor=\"middle\">АФРИКА МАТЕРИГІ</text>\n\n    <g transform=\"translate(10, 32)\">\n      <text x=\"0\" y=\"11\" fill=\"#fbbf24\" font-size=\"8.5\" font-weight=\"bold\">Экваторлық ормандар (Конго):</text>\n      <text x=\"0\" y=\"23\" fill=\"#ffffff\" font-size=\"7.5\">• 80 м ағаштар: фикус, сейба, рафия.</text>\n      <text x=\"0\" y=\"34\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fca5a5\" font-weight=\"bold\">Цеце шыбыны:</tspan> ұйқы ауруын таратады.</text>\n\n      <text x=\"0\" y=\"52\" fill=\"#fbbf24\" font-size=\"8.5\" font-weight=\"bold\">Саванналары (Африканың 40%-ы):</text>\n      <text x=\"0\" y=\"64\" fill=\"#ffffff\" font-size=\"7.5\">• Баобаб, майлы пальма, акация.</text>\n      <text x=\"0\" y=\"75\" fill=\"#ffffff\" font-size=\"7.5\">• 40-тан астам бөкен, керік, зебра,</text>\n      <text x=\"0\" y=\"86\" fill=\"#cbd5e1\" font-size=\"7.5\">арыстан, гепард, Ніл қолтырауыны (5-6 м),</text>\n      <text x=\"0\" y=\"97\" fill=\"#cbd5e1\" font-size=\"7.5\">хатшы құс (жылан аулайтын), марабу.</text>\n      <text x=\"0\" y=\"109\" fill=\"#fde047\" font-size=\"7.5\">• Мадагаскар: лемур (26 түрі), саяхатшы ағашы.</text>\n      <text x=\"0\" y=\"121\" fill=\"#fca5a5\" font-size=\"7\">Сахараның саваннаға жылжуы: 650 км².</text>\n\n      <text x=\"0\" y=\"139\" fill=\"#fbbf24\" font-size=\"8.5\" font-weight=\"bold\">Намиб шөлі және эндемиктер:</text>\n      <text x=\"0\" y=\"151\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Вельвичия:</tspan> биіктігі 50 см, жапырағы</text>\n      <text x=\"0\" y=\"162\" fill=\"#cbd5e1\" font-size=\"7.5\">2-3 м болатын ерекше өсімдік.</text>\n      <text x=\"0\" y=\"174\" fill=\"#ffffff\" font-size=\"7.5\">• Бір өркешті дромедар, фенек түлкісі.</text>\n\n      <rect x=\"0\" y=\"186\" width=\"205\" height=\"46\" rx=\"5\" fill=\"#0f172a\" stroke=\"#ca8a04\" stroke-width=\"0.8\"/>\n      <text x=\"6\" y=\"199\" fill=\"#facc15\" font-size=\"7.5\" font-weight=\"bold\">Ұлттық парктері (Шығыс Африка):</text>\n      <text x=\"6\" y=\"211\" fill=\"#ffffff\" font-size=\"7.5\">Серенгети, Киву, Вирунга, Кагера.</text>\n      <text x=\"6\" y=\"223\" fill=\"#38bdf8\" font-size=\"7\">Жасыл белдеу: 1500 км орман отырғызылуда.</text>\n    </g>\n  </g>\n\n  <!-- Right: Australia & Antarctica Card -->\n  <g transform=\"translate(500, 36)\">\n    <rect width=\"225\" height=\"275\" rx=\"10\" fill=\"#18181b\" stroke=\"#10b981\" stroke-width=\"1.2\"/>\n    <rect width=\"225\" height=\"26\" rx=\"10\" fill=\"#065f46\"/>\n    <text x=\"112\" y=\"17\" fill=\"#ffffff\" font-size=\"9.5\" font-weight=\"bold\" text-anchor=\"middle\">АУСТРАЛИЯ ЖӘНЕ АНТАРКТИДА</text>\n\n    <g transform=\"translate(10, 32)\">\n      <text x=\"0\" y=\"11\" fill=\"#34d399\" font-size=\"8.5\" font-weight=\"bold\">Аустралия шөлдерінің ерекшелігі:</text>\n      <text x=\"0\" y=\"23\" fill=\"#fef08a\" font-size=\"7.5\">• Шұраттардың (оазистердің) болмауы!</text>\n      <text x=\"0\" y=\"34\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#a7f3d0\" font-weight=\"bold\">Скрэб:</tspan> тікенекті акация мен аласа</text>\n      <text x=\"0\" y=\"45\" fill=\"#cbd5e1\" font-size=\"7.5\">эвкалипттерден тұратын қалың тоғай.</text>\n\n      <text x=\"0\" y=\"63\" fill=\"#34d399\" font-size=\"8.5\" font-weight=\"bold\">Аустралия эндемиктері:</text>\n      <text x=\"0\" y=\"75\" fill=\"#ffffff\" font-size=\"7.5\">• Өсімдіктер: <tspan fill=\"#fef08a\" font-weight=\"bold\">эвкалипт (100 м), казуарин</tspan>.</text>\n      <text x=\"0\" y=\"87\" fill=\"#ffffff\" font-size=\"7.5\">• Жануарлар: <tspan fill=\"#fef08a\" font-weight=\"bold\">кенгуру, үйректұмсық, ехидна</tspan>,</text>\n      <text x=\"0\" y=\"98\" fill=\"#cbd5e1\" font-size=\"7.5\">коала, вомбат, динго иті, эму түйеқұсы.</text>\n      <text x=\"0\" y=\"110\" fill=\"#67e8f9\" font-size=\"7.5\">• Елтаңбада: <tspan fill=\"#ffffff\" font-weight=\"bold\">эму мен кенгуру</tspan>.</text>\n      <text x=\"0\" y=\"121\" fill=\"#67e8f9\" font-size=\"7.5\">• Монетада: <tspan fill=\"#ffffff\" font-weight=\"bold\">ехидна, үйректұмсық, лирақұйрық</tspan>.</text>\n      <text x=\"0\" y=\"132\" fill=\"#94a3b8\" font-size=\"7\">Парктері: Улуру, Үлкен Тосқауыл рифі, Какаду.</text>\n\n      <text x=\"0\" y=\"150\" fill=\"#38bdf8\" font-size=\"8.5\" font-weight=\"bold\">Антарктида материгі:</text>\n      <text x=\"0\" y=\"162\" fill=\"#ffffff\" font-size=\"7.5\">• Полюс суығы: -91,2°С (Восток), альбедо 90%.</text>\n      <text x=\"0\" y=\"174\" fill=\"#ffffff\" font-size=\"7.5\">• Пингвиннің 17 түрі (Адели, Император &gt;1м).</text>\n      <text x=\"0\" y=\"185\" fill=\"#ffffff\" font-size=\"7.5\">• Көк кит (1967 ж. қорғауға алынды), итбалық.</text>\n      <text x=\"0\" y=\"197\" fill=\"#ffffff\" font-size=\"7.5\">• Альбатрос құсы (қанаты 3,5 метрге жетеді).</text>\n      <text x=\"0\" y=\"210\" fill=\"#cbd5e1\" font-size=\"7\">Озон қабаты жұқаруы: 2000 ж. рекорд 29,9 млн км².</text>\n    </g>\n  </g>\n</svg>\n    </div>\n  </div>\n\n  <!-- 4. АФРИКА, АУСТРАЛИЯ ЖӘНЕ АНТАРКТИДА -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-amber-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🦒</span>\n      <span>4. АФРИКА, АУСТРАЛИЯ ЖӘНЕ АНТАРКТИДА ТАБИҒАТ ЗОНАЛАРЫ</span>\n    </h4>\n    <div class=\"space-y-2 text-xs\">\n      <div class=\"p-3 rounded-xl bg-space-950 border border-slate-800\">\n        <strong class=\"text-amber-300 font-bold block mb-1\">Африка материгі:</strong>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Экваторлық ормандар (Конго):</strong> 80 м ағаштар (фикус, сейба, рафия, майлы пальма), цеце шыбыны (ұйқы ауруы).</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Саванналар (Африканың 40%-ы):</strong> баобаб, акация; 40-тан аса бөкен түрі, зебра, керік (жираф), арыстан, гепард, Ніл қолтырауыны (5-6 м), хатшы құс (жылан аулайды), марабу. Мадагаскар аралында: лемур (26 түрі), саяхатшы ағашы. Шөлге айналу: Сахара саваннаға қарай 650 км² жылжуда, 1500 км Жасыл белдеу отырғызылуда.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Намиб шөлі:</strong> эндемик өсімдігі — <strong class=\"text-amber-300 font-bold\">вельвичия</strong> (биіктігі 50 см, жапырағы 2-3 м). Бір өркешті дромедар, фенек түлкісі.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Шығыс Африка ұлттық парктері:</strong> Серенгети, Киву, Вирунга, Кагера.</p>\n      </div>\n\n      <div class=\"p-3 rounded-xl bg-space-950 border border-slate-800\">\n        <strong class=\"text-emerald-300 font-bold block mb-1\">Аустралия материгі:</strong>\n        <p class=\"text-slate-300\">• Шөлдерінің ерекшелігі — <strong class=\"text-emerald-300 font-bold\">шұраттардың (оазистердің) болмауы</strong>! Қалың мәңгі жасыл бұталар — <strong class=\"text-emerald-300 font-bold\">скрэб</strong> (тікенекті акация, аласа эвкалипт).</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Эндемик флорасы:</strong> эвкалипт (биіктігі 100 м, тамыры 30 м тереңде, коала қоректенеді), казуарин.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Эндемик фаунасы:</strong> кенгуру, үйректұмсық, ехидна, коала, вомбат, динго иті, эму түйеқұсы. 1975 ж. өзге материктен түрлерді әкелуге тыйым салынды.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Рәміздері:</strong> елтаңбасында — <strong class=\"text-white font-bold\">эму мен кенгуру</strong>; монеталарында — <strong class=\"text-white font-bold\">ехидна, үйректұмсық, лирақұйрық</strong>.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Ұлттық парктері:</strong> Улуру, Үлкен Тосқауыл рифі, Какаду.</p>\n      </div>\n\n      <div class=\"p-3 rounded-xl bg-space-950 border border-slate-800\">\n        <strong class=\"text-blue-300 font-bold block mb-1\">Антарктида материгі:</strong>\n        <p class=\"text-slate-300\">• Климаты өте қатал, ең төменгі Т° — <strong class=\"text-white\">-91,2°С («Восток»)</strong>, күн сәулесінің 90%-ын шағылдырады (альбедо). Антарктикалық шұраттарда балдыр, мүк, қына өседі.</p>\n        <p class=\"text-slate-300\">• Жануарлары: Уэдделл итбалығы, теңіз пілі, көк кит (1967 ж. қорғауда), пингвиннің 17 түрі (Адели, Император &gt;1м), альбатрос (3,5 м қанат).</p>\n        <p class=\"text-slate-300\">• Озон тесігі рекорды: 2000 жылы 29,9 млн км², 2012 жылы 21,2 млн км² (кішірейіп келеді).</p>\n      </div>\n    </div>\n\n    <!-- Embedded SVG 3: Summary & Soils -->\n    <div class=\"my-3\">\n      <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 740 330\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2\">\n  <text x=\"370\" y=\"22\" fill=\"#38bdf8\" font-size=\"12\" font-weight=\"900\" text-anchor=\"middle\" letter-spacing=\"1\">ТАБИҒАТ ЗОНАЛАРЫНЫҢ ТОПЫРАҚТАРЫ, ӨСІМДІКТЕРІ МЕН РЕКОРДТАРЫ</text>\n\n  <!-- Left: Soils & Vegetation Sequence -->\n  <g transform=\"translate(15, 36)\">\n    <rect width=\"350\" height=\"275\" rx=\"10\" fill=\"#18181b\" stroke=\"#a855f7\" stroke-width=\"1.2\"/>\n    <rect width=\"350\" height=\"26\" rx=\"10\" fill=\"#6b21a8\"/>\n    <text x=\"175\" y=\"17\" fill=\"#ffffff\" font-size=\"9.5\" font-weight=\"bold\" text-anchor=\"middle\">ЗОНАЛАР БОЙЫНША ТОПЫРАҚ ЖӘНЕ ФЛОРА</text>\n\n    <g transform=\"translate(12, 34)\">\n      <!-- Soil ladder -->\n      <rect x=\"0\" y=\"0\" width=\"326\" height=\"34\" rx=\"4\" fill=\"#1e293b\" stroke=\"#71717a\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"13\" fill=\"#38bdf8\" font-size=\"8\" font-weight=\"bold\">Арктикалық / Тундралық:</text>\n      <text x=\"8\" y=\"25\" fill=\"#e2e8f0\" font-size=\"7.5\">Толық жетілмеген батпақты топырақ | Мүк, қына, бұғы мүгі</text>\n\n      <rect x=\"0\" y=\"38\" width=\"326\" height=\"34\" rx=\"4\" fill=\"#1e293b\" stroke=\"#71717a\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"51\" fill=\"#34d399\" font-size=\"8\" font-weight=\"bold\">Тайга зонасы:</text>\n      <text x=\"8\" y=\"63\" fill=\"#e2e8f0\" font-size=\"7.5\">Күлгін (подзолистые) топырақ | Қарағай, шырша, майқарағай, самырсын</text>\n\n      <rect x=\"0\" y=\"76\" width=\"326\" height=\"34\" rx=\"4\" fill=\"#1e293b\" stroke=\"#71717a\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"89\" fill=\"#a7f3d0\" font-size=\"8\" font-weight=\"bold\">Аралас және жалпақ жапырақты:</text>\n      <text x=\"8\" y=\"101\" fill=\"#e2e8f0\" font-size=\"7.5\">Шымды-күлгін топырақ | Емен, шамшат, жөке, амур барқыт ағашы</text>\n\n      <rect x=\"0\" y=\"114\" width=\"326\" height=\"34\" rx=\"4\" fill=\"#1e293b\" stroke=\"#71717a\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"127\" fill=\"#facc15\" font-size=\"8\" font-weight=\"bold\">Орманды дала және Дала (Прерий):</text>\n      <text x=\"8\" y=\"139\" fill=\"#fde047\" font-size=\"7.5\">Қара және күрең (каштан) топырақ | Боз, селеу, бидайық, бизон шөбі</text>\n\n      <rect x=\"0\" y=\"152\" width=\"326\" height=\"34\" rx=\"4\" fill=\"#1e293b\" stroke=\"#71717a\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"165\" fill=\"#fb923c\" font-size=\"8\" font-weight=\"bold\">Шөлейт және Шөл:</text>\n      <text x=\"8\" y=\"177\" fill=\"#e2e8f0\" font-size=\"7.5\">Сұр-қоңыр, сортаң топырақ | Сексеуіл (ксерофиттер), кактустар (суккулент)</text>\n\n      <rect x=\"0\" y=\"190\" width=\"326\" height=\"42\" rx=\"4\" fill=\"#1e293b\" stroke=\"#71717a\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"203\" fill=\"#f87171\" font-size=\"8\" font-weight=\"bold\">Ылғалды экваторлық орман (Гилея, Сельвас):</text>\n      <text x=\"8\" y=\"215\" fill=\"#fecaca\" font-size=\"7.5\">Қызыл-сары ферралитті топырақ | Ротанг пальмасы (300 м), гевея, сейба, лианалар</text>\n    </g>\n  </g>\n\n  <!-- Right: UNT High-Yield Matching & Terms -->\n  <g transform=\"translate(375, 36)\">\n    <rect width=\"350\" height=\"275\" rx=\"10\" fill=\"#18181b\" stroke=\"#f59e0b\" stroke-width=\"1.2\"/>\n    <rect width=\"350\" height=\"26\" rx=\"10\" fill=\"#b45309\"/>\n    <text x=\"175\" y=\"17\" fill=\"#ffffff\" font-size=\"9.5\" font-weight=\"bold\" text-anchor=\"middle\">ҰБТ БАЗАСЫ: НЕГІЗГІ ТЕРМИНДЕР МЕН АТАУЛАР</text>\n\n    <g transform=\"translate(12, 34)\">\n      <rect x=\"0\" y=\"0\" width=\"326\" height=\"50\" rx=\"5\" fill=\"#1e293b\" stroke=\"#f59e0b\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"14\" fill=\"#facc15\" font-size=\"8.5\" font-weight=\"bold\">ӨСІМДІКТЕРДІҢ БЕЙІМДЕЛУ ТҮРЛЕРІ:</text>\n      <text x=\"8\" y=\"27\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fde047\" font-weight=\"bold\">Ксерофиттер:</tspan> құрғақшылыққа төзімді шөл өсімдіктері (сексеуіл).</text>\n      <text x=\"8\" y=\"39\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fde047\" font-weight=\"bold\">Суккуленттер (латынша «шырынды»):</tspan> бойына ылғал жинайтын (кактус, алоэ).</text>\n      <text x=\"8\" y=\"50\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fde047\" font-weight=\"bold\">Эфемерлер:</tspan> ерте көктемде тез гүлдеп, тұқымын шашып үлгеретін өсімдіктер.</text>\n\n      <rect x=\"0\" y=\"56\" width=\"326\" height=\"58\" rx=\"5\" fill=\"#1e293b\" stroke=\"#3b82f6\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"70\" fill=\"#38bdf8\" font-size=\"8.5\" font-weight=\"bold\">МАТЕРИКТЕР БОЙЫНША САВАННА ЖӘНЕ ДАЛАЛАР:</text>\n      <text x=\"8\" y=\"83\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#60a5fa\" font-weight=\"bold\">Прерий:</tspan> Солтүстік Америка даласы (французша «шалғын»).</text>\n      <text x=\"8\" y=\"95\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#60a5fa\" font-weight=\"bold\">Пампа:</tspan> Оңтүстік Америка (Ла-Плата) субтропиктік даласы («жазық дала»).</text>\n      <text x=\"8\" y=\"107\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#60a5fa\" font-weight=\"bold\">Льянос:</tspan> Ориноко саваннасы | <tspan fill=\"#60a5fa\" font-weight=\"bold\">Кампос:</tspan> Бразилия саваннасы.</text>\n\n      <rect x=\"0\" y=\"120\" width=\"326\" height=\"114\" rx=\"6\" fill=\"#0f172a\" stroke=\"#10b981\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"134\" fill=\"#34d399\" font-size=\"8.5\" font-weight=\"bold\">РЕКОРДТАР МЕН ЭНДЕМИКТЕР ШОЛУЫ:</text>\n      <text x=\"8\" y=\"148\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Алып секвойя (Redwood):</tspan> биіктігі 100 м, 4000 жыл өмір сүреді (Калифорния).</text>\n      <text x=\"8\" y=\"161\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Вельвичия:</tspan> Намиб шөлінің эндемигі (биіктігі 50 см, жапырағы 2-3 м).</text>\n      <text x=\"8\" y=\"174\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Эвкалипт:</tspan> Аустралияның 100 м ағашы (тамыры 30 м, коала қоректенеді).</text>\n      <text x=\"8\" y=\"187\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Кебрачо:</tspan> Оңтүстік Америка саваннасындағы «балта сынар» қатты ағаш.</text>\n      <text x=\"8\" y=\"200\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Анаконда (12 м) &amp; Капибара:</tspan> Амазонка ормандарының фаунасы.</text>\n      <text x=\"8\" y=\"213\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Цеце шыбыны:</tspan> Африканың экваторлық орманындағы ұйқы ауруы тасымалдаушысы.</text>\n      <text x=\"8\" y=\"226\" fill=\"#cbd5e1\" font-size=\"7\">Йеллоустон — 1872 ж. тұңғыш саябақ; Серенгети, Улуру — әлемдік парктер.</text>\n    </g>\n  </g>\n</svg>\n    </div>\n  </div>\n\n</div>", "full_theory_ru": "<div class=\"space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed\">\n\n  <!-- 1. ПРИРОДНЫЕ ЗОНЫ ЕВРАЗИИ -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-emerald-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🌲</span>\n      <span>1. ПРИРОДНЫЕ ЗОНЫ ЕВРАЗИИ</span>\n    </h4>\n    <p>\n      В Евразии представлены абсолютно все природные зоны Земли благодаря огромным размерам материка с севера на юг и с запада на восток:\n    </p>\n\n    <div class=\"space-y-2 text-xs\">\n      <div class=\"p-3 rounded-xl bg-space-950 border border-slate-800\">\n        <strong class=\"text-sky-300 font-bold block mb-1\">1. Арктические пустыни и 2. Тундра:</strong>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Почвы:</strong> неразвитые полигональные и тундрово-глеевые торфянистые почвы.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Флора и фауна:</strong> ягель (олений мох), мхи, лишайники, карликовые ивы. Лось, бурый медведь, песец, заяц-беляк, глухарь, белый медведь.</p>\n      </div>\n\n      <div class=\"p-3 rounded-xl bg-space-950 border border-slate-800\">\n        <strong class=\"text-emerald-300 font-bold block mb-1\">3. Тайга (Умеренный пояс, подзолистые почвы):</strong>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Растительность:</strong> в Европе — сосна, ель; в Азии — пихта, кедр (сибирская сосна), лиственница.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Животный мир:</strong> бурый медведь, кабан, лось, соболь, рысь; на Дальнем Востоке — <strong class=\"text-amber-300 font-bold\">уссурийский тигр</strong>.</p>\n      </div>\n\n      <div class=\"p-3 rounded-xl bg-space-950 border border-slate-800\">\n        <strong class=\"text-teal-300 font-bold block mb-1\">4. Смешанные и широколиственные леса:</strong>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Почвы:</strong> дерново-подзолистые. В Европе образуют сплошную полосу, на Дальнем Востоке возобновляются муссонными лесами.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Флора:</strong> на западе — бук, дуб, липа, ель; на востоке — амурский бархат, дикий виноград, лианы, корейский кедр.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Фауна:</strong> зубр, лось, благородный олень (марал), косуля, бурый медведь, пушные звери.</p>\n      </div>\n\n      <div class=\"p-3 rounded-xl bg-space-950 border border-slate-800\">\n        <strong class=\"text-amber-300 font-bold block mb-1\">5. Лесостепи и Степи (Черноземы):</strong>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Почвы:</strong> самые плодородные черноземы в мире.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Флора:</strong> в Европе — дуб, липа, клен; в Азии — березово-осиновые колки. Злаки: ковыль, типчак, пырей.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Фауна:</strong> волк, корсак, лисица; грызуны — суслик, степной хорек, полевки.</p>\n      </div>\n\n      <div class=\"p-3 rounded-xl bg-space-950 border border-slate-800\">\n        <strong class=\"text-orange-300 font-bold block mb-1\">6. Полупустыни и Пустыни:</strong>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Почвы:</strong> темно-каштановые, серо-бурые почвы, солонцы и солончаки.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Адаптации:</strong> полынь, солянки, биюргун. Засухоустойчивые — <strong class=\"text-amber-300 font-bold\">ксерофиты</strong> (саксаул), ультраранние — <strong class=\"text-amber-300 font-bold\">эфемеры</strong>. Места с близкими грунтовыми водами — <strong class=\"text-cyan-300 font-bold\">оазисы (шұраттар)</strong>.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Фауна:</strong> дикий верблюд, кулан, сайгак, джейран, вараны, змеи.</p>\n      </div>\n\n      <div class=\"p-3 rounded-xl bg-space-950 border border-purple-500/30\">\n        <strong class=\"text-purple-300 font-bold block mb-1\">7–14. Субтропики, Экватор и Высотная поясность:</strong>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Средиземноморье:</strong> жестколистные вечнозеленые леса (коричневые почвы, каменный дуб, маслина, лавр, кипарис, пиния, мирт, грецкий орех).</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Муссонные субтропики:</strong> магнолия, бамбук, камфорный лавр; гималайский медведь, <strong class=\"text-amber-300 font-bold\">бамбуковый медведь — панда</strong>, гиббоны, тигр.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Тропические пустыни (Аравия, Тар):</strong> дромедар (одногорбый верблюд), дикий осел — онагр, газели.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Влажные экваториальные леса:</strong> красно-желтые ферраллитные почвы, ротанговая пальма (200-300 м), орхидеи; носороги, орангутаны, павлины.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Высотная поясность (Тибет, Памир):</strong> як (қодас), снежный барс (ирбис), улар, архар.</p>\n      </div>\n    </div>\n\n    <!-- Embedded SVG 1: North Continents -->\n    <div class=\"my-3\">\n      <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 740 330\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2\">\n  <text x=\"370\" y=\"22\" fill=\"#38bdf8\" font-size=\"12\" font-weight=\"900\" text-anchor=\"middle\" letter-spacing=\"1\">ПРИРОДНЫЕ ЗОНЫ СЕВЕРНЫХ МАТЕРИКОВ (ЕВРАЗИЯ И СЕВЕРНАЯ АМЕРИКА)</text>\n\n  <g transform=\"translate(15, 36)\">\n    <rect width=\"350\" height=\"275\" rx=\"10\" fill=\"#18181b\" stroke=\"#3b82f6\" stroke-width=\"1.2\"/>\n    <rect width=\"350\" height=\"26\" rx=\"10\" fill=\"#1e3a8a\"/>\n    <text x=\"175\" y=\"17\" fill=\"#ffffff\" font-size=\"9.5\" font-weight=\"bold\" text-anchor=\"middle\">ПРИРОДНЫЕ ЗОНЫ ЕВРАЗИИ</text>\n\n    <g transform=\"translate(12, 34)\">\n      <rect x=\"0\" y=\"0\" width=\"326\" height=\"42\" rx=\"5\" fill=\"#1e293b\" stroke=\"#0284c7\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"13\" fill=\"#38bdf8\" font-size=\"8.5\" font-weight=\"bold\">1. Арктические пустыни и 2. Тундра:</text>\n      <text x=\"8\" y=\"25\" fill=\"#ffffff\" font-size=\"7.5\">• Почвы: тундрово-глеевые, неразвитые. Ягель, мхи, лишайники.</text>\n      <text x=\"8\" y=\"36\" fill=\"#94a3b8\" font-size=\"7.5\">• Животные: лось, бурый медведь, заяц-беляк, глухарь, белый медведь.</text>\n\n      <rect x=\"0\" y=\"46\" width=\"326\" height=\"50\" rx=\"5\" fill=\"#1e293b\" stroke=\"#059669\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"59\" fill=\"#34d399\" font-size=\"8.5\" font-weight=\"bold\">3. Тайга (Умеренный пояс, подзолистые почвы):</text>\n      <text x=\"8\" y=\"71\" fill=\"#ffffff\" font-size=\"7.5\">• В Европе: сосна, ель | В Азии: пихта, кедр, лиственница.</text>\n      <text x=\"8\" y=\"83\" fill=\"#a7f3d0\" font-size=\"7.5\">• Животные: бурый медведь, соболь, лось, <tspan fill=\"#fef08a\" font-weight=\"bold\">уссурийский тигр</tspan> (Дальний Восток).</text>\n\n      <rect x=\"0\" y=\"100\" width=\"326\" height=\"60\" rx=\"5\" fill=\"#1e293b\" stroke=\"#f59e0b\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"113\" fill=\"#facc15\" font-size=\"8.5\" font-weight=\"bold\">4. Смешанные леса и 5. Степи (черноземы):</text>\n      <text x=\"8\" y=\"125\" fill=\"#ffffff\" font-size=\"7.5\">• Смешанные: дерново-подзолистые; бук, дуб, амурский бархат, зубр.</text>\n      <text x=\"8\" y=\"137\" fill=\"#ffffff\" font-size=\"7.5\">• Степи: богатейшие черноземы; ковыль, типчак, пырей, суслик, степной хорек.</text>\n      <text x=\"8\" y=\"149\" fill=\"#fef08a\" font-size=\"7\">Пустыни: ксерофиты (саксаул), эфемеры, оазисы; сайгак, кулан, джейран.</text>\n\n      <rect x=\"0\" y=\"164\" width=\"326\" height=\"70\" rx=\"5\" fill=\"#0f172a\" stroke=\"#a855f7\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"177\" fill=\"#c084fc\" font-size=\"8.5\" font-weight=\"bold\">Субтропики и Экваториальные леса:</text>\n      <text x=\"8\" y=\"189\" fill=\"#ffffff\" font-size=\"7.5\">• Средиземноморье: жестколистные (маслина, каменный дуб, лавр, кипарис).</text>\n      <text x=\"8\" y=\"201\" fill=\"#ffffff\" font-size=\"7.5\">• Муссонные: магнолия, бамбук, камфора; <tspan fill=\"#fef08a\" font-weight=\"bold\">бамбуковый медведь — панда</tspan>, гиббон.</text>\n      <text x=\"8\" y=\"213\" fill=\"#ffffff\" font-size=\"7.5\">• Экваториальные: ротанговая пальма (200-300 м), орхидеи, орангутан, носорог.</text>\n      <text x=\"8\" y=\"226\" fill=\"#cbd5e1\" font-size=\"7\">Высотная поясность (Тибет, Памир): як (қодас), снежный барс, улар, архар.</text>\n    </g>\n  </g>\n\n  <g transform=\"translate(375, 36)\">\n    <rect width=\"350\" height=\"275\" rx=\"10\" fill=\"#18181b\" stroke=\"#10b981\" stroke-width=\"1.2\"/>\n    <rect width=\"350\" height=\"26\" rx=\"10\" fill=\"#065f46\"/>\n    <text x=\"175\" y=\"17\" fill=\"#ffffff\" font-size=\"9.5\" font-weight=\"bold\" text-anchor=\"middle\">СЕВЕРНАЯ АМЕРИКА И НАЦИОНАЛЬНЫЕ ПАРКИ</text>\n\n    <g transform=\"translate(12, 34)\">\n      <rect x=\"0\" y=\"0\" width=\"326\" height=\"42\" rx=\"5\" fill=\"#1e293b\" stroke=\"#0ea5e9\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"13\" fill=\"#38bdf8\" font-size=\"8.5\" font-weight=\"bold\">Арктика и Тундра:</text>\n      <text x=\"8\" y=\"25\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Овцебык (қойөгіз):</tspan> реликт ледникового периода (Гренландия, Канада).</text>\n      <text x=\"8\" y=\"36\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#7dd3fc\" font-weight=\"bold\">Карибу:</tspan> особый подвид северного оленя (Лабрадор, Гудзон).</text>\n\n      <rect x=\"0\" y=\"46\" width=\"326\" height=\"52\" rx=\"5\" fill=\"#1e293b\" stroke=\"#059669\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"59\" fill=\"#34d399\" font-size=\"8.5\" font-weight=\"bold\">Тайга (Подзолистые почвы, гигантская секвойя):</text>\n      <text x=\"8\" y=\"71\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Гигантская секвойя:</tspan> высота до 100 м, живет до 4000 лет.</text>\n      <text x=\"8\" y=\"83\" fill=\"#ffffff\" font-size=\"7.5\">• Животные: барибал, медведь гризли, канадская рысь, лесной бизон, вапити.</text>\n      <text x=\"8\" y=\"94\" fill=\"#a7f3d0\" font-size=\"7\">Во Флориде: болото и национальный парк Эверглейдс.</text>\n\n      <rect x=\"0\" y=\"102\" width=\"326\" height=\"54\" rx=\"5\" fill=\"#1e293b\" stroke=\"#f59e0b\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"115\" fill=\"#facc15\" font-size=\"8.5\" font-weight=\"bold\">Прерии (Степи — от франц. «луг»):</text>\n      <text x=\"8\" y=\"127\" fill=\"#ffffff\" font-size=\"7.5\">• Вытянуты меридионально; черноземы и каштановые почвы, трава бизона (1.5 м).</text>\n      <text x=\"8\" y=\"139\" fill=\"#ffffff\" font-size=\"7.5\">• Животные: бизон, степной волк — койот, лисицы.</text>\n      <text x=\"8\" y=\"151\" fill=\"#fde047\" font-size=\"7\">Пустыни (Мексика): кактусы, юкка — суккуленты («сочные растения»).</text>\n\n      <rect x=\"0\" y=\"160\" width=\"326\" height=\"74\" rx=\"6\" fill=\"#0f172a\" stroke=\"#10b981\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"174\" fill=\"#34d399\" font-size=\"8.5\" font-weight=\"bold\">НАЦИОНАЛЬНЫЕ ПАРКИ (ЕНТ):</text>\n      <text x=\"8\" y=\"188\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Йеллоустон (1872 г.):</tspan> первый в мире национальный парк.</text>\n      <text x=\"8\" y=\"201\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Редвуд (Redwood):</tspan> в Калифорнии (побережье Тихого океана),</text>\n      <text x=\"16\" y=\"212\" fill=\"#cbd5e1\" font-size=\"7.5\">создан для сохранения гигантских хвойных секвой.</text>\n      <text x=\"8\" y=\"226\" fill=\"#38bdf8\" font-size=\"7\">Саванны Центр. Америки: летучие мыши-вампиры, скунс, ягуар, опоссумы.</text>\n    </g>\n  </g>\n</svg>\n    </div>\n  </div>\n\n  <!-- 2. СЕВЕРНАЯ АМЕРИКА И ПАРКИ -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-cyan-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🌲</span>\n      <span>2. ПРИРОДНЫЕ ЗОНЫ СЕВЕРНОЙ АМЕРИКИ И НАЦИОНАЛЬНЫЕ ПАРКИ</span>\n    </h4>\n    <div class=\"space-y-2 text-xs\">\n      <div class=\"p-3 rounded-xl bg-space-950 border border-slate-800\">\n        <strong class=\"text-sky-300 font-bold block mb-1\">Арктика, Тундра и Тайга:</strong>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Арктическая пустыня:</strong> Гренландия и Канадский Арктический архипелаг. Реликт ледниковой эпохи — <strong class=\"text-amber-300 font-bold\">овцебык (қойөгіз)</strong>, в Красной книге.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Тундра:</strong> особый подвид северного оленя — <strong class=\"text-cyan-300 font-bold\">карибу</strong> (Лабрадор, Гудзонов залив).</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Тайга (Подзолистые почвы):</strong> гигантская <strong class=\"text-amber-300 font-bold\">секвойя (мамонтово дерево)</strong> высотой до 100 м, живет 4000 лет. Фауна: черный медведь барибал, гризли, канадская рысь, американская норка, лесной бизон, олень вапити.</p>\n      </div>\n\n      <div class=\"p-3 rounded-xl bg-space-950 border border-slate-800\">\n        <strong class=\"text-amber-300 font-bold block mb-1\">Прерии (Степи), Пустыни и Саванны:</strong>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Прерии</strong> (от франц. «луг»): степи, вытянутые в меридиональном направлении. Черноземы и каштановые почвы, трава бизона (1,5 м). Фауна: степной волк койот, бизон, лисицы.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Пустыни (Мексиканское нагорье):</strong> вторая родина кактусов и суккулентов (алоэ, молочаи, юкка, опунция). Суккуленты — лат. «сочные растения».</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Саванны (Центральная Америка):</strong> красные почвы, широконосые обезьяны, ягуар, летучие мыши-вампиры, скунс, опоссумы.</p>\n      </div>\n\n      <div class=\"p-3.5 rounded-xl bg-space-950 border border-emerald-500/30\">\n        <strong class=\"text-emerald-400 font-bold block mb-1\">Главные национальные парки (ЕНТ):</strong>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Йеллоустон (1872 г.):</strong> первый в мире созданный национальный парк (гейзеры, каньоны).</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Редвуд (Redwood):</strong> в Калифорнии (Тихоокеанское побережье), создан для охраны гигантских секвой.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Эверглейдс:</strong> парк на полуострове Флорида для охраны субтропических болот.</p>\n      </div>\n    </div>\n  </div>\n\n  <!-- 3. ЮЖНАЯ АМЕРИКА -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-rose-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🦜</span>\n      <span>3. ПРИРОДНЫЕ ЗОНЫ ЮЖНОЙ АМЕРИКИ</span>\n    </h4>\n    <div class=\"space-y-2 text-xs\">\n      <div class=\"p-3 rounded-xl bg-space-950 border border-slate-800\">\n        <strong class=\"text-rose-300 font-bold block mb-1\">1. Сельвас / Гилея (Амазония):</strong>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Почвы:</strong> красно-желтые ферраллитные. Трансамазонское шоссе протянулось на 8,5 тыс. км.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Флора:</strong> гевея (натуральный каучук), бальсовое дерево, хинное дерево (хинин), сейба, дынное дерево, древовидные папоротники.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Фауна:</strong> тапир, опоссум, пекари, капибара (самый крупный грызун мира), ягуар, пума; колибри (самая маленькая птица), анаконда (длиной до 12 м).</p>\n      </div>\n\n      <div class=\"p-3 rounded-xl bg-space-950 border border-slate-800\">\n        <strong class=\"text-amber-300 font-bold block mb-1\">2. Саванны: Льянос и Кампос:</strong>\n        <p class=\"text-slate-300\">• Саванна Ориноко — <strong class=\"text-amber-300 font-bold\">Льянос</strong> (пальмы, акации); Саванна Бразильского нагорья — <strong class=\"text-amber-300 font-bold\">Кампос</strong> (кактусы, мимозы, бутылочное дерево).</p>\n        <p class=\"text-slate-300\">• Дерево с тяжелой сверхтвердой древесиной — <strong class=\"text-amber-300 font-bold\">квебрахо («сломай топор»)</strong>.</p>\n        <p class=\"text-slate-300\">• Фауна: броненосцы, муравьед, страус нанду, гривистый волк, карликовый олень.</p>\n      </div>\n\n      <div class=\"p-3 rounded-xl bg-space-950 border border-slate-800\">\n        <strong class=\"text-purple-300 font-bold block mb-1\">3. Пампа, Патагония и Анды:</strong>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Пампа:</strong> субтропическая травянистая степь («равнина»), плодородные серо-коричневые почвы, пампасный олень, нутрия.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Патагония:</strong> засушливое плато, карликовые кактусы, гуанако, магелланова лисица.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Анды:</strong> пуйя Раймонда; дикие ламы — <strong class=\"text-purple-300 font-bold\">викунья, гуанако</strong>, домашняя — <strong class=\"text-purple-300 font-bold\">альпака</strong>; символы Анд — <strong class=\"text-white font-bold\">лама и кондор</strong> (крупнейшая птица), очковый медведь, шиншилла (ценный мех), магелланов пингвин.</p>\n        <p class=\"text-slate-300\">• Южная Америка — родина картофеля, батата, томатов, кукурузы, фасоли, перца, подсолнечника, табака, какао.</p>\n      </div>\n    </div>\n\n    <!-- Embedded SVG 2: South Continents -->\n    <div class=\"my-3\">\n      <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 740 330\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2\">\n  <text x=\"370\" y=\"22\" fill=\"#38bdf8\" font-size=\"12\" font-weight=\"900\" text-anchor=\"middle\" letter-spacing=\"1\">ЮЖНЫЕ МАТЕРИКИ: ЮЖНАЯ АМЕРИКА, АФРИКА И АВСТРАЛИЯ</text>\n\n  <g transform=\"translate(15, 36)\">\n    <rect width=\"225\" height=\"275\" rx=\"10\" fill=\"#18181b\" stroke=\"#ef4444\" stroke-width=\"1.2\"/>\n    <rect width=\"225\" height=\"26\" rx=\"10\" fill=\"#991b1b\"/>\n    <text x=\"112\" y=\"17\" fill=\"#ffffff\" font-size=\"9.5\" font-weight=\"bold\" text-anchor=\"middle\">ЮЖНАЯ АМЕРИКА</text>\n\n    <g transform=\"translate(10, 32)\">\n      <text x=\"0\" y=\"11\" fill=\"#f87171\" font-size=\"8.5\" font-weight=\"bold\">Сельвас (Гилея, Амазония):</text>\n      <text x=\"0\" y=\"23\" fill=\"#ffffff\" font-size=\"7.5\">• Гевея (каучук), сейба, хинное,</text>\n      <text x=\"0\" y=\"34\" fill=\"#ffffff\" font-size=\"7.5\">бальсовое, дынное дерево.</text>\n      <text x=\"0\" y=\"46\" fill=\"#cbd5e1\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Анаконда (12 м)</tspan>, капибара (водная</text>\n      <text x=\"0\" y=\"57\" fill=\"#cbd5e1\" font-size=\"7.5\">свинка), колибри, ягуар, тапир.</text>\n      <text x=\"0\" y=\"68\" fill=\"#94a3b8\" font-size=\"7\">Трансамазонское шоссе: 8.5 тыс. км.</text>\n\n      <text x=\"0\" y=\"86\" fill=\"#f87171\" font-size=\"8.5\" font-weight=\"bold\">Саванны:</text>\n      <text x=\"0\" y=\"98\" fill=\"#ffffff\" font-size=\"7.5\">• Саванна Ориноко: <tspan fill=\"#fef08a\" font-weight=\"bold\">Льянос</tspan></text>\n      <text x=\"0\" y=\"109\" fill=\"#ffffff\" font-size=\"7.5\">• Саванна Бразилии: <tspan fill=\"#fef08a\" font-weight=\"bold\">Кампос</tspan></text>\n      <text x=\"0\" y=\"120\" fill=\"#cbd5e1\" font-size=\"7.5\">Квебрахо («сломай топор»), бутылочное</text>\n      <text x=\"0\" y=\"131\" fill=\"#cbd5e1\" font-size=\"7.5\">дерево, броненосцы, страус нанду.</text>\n\n      <text x=\"0\" y=\"149\" fill=\"#f87171\" font-size=\"8.5\" font-weight=\"bold\">Пампа и Анды:</text>\n      <text x=\"0\" y=\"161\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Пампа:</tspan> субтропическая степь,</text>\n      <text x=\"0\" y=\"172\" fill=\"#cbd5e1\" font-size=\"7.5\">серо-коричневые почвы, пампасный олень.</text>\n      <text x=\"0\" y=\"184\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#38bdf8\" font-weight=\"bold\">Анды:</tspan> ламы (викунья, гуанако,</text>\n      <text x=\"0\" y=\"195\" fill=\"#cbd5e1\" font-size=\"7.5\">альпака), <tspan fill=\"#fef08a\" font-weight=\"bold\">кондор</tspan>, очковый медведь.</text>\n      <text x=\"0\" y=\"206\" fill=\"#cbd5e1\" font-size=\"7.5\">Шиншилла (ценный мех), пингвин Магеллана.</text>\n      <text x=\"0\" y=\"218\" fill=\"#a7f3d0\" font-size=\"7\">Родина картофеля, томатов, кукурузы, какао.</text>\n    </g>\n  </g>\n\n  <g transform=\"translate(257, 36)\">\n    <rect width=\"225\" height=\"275\" rx=\"10\" fill=\"#18181b\" stroke=\"#f59e0b\" stroke-width=\"1.2\"/>\n    <rect width=\"225\" height=\"26\" rx=\"10\" fill=\"#b45309\"/>\n    <text x=\"112\" y=\"17\" fill=\"#ffffff\" font-size=\"9.5\" font-weight=\"bold\" text-anchor=\"middle\">АФРИКА</text>\n\n    <g transform=\"translate(10, 32)\">\n      <text x=\"0\" y=\"11\" fill=\"#fbbf24\" font-size=\"8.5\" font-weight=\"bold\">Экваториальные леса (Конго):</text>\n      <text x=\"0\" y=\"23\" fill=\"#ffffff\" font-size=\"7.5\">• Деревья 80 м: фикус, сейба, рафия.</text>\n      <text x=\"0\" y=\"34\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fca5a5\" font-weight=\"bold\">Муха цеце:</tspan> переносчик сонной болезни.</text>\n\n      <text x=\"0\" y=\"52\" fill=\"#fbbf24\" font-size=\"8.5\" font-weight=\"bold\">Саванны (40% площади Африки):</text>\n      <text x=\"0\" y=\"64\" fill=\"#ffffff\" font-size=\"7.5\">• Баобаб, масличная пальма, акация.</text>\n      <text x=\"0\" y=\"75\" fill=\"#ffffff\" font-size=\"7.5\">• Более 40 видов антилоп, жираф, зебры,</text>\n      <text x=\"0\" y=\"86\" fill=\"#cbd5e1\" font-size=\"7.5\">лев, гепард, нильский крокодил (5-6 м),</text>\n      <text x=\"0\" y=\"97\" fill=\"#cbd5e1\" font-size=\"7.5\">птица-секретарь (ловит змей), марабу.</text>\n      <text x=\"0\" y=\"109\" fill=\"#fde047\" font-size=\"7.5\">• Мадагаскар: лемуры (26 видов), дерево путешественников.</text>\n      <text x=\"0\" y=\"121\" fill=\"#fca5a5\" font-size=\"7\">Опустынивание: Сахара надвигается на 650 км².</text>\n\n      <text x=\"0\" y=\"139\" fill=\"#fbbf24\" font-size=\"8.5\" font-weight=\"bold\">Пустыня Намиб и эндемики:</text>\n      <text x=\"0\" y=\"151\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Вельвичия:</tspan> высота 50 см, листья</text>\n      <text x=\"0\" y=\"162\" fill=\"#cbd5e1\" font-size=\"7.5\">длиной 2-3 м, феноменальный эндемик.</text>\n      <text x=\"0\" y=\"174\" fill=\"#ffffff\" font-size=\"7.5\">• Дромедар (одногорбый верблюд), фенек.</text>\n\n      <rect x=\"0\" y=\"186\" width=\"205\" height=\"46\" rx=\"5\" fill=\"#0f172a\" stroke=\"#ca8a04\" stroke-width=\"0.8\"/>\n      <text x=\"6\" y=\"199\" fill=\"#facc15\" font-size=\"7.5\" font-weight=\"bold\">Парки (Восточная Африка):</text>\n      <text x=\"6\" y=\"211\" fill=\"#ffffff\" font-size=\"7.5\">Серенгети, Киву, Вирунга, Кагера.</text>\n      <text x=\"6\" y=\"223\" fill=\"#38bdf8\" font-size=\"7\">Зеленый пояс: посадка 1500 км леса.</text>\n    </g>\n  </g>\n\n  <g transform=\"translate(500, 36)\">\n    <rect width=\"225\" height=\"275\" rx=\"10\" fill=\"#18181b\" stroke=\"#10b981\" stroke-width=\"1.2\"/>\n    <rect width=\"225\" height=\"26\" rx=\"10\" fill=\"#065f46\"/>\n    <text x=\"112\" y=\"17\" fill=\"#ffffff\" font-size=\"9.5\" font-weight=\"bold\" text-anchor=\"middle\">АВСТРАЛИЯ И АНТАРКТИДА</text>\n\n    <g transform=\"translate(10, 32)\">\n      <text x=\"0\" y=\"11\" fill=\"#34d399\" font-size=\"8.5\" font-weight=\"bold\">Специфика пустынь Австралии:</text>\n      <text x=\"0\" y=\"23\" fill=\"#fef08a\" font-size=\"7.5\">• Полное отсутствие оазисов (шұрат)!</text>\n      <text x=\"0\" y=\"34\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#a7f3d0\" font-weight=\"bold\">Скрэб:</tspan> непроходимые заросли</text>\n      <text x=\"0\" y=\"45\" fill=\"#cbd5e1\" font-size=\"7.5\">колючих акаций и низкорослых эвкалиптов.</text>\n\n      <text x=\"0\" y=\"63\" fill=\"#34d399\" font-size=\"8.5\" font-weight=\"bold\">Эндемики Австралии:</text>\n      <text x=\"0\" y=\"75\" fill=\"#ffffff\" font-size=\"7.5\">• Флора: <tspan fill=\"#fef08a\" font-weight=\"bold\">эвкалипт (до 100 м), казуарины</tspan>.</text>\n      <text x=\"0\" y=\"87\" fill=\"#ffffff\" font-size=\"7.5\">• Фауна: <tspan fill=\"#fef08a\" font-weight=\"bold\">кенгуру, утконос, ехидна</tspan>,</text>\n      <text x=\"0\" y=\"98\" fill=\"#cbd5e1\" font-size=\"7.5\">коала, вомбат, собака динго, страус эму.</text>\n      <text x=\"0\" y=\"110\" fill=\"#67e8f9\" font-size=\"7.5\">• На гербе: <tspan fill=\"#ffffff\" font-weight=\"bold\">страус эму и кенгуру</tspan>.</text>\n      <text x=\"0\" y=\"121\" fill=\"#67e8f9\" font-size=\"7.5\">• На монетах: <tspan fill=\"#ffffff\" font-weight=\"bold\">ехидна, утконос, лирохвост</tspan>.</text>\n      <text x=\"0\" y=\"132\" fill=\"#94a3b8\" font-size=\"7\">Парки: Улуру, Большой Барьерный риф, Какаду.</text>\n\n      <text x=\"0\" y=\"150\" fill=\"#38bdf8\" font-size=\"8.5\" font-weight=\"bold\">Антарктида:</text>\n      <text x=\"0\" y=\"162\" fill=\"#ffffff\" font-size=\"7.5\">• Полюс холода: -91,2°С (Восток), альбедо 90%.</text>\n      <text x=\"0\" y=\"174\" fill=\"#ffffff\" font-size=\"7.5\">• 17 видов пингвинов (Адели, Императорский &gt;1м).</text>\n      <text x=\"0\" y=\"185\" fill=\"#ffffff\" font-size=\"7.5\">• Синий кит (под охраной с 1967 г.), тюлени.</text>\n      <text x=\"0\" y=\"197\" fill=\"#ffffff\" font-size=\"7.5\">• Альбатрос (размах крыльев 3.5 м).</text>\n      <text x=\"0\" y=\"210\" fill=\"#cbd5e1\" font-size=\"7\">Озоновая дыра: рекорд 29.9 млн км² в 2000 г.</text>\n    </g>\n  </g>\n</svg>\n    </div>\n  </div>\n\n  <!-- 4. АФРИКА, АВСТРАЛИЯ И АНТАРКТИДА -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-amber-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🦒</span>\n      <span>4. ПРИРОДНЫЕ ЗОНЫ АФРИКИ, АВСТРАЛИИ И АНТАРКТИДЫ</span>\n    </h4>\n    <div class=\"space-y-2 text-xs\">\n      <div class=\"p-3 rounded-xl bg-space-950 border border-slate-800\">\n        <strong class=\"text-amber-300 font-bold block mb-1\">Африка:</strong>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Экваториальные леса (Конго):</strong> деревья высотой 80 м (фикус, сейба, пальма рафия), муха цеце (сонная болезнь).</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Саванны (40% Африки):</strong> баобаб, акация; более 40 видов антилоп, зебры, жираф, львы, нильский крокодил (5-6 м), птица-секретарь, марабу. На Мадагаскаре: 26 видов лемуров, дерево путешественников. Опустынивание: Сахара надвигается на 650 км², высаживается 1500 км Зеленого пояса.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Пустыня Намиб:</strong> эндемик — <strong class=\"text-amber-300 font-bold\">вельвичия</strong> (высота 50 см, листья 2-3 м). Одногорбый верблюд дромедар, лисица фенек.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Парки Вост. Африки:</strong> Серенгети, Киву, Вирунга, Кагера.</p>\n      </div>\n\n      <div class=\"p-3 rounded-xl bg-space-950 border border-slate-800\">\n        <strong class=\"text-emerald-300 font-bold block mb-1\">Австралия:</strong>\n        <p class=\"text-slate-300\">• Главная черта пустынь — <strong class=\"text-emerald-300 font-bold\">полное отсутствие оазисов</strong>! Заросли кустарников — <strong class=\"text-emerald-300 font-bold\">скрэб</strong> (колючая акация, низкорослый эвкалипт).</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Эндемики флоры:</strong> эвкалипт (высота 100 м, корни на 30 м вглубь, пища коал), казуарины.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Эндемики фауны:</strong> кенгуру, утконос, ехидна, коала, вомбат, собака динго, страус эму. В 1975 г. запрещен ввоз чужеродных видов.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Символика:</strong> на гербе — <strong class=\"text-white font-bold\">страус эму и кенгуру</strong>; на монетах — <strong class=\"text-white font-bold\">ехидна, утконос, лирохвост</strong>.</p>\n        <p class=\"text-slate-300\">• <strong class=\"text-white\">Парки:</strong> Улуру, Большой Барьерный риф, Какаду.</p>\n      </div>\n\n      <div class=\"p-3 rounded-xl bg-space-950 border border-slate-800\">\n        <strong class=\"text-blue-300 font-bold block mb-1\">Антарктида:</strong>\n        <p class=\"text-slate-300\">• Полюс холода: <strong class=\"text-white\">-91,2°С (станция Восток)</strong>, альбедо 90%. В оазисах — мхи и лишайники.</p>\n        <p class=\"text-slate-300\">• Фауна: тюлень Уэдделла, морской слон, синий кит (под охраной с 1967 г.), 17 видов пингвинов (Адели, Императорский &gt;1м), альбатрос (размах крыльев 3,5 м).</p>\n        <p class=\"text-slate-300\">• Озоновая дыра: рекорд 29,9 млн км² (2000 г.), 21,2 млн км² (2012 г.) — идет восстановление.</p>\n      </div>\n    </div>\n\n    <!-- Embedded SVG 3: Summary & Soils -->\n    <div class=\"my-3\">\n      <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 740 330\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2\">\n  <text x=\"370\" y=\"22\" fill=\"#38bdf8\" font-size=\"12\" font-weight=\"900\" text-anchor=\"middle\" letter-spacing=\"1\">ПОЧВЫ, РАСТИТЕЛЬНОСТЬ И РЕКОРДЫ ПРИРОДНЫХ ЗОН МИРА</text>\n\n  <g transform=\"translate(15, 36)\">\n    <rect width=\"350\" height=\"275\" rx=\"10\" fill=\"#18181b\" stroke=\"#a855f7\" stroke-width=\"1.2\"/>\n    <rect width=\"350\" height=\"26\" rx=\"10\" fill=\"#6b21a8\"/>\n    <text x=\"175\" y=\"17\" fill=\"#ffffff\" font-size=\"9.5\" font-weight=\"bold\" text-anchor=\"middle\">ПОЧВЕННЫЙ ПОКРОВ И ФЛОРА ПО ЗОНАМ</text>\n\n    <g transform=\"translate(12, 34)\">\n      <rect x=\"0\" y=\"0\" width=\"326\" height=\"34\" rx=\"4\" fill=\"#1e293b\" stroke=\"#71717a\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"13\" fill=\"#38bdf8\" font-size=\"8\" font-weight=\"bold\">Арктические пустыни / Тундра:</text>\n      <text x=\"8\" y=\"25\" fill=\"#e2e8f0\" font-size=\"7.5\">Неразвитые тундрово-глеевые почвы | Мхи, лишайники, ягель</text>\n\n      <rect x=\"0\" y=\"38\" width=\"326\" height=\"34\" rx=\"4\" fill=\"#1e293b\" stroke=\"#71717a\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"51\" fill=\"#34d399\" font-size=\"8\" font-weight=\"bold\">Тайга (хвойные леса):</text>\n      <text x=\"8\" y=\"63\" fill=\"#e2e8f0\" font-size=\"7.5\">Подзолистые почвы | Сосна, ель, пихта, лиственница, кедр</text>\n\n      <rect x=\"0\" y=\"76\" width=\"326\" height=\"34\" rx=\"4\" fill=\"#1e293b\" stroke=\"#71717a\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"89\" fill=\"#a7f3d0\" font-size=\"8\" font-weight=\"bold\">Смешанные и широколиственные:</text>\n      <text x=\"8\" y=\"101\" fill=\"#e2e8f0\" font-size=\"7.5\">Дерново-подзолистые почвы | Дуб, бук, липа, амурский бархат</text>\n\n      <rect x=\"0\" y=\"114\" width=\"326\" height=\"34\" rx=\"4\" fill=\"#1e293b\" stroke=\"#71717a\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"127\" fill=\"#facc15\" font-size=\"8\" font-weight=\"bold\">Лесостепи и Степи (Прерии):</text>\n      <text x=\"8\" y=\"139\" fill=\"#fde047\" font-size=\"7.5\">Черноземы и каштановые почвы | Ковыль, типчак, бизонья трава</text>\n\n      <rect x=\"0\" y=\"152\" width=\"326\" height=\"34\" rx=\"4\" fill=\"#1e293b\" stroke=\"#71717a\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"165\" fill=\"#fb923c\" font-size=\"8\" font-weight=\"bold\">Полупустыни и Пустыни:</text>\n      <text x=\"8\" y=\"177\" fill=\"#e2e8f0\" font-size=\"7.5\">Серо-бурые почвы, солончаки | Саксаул (ксерофиты), кактусы (суккуленты)</text>\n\n      <rect x=\"0\" y=\"190\" width=\"326\" height=\"42\" rx=\"4\" fill=\"#1e293b\" stroke=\"#71717a\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"203\" fill=\"#f87171\" font-size=\"8\" font-weight=\"bold\">Влажные экваториальные леса (Сельвас):</text>\n      <text x=\"8\" y=\"215\" fill=\"#fecaca\" font-size=\"7.5\">Красно-желтые ферраллитные почвы | Ротанговая пальма (300 м), гевея, сейба, лианы</text>\n    </g>\n  </g>\n\n  <g transform=\"translate(375, 36)\">\n    <rect width=\"350\" height=\"275\" rx=\"10\" fill=\"#18181b\" stroke=\"#f59e0b\" stroke-width=\"1.2\"/>\n    <rect width=\"350\" height=\"26\" rx=\"10\" fill=\"#b45309\"/>\n    <text x=\"175\" y=\"17\" fill=\"#ffffff\" font-size=\"9.5\" font-weight=\"bold\" text-anchor=\"middle\">БАЗА ЕНТ: КЛЮЧЕВЫЕ ТЕРМИНЫ И НАЗВАНИЯ</text>\n\n    <g transform=\"translate(12, 34)\">\n      <rect x=\"0\" y=\"0\" width=\"326\" height=\"50\" rx=\"5\" fill=\"#1e293b\" stroke=\"#f59e0b\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"14\" fill=\"#facc15\" font-size=\"8.5\" font-weight=\"bold\">АДАПТАЦИИ РАСТЕНИЙ К ЗАСУХЕ:</text>\n      <text x=\"8\" y=\"27\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fde047\" font-weight=\"bold\">Ксерофиты:</tspan> засухоустойчивые растения пустынь (саксаул).</text>\n      <text x=\"8\" y=\"39\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fde047\" font-weight=\"bold\">Суккуленты (лат. «сочные»):</tspan> накапливают воду в стеблях (кактусы, алоэ).</text>\n      <text x=\"8\" y=\"50\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fde047\" font-weight=\"bold\">Эфемеры:</tspan> растения с ультракоротким весенним циклом цветения.</text>\n\n      <rect x=\"0\" y=\"56\" width=\"326\" height=\"58\" rx=\"5\" fill=\"#1e293b\" stroke=\"#3b82f6\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"70\" fill=\"#38bdf8\" font-size=\"8.5\" font-weight=\"bold\">НАЗВАНИЯ САВАНН И СТЕПЕЙ ПО МАТЕРИКАМ:</text>\n      <text x=\"8\" y=\"83\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#60a5fa\" font-weight=\"bold\">Прерии:</tspan> степи Северной Америки (от французского «луг»).</text>\n      <text x=\"8\" y=\"95\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#60a5fa\" font-weight=\"bold\">Пампа:</tspan> субтропическая степь Южной Америки («равнина»).</text>\n      <text x=\"8\" y=\"107\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#60a5fa\" font-weight=\"bold\">Льянос:</tspan> саванна Ориноко | <tspan fill=\"#60a5fa\" font-weight=\"bold\">Кампос:</tspan> саванна Бразилии.</text>\n\n      <rect x=\"0\" y=\"120\" width=\"326\" height=\"114\" rx=\"6\" fill=\"#0f172a\" stroke=\"#10b981\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"134\" fill=\"#34d399\" font-size=\"8.5\" font-weight=\"bold\">ОБЗОР РЕКОРДОВ И ЭНДЕМИКОВ:</text>\n      <text x=\"8\" y=\"148\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Гигантская секвойя (Redwood):</tspan> высота до 100 м, возраст 4000 лет (Калифорния).</text>\n      <text x=\"8\" y=\"161\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Вельвичия:</tspan> эндемик пустыни Намиб (высота 50 см, листья 2-3 м).</text>\n      <text x=\"8\" y=\"174\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Эвкалипт:</tspan> дерево Австралии высотой 100 м (корни до 30 м, пища коал).</text>\n      <text x=\"8\" y=\"187\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Квебрахо:</tspan> сверхтвердое дерево саванн («сломай топор»).</text>\n      <text x=\"8\" y=\"200\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Анаконда (12 м) и капибара:</tspan> фауна дождевых лесов Амазонки.</text>\n      <text x=\"8\" y=\"213\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Муха цеце:</tspan> переносчик сонной болезни в лесах Африки.</text>\n      <text x=\"8\" y=\"226\" fill=\"#cbd5e1\" font-size=\"7\">Йеллоустон — 1872 г. первый парк; Серенгети, Улуру — мировые заповедники.</text>\n    </g>\n  </g>\n</svg>\n    </div>\n  </div>\n\n</div>", "svg_diagram": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 740 330\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2\">\n  <text x=\"370\" y=\"22\" fill=\"#38bdf8\" font-size=\"12\" font-weight=\"900\" text-anchor=\"middle\" letter-spacing=\"1\">ТАБИҒАТ ЗОНАЛАРЫНЫҢ ТОПЫРАҚТАРЫ, ӨСІМДІКТЕРІ МЕН РЕКОРДТАРЫ</text>\n\n  <!-- Left: Soils & Vegetation Sequence -->\n  <g transform=\"translate(15, 36)\">\n    <rect width=\"350\" height=\"275\" rx=\"10\" fill=\"#18181b\" stroke=\"#a855f7\" stroke-width=\"1.2\"/>\n    <rect width=\"350\" height=\"26\" rx=\"10\" fill=\"#6b21a8\"/>\n    <text x=\"175\" y=\"17\" fill=\"#ffffff\" font-size=\"9.5\" font-weight=\"bold\" text-anchor=\"middle\">ЗОНАЛАР БОЙЫНША ТОПЫРАҚ ЖӘНЕ ФЛОРА</text>\n\n    <g transform=\"translate(12, 34)\">\n      <!-- Soil ladder -->\n      <rect x=\"0\" y=\"0\" width=\"326\" height=\"34\" rx=\"4\" fill=\"#1e293b\" stroke=\"#71717a\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"13\" fill=\"#38bdf8\" font-size=\"8\" font-weight=\"bold\">Арктикалық / Тундралық:</text>\n      <text x=\"8\" y=\"25\" fill=\"#e2e8f0\" font-size=\"7.5\">Толық жетілмеген батпақты топырақ | Мүк, қына, бұғы мүгі</text>\n\n      <rect x=\"0\" y=\"38\" width=\"326\" height=\"34\" rx=\"4\" fill=\"#1e293b\" stroke=\"#71717a\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"51\" fill=\"#34d399\" font-size=\"8\" font-weight=\"bold\">Тайга зонасы:</text>\n      <text x=\"8\" y=\"63\" fill=\"#e2e8f0\" font-size=\"7.5\">Күлгін (подзолистые) топырақ | Қарағай, шырша, майқарағай, самырсын</text>\n\n      <rect x=\"0\" y=\"76\" width=\"326\" height=\"34\" rx=\"4\" fill=\"#1e293b\" stroke=\"#71717a\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"89\" fill=\"#a7f3d0\" font-size=\"8\" font-weight=\"bold\">Аралас және жалпақ жапырақты:</text>\n      <text x=\"8\" y=\"101\" fill=\"#e2e8f0\" font-size=\"7.5\">Шымды-күлгін топырақ | Емен, шамшат, жөке, амур барқыт ағашы</text>\n\n      <rect x=\"0\" y=\"114\" width=\"326\" height=\"34\" rx=\"4\" fill=\"#1e293b\" stroke=\"#71717a\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"127\" fill=\"#facc15\" font-size=\"8\" font-weight=\"bold\">Орманды дала және Дала (Прерий):</text>\n      <text x=\"8\" y=\"139\" fill=\"#fde047\" font-size=\"7.5\">Қара және күрең (каштан) топырақ | Боз, селеу, бидайық, бизон шөбі</text>\n\n      <rect x=\"0\" y=\"152\" width=\"326\" height=\"34\" rx=\"4\" fill=\"#1e293b\" stroke=\"#71717a\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"165\" fill=\"#fb923c\" font-size=\"8\" font-weight=\"bold\">Шөлейт және Шөл:</text>\n      <text x=\"8\" y=\"177\" fill=\"#e2e8f0\" font-size=\"7.5\">Сұр-қоңыр, сортаң топырақ | Сексеуіл (ксерофиттер), кактустар (суккулент)</text>\n\n      <rect x=\"0\" y=\"190\" width=\"326\" height=\"42\" rx=\"4\" fill=\"#1e293b\" stroke=\"#71717a\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"203\" fill=\"#f87171\" font-size=\"8\" font-weight=\"bold\">Ылғалды экваторлық орман (Гилея, Сельвас):</text>\n      <text x=\"8\" y=\"215\" fill=\"#fecaca\" font-size=\"7.5\">Қызыл-сары ферралитті топырақ | Ротанг пальмасы (300 м), гевея, сейба, лианалар</text>\n    </g>\n  </g>\n\n  <!-- Right: UNT High-Yield Matching & Terms -->\n  <g transform=\"translate(375, 36)\">\n    <rect width=\"350\" height=\"275\" rx=\"10\" fill=\"#18181b\" stroke=\"#f59e0b\" stroke-width=\"1.2\"/>\n    <rect width=\"350\" height=\"26\" rx=\"10\" fill=\"#b45309\"/>\n    <text x=\"175\" y=\"17\" fill=\"#ffffff\" font-size=\"9.5\" font-weight=\"bold\" text-anchor=\"middle\">ҰБТ БАЗАСЫ: НЕГІЗГІ ТЕРМИНДЕР МЕН АТАУЛАР</text>\n\n    <g transform=\"translate(12, 34)\">\n      <rect x=\"0\" y=\"0\" width=\"326\" height=\"50\" rx=\"5\" fill=\"#1e293b\" stroke=\"#f59e0b\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"14\" fill=\"#facc15\" font-size=\"8.5\" font-weight=\"bold\">ӨСІМДІКТЕРДІҢ БЕЙІМДЕЛУ ТҮРЛЕРІ:</text>\n      <text x=\"8\" y=\"27\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fde047\" font-weight=\"bold\">Ксерофиттер:</tspan> құрғақшылыққа төзімді шөл өсімдіктері (сексеуіл).</text>\n      <text x=\"8\" y=\"39\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fde047\" font-weight=\"bold\">Суккуленттер (латынша «шырынды»):</tspan> бойына ылғал жинайтын (кактус, алоэ).</text>\n      <text x=\"8\" y=\"50\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fde047\" font-weight=\"bold\">Эфемерлер:</tspan> ерте көктемде тез гүлдеп, тұқымын шашып үлгеретін өсімдіктер.</text>\n\n      <rect x=\"0\" y=\"56\" width=\"326\" height=\"58\" rx=\"5\" fill=\"#1e293b\" stroke=\"#3b82f6\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"70\" fill=\"#38bdf8\" font-size=\"8.5\" font-weight=\"bold\">МАТЕРИКТЕР БОЙЫНША САВАННА ЖӘНЕ ДАЛАЛАР:</text>\n      <text x=\"8\" y=\"83\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#60a5fa\" font-weight=\"bold\">Прерий:</tspan> Солтүстік Америка даласы (французша «шалғын»).</text>\n      <text x=\"8\" y=\"95\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#60a5fa\" font-weight=\"bold\">Пампа:</tspan> Оңтүстік Америка (Ла-Плата) субтропиктік даласы («жазық дала»).</text>\n      <text x=\"8\" y=\"107\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#60a5fa\" font-weight=\"bold\">Льянос:</tspan> Ориноко саваннасы | <tspan fill=\"#60a5fa\" font-weight=\"bold\">Кампос:</tspan> Бразилия саваннасы.</text>\n\n      <rect x=\"0\" y=\"120\" width=\"326\" height=\"114\" rx=\"6\" fill=\"#0f172a\" stroke=\"#10b981\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"134\" fill=\"#34d399\" font-size=\"8.5\" font-weight=\"bold\">РЕКОРДТАР МЕН ЭНДЕМИКТЕР ШОЛУЫ:</text>\n      <text x=\"8\" y=\"148\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Алып секвойя (Redwood):</tspan> биіктігі 100 м, 4000 жыл өмір сүреді (Калифорния).</text>\n      <text x=\"8\" y=\"161\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Вельвичия:</tspan> Намиб шөлінің эндемигі (биіктігі 50 см, жапырағы 2-3 м).</text>\n      <text x=\"8\" y=\"174\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Эвкалипт:</tspan> Аустралияның 100 м ағашы (тамыры 30 м, коала қоректенеді).</text>\n      <text x=\"8\" y=\"187\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Кебрачо:</tspan> Оңтүстік Америка саваннасындағы «балта сынар» қатты ағаш.</text>\n      <text x=\"8\" y=\"200\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Анаконда (12 м) &amp; Капибара:</tspan> Амазонка ормандарының фаунасы.</text>\n      <text x=\"8\" y=\"213\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Цеце шыбыны:</tspan> Африканың экваторлық орманындағы ұйқы ауруы тасымалдаушысы.</text>\n      <text x=\"8\" y=\"226\" fill=\"#cbd5e1\" font-size=\"7\">Йеллоустон — 1872 ж. тұңғыш саябақ; Серенгети, Улуру — әлемдік парктер.</text>\n    </g>\n  </g>\n</svg>", "svg_diagram_ru": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 740 330\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2\">\n  <text x=\"370\" y=\"22\" fill=\"#38bdf8\" font-size=\"12\" font-weight=\"900\" text-anchor=\"middle\" letter-spacing=\"1\">ПОЧВЫ, РАСТИТЕЛЬНОСТЬ И РЕКОРДЫ ПРИРОДНЫХ ЗОН МИРА</text>\n\n  <g transform=\"translate(15, 36)\">\n    <rect width=\"350\" height=\"275\" rx=\"10\" fill=\"#18181b\" stroke=\"#a855f7\" stroke-width=\"1.2\"/>\n    <rect width=\"350\" height=\"26\" rx=\"10\" fill=\"#6b21a8\"/>\n    <text x=\"175\" y=\"17\" fill=\"#ffffff\" font-size=\"9.5\" font-weight=\"bold\" text-anchor=\"middle\">ПОЧВЕННЫЙ ПОКРОВ И ФЛОРА ПО ЗОНАМ</text>\n\n    <g transform=\"translate(12, 34)\">\n      <rect x=\"0\" y=\"0\" width=\"326\" height=\"34\" rx=\"4\" fill=\"#1e293b\" stroke=\"#71717a\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"13\" fill=\"#38bdf8\" font-size=\"8\" font-weight=\"bold\">Арктические пустыни / Тундра:</text>\n      <text x=\"8\" y=\"25\" fill=\"#e2e8f0\" font-size=\"7.5\">Неразвитые тундрово-глеевые почвы | Мхи, лишайники, ягель</text>\n\n      <rect x=\"0\" y=\"38\" width=\"326\" height=\"34\" rx=\"4\" fill=\"#1e293b\" stroke=\"#71717a\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"51\" fill=\"#34d399\" font-size=\"8\" font-weight=\"bold\">Тайга (хвойные леса):</text>\n      <text x=\"8\" y=\"63\" fill=\"#e2e8f0\" font-size=\"7.5\">Подзолистые почвы | Сосна, ель, пихта, лиственница, кедр</text>\n\n      <rect x=\"0\" y=\"76\" width=\"326\" height=\"34\" rx=\"4\" fill=\"#1e293b\" stroke=\"#71717a\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"89\" fill=\"#a7f3d0\" font-size=\"8\" font-weight=\"bold\">Смешанные и широколиственные:</text>\n      <text x=\"8\" y=\"101\" fill=\"#e2e8f0\" font-size=\"7.5\">Дерново-подзолистые почвы | Дуб, бук, липа, амурский бархат</text>\n\n      <rect x=\"0\" y=\"114\" width=\"326\" height=\"34\" rx=\"4\" fill=\"#1e293b\" stroke=\"#71717a\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"127\" fill=\"#facc15\" font-size=\"8\" font-weight=\"bold\">Лесостепи и Степи (Прерии):</text>\n      <text x=\"8\" y=\"139\" fill=\"#fde047\" font-size=\"7.5\">Черноземы и каштановые почвы | Ковыль, типчак, бизонья трава</text>\n\n      <rect x=\"0\" y=\"152\" width=\"326\" height=\"34\" rx=\"4\" fill=\"#1e293b\" stroke=\"#71717a\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"165\" fill=\"#fb923c\" font-size=\"8\" font-weight=\"bold\">Полупустыни и Пустыни:</text>\n      <text x=\"8\" y=\"177\" fill=\"#e2e8f0\" font-size=\"7.5\">Серо-бурые почвы, солончаки | Саксаул (ксерофиты), кактусы (суккуленты)</text>\n\n      <rect x=\"0\" y=\"190\" width=\"326\" height=\"42\" rx=\"4\" fill=\"#1e293b\" stroke=\"#71717a\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"203\" fill=\"#f87171\" font-size=\"8\" font-weight=\"bold\">Влажные экваториальные леса (Сельвас):</text>\n      <text x=\"8\" y=\"215\" fill=\"#fecaca\" font-size=\"7.5\">Красно-желтые ферраллитные почвы | Ротанговая пальма (300 м), гевея, сейба, лианы</text>\n    </g>\n  </g>\n\n  <g transform=\"translate(375, 36)\">\n    <rect width=\"350\" height=\"275\" rx=\"10\" fill=\"#18181b\" stroke=\"#f59e0b\" stroke-width=\"1.2\"/>\n    <rect width=\"350\" height=\"26\" rx=\"10\" fill=\"#b45309\"/>\n    <text x=\"175\" y=\"17\" fill=\"#ffffff\" font-size=\"9.5\" font-weight=\"bold\" text-anchor=\"middle\">БАЗА ЕНТ: КЛЮЧЕВЫЕ ТЕРМИНЫ И НАЗВАНИЯ</text>\n\n    <g transform=\"translate(12, 34)\">\n      <rect x=\"0\" y=\"0\" width=\"326\" height=\"50\" rx=\"5\" fill=\"#1e293b\" stroke=\"#f59e0b\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"14\" fill=\"#facc15\" font-size=\"8.5\" font-weight=\"bold\">АДАПТАЦИИ РАСТЕНИЙ К ЗАСУХЕ:</text>\n      <text x=\"8\" y=\"27\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fde047\" font-weight=\"bold\">Ксерофиты:</tspan> засухоустойчивые растения пустынь (саксаул).</text>\n      <text x=\"8\" y=\"39\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fde047\" font-weight=\"bold\">Суккуленты (лат. «сочные»):</tspan> накапливают воду в стеблях (кактусы, алоэ).</text>\n      <text x=\"8\" y=\"50\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fde047\" font-weight=\"bold\">Эфемеры:</tspan> растения с ультракоротким весенним циклом цветения.</text>\n\n      <rect x=\"0\" y=\"56\" width=\"326\" height=\"58\" rx=\"5\" fill=\"#1e293b\" stroke=\"#3b82f6\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"70\" fill=\"#38bdf8\" font-size=\"8.5\" font-weight=\"bold\">НАЗВАНИЯ САВАНН И СТЕПЕЙ ПО МАТЕРИКАМ:</text>\n      <text x=\"8\" y=\"83\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#60a5fa\" font-weight=\"bold\">Прерии:</tspan> степи Северной Америки (от французского «луг»).</text>\n      <text x=\"8\" y=\"95\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#60a5fa\" font-weight=\"bold\">Пампа:</tspan> субтропическая степь Южной Америки («равнина»).</text>\n      <text x=\"8\" y=\"107\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#60a5fa\" font-weight=\"bold\">Льянос:</tspan> саванна Ориноко | <tspan fill=\"#60a5fa\" font-weight=\"bold\">Кампос:</tspan> саванна Бразилии.</text>\n\n      <rect x=\"0\" y=\"120\" width=\"326\" height=\"114\" rx=\"6\" fill=\"#0f172a\" stroke=\"#10b981\" stroke-width=\"0.8\"/>\n      <text x=\"8\" y=\"134\" fill=\"#34d399\" font-size=\"8.5\" font-weight=\"bold\">ОБЗОР РЕКОРДОВ И ЭНДЕМИКОВ:</text>\n      <text x=\"8\" y=\"148\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Гигантская секвойя (Redwood):</tspan> высота до 100 м, возраст 4000 лет (Калифорния).</text>\n      <text x=\"8\" y=\"161\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Вельвичия:</tspan> эндемик пустыни Намиб (высота 50 см, листья 2-3 м).</text>\n      <text x=\"8\" y=\"174\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Эвкалипт:</tspan> дерево Австралии высотой 100 м (корни до 30 м, пища коал).</text>\n      <text x=\"8\" y=\"187\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Квебрахо:</tspan> сверхтвердое дерево саванн («сломай топор»).</text>\n      <text x=\"8\" y=\"200\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Анаконда (12 м) и капибара:</tspan> фауна дождевых лесов Амазонки.</text>\n      <text x=\"8\" y=\"213\" fill=\"#ffffff\" font-size=\"7.5\">• <tspan fill=\"#fef08a\" font-weight=\"bold\">Муха цеце:</tspan> переносчик сонной болезни в лесах Африки.</text>\n      <text x=\"8\" y=\"226\" fill=\"#cbd5e1\" font-size=\"7\">Йеллоустон — 1872 г. первый парк; Серенгети, Улуру — мировые заповедники.</text>\n    </g>\n  </g>\n</svg>", "table_kz": {"cols": ["Табиғат зонасы / Материк / Ұғым", "Климаты / Топырағы / Орны", "Өсімдіктері, жануарлары және ҰБТ ерекшеліктері"], "rows": [["Арктикалық шөл (Еуразия)", "Арктикалық, мұзды", "Топырақ жетілмеген, мұз; мүк, қына, балдырлар; ақ аю, бұлан, қоян"], ["Тундра (Еуразия)", "Субарктикалық", "Батпақты тундра топырағы; бұғы мүгі, қына; бұлан, қоңыр аю, саңырауқұр"], ["Тайга (Еуразия)", "Қоңыржай, күлгін", "Еуропада қарағай/шырша; Азияда майқарағай/самырсын/балқарағай; уссурий жолбарысы, бұлғын"], ["Аралас және жалпақ жапырақты (Еуразия)", "Шымды-күлгін", "Батыста шамшат, емен, жөке; шығыста амур барқыт ағашы, корей самырсыны; зубр, марал"], ["Орманды дала және дала (Еуразия)", "Қара топырақ", "Еуропада емен, жөке; Азияда қайың, көктерек; селеу, боз, бидайық; саршұнақ, дала күзені"], ["Шөлейт және шөл (Еуразия)", "Сұр-қоңыр, сортаң", "Жусан, бұйырғын; ксерофиттер (сексеуіл), эфемерлер, оазистер; ақбөкен, құлан, қарақұйрық"], ["Қатты жапырақты мәңгі жасыл (Жерорта)", "Құнарлы қоңыр", "Тас емен, зәйтүн, лавр шиесі, кипарис, пиния, мирта, грек жаңғағы"], ["Муссондық ормандар (Шығыс Азия)", "Қоңыр-қызыл", "Магнолия, бамбук, камфора; Гималай аюы, панда (бамбук аюы), гиббон, жолбарыс"], ["Тропиктік шөлдер (Арабия, Тар)", "Тропиктік, құмды", "Қараған, шеңгел, құрма пальмасы; дромедар (бір өркешті нар), онагр (жабайы есек)"], ["Ылғалды экваторлық ормандар (Азия)", "Қызыл-сары ферралитті", "Ротанг пальмасы (200-300 м), орхидея, бамбук; мүйізтұмсық, орангутан, тауыс құсы"], ["Биіктік белдеу (Тибет, Памир)", "Таулы белдеу", "Қодас (як), қар барысы, ұлар құсы, арқар, тау аюы"], ["Арктикалық шөл (С. Америка)", "Гренландия, Канада", "Қойөгіз (овцебык) — мұз басу дәуірінің реликтісі, Қызыл кітапқа енген"], ["Тундра (С. Америка)", "Лабрадор, Гудзон", "Мүк, қына; карибу — солтүстік бұғыларының айрықша американдық түрі"], ["Тайга (С. Америка)", "Күлгін топырақ", "Алып секвойя (4000 жыл өмір сүреді); барибал, гризли, канада сілеусіні, орман бизоны"], ["Прерий (С. Америка даласы)", "Қара, каштан", "Французша «шалғын»; бизон шөбі (1,5 м), бидайық; дала қасқыры койот, бизон"], ["Шөлдер және Мексика қыраты", "Субтропиктік шөл", "Кактустың екінші отаны; ағаш тәрізді кактус, алоэ, юкка — суккуленттер («шырынды»)"], ["Йеллоустон ұлттық саябағы", "1872 жылы құрылған", "Дүниежүзінде тұңғыш құрылған ұлттық саябақ (АҚШ, гейзерлерімен әйгілі)"], ["Редвуд (Redwood) паркі", "Калифорния (батыс)", "АҚШ-тың Тынық мұхит жағалауындағы алып секвойяларды қорғауға арналған парк"], ["Эверглейдс саябағы", "Флорида түбегі", "Субтропиктік батпақты ормандар мен сулы-батпақты экожүйені қорғайтын парк"], ["Сельвас / Гилея (О. Америка)", "Амазонка ойпаты", "Гевея (каучук), сейба, хина, бальс; анаконда (12 м), капибара, ягуар, колибри"], ["Трансамазония тас жолы", "8,5 мың км", "Оңтүстік Америкада Амазония ормандарын батыстан шығысқа қақ жарып өтетін жол"], ["Льянос және Кампос", "О. Америка саваннасы", "Оринокода — льянос (пальма, акация); Бразилияда — кампос (кебрачо «балта сынар», нанду)"], ["Пампа (О. Америка)", "Қызғылт-қара топырақ", "«Жазық дала» мағынасы; Ла-Плата ойпаты; пампа бұғысы, пампа түлкісі, нутрия"], ["Патагония (О. Америка)", "Шөлейт үстірт", "Аласа кактустар, тікенекті бұталар; гуанако ламасы, сауыттылар, магеллан түлкісі"], ["Анд таулары (О. Америка)", "Биіктік белдеу", "Раймонд пуйясы; лама (викунья, гуанако, альпака), кондор (алып құс), шиншилла"], ["Мәдени өсімдіктер отаны", "Оңтүстік Америка", "Картоп, батат, мақта, жүгері, үрмебұршақ, бұрыш, қызанақ, темекі, какао"], ["Гилея / Конго (Африка)", "Қызыл-сары ферралитті", "80 м ағаштар: фикус, сейба, рафия, майлы пальма; цеце шыбыны (ұйқы ауруы)"], ["Саванна (Африканың 40%-ы)", "Қызыл ферралитті", "Баобаб, акация; 40-тан астам бөкен түрі, керік, зебра, арыстан, Ніл қолтырауыны (5-6 м)"], ["Мадагаскар аралы", "Эндемиктер", "Символы — лемур (26 түрі) және саяхатшы ағашы; шағын денелі маймылдар"], ["Сахараның жылжуы", "Жасыл белдеу", "Сахара 50 жылда саваннаға 650 км² жылжуда; 1500 км орман белдеуі отырғызылуда"], ["Намиб шөлі және Вельвичия", "Эндемик өсімдік", "Вельвичия: биіктігі 50 см, жапырағы 2-3 м; дромедар түйесі, фенек түлкісі"], ["Шығыс Африка парктері", "Ұлттық парктер", "Серенгети, Киву, Вирунга, Кагера (жануарлар дүниесін қорғау)"], ["Аустралия шөлдері", "Оазиссіз шөл", "Африкадан айырмашылығы — шұраттардың болмауы! Скрэб — тікенекті қалың бұталар"], ["Аустралия эндемиктері", "Флора мен фауна", "Эвкалипт (100 м, тамыры 30 м), казуарин; кенгуру, үйректұмсық, ехидна, коала, вомбат"], ["Аустралия рәміздері", "Елтаңба мен монета", "Елтаңбада — эму мен кенгуру; темір ақшада — ехидна, үйректұмсық, лирақұйрық"], ["Аустралия парктері", "Ұлттық парктер", "Улуру, Үлкен Тосқауыл рифі, Какаду (1975 ж. өзге түрлерді әкелуге тыйым салынған)"], ["Антарктида климаты", "-91,2°С рекорды", "Жердің суықтық полюсі («Восток»); күн сәулесінің 90%-ын шағылдырады (альбедо)"], ["Антарктида фаунасы", "Көк кит және пингвин", "Көк кит (1967 ж. қорғауда), Уэдделл итбалығы, пингвиннің 17 түрі (Император &gt;1м), альбатрос (3,5 м)"], ["Озон қабаты (Антарктида)", "Озон тесігі динамикасы", "2000 жылы рекордтық 29,9 млн км² жұқарса, 2012 жылы 21,2 млн км² құрап кішірейген"]]}, "table_ru": {"cols": ["Природная зона / Материк / Понятие", "Климат / Почвы / Положение", "Растения, животные и особенности для ЕНТ"], "rows": [["Арктические пустыни (Евразия)", "Арктический, лед", "Почвы не развиты, льды; мхи, лишайники, водоросли; белый медведь, лось, песец"], ["Тундра (Евразия)", "Субарктический", "Тундрово-болотные почвы; ягель, мхи; лось, бурый медведь, глухарь, северный олень"], ["Тайга (Евразия)", "Умеренный, подзолистые", "В Европе сосна/ель; в Азии пихта/кедр/лиственница; уссурийский тигр, соболь, бурый медведь"], ["Смешанные и широколиственные (Евразия)", "Дерново-подзолистые", "На западе бук, дуб, липа; на востоке амурский бархат, корейский кедр; зубр, марал"], ["Лесостепи и степи (Евразия)", "Черноземы", "В Европе дуб, липа; в Азии береза, осина; ковыль, типчак, пырей; суслик, степной хорек"], ["Полупустыни и пустыни (Евразия)", "Серо-бурые, солончаки", "Полынь, солянки; ксерофиты (саксаул), эфемеры, оазисы; сайгак, кулан, джейран"], ["Жестколистные вечнозеленые (Средиземноморье)", "Коричневые почвы", "Каменный дуб, маслина, лавр, кипарис, пиния, мирт, грецкий орех"], ["Муссонные леса (Вост. Азия)", "Красно-желтые почвы", "Магнолия, бамбук, камфора; гималайский медведь, панда (бамбуковый медведь), гиббон"], ["Тропические пустыни (Аравия, Тар)", "Тропический, пески", "Акации, саксаул, финиковая пальма; дромедар (одногорбый верблюд), дикий осел онагр"], ["Влажные экваториальные (Азия)", "Красно-желтые ферраллитные", "Ротанговая пальма (200-300 м), орхидеи, бамбук; носорог, орангутан, павлин"], ["Высотная поясность (Тибет, Памир)", "Высокогорный", "Як (қодас), снежный барс (ирбис), улар (горная индейка), архар, горный медведь"], ["Арктические пустыни (Сев. Америка)", "Гренландия, Канада", "Овцебык (қойөгіз) — реликт ледниковой эпохи, занесен в Красную книгу"], ["Тундра (Сев. Америка)", "Лабрадор, Гудзон", "Мхи, лишайники; карибу — особый подвид американского северного оленя"], ["Тайга (Сев. Америка)", "Подзолистые почвы", "Гигантская секвойя (живет 4000 лет); барибал, медведь гризли, канадская рысь, бизон"], ["Прерии (степи Сев. Америки)", "Черноземы, каштановые", "От франц. «луг»; трава бизона (1,5 м), пырей; степной волк койот, дикий бизон"], ["Пустыни и Мексиканское нагорье", "Субтропические пустыни", "Вторая родина кактусов; древовидные кактусы, алоэ, юкка — суккуленты («сочные»)"], ["Йеллоустонский национальный парк", "Основан в 1872 г.", "Первый в мире национальный парк (США, знаменитые гейзеры и каньоны)"], ["Парк Редвуд (Redwood)", "Калифорния (запад)", "Тихоокеанское побережье США, создан для охраны гигантских хвойных секвой"], ["Парк Эверглейдс", "Полуостров Флорида", "Охрана субтропических мангровых болот и уникальной болотистой фауны"], ["Сельвас / Гилея (Юж. Америка)", "Амазонская низменность", "Гевея (каучук), сейба, хинное, бальса; анаконда (12 м), капибара, ягуар, колибри"], ["Трансамазонское шоссе", "Длина 8,5 тыс. км", "Шоссе в Южной Америке, пересекающее амазонские леса с запада на восток"], ["Льянос и Кампос", "Саванны Юж. Америки", "Ориноко — льянос (пальмы); Бразилия — кампос (квебрахо «сломай топор», нанду)"], ["Пампа (Юж. Америка)", "Серо-коричневые почвы", "«Равнина»; Ла-Платская низменность; пампасный олень, пампасная кошка, нутрия"], ["Патагония (Юж. Америка)", "Плато полупустынь", "Низкорослые кактусы, колючие кустарники; лама гуанако, броненосцы, пума"], ["Анды (Юж. Америка)", "Высотная поясность", "Пуйя Раймонда; ламы (викунья, гуанако, альпака), кондор (гигантская птица), шиншилла"], ["Родина культурных растений", "Южная Америка", "Картофель, батат, хлопок, кукуруза, фасоль, перец, томаты, табак, какао"], ["Гилея / Конго (Африка)", "Красно-желтые ферраллитные", "Деревья 80 м: фикус, сейба, пальма рафия; муха цеце (переносчик сонной болезни)"], ["Саванны (40% Африки)", "Красные ферраллитные", "Баобаб, акация; более 40 видов антилоп, жираф, зебры, лев, нильский крокодил (5-6 м)"], ["Остров Мадагаскар", "Эндемики острова", "Символы — лемуры (26 видов) и дерево путешественников; мелкие полуобезьяны"], ["Наступление Сахары", "Зеленый пояс", "Сахара надвигается на саванну на 650 км² за 50 лет; высаживается 1500 км леса"], ["Пустыня Намиб и Вельвичия", "Уникальный эндемик", "Вельвичия: высота 50 см, длина листьев 2-3 м; верблюд дромедар, лисица фенек"], ["Парки Вост. Африки", "Национальные парки", "Серенгети, Киву, Вирунга, Кагера (охрана крупных копытных и хищников)"], ["Пустыни Австралии", "Безоазисные пустыни", "Главное отличие от Африки — отсутствие оазисов! Скрэб — колючие кустарники эвкалипта"], ["Эндемики Австралии", "Флора и фауна", "Эвкалипт (100 м, корни до 30 м), казуарин; кенгуру, утконос, ехидна, коала, вомбат"], ["Символы Австралии", "Герб и монеты", "На гербе — страус эму и кенгуру; на монетах — ехидна, утконос, птица-лирохвост"], ["Парки Австралии", "Национальные парки", "Улуру, Большой Барьерный риф, Какаду (в 1975 г. введен запрет на ввоз чужих видов)"], ["Климат Антарктиды", "Рекорд -91,2°С", "Полюс холода планеты («Восток»); отражает 90% солнечной энергии (альбедо)"], ["Фауна Антарктиды", "Синий кит и пингвины", "Синий кит (с 1967 г. под охраной), тюлень Уэдделла, 17 видов пингвинов, альбатрос (3,5 м)"], ["Озоновый слой Антарктиды", "Динамика озоновой дыры", "В 2000 г. рекордная дыра 29,9 млн км², к 2012 г. уменьшилась до 21,2 млн км²"]]}, "key_facts_kz": ["Табиғат зоналары жылу мен ылғалдың арақатынасына байланысты экватордан полюстерге қарай заңды түрде ауысады.", "Тайга зонасында күлгін топырақ түзіледі; Еуропада қарағай/шырша, Азияда майқарағай/самырсын/балқарағай; Қиыр Шығыста уссурий жолбарысы мекендейді.", "Солтүстік Америка тайгасында алып секвойя (мамонт ағашы, 4000 жыл өмір сүреді) өседі; Арктикасында қойөгіз (мұз дәуірі реликтісі) сақталған.", "Дала зонасының баламалары: Солтүстік Америкада — Прерий (французша «шалғын»), Оңтүстік Америкада — Пампа («жазық дала»).", "Оңтүстік Америка саванналары: Ориноко алабында — Льянос, Бразилия таулы үстіртінде — Кампос; кебрачо («балта сынар») ағашы өседі.", "Амазонка ормандарында (Сельвас) гевея (каучук), сейба, хина; анаконда (12 м), ең ірі кеміргіш капибара, колибри кездеседі.", "Африка саваннасы материктің 40%-ын алады; баобаб, 40-тан астам бөкен түрі, керік, арыстан; Мадагаскар символы — лемур мен саяхатшы ағашы.", "Намиб шөлінің әйгілі эндемигі — вельвичия (биіктігі 50 см, жапырағы 2-3 м); Сахара жылына 650 км² саваннаға жылжуда.", "Аустралия шөлдерінің ерекшелігі — оазистердің болмауы; скрэб (тікенекті тоғай); эндемиктері: эвкалипт (100 м), кенгуру, үйректұмсық, ехидна, коала.", "Дүниедегі тұңғыш саябақ — Йеллоустон (1872 ж.); Антарктида суықтық полюсі — Восток (-91,2°С, альбедо 90%, 17 пингвин түрі, көк кит)."], "key_facts_ru": ["Природные зоны сменяются закономерно от экватора к полюсам в зависимости от соотношения тепла и влаги.", "В тайге формируются подзолистые почвы; в Европе сосна/ель, в Азии пихта/кедр/лиственница; на Дальнем Востоке — уссурийский тигр.", "В тайге Сев. Америки растет гигантская секвойя (живет 4000 лет); в арктических пустынях сохранился реликт овцебык (қойөгіз).", "Аналоги степей: в Северной Америке — Прерии (от франц. «луг»), в Южной Америке — Пампа («равнина»).", "Саванны Южной Америки: в бассейне Ориноко — Льянос, на Бразильском нагорье — Кампос; растет сверхтвердое дерево квебрахо («сломай топор»).", "В лесах Амазонии (Сельвас) произрастают гевея (каучук), сейба, хина; обитают анаконда (12 м), капибара, ягуар, колибри.", "Саванны занимают 40% Африки; баобаб, свыше 40 видов антилоп, жираф; эндемики Мадагаскара — лемуры и дерево путешественников.", "Эндемик пустыни Намиб — вельвичия (высота 50 см, листья 2-3 м); наступление Сахары составляет 650 км² в год.", "Главная черта пустынь Австралии — отсутствие оазисов; заросли скрэба; эндемики: эвкалипт (100 м), кенгуру, утконос, ехидна, коала.", "Первый в мире национальный парк — Йеллоустон (1872 г.); Полюс холода Земли — Восток (-91,2°С, альбедо 90%, 17 видов пингвинов)."], "traps_kz": ["Қақпан 1: Саванналар мен далалардың жергілікті атауларын шатастырмаңыз! Прерий — Солтүстік Америка даласы (французша «шалғын»); Пампа — Оңтүстік Американың Ла-Плата бойындағы субтропиктік даласы; Льянос — Ориноко саваннасы; Кампос — Бразилия саваннасы.", "Қақпан 2: Аустралия шөлдерінің ерекшелігі: дүние жүзіндегі басқа шөлдерден (Сахара, Арабия) басты айырмашылығы — онда ШҰРАТТАРДЫҢ (оазистердің) болмауы! Сондай-ақ Аустралияда скрэб (тікенекті бұталар) басым, ал елтаңбасында эму мен кенгуру, монеталарында ехидна, үйректұмсық және лирақұйрық бейнеленген.", "Қақпан 3: Эндемиктер мен рекордтар: Намиб шөлінің эндемигі — вельвичия (жапырағы 2-3 м); Мадагаскар символы — лемур (26 түрі) және саяхатшы ағашы; дүниежүзіндегі тұңғыш ұлттық саябақ — Йеллоустон (1872 ж.), ал секвойяны қорғайтын парк — Редвуд (Калифорния)."], "traps_ru": ["Ловушка 1: Не путайте названия степей и саванн! Прерии — степи Северной Америки (от франц. «луг»); Пампа — субтропическая степь Южной Америки; Льянос — саванна бассейна Ориноко; Кампос — саванна Бразильского плоскогорья.", "Ловушка 2: Специфика пустынь Австралии: главное отличие от пустынь Африки и Азии — ПОЛНОЕ ОТСУТСТВИЕ ОАЗИСОВ! В растительности преобладает скрэб, а на гербе изображены кенгуру и эму, на монетах — ехидна, утконос и лирохвост.", "Ловушка 3: Эндемики и парки: эндемик пустыни Намиб — вельвичия (листья 2-3 м); символ Мадагаскара — лемуры (26 видов) и дерево путешественников; первый в мире национальный парк — Йеллоустон (1872 г.), а для охраны секвой создан Редвуд (Калифорния)."]};
+    const blooketData = {"kz": "https://dashboard.blooket.com/set/6a95f32cbf8b5b050f4c1d4e", "ru": "https://dashboard.blooket.com/set/6a94d38c8bb8084c251f286f", "doc_kz": "https://docs.google.com/document/d/1hbEH7vpM5ua_oVwxCFu2AvKrIK6ROYBT9eUaawISfdQ/edit?usp=sharing", "doc_ru": "https://drive.google.com/file/d/11KpvxcS2S3zRnihzL8DXJKjxTXHEgi_w/view?usp=sharing"};
+    let currentLang = 'kz';
+
+    // Safe localStorage helper
+    const safeStorage = {
+      getItem(k) {
+        try { return localStorage.getItem(k); } catch (e) { return null; }
+      },
+      setItem(k, v) {
+        try { localStorage.setItem(k, v); } catch (e) {}
+      }
+    };
+
+    function getCompletedSet() {
+      try {
+        return new Set(JSON.parse(safeStorage.getItem('geotany_grammar_completed') || '[]'));
+      } catch (e) {
+        return new Set();
+      }
+    }
+
+    function saveCompletedSet(setObj) {
+      safeStorage.setItem('geotany_grammar_completed', JSON.stringify(Array.from(setObj)));
+    }
+
+    function updateCompleteButton() {
+      const setObj = getCompletedSet();
+      const isDone = setObj.has(topicData.num);
+      const btn = document.getElementById('btnComplete');
+      const icon = document.getElementById('completeIcon');
+      const text = document.getElementById('completeText');
+
+      if (isDone) {
+        btn.className = "inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black transition border border-emerald-500/50 bg-emerald-500/20 text-emerald-300 shadow-md shadow-emerald-500/10";
+        icon.textContent = "✓";
+        text.textContent = (currentLang === 'ru') ? "Изучено" : "Меңгерілді";
+      } else {
+        btn.className = "inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition border border-slate-700 bg-space-900 text-slate-300 hover:text-white hover:border-slate-600";
+        icon.textContent = "○";
+        text.textContent = (currentLang === 'ru') ? "Отметить изученным" : "Меңгерілді деп белгілеу";
+      }
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('xpToast');
+      const m = document.getElementById('toastMsg');
+      m.textContent = msg;
+      t.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        t.classList.add('translate-y-20', 'opacity-0');
+      }, 2500);
+    }
+
+    function toggleComplete() {
+      const setObj = getCompletedSet();
+      const isDone = setObj.has(topicData.num);
+      let xp = parseInt(safeStorage.getItem('geotany_user_xp') || '0', 10);
+
+      if (isDone) {
+        setObj.delete(topicData.num);
+        xp = Math.max(0, xp - 20);
+        showToast((currentLang === 'ru') ? "-20 XP. Отметка снята" : "-20 XP. Белгі алынды");
+      } else {
+        setObj.add(topicData.num);
+        xp += 20;
+        showToast((currentLang === 'ru') ? "+20 XP! Тема изучена" : "+20 XP! Тақырып меңгерілді");
+      }
+
+      saveCompletedSet(setObj);
+      safeStorage.setItem('geotany_user_xp', xp.toString());
+      updateCompleteButton();
+    }
+
+    function renderTable(isRu) {
+      const tbl = isRu ? (topicData.table_ru || topicData.table_kz) : topicData.table_kz;
+      const container = document.getElementById('tableContainer');
+      if (!tbl || !tbl.cols || !tbl.rows || tbl.rows.length === 0) {
+        document.getElementById('tableSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('tableSection').classList.remove('hidden');
+
+      let html = '<table class="w-full text-left text-xs border-collapse">';
+      html += '<thead><tr class="border-b border-slate-800 text-slate-400 font-bold">';
+      tbl.cols.forEach(col => {
+        html += `<th class="p-2.5 sm:p-3 bg-space-900/60 rounded-lg whitespace-nowrap text-cyan-300 font-bold">${col}</th>`;
+      });
+      html += '</tr></thead><tbody class="divide-y divide-slate-800/60">';
+      tbl.rows.forEach(row => {
+        html += '<tr class="hover:bg-space-900/40 transition">';
+        row.forEach((cell, idx) => {
+          const cls = idx === 0 ? "font-bold text-white whitespace-nowrap" : (idx === 1 ? "text-cyan-300 font-medium" : "text-slate-300");
+          html += `<td class="p-2.5 sm:p-3 ${cls}">${cell}</td>`;
+        });
+        html += '</tr>';
+      });
+      html += '</tbody></table>';
+      container.innerHTML = html;
+    }
+
+    function renderFacts(isRu) {
+      const facts = isRu ? (topicData.key_facts_ru || topicData.key_facts_kz) : topicData.key_facts_kz;
+      const list = document.getElementById('factsList');
+      if (!facts || facts.length === 0) {
+        document.getElementById('factsSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('factsSection').classList.remove('hidden');
+      list.innerHTML = facts.map(f => `<li class="flex items-start space-x-2"><span class="text-amber-400 font-bold shrink-0 mt-0.5">•</span><span>${f}</span></li>`).join('');
+    }
+
+    function renderTraps(isRu) {
+      const traps = isRu ? (topicData.traps_ru || topicData.traps_kz) : topicData.traps_kz;
+      const list = document.getElementById('trapsList');
+      if (!traps || traps.length === 0) {
+        document.getElementById('trapsSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('trapsSection').classList.remove('hidden');
+      list.innerHTML = traps.map(tr => {
+        const str = String(tr);
+        const icon = str.startsWith('⚠️') ? '' : '<span class="text-amber-400 shrink-0 mt-0.5">⚠️</span> ';
+        return `<p class="leading-relaxed flex items-start space-x-2">${icon}<span>${str}</span></p>`;
+      }).join('');
+    }
+
+    function setLang(lang) {
+      currentLang = lang;
+      safeStorage.setItem('geotany_lang', lang);
+      const isRu = (lang === 'ru');
+
+      // Update lang buttons
+      const btnKz = document.getElementById('btnLangKz');
+      const btnRu = document.getElementById('btnLangRu');
+      if (isRu) {
+        btnRu.className = "px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow";
+        btnKz.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+      } else {
+        btnKz.className = "px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow";
+        btnRu.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+      }
+
+      // Update text fields
+      document.getElementById('navCatBadge').textContent = isRu ? (topicData.category_ru || 'География') : (topicData.category_kz || 'География');
+      document.getElementById('heroCatBadge').textContent = isRu ? (topicData.category_ru || 'География') : (topicData.category_kz || 'География');
+      document.getElementById('heroTitle').textContent = isRu ? topicData.title_ru : topicData.title_kz;
+
+      // Summary
+      document.getElementById('summaryHeader').textContent = isRu ? "КРАТКИЙ ОБЗОР ТЕМЫ" : "ТАҚЫРЫПҚА ҚЫСҚАША ШОЛУ";
+      document.getElementById('summaryText').textContent = isRu ? topicData.summary_ru : topicData.summary_kz;
+
+      // Theory
+      document.getElementById('theoryHeader').textContent = isRu ? "ПОЛНЫЙ ТЕОРЕТИЧЕСКИЙ МАТЕРИАЛ И КОНСПЕКТ" : "ТОЛЫҚ ТЕОРИЯЛЫҚ МАТЕРИАЛ МЕН КОНСПЕКТ";
+      document.getElementById('theoryContent').innerHTML = isRu ? topicData.full_theory_ru : topicData.full_theory_kz;
+
+      // SVG
+      document.getElementById('svgHeader').textContent = isRu ? "НАГЛЯДНАЯ СХЕМА И ИНФОГРАФИКА" : "КӨРНЕКІ СХЕМА МЕН ИНФОГРАФИКА";
+      const svgCode = isRu ? (topicData.svg_diagram_ru || topicData.svg_diagram) : topicData.svg_diagram;
+      document.getElementById('svgContainer').innerHTML = svgCode || '';
+
+      // Table, Facts, Traps
+      document.getElementById('tableHeader').textContent = isRu ? "СТРУКТУРИРОВАННАЯ ТАБЛИЦА ПОКАЗАТЕЛЕЙ И КЛАССИФИКАЦИИ" : "НАҚТЫ КӨРСЕТКІШТЕР МЕН КЛАССИФИКАЦИЯ КЕСТЕСІ";
+      renderTable(isRu);
+
+      document.getElementById('factsHeader').textContent = isRu ? "ГЛАВНЫЕ ФАКТЫ ДЛЯ ЕНТ И ЗАПОМИНАНИЯ" : "ҰБТ-ҒА ҚАЖЕТТІ НЕГІЗГІ ЕРЕЖЕЛЕР МЕН ФАКТІЛЕР";
+      renderFacts(isRu);
+
+      document.getElementById('trapsHeader').textContent = isRu ? "ЛОВУШКИ И ЛАЙФХАКИ ЕНТ" : "ҰБТ ҚАҚПАНДАРЫ МЕН ЛАЙФХАКТАР";
+      renderTraps(isRu);
+
+      // Blooket & Doc links
+      const btnB = document.getElementById('btnBlooket');
+      const bUrl = isRu ? (blooketData.ru || blooketData.kz) : (blooketData.kz || blooketData.ru);
+      if (bUrl) {
+        btnB.href = bUrl;
+        btnB.classList.remove('hidden');
+      } else {
+        btnB.classList.add('hidden');
+      }
+
+      const btnD = document.getElementById('btnDoc');
+      if (btnD) { const dUrl = isRu ? (blooketData.doc_ru || blooketData.doc_kz) : (blooketData.doc_kz || blooketData.doc_ru); if (dUrl) { btnD.href = dUrl; btnD.classList.remove('hidden'); } else { btnD.classList.add('hidden'); } }
+
+      updateCompleteButton();
+    }
+
+    // Initialization on page load with URL param and localStorage sync
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const queryLang = urlParams.get('lang');
+      let langToSet = 'kz';
+      if (queryLang === 'ru' || queryLang === 'kz') {
+        langToSet = queryLang;
+        safeStorage.setItem('geotany_lang', queryLang);
+      } else {
+        const savedLang = safeStorage.getItem('geotany_lang');
+        if (savedLang === 'ru') langToSet = 'ru';
+        else langToSet = 'kz';
+      }
+      setLang(langToSet);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="kk" class="dark">
+<head>
+  <!-- COURSE ACCESS GUARD: RESTRICT DIRECT ACCESS WITHOUT VALID CODE -->
+  <style id="authCloak">body { display: none !important; }</style>
+  <script>
+    (function() {
+      try {
+        var isAdmin = localStorage.getItem('geotany_admin_auth') === 'true';
+        var sessionStr = localStorage.getItem('geotany_user_session');
+        var isAuthorized = isAdmin;
+        if (!isAuthorized && sessionStr) {
+          var s = JSON.parse(sessionStr);
+          if (s && s.email && (s.courseCode || s.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        var profileStr = localStorage.getItem('geotany_user_profile');
+        if (!isAuthorized && profileStr) {
+          var p = JSON.parse(profileStr);
+          if (p && p.isRegistered && p.email && p.courseCode) {
+            isAuthorized = true;
+          }
+        }
+        if (!isAuthorized) {
+          var target = window.location.pathname.split('/').pop() || 'topics.html';
+          window.location.replace('../index.html?need_course=GEOTANY&redirect=' + encodeURIComponent(target));
+          return;
+        }
+        var cloak = document.getElementById('authCloak');
+        if (cloak) cloak.remove();
+      } catch (err) {
+        window.location.replace('../index.html');
+      }
+    })();
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>#7 Литосфералық катаклизмдер | GeoTany</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50: '#eef2ff', 100: '#e0e7ff', 200: '#c7d2fe', 300: '#a5b4fc', 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 800: '#3730a3', 900: '#312e81' },
+            space: { 800: '#1e293b', 850: '#172033', 900: '#0f172a', 950: '#0b1120' }
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Outfit', 'Inter', sans-serif; }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #0b1120; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+  </style>
+</head>
+<body class="bg-[#070b14] text-slate-100 min-h-screen flex flex-col selection:bg-cyan-500 selection:text-space-950">
+
+  <!-- STICKY TOP NAVBAR -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-space-950/85 border-b border-slate-800/80 px-4 sm:px-8 py-3">
+    <div class="max-w-6xl mx-auto flex items-center justify-between gap-3">
+      <!-- Left: Back Button & Badges -->
+      <div class="flex items-center space-x-2.5 sm:space-x-3 shrink-0">
+        <a href="../index.html#section-zhattau_grammar" id="btnBackToCourse" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white transition"><span>←</span><span id="btnBackToCourseText">Артқа</span></a>
+        <span class="px-2.5 py-1 rounded-full text-xs font-black bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
+          #7
+        </span>
+        <span id="navCatBadge" class="text-xs text-slate-400 font-bold hidden md:inline truncate max-w-[200px]">
+          Литосфера және Геодинамика
+        </span>
+      </div>
+
+      <!-- Right: Controls (Lang Switcher & Mark Complete) -->
+      <div class="flex items-center space-x-2 sm:space-x-3 shrink-0">
+        <!-- Language Switcher -->
+        <div class="inline-flex p-1 bg-space-900 border border-slate-800 rounded-xl space-x-1">
+          <button id="btnLangKz" onclick="setLang('kz')" class="px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow">
+            KZ
+          </button>
+          <button id="btnLangRu" onclick="setLang('ru')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">
+            RU
+          </button>
+        </div>
+
+        <!-- Mark as Completed Button -->
+        <button id="btnComplete" onclick="toggleComplete()" class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition border border-slate-700 bg-space-900 text-slate-300 hover:text-white hover:border-slate-600">
+          <span id="completeIcon" class="text-sm">○</span>
+          <span id="completeText" class="hidden sm:inline">Меңгерілді</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN TOPIC CONTAINER -->
+  <main class="max-w-5xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-8 space-y-6 flex-1">
+
+    <!-- HERO HEADER CARD -->
+    <div class="p-6 sm:p-7 rounded-2xl bg-space-950/90 border border-slate-800 space-y-3.5 shadow-xl relative overflow-hidden">
+      <div class="absolute -right-12 -top-12 w-48 h-48 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="flex items-center space-x-2">
+        <span id="heroCatBadge" class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-space-850 text-cyan-400 border border-cyan-500/20">
+          Литосфера және Геодинамика
+        </span>
+        <span class="text-xs text-slate-400">⏱️ ~8-12 мин оқу</span>
+      </div>
+      <h1 id="heroTitle" class="text-xl sm:text-2xl md:text-3xl font-black text-white tracking-tight leading-snug">
+        Литосфералық катаклизмдер
+      </h1>
+      <!-- External Links Bar -->
+      <div class="flex flex-wrap items-center gap-2 pt-1">
+        <a id="btnBlooket" href="https://dashboard.blooket.com/set/6a95f2d8c923faa1d82d3fde" target="_blank" class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 border border-purple-500/40 text-xs font-bold transition shadow-sm">
+          <span>🎮</span>
+          <span id="btnBlooketText">Blooket ойыны</span>
+        </a>
+        <button onclick="window.print()" class="inline-flex items-center space-x-1 px-3 py-1.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-400 hover:text-white transition">
+          <span>🖨️</span>
+          <span class="hidden sm:inline">Басып шығару</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 1. BRIEF SUMMARY CARD -->
+    <section class="p-5 rounded-2xl bg-space-950 border border-brand-500/40 text-xs sm:text-sm text-slate-200 leading-relaxed shadow-lg">
+      <div class="flex items-center space-x-2 text-brand-400 font-extrabold text-xs mb-2">
+        <span>📖</span>
+        <span id="summaryHeader">ТАҚЫРЫПҚА ҚЫСҚАША ШОЛУ</span>
+      </div>
+      <p id="summaryText" class="leading-relaxed">
+        Литосфералық катаклизмдер — жер қойнауындағы эндогендік процестердің әсерінен болатын жойқын апатты құбылыстар: жер сілкінісі (гипоцентр, эпицентр, MSK-64 12 баллдық шкаласы, 4 сейсмикалық белдеу), цунами («үдемелі толқын», 400-800 км/сағ) және жанартаулар (800-ге жуық сөнбеген жанартау, көмей, кратер, лава, әлемнің 12 ірі жанартауы) бойынша толық оқу-әдістемелік конспект.
+      </p>
+    </section>
+
+    <!-- 2. FULL THEORY SECTION -->
+    <section class="p-5 sm:p-7 rounded-2xl bg-space-950 border border-slate-800 space-y-4 shadow-xl">
+      <div class="flex items-center space-x-2 border-b border-slate-800 pb-3">
+        <span class="text-base text-cyan-400 font-black">📚</span>
+        <h2 id="theoryHeader" class="text-xs sm:text-sm font-black text-white uppercase tracking-wider">
+          ТОЛЫҚ ТЕОРИЯЛЫҚ МАТЕРИАЛ МЕН КОНСПЕКТ
+        </h2>
+      </div>
+      <div id="theoryContent">
+        <div class="space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed">
+
+  <!-- 1. КАТАКЛИЗМ ҰҒЫМЫ ЖӘНЕ ЛИТОСФЕРАЛЫҚ АПАТТАР -->
+  <div class="p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3">
+    <h4 class="text-sm sm:text-base font-black text-rose-400 flex items-center space-x-2 border-b border-slate-800 pb-2">
+      <span>🌋</span>
+      <span>1. ЛИТОСФЕРАЛЫҚ КАТАКЛИЗМДЕР ҰҒЫМЫ ЖӘНЕ НЕГІЗГІ ТҮРЛЕРІ</span>
+    </h4>
+    <p>
+      <strong class="text-white font-bold">Катаклизм</strong> (грекше <em>kataklysmos</em> — су тасқыны, күйреу) — жер бетінде кенеттен болатын жойқын апатты жағдай, табиғаттағы қайтымсыз экологиялық және геоморфологиялық катастрофа.
+    </p>
+    <div class="p-3.5 rounded-xl bg-space-950 border border-rose-500/30 text-xs text-rose-200 space-y-2">
+      <div class="font-bold text-rose-400 flex items-center space-x-2">
+        <span>⚠️</span>
+        <span>Литосфералық катаклизмдердің 3 негізгі түрі:</span>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 font-medium">
+        <div class="p-2 rounded-lg bg-space-900 border border-slate-800 text-center">
+          <span class="block text-amber-400 font-black text-sm">1. ЖЕР СІЛКІНІСІ</span>
+          <span class="text-[11px] text-slate-300">Жер қыртысындағы тектоникалық дүмпу</span>
+        </div>
+        <div class="p-2 rounded-lg bg-space-900 border border-slate-800 text-center">
+          <span class="block text-rose-400 font-black text-sm">2. ЖАНАРТАУ АТҚЫЛАУЫ</span>
+          <span class="text-[11px] text-slate-300">Магма мен лаваның жер бетіне шығуы</span>
+        </div>
+        <div class="p-2 rounded-lg bg-space-900 border border-slate-800 text-center">
+          <span class="block text-cyan-400 font-black text-sm">3. ЦУНАМИ</span>
+          <span class="text-[11px] text-slate-300">Су асты жер сілкінісінен туатын алып толқын</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. ЖЕР СІЛКІНІСІ, ЭПИЦЕНТР ЖӘНЕ СЕЙСМИКАЛЫҚ ШКАЛА -->
+  <div class="p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3">
+    <h4 class="text-sm sm:text-base font-black text-amber-400 flex items-center space-x-2 border-b border-slate-800 pb-2">
+      <span>⚡</span>
+      <span>2. ЖЕР СІЛКІНІСІ ҚҰРЫЛЫМЫ, ЭПИЦЕНТР ЖӘНЕ MSK-64 ШКАЛАСЫ</span>
+    </h4>
+    <p>
+      Жер қыртысының немесе жоғарғы мантияның терең қойнауындағы кенеттен үлкен күш алып жарылып қозғалған жері — <strong class="text-amber-300 font-bold">Жер сілкінісі ошағы (Гипоцентр)</strong> деп аталады.
+    </p>
+    <p>
+      Тереңдегі дүмпу толқындарының жер бетіне тік шығатын ең жақын нүктесі — <strong class="text-amber-300 font-bold">Эпицентр</strong> (грекше <em>epi</em> — үстінде, <em>kentron</em> — орталық). Эпицентрде жер сілкінісінің күші мен қирату деңгейі ең жоғары болады.
+    </p>
+    
+    <div class="p-3.5 rounded-xl bg-space-950 border border-amber-500/30 text-xs space-y-2">
+      <div class="font-bold text-amber-400">Халықаралық сейсмикалық өлшем шкаласы:</div>
+      <ul class="space-y-1.5 list-disc list-inside text-slate-300">
+        <li><strong class="text-white">Шкаланы жасаған көрнекті ғалымдар:</strong> кеңестік ғалым <strong class="text-amber-300">С. Медведев</strong>, неміс ғалымы <strong class="text-amber-300">В. Шпонхойер</strong> және чех сейсмологы <strong class="text-amber-300">В. Карник</strong>.</li>
+        <li><strong class="text-white">Құрылған жылы мен ресми атауы:</strong> <strong class="text-cyan-300">1964 жылы (MSK-64 шкаласы)</strong>.</li>
+        <li><strong class="text-white">Сейсмикалық шкала өлшемі:</strong> <strong class="text-amber-300">12 баллдық шкала</strong> (1-4 балл — адамдарға сезілмейді немесе әлсіз; 5-7 балл — орташа, ғимарат қабырғалары жарылады; 8-10 балл — жойқын қираулар; 11-12 балл — апатты өзгерістер, жер қыртысы жарылып, жер бедері өзгереді).</li>
+      </ul>
+    </div>
+
+    <!-- Embedded SVG 1 -->
+    <div class="my-3">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 240" class="w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2">
+  <text x="350" y="22" fill="#38bdf8" font-size="11.5" font-weight="900" text-anchor="middle">ЖЕР СІЛКІНІСІ ҚҰРЫЛЫМЫ, ЭПИЦЕНТР ЖӘНЕ ЦУНАМИ МЕХАНИЗМІ</text>
+
+  <!-- Left: Earthquake Cross-section -->
+  <g transform="translate(20, 38)">
+    <rect x="0" y="0" width="320" height="190" rx="8" fill="#0f172a" stroke="#ef4444" stroke-width="1.2" />
+    <rect x="10" y="8" width="300" height="22" rx="4" fill="#ef4444" fill-opacity="0.15" />
+    <text x="160" y="23" fill="#f87171" font-size="10" font-weight="bold" text-anchor="middle">ЖЕР СІЛКІНІСІ (ГИПОЦЕНТР ЖӘНЕ ЭПИЦЕНТР)</text>
+
+    <!-- Graphic -->
+    <rect x="25" y="45" width="270" height="70" rx="5" fill="#1e293b" />
+    <!-- Fault line -->
+    <path d="M 60 100 L 160 80 L 260 55" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4 2" />
+    <!-- Focus -->
+    <circle cx="160" cy="80" r="8" fill="#ef4444" />
+    <circle cx="160" cy="80" r="16" fill="none" stroke="#f87171" stroke-width="1.5" stroke-dasharray="3 3" />
+    <text x="160" y="84" fill="#ffffff" font-size="7" font-weight="bold" text-anchor="middle">ОШАҚ</text>
+    
+    <!-- Epicenter on surface -->
+    <polygon points="160,42 165,52 155,52" fill="#38bdf8" />
+    <text x="160" y="38" fill="#38bdf8" font-size="8.5" font-weight="bold" text-anchor="middle">ЭПИЦЕНТР (ЖЕР БЕТІ)</text>
+
+    <text x="15" y="132" fill="#cbd5e1" font-size="8.5">• <tspan font-weight="bold" fill="#ffffff">Ошақ (Гипоцентр):</tspan> терең қойнауда дүмпу басталған жер.</text>
+    <text x="15" y="148" fill="#cbd5e1" font-size="8.5">• <tspan font-weight="bold" fill="#ffffff">Эпицентр:</tspan> дүмпу жер бетіне шығып, ең күшті сезілетін жер.</text>
+    <text x="15" y="164" fill="#cbd5e1" font-size="8.5">• <tspan font-weight="bold" fill="#34d399">MSK-64 шкаласы:</tspan> 1964 ж. құрылған <tspan font-weight="bold" fill="#fbbf24">12 баллдық</tspan> жүйе</text>
+    <text x="25" y="178" fill="#94a3b8" font-size="8">(Авторлары: С. Медведев, В. Шпонхойер, В. Карник).</text>
+  </g>
+
+  <!-- Right: Tsunami -->
+  <g transform="translate(360, 38)">
+    <rect x="0" y="0" width="320" height="190" rx="8" fill="#0f172a" stroke="#0ea5e9" stroke-width="1.2" />
+    <rect x="10" y="8" width="300" height="22" rx="4" fill="#0284c7" fill-opacity="0.15" />
+    <text x="160" y="23" fill="#38bdf8" font-size="10" font-weight="bold" text-anchor="middle">ЦУНАМИ («ҮДЕМЕЛІ ТОЛҚЫН»)</text>
+
+    <!-- Wave Graphic -->
+    <rect x="25" y="45" width="270" height="70" rx="5" fill="#1e293b" />
+    <path d="M 30 90 Q 90 85 150 75 T 230 55 T 285 45" fill="none" stroke="#38bdf8" stroke-width="2.5" />
+    <polygon points="285,45 285,95 240,95" fill="#38bdf8" fill-opacity="0.3" />
+    <text x="80" y="105" fill="#94a3b8" font-size="8">Ашық мұхит (400–800 км/сағ)</text>
+    <text x="235" y="105" fill="#f87171" font-size="8" font-weight="bold">Жағалау (алып толқын)</text>
+
+    <text x="15" y="132" fill="#cbd5e1" font-size="8.5">• <tspan font-weight="bold" fill="#ffffff">Этимологиясы:</tspan> Жапон тілінде <tspan font-weight="bold" fill="#38bdf8">«үдемелі толқын»</tspan> деген сөз.</text>
+    <text x="15" y="148" fill="#cbd5e1" font-size="8.5">• <tspan font-weight="bold" fill="#ffffff">Пайда болуы:</tspan> су астындағы жер сілкінісі мен жанартау.</text>
+    <text x="15" y="164" fill="#cbd5e1" font-size="8.5">• <tspan font-weight="bold" fill="#fbbf24">Таралу жылдамдығы:</tspan> <tspan font-weight="bold" fill="#ffffff">400–800 км/сағ</tspan> шамасында.</text>
+    <text x="15" y="180" fill="#cbd5e1" font-size="8.5">• Жағалауға таяғанда биіктігі ондаған метрге дейін жетеді.</text>
+  </g>
+</svg>
+    </div>
+  </div>
+
+  <!-- 3. ДҮНИЕ ЖҮЗІНДЕГІ 4 СЕЙСМИКАЛЫҚ БЕЛДЕУ -->
+  <div class="p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3">
+    <h4 class="text-sm sm:text-base font-black text-cyan-400 flex items-center space-x-2 border-b border-slate-800 pb-2">
+      <span>🌐</span>
+      <span>3. ДҮНИЕ ЖҮЗІНДЕГІ 4 НЕГІЗГІ СЕЙСМИКАЛЫҚ БЕЛДЕУ</span>
+    </h4>
+    <p>
+      Жер шарындағы литосфералық тақталардың шекараларында қозғалмалы геосинклинальдық белдеулер орналасқан. Жер сілкіністері мен жанартаулар біркелкі таралмай, негізгі <strong class="text-cyan-300 font-bold">4 сейсмикалық белдеуде</strong> топтасқан:
+    </p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+      <div class="p-3.5 rounded-xl bg-space-950 border border-cyan-500/30 space-y-2">
+        <div class="font-extrabold text-cyan-300 text-sm flex items-center space-x-2">
+          <span>🔵</span>
+          <span>1. Тынық мұхиттық белдеу («Отты шеңбер»)</span>
+        </div>
+        <p class="text-slate-300 leading-relaxed">
+          <strong class="text-white">Қамтитын аймақтары:</strong> Камчатка түбегі, Куриль аралдары, Сахалин аралдары, Жапон және Филиппин теңіздері, Жаңа Зеландия аралы, Солтүстік және Оңтүстік Америка жағалауы (Кордильера және Анд таулары бойымен).
+        </p>
+        <span class="inline-block px-2 py-0.5 rounded bg-cyan-950 text-cyan-400 font-mono text-[10px] border border-cyan-800">Дүние жүзі жер сілкіністерінің ~80%-ы</span>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-space-950 border border-amber-500/30 space-y-2">
+        <div class="font-extrabold text-amber-300 text-sm flex items-center space-x-2">
+          <span>🟠</span>
+          <span>2. Жерорта теңіздік және Альпі аймағы</span>
+        </div>
+        <p class="text-slate-300 leading-relaxed">
+          <strong class="text-white">Географиялық созылымы:</strong> Атлант мұхитындағы Португалия жағалауындағы Жасыл мүйіс аралынан бастап шығысында Жаңа Гвинея аралына дейін <strong class="text-amber-300">15 мың км-ге</strong> созылып жатыр. Оңтүстік Еуропа, Кавказ, Кіші Азия және Гималай тауларын қамтиды.
+        </p>
+        <span class="inline-block px-2 py-0.5 rounded bg-amber-950 text-amber-400 font-mono text-[10px] border border-amber-800">Ұзындығы: 15 000 км</span>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-space-950 border border-emerald-500/30 space-y-2">
+        <div class="font-extrabold text-emerald-300 text-sm flex items-center space-x-2">
+          <span>🟢</span>
+          <span>3. Шығыс Африка аймағы (Ұлы Рифт)</span>
+        </div>
+        <p class="text-slate-300 leading-relaxed">
+          <strong class="text-white">Географиялық созылымы:</strong> Арабия түбегінің табанынан және Қызыл теңізден бастап Африканың оңтүстігіндегі Замбези өзеніне дейінгі <strong class="text-emerald-300">6500 км</strong> ірі тектоникалық жарықшақ (грабендер жүйесі). Килиманджаро мен Кения жанартаулары осы аймақта.
+        </p>
+        <span class="inline-block px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 font-mono text-[10px] border border-emerald-800">Ұзындығы: 6 500 км жарықшақ</span>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-space-950 border border-purple-500/30 space-y-2">
+        <div class="font-extrabold text-purple-300 text-sm flex items-center space-x-2">
+          <span>🟣</span>
+          <span>4. Орта Азия аймағы</span>
+        </div>
+        <p class="text-slate-300 leading-relaxed">
+          <strong class="text-white">Қамтитын тау жүйелері:</strong> Моңғол Алтайы, Тянь-Шань таулары, Хангай таулы үстірті, Кунь-Лунь, Нань-Шань жоталары. Қазақстанның оңтүстік және оңтүстік-шығыс өңірлері (Алматы, Жамбыл, Түркістан) осы белдеуде жатыр.
+        </p>
+        <span class="inline-block px-2 py-0.5 rounded bg-purple-950 text-purple-400 font-mono text-[10px] border border-purple-800">Қазақстанның сейсмикалық аймағы</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. ЦУНАМИ ЖӘНЕ ОНЫҢ ПАЙДА БОЛУЫ -->
+  <div class="p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3">
+    <h4 class="text-sm sm:text-base font-black text-sky-400 flex items-center space-x-2 border-b border-slate-800 pb-2">
+      <span>🌊</span>
+      <span>4. ЦУНАМИ — МҰХИТТАҒЫ ЖОЙҚЫН ҮДЕМЕЛІ ТОЛҚЫНДАР</span>
+    </h4>
+    <p>
+      <strong class="text-white font-bold">Цунами</strong> — жапон тілінен аударғанда <strong class="text-sky-300 font-bold">«үдемелі толқын»</strong> (шығанақтағы үлкен толқын, <em>tsu</em> — айлақ/шығанақ, <em>nami</em> — толқын) деген мағынаны білдіреді.
+    </p>
+    <div class="p-3.5 rounded-xl bg-space-950 border border-sky-500/30 text-xs space-y-2">
+      <div class="font-bold text-sky-400">Цунамидің физикалық-географиялық сипаттамасы:</div>
+      <ul class="space-y-1.5 list-disc list-inside text-slate-300">
+        <li><strong class="text-white">Пайда болу себебі:</strong> мұхит түбінде болатын күшті су асты жер сілкіністері, теңіз түбінің опырылуы немесе су асты жанартауларының атқылауы нәтижесінде тұтас су қабаты қозғалысқа түседі.</li>
+        <li><strong class="text-white">Цунами жылдамдығы:</strong> ашық мұхитта <strong class="text-sky-300 font-bold">400–800 км/сағ</strong>-қа жетеді (реактивті ұшақтың жылдамдығымен бірдей).</li>
+        <li><strong class="text-white">Апатты күші:</strong> терең суда толқын биіктігі 0.5–2 метрден аспай байқалмаса, таяз жағалауға жеткенде жылдамдығы бәсеңдеп, толқын биіктігі <strong class="text-rose-400 font-bold">20–40 метрге</strong> дейін қабырға болып көтеріліп, жағалауды түгел жайпап өтеді.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 5. ЖАНАРТАУ ҚҰРЫЛЫСЫ ЖӘНЕ ЛАВА -->
+  <div class="p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3">
+    <h4 class="text-sm sm:text-base font-black text-rose-400 flex items-center space-x-2 border-b border-slate-800 pb-2">
+      <span>🌋</span>
+      <span>5. ЖАНАРТАУДЫҢ ІШКІ ЖӘНЕ СЫРТҚЫ ҚҰРЫЛЫСЫ</span>
+    </h4>
+    <p>
+      <strong class="text-white font-bold">Жанартау</strong> — көмейінен ыстық газ, су буы, күл, тас (бомбалар), т.б. тау жыныстары атқылап тұратын және лава тасып тұратын конус формалы тау.
+    </p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+      <div class="p-3 rounded-xl bg-space-950 border border-slate-800 space-y-1">
+        <span class="text-amber-400 font-bold">Сөнбеген жанартаулар саны:</span>
+        <p class="text-slate-300">Жер бетінде қазіргі уақытта <strong class="text-white">800-ге жуық сөнбеген (әрекеттегі) жанартау</strong> тіркелген.</p>
+      </div>
+      <div class="p-3 rounded-xl bg-space-950 border border-slate-800 space-y-1">
+        <span class="text-rose-400 font-bold">Жанартаулардың негізгі орны:</span>
+        <p class="text-slate-300">Жанартаулардың басым көпшілігі <strong class="text-white">Тынық мұхитында</strong> және оның жағалауындағы «Отты шеңберде» орналасқан.</p>
+      </div>
+    </div>
+
+    <div class="p-3.5 rounded-xl bg-space-950 border border-rose-500/30 text-xs space-y-2">
+      <div class="font-bold text-rose-400">Жанартау құрылымының негізгі элементтері:</div>
+      <ul class="space-y-1.5 list-disc list-inside text-slate-300">
+        <li><strong class="text-white">Лава:</strong> жанартау атқылаған кезде магма ошағынан жер бетіне шығып төгілетін, газдарынан арылған отты қоймалжың балқыған зат. Температурасы 700–1200°C.</li>
+        <li><strong class="text-white">Жанартау көмейі (жерло):</strong> магма ошағынан жоғары қарай көтерілетін, өңеш тәрізді цилиндрлік тік канал.</li>
+        <li><strong class="text-white">Кратер:</strong> жанартау ұшындағы тостаған тәрізді, лава мен газдар тасып төгілетін шұңқыр ұңғыма. Грек тілінен аударғанда <strong class="text-amber-300 font-bold">«тостаған»</strong> деген мағынаны білдіреді.</li>
+        <li><strong class="text-white">Куриль аралдары:</strong> Тынық мұхитындағы сөнбеген жанартаулардың конустары көп шоғырланған белсенді аралдар доғасы.</li>
+      </ul>
+    </div>
+
+    <!-- Embedded SVG 2 -->
+    <div class="my-3">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 240" class="w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2">
+  <text x="350" y="22" fill="#38bdf8" font-size="11.5" font-weight="900" text-anchor="middle">ЖАНАРТАУДЫҢ ҚҰРЫЛЫСЫ (КӨМЕЙ, КРАТЕР, ЛАВА) ЖӘНЕ ӘЛЕМ ЖАНАРТАУЛАРЫ</text>
+
+  <!-- Left: Volcano Structure -->
+  <g transform="translate(20, 38)">
+    <rect x="0" y="0" width="320" height="190" rx="8" fill="#0f172a" stroke="#f59e0b" stroke-width="1.2" />
+    <rect x="10" y="8" width="300" height="22" rx="4" fill="#f59e0b" fill-opacity="0.15" />
+    <text x="160" y="23" fill="#fbbf24" font-size="10" font-weight="bold" text-anchor="middle">ЖАНАРТАУДЫҢ НЕГІЗГІ ЭЛЕМЕНТТЕРІ</text>
+
+    <!-- Cone cone graphic -->
+    <g transform="translate(160, 115)">
+      <!-- Volcano Cone -->
+      <polygon points="-80,55 0,-15 80,55" fill="#334155" stroke="#475569" stroke-width="1.5" />
+      <!-- Vent/conduit -->
+      <line x1="0" y1="55" x2="0" y2="-15" stroke="#ef4444" stroke-width="6" />
+      <!-- Crater bowl -->
+      <ellipse cx="0" cy="-15" rx="14" ry="4" fill="#1e293b" stroke="#f59e0b" stroke-width="1.5" />
+      <!-- Magma chamber -->
+      <ellipse cx="0" cy="55" rx="35" ry="12" fill="#ef4444" />
+      <!-- Eruption cloud -->
+      <ellipse cx="0" cy="-35" rx="32" ry="14" fill="#475569" fill-opacity="0.6" />
+      <text x="0" y="-32" fill="#fbbf24" font-size="7.5" font-weight="bold" text-anchor="middle">Газ, күл, бу</text>
+    </g>
+
+    <text x="15" y="172" fill="#cbd5e1" font-size="8.5">• <tspan font-weight="bold" fill="#38bdf8">Кратер (грекше тостаған):</tspan> ұшындағы ойыс ұңғыма.</text>
+    <text x="15" y="186" fill="#cbd5e1" font-size="8.5">• <tspan font-weight="bold" fill="#fb923c">Көмей (өңеш):</tspan> магма көтерілетін тік арна.</text>
+    <text x="15" y="200" fill="#cbd5e1" font-size="8.5">• <tspan font-weight="bold" fill="#f87171">Лава:</tspan> жер бетіне төгілетін отты балқыған қоймалжың зат.</text>
+  </g>
+
+  <!-- Right: 12 Major Volcanoes -->
+  <g transform="translate(360, 38)">
+    <rect x="0" y="0" width="320" height="190" rx="8" fill="#0f172a" stroke="#8b5cf6" stroke-width="1.2" />
+    <rect x="10" y="8" width="300" height="22" rx="4" fill="#8b5cf6" fill-opacity="0.15" />
+    <text x="160" y="23" fill="#c084fc" font-size="10" font-weight="bold" text-anchor="middle">ӘЛЕМНІҢ 12 АТАҚТЫ ЖАНАРТАУЫ</text>
+
+    <text x="15" y="44" fill="#ffffff" font-size="8.5">1. <tspan font-weight="bold" fill="#38bdf8">Гекла</tspan> — Исландия (26-дан астам сөнбеген жанартау)</text>
+    <text x="15" y="58" fill="#ffffff" font-size="8.5">2. <tspan font-weight="bold" fill="#38bdf8">Везувий</tspan> — Апеннин түбегі (Италия)</text>
+    <text x="15" y="72" fill="#ffffff" font-size="8.5">3. <tspan font-weight="bold" fill="#38bdf8">Этна</tspan> — Сицилия аралы (Еуропадағы ең биік)</text>
+    <text x="15" y="86" fill="#ffffff" font-size="8.5">4. <tspan font-weight="bold" fill="#38bdf8">Эльбрус (5642 м), Қазбек</tspan> — Кавказ (сөнген жанартаулар)</text>
+    <text x="15" y="100" fill="#ffffff" font-size="8.5">5. <tspan font-weight="bold" fill="#f87171">Ключий шоқысы (4750 м)</tspan> — Камчатка (Еуразия ең биігі)</text>
+    <text x="15" y="114" fill="#ffffff" font-size="8.5">6. <tspan font-weight="bold" fill="#38bdf8">Фудзияма</tspan> — Жапонияның киелі жанартауы</text>
+    <text x="15" y="128" fill="#ffffff" font-size="8.5">7. <tspan font-weight="bold" fill="#fbbf24">Килиманджаро (5895 м)</tspan> — Африка материгі</text>
+    <text x="15" y="142" fill="#ffffff" font-size="8.5">8. <tspan font-weight="bold" fill="#38bdf8">Кракатау</tspan> — Ява аралы (Индонезия)</text>
+    <text x="15" y="156" fill="#ffffff" font-size="8.5">9. <tspan font-weight="bold" fill="#38bdf8">Мауна-Лоа</tspan> — Гавай аралдары (АҚШ)</text>
+    <text x="15" y="170" fill="#ffffff" font-size="8.5">10. <tspan font-weight="bold" fill="#38bdf8">Руапеху</tspan> — Жаңа Зеландия аралы</text>
+    <text x="15" y="184" fill="#ffffff" font-size="8.5">11. <tspan font-weight="bold" fill="#fbbf24">Котопахи</tspan> — Эквадор (30-дан астам жанартау ішіндегі ірісі)</text>
+    <text x="15" y="198" fill="#ffffff" font-size="8.5">12. <tspan font-weight="bold" fill="#f87171">Льюльяйльяко &amp; Охос-дель-Саладо</tspan> — Анд таулары</text>
+  </g>
+</svg>
+    </div>
+  </div>
+
+  <!-- 6. ӘЛЕМ БОЙЫНША 12 ІРІ ЖАНАРТАУ -->
+  <div class="p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3">
+    <h4 class="text-sm sm:text-base font-black text-amber-400 flex items-center space-x-2 border-b border-slate-800 pb-2">
+      <span>🗺️</span>
+      <span>6. ӘЛЕМ БОЙЫНША 12 ІРІ ЖАНАРТАУ ЖӘНЕ ОЛАРДЫҢ ОРНЫ</span>
+    </h4>
+    <p>ҰБТ және география емтихандарында міндетті түрде сұралатын әлемнің 12 негізгі жанартауы мен олардың географиялық мекенжайы:</p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 text-xs">
+      <div class="p-2.5 rounded-xl bg-space-950 border border-slate-800">
+        <div class="font-bold text-amber-300">1. Гекла (Исландия)</div>
+        <div class="text-slate-400 text-[11px]">26-дан астам ірі сөнбеген жанартауы бар аралдағы ең ірісі. Биіктігі 1491 м.</div>
+      </div>
+      <div class="p-2.5 rounded-xl bg-space-950 border border-slate-800">
+        <div class="font-bold text-amber-300">2. Везувий (Апеннин түбегі)</div>
+        <div class="text-slate-400 text-[11px]">Италия. Б.з. 79 ж. Помпей қаласын күйреткен әйгілі сөнбеген жанартау (1281 м).</div>
+      </div>
+      <div class="p-2.5 rounded-xl bg-space-950 border border-slate-800">
+        <div class="font-bold text-amber-300">3. Этна (Сицилия аралы)</div>
+        <div class="text-slate-400 text-[11px]">Италия. Еуропадағы ең биік белсенді жанартау (3357 м), жиі атқылайды.</div>
+      </div>
+      <div class="p-2.5 rounded-xl bg-space-950 border border-slate-800">
+        <div class="font-bold text-cyan-300">4. Эльбрус және Қазбек (Кавказ)</div>
+        <div class="text-slate-400 text-[11px]">Кавказ тауларындағы сөнген жанартаулар (Эльбрус — 5642 м, Қазбек — 5033 м).</div>
+      </div>
+      <div class="p-2.5 rounded-xl bg-space-950 border border-slate-800">
+        <div class="font-bold text-rose-300">5. Ключий шоқысы (Камчатка)</div>
+        <div class="text-slate-400 text-[11px]">Ресей. Еуразия құрлығындағы ең биік сөнбеген жанартау (4750 м).</div>
+      </div>
+      <div class="p-2.5 rounded-xl bg-space-950 border border-slate-800">
+        <div class="font-bold text-amber-300">6. Фудзияма (Жапония)</div>
+        <div class="text-slate-400 text-[11px]">Хонсю аралындағы Жапонияның ең биік, қасиетті конус тәрізді жанартауы (3776 м).</div>
+      </div>
+      <div class="p-2.5 rounded-xl bg-space-950 border border-slate-800">
+        <div class="font-bold text-emerald-300">7. Килиманджаро (Африка)</div>
+        <div class="text-slate-400 text-[11px]">Танзания. Африка құрлығының ең биік шыңы және алып жанартауы (5895 м).</div>
+      </div>
+      <div class="p-2.5 rounded-xl bg-space-950 border border-slate-800">
+        <div class="font-bold text-rose-300">8. Кракатау (Ява аралы)</div>
+        <div class="text-slate-400 text-[11px]">Индонезия, Зонд бұғазы. 1883 жылы сұрапыл жарылысымен әлемге танылған жанартау.</div>
+      </div>
+      <div class="p-2.5 rounded-xl bg-space-950 border border-slate-800">
+        <div class="font-bold text-cyan-300">9. Мауна-Лоа / Мауна-Лао (Гавай)</div>
+        <div class="text-slate-400 text-[11px]">Тынық мұхит, АҚШ. Жер шарындағы көлемі мен массасы бойынша ең үлкен жанартау.</div>
+      </div>
+      <div class="p-2.5 rounded-xl bg-space-950 border border-slate-800">
+        <div class="font-bold text-purple-300">10. Руапеху (Жаңа Зеландия)</div>
+        <div class="text-slate-400 text-[11px]">Тынық мұхиты, Солтүстік арал. Жаңа Зеландияның ірі әрекеттегі жанартауы (2797 м).</div>
+      </div>
+      <div class="p-2.5 rounded-xl bg-space-950 border border-slate-800">
+        <div class="font-bold text-amber-300">11. Котопахи (Эквадор)</div>
+        <div class="text-slate-400 text-[11px]">Оңтүстік Америка. 30-дан аса жанартауы бар Эквадордың ең ірі белсенді жанартауы (5897 м).</div>
+      </div>
+      <div class="p-2.5 rounded-xl bg-space-950 border border-slate-800">
+        <div class="font-bold text-rose-300">12. Льюльяйльяко және Охос-дель-Саладо</div>
+        <div class="text-slate-400 text-[11px]">Анд таулары (Чили/Аргентина). Жер шарындағы ең биік жанартаулар (6739 м және 6893 м).</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+      </div>
+    </section>
+
+    <!-- 3. VISUAL SVG DIAGRAM / ILLUSTRATION -->
+    <section id="svgSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl">
+      <div class="flex items-center space-x-2 text-amber-400 font-extrabold text-xs">
+        <span>🎨</span>
+        <span id="svgHeader">КӨРНЕКІ СХЕМА МЕН ИНФОГРАФИКА</span>
+      </div>
+      <div id="svgContainer" class="w-full flex justify-center overflow-x-auto">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 250" class="w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner">
+  <text x="350" y="24" fill="#38bdf8" font-size="12" font-weight="900" text-anchor="middle">ЛИТОСФЕРАЛЫҚ КАТАКЛИЗМДЕР: ЖЕР СІЛКІНІСІ, ЦУНАМИ ЖӘНЕ ЖАНАРТАУЛАР</text>
+
+  <!-- Left Card: Earthquakes -->
+  <rect x="15" y="40" width="210" height="195" rx="10" fill="#0f172a" stroke="#ef4444" stroke-width="1.5" />
+  <rect x="25" y="50" width="190" height="24" rx="6" fill="#ef4444" fill-opacity="0.15" />
+  <text x="120" y="66" fill="#f87171" font-size="10.5" font-weight="900" text-anchor="middle">ЖЕР СІЛКІНІСТЕРІ</text>
+  <text x="26" y="92" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#ffffff">Гипоцентр:</tspan> тереңдегі ошақ</text>
+  <text x="26" y="108" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#ffffff">Эпицентр:</tspan> жер бетіндегі нүкте</text>
+  <text x="26" y="128" fill="#38bdf8" font-size="9.5" font-weight="bold">• MSK-64 ШКАЛАСЫ (1964 ж.):</text>
+  <text x="34" y="142" fill="#94a3b8" font-size="9">12 баллдық жүйе (Медведев,</text>
+  <text x="34" y="156" fill="#94a3b8" font-size="9">Шпонхойер, Карник жасаған)</text>
+  <text x="26" y="176" fill="#fbbf24" font-size="9.5" font-weight="bold">• 4 СЕЙСМИКАЛЫҚ БЕЛДЕУ:</text>
+  <text x="34" y="190" fill="#94a3b8" font-size="9">1. Тынық мұхит (80%), 2. Альпі</text>
+  <text x="34" y="204" fill="#94a3b8" font-size="9">3. Шығыс Африка (6500 км),</text>
+  <text x="34" y="218" fill="#94a3b8" font-size="9">4. Орта Азия (Тянь-Шань)</text>
+
+  <!-- Middle Card: Tsunami -->
+  <rect x="245" y="40" width="210" height="195" rx="10" fill="#0f172a" stroke="#0ea5e9" stroke-width="1.5" />
+  <rect x="255" y="50" width="190" height="24" rx="6" fill="#0284c7" fill-opacity="0.15" />
+  <text x="350" y="66" fill="#38bdf8" font-size="10.5" font-weight="900" text-anchor="middle">ЦУНАМИ ТОЛҚЫНЫ</text>
+  <text x="256" y="92" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#ffffff">Мағынасы:</tspan> жапон тілінде</text>
+  <text x="264" y="106" fill="#38bdf8" font-size="9">«үдемелі толқын» деген сөз</text>
+  <text x="256" y="126" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#ffffff">Пайда болуы:</tspan> су астындағы</text>
+  <text x="264" y="140" fill="#94a3b8" font-size="9">күшті жер сілкіністерінен</text>
+  <text x="256" y="160" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#fbbf24">Жылдамдығы:</tspan> 400–800 км/сағ</text>
+  <text x="256" y="180" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#ffffff">Биіктігі:</tspan> жағалауға келгенде</text>
+  <text x="264" y="194" fill="#94a3b8" font-size="9">ондаған метрге өсіп, жойқын</text>
+  <text x="264" y="208" fill="#94a3b8" font-size="9">апат пен қирату әкеледі</text>
+
+  <!-- Right Card: Volcanoes -->
+  <rect x="475" y="40" width="210" height="195" rx="10" fill="#0f172a" stroke="#f59e0b" stroke-width="1.5" />
+  <rect x="485" y="50" width="190" height="24" rx="6" fill="#f59e0b" fill-opacity="0.15" />
+  <text x="580" y="66" fill="#fbbf24" font-size="10.5" font-weight="900" text-anchor="middle">ЖАНАРТАУЛАР</text>
+  <text x="486" y="92" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#ffffff">Сөнбеген жанартаулар:</tspan></text>
+  <text x="494" y="106" fill="#94a3b8" font-size="9">Жер бетінде 800-ге жуық</text>
+  <text x="486" y="126" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#38bdf8">Кратер:</tspan> грекше «тостаған»</text>
+  <text x="486" y="142" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#fb923c">Көмей:</tspan> өңеш тәрізді канал</text>
+  <text x="486" y="158" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#f87171">Лава:</tspan> отты балқыған зат</text>
+  <text x="486" y="178" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#34d399">Алыптары:</tspan> Ключий (4750 м),</text>
+  <text x="494" y="192" fill="#94a3b8" font-size="9">Котопахи, Везувий, Этна,</text>
+  <text x="494" y="206" fill="#94a3b8" font-size="9">Фудзияма, Льюльяйльяко</text>
+</svg>
+      </div>
+    </section>
+
+    <!-- 4. STRUCTURED DATA TABLE -->
+    <section id="tableSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl overflow-x-auto">
+      <h3 class="text-xs font-black text-cyan-400 flex items-center space-x-2">
+        <span>📊</span>
+        <span id="tableHeader">НАҚТЫ КӨРСЕТКІШТЕР МЕН КЛАССИФИКАЦИЯ КЕСТЕСІ</span>
+      </h3>
+      <div id="tableContainer">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- 5. KEY FACTS FOR UNT / ЕНТ -->
+    <section id="factsSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl">
+      <h3 class="text-xs font-black text-amber-400 flex items-center space-x-2">
+        <span>⚡</span>
+        <span id="factsHeader">ҰБТ-ҒА ҚАЖЕТТІ НЕГІЗГІ ЕРЕЖЕЛЕР МЕН ФАКТІЛЕР</span>
+      </h3>
+      <ul id="factsList" class="space-y-2 text-xs text-slate-300">
+        <!-- Rendered via JS -->
+      </ul>
+    </section>
+
+    <!-- 6. TRAPS AND HACKS -->
+    <section id="trapsSection" class="p-5 rounded-2xl bg-gradient-to-r from-amber-950/40 via-space-950 to-space-950 border border-amber-500/40 space-y-3 shadow-xl">
+      <h3 class="text-xs font-black text-amber-400 flex items-center space-x-2">
+        <span>💡</span>
+        <span id="trapsHeader">ҰБТ ҚАҚПАНДАРЫ МЕН ЛАЙФХАКТАР</span>
+      </h3>
+      <div id="trapsList" class="space-y-2 text-xs text-slate-200">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- FOOTER NAVIGATION -->
+    <nav class="pt-4 pb-8 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3 text-xs">
+      <a href="topic_06.html" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white transition shadow-sm">
+      <span>←</span>
+      <span>#6 Алдыңғы тақырып</span>
+    </a>
+      <a href="../index.html#section-zhattau_grammar" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-400 hover:text-white transition">
+        <span>🏠</span>
+        <span>Барлық тақырыптар</span>
+      </a>
+      <a href="topic_08.html" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-xs font-bold text-cyan-300 hover:text-white transition shadow-sm">
+      <span>Келесі тақырып #8</span>
+      <span>→</span>
+    </a>
+    </nav>
+
+  </main>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="xpToast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300 flex items-center space-x-2 px-4 py-3 rounded-2xl bg-space-900 border border-cyan-500/40 shadow-2xl text-xs font-bold text-white">
+    <span class="text-cyan-400 text-base">✨</span>
+    <span id="toastMsg">+20 XP! Тақырып меңгерілді</span>
+  </div>
+
+  <script>
+    const topicData = {"num": 7, "title_kz": "Литосфералық катаклизмдер", "title_ru": "Литосферные катаклизмы", "category_kz": "Литосфера және Геодинамика", "category_ru": "Литосфера и геодинамика", "summary_kz": "Литосфералық катаклизмдер — жер қойнауындағы эндогендік процестердің әсерінен болатын жойқын апатты құбылыстар: жер сілкінісі (гипоцентр, эпицентр, MSK-64 12 баллдық шкаласы, 4 сейсмикалық белдеу), цунами («үдемелі толқын», 400-800 км/сағ) және жанартаулар (800-ге жуық сөнбеген жанартау, көмей, кратер, лава, әлемнің 12 ірі жанартауы) бойынша толық оқу-әдістемелік конспект.", "summary_ru": "Литосферные катаклизмы — разрушительные природные катастрофы, вызванные глубинными эндогенными процессами Земли: землетрясения (очаг/гипоцентр, эпицентр, 12-балльная шкала MSK-64, 4 сейсмических пояса планеты), цунами (в переводе с японского «нарастающая/заливная волна», скорость 400-800 км/ч) и вулканизм (около 800 действующих вулканов, жерло/кратер/лава, 12 крупнейших вулканов мира).", "full_theory_kz": "<div class=\"space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed\">\n\n  <!-- 1. КАТАКЛИЗМ ҰҒЫМЫ ЖӘНЕ ЛИТОСФЕРАЛЫҚ АПАТТАР -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-rose-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🌋</span>\n      <span>1. ЛИТОСФЕРАЛЫҚ КАТАКЛИЗМДЕР ҰҒЫМЫ ЖӘНЕ НЕГІЗГІ ТҮРЛЕРІ</span>\n    </h4>\n    <p>\n      <strong class=\"text-white font-bold\">Катаклизм</strong> (грекше <em>kataklysmos</em> — су тасқыны, күйреу) — жер бетінде кенеттен болатын жойқын апатты жағдай, табиғаттағы қайтымсыз экологиялық және геоморфологиялық катастрофа.\n    </p>\n    <div class=\"p-3.5 rounded-xl bg-space-950 border border-rose-500/30 text-xs text-rose-200 space-y-2\">\n      <div class=\"font-bold text-rose-400 flex items-center space-x-2\">\n        <span>⚠️</span>\n        <span>Литосфералық катаклизмдердің 3 негізгі түрі:</span>\n      </div>\n      <div class=\"grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 font-medium\">\n        <div class=\"p-2 rounded-lg bg-space-900 border border-slate-800 text-center\">\n          <span class=\"block text-amber-400 font-black text-sm\">1. ЖЕР СІЛКІНІСІ</span>\n          <span class=\"text-[11px] text-slate-300\">Жер қыртысындағы тектоникалық дүмпу</span>\n        </div>\n        <div class=\"p-2 rounded-lg bg-space-900 border border-slate-800 text-center\">\n          <span class=\"block text-rose-400 font-black text-sm\">2. ЖАНАРТАУ АТҚЫЛАУЫ</span>\n          <span class=\"text-[11px] text-slate-300\">Магма мен лаваның жер бетіне шығуы</span>\n        </div>\n        <div class=\"p-2 rounded-lg bg-space-900 border border-slate-800 text-center\">\n          <span class=\"block text-cyan-400 font-black text-sm\">3. ЦУНАМИ</span>\n          <span class=\"text-[11px] text-slate-300\">Су асты жер сілкінісінен туатын алып толқын</span>\n        </div>\n      </div>\n    </div>\n  </div>\n\n  <!-- 2. ЖЕР СІЛКІНІСІ, ЭПИЦЕНТР ЖӘНЕ СЕЙСМИКАЛЫҚ ШКАЛА -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-amber-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>⚡</span>\n      <span>2. ЖЕР СІЛКІНІСІ ҚҰРЫЛЫМЫ, ЭПИЦЕНТР ЖӘНЕ MSK-64 ШКАЛАСЫ</span>\n    </h4>\n    <p>\n      Жер қыртысының немесе жоғарғы мантияның терең қойнауындағы кенеттен үлкен күш алып жарылып қозғалған жері — <strong class=\"text-amber-300 font-bold\">Жер сілкінісі ошағы (Гипоцентр)</strong> деп аталады.\n    </p>\n    <p>\n      Тереңдегі дүмпу толқындарының жер бетіне тік шығатын ең жақын нүктесі — <strong class=\"text-amber-300 font-bold\">Эпицентр</strong> (грекше <em>epi</em> — үстінде, <em>kentron</em> — орталық). Эпицентрде жер сілкінісінің күші мен қирату деңгейі ең жоғары болады.\n    </p>\n    \n    <div class=\"p-3.5 rounded-xl bg-space-950 border border-amber-500/30 text-xs space-y-2\">\n      <div class=\"font-bold text-amber-400\">Халықаралық сейсмикалық өлшем шкаласы:</div>\n      <ul class=\"space-y-1.5 list-disc list-inside text-slate-300\">\n        <li><strong class=\"text-white\">Шкаланы жасаған көрнекті ғалымдар:</strong> кеңестік ғалым <strong class=\"text-amber-300\">С. Медведев</strong>, неміс ғалымы <strong class=\"text-amber-300\">В. Шпонхойер</strong> және чех сейсмологы <strong class=\"text-amber-300\">В. Карник</strong>.</li>\n        <li><strong class=\"text-white\">Құрылған жылы мен ресми атауы:</strong> <strong class=\"text-cyan-300\">1964 жылы (MSK-64 шкаласы)</strong>.</li>\n        <li><strong class=\"text-white\">Сейсмикалық шкала өлшемі:</strong> <strong class=\"text-amber-300\">12 баллдық шкала</strong> (1-4 балл — адамдарға сезілмейді немесе әлсіз; 5-7 балл — орташа, ғимарат қабырғалары жарылады; 8-10 балл — жойқын қираулар; 11-12 балл — апатты өзгерістер, жер қыртысы жарылып, жер бедері өзгереді).</li>\n      </ul>\n    </div>\n\n    <!-- Embedded SVG 1 -->\n    <div class=\"my-3\">\n      <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 700 240\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2\">\n  <text x=\"350\" y=\"22\" fill=\"#38bdf8\" font-size=\"11.5\" font-weight=\"900\" text-anchor=\"middle\">ЖЕР СІЛКІНІСІ ҚҰРЫЛЫМЫ, ЭПИЦЕНТР ЖӘНЕ ЦУНАМИ МЕХАНИЗМІ</text>\n\n  <!-- Left: Earthquake Cross-section -->\n  <g transform=\"translate(20, 38)\">\n    <rect x=\"0\" y=\"0\" width=\"320\" height=\"190\" rx=\"8\" fill=\"#0f172a\" stroke=\"#ef4444\" stroke-width=\"1.2\" />\n    <rect x=\"10\" y=\"8\" width=\"300\" height=\"22\" rx=\"4\" fill=\"#ef4444\" fill-opacity=\"0.15\" />\n    <text x=\"160\" y=\"23\" fill=\"#f87171\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">ЖЕР СІЛКІНІСІ (ГИПОЦЕНТР ЖӘНЕ ЭПИЦЕНТР)</text>\n\n    <!-- Graphic -->\n    <rect x=\"25\" y=\"45\" width=\"270\" height=\"70\" rx=\"5\" fill=\"#1e293b\" />\n    <!-- Fault line -->\n    <path d=\"M 60 100 L 160 80 L 260 55\" stroke=\"#f59e0b\" stroke-width=\"2\" stroke-dasharray=\"4 2\" />\n    <!-- Focus -->\n    <circle cx=\"160\" cy=\"80\" r=\"8\" fill=\"#ef4444\" />\n    <circle cx=\"160\" cy=\"80\" r=\"16\" fill=\"none\" stroke=\"#f87171\" stroke-width=\"1.5\" stroke-dasharray=\"3 3\" />\n    <text x=\"160\" y=\"84\" fill=\"#ffffff\" font-size=\"7\" font-weight=\"bold\" text-anchor=\"middle\">ОШАҚ</text>\n    \n    <!-- Epicenter on surface -->\n    <polygon points=\"160,42 165,52 155,52\" fill=\"#38bdf8\" />\n    <text x=\"160\" y=\"38\" fill=\"#38bdf8\" font-size=\"8.5\" font-weight=\"bold\" text-anchor=\"middle\">ЭПИЦЕНТР (ЖЕР БЕТІ)</text>\n\n    <text x=\"15\" y=\"132\" fill=\"#cbd5e1\" font-size=\"8.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Ошақ (Гипоцентр):</tspan> терең қойнауда дүмпу басталған жер.</text>\n    <text x=\"15\" y=\"148\" fill=\"#cbd5e1\" font-size=\"8.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Эпицентр:</tspan> дүмпу жер бетіне шығып, ең күшті сезілетін жер.</text>\n    <text x=\"15\" y=\"164\" fill=\"#cbd5e1\" font-size=\"8.5\">• <tspan font-weight=\"bold\" fill=\"#34d399\">MSK-64 шкаласы:</tspan> 1964 ж. құрылған <tspan font-weight=\"bold\" fill=\"#fbbf24\">12 баллдық</tspan> жүйе</text>\n    <text x=\"25\" y=\"178\" fill=\"#94a3b8\" font-size=\"8\">(Авторлары: С. Медведев, В. Шпонхойер, В. Карник).</text>\n  </g>\n\n  <!-- Right: Tsunami -->\n  <g transform=\"translate(360, 38)\">\n    <rect x=\"0\" y=\"0\" width=\"320\" height=\"190\" rx=\"8\" fill=\"#0f172a\" stroke=\"#0ea5e9\" stroke-width=\"1.2\" />\n    <rect x=\"10\" y=\"8\" width=\"300\" height=\"22\" rx=\"4\" fill=\"#0284c7\" fill-opacity=\"0.15\" />\n    <text x=\"160\" y=\"23\" fill=\"#38bdf8\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">ЦУНАМИ («ҮДЕМЕЛІ ТОЛҚЫН»)</text>\n\n    <!-- Wave Graphic -->\n    <rect x=\"25\" y=\"45\" width=\"270\" height=\"70\" rx=\"5\" fill=\"#1e293b\" />\n    <path d=\"M 30 90 Q 90 85 150 75 T 230 55 T 285 45\" fill=\"none\" stroke=\"#38bdf8\" stroke-width=\"2.5\" />\n    <polygon points=\"285,45 285,95 240,95\" fill=\"#38bdf8\" fill-opacity=\"0.3\" />\n    <text x=\"80\" y=\"105\" fill=\"#94a3b8\" font-size=\"8\">Ашық мұхит (400–800 км/сағ)</text>\n    <text x=\"235\" y=\"105\" fill=\"#f87171\" font-size=\"8\" font-weight=\"bold\">Жағалау (алып толқын)</text>\n\n    <text x=\"15\" y=\"132\" fill=\"#cbd5e1\" font-size=\"8.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Этимологиясы:</tspan> Жапон тілінде <tspan font-weight=\"bold\" fill=\"#38bdf8\">«үдемелі толқын»</tspan> деген сөз.</text>\n    <text x=\"15\" y=\"148\" fill=\"#cbd5e1\" font-size=\"8.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Пайда болуы:</tspan> су астындағы жер сілкінісі мен жанартау.</text>\n    <text x=\"15\" y=\"164\" fill=\"#cbd5e1\" font-size=\"8.5\">• <tspan font-weight=\"bold\" fill=\"#fbbf24\">Таралу жылдамдығы:</tspan> <tspan font-weight=\"bold\" fill=\"#ffffff\">400–800 км/сағ</tspan> шамасында.</text>\n    <text x=\"15\" y=\"180\" fill=\"#cbd5e1\" font-size=\"8.5\">• Жағалауға таяғанда биіктігі ондаған метрге дейін жетеді.</text>\n  </g>\n</svg>\n    </div>\n  </div>\n\n  <!-- 3. ДҮНИЕ ЖҮЗІНДЕГІ 4 СЕЙСМИКАЛЫҚ БЕЛДЕУ -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-cyan-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🌐</span>\n      <span>3. ДҮНИЕ ЖҮЗІНДЕГІ 4 НЕГІЗГІ СЕЙСМИКАЛЫҚ БЕЛДЕУ</span>\n    </h4>\n    <p>\n      Жер шарындағы литосфералық тақталардың шекараларында қозғалмалы геосинклинальдық белдеулер орналасқан. Жер сілкіністері мен жанартаулар біркелкі таралмай, негізгі <strong class=\"text-cyan-300 font-bold\">4 сейсмикалық белдеуде</strong> топтасқан:\n    </p>\n\n    <div class=\"grid grid-cols-1 md:grid-cols-2 gap-3 text-xs\">\n      <div class=\"p-3.5 rounded-xl bg-space-950 border border-cyan-500/30 space-y-2\">\n        <div class=\"font-extrabold text-cyan-300 text-sm flex items-center space-x-2\">\n          <span>🔵</span>\n          <span>1. Тынық мұхиттық белдеу («Отты шеңбер»)</span>\n        </div>\n        <p class=\"text-slate-300 leading-relaxed\">\n          <strong class=\"text-white\">Қамтитын аймақтары:</strong> Камчатка түбегі, Куриль аралдары, Сахалин аралдары, Жапон және Филиппин теңіздері, Жаңа Зеландия аралы, Солтүстік және Оңтүстік Америка жағалауы (Кордильера және Анд таулары бойымен).\n        </p>\n        <span class=\"inline-block px-2 py-0.5 rounded bg-cyan-950 text-cyan-400 font-mono text-[10px] border border-cyan-800\">Дүние жүзі жер сілкіністерінің ~80%-ы</span>\n      </div>\n\n      <div class=\"p-3.5 rounded-xl bg-space-950 border border-amber-500/30 space-y-2\">\n        <div class=\"font-extrabold text-amber-300 text-sm flex items-center space-x-2\">\n          <span>🟠</span>\n          <span>2. Жерорта теңіздік және Альпі аймағы</span>\n        </div>\n        <p class=\"text-slate-300 leading-relaxed\">\n          <strong class=\"text-white\">Географиялық созылымы:</strong> Атлант мұхитындағы Португалия жағалауындағы Жасыл мүйіс аралынан бастап шығысында Жаңа Гвинея аралына дейін <strong class=\"text-amber-300\">15 мың км-ге</strong> созылып жатыр. Оңтүстік Еуропа, Кавказ, Кіші Азия және Гималай тауларын қамтиды.\n        </p>\n        <span class=\"inline-block px-2 py-0.5 rounded bg-amber-950 text-amber-400 font-mono text-[10px] border border-amber-800\">Ұзындығы: 15 000 км</span>\n      </div>\n\n      <div class=\"p-3.5 rounded-xl bg-space-950 border border-emerald-500/30 space-y-2\">\n        <div class=\"font-extrabold text-emerald-300 text-sm flex items-center space-x-2\">\n          <span>🟢</span>\n          <span>3. Шығыс Африка аймағы (Ұлы Рифт)</span>\n        </div>\n        <p class=\"text-slate-300 leading-relaxed\">\n          <strong class=\"text-white\">Географиялық созылымы:</strong> Арабия түбегінің табанынан және Қызыл теңізден бастап Африканың оңтүстігіндегі Замбези өзеніне дейінгі <strong class=\"text-emerald-300\">6500 км</strong> ірі тектоникалық жарықшақ (грабендер жүйесі). Килиманджаро мен Кения жанартаулары осы аймақта.\n        </p>\n        <span class=\"inline-block px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 font-mono text-[10px] border border-emerald-800\">Ұзындығы: 6 500 км жарықшақ</span>\n      </div>\n\n      <div class=\"p-3.5 rounded-xl bg-space-950 border border-purple-500/30 space-y-2\">\n        <div class=\"font-extrabold text-purple-300 text-sm flex items-center space-x-2\">\n          <span>🟣</span>\n          <span>4. Орта Азия аймағы</span>\n        </div>\n        <p class=\"text-slate-300 leading-relaxed\">\n          <strong class=\"text-white\">Қамтитын тау жүйелері:</strong> Моңғол Алтайы, Тянь-Шань таулары, Хангай таулы үстірті, Кунь-Лунь, Нань-Шань жоталары. Қазақстанның оңтүстік және оңтүстік-шығыс өңірлері (Алматы, Жамбыл, Түркістан) осы белдеуде жатыр.\n        </p>\n        <span class=\"inline-block px-2 py-0.5 rounded bg-purple-950 text-purple-400 font-mono text-[10px] border border-purple-800\">Қазақстанның сейсмикалық аймағы</span>\n      </div>\n    </div>\n  </div>\n\n  <!-- 4. ЦУНАМИ ЖӘНЕ ОНЫҢ ПАЙДА БОЛУЫ -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-sky-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🌊</span>\n      <span>4. ЦУНАМИ — МҰХИТТАҒЫ ЖОЙҚЫН ҮДЕМЕЛІ ТОЛҚЫНДАР</span>\n    </h4>\n    <p>\n      <strong class=\"text-white font-bold\">Цунами</strong> — жапон тілінен аударғанда <strong class=\"text-sky-300 font-bold\">«үдемелі толқын»</strong> (шығанақтағы үлкен толқын, <em>tsu</em> — айлақ/шығанақ, <em>nami</em> — толқын) деген мағынаны білдіреді.\n    </p>\n    <div class=\"p-3.5 rounded-xl bg-space-950 border border-sky-500/30 text-xs space-y-2\">\n      <div class=\"font-bold text-sky-400\">Цунамидің физикалық-географиялық сипаттамасы:</div>\n      <ul class=\"space-y-1.5 list-disc list-inside text-slate-300\">\n        <li><strong class=\"text-white\">Пайда болу себебі:</strong> мұхит түбінде болатын күшті су асты жер сілкіністері, теңіз түбінің опырылуы немесе су асты жанартауларының атқылауы нәтижесінде тұтас су қабаты қозғалысқа түседі.</li>\n        <li><strong class=\"text-white\">Цунами жылдамдығы:</strong> ашық мұхитта <strong class=\"text-sky-300 font-bold\">400–800 км/сағ</strong>-қа жетеді (реактивті ұшақтың жылдамдығымен бірдей).</li>\n        <li><strong class=\"text-white\">Апатты күші:</strong> терең суда толқын биіктігі 0.5–2 метрден аспай байқалмаса, таяз жағалауға жеткенде жылдамдығы бәсеңдеп, толқын биіктігі <strong class=\"text-rose-400 font-bold\">20–40 метрге</strong> дейін қабырға болып көтеріліп, жағалауды түгел жайпап өтеді.</li>\n      </ul>\n    </div>\n  </div>\n\n  <!-- 5. ЖАНАРТАУ ҚҰРЫЛЫСЫ ЖӘНЕ ЛАВА -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-rose-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🌋</span>\n      <span>5. ЖАНАРТАУДЫҢ ІШКІ ЖӘНЕ СЫРТҚЫ ҚҰРЫЛЫСЫ</span>\n    </h4>\n    <p>\n      <strong class=\"text-white font-bold\">Жанартау</strong> — көмейінен ыстық газ, су буы, күл, тас (бомбалар), т.б. тау жыныстары атқылап тұратын және лава тасып тұратын конус формалы тау.\n    </p>\n    <div class=\"grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs\">\n      <div class=\"p-3 rounded-xl bg-space-950 border border-slate-800 space-y-1\">\n        <span class=\"text-amber-400 font-bold\">Сөнбеген жанартаулар саны:</span>\n        <p class=\"text-slate-300\">Жер бетінде қазіргі уақытта <strong class=\"text-white\">800-ге жуық сөнбеген (әрекеттегі) жанартау</strong> тіркелген.</p>\n      </div>\n      <div class=\"p-3 rounded-xl bg-space-950 border border-slate-800 space-y-1\">\n        <span class=\"text-rose-400 font-bold\">Жанартаулардың негізгі орны:</span>\n        <p class=\"text-slate-300\">Жанартаулардың басым көпшілігі <strong class=\"text-white\">Тынық мұхитында</strong> және оның жағалауындағы «Отты шеңберде» орналасқан.</p>\n      </div>\n    </div>\n\n    <div class=\"p-3.5 rounded-xl bg-space-950 border border-rose-500/30 text-xs space-y-2\">\n      <div class=\"font-bold text-rose-400\">Жанартау құрылымының негізгі элементтері:</div>\n      <ul class=\"space-y-1.5 list-disc list-inside text-slate-300\">\n        <li><strong class=\"text-white\">Лава:</strong> жанартау атқылаған кезде магма ошағынан жер бетіне шығып төгілетін, газдарынан арылған отты қоймалжың балқыған зат. Температурасы 700–1200°C.</li>\n        <li><strong class=\"text-white\">Жанартау көмейі (жерло):</strong> магма ошағынан жоғары қарай көтерілетін, өңеш тәрізді цилиндрлік тік канал.</li>\n        <li><strong class=\"text-white\">Кратер:</strong> жанартау ұшындағы тостаған тәрізді, лава мен газдар тасып төгілетін шұңқыр ұңғыма. Грек тілінен аударғанда <strong class=\"text-amber-300 font-bold\">«тостаған»</strong> деген мағынаны білдіреді.</li>\n        <li><strong class=\"text-white\">Куриль аралдары:</strong> Тынық мұхитындағы сөнбеген жанартаулардың конустары көп шоғырланған белсенді аралдар доғасы.</li>\n      </ul>\n    </div>\n\n    <!-- Embedded SVG 2 -->\n    <div class=\"my-3\">\n      <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 700 240\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2\">\n  <text x=\"350\" y=\"22\" fill=\"#38bdf8\" font-size=\"11.5\" font-weight=\"900\" text-anchor=\"middle\">ЖАНАРТАУДЫҢ ҚҰРЫЛЫСЫ (КӨМЕЙ, КРАТЕР, ЛАВА) ЖӘНЕ ӘЛЕМ ЖАНАРТАУЛАРЫ</text>\n\n  <!-- Left: Volcano Structure -->\n  <g transform=\"translate(20, 38)\">\n    <rect x=\"0\" y=\"0\" width=\"320\" height=\"190\" rx=\"8\" fill=\"#0f172a\" stroke=\"#f59e0b\" stroke-width=\"1.2\" />\n    <rect x=\"10\" y=\"8\" width=\"300\" height=\"22\" rx=\"4\" fill=\"#f59e0b\" fill-opacity=\"0.15\" />\n    <text x=\"160\" y=\"23\" fill=\"#fbbf24\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">ЖАНАРТАУДЫҢ НЕГІЗГІ ЭЛЕМЕНТТЕРІ</text>\n\n    <!-- Cone cone graphic -->\n    <g transform=\"translate(160, 115)\">\n      <!-- Volcano Cone -->\n      <polygon points=\"-80,55 0,-15 80,55\" fill=\"#334155\" stroke=\"#475569\" stroke-width=\"1.5\" />\n      <!-- Vent/conduit -->\n      <line x1=\"0\" y1=\"55\" x2=\"0\" y2=\"-15\" stroke=\"#ef4444\" stroke-width=\"6\" />\n      <!-- Crater bowl -->\n      <ellipse cx=\"0\" cy=\"-15\" rx=\"14\" ry=\"4\" fill=\"#1e293b\" stroke=\"#f59e0b\" stroke-width=\"1.5\" />\n      <!-- Magma chamber -->\n      <ellipse cx=\"0\" cy=\"55\" rx=\"35\" ry=\"12\" fill=\"#ef4444\" />\n      <!-- Eruption cloud -->\n      <ellipse cx=\"0\" cy=\"-35\" rx=\"32\" ry=\"14\" fill=\"#475569\" fill-opacity=\"0.6\" />\n      <text x=\"0\" y=\"-32\" fill=\"#fbbf24\" font-size=\"7.5\" font-weight=\"bold\" text-anchor=\"middle\">Газ, күл, бу</text>\n    </g>\n\n    <text x=\"15\" y=\"172\" fill=\"#cbd5e1\" font-size=\"8.5\">• <tspan font-weight=\"bold\" fill=\"#38bdf8\">Кратер (грекше тостаған):</tspan> ұшындағы ойыс ұңғыма.</text>\n    <text x=\"15\" y=\"186\" fill=\"#cbd5e1\" font-size=\"8.5\">• <tspan font-weight=\"bold\" fill=\"#fb923c\">Көмей (өңеш):</tspan> магма көтерілетін тік арна.</text>\n    <text x=\"15\" y=\"200\" fill=\"#cbd5e1\" font-size=\"8.5\">• <tspan font-weight=\"bold\" fill=\"#f87171\">Лава:</tspan> жер бетіне төгілетін отты балқыған қоймалжың зат.</text>\n  </g>\n\n  <!-- Right: 12 Major Volcanoes -->\n  <g transform=\"translate(360, 38)\">\n    <rect x=\"0\" y=\"0\" width=\"320\" height=\"190\" rx=\"8\" fill=\"#0f172a\" stroke=\"#8b5cf6\" stroke-width=\"1.2\" />\n    <rect x=\"10\" y=\"8\" width=\"300\" height=\"22\" rx=\"4\" fill=\"#8b5cf6\" fill-opacity=\"0.15\" />\n    <text x=\"160\" y=\"23\" fill=\"#c084fc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">ӘЛЕМНІҢ 12 АТАҚТЫ ЖАНАРТАУЫ</text>\n\n    <text x=\"15\" y=\"44\" fill=\"#ffffff\" font-size=\"8.5\">1. <tspan font-weight=\"bold\" fill=\"#38bdf8\">Гекла</tspan> — Исландия (26-дан астам сөнбеген жанартау)</text>\n    <text x=\"15\" y=\"58\" fill=\"#ffffff\" font-size=\"8.5\">2. <tspan font-weight=\"bold\" fill=\"#38bdf8\">Везувий</tspan> — Апеннин түбегі (Италия)</text>\n    <text x=\"15\" y=\"72\" fill=\"#ffffff\" font-size=\"8.5\">3. <tspan font-weight=\"bold\" fill=\"#38bdf8\">Этна</tspan> — Сицилия аралы (Еуропадағы ең биік)</text>\n    <text x=\"15\" y=\"86\" fill=\"#ffffff\" font-size=\"8.5\">4. <tspan font-weight=\"bold\" fill=\"#38bdf8\">Эльбрус (5642 м), Қазбек</tspan> — Кавказ (сөнген жанартаулар)</text>\n    <text x=\"15\" y=\"100\" fill=\"#ffffff\" font-size=\"8.5\">5. <tspan font-weight=\"bold\" fill=\"#f87171\">Ключий шоқысы (4750 м)</tspan> — Камчатка (Еуразия ең биігі)</text>\n    <text x=\"15\" y=\"114\" fill=\"#ffffff\" font-size=\"8.5\">6. <tspan font-weight=\"bold\" fill=\"#38bdf8\">Фудзияма</tspan> — Жапонияның киелі жанартауы</text>\n    <text x=\"15\" y=\"128\" fill=\"#ffffff\" font-size=\"8.5\">7. <tspan font-weight=\"bold\" fill=\"#fbbf24\">Килиманджаро (5895 м)</tspan> — Африка материгі</text>\n    <text x=\"15\" y=\"142\" fill=\"#ffffff\" font-size=\"8.5\">8. <tspan font-weight=\"bold\" fill=\"#38bdf8\">Кракатау</tspan> — Ява аралы (Индонезия)</text>\n    <text x=\"15\" y=\"156\" fill=\"#ffffff\" font-size=\"8.5\">9. <tspan font-weight=\"bold\" fill=\"#38bdf8\">Мауна-Лоа</tspan> — Гавай аралдары (АҚШ)</text>\n    <text x=\"15\" y=\"170\" fill=\"#ffffff\" font-size=\"8.5\">10. <tspan font-weight=\"bold\" fill=\"#38bdf8\">Руапеху</tspan> — Жаңа Зеландия аралы</text>\n    <text x=\"15\" y=\"184\" fill=\"#ffffff\" font-size=\"8.5\">11. <tspan font-weight=\"bold\" fill=\"#fbbf24\">Котопахи</tspan> — Эквадор (30-дан астам жанартау ішіндегі ірісі)</text>\n    <text x=\"15\" y=\"198\" fill=\"#ffffff\" font-size=\"8.5\">12. <tspan font-weight=\"bold\" fill=\"#f87171\">Льюльяйльяко &amp; Охос-дель-Саладо</tspan> — Анд таулары</text>\n  </g>\n</svg>\n    </div>\n  </div>\n\n  <!-- 6. ӘЛЕМ БОЙЫНША 12 ІРІ ЖАНАРТАУ -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-amber-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🗺️</span>\n      <span>6. ӘЛЕМ БОЙЫНША 12 ІРІ ЖАНАРТАУ ЖӘНЕ ОЛАРДЫҢ ОРНЫ</span>\n    </h4>\n    <p>ҰБТ және география емтихандарында міндетті түрде сұралатын әлемнің 12 негізгі жанартауы мен олардың географиялық мекенжайы:</p>\n\n    <div class=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 text-xs\">\n      <div class=\"p-2.5 rounded-xl bg-space-950 border border-slate-800\">\n        <div class=\"font-bold text-amber-300\">1. Гекла (Исландия)</div>\n        <div class=\"text-slate-400 text-[11px]\">26-дан астам ірі сөнбеген жанартауы бар аралдағы ең ірісі. Биіктігі 1491 м.</div>\n      </div>\n      <div class=\"p-2.5 rounded-xl bg-space-950 border border-slate-800\">\n        <div class=\"font-bold text-amber-300\">2. Везувий (Апеннин түбегі)</div>\n        <div class=\"text-slate-400 text-[11px]\">Италия. Б.з. 79 ж. Помпей қаласын күйреткен әйгілі сөнбеген жанартау (1281 м).</div>\n      </div>\n      <div class=\"p-2.5 rounded-xl bg-space-950 border border-slate-800\">\n        <div class=\"font-bold text-amber-300\">3. Этна (Сицилия аралы)</div>\n        <div class=\"text-slate-400 text-[11px]\">Италия. Еуропадағы ең биік белсенді жанартау (3357 м), жиі атқылайды.</div>\n      </div>\n      <div class=\"p-2.5 rounded-xl bg-space-950 border border-slate-800\">\n        <div class=\"font-bold text-cyan-300\">4. Эльбрус және Қазбек (Кавказ)</div>\n        <div class=\"text-slate-400 text-[11px]\">Кавказ тауларындағы сөнген жанартаулар (Эльбрус — 5642 м, Қазбек — 5033 м).</div>\n      </div>\n      <div class=\"p-2.5 rounded-xl bg-space-950 border border-slate-800\">\n        <div class=\"font-bold text-rose-300\">5. Ключий шоқысы (Камчатка)</div>\n        <div class=\"text-slate-400 text-[11px]\">Ресей. Еуразия құрлығындағы ең биік сөнбеген жанартау (4750 м).</div>\n      </div>\n      <div class=\"p-2.5 rounded-xl bg-space-950 border border-slate-800\">\n        <div class=\"font-bold text-amber-300\">6. Фудзияма (Жапония)</div>\n        <div class=\"text-slate-400 text-[11px]\">Хонсю аралындағы Жапонияның ең биік, қасиетті конус тәрізді жанартауы (3776 м).</div>\n      </div>\n      <div class=\"p-2.5 rounded-xl bg-space-950 border border-slate-800\">\n        <div class=\"font-bold text-emerald-300\">7. Килиманджаро (Африка)</div>\n        <div class=\"text-slate-400 text-[11px]\">Танзания. Африка құрлығының ең биік шыңы және алып жанартауы (5895 м).</div>\n      </div>\n      <div class=\"p-2.5 rounded-xl bg-space-950 border border-slate-800\">\n        <div class=\"font-bold text-rose-300\">8. Кракатау (Ява аралы)</div>\n        <div class=\"text-slate-400 text-[11px]\">Индонезия, Зонд бұғазы. 1883 жылы сұрапыл жарылысымен әлемге танылған жанартау.</div>\n      </div>\n      <div class=\"p-2.5 rounded-xl bg-space-950 border border-slate-800\">\n        <div class=\"font-bold text-cyan-300\">9. Мауна-Лоа / Мауна-Лао (Гавай)</div>\n        <div class=\"text-slate-400 text-[11px]\">Тынық мұхит, АҚШ. Жер шарындағы көлемі мен массасы бойынша ең үлкен жанартау.</div>\n      </div>\n      <div class=\"p-2.5 rounded-xl bg-space-950 border border-slate-800\">\n        <div class=\"font-bold text-purple-300\">10. Руапеху (Жаңа Зеландия)</div>\n        <div class=\"text-slate-400 text-[11px]\">Тынық мұхиты, Солтүстік арал. Жаңа Зеландияның ірі әрекеттегі жанартауы (2797 м).</div>\n      </div>\n      <div class=\"p-2.5 rounded-xl bg-space-950 border border-slate-800\">\n        <div class=\"font-bold text-amber-300\">11. Котопахи (Эквадор)</div>\n        <div class=\"text-slate-400 text-[11px]\">Оңтүстік Америка. 30-дан аса жанартауы бар Эквадордың ең ірі белсенді жанартауы (5897 м).</div>\n      </div>\n      <div class=\"p-2.5 rounded-xl bg-space-950 border border-slate-800\">\n        <div class=\"font-bold text-rose-300\">12. Льюльяйльяко және Охос-дель-Саладо</div>\n        <div class=\"text-slate-400 text-[11px]\">Анд таулары (Чили/Аргентина). Жер шарындағы ең биік жанартаулар (6739 м және 6893 м).</div>\n      </div>\n    </div>\n  </div>\n\n</div>", "full_theory_ru": "<div class=\"space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed\">\n\n  <!-- 1. ПОНЯТИЕ КАТАКЛИЗМА И ЛИТОСФЕРНЫЕ КАТАСТРОФЫ -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-rose-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🌋</span>\n      <span>1. ПОНЯТИЕ КАТАКЛИЗМА И ОСНОВНЫЕ ВИДЫ ЛИТОСФЕРНЫХ КАТАСТРОФ</span>\n    </h4>\n    <p>\n      <strong class=\"text-white font-bold\">Катаклизм</strong> (от греч. <em>kataklysmos</em> — наводнение, разрушение) — внезапное разрушительное бедствие, природная катастрофа, приводящая к резким изменениям рельефа и необратимым экологическим последствиям.\n    </p>\n    <div class=\"p-3.5 rounded-xl bg-space-950 border border-rose-500/30 text-xs text-rose-200 space-y-2\">\n      <div class=\"font-bold text-rose-400 flex items-center space-x-2\">\n        <span>⚠️</span>\n        <span>3 главных вида литосферных катаклизмов:</span>\n      </div>\n      <div class=\"grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 font-medium\">\n        <div class=\"p-2 rounded-lg bg-space-900 border border-slate-800 text-center\">\n          <span class=\"block text-amber-400 font-black text-sm\">1. ЗЕМЛЕТРЯСЕНИЯ</span>\n          <span class=\"text-[11px] text-slate-300\">Подземные толчки и колебания земной коры</span>\n        </div>\n        <div class=\"p-2 rounded-lg bg-space-900 border border-slate-800 text-center\">\n          <span class=\"block text-rose-400 font-black text-sm\">2. ИЗВЕРЖЕНИЯ ВУЛКАНОВ</span>\n          <span class=\"text-[11px] text-slate-300\">Выход магмы, газов и лавы на поверхность</span>\n        </div>\n        <div class=\"p-2 rounded-lg bg-space-900 border border-slate-800 text-center\">\n          <span class=\"block text-cyan-400 font-black text-sm\">3. ЦУНАМИ</span>\n          <span class=\"text-[11px] text-slate-300\">Гигантские волны от подводных землетрясений</span>\n        </div>\n      </div>\n    </div>\n  </div>\n\n  <!-- 2. СТРОЕНИЕ ЗЕМЛЕТРЯСЕНИЯ, ЭПИЦЕНТР И ШКАЛА MSK-64 -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-amber-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>⚡</span>\n      <span>2. СТРУКТУРА ЗЕМЛЕТРЯСЕНИЯ, ЭПИЦЕНТР И 12-БАЛЛЬНАЯ ШКАЛА MSK-64</span>\n    </h4>\n    <p>\n      Место в глубинах земной коры или верхней мантии, где происходит внезапный разрыв и смещение горных пород — называется <strong class=\"text-amber-300 font-bold\">Очагом землетрясения (Гипоцентром)</strong>.\n    </p>\n    <p>\n      Точка на поверхности Земли, расположенная непосредственно над очагом по вертикали — называется <strong class=\"text-amber-300 font-bold\">Эпицентром</strong> (от греч. <em>epi</em> — над, сверх и лат. <em>centrum</em> — центр). В эпицентре наблюдается максимальная сила сотрясения и наибольшие разрушения.\n    </p>\n    \n    <div class=\"p-3.5 rounded-xl bg-space-950 border border-amber-500/30 text-xs space-y-2\">\n      <div class=\"font-bold text-amber-400\">Международная сейсмическая шкала интенсивности:</div>\n      <ul class=\"space-y-1.5 list-disc list-inside text-slate-300\">\n        <li><strong class=\"text-white\">Ученые-разработчики шкалы:</strong> советский геофизик <strong class=\"text-amber-300\">С. Медведев</strong>, немецкий сейсмолог <strong class=\"text-amber-300\">В. Шпонхойер</strong> и чешский ученый <strong class=\"text-amber-300\">В. Карник</strong>.</li>\n        <li><strong class=\"text-white\">Год создания и стандарт:</strong> разработана в <strong class=\"text-cyan-300\">1964 году (шкала MSK-64)</strong>.</li>\n        <li><strong class=\"text-white\">Размерность шкалы:</strong> <strong class=\"text-amber-300\">12-балльная шкала</strong> (1-4 балла — неощутимые или слабые; 5-7 баллов — умеренные, трещины в штукатурке; 8-10 баллов — сильные разрушения зданий; 11-12 баллов — катастрофические изменения рельефа, трещины в грунте).</li>\n      </ul>\n    </div>\n\n    <!-- Embedded SVG 1 -->\n    <div class=\"my-3\">\n      <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 700 240\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2\">\n  <text x=\"350\" y=\"22\" fill=\"#38bdf8\" font-size=\"11.5\" font-weight=\"900\" text-anchor=\"middle\">СТРОЕНИЕ ЗЕМЛЕТРЯСЕНИЯ, ЭПИЦЕНТР И МЕХАНИЗМ ЦУНАМИ</text>\n\n  <g transform=\"translate(20, 38)\">\n    <rect x=\"0\" y=\"0\" width=\"320\" height=\"190\" rx=\"8\" fill=\"#0f172a\" stroke=\"#ef4444\" stroke-width=\"1.2\" />\n    <rect x=\"10\" y=\"8\" width=\"300\" height=\"22\" rx=\"4\" fill=\"#ef4444\" fill-opacity=\"0.15\" />\n    <text x=\"160\" y=\"23\" fill=\"#f87171\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">ЗЕМЛЕТРЯСЕНИЕ (ОЧАГ И ЭПИЦЕНТР)</text>\n\n    <rect x=\"25\" y=\"45\" width=\"270\" height=\"70\" rx=\"5\" fill=\"#1e293b\" />\n    <path d=\"M 60 100 L 160 80 L 260 55\" stroke=\"#f59e0b\" stroke-width=\"2\" stroke-dasharray=\"4 2\" />\n    <circle cx=\"160\" cy=\"80\" r=\"8\" fill=\"#ef4444\" />\n    <circle cx=\"160\" cy=\"80\" r=\"16\" fill=\"none\" stroke=\"#f87171\" stroke-width=\"1.5\" stroke-dasharray=\"3 3\" />\n    <text x=\"160\" y=\"84\" fill=\"#ffffff\" font-size=\"7\" font-weight=\"bold\" text-anchor=\"middle\">ОЧАГ</text>\n    <polygon points=\"160,42 165,52 155,52\" fill=\"#38bdf8\" />\n    <text x=\"160\" y=\"38\" fill=\"#38bdf8\" font-size=\"8.5\" font-weight=\"bold\" text-anchor=\"middle\">ЭПИЦЕНТР (ПОВЕРХНОСТЬ)</text>\n\n    <text x=\"15\" y=\"132\" fill=\"#cbd5e1\" font-size=\"8.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Гипоцентр (очаг):</tspan> глубинная зона зарождения толчка.</text>\n    <text x=\"15\" y=\"148\" fill=\"#cbd5e1\" font-size=\"8.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Эпицентр:</tspan> проекция очага на поверхность Земли.</text>\n    <text x=\"15\" y=\"164\" fill=\"#cbd5e1\" font-size=\"8.5\">• <tspan font-weight=\"bold\" fill=\"#34d399\">Шкала MSK-64:</tspan> 1964 г., <tspan font-weight=\"bold\" fill=\"#fbbf24\">12-балльная</tspan> система сейсмичности</text>\n    <text x=\"25\" y=\"178\" fill=\"#94a3b8\" font-size=\"8\">(Авторы: С. Медведев, В. Шпонхойер, В. Карник).</text>\n  </g>\n\n  <g transform=\"translate(360, 38)\">\n    <rect x=\"0\" y=\"0\" width=\"320\" height=\"190\" rx=\"8\" fill=\"#0f172a\" stroke=\"#0ea5e9\" stroke-width=\"1.2\" />\n    <rect x=\"10\" y=\"8\" width=\"300\" height=\"22\" rx=\"4\" fill=\"#0284c7\" fill-opacity=\"0.15\" />\n    <text x=\"160\" y=\"23\" fill=\"#38bdf8\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">ЦУНАМИ («НАРАСТАЮЩАЯ ВОЛНА»)</text>\n\n    <rect x=\"25\" y=\"45\" width=\"270\" height=\"70\" rx=\"5\" fill=\"#1e293b\" />\n    <path d=\"M 30 90 Q 90 85 150 75 T 230 55 T 285 45\" fill=\"none\" stroke=\"#38bdf8\" stroke-width=\"2.5\" />\n    <polygon points=\"285,45 285,95 240,95\" fill=\"#38bdf8\" fill-opacity=\"0.3\" />\n    <text x=\"80\" y=\"105\" fill=\"#94a3b8\" font-size=\"8\">Открытый океан (400–800 км/ч)</text>\n    <text x=\"235\" y=\"105\" fill=\"#f87171\" font-size=\"8\" font-weight=\"bold\">Побережье (гигантская волна)</text>\n\n    <text x=\"15\" y=\"132\" fill=\"#cbd5e1\" font-size=\"8.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Этимология:</tspan> с японского означает <tspan font-weight=\"bold\" fill=\"#38bdf8\">«волна в гавани»</tspan>.</text>\n    <text x=\"15\" y=\"148\" fill=\"#cbd5e1\" font-size=\"8.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Причина:</tspan> подводные землетрясения и извержения.</text>\n    <text x=\"15\" y=\"164\" fill=\"#cbd5e1\" font-size=\"8.5\">• <tspan font-weight=\"bold\" fill=\"#fbbf24\">Скорость:</tspan> от <tspan font-weight=\"bold\" fill=\"#ffffff\">400 до 800 км/ч</tspan>.</text>\n    <text x=\"15\" y=\"180\" fill=\"#cbd5e1\" font-size=\"8.5\">• При выходе на мелководье высота волны достигает десятков метров.</text>\n  </g>\n</svg>\n    </div>\n  </div>\n\n  <!-- 3. 4 СЕЙСМИЧЕСКИХ ПОЯСА ЗЕМЛИ -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-cyan-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🌐</span>\n      <span>3. ЧЕТЫРЕ ОСНОВНЫХ СЕЙСМИЧЕСКИХ ПОЯСА ПЛАНЕТЫ</span>\n    </h4>\n    <p>\n      Землетрясения и вулканизм приурочены к границам литосферных плит и распределены по <strong class=\"text-cyan-300 font-bold\">четырем главным сейсмическим поясам</strong>:\n    </p>\n\n    <div class=\"grid grid-cols-1 md:grid-cols-2 gap-3 text-xs\">\n      <div class=\"p-3.5 rounded-xl bg-space-950 border border-cyan-500/30 space-y-2\">\n        <div class=\"font-extrabold text-cyan-300 text-sm flex items-center space-x-2\">\n          <span>🔵</span>\n          <span>1. Тихоокеанский пояс («Огненное кольцо»)</span>\n        </div>\n        <p class=\"text-slate-300 leading-relaxed\">\n          <strong class=\"text-white\">Охватываемые регионы:</strong> полуостров Камчатка, Курильские острова, остров Сахалин, Японское и Филиппинское моря, остров Новая Зеландия, тихоокеанское побережье Северной и Южной Америки (вдоль Кордильер и Анд).\n        </p>\n        <span class=\"inline-block px-2 py-0.5 rounded bg-cyan-950 text-cyan-400 font-mono text-[10px] border border-cyan-800\">~80% всех землетрясений планеты</span>\n      </div>\n\n      <div class=\"p-3.5 rounded-xl bg-space-950 border border-amber-500/30 space-y-2\">\n        <div class=\"font-extrabold text-amber-300 text-sm flex items-center space-x-2\">\n          <span>🟠</span>\n          <span>2. Средиземноморско-Альпийский пояс</span>\n        </div>\n        <p class=\"text-slate-300 leading-relaxed\">\n          <strong class=\"text-white\">Протяженность:</strong> протянулся от островов Зеленого Мыса (Кабо-Верде) у берегов Португалии на западе до острова Новая Гвинея на востоке на расстояние <strong class=\"text-amber-300\">15 тыс. км</strong>. Охватывает Южную Европу, Кавказ, Малую Азию и Гималаи.\n        </p>\n        <span class=\"inline-block px-2 py-0.5 rounded bg-amber-950 text-amber-400 font-mono text-[10px] border border-amber-800\">Длина пояса: 15 000 км</span>\n      </div>\n\n      <div class=\"p-3.5 rounded-xl bg-space-950 border border-emerald-500/30 space-y-2\">\n        <div class=\"font-extrabold text-emerald-300 text-sm flex items-center space-x-2\">\n          <span>🟢</span>\n          <span>3. Восточно-Африканский пояс (Великий Рифт)</span>\n        </div>\n        <p class=\"text-slate-300 leading-relaxed\">\n          <strong class=\"text-white\">Протяженность:</strong> грандиозный тектонический разлом длиной <strong class=\"text-emerald-300\">6500 км</strong>, протянувшийся от подножия Аравийского полуострова и Красного моря до реки Замбези на юге Африки. Здесь расположены Килиманджаро и Кения.\n        </p>\n        <span class=\"inline-block px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 font-mono text-[10px] border border-emerald-800\">Разлом длиной 6 500 км</span>\n      </div>\n\n      <div class=\"p-3.5 rounded-xl bg-space-950 border border-purple-500/30 space-y-2\">\n        <div class=\"font-extrabold text-purple-300 text-sm flex items-center space-x-2\">\n          <span>🟣</span>\n          <span>4. Центрально-Азиатский пояс</span>\n        </div>\n        <p class=\"text-slate-300 leading-relaxed\">\n          <strong class=\"text-white\">Горные системы:</strong> Монгольский Алтай, горы Тянь-Шань, нагорье Хангай, хребты Куньлунь и Наньшань. Южные и юго-восточные регионы Казахстана (Алматы, Жамбыл, Туркестан) относятся к этому сейсмическому поясу.\n        </p>\n        <span class=\"inline-block px-2 py-0.5 rounded bg-purple-950 text-purple-400 font-mono text-[10px] border border-purple-800\">Сейсмическая зона Казахстана</span>\n      </div>\n    </div>\n  </div>\n\n  <!-- 4. ЦУНАМИ И МЕХАНИЗМ ОБРАЗОВАНИЯ -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-sky-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🌊</span>\n      <span>4. ЦУНАМИ — РАЗРУШИТЕЛЬНЫЕ ГИГАНТСКИЕ ВОЛНЫ В ОКЕАНЕ</span>\n    </h4>\n    <p>\n      <strong class=\"text-white font-bold\">Цунами</strong> — в переводе с японского языка означает <strong class=\"text-sky-300 font-bold\">«нарастающая волна»</strong> (большая волна в заливе / гавани, от <em>цу</em> — гавань, <em>нами</em> — волна).\n    </p>\n    <div class=\"p-3.5 rounded-xl bg-space-950 border border-sky-500/30 text-xs space-y-2\">\n      <div class=\"font-bold text-sky-400\">Характеристики и физика цунами:</div>\n      <ul class=\"space-y-1.5 list-disc list-inside text-slate-300\">\n        <li><strong class=\"text-white\">Причина возникновения:</strong> мощные подводные землетрясения, оползни океанического дна или извержения подводных вулканов, приводящие в движение всю толщу воды.</li>\n        <li><strong class=\"text-white\">Скорость цунами:</strong> в открытом океане достигает <strong class=\"text-sky-300 font-bold\">400–800 км/ч</strong> (сравнима со скоростью пассажирского самолета).</li>\n        <li><strong class=\"text-white\">Разрушительный эффект:</strong> в глубоком океане высота волны составляет всего 0.5–2 метра, но при подходе к мелководному берегу скорость падает, а высота вздымается до <strong class=\"text-rose-400 font-bold\">20–40 метров</strong>, сметая все на суше.</li>\n      </ul>\n    </div>\n  </div>\n\n  <!-- 5. СТРОЕНИЕ ВУЛКАНА И ЛАВА -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-rose-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🌋</span>\n      <span>5. СТРОЕНИЕ ВУЛКАНА, ЖЕРЛО, КРАТЕР И ЛАВА</span>\n    </h4>\n    <p>\n      <strong class=\"text-white font-bold\">Вулкан</strong> — конусообразная гора, из жерла которой извергаются горячие газы, пар, пепел, камни (вулканические бомбы) и изливается лава.\n    </p>\n    <div class=\"grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs\">\n      <div class=\"p-3 rounded-xl bg-space-950 border border-slate-800 space-y-1\">\n        <span class=\"text-amber-400 font-bold\">Число действующих вулканов:</span>\n        <p class=\"text-slate-300\">На поверхности Земли насчитывается <strong class=\"text-white\">около 800 действующих (неспящих) вулканов</strong>.</p>\n      </div>\n      <div class=\"p-3 rounded-xl bg-space-950 border border-slate-800 space-y-1\">\n        <span class=\"text-rose-400 font-bold\">Главный район концентрации:</span>\n        <p class=\"text-slate-300\">Большинство вулканов расположено в <strong class=\"text-white\">Тихом океане</strong> вдоль Тихоокеанского «Огненного кольца».</p>\n      </div>\n    </div>\n\n    <div class=\"p-3.5 rounded-xl bg-space-950 border border-rose-500/30 text-xs space-y-2\">\n      <div class=\"font-bold text-rose-400\">Анатомия и составные части вулкана:</div>\n      <ul class=\"space-y-1.5 list-disc list-inside text-slate-300\">\n        <li><strong class=\"text-white\">Лава:</strong> раскаленная вязкая жидкая магматическая масса, изливающаяся на поверхность Земли и потерявшая часть газов. Температура достигает 700–1200°C.</li>\n        <li><strong class=\"text-white\">Жерло вулкана (көмейі):</strong> вертикальный трубообразный канал, по которому магма поднимается из магматического очага к кратеру.</li>\n        <li><strong class=\"text-white\">Кратер:</strong> чашеобразное углубление на вершине вулкана, через которое изливается лава. В переводе с греческого языка означает <strong class=\"text-amber-300 font-bold\">«чаша»</strong>.</li>\n        <li><strong class=\"text-white\">Курильские острова:</strong> цепь островов в Тихом океане, представляющая собой вершины действующих вулканических конусов.</li>\n      </ul>\n    </div>\n\n    <!-- Embedded SVG 2 -->\n    <div class=\"my-3\">\n      <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 700 240\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2\">\n  <text x=\"350\" y=\"22\" fill=\"#38bdf8\" font-size=\"11.5\" font-weight=\"900\" text-anchor=\"middle\">СТРОЕНИЕ ВУЛКАНА (ЖЕРЛО, КРАТЕР, ЛАВА) И ВУЛКАНЫ МИРА</text>\n\n  <g transform=\"translate(20, 38)\">\n    <rect x=\"0\" y=\"0\" width=\"320\" height=\"190\" rx=\"8\" fill=\"#0f172a\" stroke=\"#f59e0b\" stroke-width=\"1.2\" />\n    <rect x=\"10\" y=\"8\" width=\"300\" height=\"22\" rx=\"4\" fill=\"#f59e0b\" fill-opacity=\"0.15\" />\n    <text x=\"160\" y=\"23\" fill=\"#fbbf24\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">ЭЛЕМЕНТЫ ВУЛКАНА</text>\n\n    <g transform=\"translate(160, 115)\">\n      <polygon points=\"-80,55 0,-15 80,55\" fill=\"#334155\" stroke=\"#475569\" stroke-width=\"1.5\" />\n      <line x1=\"0\" y1=\"55\" x2=\"0\" y2=\"-15\" stroke=\"#ef4444\" stroke-width=\"6\" />\n      <ellipse cx=\"0\" cy=\"-15\" rx=\"14\" ry=\"4\" fill=\"#1e293b\" stroke=\"#f59e0b\" stroke-width=\"1.5\" />\n      <ellipse cx=\"0\" cy=\"55\" rx=\"35\" ry=\"12\" fill=\"#ef4444\" />\n      <ellipse cx=\"0\" cy=\"-35\" rx=\"32\" ry=\"14\" fill=\"#475569\" fill-opacity=\"0.6\" />\n      <text x=\"0\" y=\"-32\" fill=\"#fbbf24\" font-size=\"7.5\" font-weight=\"bold\" text-anchor=\"middle\">Газы, пепел</text>\n    </g>\n\n    <text x=\"15\" y=\"172\" fill=\"#cbd5e1\" font-size=\"8.5\">• <tspan font-weight=\"bold\" fill=\"#38bdf8\">Кратер (греч. чаша):</tspan> чашеобразное углубление на вершине.</text>\n    <text x=\"15\" y=\"186\" fill=\"#cbd5e1\" font-size=\"8.5\">• <tspan font-weight=\"bold\" fill=\"#fb923c\">Жерло:</tspan> вертикальный канал выхода магмы.</text>\n    <text x=\"15\" y=\"200\" fill=\"#cbd5e1\" font-size=\"8.5\">• <tspan font-weight=\"bold\" fill=\"#f87171\">Лава:</tspan> излившаяся на поверхность дегазированная магма.</text>\n  </g>\n\n  <g transform=\"translate(360, 38)\">\n    <rect x=\"0\" y=\"0\" width=\"320\" height=\"190\" rx=\"8\" fill=\"#0f172a\" stroke=\"#8b5cf6\" stroke-width=\"1.2\" />\n    <rect x=\"10\" y=\"8\" width=\"300\" height=\"22\" rx=\"4\" fill=\"#8b5cf6\" fill-opacity=\"0.15\" />\n    <text x=\"160\" y=\"23\" fill=\"#c084fc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">12 ЗНАМЕНИТЫХ ВУЛКАНОВ МИРА</text>\n\n    <text x=\"15\" y=\"44\" fill=\"#ffffff\" font-size=\"8.5\">1. <tspan font-weight=\"bold\" fill=\"#38bdf8\">Гекла</tspan> — Исландия (более 26 действующих вулканов)</text>\n    <text x=\"15\" y=\"58\" fill=\"#ffffff\" font-size=\"8.5\">2. <tspan font-weight=\"bold\" fill=\"#38bdf8\">Везувий</tspan> — Апеннинский полуостров (Италия)</text>\n    <text x=\"15\" y=\"72\" fill=\"#ffffff\" font-size=\"8.5\">3. <tspan font-weight=\"bold\" fill=\"#38bdf8\">Этна</tspan> — Сицилия (высочайший действующий в Европе)</text>\n    <text x=\"15\" y=\"86\" fill=\"#ffffff\" font-size=\"8.5\">4. <tspan font-weight=\"bold\" fill=\"#38bdf8\">Эльбрус (5642 м), Казбек</tspan> — Кавказ (потухшие вулканы)</text>\n    <text x=\"15\" y=\"100\" fill=\"#ffffff\" font-size=\"8.5\">5. <tspan font-weight=\"bold\" fill=\"#f87171\">Ключевская Сопка (4750 м)</tspan> — Камчатка (высший в Евразии)</text>\n    <text x=\"15\" y=\"114\" fill=\"#ffffff\" font-size=\"8.5\">6. <tspan font-weight=\"bold\" fill=\"#38bdf8\">Фудзияма</tspan> — священный вулкан Японии</text>\n    <text x=\"15\" y=\"128\" fill=\"#ffffff\" font-size=\"8.5\">7. <tspan font-weight=\"bold\" fill=\"#fbbf24\">Килиманджаро (5895 м)</tspan> — вулкан Африки</text>\n    <text x=\"15\" y=\"142\" fill=\"#ffffff\" font-size=\"8.5\">8. <tspan font-weight=\"bold\" fill=\"#38bdf8\">Кракатау</tspan> — остров Ява (Индонезия)</text>\n    <text x=\"15\" y=\"156\" fill=\"#ffffff\" font-size=\"8.5\">9. <tspan font-weight=\"bold\" fill=\"#38bdf8\">Мауна-Лоа</tspan> — Гавайские острова (США)</text>\n    <text x=\"15\" y=\"170\" fill=\"#ffffff\" font-size=\"8.5\">10. <tspan font-weight=\"bold\" fill=\"#38bdf8\">Руапеху</tspan> — Новая Зеландия</text>\n    <text x=\"15\" y=\"184\" fill=\"#ffffff\" font-size=\"8.5\">11. <tspan font-weight=\"bold\" fill=\"#fbbf24\">Котопахи</tspan> — Эквадор (крупнейший из 30 вулканов страны)</text>\n    <text x=\"15\" y=\"198\" fill=\"#ffffff\" font-size=\"8.5\">12. <tspan font-weight=\"bold\" fill=\"#f87171\">Льюльяйльяко &amp; Охос-дель-Саладо</tspan> — Анды</text>\n  </g>\n</svg>\n    </div>\n  </div>\n\n  <!-- 6. 12 КРУПНЕЙШИХ ВУЛКАНОВ МИРА -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-amber-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🗺️</span>\n      <span>6. ДВЕНАДЦАТЬ КРУПНЕЙШИХ ВУЛКАНОВ МИРА И ИХ ГЕОГРАФИЯ</span>\n    </h4>\n    <p>Список 12 важнейших вулканов планеты, встречающихся в тестах ЕНТ и школьной программе:</p>\n\n    <div class=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 text-xs\">\n      <div class=\"p-2.5 rounded-xl bg-space-950 border border-slate-800\">\n        <div class=\"font-bold text-amber-300\">1. Гекла (остров Исландия)</div>\n        <div class=\"text-slate-400 text-[11px]\">Крупнейший на острове Исландия, где насчитывается более 26 действующих вулканов (1491 м).</div>\n      </div>\n      <div class=\"p-2.5 rounded-xl bg-space-950 border border-slate-800\">\n        <div class=\"font-bold text-amber-300\">2. Везувий (Апеннинский п-ов)</div>\n        <div class=\"text-slate-400 text-[11px]\">Италия. Знаменитый действующий вулкан, уничтоживший город Помпеи в 79 г. н.э. (1281 м).</div>\n      </div>\n      <div class=\"p-2.5 rounded-xl bg-space-950 border border-slate-800\">\n        <div class=\"font-bold text-amber-300\">3. Этна (остров Сицилия)</div>\n        <div class=\"text-slate-400 text-[11px]\">Италия. Самый высокий действующий вулкан Европы (3357 м), постоянно активен.</div>\n      </div>\n      <div class=\"p-2.5 rounded-xl bg-space-950 border border-slate-800\">\n        <div class=\"font-bold text-cyan-300\">4. Эльбрус и Казбек (Кавказ)</div>\n        <div class=\"text-slate-400 text-[11px]\">Потухшие вулканы на Кавказе (Эльбрус — 5642 м, высшая точка России и Европы; Казбек — 5033 м).</div>\n      </div>\n      <div class=\"p-2.5 rounded-xl bg-space-950 border border-slate-800\">\n        <div class=\"font-bold text-rose-300\">5. Ключевская Сопка (Камчатка)</div>\n        <div class=\"text-slate-400 text-[11px]\">Россия. Высочайший действующий вулкан Евразии (Ключий шоқысы, 4750 м).</div>\n      </div>\n      <div class=\"p-2.5 rounded-xl bg-space-950 border border-slate-800\">\n        <div class=\"font-bold text-amber-300\">6. Фудзияма (Япония)</div>\n        <div class=\"text-slate-400 text-[11px]\">Остров Хонсю. Высочайшая вершина и священный конический вулкан Японии (3776 м).</div>\n      </div>\n      <div class=\"p-2.5 rounded-xl bg-space-950 border border-slate-800\">\n        <div class=\"font-bold text-emerald-300\">7. Килиманджаро (Африка)</div>\n        <div class=\"text-slate-400 text-[11px]\">Танзания. Высочайший стратовулкан и высшая точка африканского континента (5895 м).</div>\n      </div>\n      <div class=\"p-2.5 rounded-xl bg-space-950 border border-slate-800\">\n        <div class=\"font-bold text-rose-300\">8. Кракатау (остров Ява)</div>\n        <div class=\"text-slate-400 text-[11px]\">Индонезия, Зондский пролив. Вулкан колоссальной взрывной силы (извержение 1883 года).</div>\n      </div>\n      <div class=\"p-2.5 rounded-xl bg-space-950 border border-slate-800\">\n        <div class=\"font-bold text-cyan-300\">9. Мауна-Лоа (Гавайские о-ва)</div>\n        <div class=\"text-slate-400 text-[11px]\">Тихий океан, США. Крупнейший по объему и площади щитовой вулкан Земли.</div>\n      </div>\n      <div class=\"p-2.5 rounded-xl bg-space-950 border border-slate-800\">\n        <div class=\"font-bold text-purple-300\">10. Руапеху (Новая Зеландия)</div>\n        <div class=\"text-slate-400 text-[11px]\">Северный остров. Крупнейший действующий стратовулкан Новой Зеландии (2797 м).</div>\n      </div>\n      <div class=\"p-2.5 rounded-xl bg-space-950 border border-slate-800\">\n        <div class=\"font-bold text-amber-300\">11. Котопахи (Эквадор)</div>\n        <div class=\"text-slate-400 text-[11px]\">Южная Америка. Высочайший действующий вулкан Эквадора, где более 30 вулканов (5897 м).</div>\n      </div>\n      <div class=\"p-2.5 rounded-xl bg-space-950 border border-slate-800\">\n        <div class=\"font-bold text-rose-300\">12. Льюльяйльяко и Охос-дель-Саладо</div>\n        <div class=\"text-slate-400 text-[11px]\">Анды (Чили/Аргентина). Самые высокие вулканы на планете (6739 м и 6893 м).</div>\n      </div>\n    </div>\n  </div>\n\n</div>", "svg_diagram": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 700 250\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner\">\n  <text x=\"350\" y=\"24\" fill=\"#38bdf8\" font-size=\"12\" font-weight=\"900\" text-anchor=\"middle\">ЛИТОСФЕРАЛЫҚ КАТАКЛИЗМДЕР: ЖЕР СІЛКІНІСІ, ЦУНАМИ ЖӘНЕ ЖАНАРТАУЛАР</text>\n\n  <!-- Left Card: Earthquakes -->\n  <rect x=\"15\" y=\"40\" width=\"210\" height=\"195\" rx=\"10\" fill=\"#0f172a\" stroke=\"#ef4444\" stroke-width=\"1.5\" />\n  <rect x=\"25\" y=\"50\" width=\"190\" height=\"24\" rx=\"6\" fill=\"#ef4444\" fill-opacity=\"0.15\" />\n  <text x=\"120\" y=\"66\" fill=\"#f87171\" font-size=\"10.5\" font-weight=\"900\" text-anchor=\"middle\">ЖЕР СІЛКІНІСТЕРІ</text>\n  <text x=\"26\" y=\"92\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Гипоцентр:</tspan> тереңдегі ошақ</text>\n  <text x=\"26\" y=\"108\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Эпицентр:</tspan> жер бетіндегі нүкте</text>\n  <text x=\"26\" y=\"128\" fill=\"#38bdf8\" font-size=\"9.5\" font-weight=\"bold\">• MSK-64 ШКАЛАСЫ (1964 ж.):</text>\n  <text x=\"34\" y=\"142\" fill=\"#94a3b8\" font-size=\"9\">12 баллдық жүйе (Медведев,</text>\n  <text x=\"34\" y=\"156\" fill=\"#94a3b8\" font-size=\"9\">Шпонхойер, Карник жасаған)</text>\n  <text x=\"26\" y=\"176\" fill=\"#fbbf24\" font-size=\"9.5\" font-weight=\"bold\">• 4 СЕЙСМИКАЛЫҚ БЕЛДЕУ:</text>\n  <text x=\"34\" y=\"190\" fill=\"#94a3b8\" font-size=\"9\">1. Тынық мұхит (80%), 2. Альпі</text>\n  <text x=\"34\" y=\"204\" fill=\"#94a3b8\" font-size=\"9\">3. Шығыс Африка (6500 км),</text>\n  <text x=\"34\" y=\"218\" fill=\"#94a3b8\" font-size=\"9\">4. Орта Азия (Тянь-Шань)</text>\n\n  <!-- Middle Card: Tsunami -->\n  <rect x=\"245\" y=\"40\" width=\"210\" height=\"195\" rx=\"10\" fill=\"#0f172a\" stroke=\"#0ea5e9\" stroke-width=\"1.5\" />\n  <rect x=\"255\" y=\"50\" width=\"190\" height=\"24\" rx=\"6\" fill=\"#0284c7\" fill-opacity=\"0.15\" />\n  <text x=\"350\" y=\"66\" fill=\"#38bdf8\" font-size=\"10.5\" font-weight=\"900\" text-anchor=\"middle\">ЦУНАМИ ТОЛҚЫНЫ</text>\n  <text x=\"256\" y=\"92\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Мағынасы:</tspan> жапон тілінде</text>\n  <text x=\"264\" y=\"106\" fill=\"#38bdf8\" font-size=\"9\">«үдемелі толқын» деген сөз</text>\n  <text x=\"256\" y=\"126\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Пайда болуы:</tspan> су астындағы</text>\n  <text x=\"264\" y=\"140\" fill=\"#94a3b8\" font-size=\"9\">күшті жер сілкіністерінен</text>\n  <text x=\"256\" y=\"160\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#fbbf24\">Жылдамдығы:</tspan> 400–800 км/сағ</text>\n  <text x=\"256\" y=\"180\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Биіктігі:</tspan> жағалауға келгенде</text>\n  <text x=\"264\" y=\"194\" fill=\"#94a3b8\" font-size=\"9\">ондаған метрге өсіп, жойқын</text>\n  <text x=\"264\" y=\"208\" fill=\"#94a3b8\" font-size=\"9\">апат пен қирату әкеледі</text>\n\n  <!-- Right Card: Volcanoes -->\n  <rect x=\"475\" y=\"40\" width=\"210\" height=\"195\" rx=\"10\" fill=\"#0f172a\" stroke=\"#f59e0b\" stroke-width=\"1.5\" />\n  <rect x=\"485\" y=\"50\" width=\"190\" height=\"24\" rx=\"6\" fill=\"#f59e0b\" fill-opacity=\"0.15\" />\n  <text x=\"580\" y=\"66\" fill=\"#fbbf24\" font-size=\"10.5\" font-weight=\"900\" text-anchor=\"middle\">ЖАНАРТАУЛАР</text>\n  <text x=\"486\" y=\"92\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Сөнбеген жанартаулар:</tspan></text>\n  <text x=\"494\" y=\"106\" fill=\"#94a3b8\" font-size=\"9\">Жер бетінде 800-ге жуық</text>\n  <text x=\"486\" y=\"126\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#38bdf8\">Кратер:</tspan> грекше «тостаған»</text>\n  <text x=\"486\" y=\"142\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#fb923c\">Көмей:</tspan> өңеш тәрізді канал</text>\n  <text x=\"486\" y=\"158\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#f87171\">Лава:</tspan> отты балқыған зат</text>\n  <text x=\"486\" y=\"178\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#34d399\">Алыптары:</tspan> Ключий (4750 м),</text>\n  <text x=\"494\" y=\"192\" fill=\"#94a3b8\" font-size=\"9\">Котопахи, Везувий, Этна,</text>\n  <text x=\"494\" y=\"206\" fill=\"#94a3b8\" font-size=\"9\">Фудзияма, Льюльяйльяко</text>\n</svg>", "svg_diagram_ru": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 700 250\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner\">\n  <text x=\"350\" y=\"24\" fill=\"#38bdf8\" font-size=\"12\" font-weight=\"900\" text-anchor=\"middle\">ЛИТОСФЕРНЫЕ КАТАКЛИЗМЫ: ЗЕМЛЕТРЯСЕНИЯ, ЦУНАМИ И ВУЛКАНЫ</text>\n\n  <rect x=\"15\" y=\"40\" width=\"210\" height=\"195\" rx=\"10\" fill=\"#0f172a\" stroke=\"#ef4444\" stroke-width=\"1.5\" />\n  <rect x=\"25\" y=\"50\" width=\"190\" height=\"24\" rx=\"6\" fill=\"#ef4444\" fill-opacity=\"0.15\" />\n  <text x=\"120\" y=\"66\" fill=\"#f87171\" font-size=\"10.5\" font-weight=\"900\" text-anchor=\"middle\">ЗЕМЛЕТРЯСЕНИЯ</text>\n  <text x=\"26\" y=\"92\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Гипоцентр:</tspan> глубинная зона</text>\n  <text x=\"26\" y=\"108\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Эпицентр:</tspan> точка на поверхности</text>\n  <text x=\"26\" y=\"128\" fill=\"#38bdf8\" font-size=\"9.5\" font-weight=\"bold\">• ШКАЛА MSK-64 (1964 г.):</text>\n  <text x=\"34\" y=\"142\" fill=\"#94a3b8\" font-size=\"9\">12-балльная система (Медведев,</text>\n  <text x=\"34\" y=\"156\" fill=\"#94a3b8\" font-size=\"9\">Шпонхойер, Карник)</text>\n  <text x=\"26\" y=\"176\" fill=\"#fbbf24\" font-size=\"9.5\" font-weight=\"bold\">• 4 СЕЙСМОПОЯСА:</text>\n  <text x=\"34\" y=\"190\" fill=\"#94a3b8\" font-size=\"9\">1. Тихоокеанский (80%), 2. Альпы</text>\n  <text x=\"34\" y=\"204\" fill=\"#94a3b8\" font-size=\"9\">3. Восточно-Африканский (6500 км)</text>\n  <text x=\"34\" y=\"218\" fill=\"#94a3b8\" font-size=\"9\">4. Среднеазиатский (Тянь-Шань)</text>\n\n  <rect x=\"245\" y=\"40\" width=\"210\" height=\"195\" rx=\"10\" fill=\"#0f172a\" stroke=\"#0ea5e9\" stroke-width=\"1.5\" />\n  <rect x=\"255\" y=\"50\" width=\"190\" height=\"24\" rx=\"6\" fill=\"#0284c7\" fill-opacity=\"0.15\" />\n  <text x=\"350\" y=\"66\" fill=\"#38bdf8\" font-size=\"10.5\" font-weight=\"900\" text-anchor=\"middle\">ВОЛНЫ ЦУНАМИ</text>\n  <text x=\"256\" y=\"92\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Значение:</tspan> с японского</text>\n  <text x=\"264\" y=\"106\" fill=\"#38bdf8\" font-size=\"9\">«нарастающая волна в бухте»</text>\n  <text x=\"256\" y=\"126\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Причина:</tspan> подводные толчки</text>\n  <text x=\"264\" y=\"140\" fill=\"#94a3b8\" font-size=\"9\">и моретрясения</text>\n  <text x=\"256\" y=\"160\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#fbbf24\">Скорость:</tspan> 400–800 км/ч</text>\n  <text x=\"256\" y=\"180\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Высота:</tspan> на мелководье</text>\n  <text x=\"264\" y=\"194\" fill=\"#94a3b8\" font-size=\"9\">достигает десятков метров,</text>\n  <text x=\"264\" y=\"208\" fill=\"#94a3b8\" font-size=\"9\">вызывая катастрофы</text>\n\n  <rect x=\"475\" y=\"40\" width=\"210\" height=\"195\" rx=\"10\" fill=\"#0f172a\" stroke=\"#f59e0b\" stroke-width=\"1.5\" />\n  <rect x=\"485\" y=\"50\" width=\"190\" height=\"24\" rx=\"6\" fill=\"#f59e0b\" fill-opacity=\"0.15\" />\n  <text x=\"580\" y=\"66\" fill=\"#fbbf24\" font-size=\"10.5\" font-weight=\"900\" text-anchor=\"middle\">ВУЛКАНЫ</text>\n  <text x=\"486\" y=\"92\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Действующих вулканов:</tspan></text>\n  <text x=\"494\" y=\"106\" fill=\"#94a3b8\" font-size=\"9\">около 800 на Земле</text>\n  <text x=\"486\" y=\"126\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#38bdf8\">Кратер:</tspan> греч. «чаша»</text>\n  <text x=\"486\" y=\"142\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#fb923c\">Жерло:</tspan> выводной канал</text>\n  <text x=\"486\" y=\"158\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#f87171\">Лава:</tspan> магма без газов</text>\n  <text x=\"486\" y=\"178\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#34d399\">Гиганты:</tspan> Ключевская (4750 м),</text>\n  <text x=\"494\" y=\"192\" fill=\"#94a3b8\" font-size=\"9\">Котопахи, Везувий, Этна,</text>\n  <text x=\"494\" y=\"206\" fill=\"#94a3b8\" font-size=\"9\">Фудзияма, Льюльяйльяко</text>\n</svg>", "table_kz": {"cols": ["Катаклизм / Нысан / Ғалым", "Көрсеткіші / Параметрі / Орны", "Анықтамасы және ҰБТ ерекшелігі"], "rows": [["Катаклизм", "Табиғи катастрофа", "Жойқын апатты жағдай, табиғаттағы қайтымсыз өзгеріс әкелетін катастрофа"], ["Литосфералық катаклизмдер", "3 негізгі түрі", "Жер сілкінісі, жанартаудың атқылауы, цунами құбылыстары жатады"], ["Жер сілкінісі ошағы (Гипоцентр)", "Терең қойнауда", "Жер қыртысының терең қойнауындағы кенеттен үлкен күш алып қозғалған жері"], ["Эпицентр", "Жер бетінде", "Жер қойнауындағы дүмпу толқындарының жер бетіне тік шығатын ең жоғарғы нүктесі"], ["Сейсмикалық шкаланы жасаушылар", "3 ғалым", "С. Медведев, В. Шпонхойер, В. Карник жасап шығарған халықаралық сейсмикалық жүйе"], ["Сейсмикалық кесте құрылған жыл", "1964 жылы", "Халықаралық сейсмикалық кесте (MSK-64 стандарты) ресми бекітілген жыл"], ["Сейсмикалық шкала өлшемі", "12 баллдық шкала", "Жер сілкінісінің жер бетіндегі дүмпуі мен қирату күшін бағалайтын 12 баллдық жүйе"], ["Сейсмикалық белдеулер саны", "4 белдеу", "Тынық мұхиттық, Жерорта теңіздік-Альпі, Шығыс Африка, Орта Азия белдеулері"], ["1. Тынық мұхиттық белдеу", "«Отты шеңбер» (~80%)", "Камчатка, Куриль, Сахалин аралдары, Жапон, Филиппин теңіздері, Жаңа Зеландия, С. және О. Америка жағалауы"], ["2. Жерорта теңіздік және Альпі", "15 000 км", "Португалия жағалауындағы Жасыл мүйіс аралынан Жаңа Гвинея аралына дейін 15 мың км-ге созылған"], ["3. Шығыс Африка аймағы", "6 500 км жарықшақ", "Арабия түбегінің табанынан бастап Замбези өзеніне дейінгі 6500 км ірі тектоникалық жарықшақ"], ["4. Орта Азия аймағы", "Қазақстан өңірлері", "Моңғол Алтайы, Тянь-Шань, Хангай үстірті, Кунь-Лунь, Нань-Шань жоталарын қамтиды"], ["Цунами сөзінің мағынасы", "«Үдемелі толқын»", "Жапон тілінен аударғанда шығанақтағы «үдемелі толқын» мағынасын береді"], ["Цунами анықтамасы", "Алып мұхит толқыны", "Күшті су асты жер сілкінісінен мұхит бетінде қалыптасатын жойқын, өте биік толқын"], ["Цунами жылдамдығы", "400–800 км/сағ", "Ашық мұхиттағы таралу жылдамдығы ұшақ жылдамдығымен бірдей өте жоғары болады"], ["Жердегі жанартаулар саны", "800-ге жуық", "Қазіргі таңда Жер шарында 800-ге жуық сөнбеген (әрекеттегі) жанартау тіркелген"], ["Жанартау анықтамасы", "Конус формалы тау", "Көмейінен ыстық газ, бу, күл, тас атқылап тұратын және лава таситын конус тау"], ["Лава", "700–1200°C", "Жанартау атқылағанда жер бетіне шығып төгілетін, газынан арылған отты қоймалжың балқыған зат"], ["Жанартау көмейі (жерло)", "Өңеш тәрізді", "Магма ошағынан жоғары қарай көтерілетін өңеш тәрізді тік канал"], ["Кратер", "Грекше «тостаған»", "Жанартау ұшындағы тостаған тәрізді, лава тасып төгілетін ойыс ұңғыма"], ["Жанартаулар көп шоғырланған мұхит", "Тынық мұхит", "Жер шарындағы жанартаулардың негізгі бөлігі орналасқан мұхит алабы"], ["Куриль аралдары", "Сөнбеген конустар", "Тынық мұхитындағы сөнбеген жанартаулардың конустары шоғырланған аралдар тізбегі"], ["1. Гекла (Исландия)", "1491 м", "26-дан астам ірі сөнбеген жанартауы бар Исландия аралының ең ірісі"], ["2. Везувий (Апеннин түбегі)", "1281 м", "Италиядағы жанартау. Б.з. 79 жылы Помпей қаласын күл астында қалдырған"], ["3. Этна (Сицилия аралы)", "3357 м", "Италия, Сицилия аралы. Еуропадағы ең биік сөнбеген белсенді жанартау"], ["4. Эльбрус және Қазбек", "5642 м / 5033 м", "Кавказ тауында орналасқан сөнген жанартаулар (Эльбрус — Ресейдің ең биік шыңы)"], ["5. Ключий шоқысы", "4750 м", "Камчатка түбегіндегі жанартау. Еуразиядағы ең биік сөнбеген жанартау"], ["6. Фудзияма", "3776 м", "Жапонияның Хонсю аралындағы ең биік, әйгілі сөнбеген жанартауы"], ["7. Килиманджаро", "5895 м", "Африка құрлығының Танзания еліндегі ең биік шыңы және ірі жанартауы"], ["8. Кракатау", "813 м", "Индонезия, Ява аралы / Зонд бұғазындағы 1883 ж. апатты атқылаған жанартау"], ["9. Мауна-Лоа (Мауна-Лао)", "4169 м", "Гавай аралындағы Жер шарындағы ең үлкен көлемді қалқанды жанартау"], ["10. Руапеху", "2797 м", "Жаңа Зеландия аралының Солтүстік аралында орналасқан ірі жанартауы"], ["11. Котопахи", "5897 м", "Эквадор елінде 30-дан аса жанартау бар, олардың ішіндегі ең ірісі"], ["12. Льюльяйльяко және Охос-дель-Саладо", "6739 м / 6893 м", "Оңтүстік Американың Анд тауларындағы Жер шарындағы ең биік жанартаулар"]]}, "table_ru": {"cols": ["Катаклизм / Объект / Ученый", "Показатель / Параметр / Местоположение", "Определение и особенности для ЕНТ"], "rows": [["Катаклизм", "Природная катастрофа", "Внезапное разрушительное стихийное бедствие, катастрофа планетарного масштаба"], ["Литосферные катаклизмы", "3 основных вида", "Землетрясения, извержения вулканов, разрушительные волны цунами"], ["Очаг землетрясения (Гипоцентр)", "В глубинах Земли", "Область в земной коре или мантии, где происходит внезапное смещение пород"], ["Эпицентр", "На поверхности Земли", "Точка на поверхности Земли, расположенная прямо над гипоцентром по вертикали"], ["Создатели сейсмической шкалы", "3 ученых", "С. Медведев, В. Шпонхойер, В. Карник разработали международную шкалу интенсивности"], ["Год создания шкалы", "1964 год", "Официальный год утверждения международной сейсмической шкалы MSK-64"], ["Единица измерения шкалы", "12-балльная шкала", "Шкала оценки интенсивности землетрясения и степени разрушений от 1 до 12 баллов"], ["Число сейсмических поясов", "4 пояса", "Тихоокеанский, Средиземноморско-Альпийский, Восточно-Африканский, Центрально-Азиатский"], ["1. Тихоокеанский пояс", "«Огненное кольцо» (~80%)", "Камчатка, Курилы, Сахалин, Японское и Филиппинское моря, Новая Зеландия, побережье Америк"], ["2. Средиземноморско-Альпийский", "15 000 км", "От островов Зеленого Мыса (Португалия) на западе до Новой Гвинеи на востоке протяженностью 15 тыс. км"], ["3. Восточно-Африканский пояс", "Разлом 6 500 км", "Гигантский тектонический разлом от основания Аравийского п-ова до реки Замбези длиной 6500 км"], ["4. Центрально-Азиатский пояс", "Регионы Казахстана", "Монгольский Алтай, горы Тянь-Шань, нагорье Хангай, хребты Куньлунь и Наньшань"], ["Значение слова «Цунами»", "«Нарастающая волна»", "В переводе с японского означает «нарастающая волна» / «волна в гавани» (цу + нами)"], ["Определение цунами", "Гигантская волна океана", "Разрушительная высокая волна, образующаяся в океане при подводных землетрясениях"], ["Скорость цунами", "400–800 км/ч", "Скорость распространения волны в открытом океане сопоставима со скоростью самолета"], ["Количество вулканов на Земле", "Около 800", "На земном шаре зарегистрировано около 800 действующих (неспящих) вулканов"], ["Определение вулкана", "Конусообразная гора", "Конусообразная гора, из жерла которой извергаются газы, пар, пепел, бомбы и лава"], ["Лава", "700–1200°C", "Раскаленная жидкая или вязкая магма, изливающаяся на поверхность и дегазированная"], ["Жерло вулкана (көмейі)", "Трубообразный канал", "Канал в виде пищевода, соединяющий магматический очаг с поверхностью кратера"], ["Кратер", "Греч. «чаша»", "Чашеобразное углубление на вершине вулкана, из которого изливается лава"], ["Океан с наибольшим числом вулканов", "Тихий океан", "Океан, где сосредоточено подавляющее большинство действующих вулканов мира"], ["Курильские острова", "Действующие конусы", "Цепь островов в Тихом океане, представляющая собой вершины действующих вулканов"], ["1. Гекла (остров Исландия)", "1491 м", "Крупнейший вулкан Исландии, где расположено более 26 действующих вулканов"], ["2. Везувий (Апеннинский п-ов)", "1281 м", "Вулкан в Италии, уничтоживший древнеримский город Помпеи в 79 году н.э."], ["3. Этна (остров Сицилия)", "3357 м", "Италия, Сицилия. Самый высокий действующий вулкан Европы с частыми извержениями"], ["4. Эльбрус и Казбек", "5642 м / 5033 м", "Потухшие вулканы на Кавказе (Эльбрус — высочайшая вершина Кавказа и Европы)"], ["5. Ключевская Сопка (Камчатка)", "4750 м", "Полуостров Камчатка. Высочайший действующий вулкан Евразии (Ключий шоқысы)"], ["6. Фудзияма", "3776 м", "Крупнейший вулкан Японии на острове Хонсю, священная правильная коническая вершина"], ["7. Килиманджаро", "5895 м", "Высочайший вулкан и высшая точка Африки (Танзания, 5895 метров)"], ["8. Кракатау", "813 м", "Индонезия, остров Ява / Зондский пролив. Вулкан катастрофического взрыва 1883 года"], ["9. Мауна-Лоа (Мауна-Лао)", "4169 м", "Гавайские острова, Тихий океан. Крупнейший по объему щитовой вулкан Земли"], ["10. Руапеху", "2797 м", "Крупнейший действующий вулкан Новой Зеландии на Северном острове"], ["11. Котопахи", "5897 м", "Эквадор. Крупнейший действующий вулкан страны, где насчитывается более 30 вулканов"], ["12. Льюльяйльяко и Охос-дель-Саладо", "6739 м / 6893 м", "Горы Анды в Южной Америке. Самые высокие вулканы на планете Земля"]]}, "key_facts_kz": ["Катаклизм — табиғаттағы жойқын апатты жағдай және катастрофа (жер сілкінісі, жанартау атқылауы, цунами).", "Жер қыртысындағы терең қозғалыс орны — Жер сілкінісі ошағы (Гипоцентр), ал оның жер бетіндегі тік нүктесі — Эпицентр.", "Халықаралық сейсмикалық шкаланы 1964 жылы С. Медведев, В. Шпонхойер, В. Карник жасаған (MSK-64, 12 баллдық шкала).", "Жер шарында 4 сейсмикалық белдеу бар: Тынық мұхиттық (~80%), Жерорта теңіздік-Альпі (15 мың км), Шығыс Африка (6500 км жарықшақ), Орта Азия.", "Цунами жапон тілінде «үдемелі толқын» дегенді білдіреді, су асты жер сілкінісінен түзіледі, жылдамдығы 400–800 км/сағ.", "Жер бетінде 800-ге жуық сөнбеген жанартау бар, басым бөлігі Тынық мұхитында («Отты шеңбер») шоғырланған.", "Жанартау көмейі — өңеш тәрізді көтерілу каналы, кратер — грекше «тостаған» мағынасын беретін ұңғыма, лава — отты қоймалжың балқыған зат.", "Әлемдегі ірі жанартаулар: Гекла (Исландия), Везувий (Апеннин), Этна (Сицилия), Эльбрус пен Қазбек (Кавказ, сөнген), Ключий шоқысы (4750 м, Камчатка), Фудзияма (Жапония), Килиманджаро (Африка), Кракатау (Ява), Мауна-Лоа (Гавай), Руапеху (Жаңа Зеландия), Котопахи (Эквадор), Льюльяйльяко мен Охос-дель-Саладо (Анд)."], "key_facts_ru": ["Катаклизм — внезапное разрушительное стихийное бедствие и катастрофа (землетрясения, извержения вулканов, цунами).", "Область смещения пород на глубине — очаг землетрясения (гипоцентр), а точка над ним на поверхности Земли — эпицентр.", "Международная сейсмическая шкала создана в 1964 году С. Медведевым, В. Шпонхойером, В. Карником (MSK-64, 12-балльная шкала).", "На Земле выделяют 4 сейсмических пояса: Тихоокеанский (~80%), Средиземноморско-Альпийский (15 тыс. км), Восточно-Африканский (разлом 6500 км), Центрально-Азиатский.", "Цунами в переводе с японского означает «нарастающая волна», образуется от подводных толчков, скорость в океане 400–800 км/ч.", "На Земле около 800 действующих вулканов, большинство которых расположено в бассейне Тихого океана («Огненное кольцо»).", "Жерло вулкана — трубчатый канал («пищевод»), кратер — в переводе с греческого «чаша», лава — излившаяся дегазированная магма.", "12 важнейших вулканов мира: Гекла (Исландия), Везувий (Апеннины), Этна (Сицилия), Эльбрус и Казбек (Кавказ, потухшие), Ключевская Сопка (4750 м, Камчатка), Фудзияма (Япония), Килиманджаро (Африка), Кракатау (Ява), Мауна-Лоа (Гавайи), Руапеху (Новая Зеландия), Котопахи (Эквадор), Льюльяйльяко и Охос-дель-Саладо (Анды)."], "traps_kz": ["Эпицентр мен Гипоцентрді шатастырмаңыз: Гипоцентр (ошақ) — жер қыртысының тереңінде орналасқан бастапқы жарылыс нүктесі, ал Эпицентр — осы ошақтың жер бетіндегі дәл үстіндегі ең күшті дүмпу болатын нүктесі.", "Цунами қаупі: Ашық мұхитта толқын биіктігі небары 1-2 метр болып, кемелерге білінбей өтеді, бірақ жылдамдығы 400–800 км/сағ болады. Жағалауға таянғанда су таяздап, жылдамдық азайып, толқын биіктігі 20–40 метрлік жойқын қабырғаға айналады.", "Сөнбеген және сөнген жанартаулар: Кавказдағы Эльбрус (5642 м) пен Қазбек (5033 м) — сөнген жанартаулар! Ал Еуразиядағы ең биік сөнбеген жанартау — Камчаткадағы Ключий шоқысы (4750 м). Сондай-ақ Исландия аралында 26-дан астам сөнбеген жанартау бар, ең ірісі — Гекла."], "traps_ru": ["Ловушка ЕНТ: не путайте Гипоцентр и Эпицентр! Гипоцентр (очаг) находится в недрах Земли, где зарождается толчок, а Эпицентр — это проекция очага на поверхность Земли, где происходят максимальные разрушения.", "Особенность цунами: в открытом океане волна имеет высоту всего 0.5–2 метра и незаметна для судов, но мчится со скоростью 400–800 км/ч. Лишь на мелководье у побережья она тормозится и вырастает до 20–40 метров.", "Потухшие против действующих: Эльбрус (5642 м) и Казбек (5033 м) на Кавказе — потухшие вулканы! Высочайшим действующим вулканом Евразии является Ключевская Сопка (4750 м, Камчатка). На острове Исландия более 26 действующих вулканов, крупнейший — Гекла."]};
+    const blooketData = {"kz": "https://dashboard.blooket.com/set/6a95f2d8c923faa1d82d3fde", "ru": "https://dashboard.blooket.com/set/6a94d2fec923faa1d82d19b8", "doc_kz": "https://docs.google.com/document/d/1qk4C61JU2JVNWipgnIAx7Z4SCRiN4IH9EWL_NXgtow0/edit?usp=sharing", "doc_ru": "https://drive.google.com/file/d/1Bl-oTu8SW85QxMSkdepH9moPyDBWCvP4/view?usp=sharing"};
+    let currentLang = 'kz';
+
+    // Safe localStorage helper
+    const safeStorage = {
+      getItem(k) {
+        try { return localStorage.getItem(k); } catch (e) { return null; }
+      },
+      setItem(k, v) {
+        try { localStorage.setItem(k, v); } catch (e) {}
+      }
+    };
+
+    function getCompletedSet() {
+      try {
+        return new Set(JSON.parse(safeStorage.getItem('geotany_grammar_completed') || '[]'));
+      } catch (e) {
+        return new Set();
+      }
+    }
+
+    function saveCompletedSet(setObj) {
+      safeStorage.setItem('geotany_grammar_completed', JSON.stringify(Array.from(setObj)));
+    }
+
+    function updateCompleteButton() {
+      const setObj = getCompletedSet();
+      const isDone = setObj.has(topicData.num);
+      const btn = document.getElementById('btnComplete');
+      const icon = document.getElementById('completeIcon');
+      const text = document.getElementById('completeText');
+
+      if (isDone) {
+        btn.className = "inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black transition border border-emerald-500/50 bg-emerald-500/20 text-emerald-300 shadow-md shadow-emerald-500/10";
+        icon.textContent = "✓";
+        text.textContent = (currentLang === 'ru') ? "Изучено" : "Меңгерілді";
+      } else {
+        btn.className = "inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition border border-slate-700 bg-space-900 text-slate-300 hover:text-white hover:border-slate-600";
+        icon.textContent = "○";
+        text.textContent = (currentLang === 'ru') ? "Отметить изученным" : "Меңгерілді деп белгілеу";
+      }
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('xpToast');
+      const m = document.getElementById('toastMsg');
+      m.textContent = msg;
+      t.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        t.classList.add('translate-y-20', 'opacity-0');
+      }, 2500);
+    }
+
+    function toggleComplete() {
+      const setObj = getCompletedSet();
+      const isDone = setObj.has(topicData.num);
+      let xp = parseInt(safeStorage.getItem('geotany_user_xp') || '0', 10);
+
+      if (isDone) {
+        setObj.delete(topicData.num);
+        xp = Math.max(0, xp - 20);
+        showToast((currentLang === 'ru') ? "-20 XP. Отметка снята" : "-20 XP. Белгі алынды");
+      } else {
+        setObj.add(topicData.num);
+        xp += 20;
+        showToast((currentLang === 'ru') ? "+20 XP! Тема изучена" : "+20 XP! Тақырып меңгерілді");
+      }
+
+      saveCompletedSet(setObj);
+      safeStorage.setItem('geotany_user_xp', xp.toString());
+      updateCompleteButton();
+    }
+
+    function renderTable(isRu) {
+      const tbl = isRu ? (topicData.table_ru || topicData.table_kz) : topicData.table_kz;
+      const container = document.getElementById('tableContainer');
+      if (!tbl || !tbl.cols || !tbl.rows || tbl.rows.length === 0) {
+        document.getElementById('tableSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('tableSection').classList.remove('hidden');
+
+      let html = '<table class="w-full text-left text-xs border-collapse">';
+      html += '<thead><tr class="border-b border-slate-800 text-slate-400 font-bold">';
+      tbl.cols.forEach(col => {
+        html += `<th class="p-2.5 sm:p-3 bg-space-900/60 rounded-lg whitespace-nowrap text-cyan-300 font-bold">${col}</th>`;
+      });
+      html += '</tr></thead><tbody class="divide-y divide-slate-800/60">';
+      tbl.rows.forEach(row => {
+        html += '<tr class="hover:bg-space-900/40 transition">';
+        row.forEach((cell, idx) => {
+          const cls = idx === 0 ? "font-bold text-white whitespace-nowrap" : (idx === 1 ? "text-cyan-300 font-medium" : "text-slate-300");
+          html += `<td class="p-2.5 sm:p-3 ${cls}">${cell}</td>`;
+        });
+        html += '</tr>';
+      });
+      html += '</tbody></table>';
+      container.innerHTML = html;
+    }
+
+    function renderFacts(isRu) {
+      const facts = isRu ? (topicData.key_facts_ru || topicData.key_facts_kz) : topicData.key_facts_kz;
+      const list = document.getElementById('factsList');
+      if (!facts || facts.length === 0) {
+        document.getElementById('factsSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('factsSection').classList.remove('hidden');
+      list.innerHTML = facts.map(f => `<li class="flex items-start space-x-2"><span class="text-amber-400 font-bold shrink-0 mt-0.5">•</span><span>${f}</span></li>`).join('');
+    }
+
+    function renderTraps(isRu) {
+      const traps = isRu ? (topicData.traps_ru || topicData.traps_kz) : topicData.traps_kz;
+      const list = document.getElementById('trapsList');
+      if (!traps || traps.length === 0) {
+        document.getElementById('trapsSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('trapsSection').classList.remove('hidden');
+      list.innerHTML = traps.map(tr => {
+        const str = String(tr);
+        const icon = str.startsWith('⚠️') ? '' : '<span class="text-amber-400 shrink-0 mt-0.5">⚠️</span> ';
+        return `<p class="leading-relaxed flex items-start space-x-2">${icon}<span>${str}</span></p>`;
+      }).join('');
+    }
+
+    function setLang(lang) {
+      currentLang = lang;
+      safeStorage.setItem('geotany_lang', lang);
+      const isRu = (lang === 'ru');
+
+      // Update lang buttons
+      const btnKz = document.getElementById('btnLangKz');
+      const btnRu = document.getElementById('btnLangRu');
+      if (isRu) {
+        btnRu.className = "px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow";
+        btnKz.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+      } else {
+        btnKz.className = "px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow";
+        btnRu.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+      }
+
+      // Update text fields
+      document.getElementById('navCatBadge').textContent = isRu ? (topicData.category_ru || 'География') : (topicData.category_kz || 'География');
+      document.getElementById('heroCatBadge').textContent = isRu ? (topicData.category_ru || 'География') : (topicData.category_kz || 'География');
+      document.getElementById('heroTitle').textContent = isRu ? topicData.title_ru : topicData.title_kz;
+
+      // Summary
+      document.getElementById('summaryHeader').textContent = isRu ? "КРАТКИЙ ОБЗОР ТЕМЫ" : "ТАҚЫРЫПҚА ҚЫСҚАША ШОЛУ";
+      document.getElementById('summaryText').textContent = isRu ? topicData.summary_ru : topicData.summary_kz;
+
+      // Theory
+      document.getElementById('theoryHeader').textContent = isRu ? "ПОЛНЫЙ ТЕОРЕТИЧЕСКИЙ МАТЕРИАЛ И КОНСПЕКТ" : "ТОЛЫҚ ТЕОРИЯЛЫҚ МАТЕРИАЛ МЕН КОНСПЕКТ";
+      document.getElementById('theoryContent').innerHTML = isRu ? topicData.full_theory_ru : topicData.full_theory_kz;
+
+      // SVG
+      document.getElementById('svgHeader').textContent = isRu ? "НАГЛЯДНАЯ СХЕМА И ИНФОГРАФИКА" : "КӨРНЕКІ СХЕМА МЕН ИНФОГРАФИКА";
+      const svgCode = isRu ? (topicData.svg_diagram_ru || topicData.svg_diagram) : topicData.svg_diagram;
+      document.getElementById('svgContainer').innerHTML = svgCode || '';
+
+      // Table, Facts, Traps
+      document.getElementById('tableHeader').textContent = isRu ? "СТРУКТУРИРОВАННАЯ ТАБЛИЦА ПОКАЗАТЕЛЕЙ И КЛАССИФИКАЦИИ" : "НАҚТЫ КӨРСЕТКІШТЕР МЕН КЛАССИФИКАЦИЯ КЕСТЕСІ";
+      renderTable(isRu);
+
+      document.getElementById('factsHeader').textContent = isRu ? "ГЛАВНЫЕ ФАКТЫ ДЛЯ ЕНТ И ЗАПОМИНАНИЯ" : "ҰБТ-ҒА ҚАЖЕТТІ НЕГІЗГІ ЕРЕЖЕЛЕР МЕН ФАКТІЛЕР";
+      renderFacts(isRu);
+
+      document.getElementById('trapsHeader').textContent = isRu ? "ЛОВУШКИ И ЛАЙФХАКИ ЕНТ" : "ҰБТ ҚАҚПАНДАРЫ МЕН ЛАЙФХАКТАР";
+      renderTraps(isRu);
+
+      // Blooket & Doc links
+      const btnB = document.getElementById('btnBlooket');
+      const bUrl = isRu ? (blooketData.ru || blooketData.kz) : (blooketData.kz || blooketData.ru);
+      if (bUrl) {
+        btnB.href = bUrl;
+        btnB.classList.remove('hidden');
+      } else {
+        btnB.classList.add('hidden');
+      }
+
+      const btnD = document.getElementById('btnDoc');
+      const dUrl = isRu ? (blooketData.doc_ru || blooketData.doc_kz) : (blooketData.doc_kz || blooketData.doc_ru);
+      if (dUrl) {
+        btnD.href = dUrl;
+        btnD.classList.remove('hidden');
+      } else {
+        btnD.classList.add('hidden');
+      }
+
+      updateCompleteButton();
+    }
+
+    // Initialization on page load with URL param and localStorage sync
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const queryLang = urlParams.get('lang');
+      let langToSet = 'kz';
+      if (queryLang === 'ru' || queryLang === 'kz') {
+        langToSet = queryLang;
+        safeStorage.setItem('geotany_lang', queryLang);
+      } else {
+        const savedLang = safeStorage.getItem('geotany_lang');
+        if (savedLang === 'ru') langToSet = 'ru';
+        else langToSet = 'kz';
+      }
+      setLang(langToSet);
+    });
+  </script>
+</body>
+</html>

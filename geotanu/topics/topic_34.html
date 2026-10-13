@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="kk" class="dark">
+<head>
+  <!-- COURSE ACCESS GUARD: RESTRICT DIRECT ACCESS WITHOUT VALID CODE -->
+  <style id="authCloak">body { display: none !important; }</style>
+  <script>
+    (function() {
+      try {
+        var isAdmin = localStorage.getItem('geotany_admin_auth') === 'true';
+        var sessionStr = localStorage.getItem('geotany_user_session');
+        var isAuthorized = isAdmin;
+        if (!isAuthorized && sessionStr) {
+          var s = JSON.parse(sessionStr);
+          if (s && s.email && (s.courseCode || s.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        var profileStr = localStorage.getItem('geotany_user_profile');
+        if (!isAuthorized && profileStr) {
+          var p = JSON.parse(profileStr);
+          if (p && p.isRegistered && p.email && p.courseCode) {
+            isAuthorized = true;
+          }
+        }
+        if (!isAuthorized) {
+          var target = window.location.pathname.split('/').pop() || 'topics.html';
+          window.location.replace('../index.html?need_course=GEOTANY&redirect=' + encodeURIComponent(target));
+          return;
+        }
+        var cloak = document.getElementById('authCloak');
+        if (cloak) cloak.remove();
+      } catch (err) {
+        window.location.replace('../index.html');
+      }
+    })();
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>#34 Ғалымдардың еңбектері | GeoTany</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50: '#eef2ff', 100: '#e0e7ff', 200: '#c7d2fe', 300: '#a5b4fc', 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 800: '#3730a3', 900: '#312e81' },
+            space: { 800: '#1e293b', 850: '#172033', 900: '#0f172a', 950: '#0b1120' }
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Outfit', 'Inter', sans-serif; }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #0b1120; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+  </style>
+</head>
+<body class="bg-[#070b14] text-slate-100 min-h-screen flex flex-col selection:bg-cyan-500 selection:text-space-950">
+
+  <!-- STICKY TOP NAVBAR -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-space-950/85 border-b border-slate-800/80 px-4 sm:px-8 py-3">
+    <div class="max-w-6xl mx-auto flex items-center justify-between gap-3">
+      <!-- Left: Back Button & Badges -->
+      <div class="flex items-center space-x-2.5 sm:space-x-3 shrink-0">
+        <a href="../index.html#section-zhattau_grammar" id="btnBackToCourse" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white transition"><span>←</span><span id="btnBackToCourseText">Артқа</span></a>
+        <span class="px-2.5 py-1 rounded-full text-xs font-black bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
+          #34
+        </span>
+        <span id="navCatBadge" class="text-xs text-slate-400 font-bold hidden md:inline truncate max-w-[200px]">
+          География ғылымы және әдіснамасы
+        </span>
+      </div>
+
+      <!-- Right: Controls (Lang Switcher & Mark Complete) -->
+      <div class="flex items-center space-x-2 sm:space-x-3 shrink-0">
+        <!-- Language Switcher -->
+        <div class="inline-flex p-1 bg-space-900 border border-slate-800 rounded-xl space-x-1">
+          <button id="btnLangKz" onclick="setLang('kz')" class="px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow">
+            KZ
+          </button>
+          <button id="btnLangRu" onclick="setLang('ru')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">
+            RU
+          </button>
+        </div>
+
+        <!-- Mark as Completed Button -->
+        <button id="btnComplete" onclick="toggleComplete()" class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition border border-slate-700 bg-space-900 text-slate-300 hover:text-white hover:border-slate-600">
+          <span id="completeIcon" class="text-sm">○</span>
+          <span id="completeText" class="hidden sm:inline">Меңгерілді</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN TOPIC CONTAINER -->
+  <main class="max-w-5xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-8 space-y-6 flex-1">
+
+    <!-- HERO HEADER CARD -->
+    <div class="p-6 sm:p-7 rounded-2xl bg-space-950/90 border border-slate-800 space-y-3.5 shadow-xl relative overflow-hidden">
+      <div class="absolute -right-12 -top-12 w-48 h-48 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="flex items-center space-x-2">
+        <span id="heroCatBadge" class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-space-850 text-cyan-400 border border-cyan-500/20">
+          География ғылымы және әдіснамасы
+        </span>
+        <span class="text-xs text-slate-400">⏱️ ~8-12 мин оқу</span>
+      </div>
+      <h1 id="heroTitle" class="text-xl sm:text-2xl md:text-3xl font-black text-white tracking-tight leading-snug">
+        Ғалымдардың еңбектері
+      </h1>
+      <!-- External Links Bar -->
+      <div class="flex flex-wrap items-center gap-2 pt-1">
+        <a id="btnBlooket" href="https://dashboard.blooket.com/set/6a96ec2aa0cfe73b9ff91e0d" target="_blank" class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 border border-purple-500/40 text-xs font-bold transition shadow-sm">
+          <span>🎮</span>
+          <span id="btnBlooketText">Blooket ойыны</span>
+        </a>
+        
+      </div>
+    </div>
+
+    <!-- 1. BRIEF SUMMARY CARD -->
+    <section class="p-5 rounded-2xl bg-space-950 border border-brand-500/40 text-xs sm:text-sm text-slate-200 leading-relaxed shadow-lg">
+      <div class="flex items-center space-x-2 text-brand-400 font-extrabold text-xs mb-2">
+        <span>📖</span>
+        <span id="summaryHeader">ТАҚЫРЫПҚА ҚЫСҚАША ШОЛУ</span>
+      </div>
+      <p id="summaryText" class="leading-relaxed">
+        География ғылымына үлес қосқан 37 көрнекті ғалымның еңбектері: А. Гумбольдт, В.И. Вернадский (ноосфера), Н.Н. Баранский (ҚР 5 ауданы, 4 ЭГЖ), Ф. Ратцель (экспансияның 7 заңы), Р. Челлен (геосаясат), Х. Маккиндер (Хартленд), И. Валлерстайн (әлем-жүйе), М. Портер (кластерлер), Махбуб уль-Хак (АДИ 1990 ж.).
+      </p>
+    </section>
+
+    <!-- 2. FULL THEORY SECTION -->
+    <section class="p-5 sm:p-7 rounded-2xl bg-space-950 border border-slate-800 space-y-4 shadow-xl">
+      <div class="flex items-center space-x-2 border-b border-slate-800 pb-3">
+        <span class="text-base text-cyan-400 font-black">📚</span>
+        <h2 id="theoryHeader" class="text-xs sm:text-sm font-black text-white uppercase tracking-wider">
+          ТОЛЫҚ ТЕОРИЯЛЫҚ МАТЕРИАЛ МЕН КОНСПЕКТ
+        </h2>
+      </div>
+      <div id="theoryContent">
+        <div class="space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed">
+
+  <!-- 1. ФИЗИКАЛЫҚ ГЕОГРАФИЯ ЖӘНЕ ЖЕРТАНУ ТҰЖЫРЫМДАМАЛАРЫ -->
+  <div class="p-5 rounded-2xl bg-space-900/90 border border-indigo-500/30 space-y-4 shadow-xl">
+    <div class="flex items-center space-x-3 text-indigo-400">
+      <span class="text-2xl">🌍</span>
+      <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-wider">1. Физикалық география және Жертанудың классикалық ілімдері</h3>
+    </div>
+    <div class="space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed">
+      <p class="leading-relaxed">• <b>Александр фон Гумбольдт:</b> XIX ғасырда салыстыру әдісін географияға тұңғыш рет ғылыми негізде енгізді. Жер қабықтарының ғаламдық заңдылықтарын жүйелеп, қазіргі физикалық географияның іргетасын қалады. 1843 жылы географияға <b>«Орта Азия»</b> ұғымын енгізді.</p>
+      <p class="leading-relaxed">• <b>Карл Риттер:</b> Салыстырмалы географиялық талдауды кең қолданды. Негізгі еңбектері: <i>«Табиғат пен адам тарихына қатысты жертану»</i>, <i>«Жалпы салыстырмалы география»</i>, <i>«Салыстырмалы жертану туралы идеялар»</i>.</p>
+      <p class="leading-relaxed">• <b>Платон (Ежелгі Грекия):</b> Салыстыру әдістерінің көне түрі — <b>баламалау (аналогия)</b> әдісін алғаш қолданып, Жер шарын тұтас тірі адам ағзасына теңеді.</p>
+      <p class="leading-relaxed">• <b>Уолтер Кеннон:</b> Тірі организмдердің ішкі ортасының тұрақтылығын сипаттайтын <b>«Гомеостаз»</b> терминін ғылымға енгізді (кейін геожүйелерге қолданылды).</p>
+    </div>
+  </div>
+
+  <!-- 2. ГЕОЭКОЛОГИЯ, ТАБИҒАТТЫ ПАЙДАЛАНУ ЖӘНЕ НООСФЕРА -->
+  <div class="p-5 rounded-2xl bg-space-900/90 border border-emerald-500/30 space-y-4 shadow-xl">
+    <div class="flex items-center space-x-3 text-emerald-400">
+      <span class="text-2xl">🌱</span>
+      <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-wider">2. Геоэкология, табиғатты пайдалану және Ноосфера ілімі</h3>
+    </div>
+    <div class="space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed">
+      <p class="leading-relaxed">• <b>Владимир Иванович Вернадский:</b> Академик, биосфера мен <b>Ноосфера (ақыл-ой қабығы)</b> туралы ілімнің негізін қалады. Адамзаттың саналы әрекеті геологиялық қуатты күшке айналғанын дәлелдеді.</p>
+      <p class="leading-relaxed">• <b>Карл Тролл (1939 ж.):</b> Ғылымға алғаш рет <b>«Геоэкология»</b> терминін енгізді (ландшафттық экология түсінігімен байланыстырды).</p>
+      <p class="leading-relaxed">• <b>А.В. Чигаркин:</b> Қазақстан аумағын экологиялық шиеленіс деңгейіне қарай <b>5 деңгей мен 47 геоэкологиялық провинцияға</b> бөлді. 1994 жылы құрастырылған Қазақстанның тұңғыш Геоэкологиялық картасының авторы.</p>
+      <p class="leading-relaxed">• <b>Николай Федорович Реймерс:</b> Табиғатты пайдаланудың экологиялық жолдары мен қағидаттарын жүйелеп жіктеді.</p>
+      <p class="leading-relaxed">• <b>Юджин Одум:</b> Табиғатты тиімді пайдалануды екі жақты мақсатта қарастырды: 1) адамның материалдық, эстетикалық және рекреациялық сұраныстарын қанағаттандыру; 2) табиғи ресурстардың тұтынылуы мен қайта қалпына келуінің тепе-теңдігін үздіксіз сақтау.</p>
+      <p class="leading-relaxed">• <b>Барри Коммонер:</b> Экологияның 4 іргелі заңын тұжырымдады: <i>«Барлығы бәрімен байланысты»</i>, <i>«Барлығы бір жаққа кетуі керек»</i>, <i>«Табиғат бәрінен жақсы біледі»</i>, <i>«Тегін ештеңе берілмейді»</i>.</p>
+      <p class="leading-relaxed">• <b>Доннелла Медоуз және Рим клубы:</b> Адамзаттың ресурстық дағдарысы мен ғаламдық шектеулерін зерттеген әйгілі <b>«Өсудің шегі» («Пределы роста»)</b> кітабының авторлары.</p>
+    </div>
+  </div>
+
+  <!-- 3. ГЕОСАЯСАТ ЖӘНЕ САЯСИ ГЕОГРАФИЯ -->
+  <div class="p-5 rounded-2xl bg-space-900/90 border border-amber-500/30 space-y-4 shadow-xl">
+    <div class="flex items-center space-x-3 text-amber-400">
+      <span class="text-2xl">🌐</span>
+      <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-wider">3. Геосаясат және саяси география теориялары</h3>
+    </div>
+    <div class="space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed">
+      <p class="leading-relaxed">• <b>Рудольф Челлен (Швеция):</b> 1899 жылы ғылымға <b>«Геосаясат» (геополитика)</b> терминін алғаш рет енгізген ғалым. Мемлекетті кеңістікте өмір сүретін биологиялық ағза ретінде қарастырды.</p>
+      <p class="leading-relaxed">• <b>Фридрих Ратцель (Германия):</b> Саяси географияның негізін қалады. Мемлекеттік <b>экспансияның 7 заңын</b> ашты. Ғылымға «өмір сүру кеңістігі» (*Lebensraum*) және «мәдени зоналар» ұғымдарын енгізді.</p>
+      <p class="leading-relaxed">• <b>Хэлфорд Джон Маккиндер (Ұлыбритания):</b> Саяси-географиялық аудандастырудың алғашқы ғаламдық үлгісін жасады. Еуразияның ішкі құрлықтық өзегін — <b>Хартленд («Жер кіндігі»)</b>, оны қоршаған кеңістікті — <b>ішкі жарты ай</b> және <b>сыртқы жарты ай</b> деп жіктеді.</p>
+      <p class="leading-relaxed">• <b>Саул Коэн:</b> Әлемнің «көпполюстілігі» туралы күрделі геосаяси үлгісін жасап, ғаламшарды <b>2 геостратегиялық облысқа</b> және шеткі геосаяси аймақтарға бөлді.</p>
+      <p class="leading-relaxed">• <b>К.Э. Сорокин:</b> Геокеңістікке бақылау жасау мен ықпал ету ұғымын геосаяси экспансия түсінігімен терең байланыстырды.</p>
+      <p class="leading-relaxed">• <b>Питер Тейлор:</b> Қазіргі геосаяси үдерістердегі экономикалық факторлар мен жаһандық сауда жүйесінің жетекші рөлін зерттеді.</p>
+    </div>
+  </div>
+
+  <!-- 4. ЭКОНОМИКАЛЫҚ ГЕОГРАФИЯ, ЕЛТАНУ ЖӘНЕ АЙМАҚТАНУ -->
+  <div class="p-5 rounded-2xl bg-space-900/90 border border-cyan-500/30 space-y-4 shadow-xl">
+    <div class="flex items-center space-x-3 text-cyan-400">
+      <span class="text-2xl">📊</span>
+      <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-wider">4. Экономикалық география, елтану және әлемдік кеңістік үлгілері</h3>
+    </div>
+    <div class="space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed">
+      <p class="leading-relaxed">• <b>Николай Николаевич Баранский:</b> Кеңестік экономикалық география мен <b>елтану бағытының</b> негізін қалады. Аумақтық экономикалық-географиялық жағдайдың (ЭГЖ) <b>4 түрін</b> (орталық, көршілік, теңіз маңы, шеткі) негіздеді. <b>Қазақстан аумағын 5 экономикалық ауданға</b> бөлген ғалым.</p>
+      <p class="leading-relaxed">• <b>Иммануил Валлерстайн:</b> Қазіргі әлемнің экономикалық кеңістіктік үлгісін (мир-системный анализ) 3 деңгейге жіктеді: <b>Орталық (ядро) ➔ Жартылай периферия ➔ Периферия</b>.</p>
+      <p class="leading-relaxed">• <b>Майкл Юджин Портер:</b> Жеке мемлекеттің ұлттық бәсекеге қабілеттілігінің 5 негізгі белгісін («Портер ромбы») анықтады және <b>кластерлік даму теориясының</b> негізін салды.</p>
+      <p class="leading-relaxed">• <b>Махбуб уль-Хак (Пәкістан):</b> 1990 жылы БҰҰ Даму бағдарламасында (БҰҰДБ) алғаш рет <b>Адам дамуы индексін (АДИ / ИРЧП)</b> енгізді.</p>
+      <p class="leading-relaxed">• <b>Томас Мальтус:</b> Халық саны <i>геометриялық прогрессиямен</i>, ал азық-түлік өндірісі <i>арифметикалық прогрессиямен</i> өседі деген әйгілі демографиялық болжам авторы.</p>
+      <p class="leading-relaxed">• <b>А.П. Кузнецов:</b> Азияның динамикалы дамып келе жатқан экономикалық құрылымын <b>«алып адам (великан) моделіне»</b> теңеді.</p>
+      <p class="leading-relaxed">• <b>В.В. Вольский:</b> Әлемді 12 ірі тарихи-мәдени макроаймаққа бөлді.</p>
+      <p class="leading-relaxed">• <b>Ю.Н. Гладкий және А.И. Чистобаев:</b> География ғылымындағы аймақтық аудандастырудың құрылымдық базасын жасап, аймақтарды 3 сатыға жіктеді.</p>
+      <p class="leading-relaxed">• <b>Арнольд Тойнби:</b> Адамзат тарихын өркениеттерге жіктеп, олардың қалыптасуына географиялық-климаттық орта мен әлеуметтік факторлардың («Сын-қатер және жауап») ықпалын дәлелдеді.</p>
+      <p class="leading-relaxed">• <b>В.П. Максаковский:</b> Ғаламдық мәселелердің барлық мемлекеттер мен құрлықтарды қамтитын тұтас сипатын талдады.</p>
+      <p class="leading-relaxed">• <b>Ричард Хартшорн:</b> Қазіргі заманғы аймақтану парадигмасын кеңістіктік дифференциация ретінде ғылыми тұрғыдан дәйектеді.</p>
+    </div>
+  </div>
+
+  <!-- 5. КИБЕРНЕТИКА ЖӘНЕ ЦИФРЛЫҚ ТЕХНОЛОГИЯЛАР -->
+  <div class="p-5 rounded-2xl bg-space-900/90 border border-purple-500/30 space-y-4 shadow-xl">
+    <div class="flex items-center space-x-3 text-purple-400">
+      <span class="text-2xl">💻</span>
+      <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-wider">5. Кибернетика, ақпараттық жүйелер және IT пионерлері</h3>
+    </div>
+    <div class="space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed">
+      <p class="leading-relaxed">• <b>Андре Мари Ампер (1830 ж.):</b> Ғылымға <b>«Кибернетика»</b> терминін алғаш рет енгізді (мемлекетті басқару туралы ғылым ретінде қарастырды).</p>
+      <p class="leading-relaxed">• <b>Норберт Винер (1948 ж.):</b> Кибернетиканың негізгі қағидаларын жүйелеп, ақпараттық байланыс пен басқару теориясы ретінде <b>кибернетиканың негізін салды</b>.</p>
+      <p class="leading-relaxed">• <b>Дэн Бриклин және Боб Фрэнкстон (1979 ж.):</b> Дүниежүзіндегі тұңғыш электронды кестелік бағдарлама — VisiCalc-ты (кейіннен <b>Microsoft Excel</b> бағдарламасының бастауы болды) ойлап тапты.</p>
+      <p class="leading-relaxed">• <b>Стив Джобс және Стив Возняк (1976 ж.):</b> Дербес компьютерлер мен цифрлық технологиялар дәуірін ашқан <b>Apple компаниясын</b> құрды.</p>
+    </div>
+  </div>
+
+</div>
+      </div>
+    </section>
+
+    <!-- 3. VISUAL SVG DIAGRAM / ILLUSTRATION -->
+    <section id="svgSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl">
+      <div class="flex items-center space-x-2 text-amber-400 font-extrabold text-xs">
+        <span>🎨</span>
+        <span id="svgHeader">КӨРНЕКІ СХЕМА МЕН ИНФОГРАФИКА</span>
+      </div>
+      <div id="svgContainer" class="w-full flex justify-center overflow-x-auto">
+        <svg viewBox="0 0 800 480" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg" style="background:#0b1120; border-radius:16px;">
+  <defs>
+    <linearGradient id="topG34" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#4f46e5"/></linearGradient>
+    <linearGradient id="cg34" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1e293b"/><stop offset="100%" stop-color="#0f172a"/></linearGradient>
+    <filter id="sh34" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.5"/></filter>
+  </defs>
+  <rect width="800" height="480" fill="#0b1120" rx="16"/>
+  <rect x="30" y="20" width="740" height="55" rx="12" fill="url(#topG34)" filter="url(#sh34)"/>
+  <text x="400" y="45" fill="#fff" font-size="17" font-weight="bold" text-anchor="middle" font-family="system-ui, sans-serif">ҒАЛЫМДАРДЫҢ ЕҢБЕКТЕРІ МЕН ГЕОГРАФИЯЛЫҚ ІЛІМДЕР</text>
+  <text x="400" y="64" fill="#e0e7ff" font-size="12" text-anchor="middle" font-family="system-ui, sans-serif">А. Гумбольдт, В.И. Вернадский, Н.Н. Баранский, Ф. Ратцель, Х. Маккиндер, М. Портер</text>
+  
+  <!-- Col 1: Physical & Natural Geography -->
+  <g transform="translate(30, 95)" filter="url(#sh34)">
+    <rect width="235" height="175" rx="12" fill="url(#cg34)" stroke="#38bdf8" stroke-width="1.5"/>
+    <text x="15" y="26" fill="#38bdf8" font-size="12" font-weight="bold">ФИЗИКАЛЫҚ ГЕОГРАФИЯ</text>
+    <text x="15" y="48" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• А. Гумбольдт:</tspan> Салыстыру әдісі, Жер қабықтары заңдылықтары, 1843 ж. «Орта Азия» ұғымы.</text>
+    <text x="15" y="94" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• К. Риттер:</tspan> «Салыстырмалы жертану идеялары», табиғат пен адам тарихы байланысы.</text>
+    <text x="15" y="138" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• Платон:</tspan> Жер шарын адам ағзасына теңеген баламалау әдісінің бастауы.</text>
+  </g>
+
+  <!-- Col 2: Ecology & Biosphere -->
+  <g transform="translate(282, 95)" filter="url(#sh34)">
+    <rect width="235" height="175" rx="12" fill="url(#cg34)" stroke="#34d399" stroke-width="1.5"/>
+    <text x="15" y="26" fill="#34d399" font-size="12" font-weight="bold">ГЕОЭКОЛОГИЯ ЖӘНЕ НООСФЕРА</text>
+    <text x="15" y="48" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• В.И. Вернадский:</tspan> Ноосфера (ақыл-ой қабығы) туралы ілім негізін қалаушы академик.</text>
+    <text x="15" y="90" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• К. Тролл (1939 ж):</tspan> «Геоэкология» терминін ғылымға алғаш рет енгізген ғалым.</text>
+    <text x="15" y="126" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• А.В. Чигаркин:</tspan> ҚР-ны 5 экологиялық шиеленіс деңгейіне, 47 провинцияға бөлген (1994 ж. карта).</text>
+  </g>
+
+  <!-- Col 3: Geopolitics & Regional Modeling -->
+  <g transform="translate(535, 95)" filter="url(#sh34)">
+    <rect width="235" height="175" rx="12" fill="url(#cg34)" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="15" y="26" fill="#f59e0b" font-size="12" font-weight="bold">ГЕОСАЯСАТ ЖӘНЕ АЙМАҚТАНУ</text>
+    <text x="15" y="48" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• Р. Челлен:</tspan> «Геосаясат» терминінің авторы. <tspan font-weight="bold" fill="#fde047">Ф. Ратцель:</tspan> Саяси география, экспансияның 7 заңы.</text>
+    <text x="15" y="94" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• Х.Дж. Маккиндер:</tspan> Хартленд тұжырымы (Орталық, ішкі және сыртқы жарты айлар).</text>
+    <text x="15" y="136" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• И. Валлерстайн:</tspan> Әлем-жүйе моделі (Орталық, Жартылай периферия, Периферия).</text>
+  </g>
+
+  <!-- Bottom Panel: Economic Geography & Modern Concepts -->
+  <g transform="translate(30, 285)" filter="url(#sh34)">
+    <rect width="740" height="175" rx="12" fill="url(#cg34)" stroke="#c084fc" stroke-width="1.5"/>
+    <text x="20" y="24" fill="#c084fc" font-size="12" font-weight="bold">ЭКОНОМИКАЛЫҚ ГЕОГРАФИЯ ЖӘНЕ ЗАМАНАУИ ТЕОРИЯЛАР:</text>
+    <text x="20" y="48" fill="#e2e8f0" font-size="11"><tspan font-weight="bold" fill="#fde047">Н.Н. Баранский:</tspan> Елтану негізін салған. Аумақтық ЭГЖ-ның 4 түрі (орталық, көршілік, теңіз маңы, шеткі). Қазақстанды 5 ауданға бөлген.</text>
+    <text x="20" y="70" fill="#e2e8f0" font-size="11"><tspan font-weight="bold" fill="#fde047">Майкл Портер:</tspan> Елдердің бәсекеге қабілеттілігінің 5 белгісі және кластерлік даму теориясының авторы.</text>
+    <text x="20" y="92" fill="#e2e8f0" font-size="11"><tspan font-weight="bold" fill="#38bdf8">Махбуб уль-Хак (1990 ж):</tspan> Адам дамуы индексі (АДИ / ИРЧП) тұжырымдамасын БҰҰ шеңберінде алғаш ұсынды.</text>
+    <text x="20" y="114" fill="#e2e8f0" font-size="11"><tspan font-weight="bold" fill="#34d399">Т. Мальтус:</tspan> Халық саны геометриялық, ал азық-түлік арифметикалық прогрессиямен өседі деген заңдылық авторы.</text>
+    <text x="20" y="136" fill="#e2e8f0" font-size="11"><tspan font-weight="bold" fill="#fbbf24">Кибернетика мен IT:</tspan> Ампер (1830) — «кибернетика» термині | Н. Винер (1948) — негізін салушы | Д. Бриклин, Б. Фринкстон (1979) — Excel бағдарламасы.</text>
+    <text x="20" y="156" fill="#94a3b8" font-size="10.5">📚 Д. Медоуз — «Өсудің шегі» («Пределы роста») кітабы | Уолтер Кеннон — «Гомеостаз» термині | А.П. Кузнецов — «Азияның алып адам моделі».</text>
+  </g>
+</svg>
+      </div>
+    </section>
+
+    <!-- 4. STRUCTURED DATA TABLE -->
+    <section id="tableSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl overflow-x-auto">
+      <h3 class="text-xs font-black text-cyan-400 flex items-center space-x-2">
+        <span>📊</span>
+        <span id="tableHeader">НАҚТЫ КӨРСЕТКІШТЕР МЕН КЛАССИФИКАЦИЯ КЕСТЕСІ</span>
+      </h3>
+      <div id="tableContainer">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- 5. KEY FACTS FOR UNT / ЕНТ -->
+    <section id="factsSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl">
+      <h3 class="text-xs font-black text-amber-400 flex items-center space-x-2">
+        <span>⚡</span>
+        <span id="factsHeader">ҰБТ-ҒА ҚАЖЕТТІ НЕГІЗГІ ЕРЕЖЕЛЕР МЕН ФАКТІЛЕР</span>
+      </h3>
+      <ul id="factsList" class="space-y-2 text-xs text-slate-300">
+        <!-- Rendered via JS -->
+      </ul>
+    </section>
+
+    <!-- 6. TRAPS AND HACKS -->
+    <section id="trapsSection" class="p-5 rounded-2xl bg-gradient-to-r from-amber-950/40 via-space-950 to-space-950 border border-amber-500/40 space-y-3 shadow-xl">
+      <h3 class="text-xs font-black text-amber-400 flex items-center space-x-2">
+        <span>💡</span>
+        <span id="trapsHeader">ҰБТ ҚАҚПАНДАРЫ МЕН ЛАЙФХАКТАР</span>
+      </h3>
+      <div id="trapsList" class="space-y-2 text-xs text-slate-200">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- FOOTER NAVIGATION -->
+    <nav class="pt-4 pb-8 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3 text-xs">
+      <a href="topic_33.html" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white transition shadow-sm">
+      <span>←</span>
+      <span>#33 Алдыңғы тақырып</span>
+    </a>
+      <a href="../index.html#section-zhattau_grammar" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-400 hover:text-white transition">
+        <span>🏠</span>
+        <span>Барлық тақырыптар</span>
+      </a>
+      <a href="topic_35.html" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-xs font-bold text-cyan-300 hover:text-white transition shadow-sm">
+      <span>Келесі тақырып #35</span>
+      <span>→</span>
+    </a>
+    </nav>
+
+  </main>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="xpToast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300 flex items-center space-x-2 px-4 py-3 rounded-2xl bg-space-900 border border-cyan-500/40 shadow-2xl text-xs font-bold text-white">
+    <span class="text-cyan-400 text-base">✨</span>
+    <span id="toastMsg">+20 XP! Тақырып меңгерілді</span>
+  </div>
+
+  <script>
+    const topicData = {"num": 34, "title_kz": "Ғалымдардың еңбектері", "title_ru": "Труды ученых-географов", "category_kz": "География ғылымы және әдіснамасы", "category_ru": "Географическая наука и методология", "summary_kz": "География ғылымына үлес қосқан 37 көрнекті ғалымның еңбектері: А. Гумбольдт, В.И. Вернадский (ноосфера), Н.Н. Баранский (ҚР 5 ауданы, 4 ЭГЖ), Ф. Ратцель (экспансияның 7 заңы), Р. Челлен (геосаясат), Х. Маккиндер (Хартленд), И. Валлерстайн (әлем-жүйе), М. Портер (кластерлер), Махбуб уль-Хак (АДИ 1990 ж.).", "summary_ru": "Труды и концепции 37 выдающихся ученых: А. Гумбольдт, В.И. Вернадский (ноосфера), Н.Н. Баранский (5 районов РК, 4 типа ЭГП), Ф. Ратцель (7 законов экспансии), Р. Челлен (геополитика), Х. Маккиндер (Хартленд), И. Валлерстайн (мир-системная модель), М. Портер (кластеры), Махбуб уль-Хак (ИРЧП).", "full_theory_kz": "<div class=\"space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed\">\n\n  <!-- 1. ФИЗИКАЛЫҚ ГЕОГРАФИЯ ЖӘНЕ ЖЕРТАНУ ТҰЖЫРЫМДАМАЛАРЫ -->\n  <div class=\"p-5 rounded-2xl bg-space-900/90 border border-indigo-500/30 space-y-4 shadow-xl\">\n    <div class=\"flex items-center space-x-3 text-indigo-400\">\n      <span class=\"text-2xl\">🌍</span>\n      <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">1. Физикалық география және Жертанудың классикалық ілімдері</h3>\n    </div>\n    <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n      <p class=\"leading-relaxed\">• <b>Александр фон Гумбольдт:</b> XIX ғасырда салыстыру әдісін географияға тұңғыш рет ғылыми негізде енгізді. Жер қабықтарының ғаламдық заңдылықтарын жүйелеп, қазіргі физикалық географияның іргетасын қалады. 1843 жылы географияға <b>«Орта Азия»</b> ұғымын енгізді.</p>\n      <p class=\"leading-relaxed\">• <b>Карл Риттер:</b> Салыстырмалы географиялық талдауды кең қолданды. Негізгі еңбектері: <i>«Табиғат пен адам тарихына қатысты жертану»</i>, <i>«Жалпы салыстырмалы география»</i>, <i>«Салыстырмалы жертану туралы идеялар»</i>.</p>\n      <p class=\"leading-relaxed\">• <b>Платон (Ежелгі Грекия):</b> Салыстыру әдістерінің көне түрі — <b>баламалау (аналогия)</b> әдісін алғаш қолданып, Жер шарын тұтас тірі адам ағзасына теңеді.</p>\n      <p class=\"leading-relaxed\">• <b>Уолтер Кеннон:</b> Тірі организмдердің ішкі ортасының тұрақтылығын сипаттайтын <b>«Гомеостаз»</b> терминін ғылымға енгізді (кейін геожүйелерге қолданылды).</p>\n    </div>\n  </div>\n\n  <!-- 2. ГЕОЭКОЛОГИЯ, ТАБИҒАТТЫ ПАЙДАЛАНУ ЖӘНЕ НООСФЕРА -->\n  <div class=\"p-5 rounded-2xl bg-space-900/90 border border-emerald-500/30 space-y-4 shadow-xl\">\n    <div class=\"flex items-center space-x-3 text-emerald-400\">\n      <span class=\"text-2xl\">🌱</span>\n      <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">2. Геоэкология, табиғатты пайдалану және Ноосфера ілімі</h3>\n    </div>\n    <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n      <p class=\"leading-relaxed\">• <b>Владимир Иванович Вернадский:</b> Академик, биосфера мен <b>Ноосфера (ақыл-ой қабығы)</b> туралы ілімнің негізін қалады. Адамзаттың саналы әрекеті геологиялық қуатты күшке айналғанын дәлелдеді.</p>\n      <p class=\"leading-relaxed\">• <b>Карл Тролл (1939 ж.):</b> Ғылымға алғаш рет <b>«Геоэкология»</b> терминін енгізді (ландшафттық экология түсінігімен байланыстырды).</p>\n      <p class=\"leading-relaxed\">• <b>А.В. Чигаркин:</b> Қазақстан аумағын экологиялық шиеленіс деңгейіне қарай <b>5 деңгей мен 47 геоэкологиялық провинцияға</b> бөлді. 1994 жылы құрастырылған Қазақстанның тұңғыш Геоэкологиялық картасының авторы.</p>\n      <p class=\"leading-relaxed\">• <b>Николай Федорович Реймерс:</b> Табиғатты пайдаланудың экологиялық жолдары мен қағидаттарын жүйелеп жіктеді.</p>\n      <p class=\"leading-relaxed\">• <b>Юджин Одум:</b> Табиғатты тиімді пайдалануды екі жақты мақсатта қарастырды: 1) адамның материалдық, эстетикалық және рекреациялық сұраныстарын қанағаттандыру; 2) табиғи ресурстардың тұтынылуы мен қайта қалпына келуінің тепе-теңдігін үздіксіз сақтау.</p>\n      <p class=\"leading-relaxed\">• <b>Барри Коммонер:</b> Экологияның 4 іргелі заңын тұжырымдады: <i>«Барлығы бәрімен байланысты»</i>, <i>«Барлығы бір жаққа кетуі керек»</i>, <i>«Табиғат бәрінен жақсы біледі»</i>, <i>«Тегін ештеңе берілмейді»</i>.</p>\n      <p class=\"leading-relaxed\">• <b>Доннелла Медоуз және Рим клубы:</b> Адамзаттың ресурстық дағдарысы мен ғаламдық шектеулерін зерттеген әйгілі <b>«Өсудің шегі» («Пределы роста»)</b> кітабының авторлары.</p>\n    </div>\n  </div>\n\n  <!-- 3. ГЕОСАЯСАТ ЖӘНЕ САЯСИ ГЕОГРАФИЯ -->\n  <div class=\"p-5 rounded-2xl bg-space-900/90 border border-amber-500/30 space-y-4 shadow-xl\">\n    <div class=\"flex items-center space-x-3 text-amber-400\">\n      <span class=\"text-2xl\">🌐</span>\n      <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">3. Геосаясат және саяси география теориялары</h3>\n    </div>\n    <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n      <p class=\"leading-relaxed\">• <b>Рудольф Челлен (Швеция):</b> 1899 жылы ғылымға <b>«Геосаясат» (геополитика)</b> терминін алғаш рет енгізген ғалым. Мемлекетті кеңістікте өмір сүретін биологиялық ағза ретінде қарастырды.</p>\n      <p class=\"leading-relaxed\">• <b>Фридрих Ратцель (Германия):</b> Саяси географияның негізін қалады. Мемлекеттік <b>экспансияның 7 заңын</b> ашты. Ғылымға «өмір сүру кеңістігі» (*Lebensraum*) және «мәдени зоналар» ұғымдарын енгізді.</p>\n      <p class=\"leading-relaxed\">• <b>Хэлфорд Джон Маккиндер (Ұлыбритания):</b> Саяси-географиялық аудандастырудың алғашқы ғаламдық үлгісін жасады. Еуразияның ішкі құрлықтық өзегін — <b>Хартленд («Жер кіндігі»)</b>, оны қоршаған кеңістікті — <b>ішкі жарты ай</b> және <b>сыртқы жарты ай</b> деп жіктеді.</p>\n      <p class=\"leading-relaxed\">• <b>Саул Коэн:</b> Әлемнің «көпполюстілігі» туралы күрделі геосаяси үлгісін жасап, ғаламшарды <b>2 геостратегиялық облысқа</b> және шеткі геосаяси аймақтарға бөлді.</p>\n      <p class=\"leading-relaxed\">• <b>К.Э. Сорокин:</b> Геокеңістікке бақылау жасау мен ықпал ету ұғымын геосаяси экспансия түсінігімен терең байланыстырды.</p>\n      <p class=\"leading-relaxed\">• <b>Питер Тейлор:</b> Қазіргі геосаяси үдерістердегі экономикалық факторлар мен жаһандық сауда жүйесінің жетекші рөлін зерттеді.</p>\n    </div>\n  </div>\n\n  <!-- 4. ЭКОНОМИКАЛЫҚ ГЕОГРАФИЯ, ЕЛТАНУ ЖӘНЕ АЙМАҚТАНУ -->\n  <div class=\"p-5 rounded-2xl bg-space-900/90 border border-cyan-500/30 space-y-4 shadow-xl\">\n    <div class=\"flex items-center space-x-3 text-cyan-400\">\n      <span class=\"text-2xl\">📊</span>\n      <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">4. Экономикалық география, елтану және әлемдік кеңістік үлгілері</h3>\n    </div>\n    <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n      <p class=\"leading-relaxed\">• <b>Николай Николаевич Баранский:</b> Кеңестік экономикалық география мен <b>елтану бағытының</b> негізін қалады. Аумақтық экономикалық-географиялық жағдайдың (ЭГЖ) <b>4 түрін</b> (орталық, көршілік, теңіз маңы, шеткі) негіздеді. <b>Қазақстан аумағын 5 экономикалық ауданға</b> бөлген ғалым.</p>\n      <p class=\"leading-relaxed\">• <b>Иммануил Валлерстайн:</b> Қазіргі әлемнің экономикалық кеңістіктік үлгісін (мир-системный анализ) 3 деңгейге жіктеді: <b>Орталық (ядро) ➔ Жартылай периферия ➔ Периферия</b>.</p>\n      <p class=\"leading-relaxed\">• <b>Майкл Юджин Портер:</b> Жеке мемлекеттің ұлттық бәсекеге қабілеттілігінің 5 негізгі белгісін («Портер ромбы») анықтады және <b>кластерлік даму теориясының</b> негізін салды.</p>\n      <p class=\"leading-relaxed\">• <b>Махбуб уль-Хак (Пәкістан):</b> 1990 жылы БҰҰ Даму бағдарламасында (БҰҰДБ) алғаш рет <b>Адам дамуы индексін (АДИ / ИРЧП)</b> енгізді.</p>\n      <p class=\"leading-relaxed\">• <b>Томас Мальтус:</b> Халық саны <i>геометриялық прогрессиямен</i>, ал азық-түлік өндірісі <i>арифметикалық прогрессиямен</i> өседі деген әйгілі демографиялық болжам авторы.</p>\n      <p class=\"leading-relaxed\">• <b>А.П. Кузнецов:</b> Азияның динамикалы дамып келе жатқан экономикалық құрылымын <b>«алып адам (великан) моделіне»</b> теңеді.</p>\n      <p class=\"leading-relaxed\">• <b>В.В. Вольский:</b> Әлемді 12 ірі тарихи-мәдени макроаймаққа бөлді.</p>\n      <p class=\"leading-relaxed\">• <b>Ю.Н. Гладкий және А.И. Чистобаев:</b> География ғылымындағы аймақтық аудандастырудың құрылымдық базасын жасап, аймақтарды 3 сатыға жіктеді.</p>\n      <p class=\"leading-relaxed\">• <b>Арнольд Тойнби:</b> Адамзат тарихын өркениеттерге жіктеп, олардың қалыптасуына географиялық-климаттық орта мен әлеуметтік факторлардың («Сын-қатер және жауап») ықпалын дәлелдеді.</p>\n      <p class=\"leading-relaxed\">• <b>В.П. Максаковский:</b> Ғаламдық мәселелердің барлық мемлекеттер мен құрлықтарды қамтитын тұтас сипатын талдады.</p>\n      <p class=\"leading-relaxed\">• <b>Ричард Хартшорн:</b> Қазіргі заманғы аймақтану парадигмасын кеңістіктік дифференциация ретінде ғылыми тұрғыдан дәйектеді.</p>\n    </div>\n  </div>\n\n  <!-- 5. КИБЕРНЕТИКА ЖӘНЕ ЦИФРЛЫҚ ТЕХНОЛОГИЯЛАР -->\n  <div class=\"p-5 rounded-2xl bg-space-900/90 border border-purple-500/30 space-y-4 shadow-xl\">\n    <div class=\"flex items-center space-x-3 text-purple-400\">\n      <span class=\"text-2xl\">💻</span>\n      <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">5. Кибернетика, ақпараттық жүйелер және IT пионерлері</h3>\n    </div>\n    <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n      <p class=\"leading-relaxed\">• <b>Андре Мари Ампер (1830 ж.):</b> Ғылымға <b>«Кибернетика»</b> терминін алғаш рет енгізді (мемлекетті басқару туралы ғылым ретінде қарастырды).</p>\n      <p class=\"leading-relaxed\">• <b>Норберт Винер (1948 ж.):</b> Кибернетиканың негізгі қағидаларын жүйелеп, ақпараттық байланыс пен басқару теориясы ретінде <b>кибернетиканың негізін салды</b>.</p>\n      <p class=\"leading-relaxed\">• <b>Дэн Бриклин және Боб Фрэнкстон (1979 ж.):</b> Дүниежүзіндегі тұңғыш электронды кестелік бағдарлама — VisiCalc-ты (кейіннен <b>Microsoft Excel</b> бағдарламасының бастауы болды) ойлап тапты.</p>\n      <p class=\"leading-relaxed\">• <b>Стив Джобс және Стив Возняк (1976 ж.):</b> Дербес компьютерлер мен цифрлық технологиялар дәуірін ашқан <b>Apple компаниясын</b> құрды.</p>\n    </div>\n  </div>\n\n</div>", "full_theory_ru": "<div class=\"space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed\">\n\n  <!-- 1. ФИЗИЧЕСКАЯ ГЕОГРАФИЯ И ЗЕМЛЕВЕДЕНИЕ -->\n  <div class=\"p-5 rounded-2xl bg-space-900/90 border border-indigo-500/30 space-y-4 shadow-xl\">\n    <div class=\"flex items-center space-x-3 text-indigo-400\">\n      <span class=\"text-2xl\">🌍</span>\n      <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">1. Классическая физическая география и основы землеведения</h3>\n    </div>\n    <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n      <p class=\"leading-relaxed\">• <b>Александр фон Гумбольдт:</b> В XIX веке впервые научно внедрил в географию сравнительный метод. Исследовал планетарные законы географических оболочек, заложив основы современного физического землеведения. В 1843 г. ввел географическое понятие <b>«Средняя Азия»</b>.</p>\n      <p class=\"leading-relaxed\">• <b>Карл Риттер:</b> Развил метод сравнительного анализа. Фундаментальные труды: <i>«Землеведение в отношении к природе и истории человека»</i>, <i>«Всеобщее сравнительное землеведение»</i>, <i>«Идеи о сравнительном землеведении»</i>.</p>\n      <p class=\"leading-relaxed\">• <b>Платон (Древняя Греция):</b> Применил ранний сравнительный метод — <b>метод аналогий</b>, уподобив планету Земля живому организму человека.</p>\n      <p class=\"leading-relaxed\">• <b>Уолтер Кеннон:</b> Ввел фундаментальный научный термин <b>«Гомеостаз»</b> — свойство систем сохранять динамическое равновесие (впоследствии перенесено на природные геосистемы).</p>\n    </div>\n  </div>\n\n  <!-- 2. ГЕОЭКОЛОГИЯ, ПРИРОДОПОЛЬЗОВАНИЕ И НООСФЕРА -->\n  <div class=\"p-5 rounded-2xl bg-space-900/90 border border-emerald-500/30 space-y-4 shadow-xl\">\n    <div class=\"flex items-center space-x-3 text-emerald-400\">\n      <span class=\"text-2xl\">🌱</span>\n      <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">2. Геоэкология, рациональное природопользование и учение о ноосфере</h3>\n    </div>\n    <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n      <p class=\"leading-relaxed\">• <b>Владимир Иванович Вернадский:</b> Академик, создатель учения о биосфере и <b>Ноосфере (сфере разума)</b>. Доказал, что разумная хозяйственная деятельность человека стала крупнейшей геологической преобразующей силой.</p>\n      <p class=\"leading-relaxed\">• <b>Карл Тролль (1939 г.):</b> Впервые сформулировал и ввел в географическую науку термин <b>«Геоэкология»</b> (на стыке ландшафтоведения и экологии).</p>\n      <p class=\"leading-relaxed\">• <b>А.В. Чигаркин:</b> Классифицировал территорию Казахстана по степени экологической напряженности на <b>5 уровней и 47 геоэкологических провинций</b>. Автор уникальной Геоэкологической карты РК (1994 г.).</p>\n      <p class=\"leading-relaxed\">• <b>Николай Федорович Реймерс:</b> Разработал фундаментальную классификацию направлений и законов рационального природопользования.</p>\n      <p class=\"leading-relaxed\">• <b>Юджин Одум:</b> Рассматривал рациональное природопользование в двух взаимосвязанных аспектах: 1) удовлетворение эстетических, рекреационных и материальных потребностей человека; 2) обеспечение баланса между изъятием биоресурсов и их естественным воспроизводством.</p>\n      <p class=\"leading-relaxed\">• <b>Барри Коммонер:</b> Сформулировал 4 всемирно известных закона экологии: <i>«Все связано со всем»</i>, <i>«Все должно куда-то деваться»</i>, <i>«Природа знает лучше»</i>, <i>«Ничто не дается даром»</i>.</p>\n      <p class=\"leading-relaxed\">• <b>Донелла Медоуз и Римский клуб:</b> Авторы эпохального глобального доклада <b>«Пределы роста» («The Limits to Growth»)</b> о демографических и ресурсных рубежах биосферы.</p>\n    </div>\n  </div>\n\n  <!-- 3. ГЕОПОЛИТИКА И ПОЛИТИЧЕСКАЯ ГЕОГРАФИЯ -->\n  <div class=\"p-5 rounded-2xl bg-space-900/90 border border-amber-500/30 space-y-4 shadow-xl\">\n    <div class=\"flex items-center space-x-3 text-amber-400\">\n      <span class=\"text-2xl\">🌐</span>\n      <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">3. Геополитика и теории политической географии</h3>\n    </div>\n    <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n      <p class=\"leading-relaxed\">• <b>Рудольф Челлен (Швеция):</b> В 1899 г. ввел научный термин <b>«Геополитика»</b>. Определил государство как пространственный географический организм.</p>\n      <p class=\"leading-relaxed\">• <b>Фридрих Ратцель (Германия):</b> Основатель политической географии. Открыл <b>7 законов пространственного роста (экспансии) государств</b>. Ввел концепции «жизненного пространства» и «культурных зон».</p>\n      <p class=\"leading-relaxed\">• <b>Хэлфорд Джон Маккиндер (Великобритания):</b> Создал базовую модель геополитического районирования мира: сухопутное осевое ядро Евразии — <b>Хартленд («Сердце Земли»)</b>, окаймляющий <b>внутренний полумесяц</b> (Римленд) и <b>внешний островной полумесяц</b>.</p>\n      <p class=\"leading-relaxed\">• <b>Саул Коэн:</b> Разработал полицентрическую модель многополярного мира, выделив <b>2 геостратегические сферы</b> и систему периферийных геополитических регионов.</p>\n      <p class=\"leading-relaxed\">• <b>К.Э. Сорокин:</b> Обосновал концепцию контроля над геопространством через системные механизмы внешнеполитической экспансии.</p>\n      <p class=\"leading-relaxed\">• <b>Питер Тейлор:</b> Исследовал первичное влияние глобальных торгово-экономических факторов на современную геополитическую архитектонику.</p>\n    </div>\n  </div>\n\n  <!-- 4. ЭКОНОМИЧЕСКАЯ ГЕОГРАФИЯ И ПРОСТРАНСТВЕННЫЕ МОДЕЛИ -->\n  <div class=\"p-5 rounded-2xl bg-space-900/90 border border-cyan-500/30 space-y-4 shadow-xl\">\n    <div class=\"flex items-center space-x-3 text-cyan-400\">\n      <span class=\"text-2xl\">📊</span>\n      <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">4. Экономическая география, страноведение и региональные концепции</h3>\n    </div>\n    <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n      <p class=\"leading-relaxed\">• <b>Николай Николаевич Баранский:</b> Основоположник отечественной экономической географии и научного <b>страноведения</b>. Разработал учение об ЭГП, выделив <b>4 категории положения</b> (центральное, соседское, приморское, периферийное). <b>Разделил территорию Казахстана на 5 экономических районов</b>.</p>\n      <p class=\"leading-relaxed\">• <b>Иммануил Валлерстайн:</b> Автор мир-системной концепции, делящей глобальное экономическое пространство на 3 уровня: <b>Ядро (центр) ➔ Полупериферия ➔ Периферия</b>.</p>\n      <p class=\"leading-relaxed\">• <b>Майкл Юджин Портер:</b> Выделил 5 детерминантов конкурентоспособности («ромб Портера») и создал фундаментальную <b>теорию кластерного развития экономики</b>.</p>\n      <p class=\"leading-relaxed\">• <b>Махбуб уль-Хак (Пакистан):</b> В 1990 г. в рамках Программы развития ООН (ПРООН) впервые разработал и внедрил <b>Индекс человеческого развития (ИРЧП / HDI)</b>.</p>\n      <p class=\"leading-relaxed\">• <b>Томас Мальтус:</b> Выдвинул закон народонаселения: население удваивается в <i>геометрической прогрессии</i>, а средства существования прирастают лишь в <i>арифметической</i>.</p>\n      <p class=\"leading-relaxed\">• <b>А.П. Кузнецов:</b> Охарактеризовал бурную пространственную динамику экономики Азии через образ <b>«модели азиатского великана»</b>.</p>\n      <p class=\"leading-relaxed\">• <b>В.В. Вольский:</b> Разделил мир на 12 историко-культурных макрорегионов.</p>\n      <p class=\"leading-relaxed\">• <b>Ю.Н. Гладкий и А.И. Чистобаев:</b> Создали системную методологическую базу районирования в региональной географии (3-ступенчатая структура).</p>\n      <p class=\"leading-relaxed\">• <b>Арнольд Тойнби:</b> Цивилизационная теория развития: роль вызовов природной среды в становлении и эволюции человеческих цивилизаций («Вызов и ответ»).</p>\n      <p class=\"leading-relaxed\">• <b>В.П. Максаковский:</b> Исследовал всеохватную планетарную специфику глобальных проблем современности.</p>\n      <p class=\"leading-relaxed\">• <b>Ричард Хартшорн:</b> Сформулировал парадигму хорологической географии (наука о пространственной дифференциации земной поверхности).</p>\n    </div>\n  </div>\n\n  <!-- 5. КИБЕРНЕТИКА И ЦИФРОВЫЕ СИСТЕМЫ -->\n  <div class=\"p-5 rounded-2xl bg-space-900/90 border border-purple-500/30 space-y-4 shadow-xl\">\n    <div class=\"flex items-center space-x-3 text-purple-400\">\n      <span class=\"text-2xl\">💻</span>\n      <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">5. Кибернетика, информационные технологии и IT-инновации</h3>\n    </div>\n    <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n      <p class=\"leading-relaxed\">• <b>Андре-Мари Ампер (1830 г.):</b> Впервые предложил научный термин <b>«Кибернетика»</b> (как искусство управления государством).</p>\n      <p class=\"leading-relaxed\">• <b>Норберт Винер (1948 г.):</b> Основоположник современной кибернетики как науки об управлении и связях в машинах и живых организмах.</p>\n      <p class=\"leading-relaxed\">• <b>Дэн Бриклин и Боб Фрэнкстон (1979 г.):</b> Создали первую в истории электронную таблицу VisiCalc, ставшую прототипом <b>Microsoft Excel</b>.</p>\n      <p class=\"leading-relaxed\">• <b>Стив Джобс и Стив Возняк (1976 г.):</b> Основали корпорацию <b>Apple</b>, начав революцию персональных компьютеров и цифровых интерфейсов.</p>\n    </div>\n  </div>\n\n</div>", "svg_diagram": "<svg viewBox=\"0 0 800 480\" width=\"100%\" height=\"auto\" xmlns=\"http://www.w3.org/2000/svg\" style=\"background:#0b1120; border-radius:16px;\">\n  <defs>\n    <linearGradient id=\"topG34\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" stop-color=\"#6366f1\"/><stop offset=\"100%\" stop-color=\"#4f46e5\"/></linearGradient>\n    <linearGradient id=\"cg34\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" stop-color=\"#1e293b\"/><stop offset=\"100%\" stop-color=\"#0f172a\"/></linearGradient>\n    <filter id=\"sh34\" x=\"-10%\" y=\"-10%\" width=\"120%\" height=\"120%\"><feDropShadow dx=\"0\" dy=\"4\" stdDeviation=\"6\" flood-color=\"#000\" flood-opacity=\"0.5\"/></filter>\n  </defs>\n  <rect width=\"800\" height=\"480\" fill=\"#0b1120\" rx=\"16\"/>\n  <rect x=\"30\" y=\"20\" width=\"740\" height=\"55\" rx=\"12\" fill=\"url(#topG34)\" filter=\"url(#sh34)\"/>\n  <text x=\"400\" y=\"45\" fill=\"#fff\" font-size=\"17\" font-weight=\"bold\" text-anchor=\"middle\" font-family=\"system-ui, sans-serif\">ҒАЛЫМДАРДЫҢ ЕҢБЕКТЕРІ МЕН ГЕОГРАФИЯЛЫҚ ІЛІМДЕР</text>\n  <text x=\"400\" y=\"64\" fill=\"#e0e7ff\" font-size=\"12\" text-anchor=\"middle\" font-family=\"system-ui, sans-serif\">А. Гумбольдт, В.И. Вернадский, Н.Н. Баранский, Ф. Ратцель, Х. Маккиндер, М. Портер</text>\n  \n  <!-- Col 1: Physical & Natural Geography -->\n  <g transform=\"translate(30, 95)\" filter=\"url(#sh34)\">\n    <rect width=\"235\" height=\"175\" rx=\"12\" fill=\"url(#cg34)\" stroke=\"#38bdf8\" stroke-width=\"1.5\"/>\n    <text x=\"15\" y=\"26\" fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\">ФИЗИКАЛЫҚ ГЕОГРАФИЯ</text>\n    <text x=\"15\" y=\"48\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• А. Гумбольдт:</tspan> Салыстыру әдісі, Жер қабықтары заңдылықтары, 1843 ж. «Орта Азия» ұғымы.</text>\n    <text x=\"15\" y=\"94\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• К. Риттер:</tspan> «Салыстырмалы жертану идеялары», табиғат пен адам тарихы байланысы.</text>\n    <text x=\"15\" y=\"138\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Платон:</tspan> Жер шарын адам ағзасына теңеген баламалау әдісінің бастауы.</text>\n  </g>\n\n  <!-- Col 2: Ecology & Biosphere -->\n  <g transform=\"translate(282, 95)\" filter=\"url(#sh34)\">\n    <rect width=\"235\" height=\"175\" rx=\"12\" fill=\"url(#cg34)\" stroke=\"#34d399\" stroke-width=\"1.5\"/>\n    <text x=\"15\" y=\"26\" fill=\"#34d399\" font-size=\"12\" font-weight=\"bold\">ГЕОЭКОЛОГИЯ ЖӘНЕ НООСФЕРА</text>\n    <text x=\"15\" y=\"48\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• В.И. Вернадский:</tspan> Ноосфера (ақыл-ой қабығы) туралы ілім негізін қалаушы академик.</text>\n    <text x=\"15\" y=\"90\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• К. Тролл (1939 ж):</tspan> «Геоэкология» терминін ғылымға алғаш рет енгізген ғалым.</text>\n    <text x=\"15\" y=\"126\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• А.В. Чигаркин:</tspan> ҚР-ны 5 экологиялық шиеленіс деңгейіне, 47 провинцияға бөлген (1994 ж. карта).</text>\n  </g>\n\n  <!-- Col 3: Geopolitics & Regional Modeling -->\n  <g transform=\"translate(535, 95)\" filter=\"url(#sh34)\">\n    <rect width=\"235\" height=\"175\" rx=\"12\" fill=\"url(#cg34)\" stroke=\"#f59e0b\" stroke-width=\"1.5\"/>\n    <text x=\"15\" y=\"26\" fill=\"#f59e0b\" font-size=\"12\" font-weight=\"bold\">ГЕОСАЯСАТ ЖӘНЕ АЙМАҚТАНУ</text>\n    <text x=\"15\" y=\"48\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Р. Челлен:</tspan> «Геосаясат» терминінің авторы. <tspan font-weight=\"bold\" fill=\"#fde047\">Ф. Ратцель:</tspan> Саяси география, экспансияның 7 заңы.</text>\n    <text x=\"15\" y=\"94\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Х.Дж. Маккиндер:</tspan> Хартленд тұжырымы (Орталық, ішкі және сыртқы жарты айлар).</text>\n    <text x=\"15\" y=\"136\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• И. Валлерстайн:</tspan> Әлем-жүйе моделі (Орталық, Жартылай периферия, Периферия).</text>\n  </g>\n\n  <!-- Bottom Panel: Economic Geography & Modern Concepts -->\n  <g transform=\"translate(30, 285)\" filter=\"url(#sh34)\">\n    <rect width=\"740\" height=\"175\" rx=\"12\" fill=\"url(#cg34)\" stroke=\"#c084fc\" stroke-width=\"1.5\"/>\n    <text x=\"20\" y=\"24\" fill=\"#c084fc\" font-size=\"12\" font-weight=\"bold\">ЭКОНОМИКАЛЫҚ ГЕОГРАФИЯ ЖӘНЕ ЗАМАНАУИ ТЕОРИЯЛАР:</text>\n    <text x=\"20\" y=\"48\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#fde047\">Н.Н. Баранский:</tspan> Елтану негізін салған. Аумақтық ЭГЖ-ның 4 түрі (орталық, көршілік, теңіз маңы, шеткі). Қазақстанды 5 ауданға бөлген.</text>\n    <text x=\"20\" y=\"70\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#fde047\">Майкл Портер:</tspan> Елдердің бәсекеге қабілеттілігінің 5 белгісі және кластерлік даму теориясының авторы.</text>\n    <text x=\"20\" y=\"92\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#38bdf8\">Махбуб уль-Хак (1990 ж):</tspan> Адам дамуы индексі (АДИ / ИРЧП) тұжырымдамасын БҰҰ шеңберінде алғаш ұсынды.</text>\n    <text x=\"20\" y=\"114\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#34d399\">Т. Мальтус:</tspan> Халық саны геометриялық, ал азық-түлік арифметикалық прогрессиямен өседі деген заңдылық авторы.</text>\n    <text x=\"20\" y=\"136\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#fbbf24\">Кибернетика мен IT:</tspan> Ампер (1830) — «кибернетика» термині | Н. Винер (1948) — негізін салушы | Д. Бриклин, Б. Фринкстон (1979) — Excel бағдарламасы.</text>\n    <text x=\"20\" y=\"156\" fill=\"#94a3b8\" font-size=\"10.5\">📚 Д. Медоуз — «Өсудің шегі» («Пределы роста») кітабы | Уолтер Кеннон — «Гомеостаз» термині | А.П. Кузнецов — «Азияның алып адам моделі».</text>\n  </g>\n</svg>", "svg_diagram_ru": "<svg viewBox=\"0 0 800 480\" width=\"100%\" height=\"auto\" xmlns=\"http://www.w3.org/2000/svg\" style=\"background:#0b1120; border-radius:16px;\">\n  <defs>\n    <linearGradient id=\"topG34\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" stop-color=\"#6366f1\"/><stop offset=\"100%\" stop-color=\"#4f46e5\"/></linearGradient>\n    <linearGradient id=\"cg34\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" stop-color=\"#1e293b\"/><stop offset=\"100%\" stop-color=\"#0f172a\"/></linearGradient>\n    <filter id=\"sh34\" x=\"-10%\" y=\"-10%\" width=\"120%\" height=\"120%\"><feDropShadow dx=\"0\" dy=\"4\" stdDeviation=\"6\" flood-color=\"#000\" flood-opacity=\"0.5\"/></filter>\n  </defs>\n  <rect width=\"800\" height=\"480\" fill=\"#0b1120\" rx=\"16\"/>\n  <rect x=\"30\" y=\"20\" width=\"740\" height=\"55\" rx=\"12\" fill=\"url(#topG34)\" filter=\"url(#sh34)\"/>\n  <text x=\"400\" y=\"45\" fill=\"#fff\" font-size=\"17\" font-weight=\"bold\" text-anchor=\"middle\" font-family=\"system-ui, sans-serif\">ТРУДЫ УЧЕНЫХ И ГЕОГРАФИЧЕСКИЕ УЧЕНИЯ</text>\n  <text x=\"400\" y=\"64\" fill=\"#e0e7ff\" font-size=\"12\" text-anchor=\"middle\" font-family=\"system-ui, sans-serif\">А. Гумбольдт, В.И. Вернадский, Н.Н. Баранский, Ф. Ратцель, Х. Маккиндер, М. Портер</text>\n  \n  <!-- Col 1: Physical & Natural Geography -->\n  <g transform=\"translate(30, 95)\" filter=\"url(#sh34)\">\n    <rect width=\"235\" height=\"175\" rx=\"12\" fill=\"url(#cg34)\" stroke=\"#38bdf8\" stroke-width=\"1.5\"/>\n    <text x=\"15\" y=\"26\" fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\">ФИЗИЧЕСКАЯ ГЕОГРАФИЯ</text>\n    <text x=\"15\" y=\"48\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• А. Гумбольдт:</tspan> Метод сравнения, закономерности оболочек Земли, ввел термин «Средняя Азия» (1843).</text>\n    <text x=\"15\" y=\"94\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• К. Риттер:</tspan> «Идеи сравнительного землеведения», связь природы и истории человечества.</text>\n    <text x=\"15\" y=\"138\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Платон:</tspan> Метод аналогий: сравнивал планету Земля с живым организмом человека.</text>\n  </g>\n\n  <!-- Col 2: Ecology & Biosphere -->\n  <g transform=\"translate(282, 95)\" filter=\"url(#sh34)\">\n    <rect width=\"235\" height=\"175\" rx=\"12\" fill=\"url(#cg34)\" stroke=\"#34d399\" stroke-width=\"1.5\"/>\n    <text x=\"15\" y=\"26\" fill=\"#34d399\" font-size=\"12\" font-weight=\"bold\">ГЕОЭКОЛОГИЯ И НООСФЕРА</text>\n    <text x=\"15\" y=\"48\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• В.И. Вернадский:</tspan> Основоположник учения о ноосфере (сфере разума) и биосфере Земли.</text>\n    <text x=\"15\" y=\"90\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• К. Тролль (1939 г):</tspan> Впервые ввел в научный оборот фундаментальный термин «геоэкология».</text>\n    <text x=\"15\" y=\"126\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• А.В. Чигаркин:</tspan> Выделил 5 уровней напряженности и 47 провинций РК (геоэкологическая карта 1994 г.).</text>\n  </g>\n\n  <!-- Col 3: Geopolitics & Regional Modeling -->\n  <g transform=\"translate(535, 95)\" filter=\"url(#sh34)\">\n    <rect width=\"235\" height=\"175\" rx=\"12\" fill=\"url(#cg34)\" stroke=\"#f59e0b\" stroke-width=\"1.5\"/>\n    <text x=\"15\" y=\"26\" fill=\"#f59e0b\" font-size=\"12\" font-weight=\"bold\">ГЕОПОЛИТИКА И РЕГИОНОВЕДЕНИЕ</text>\n    <text x=\"15\" y=\"48\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Р. Челлен:</tspan> Автор термина «геополитика». <tspan font-weight=\"bold\" fill=\"#fde047\">Ф. Ратцель:</tspan> Политическая география, 7 законов экспансии.</text>\n    <text x=\"15\" y=\"94\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Х. Дж. Маккиндер:</tspan> Концепция Хартленда (Осевой регион, внутренний и внешний полумесяцы).</text>\n    <text x=\"15\" y=\"136\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• И. Валлерстайн:</tspan> Мир-системная модель: Центр (ядро), Полупериферия и Периферия.</text>\n  </g>\n\n  <!-- Bottom Panel: Economic Geography & Modern Concepts -->\n  <g transform=\"translate(30, 285)\" filter=\"url(#sh34)\">\n    <rect width=\"740\" height=\"175\" rx=\"12\" fill=\"url(#cg34)\" stroke=\"#c084fc\" stroke-width=\"1.5\"/>\n    <text x=\"20\" y=\"24\" fill=\"#c084fc\" font-size=\"12\" font-weight=\"bold\">ЭКОНОМИЧЕСКАЯ ГЕОГРАФИЯ И СОВРЕМЕННЫЕ КОНЦЕПЦИИ:</text>\n    <text x=\"20\" y=\"48\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#fde047\">Н.Н. Баранский:</tspan> Основатель страноведения. 4 типа ЭГП (центральное, соседское, приморское, периферийное). 5 районов РК.</text>\n    <text x=\"20\" y=\"70\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#fde047\">Майкл Портер:</tspan> 5 признаков конкурентоспособности стран и автор кластерной теории развития.</text>\n    <text x=\"20\" y=\"92\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#38bdf8\">Махбуб уль-Хак (1990 г):</tspan> Впервые разработал концепцию Индекса развития человеческого потенциала (ИРЧП).</text>\n    <text x=\"20\" y=\"114\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#34d399\">Т. Мальтус:</tspan> Народонаселение растет в геометрической, а производство пищи — в арифметической прогрессии.</text>\n    <text x=\"20\" y=\"136\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#fbbf24\">Кибернетика и IT:</tspan> Ампер (1830) — термин «кибернетика» | Н. Винер (1948) — основы кибернетики | Д. Бриклин (1979) — таблица Excel.</text>\n    <text x=\"20\" y=\"156\" fill=\"#94a3b8\" font-size=\"10.5\">📚 Д. Медоуз — доклад «Пределы роста» | У. Кеннон — термин «гомеостаз» | А.П. Кузнецов — образ «Азия — великан».</text>\n  </g>\n</svg>", "table_kz": {"cols": ["№", "Ғалымның аты-жөні", "Ғылым саласы / Дәуірі", "Негізгі еңбектері, енгізген терминдері мен тұжырымдары"], "rows": [["1", "А. Гумбольдт", "Физикалық география (XIX ғ.)", "Салыстыру әдісі, Жер қабықтары заңдылықтары, 1843 ж. «Орта Азия» ұғымын енгізді."], ["2", "К. Риттер", "Жертану, салыстырмалы геогр.", "«Табиғат пен адам тарихына қатысты жертану», «Салыстырмалы жертану идеялары»."], ["3", "Платон", "Антикалық философия", "Баламалау (аналогия) әдісі: Жер шарын адам ағзасына теңеген."], ["4", "Д. Бриклин, Б. Фринкстон (1979)", "Ақпараттық технологиялар", "Тұңғыш электронды кестелік бағдарламаны (Excel бастауын) ойлап тапты."], ["5", "Н.Ф. Реймерс", "Экология, табиғат пайдалану", "Табиғатты пайдаланудың экологиялық қағидаттары мен жолдарын жіктеді."], ["6", "Юджин Одум", "Биоэкология", "Табиғатты тиімді пайдаланудың екі жақты мақсаты (сұраныс пен тепе-теңдік)."], ["7", "Б. Коммонер", "Экология заңдары", "Экологияның 4 негізгі заңын тұжырымдаған."], ["8", "К. Тролл (1939 ж.)", "Ландшафттық геоэкология", "«Геоэкология» терминін алғаш ұсынған ғалым."], ["9", "А.В. Чигаркин", "ҚР геоэкологиясы", "ҚР-ны 5 экологиялық шиеленіс деңгейіне, 47 провинцияға бөлді (1994 ж. карта)."], ["10", "В.И. Вернадский", "Геохимия, биосфера", "Ноосфера (ақыл-ой қабығы) туралы ілімнің негізін қалаған академик."], ["11", "А.М. Ампер (1830 ж.)", "Физика, кибернетика", "Ғылымға «Кибернетика» терминін алғаш енгізді."], ["12", "Н. Винер (1948 ж.)", "Кибернетика", "Кибернетиканың негізгі қағидаларын тұжырымдап, негізін салды."], ["13", "Р. Челлен (1899 ж.)", "Саясаттану, география", "«Геосаясат» (геополитика) терминінің авторы."], ["14", "Ф. Ратцель", "Саяси география", "Саяси географияның негізін салды, экспансияның 7 заңын, мәдени зоналарды ұсынды."], ["15", "С. Коэн", "Геосаясат", "Көпполюстілік тұжырымы, 2 геостратегиялық облыс пен шеткі аймақтар."], ["16", "А.П. Кузнецов", "Экономикалық география", "Азияның экономикасын «алып адам (великан) моделіне» теңеді."], ["17", "Н.Н. Баранский", "Экономикалық елтану", "Елтану негізін салды, ЭГЖ-ның 4 түрі, Қазақстанды 5 ауданға бөлді."], ["18", "К.Э. Сорокин", "Геостратегия", "Геокеңістікке бақылау жасауды экспансия ұғымымен түсіндірді."], ["19", "Питер Тейлор", "Геосаясат", "Геосаясаттағы экономикалық факторлар мен жаһандық байланыстарды зерттеді."], ["20", "А. Тойнби (XX ғ.)", "Өркениеттану", "Өркениеттер тарихын табиғи орта ықпалымен («Сын-қатер және жауап») талдады."], ["21", "Х.Дж. Маккиндер", "Саяси география", "Хартленд үлгісі: Орталық ядро, ішкі және сыртқы жарты айлар."], ["22", "И. Валлерстайн", "Әлем-жүйелік талдау", "Экономикалық кеңістік моделі: Орталық, Жартылай периферия, Периферия."], ["23", "Ю.Н. Гладкий, А.И. Чистобаев", "Аймақтану", "Аймақтарды 3 сатыға жіктеп, аудандастырудың құрылымдық базасын жасады."], ["24", "В.В. Вольский", "Әлеуметтік елтану", "Әлемді 12 тарихи-мәдени макроаймаққа бөлді."], ["25", "Майкл Портер", "Экономикалық бәсеке", "Бәсекеге қабілеттіліктің 5 белгісі және кластерлік даму теориясы."], ["26", "Махбуб уль-Хак (1990)", "Адам дамуы тұжырымдамасы", "БҰҰ Адам дамуы индексін (АДИ / ИРЧП) алғаш ұсынды."], ["27", "В.П. Максаковский", "Әлемдік география", "Ғаламдық мәселелердің бүкіл адамзатты қамтитын сипатын талдады."], ["28", "Т. Мальтус", "Демография", "Халық саны геометриялық, азық-түлік арифметикалық прогрессиямен өседі."], ["29", "Д. Медоуз", "Ғаламдық экология", "«Пределы роста» («Өсудің шегі») кітабының авторы."], ["30", "Уолтер Кеннон", "Жүйелер теориясы", "«Гомеостаз» терминін енгізді."], ["31", "Стив Джобс, С. Возняк", "Цифрлық индустрия", "1976 жылы Apple компаниясын құрды."], ["32", "Ричард Хартшорн", "Кеңістіктік география", "Қазіргі заманғы аймақтану парадигмасын негіздеді."]]}, "table_ru": {"cols": ["№", "Имя ученого", "Отрасль / Эпоха", "Главные труды, введенные термины и концепции"], "rows": [["1", "А. Гумбольдт", "Физическая география (XIX в.)", "Сравнительный метод, законы геооболочек, ввел термин «Средняя Азия» (1843)."], ["2", "К. Риттер", "Землеведение, сравнительный анализ", "«Землеведение в отношении к природе и человеку», идеи сравнительной географии."], ["3", "Платон", "Античная философия", "Метод аналогий: сравнивал планету Земля с человеческим организмом."], ["4", "Д. Бриклин, Б. Фринкстон", "Информационные технологии (1979)", "Изобрели первую электронную таблицу VisiCalc (предшественник Excel)."], ["5", "Н.Ф. Реймерс", "Природопользование", "Классифицировал экологические принципы и пути природопользования."], ["6", "Юджин Одум", "Биоэкология", "Двуединая цель природопользования: удовлетворение потребностей и баланс воспроизводства."], ["7", "Б. Коммонер", "Законы экологии", "Сформулировал 4 всемирных фундаментальных закона экологии."], ["8", "К. Тролль (1939 г.)", "Ландшафтная экология", "Впервые ввел в научный оборот термин «Геоэкология»."], ["9", "А.В. Чигаркин", "Геоэкология РК", "Разделил РК на 5 уровней напряженности и 47 провинций (карта 1994 г.)."], ["10", "В.И. Вернадский", "Биосфера и ноосфера", "Создатель учения о биосфере и Ноосфере (сфере человеческого разума)."], ["11", "А.М. Ампер (1830 г.)", "Физика, кибернетика", "Впервые предложил научный термин «Кибернетика»."], ["12", "Н. Винер (1948 г.)", "Кибернетика", "Сформулировал принципы кибернетики как науки об управлении и связи."], ["13", "Р. Челлен (1899 г.)", "Политология, география", "Автор научного термина «Геополитика»."], ["14", "Ф. Ратцель", "Политическая география", "Основатель политгеографии, открыл 7 законов экспансии, концепцию жизненного пространства."], ["15", "С. Коэн", "Геополитика", "Концепция многополярности: 2 геостратегические сферы и внешние регионы."], ["16", "А.П. Кузнецов", "Экономическая география", "Сравнил динамичную экономику Азии с моделью гигантского великана."], ["17", "Н.Н. Баранский", "Экономическое страноведение", "Основатель страноведения, 4 типа ЭГП, разделил Казахстан на 5 районов."], ["18", "К.Э. Сорокин", "Геополитика", "Обосновал контроль над геопространством через экспансию."], ["19", "Питер Тейлор", "Геополитика", "Исследовал доминирующую роль мирохозяйственных связей в геополитике."], ["20", "А. Тойнби (XX в.)", "Цивилизациология", "Анализировал цивилизации через концепцию природного «Вызова и ответа»."], ["21", "Х.Дж. Маккиндер", "Политическая география", "Модель Хартленда («Сердце Земли»), внутренний и внешний полумесяцы."], ["22", "И. Валлерстайн", "Мир-системный анализ", "Пространственная модель: Ядро (центр), Полупериферия, Периферия."], ["23", "Ю.Н. Гладкий, А.И. Чистобаев", "Регионоведение", "3-ступенчатая структура районирования и методология регионоведения."], ["24", "В.В. Вольский", "Социально-экономическая геогр.", "Разделил мир на 12 историко-культурных макрорегионов."], ["25", "Майкл Портер", "Теория конкуренции", "5 детерминантов конкурентоспособности и кластерная теория развития."], ["26", "Махбуб уль-Хак (1990)", "Концепция человеческого развития", "Впервые ввел Индекс развития человеческого потенциала (ИРЧП / ПРООН)."], ["27", "В.П. Максаковский", "Мировая география", "Анализировал глобальные проблемы как охватывающие все континенты."], ["28", "Т. Мальтус", "Демография", "Население растет в геометрической, а пища — в арифметической прогрессии."], ["29", "Д. Медоуз", "Глобальная экология", "Автор эпохального доклада Римскому клубу «Пределы роста»."], ["30", "Уолтер Кеннон", "Теория систем", "Ввел понятие «Гомеостаз»."], ["31", "Стив Джобс, С. Возняк", "Цифровая индустрия", "Основали компанию Apple в 1976 г."], ["32", "Ричард Хартшорн", "Пространственная география", "Обосновал парадигму хорологического регионоведения."]]}, "key_facts_kz": ["А. Гумбольдт географияға салыстыру әдісін енгізіп, 1843 жылы «Орта Азия» ұғымын қалыптастырды.", "Р. Челлен 1899 жылы «геосаясат» терминін енгізсе, Ф. Ратцель саяси географияның негізін салып, экспансияның 7 заңын ашты.", "Х.Дж. Маккиндер Хартленд (Еуразияның кіндігі), ішкі және сыртқы жарты айлар геосаяси үлгісінің авторы.", "Н.Н. Баранский елтану бағытын қалыптастырып, ЭГЖ-ның 4 түрін бөлді және Қазақстанды 5 экономикалық ауданға жіктеді.", "И. Валлерстайн әлем-жүйе моделін 3 деңгейге бөлді: Орталық (ядро), Жартылай периферия және Периферия.", "Майкл Портер елдер бәсекеге қабілеттілігінің 5 детерминанты мен кластерлік даму теориясын жасады.", "Махбуб уль-Хак 1990 жылы БҰҰ Даму бағдарламасында Адам дамуы индексі (АДИ / ИРЧП) көрсеткішін ұсынды.", "К. Тролл 1939 жылы «геоэкология» терминін, ал В.И. Вернадский Ноосфера (ақыл-ой қабығы) ілімін қалыптастырды.", "А.В. Чигаркин Қазақстанды 5 экологиялық шиеленіс деңгейіне, 47 провинцияға бөлді (1994 ж. карта).", "Т. Мальтус бойынша халық саны геометриялық, ал азық-түлік арифметикалық прогрессиямен өседі.", "Ампер 1830 ж. «кибернетика» терминін енгізді, ал Н. Винер 1948 ж. оның ғылыми негізін салды.", "Д. Бриклин мен Б. Фринкстон 1979 жылы тұңғыш электронды кесте бағдарламасын (Excel бастауын) ойлап тапты."], "key_facts_ru": ["А. Гумбольдт ввел в географию метод сравнения и в 1843 году сформулировал понятие «Средняя Азия».", "Р. Челлен в 1899 г. ввел термин «геополитика», а Ф. Ратцель открыл 7 законов территориальной экспансии.", "Х.Дж. Маккиндер — автор модели Хартленда («Сердце Земли»), внутреннего и внешнего полумесяцев.", "Н.Н. Баранский основал отечественное страноведение, выделил 4 типа ЭГП и разделил Казахстан на 5 районов.", "И. Валлерстайн создал мир-системную модель: Ядро (центр), Полупериферия и Периферия.", "Майкл Портер разработал модель «ромба конкурентоспособности» и кластерную теорию развития.", "Махбуб уль-Хак в 1990 г. в рамках ПРООН впервые разработал Индекс человеческого развития (ИРЧП / HDI).", "К. Тролль в 1939 г. ввел термин «геоэкология», а В.И. Вернадский создал учение о Ноосфере (сфере разума).", "А.В. Чигаркин разделил территорию Казахстана на 5 уровней напряженности и 47 геоэкологических провинций (1994 г.).", "Т. Мальтус выдвинул теорию: население растет в геометрической прогрессии, а продовольствие — в арифметической.", "А.-М. Ампер в 1830 г. ввел термин «кибернетика», а Н. Винер в 1948 г. заложил ее теоретические основы.", "Д. Бриклин и Б. Фринкстон в 1979 г. создали первую программу электронных таблиц (прообраз Microsoft Excel)."], "traps_kz": ["⚠️ «Геосаясат» және «Геоэкология» терминдері: «Геосаясат» терминін 1899 ж. швед ғалымы Р. ЧЕЛЛЕН енгізді. «Геоэкология» терминін 1939 ж. неміс ғалымы К. ТРОЛЛ енгізді. Екеуін шатастырмаңыз!", "⚠️ Н.Н. Баранский мен А.В. Чигаркиннің Қазақстанды бөлуі: Н.Н. Баранский Қазақстанды 5 ЭКОНОМИКАЛЫҚ АУДАНҒА бөлді. Ал А.В. Чигаркин Қазақстанды 5 ЭКОЛОГИЯЛЫҚ ШИЕЛЕНІС ДЕҢГЕЙІ мен 47 геоэкологиялық провинцияға бөлді!", "⚠️ Мальтус прогрессиялары: Халық саны — ГЕОМЕТРИЯЛЫҚ прогрессиямен (1, 2, 4, 8, 16...), ал азық-түлік — АРИФМЕТИКАЛЫҚ прогрессиямен (1, 2, 3, 4, 5...) өседі. ҰБТ-да бұл прогрессияларды керісінше беріп шатастырады!", "⚠️ АДИ және Кластерлер: АДИ (ИРЧП) көрсеткішін 1990 жылы МАХБУБ УЛЬ-ХАК енгізді. Ал кластерлік даму теориясы мен 5 бәсекелестік белгісін МАЙКЛ ПОРТЕР жасады."], "traps_ru": ["⚠️ Термины «Геополитика» и «Геоэкология»: Термин «Геополитика» ввел в 1899 г. Р. ЧЕЛЛЕН. Термин «Геоэкология» ввел в 1939 г. К. ТРОЛЛЬ. Не путайте даты и фамилии ученых!", "⚠️ Районирование Баранского vs Чигаркина: Н.Н. Баранский выделил в Казахстане 5 ЭКОНОМИЧЕСКИХ районов. А.В. Чигаркин разделил территорию Казахстана на 5 уровней ЭКОЛОГИЧЕСКОЙ напряженности и 47 провинций!", "⚠️ Прогрессии Мальтуса: Рост населения идет в ГЕОМЕТРИЧЕСКОЙ прогрессии, а рост производства пищи — в АРИФМЕТИЧЕСКОЙ. В тестах ЕНТ часто меняют эти понятия местами!", "⚠️ ИРЧП vs Кластерная теория: Индекс человеческого развития (ИРЧП) в 1990 г. ввел МАХБУБ УЛЬ-ХАК. Кластерную теорию конкурентоспособности создал МАЙКЛ ПОРТЕР."]};
+    const blooketData = {"kz": "https://dashboard.blooket.com/set/6a96ec2aa0cfe73b9ff91e0d", "ru": "https://dashboard.blooket.com/set/6a95ebf3bf8b5b050f4c1c2f", "doc_kz": "https://docs.google.com/document/d/1u3fI3U-hhxUI3X7MSed07ht1_630UxUmbuXRDN3yE7Y/edit?usp=sharing", "doc_ru": "https://drive.google.com/file/d/1IQ3wxSqt6CkSOSM06_gidfviO9YlSElZ/view?usp=sharing"};
+    let currentLang = 'kz';
+
+    // Safe localStorage helper
+    const safeStorage = {
+      getItem(k) {
+        try { return localStorage.getItem(k); } catch (e) { return null; }
+      },
+      setItem(k, v) {
+        try { localStorage.setItem(k, v); } catch (e) {}
+      }
+    };
+
+    function getCompletedSet() {
+      try {
+        return new Set(JSON.parse(safeStorage.getItem('geotany_grammar_completed') || '[]'));
+      } catch (e) {
+        return new Set();
+      }
+    }
+
+    function saveCompletedSet(setObj) {
+      safeStorage.setItem('geotany_grammar_completed', JSON.stringify(Array.from(setObj)));
+    }
+
+    function updateCompleteButton() {
+      const setObj = getCompletedSet();
+      const isDone = setObj.has(topicData.num);
+      const btn = document.getElementById('btnComplete');
+      const icon = document.getElementById('completeIcon');
+      const text = document.getElementById('completeText');
+
+      if (isDone) {
+        btn.className = "inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black transition border border-emerald-500/50 bg-emerald-500/20 text-emerald-300 shadow-md shadow-emerald-500/10";
+        icon.textContent = "✓";
+        text.textContent = (currentLang === 'ru') ? "Изучено" : "Меңгерілді";
+      } else {
+        btn.className = "inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition border border-slate-700 bg-space-900 text-slate-300 hover:text-white hover:border-slate-600";
+        icon.textContent = "○";
+        text.textContent = (currentLang === 'ru') ? "Отметить изученным" : "Меңгерілді деп белгілеу";
+      }
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('xpToast');
+      const m = document.getElementById('toastMsg');
+      m.textContent = msg;
+      t.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        t.classList.add('translate-y-20', 'opacity-0');
+      }, 2500);
+    }
+
+    function toggleComplete() {
+      const setObj = getCompletedSet();
+      const isDone = setObj.has(topicData.num);
+      let xp = parseInt(safeStorage.getItem('geotany_user_xp') || '0', 10);
+
+      if (isDone) {
+        setObj.delete(topicData.num);
+        xp = Math.max(0, xp - 20);
+        showToast((currentLang === 'ru') ? "-20 XP. Отметка снята" : "-20 XP. Белгі алынды");
+      } else {
+        setObj.add(topicData.num);
+        xp += 20;
+        showToast((currentLang === 'ru') ? "+20 XP! Тема изучена" : "+20 XP! Тақырып меңгерілді");
+      }
+
+      saveCompletedSet(setObj);
+      safeStorage.setItem('geotany_user_xp', xp.toString());
+      updateCompleteButton();
+    }
+
+    function renderTable(isRu) {
+      const tbl = isRu ? (topicData.table_ru || topicData.table_kz) : topicData.table_kz;
+      const container = document.getElementById('tableContainer');
+      if (!tbl || !tbl.cols || !tbl.rows || tbl.rows.length === 0) {
+        document.getElementById('tableSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('tableSection').classList.remove('hidden');
+
+      let html = '<div class="overflow-x-auto"><table class="w-full text-left text-xs border-collapse">';
+      html += '<thead><tr class="border-b border-slate-800 text-slate-400 font-bold">';
+      tbl.cols.forEach(col => {
+        html += `<th class="p-2.5 sm:p-3 bg-space-900/60 rounded-lg whitespace-nowrap text-cyan-300 font-bold">${col}</th>`;
+      });
+      html += '</tr></thead><tbody class="divide-y divide-slate-800/60">';
+      tbl.rows.forEach(row => {
+        html += '<tr class="hover:bg-space-900/40 transition">';
+        row.forEach((cell, idx) => {
+          const cls = idx === 0 ? "font-bold text-white whitespace-nowrap" : (idx === 1 ? "text-cyan-300 font-medium" : "text-slate-300");
+          html += `<td class="p-2.5 sm:p-3 ${cls}">${cell}</td>`;
+        });
+        html += '</tr>';
+      });
+      html += '</tbody></table></div>';
+      container.innerHTML = html;
+    }
+
+    function renderFacts(isRu) {
+      const facts = isRu ? (topicData.key_facts_ru || topicData.key_facts_kz) : topicData.key_facts_kz;
+      const list = document.getElementById('factsList');
+      if (!facts || facts.length === 0) {
+        document.getElementById('factsSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('factsSection').classList.remove('hidden');
+      list.innerHTML = facts.map(f => `<li class="flex items-start space-x-2"><span class="text-amber-400 font-bold shrink-0 mt-0.5">•</span><span>${f}</span></li>`).join('');
+    }
+
+    function renderTraps(isRu) {
+      const traps = isRu ? (topicData.traps_ru || topicData.traps_kz) : topicData.traps_kz;
+      const list = document.getElementById('trapsList');
+      if (!traps || traps.length === 0) {
+        document.getElementById('trapsSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('trapsSection').classList.remove('hidden');
+      list.innerHTML = traps.map(tr => {
+        const str = String(tr);
+        const icon = str.startsWith('⚠️') ? '' : '<span class="text-amber-400 shrink-0 mt-0.5">⚠️</span> ';
+        return `<div class="p-3 rounded-xl bg-space-900/80 border border-amber-500/20 text-xs text-slate-200 leading-relaxed flex items-start space-x-2.5">${icon}<span>${str}</span></div>`;
+      }).join('');
+    }
+
+    function setLang(lang) {
+      currentLang = lang;
+      safeStorage.setItem('geotany_lang', lang);
+      const isRu = (lang === 'ru');
+
+      // Update lang buttons
+      const btnKz = document.getElementById('btnLangKz');
+      const btnRu = document.getElementById('btnLangRu');
+      if (isRu) {
+        btnRu.className = "px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow";
+        btnKz.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+      } else {
+        btnKz.className = "px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow";
+        btnRu.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+      }
+
+      // Update text fields
+      document.getElementById('navCatBadge').textContent = isRu ? (topicData.category_ru || 'География') : (topicData.category_kz || 'География');
+      document.getElementById('heroCatBadge').textContent = isRu ? (topicData.category_ru || 'География') : (topicData.category_kz || 'География');
+      document.getElementById('heroTitle').textContent = isRu ? topicData.title_ru : topicData.title_kz;
+
+      // Summary
+      document.getElementById('summaryHeader').textContent = isRu ? "КРАТКИЙ ОБЗОР ТЕМЫ" : "ТАҚЫРЫПҚА ҚЫСҚАША ШОЛУ";
+      document.getElementById('summaryText').textContent = isRu ? topicData.summary_ru : topicData.summary_kz;
+
+      // Theory
+      document.getElementById('theoryHeader').textContent = isRu ? "ПОЛНЫЙ ТЕОРЕТИЧЕСКИЙ МАТЕРИАЛ И КОНСПЕКТ" : "ТОЛЫҚ ТЕОРИЯЛЫҚ МАТЕРИАЛ МЕН КОНСПЕКТ";
+      document.getElementById('theoryContent').innerHTML = isRu ? topicData.full_theory_ru : topicData.full_theory_kz;
+
+      // SVG
+      document.getElementById('svgHeader').textContent = isRu ? "НАГЛЯДНАЯ СХЕМА И ИНФОГРАФИКА" : "КӨРНЕКІ СХЕМА МЕН ИНФОГРАФИКА";
+      const svgCode = isRu ? (topicData.svg_diagram_ru || topicData.svg_diagram) : topicData.svg_diagram;
+      document.getElementById('svgContainer').innerHTML = svgCode || '';
+
+      // Table, Facts, Traps
+      document.getElementById('tableHeader').textContent = isRu ? "СТРУКТУРИРОВАННАЯ ТАБЛИЦА ПОКАЗАТЕЛЕЙ И КЛАССИФИКАЦИИ" : "НАҚТЫ КӨРСЕТКІШТЕР МЕН КЛАССИФИКАЦИЯ КЕСТЕСІ";
+      renderTable(isRu);
+
+      document.getElementById('factsHeader').textContent = isRu ? "ГЛАВНЫЕ ФАКТЫ ДЛЯ ЕНТ И ЗАПОМИНАНИЯ" : "ҰБТ-ҒА ҚАЖЕТТІ НЕГІЗГІ ЕРЕЖЕЛЕР МЕН ФАКТІЛЕР";
+      renderFacts(isRu);
+
+      document.getElementById('trapsHeader').textContent = isRu ? "ЛОВУШКИ И ЛАЙФХАКТАР ЕНТ" : "ҰБТ ҚАҚПАНДАРЫ МЕН ЛАЙФХАКТАР";
+      renderTraps(isRu);
+
+      // Blooket & Doc links
+      const btnB = document.getElementById('btnBlooket');
+      const bUrl = isRu ? (blooketData.ru || blooketData.kz) : (blooketData.kz || blooketData.ru);
+      if (bUrl) {
+        btnB.href = bUrl;
+        btnB.classList.remove('hidden');
+      } else {
+        btnB.classList.add('hidden');
+      }
+
+      const btnD = document.getElementById('btnDoc');
+      if (btnD) { const dUrl = isRu ? (blooketData.doc_ru || blooketData.doc_kz) : (blooketData.doc_kz || blooketData.doc_ru); if (dUrl) { btnD.href = dUrl; btnD.classList.remove('hidden'); } else { btnD.classList.add('hidden'); } }
+
+      updateCompleteButton();
+    }
+
+    // Initialization on page load with URL param and localStorage sync
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const queryLang = urlParams.get('lang');
+      let langToSet = 'kz';
+      if (queryLang === 'ru' || queryLang === 'kz') {
+        langToSet = queryLang;
+        safeStorage.setItem('geotany_lang', queryLang);
+      } else {
+        const savedLang = safeStorage.getItem('geotany_lang');
+        if (savedLang === 'ru') langToSet = 'ru';
+        else langToSet = 'kz';
+      }
+      setLang(langToSet);
+    });
+  </script>
+</body>
+</html>

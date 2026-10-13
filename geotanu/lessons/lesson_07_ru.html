@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>7 урок. Атмосфера | GEOTANY</title>
+
+  <!-- AUTH GUARD: RESTRICT DIRECT ACCESS WITHOUT VALID SESSION -->
+  <style id="authCloak">body { display: none !important; }</style>
+  <script>
+    (function() {
+      try {
+        var isAdmin = localStorage.getItem('geotany_admin_auth') === 'true';
+        var sessionStr = localStorage.getItem('geotany_user_session');
+        var isAuthorized = isAdmin;
+        if (!isAuthorized && sessionStr) {
+          var s = JSON.parse(sessionStr);
+          if (s && s.email && (s.courseCode || s.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        var profileStr = localStorage.getItem('geotany_user_profile');
+        if (!isAuthorized && profileStr) {
+          var p = JSON.parse(profileStr);
+          if (p && p.email && (p.courseCode || p.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        if (!isAuthorized) {
+          window.location.replace('../index.html?error=unauthorized_course');
+          return;
+        }
+        var cloak = document.getElementById('authCloak');
+        if (cloak) cloak.remove();
+      } catch (e) {
+        window.location.replace('../index.html?error=unauthorized_course');
+      }
+    })();
+  </script>
+
+  <!-- TAILWIND CSS & FONTS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            space: {
+              800: '#1E293B',
+              850: '#151E2E',
+              900: '#0F172A',
+              950: '#0B0F19',
+            },
+            brand: {
+              400: '#34D399',
+              500: '#10B981',
+              600: '#059669',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0B0F19;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1E293B;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+    .prose-theory h1, .prose-theory h2, .prose-theory h3, .prose-theory h4 {
+      color: #F8FAFC;
+      font-weight: 800;
+    }
+    .prose-theory p {
+      color: #CBD5E1;
+      line-height: 1.75;
+      font-size: 0.875rem;
+    }
+    .prose-theory ul {
+      list-style-type: disc;
+      margin-left: 1.25rem;
+      color: #CBD5E1;
+      font-size: 0.875rem;
+    }
+    .prose-theory table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.75rem;
+    }
+    .prose-theory th, .prose-theory td {
+      border: 1px solid #334155;
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+    }
+    .prose-theory th {
+      background: #1E293B;
+      color: #F8FAFC;
+      font-weight: 700;
+    }
+    .prose-theory tr:nth-child(even) {
+      background: rgba(15, 23, 42, 0.6);
+    }
+  </style>
+</head>
+<body class="bg-space-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-brand-500/30 selection:text-brand-400">
+
+  <!-- TOP APP BAR -->
+  <header class="sticky top-0 z-40 bg-space-950/90 backdrop-blur-xl border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+      
+      <!-- Left: Back Button & Title -->
+      <div class="flex items-center space-x-3">
+        <a href="../index.html?lang=ru#section-sabaktar_reading" class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 text-slate-300 hover:text-white border border-slate-700/80 text-xs sm:text-sm font-bold transition shadow-sm">
+          <span>←</span>
+          <span>Назад</span>
+        </a>
+        <div class="h-6 w-px bg-slate-800 hidden sm:block"></div>
+        <div class="flex items-center space-x-2">
+          <span class="text-xs px-2.5 py-1 rounded-lg bg-cyan-500/10 text-cyan-400 font-extrabold border border-cyan-500/20">
+            7 / 20 урок
+          </span>
+          <span class="text-sm font-bold text-slate-200 hidden md:inline truncate max-w-xs">
+            7 урок. Атмосфера
+          </span>
+        </div>
+      </div>
+
+      <!-- Center: Reading Time Badge -->
+      <div class="hidden sm:flex items-center space-x-1.5 bg-space-900 border border-slate-800 px-3 py-1.5 rounded-xl text-xs text-slate-400 font-medium">
+        <span>⏱️</span>
+        <span>8 мин</span>
+      </div>
+
+      <!-- Right: Direct Language Page Switcher & Complete Button -->
+      <div class="flex items-center space-x-2 sm:space-x-3">
+        
+        <!-- Language Switcher linking directly to counterpart page -->
+        <div class="flex items-center bg-space-900 p-0.5 rounded-xl border border-slate-800 text-xs font-bold">
+          <a href="lesson_07_kz.html" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition">
+            🇰🇿 KZ
+          </a>
+          <a href="lesson_07_ru.html" class="px-2.5 py-1 rounded-lg bg-brand-500 text-space-950 font-black transition">
+            🇷🇺 RU
+          </a>
+        </div>
+
+        <!-- Mark as Completed Toggle Button -->
+        <button id="btnHeaderComplete" onclick="toggleLessonComplete()" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-emerald-400 text-xs font-bold transition flex items-center space-x-1.5 shadow-sm">
+          <span id="headerCheckIcon">○</span>
+          <span id="headerCompleteText" class="hidden sm:inline">Прочитано</span>
+        </button>
+
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-8">
+
+    <!-- HERO LESSON BANNER -->
+    <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-space-900 via-space-850 to-space-900 border border-slate-800 shadow-xl relative overflow-hidden">
+      <!-- Glow decoration -->
+      <div class="absolute -right-20 -top-20 w-60 h-60 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-20 -bottom-20 w-60 h-60 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10 space-y-4">
+        
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <span class="px-3 py-1 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 font-extrabold text-xs tracking-wider uppercase">
+              📖 ЕНТ ГЕОГРАФИЯ • УРОК №7
+            </span>
+            <span class="px-3 py-1 rounded-xl bg-brand-500/10 border border-brand-500/30 text-brand-400 font-bold text-xs">
+              Русское отделение
+            </span>
+          </div>
+
+          <!-- Prev / Next Navigation -->
+          <div class="flex items-center space-x-2 text-xs font-bold">
+            <a href="lesson_06_ru.html" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition flex items-center space-x-1"><span>←</span><span>Предыдущий</span></a>
+            <span class="text-slate-500">|</span>
+            <a href="lesson_08_ru.html" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition flex items-center space-x-1"><span>Следующий</span><span>→</span></a>
+          </div>
+        </div>
+
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            7 урок. Атмосфера
+          </h1>
+          <h2 class="text-sm font-semibold text-cyan-300/80 mt-1">
+            7-сабақ. Атмосфера
+          </h2>
+        </div>
+
+        <!-- Tags Row -->
+        <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-800/80">
+          <span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">#Атмосфера</span><span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">#Атмосфера</span>
+        </div>
+
+        <!-- Completed Banner -->
+        <div id="lessonCompletedBanner" class="hidden p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-xs sm:text-sm text-emerald-300 flex items-center justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <span>✅</span>
+            <span>Этот урок отмечен как прочитанный.</span>
+          </div>
+          <span class="text-xs px-2.5 py-1 rounded-xl bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40">
+            +30 XP получено
+          </span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SECTION 1: KEY TERMS & DEFINITIONS -->
+    <section class="p-6 sm:p-7 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-base sm:text-lg font-black text-white flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center text-sm font-black">1</span>
+          <span>Ключевые термины и понятия</span>
+        </h3>
+        <span class="text-xs text-slate-400 font-semibold">
+          5 терминов
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Тропосфера</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Нижний слой атмосферы толщиной 8–18 км, содержащий 80% массы воздуха и весь водяной пар.</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Солнечная радиация</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Электромагнитное излучение Солнца, поступающее на земную поверхность.</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Циклон</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Атмосферный вихрь с низким давлением в центре, приносящий облачность и осадки.</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Антициклон</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Атмосферный вихрь с высоким давлением в центре, обуславливающий ясную сухую погоду.</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Атмосферный фронт</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Переходная зона раздела между двумя различными по свойствам воздушными массами.</p>
+        </div>
+        
+      </div>
+    </section>
+
+    <!-- SECTION 2: FULL COMPREHENSIVE THEORY -->
+    <section class="p-6 sm:p-8 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-5">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-base sm:text-lg font-black text-white flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-brand-500/10 border border-brand-500/20 text-brand-400 flex items-center justify-center text-sm font-black">2</span>
+          <span>Полный теоретический конспект и иллюстрации</span>
+        </h3>
+        <span class="text-xs text-slate-400 font-medium hidden sm:inline">
+          Интерактивное чтение
+        </span>
+      </div>
+
+      <!-- Theory Body Container -->
+      <div class="prose-theory leading-relaxed space-y-4 overflow-x-auto">
+        <h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>1. Строение и слои атмосферы</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Атмосфера</b> (греч. <i class="text-slate-300">atmos</i> — пар, <i class="text-slate-300">sphaira</i> — шар) — газовая оболочка Земли. Состав чистого сухого воздуха: 78% азот, 21% кислород, 0,93% аргон, 0,03% углекислый газ.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Слои атмосферы:</b></li>
+</ul>
+<ol class="space-y-3 my-2.5 ml-6 list-none"><li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">1.</span><b class="text-emerald-300 font-bold">Тропосфера:</b> Нижний, самый плотный слой. Толщина у полюсов 8–10 км, в умеренных широтах 10–12 км, на экваторе 16–18 км.<ul class="space-y-1.5 my-2 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Здесь сосредоточено <b class="text-cyan-300 font-bold">80% массы воздуха</b> и практически весь водяной пар Земли.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">«Фабрика погоды»: все процессы образования облаков, ветров, циклонов и осадков происходят именно здесь.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Вертикальный температурный градиент:</b> При подъеме в тропосфере на каждые <b class="text-cyan-300 font-bold">1000 м (1 км)</b> температура воздуха падает в среднем на <b class="text-cyan-300 font-bold">6°C</b>.</li>
+</ul></li><li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">2.</span><b class="text-emerald-300 font-bold">Стратосфера (18–50 км):</b> Воздух сухой и разреженный, облака отсутствуют. На высоте 20–25 км расположен <b class="text-emerald-300 font-bold">ОЗОНОВЫЙ ЭКРАН (O3)</b>. Он поглощает губительные для жизни ультрафиолетовые лучи Солнца.</li><li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">3.</span><b class="text-emerald-300 font-bold">Мезосфера и Термосфера (50–800 км):</b> Зона сгорания метеороидов, полярных сияний и ионосферы, отражающей радиоволны.</li></ol>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>☁️</span>
+<span>1-СЫЗБА: СЛОИ АТМОСФЕРЫ И ОЗОНОВЫЙ ЭКРАН</span>
+</span>
+<span class="text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono">Тропосфера (80% ауа) • Стратосфера (Озон)</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 220">
+<rect fill="#15803d" height="30" width="640" x="30" y="180"></rect>
+<text fill="#f8fafc" font-size="11" font-weight="bold" text-anchor="middle" x="350" y="200">ПОВЕРХНОСТЬ ЗЕМЛИ (0 км)</text>
+<rect fill="#0284c7" fill-opacity="0.3" height="55" stroke="#38bdf8" width="640" x="30" y="125"></rect>
+<text fill="#38bdf8" font-size="12" font-weight="bold" x="60" y="145">ТРОПОСФЕРА (0 — 18 км)</text>
+<text fill="#e2e8f0" font-size="10" x="60" y="165">80% массы воздуха, весь водяной пар, погода, облака и осадки</text>
+<text fill="#f87171" font-size="10" font-weight="bold" text-anchor="end" x="600" y="155">h + 1000м -&gt; T - 6°C</text>
+<rect fill="#6366f1" fill-opacity="0.25" height="60" stroke="#818cf8" width="640" x="30" y="65"></rect>
+<text fill="#a5b4fc" font-size="12" font-weight="bold" x="60" y="85">СТРАТОСФЕРА (18 — 50 км)</text>
+<rect fill="#06b6d4" fill-opacity="0.4" height="20" rx="4" stroke="#22d3ee" stroke-dasharray="3 3" width="620" x="40" y="95"></rect>
+<text fill="#e0f2fe" font-size="10" font-weight="bold" text-anchor="middle" x="350" y="110">🛡️ ОЗОНОВЫЙ СЛОЙ (O3, 20–25 км): Защита от УФ-излучения</text>
+<rect fill="#0f172a" height="50" stroke="#334155" width="640" x="30" y="15"></rect>
+<text fill="#94a3b8" font-size="11" font-weight="bold" x="60" y="35">МЕЗОСФЕРА (50 — 85 км) &amp; ТЕРМОСФЕРА (85+ км)</text>
+<text fill="#64748b" font-size="9" x="60" y="52">Сгорание метеоров, полярные сияния, ионосфера</text>
+</svg>
+</div>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>2. Солнечная радиация и тепловой баланс</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Солнечная радиация</b> — основной двигатель всех атмосферных процессов на Земле.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Виды радиации:</b></li>
+</ul>
+<ol class="space-y-2 my-2.5 ml-6 list-none">
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">1.</span><b class="text-emerald-300 font-bold">Прямая радиация:</b> Доходит до поверхности Земли в виде прямых лучей непосредственно от солнечного диска при ясном небе.</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">2.</span><b class="text-emerald-300 font-bold">Рассеянная радиация:</b> Свет, рассеянный молекулами газов, каплями воды и пылью атмосферы. Преобладает в пасмурные дни.</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">3.</span><b class="text-emerald-300 font-bold">Суммарная радиация:</b> Совокупность прямой и рассеянной радиации, поступающей на земную поверхность (Суммарная = Прямая + Рассеянная).</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">4.</span><b class="text-emerald-300 font-bold">Альбедо:</b> Отражательная способность поверхности (в процентах). Самое высокое альбедо у свежевыпавшего снега (до 85–90%).</li>
+</ol>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Температурная амплитуда:</b> Разность между максимальным и минимальным значениями температуры воздуха.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><i class="text-slate-300">Пример расчета:</i> Днем температура была -6°C, а ночью опустилась до -10°C. Суточная амплитуда равна: -6 - (-10) = <b class="text-cyan-300 font-bold">4°C</b>.</li>
+</ul>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>☀️</span>
+<span>2-СЫЗБА: СОСТАВ И ВИДЫ СОЛНЕЧНОЙ РАДИАЦИИ</span>
+</span>
+<span class="text-[10px] bg-amber-500/10 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/20 font-mono">Жиынтық = Тікелей + Шашыранды</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 220">
+<circle cx="90" cy="50" fill="#f59e0b" r="30"></circle>
+<text fill="#0b1329" font-size="12" font-weight="black" text-anchor="middle" x="90" y="55">КҮН</text>
+<line stroke="#f59e0b" stroke-width="4" x1="120" x2="280" y1="65" y2="170"></line>
+<text fill="#fde047" font-size="11" font-weight="bold" x="210" y="105">Прямая радиация</text>
+<ellipse cx="380" cy="55" fill="#64748b" fill-opacity="0.6" rx="50" ry="25"></ellipse>
+<line stroke="#f59e0b" stroke-dasharray="4 4" stroke-width="3" x1="120" x2="330" y1="50" y2="55"></line>
+<line stroke="#38bdf8" stroke-width="2" x1="380" x2="360" y1="80" y2="170"></line>
+<line stroke="#38bdf8" stroke-width="2" x1="400" x2="420" y1="80" y2="170"></line>
+<text fill="#38bdf8" font-size="11" font-weight="bold" x="440" y="105">Рассеянная радиация</text>
+<line stroke="#e2e8f0" stroke-dasharray="3 3" stroke-width="2.5" x1="300" x2="370" y1="170" y2="120"></line>
+<text fill="#94a3b8" font-size="10" x="360" y="140">Альбедо (Отраженная)</text>
+<line stroke="#10b981" stroke-width="4" x1="30" x2="670" y1="175" y2="175"></line>
+<text fill="#34d399" font-size="12" font-weight="bold" text-anchor="middle" x="350" y="200">СУММАРНАЯ РАДИАЦИЯ = ПРЯМАЯ + РАССЕЯННАЯ</text>
+</svg>
+</div>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>3. Атмосферное давление, циклоны и антициклоны</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Атмосферное давление:</b> Сила давления воздуха на единицу площади поверхности. Нормальное давление на уровне моря (45° широты, 0°C) равно <b class="text-cyan-300 font-bold">760 мм рт. ст.</b> (1013 гПа). При подъеме на каждые 10,5 м давление падает на 1 мм рт. ст.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Циклон (область низкого давления):</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">В центре давление минимальное, по краям — высокое.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Воздух устремляется от периферии к центру и восходит вверх.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">В Северном полушарии вихрь закручивается против часовой стрелки.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Погода:</b> Пасмурная, облачная, ветреная, с обильными осадками.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Антициклон (область высокого давления):</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">В центре давление максимальное, по краям — низкое.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Воздух опускается из верхних слоев к земле и растекается от центра к краям.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">В Северном полушарии движется по часовой стрелке.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Погода:</b> Малооблачная, сухая, без осадков. Летом жарко, зимой — сильные трескучие морозы.</li>
+</ul>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>🌀</span>
+<span>3-СЫЗБА: МЕХАНИЗМ ЦИКЛОНА И АНТИЦИКЛОНА</span>
+</span>
+<span class="text-[10px] bg-red-500/10 text-red-300 px-2.5 py-0.5 rounded-full border border-red-500/20 font-mono">Төмен қысым vs Жоғары қысым</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 220">
+<rect fill="#0b1329" height="190" rx="8" stroke="#06b6d4" width="315" x="20" y="15"></rect>
+<text fill="#38bdf8" font-size="12" font-weight="bold" text-anchor="middle" x="177" y="38">ЦИКЛОН (Низкое давление)</text>
+<circle cx="177" cy="100" fill="#0369a1" r="24"></circle>
+<text fill="#ffffff" font-size="16" font-weight="black" text-anchor="middle" x="177" y="106">Т (Н)</text>
+<path d="M 120 100 Q 140 80 155 90" fill="none" stroke="#38bdf8" stroke-width="2.5"></path>
+<path d="M 230 100 Q 210 120 195 110" fill="none" stroke="#38bdf8" stroke-width="2.5"></path>
+<path d="M 177 55 Q 195 70 185 85" fill="none" stroke="#38bdf8" stroke-width="2.5"></path>
+<path d="M 177 145 Q 160 130 170 115" fill="none" stroke="#38bdf8" stroke-width="2.5"></path>
+<text fill="#f87171" font-size="10" font-weight="bold" text-anchor="middle" x="177" y="165">Воздух восходит -&gt; Облачно, дожди, ветер</text>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="177" y="185">В сев. полушарии против часовой стрелки</text>
+<rect fill="#0b1329" height="190" rx="8" stroke="#f59e0b" width="315" x="365" y="15"></rect>
+<text fill="#fbbf24" font-size="12" font-weight="bold" text-anchor="middle" x="522" y="38">АНТИЦИКЛОН (Высокое давление)</text>
+<circle cx="522" cy="100" fill="#b45309" r="24"></circle>
+<text fill="#ffffff" font-size="16" font-weight="black" text-anchor="middle" x="522" y="106">Ж (В)</text>
+<path d="M 545 90 Q 565 80 580 90" fill="none" stroke="#fbbf24" stroke-width="2.5"></path>
+<path d="M 500 110 Q 480 120 465 110" fill="none" stroke="#fbbf24" stroke-width="2.5"></path>
+<path d="M 530 80 Q 540 65 530 55" fill="none" stroke="#fbbf24" stroke-width="2.5"></path>
+<path d="M 515 120 Q 505 135 515 145" fill="none" stroke="#fbbf24" stroke-width="2.5"></path>
+<text fill="#34d399" font-size="10" font-weight="bold" text-anchor="middle" x="522" y="165">Воздух опускается -&gt; Ясно, сухо, без осадков</text>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="522" y="185">В сев. полушарии по часовой стрелке</text>
+</svg>
+</div>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>4. Ветры и общая циркуляция атмосферы</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Ветер</b> — движение воздуха параллельно земной поверхности. <b class="text-cyan-300 font-bold">Главная причина ветра — разность атмосферного давления</b>. Воздух всегда перемещается из зоны высокого давления в зону низкого.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Классификация ветров:</b></li>
+</ul>
+<ol class="space-y-3 my-2.5 ml-6 list-none"><li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">1.</span><b class="text-emerald-300 font-bold">Бриз (франц. <i class="text-slate-300">brise</i> — легкий ветер):</b><ul class="space-y-1.5 my-2 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Дует на берегах морей, озер и крупных водохранилищ.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Меняет направление дважды в сутки: <b class="text-cyan-300 font-bold">дневной бриз</b> дует с прохладной воды на нагретую сушу; <b class="text-cyan-300 font-bold">ночной бриз</b> — с быстро остывшей суши на теплое море.</li>
+</ul></li><li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">2.</span><b class="text-emerald-300 font-bold">Муссон (араб. <i class="text-slate-300">маусим</i> — сезон):</b><ul class="space-y-1.5 my-2 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Мощный сезонный ветер между материком и океаном.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Меняет направление дважды в год: <b class="text-cyan-300 font-bold">летний муссон</b> несет влагу с океана на континент (ливни); <b class="text-cyan-300 font-bold">зимний муссон</b> дует с суши на океан (сухо и морозно).</li>
+</ul></li><li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">3.</span><b class="text-emerald-300 font-bold">Пассаты:</b> Постоянные ветры, круглый год дующие из тропических поясов высокого давления (30°) к экваториальному поясу низкого давления.</li><li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">4.</span><b class="text-emerald-300 font-bold">Западный перенос (Западные ветры):</b> Господствующие ветры умеренных широт (30°–60°), приносящие влажные океанические массы с Атлантики вглубь Евразии.</li></ol>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>💨</span>
+<span>4-СЫЗБА: СИСТЕМА ПОСТОЯННЫХ И СЕЗОННЫХ ВЕТРОВ</span>
+</span>
+<span class="text-[10px] bg-purple-500/10 text-purple-300 px-2.5 py-0.5 rounded-full border border-purple-500/20 font-mono">Бриз • Муссон • Пассаттар • Батыс желдері</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 220">
+<rect fill="#0b1329" height="180" rx="8" stroke="#1e293b" width="205" x="20" y="20"></rect>
+<text fill="#38bdf8" font-size="11" font-weight="bold" text-anchor="middle" x="122" y="45">БРИЗ (Суточный ветер)</text>
+<text fill="#f8fafc" font-size="10" font-weight="bold" text-anchor="middle" x="122" y="70">Днем: с моря на сушу</text>
+<text fill="#f8fafc" font-size="10" font-weight="bold" text-anchor="middle" x="122" y="90">Ночью: с суши на море</text>
+<line stroke="#1e293b" x1="40" x2="200" y1="105" y2="105"></line>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="122" y="130">Франц. brise — «легкий ветер»</text>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="122" y="150">Причина: разница нагрева</text>
+<text fill="#38bdf8" font-size="9" text-anchor="middle" x="122" y="170">суши и воды за сутки</text>
+<rect fill="#0b1329" height="180" rx="8" stroke="#1e293b" width="210" x="245" y="20"></rect>
+<text fill="#34d399" font-size="11" font-weight="bold" text-anchor="middle" x="350" y="45">МУССОН (Сезонный ветер)</text>
+<text fill="#f8fafc" font-size="10" font-weight="bold" text-anchor="middle" x="350" y="70">Летом: с океана на сушу</text>
+<text fill="#f8fafc" font-size="10" font-weight="bold" text-anchor="middle" x="350" y="90">Зимой: с суши на океан</text>
+<line stroke="#1e293b" x1="265" x2="435" y1="105" y2="105"></line>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="350" y="130">Араб. «маусим» — сезон</text>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="350" y="150">Меняет направление 2 раза в год</text>
+<text fill="#34d399" font-size="9" text-anchor="middle" x="350" y="170">Южная и Восточная Азия</text>
+<rect fill="#0b1329" height="180" rx="8" stroke="#1e293b" width="205" x="475" y="20"></rect>
+<text fill="#fbbf24" font-size="11" font-weight="bold" text-anchor="middle" x="577" y="45">ПОСТОЯННЫЕ ВЕТРЫ</text>
+<text fill="#fbbf24" font-size="10" font-weight="bold" text-anchor="middle" x="577" y="70">ПАССАТЫ (от 30° к 0°)</text>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="577" y="88">Из тропиков к экватору</text>
+<line stroke="#1e293b" x1="495" x2="660" y1="105" y2="105"></line>
+<text fill="#38bdf8" font-size="10" font-weight="bold" text-anchor="middle" x="577" y="130">ЗАПАДНЫЙ ПЕРЕНОС</text>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="577" y="150">В умеренных широтах</text>
+<text fill="#38bdf8" font-size="9" text-anchor="middle" x="577" y="170">Приносит осадки в Казахстан</text>
+</svg>
+</div>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>5. Влажность воздуха, облака и климатические типы</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Влажность воздуха:</b> Содержание водяного пара в воздухе (абсолютная в г/м³ и относительная в %).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Основные типы облаков:</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Перистые облака:</b> Формируются выше 6 км при отрицательных температурах и целиком состоят из <b class="text-cyan-300 font-bold">мелких кристалликов льда</b>.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Кучевые облака:</b> Белые купола и башни; при сильном развитии превращаются в кучево-дождевые грозовые тучи с ливнями и градом.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Слоистые облака:</b> Сплошная серая пелена в нижнем ярусе (&lt;2 км), дающая моросящие затяжные дожди.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Гумидный и аридный климат:</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Гумидный (влажный) климат:</b> Осадков выпадает больше, чем испаряется.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Аридный (засушливый) климат:</b> Испаряемость во много раз превышает скудное количество осадков (пустыни).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Влияние холодных течений:</b> Холодные морские течения охлаждают воздух у побережий, блокируют восходящие потоки и препятствуют конденсации влаги, формируя прибрежные береговые пустыни (Атакама, Намиб).</li>
+</ul>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>🌡️</span>
+<span>5-СЫЗБА: ОБЛАКА И ВЕРТИКАЛЬНЫЙ ТЕМПЕРАТУРНЫЙ ГРАДИЕНТ</span>
+</span>
+<span class="text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono">Әр 1000 м биіктегенде T - 6°C кемиді</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 220">
+<polygon fill="#1e293b" points="50,180 200,60 350,180" stroke="#475569" stroke-width="2"></polygon>
+<circle cx="50" cy="180" fill="#10b981" r="4"></circle>
+<text fill="#10b981" font-size="10" font-weight="bold" x="60" y="195">0 м (+22°C)</text>
+<line stroke="#38bdf8" stroke-dasharray="2 2" x1="125" x2="160" y1="120" y2="120"></line>
+<text fill="#38bdf8" font-size="10" font-weight="bold" x="170" y="124">1000 м (+16°C)</text>
+<circle cx="200" cy="60" fill="#ef4444" r="4"></circle>
+<text fill="#fca5a5" font-size="11" font-weight="bold" x="210" y="64">2000 м (+10°C)</text>
+<text fill="#f87171" font-size="9" text-anchor="middle" x="200" y="45">22°C - (2 × 6°C) = +10°C</text>
+<rect fill="#0b1329" height="180" rx="8" stroke="#1e293b" width="300" x="380" y="20"></rect>
+<text fill="#38bdf8" font-size="11" font-weight="bold" text-anchor="middle" x="530" y="42">ОСНОВНЫЕ ВИДЫ ОБЛАКОВ</text>
+<text fill="#f8fafc" font-size="10" font-weight="bold" x="400" y="70">1. Перистые (&gt;6 км):</text>
+<text fill="#94a3b8" font-size="9" x="410" y="88">Состоят только из кристалликов льда</text>
+<text fill="#f8fafc" font-size="10" font-weight="bold" x="400" y="115">2. Кучевые (2–6 км):</text>
+<text fill="#94a3b8" font-size="9" x="410" y="133">Кучево-дождевые дают ливни и грозы</text>
+<text fill="#f8fafc" font-size="10" font-weight="bold" x="400" y="160">3. Слоистые (&lt;2 км):</text>
+<text fill="#94a3b8" font-size="9" x="410" y="178">Затягивают все небо, моросящий дождь</text>
+</svg>
+</div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: COMMON EXAM TRAPS & PITFALLS (if available) -->
+    <section class="p-6 sm:p-7 rounded-3xl bg-amber-500/5 border border-amber-500/20 shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-amber-500/20 pb-3">
+        <h3 class="text-base sm:text-lg font-black text-amber-300 flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center text-sm font-black">⚠️</span>
+          <span>Экзаменационные ловушки и нюансы ЕНТ</span>
+        </h3>
+        <span class="text-xs text-amber-400/80 font-bold">
+          Обратите внимание
+        </span>
+      </div>
+
+      <div class="space-y-2.5 text-xs sm:text-sm text-slate-200">
+        <p class="leading-relaxed flex items-start space-x-2"><span class="text-amber-400 shrink-0 mt-0.5">⚠️</span><span>⚠️ Назар аударыңыз: Атмосфера бойынша сұрақтар ҰБТ-ның контексттік тесттерінде жиі кездеседі.</span></p>
+      </div>
+    </section>
+
+    <!-- SECTION 4: END-OF-LESSON TEST -->
+    <section class="p-6 sm:p-8 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-6">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-brand-500/10 border border-brand-500/20 text-brand-400 flex items-center justify-center text-sm font-black">3</span>
+          <div>
+            <h3 class="text-base sm:text-lg font-black text-white">
+              Итоговый тест по теме
+            </h3>
+            <p class="text-xs text-slate-400 mt-0.5">
+              Проходной балл: 80% • Награда: +30 XP
+            </p>
+          </div>
+        </div>
+
+        <div id="testScoreBadge" class="hidden px-3 py-1 rounded-xl bg-space-850 border border-slate-700 text-xs font-bold text-amber-400 font-mono">
+          0%
+        </div>
+      </div>
+
+      <!-- Test Questions Container -->
+      <div id="testQuestionsList" class="space-y-6">
+        <!-- Dynamically populated test questions via JS -->
+      </div>
+
+      <!-- Test Submit & Score Action Bar -->
+      <div class="pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="text-xs text-slate-400" id="testProgressInfo">
+          Ответьте на все вопросы и проверьте свои знания.
+        </div>
+        <div class="flex items-center space-x-2.5 w-full sm:w-auto">
+          <button id="btnSubmitTest" onclick="submitLessonTest()" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-brand-500 hover:from-amber-400 hover:to-brand-400 text-space-950 font-black text-xs sm:text-sm shadow-md transition flex items-center justify-center space-x-2">
+            <span>🏁</span>
+            <span>Проверить ответы</span>
+          </button>
+          <button id="btnResetTest" onclick="resetLessonTest()" class="hidden px-4 py-2.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-bold transition flex items-center justify-center space-x-1">
+            <span>🔄</span>
+            <span>Пересдать</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- BOTTOM NAVIGATION & FOOTER -->
+    <div class="p-6 rounded-3xl bg-space-900 border border-slate-800 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleLessonComplete()" class="px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-400 text-space-950 font-black text-xs sm:text-sm shadow-md transition flex items-center space-x-2">
+          <span>✓</span>
+          <span id="lblBottomComplete">Отметить как прочитанное (+30 XP)</span>
+        </button>
+      </div>
+
+      <div class="flex items-center space-x-2 text-xs font-bold">
+        <a href="lesson_06_ru.html" class="px-4 py-2 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition">← Предыдущий</a>
+        <a href="../index.html?lang=ru#section-sabaktar_reading" class="px-4 py-2 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition">
+          Каталог уроков
+        </a>
+        <a href="lesson_08_ru.html" class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-space-950 transition font-black">Следующий →</a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- LESSON SCRIPT ENGINE -->
+  <script>
+    const lessonData = {"id": 7, "title_kz": "7-сабақ. Атмосфера", "title_ru": "7 урок. Атмосфера", "time": "8 мин", "tags": ["Атмосфера", "Атмосфера"], "terms": [{"kz": "Тропосфера", "ru": "Тропосфера", "desc_kz": "Атмосфераның жер бетіне тиіп тұрған, бүкіл ауа райы құбылыстары жүретін төменгі қабаты (8-18 км).", "desc_ru": "Нижний слой атмосферы толщиной 8–18 км, содержащий 80% массы воздуха и весь водяной пар."}, {"kz": "Күн радиациясы", "ru": "Солнечная радиация", "desc_kz": "Күннен жер бетіне келетін жарық пен жылудың жалпы ағыны (тура, шашыранды, жұтылған, шағылысқан).", "desc_ru": "Электромагнитное излучение Солнца, поступающее на земную поверхность."}, {"kz": "Циклон", "ru": "Циклон", "desc_kz": "Орталығында қысымы төмен, ауа ағыны шетінен ортасына қарай айнала соғатын бұлтты, жауын-шашынды құйын.", "desc_ru": "Атмосферный вихрь с низким давлением в центре, приносящий облачность и осадки."}, {"kz": "Антициклон", "ru": "Антициклон", "desc_kz": "Орталығында қысымы жоғары, ашық, жауын-шашынсыз, тымық ауа райын орнататын қуатты құйын.", "desc_ru": "Атмосферный вихрь с высоким давлением в центре, обуславливающий ясную сухую погоду."}, {"kz": "Атмосфералық фронт", "ru": "Атмосферный фронт", "desc_kz": "Температурасы мен ылғалдылығы әртүрлі екі ауа массасының арасындағы өтпелі шекаралық белдеу.", "desc_ru": "Переходная зона раздела между двумя различными по свойствам воздушными массами."}], "theory_kz": "<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>1. Атмосфераның құрылысы мен қабаттары</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Атмосфера</b> (грек. <i class=\"text-slate-300\">atmos</i> — бу, <i class=\"text-slate-300\">sphaira</i> — шар) — Жердің ауа қабығы. Ауаның 78%-ы азоттан, 21%-ы оттектен, 0,93%-ы аргоннан, 0,03%-ы көмірқышқыл газынан тұрады.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Атмосфера қабаттары:</b></li>\n</ul>\n<ol class=\"space-y-3 my-2.5 ml-6 list-none\"><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Тропосфера:</b> Жерге ең жақын әрі ең тығыз қабат. Полюстерде қалыңдығы 8–10 км, қоңыржай ендіктерде 10–12 км, экваторда 16–18 км.<ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Мұнда бүкіл атмосфера ауасының <b class=\"text-cyan-300 font-bold\">80%-ы</b> және атмосфералық су буының барлығы дерлік шоғырланған.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Барлық ауа райы құбылыстары (бұлт, жауын-шашын, жел) осы тропосферада жүреді.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Тік температуралық градиент:</b> Тропосферада әрбір <b class=\"text-cyan-300 font-bold\">1000 метрге (1 км)</b> көтерілген сайын ауа температурасы орта есеппен <b class=\"text-cyan-300 font-bold\">6°C-қа төмендейді</b>.</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Стратосфера (18–50 км):</b> Су буы мен бұлттар болмайды. 20–25 км биіктікте тіршілік үшін аса маңызды <b class=\"text-emerald-300 font-bold\">ОЗОН ҚАБАТЫ (О3)</b> шоғырланған. Ол Күннен келетін қауіпті ультракүлгін сәулелерді жұтып, жердегі өмірді сақтайды.</li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Мезосфера және Термосфера (50–800 км):</b> Метеорлар жанып кететін қабат. Полярлық шұғыла байқалатын және радиотолқындар шағылысатын ионосфера орналасқан.</li></ol>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>☁️</span>\n<span>1-СЫЗБА: АТМОСФЕРА ҚАБАТТАРЫ ЖӘНЕ ОЗОН ҚАЛҚАНЫ</span>\n</span>\n<span class=\"text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono\">Тропосфера (80% ауа) • Стратосфера (Озон)</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<rect fill=\"#15803d\" height=\"30\" width=\"640\" x=\"30\" y=\"180\"></rect>\n<text fill=\"#f8fafc\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"200\">ЖЕР БЕТІ (0 км)</text>\n<rect fill=\"#0284c7\" fill-opacity=\"0.3\" height=\"55\" stroke=\"#38bdf8\" width=\"640\" x=\"30\" y=\"125\"></rect>\n<text fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\" x=\"60\" y=\"145\">ТРОПОСФЕРА (0 — 18 км)</text>\n<text fill=\"#e2e8f0\" font-size=\"10\" x=\"60\" y=\"165\">Барлық ауа массасының 80%-ы, барлық су буы, ауа райы құбылыстары осында</text>\n<text fill=\"#f87171\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"end\" x=\"600\" y=\"155\">h + 1000м -&gt; T - 6°C</text>\n<rect fill=\"#6366f1\" fill-opacity=\"0.25\" height=\"60\" stroke=\"#818cf8\" width=\"640\" x=\"30\" y=\"65\"></rect>\n<text fill=\"#a5b4fc\" font-size=\"12\" font-weight=\"bold\" x=\"60\" y=\"85\">СТРАТОСФЕРА (18 — 50 км)</text>\n<rect fill=\"#06b6d4\" fill-opacity=\"0.4\" height=\"20\" rx=\"4\" stroke=\"#22d3ee\" stroke-dasharray=\"3 3\" width=\"620\" x=\"40\" y=\"95\"></rect>\n<text fill=\"#e0f2fe\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"110\">🛡️ ОЗОН ҚАБАТЫ (О3, 20–25 км): Ультракүлгін сәулелерден қорғайды</text>\n<rect fill=\"#0f172a\" height=\"50\" stroke=\"#334155\" width=\"640\" x=\"30\" y=\"15\"></rect>\n<text fill=\"#94a3b8\" font-size=\"11\" font-weight=\"bold\" x=\"60\" y=\"35\">МЕЗОСФЕРА (50 — 85 км) &amp; ТЕРМОСФЕРА (85+ км)</text>\n<text fill=\"#64748b\" font-size=\"9\" x=\"60\" y=\"52\">Метеорлардың жануы, полярлық шұғыла, ионосфера</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>2. Күн радиациясы және жылу балансы</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Күн радиациясы</b> — Жерге келетін барлық жарық пен жылудың негізгі бастауы.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Радиация түрлері:</b></li>\n</ul>\n<ol class=\"space-y-2 my-2.5 ml-6 list-none\">\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Тікелей радиация:</b> Күннен Жер бетіне сәулелер түрінде тікелей тарайтын радиация. Ашық ауа райында басым.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Шашыранды радиация:</b> Атмосферадағы газдар, тозаңдар және бұлт тамшыларына шағылысып, жан-жаққа шашыраған сәулелер. Бұлтты күндері басым.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Жиынтық (суммарная) радиация:</b> Тікелей және шашыранды радиацияның қосындысы (Жиынтық = Тікелей + Шашыранды).</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">4.</span><b class=\"text-emerald-300 font-bold\">Альбедо:</b> Жер бетінің немесе бұлттардың күн сәулесін шағылдыру қабілеті (%-бен өлшенеді). Ең жоғары альбедо — жаңа жауған аппақ қарда (80–90%).</li>\n</ol>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Температуралық амплитуда:</b> Ең жоғарғы және ең төменгі температуралардың арасындағы айырмашылық.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><i class=\"text-slate-300\">Мысалы:</i> Күндіз -6°C, ал түнде -10°C болса, тәуліктік амплитуда: -6 - (-10) = <b class=\"text-cyan-300 font-bold\">4°C</b>.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>☀️</span>\n<span>2-СЫЗБА: КҮН РАДИАЦИЯСЫНЫҢ ҚҰРАМЫ МЕН ТҮРЛЕРІ</span>\n</span>\n<span class=\"text-[10px] bg-amber-500/10 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/20 font-mono\">Жиынтық = Тікелей + Шашыранды</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<circle cx=\"90\" cy=\"50\" fill=\"#f59e0b\" r=\"30\"></circle>\n<text fill=\"#0b1329\" font-size=\"12\" font-weight=\"black\" text-anchor=\"middle\" x=\"90\" y=\"55\">КҮН</text>\n<line stroke=\"#f59e0b\" stroke-width=\"4\" x1=\"120\" x2=\"280\" y1=\"65\" y2=\"170\"></line>\n<text fill=\"#fde047\" font-size=\"11\" font-weight=\"bold\" x=\"210\" y=\"105\">Тікелей радиация (Прямая)</text>\n<ellipse cx=\"380\" cy=\"55\" fill=\"#64748b\" fill-opacity=\"0.6\" rx=\"50\" ry=\"25\"></ellipse>\n<line stroke=\"#f59e0b\" stroke-dasharray=\"4 4\" stroke-width=\"3\" x1=\"120\" x2=\"330\" y1=\"50\" y2=\"55\"></line>\n<line stroke=\"#38bdf8\" stroke-width=\"2\" x1=\"380\" x2=\"360\" y1=\"80\" y2=\"170\"></line>\n<line stroke=\"#38bdf8\" stroke-width=\"2\" x1=\"400\" x2=\"420\" y1=\"80\" y2=\"170\"></line>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" x=\"440\" y=\"105\">Шашыранды (Рассеянная)</text>\n<line stroke=\"#e2e8f0\" stroke-dasharray=\"3 3\" stroke-width=\"2.5\" x1=\"300\" x2=\"370\" y1=\"170\" y2=\"120\"></line>\n<text fill=\"#94a3b8\" font-size=\"10\" x=\"360\" y=\"140\">Шағылысқан (Альбедо)</text>\n<line stroke=\"#10b981\" stroke-width=\"4\" x1=\"30\" x2=\"670\" y1=\"175\" y2=\"175\"></line>\n<text fill=\"#34d399\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"200\">ЖИЫНТЫҚ РАДИАЦИЯ = ТІКЕЛЕЙ + ШАШЫРАНДЫ</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>3. Атмосфералық қысым, циклондар және антициклондар</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Атмосфералық қысым:</b> Ауаның Жер бетіне және ондағы денелерге түсіретін салмағы. Қалыпты қысым (0 м биіктікте, 45° ендікте, 0°C-та) = <b class=\"text-cyan-300 font-bold\">760 мм сынап бағанасы</b> (1013 гПа). Әрбір 10,5 метр биіктеген сайын қысым 1 мм-ге кемиді.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Циклон (Төмен қысымды құйын):</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Орталығында қысым ең төмен, шеттерінде жоғары.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Ауа шетінен ортасына қарай ағып, ортасында жоғары көтеріледі.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Солтүстік жартышарда сағат тіліне қарсы бағытта үйіріледі.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Ауа райы:</b> Бұлтты, салқын, қатты желді, жауын-шашынды болады.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Антициклон (Жоғары қысымды құйын):</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Орталығында қысым ең жоғары, шеттерінде төмен.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Ауа жоғарыдан төмен қарай басылып, ортасынан шетіне қарай тарайды.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Солтүстік жартышарда сағат тілінің бағытымен қозғалады.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Ауа райы:</b> Ашық, тымық, жауын-шашынсыз. Жазда ыстық, қыста қақаған аязды болады.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🌀</span>\n<span>3-СЫЗБА: ЦИКЛОН ЖӘНЕ АНТИЦИКЛОН МЕХАНИЗМІ</span>\n</span>\n<span class=\"text-[10px] bg-red-500/10 text-red-300 px-2.5 py-0.5 rounded-full border border-red-500/20 font-mono\">Төмен қысым vs Жоғары қысым</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<rect fill=\"#0b1329\" height=\"190\" rx=\"8\" stroke=\"#06b6d4\" width=\"315\" x=\"20\" y=\"15\"></rect>\n<text fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"38\">ЦИКЛОН (Төмен қысымды құйын)</text>\n<circle cx=\"177\" cy=\"100\" fill=\"#0369a1\" r=\"24\"></circle>\n<text fill=\"#ffffff\" font-size=\"16\" font-weight=\"black\" text-anchor=\"middle\" x=\"177\" y=\"106\">Т (Н)</text>\n<path d=\"M 120 100 Q 140 80 155 90\" fill=\"none\" stroke=\"#38bdf8\" stroke-width=\"2.5\"></path>\n<path d=\"M 230 100 Q 210 120 195 110\" fill=\"none\" stroke=\"#38bdf8\" stroke-width=\"2.5\"></path>\n<path d=\"M 177 55 Q 195 70 185 85\" fill=\"none\" stroke=\"#38bdf8\" stroke-width=\"2.5\"></path>\n<path d=\"M 177 145 Q 160 130 170 115\" fill=\"none\" stroke=\"#38bdf8\" stroke-width=\"2.5\"></path>\n<text fill=\"#f87171\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"165\">Ауа жоғары көтеріледі -&gt; Бұлтты, жаңбырлы</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"177\" y=\"185\">Солтүстік жартышарда сағат тіліне ҚАРСЫ</text>\n<rect fill=\"#0b1329\" height=\"190\" rx=\"8\" stroke=\"#f59e0b\" width=\"315\" x=\"365\" y=\"15\"></rect>\n<text fill=\"#fbbf24\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"522\" y=\"38\">АНТИЦИКЛОН (Жоғары қысымды құйын)</text>\n<circle cx=\"522\" cy=\"100\" fill=\"#b45309\" r=\"24\"></circle>\n<text fill=\"#ffffff\" font-size=\"16\" font-weight=\"black\" text-anchor=\"middle\" x=\"522\" y=\"106\">Ж (В)</text>\n<path d=\"M 545 90 Q 565 80 580 90\" fill=\"none\" stroke=\"#fbbf24\" stroke-width=\"2.5\"></path>\n<path d=\"M 500 110 Q 480 120 465 110\" fill=\"none\" stroke=\"#fbbf24\" stroke-width=\"2.5\"></path>\n<path d=\"M 530 80 Q 540 65 530 55\" fill=\"none\" stroke=\"#fbbf24\" stroke-width=\"2.5\"></path>\n<path d=\"M 515 120 Q 505 135 515 145\" fill=\"none\" stroke=\"#fbbf24\" stroke-width=\"2.5\"></path>\n<text fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"522\" y=\"165\">Ауа төмен басылады -&gt; Ашық, жауын-шашынсыз</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"522\" y=\"185\">Солтүстік жартышарда сағат тілімен бағыттас</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>4. Жел түрлері және атмосфералық циркуляция</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Жел</b> — ауаның жер бетімен көлденең бағытта қозғалуы. Желдің пайда болуының <b class=\"text-cyan-300 font-bold\">басты себебі — қысым айырмашылығы</b>. Ауа әрқашан қысымы жоғары аймақтан қысымы төмен аймаққа қарай ұмтылады.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Желдердің жіктелуі:</b></li>\n</ul>\n<ol class=\"space-y-3 my-2.5 ml-6 list-none\"><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Бриз (франц. <i class=\"text-slate-300\">brise</i> — жеңіл жел):</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Теңіз, көл не үлкен өзен жағасында соғады.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Бағытын тәулігіне 2 рет өзгертеді: <b class=\"text-cyan-300 font-bold\">Күндізгі бриз</b> — салқын теңізден жылы құрлыққа; <b class=\"text-cyan-300 font-bold\">Түнгі бриз</b> — суық құрлықтан жылы теңізге қарай соғады.</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Муссон (араб. <i class=\"text-slate-300\">маусым</i>):</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Құрлық пен мұхит арасындағы алып маусымдық жел.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Бағытын жылына 2 рет өзгертеді: <b class=\"text-cyan-300 font-bold\">Жазғы муссон</b> — мұхиттан құрлыққа мол жауын-шашын әкеледі; <b class=\"text-cyan-300 font-bold\">Қысқы муссон</b> — құрлықтан мұхитқа қарай құрғақ әрі суық соғады.</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Пассаттар:</b> 30° тропиктік жоғары қысым белдеуінен экваторлық төмен қысым белдеуіне қарай жыл бойы тоқтаусыз соғатын тұрақты желдер.</li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">4.</span><b class=\"text-emerald-300 font-bold\">Батыс желдері (Батыс тасымалы):</b> Қоңыржай ендіктерде (30°–60°) батыстан шығысқа қарай соғатын тұрақты желдер. Атлант мұхитының ылғалын Еуразияға әкеледі.</li></ol>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>💨</span>\n<span>4-СЫЗБА: ТҰРАҚТЫ ЖӘНЕ МАУСЫМДЫҚ ЖЕЛДЕР ЖҮЙЕСІ</span>\n</span>\n<span class=\"text-[10px] bg-purple-500/10 text-purple-300 px-2.5 py-0.5 rounded-full border border-purple-500/20 font-mono\">Бриз • Муссон • Пассаттар • Батыс желдері</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"205\" x=\"20\" y=\"20\"></rect>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"122\" y=\"45\">БРИЗ (Тәуліктік жел)</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"122\" y=\"70\">Күндіз: Теңізден -&gt; Құрлыққа</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"122\" y=\"90\">Түнде: Құрлықтан -&gt; Теңізге</text>\n<line stroke=\"#1e293b\" x1=\"40\" x2=\"200\" y1=\"105\" y2=\"105\"></line>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"122\" y=\"130\">Французша: «жеңіл жел»</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"122\" y=\"150\">Себебі: құрлық пен судың</text>\n<text fill=\"#38bdf8\" font-size=\"9\" text-anchor=\"middle\" x=\"122\" y=\"170\">әркелкі жылынуы</text>\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"210\" x=\"245\" y=\"20\"></rect>\n<text fill=\"#34d399\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"45\">МУССОН (Маусымдық жел)</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"70\">Жазда: Мұхиттан -&gt; Құрлыққа</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"90\">Қыста: Құрлықтан -&gt; Мұхитқа</text>\n<line stroke=\"#1e293b\" x1=\"265\" x2=\"435\" y1=\"105\" y2=\"105\"></line>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"350\" y=\"130\">Арабша: «маусым»</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"350\" y=\"150\">Бағытын жылына 2 рет өзгертеді</text>\n<text fill=\"#34d399\" font-size=\"9\" text-anchor=\"middle\" x=\"350\" y=\"170\">Оңтүстік және Шығыс Азия</text>\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"205\" x=\"475\" y=\"20\"></rect>\n<text fill=\"#fbbf24\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"577\" y=\"45\">ТҰРАҚТЫ ЖЕЛДЕР</text>\n<text fill=\"#fbbf24\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"577\" y=\"70\">ПАССАТТАР (30° -&gt; 0°)</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"577\" y=\"88\">Тропиктен экваторға қарай</text>\n<line stroke=\"#1e293b\" x1=\"495\" x2=\"660\" y1=\"105\" y2=\"105\"></line>\n<text fill=\"#38bdf8\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"577\" y=\"130\">БАТЫС ЖЕЛДЕРІ (30° -&gt; 60°)</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"577\" y=\"150\">Қоңыржай ендіктерде басым</text>\n<text fill=\"#38bdf8\" font-size=\"9\" text-anchor=\"middle\" x=\"577\" y=\"170\">Қазақстанға ылғал әкеледі</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>5. Ауаның ылғалдылығы, бұлттар және жауын-шашын</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Ылғалдылық:</b> Ауадағы су буының мөлшері (абсолюттік г/м³ және салыстырмалы %).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Бұлттар:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Шарбы бұлттар (Перистые):</b> 6 км-ден биікте қалыптасады, өте суық болғандықтан тек <b class=\"text-cyan-300 font-bold\">майда мұз кристалдарынан</b> тұрады.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Будақ бұлттар (Кучевые):</b> Мақта тәрізді ақ шоқтар, найзағайлы будақ-жаңбырлы бұлттар нөсер жаңбыр мен бұршақ жаудырады.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Қатпарлы бұлттар (Слоистые):</b> Аспанды тұтас жауып тұратын сұр бұлттар, ұзаққа созылған сіркіреме жаңбыр әкеледі.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Климат ылғалдылығы бойынша:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Гумидті климат (латынша <i class=\"text-slate-300\">humidus</i> — ылғалды):</b> Жауын-шашын мөлшері буланудан артық болатын мол ылғалды климат.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Аридті климат:</b> Құрғақ, буланушылық жауын-шашыннан әлдеқайда көп шөлді климат.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Мұхит ағыстарының әсері:</b> Суық мұхит ағыстары жағалаулық шөлдерді қалыптастырады (мысалы, Атакама, Намиб), өйткені олар ауаны суытып, булануға және бұлт түзілуіне кедергі жасайды.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🌡️</span>\n<span>5-СЫЗБА: БҰЛТТАР ЖӘНЕ ТРОПОСФЕРАДАҒЫ ТЕМПЕРАТУРА ГРАДИЕНТІ</span>\n</span>\n<span class=\"text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono\">Әр 1000 м биіктегенде T - 6°C кемиді</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<polygon fill=\"#1e293b\" points=\"50,180 200,60 350,180\" stroke=\"#475569\" stroke-width=\"2\"></polygon>\n<circle cx=\"50\" cy=\"180\" fill=\"#10b981\" r=\"4\"></circle>\n<text fill=\"#10b981\" font-size=\"10\" font-weight=\"bold\" x=\"60\" y=\"195\">0 м (+22°C)</text>\n<line stroke=\"#38bdf8\" stroke-dasharray=\"2 2\" x1=\"125\" x2=\"160\" y1=\"120\" y2=\"120\"></line>\n<text fill=\"#38bdf8\" font-size=\"10\" font-weight=\"bold\" x=\"170\" y=\"124\">1000 м (+16°C)</text>\n<circle cx=\"200\" cy=\"60\" fill=\"#ef4444\" r=\"4\"></circle>\n<text fill=\"#fca5a5\" font-size=\"11\" font-weight=\"bold\" x=\"210\" y=\"64\">2000 м (+10°C)</text>\n<text fill=\"#f87171\" font-size=\"9\" text-anchor=\"middle\" x=\"200\" y=\"45\">22°C - (2 × 6°C) = +10°C</text>\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"300\" x=\"380\" y=\"20\"></rect>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"530\" y=\"42\">БҰЛТТАРДЫҢ НЕГІЗГІ ТҮРЛЕРІ</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" x=\"400\" y=\"70\">1. Шарбы бұлттар (Перистые, &gt;6 км):</text>\n<text fill=\"#94a3b8\" font-size=\"9\" x=\"410\" y=\"88\">Тек ұсақ мұз кристалдарынан тұрады</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" x=\"400\" y=\"115\">2. Будақ бұлттар (Кучевые, 2–6 км):</text>\n<text fill=\"#94a3b8\" font-size=\"9\" x=\"410\" y=\"133\">Мақта тәріздес, найзағай, нөсер жаңбыр</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" x=\"400\" y=\"160\">3. Қатпарлы бұлттар (Слоистые, &lt;2 км):</text>\n<text fill=\"#94a3b8\" font-size=\"9\" x=\"410\" y=\"178\">Тұман тәрізді аспанды жауып, сіркірейді</text>\n</svg>\n</div>", "theory_ru": "<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>1. Строение и слои атмосферы</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Атмосфера</b> (греч. <i class=\"text-slate-300\">atmos</i> — пар, <i class=\"text-slate-300\">sphaira</i> — шар) — газовая оболочка Земли. Состав чистого сухого воздуха: 78% азот, 21% кислород, 0,93% аргон, 0,03% углекислый газ.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Слои атмосферы:</b></li>\n</ul>\n<ol class=\"space-y-3 my-2.5 ml-6 list-none\"><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Тропосфера:</b> Нижний, самый плотный слой. Толщина у полюсов 8–10 км, в умеренных широтах 10–12 км, на экваторе 16–18 км.<ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Здесь сосредоточено <b class=\"text-cyan-300 font-bold\">80% массы воздуха</b> и практически весь водяной пар Земли.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">«Фабрика погоды»: все процессы образования облаков, ветров, циклонов и осадков происходят именно здесь.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Вертикальный температурный градиент:</b> При подъеме в тропосфере на каждые <b class=\"text-cyan-300 font-bold\">1000 м (1 км)</b> температура воздуха падает в среднем на <b class=\"text-cyan-300 font-bold\">6°C</b>.</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Стратосфера (18–50 км):</b> Воздух сухой и разреженный, облака отсутствуют. На высоте 20–25 км расположен <b class=\"text-emerald-300 font-bold\">ОЗОНОВЫЙ ЭКРАН (O3)</b>. Он поглощает губительные для жизни ультрафиолетовые лучи Солнца.</li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Мезосфера и Термосфера (50–800 км):</b> Зона сгорания метеороидов, полярных сияний и ионосферы, отражающей радиоволны.</li></ol>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>☁️</span>\n<span>1-СЫЗБА: СЛОИ АТМОСФЕРЫ И ОЗОНОВЫЙ ЭКРАН</span>\n</span>\n<span class=\"text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono\">Тропосфера (80% ауа) • Стратосфера (Озон)</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<rect fill=\"#15803d\" height=\"30\" width=\"640\" x=\"30\" y=\"180\"></rect>\n<text fill=\"#f8fafc\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"200\">ПОВЕРХНОСТЬ ЗЕМЛИ (0 км)</text>\n<rect fill=\"#0284c7\" fill-opacity=\"0.3\" height=\"55\" stroke=\"#38bdf8\" width=\"640\" x=\"30\" y=\"125\"></rect>\n<text fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\" x=\"60\" y=\"145\">ТРОПОСФЕРА (0 — 18 км)</text>\n<text fill=\"#e2e8f0\" font-size=\"10\" x=\"60\" y=\"165\">80% массы воздуха, весь водяной пар, погода, облака и осадки</text>\n<text fill=\"#f87171\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"end\" x=\"600\" y=\"155\">h + 1000м -&gt; T - 6°C</text>\n<rect fill=\"#6366f1\" fill-opacity=\"0.25\" height=\"60\" stroke=\"#818cf8\" width=\"640\" x=\"30\" y=\"65\"></rect>\n<text fill=\"#a5b4fc\" font-size=\"12\" font-weight=\"bold\" x=\"60\" y=\"85\">СТРАТОСФЕРА (18 — 50 км)</text>\n<rect fill=\"#06b6d4\" fill-opacity=\"0.4\" height=\"20\" rx=\"4\" stroke=\"#22d3ee\" stroke-dasharray=\"3 3\" width=\"620\" x=\"40\" y=\"95\"></rect>\n<text fill=\"#e0f2fe\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"110\">🛡️ ОЗОНОВЫЙ СЛОЙ (O3, 20–25 км): Защита от УФ-излучения</text>\n<rect fill=\"#0f172a\" height=\"50\" stroke=\"#334155\" width=\"640\" x=\"30\" y=\"15\"></rect>\n<text fill=\"#94a3b8\" font-size=\"11\" font-weight=\"bold\" x=\"60\" y=\"35\">МЕЗОСФЕРА (50 — 85 км) &amp; ТЕРМОСФЕРА (85+ км)</text>\n<text fill=\"#64748b\" font-size=\"9\" x=\"60\" y=\"52\">Сгорание метеоров, полярные сияния, ионосфера</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>2. Солнечная радиация и тепловой баланс</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Солнечная радиация</b> — основной двигатель всех атмосферных процессов на Земле.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Виды радиации:</b></li>\n</ul>\n<ol class=\"space-y-2 my-2.5 ml-6 list-none\">\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Прямая радиация:</b> Доходит до поверхности Земли в виде прямых лучей непосредственно от солнечного диска при ясном небе.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Рассеянная радиация:</b> Свет, рассеянный молекулами газов, каплями воды и пылью атмосферы. Преобладает в пасмурные дни.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Суммарная радиация:</b> Совокупность прямой и рассеянной радиации, поступающей на земную поверхность (Суммарная = Прямая + Рассеянная).</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">4.</span><b class=\"text-emerald-300 font-bold\">Альбедо:</b> Отражательная способность поверхности (в процентах). Самое высокое альбедо у свежевыпавшего снега (до 85–90%).</li>\n</ol>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Температурная амплитуда:</b> Разность между максимальным и минимальным значениями температуры воздуха.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><i class=\"text-slate-300\">Пример расчета:</i> Днем температура была -6°C, а ночью опустилась до -10°C. Суточная амплитуда равна: -6 - (-10) = <b class=\"text-cyan-300 font-bold\">4°C</b>.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>☀️</span>\n<span>2-СЫЗБА: СОСТАВ И ВИДЫ СОЛНЕЧНОЙ РАДИАЦИИ</span>\n</span>\n<span class=\"text-[10px] bg-amber-500/10 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/20 font-mono\">Жиынтық = Тікелей + Шашыранды</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<circle cx=\"90\" cy=\"50\" fill=\"#f59e0b\" r=\"30\"></circle>\n<text fill=\"#0b1329\" font-size=\"12\" font-weight=\"black\" text-anchor=\"middle\" x=\"90\" y=\"55\">КҮН</text>\n<line stroke=\"#f59e0b\" stroke-width=\"4\" x1=\"120\" x2=\"280\" y1=\"65\" y2=\"170\"></line>\n<text fill=\"#fde047\" font-size=\"11\" font-weight=\"bold\" x=\"210\" y=\"105\">Прямая радиация</text>\n<ellipse cx=\"380\" cy=\"55\" fill=\"#64748b\" fill-opacity=\"0.6\" rx=\"50\" ry=\"25\"></ellipse>\n<line stroke=\"#f59e0b\" stroke-dasharray=\"4 4\" stroke-width=\"3\" x1=\"120\" x2=\"330\" y1=\"50\" y2=\"55\"></line>\n<line stroke=\"#38bdf8\" stroke-width=\"2\" x1=\"380\" x2=\"360\" y1=\"80\" y2=\"170\"></line>\n<line stroke=\"#38bdf8\" stroke-width=\"2\" x1=\"400\" x2=\"420\" y1=\"80\" y2=\"170\"></line>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" x=\"440\" y=\"105\">Рассеянная радиация</text>\n<line stroke=\"#e2e8f0\" stroke-dasharray=\"3 3\" stroke-width=\"2.5\" x1=\"300\" x2=\"370\" y1=\"170\" y2=\"120\"></line>\n<text fill=\"#94a3b8\" font-size=\"10\" x=\"360\" y=\"140\">Альбедо (Отраженная)</text>\n<line stroke=\"#10b981\" stroke-width=\"4\" x1=\"30\" x2=\"670\" y1=\"175\" y2=\"175\"></line>\n<text fill=\"#34d399\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"200\">СУММАРНАЯ РАДИАЦИЯ = ПРЯМАЯ + РАССЕЯННАЯ</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>3. Атмосферное давление, циклоны и антициклоны</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Атмосферное давление:</b> Сила давления воздуха на единицу площади поверхности. Нормальное давление на уровне моря (45° широты, 0°C) равно <b class=\"text-cyan-300 font-bold\">760 мм рт. ст.</b> (1013 гПа). При подъеме на каждые 10,5 м давление падает на 1 мм рт. ст.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Циклон (область низкого давления):</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">В центре давление минимальное, по краям — высокое.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Воздух устремляется от периферии к центру и восходит вверх.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">В Северном полушарии вихрь закручивается против часовой стрелки.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Погода:</b> Пасмурная, облачная, ветреная, с обильными осадками.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Антициклон (область высокого давления):</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">В центре давление максимальное, по краям — низкое.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Воздух опускается из верхних слоев к земле и растекается от центра к краям.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">В Северном полушарии движется по часовой стрелке.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Погода:</b> Малооблачная, сухая, без осадков. Летом жарко, зимой — сильные трескучие морозы.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🌀</span>\n<span>3-СЫЗБА: МЕХАНИЗМ ЦИКЛОНА И АНТИЦИКЛОНА</span>\n</span>\n<span class=\"text-[10px] bg-red-500/10 text-red-300 px-2.5 py-0.5 rounded-full border border-red-500/20 font-mono\">Төмен қысым vs Жоғары қысым</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<rect fill=\"#0b1329\" height=\"190\" rx=\"8\" stroke=\"#06b6d4\" width=\"315\" x=\"20\" y=\"15\"></rect>\n<text fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"38\">ЦИКЛОН (Низкое давление)</text>\n<circle cx=\"177\" cy=\"100\" fill=\"#0369a1\" r=\"24\"></circle>\n<text fill=\"#ffffff\" font-size=\"16\" font-weight=\"black\" text-anchor=\"middle\" x=\"177\" y=\"106\">Т (Н)</text>\n<path d=\"M 120 100 Q 140 80 155 90\" fill=\"none\" stroke=\"#38bdf8\" stroke-width=\"2.5\"></path>\n<path d=\"M 230 100 Q 210 120 195 110\" fill=\"none\" stroke=\"#38bdf8\" stroke-width=\"2.5\"></path>\n<path d=\"M 177 55 Q 195 70 185 85\" fill=\"none\" stroke=\"#38bdf8\" stroke-width=\"2.5\"></path>\n<path d=\"M 177 145 Q 160 130 170 115\" fill=\"none\" stroke=\"#38bdf8\" stroke-width=\"2.5\"></path>\n<text fill=\"#f87171\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"165\">Воздух восходит -&gt; Облачно, дожди, ветер</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"177\" y=\"185\">В сев. полушарии против часовой стрелки</text>\n<rect fill=\"#0b1329\" height=\"190\" rx=\"8\" stroke=\"#f59e0b\" width=\"315\" x=\"365\" y=\"15\"></rect>\n<text fill=\"#fbbf24\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"522\" y=\"38\">АНТИЦИКЛОН (Высокое давление)</text>\n<circle cx=\"522\" cy=\"100\" fill=\"#b45309\" r=\"24\"></circle>\n<text fill=\"#ffffff\" font-size=\"16\" font-weight=\"black\" text-anchor=\"middle\" x=\"522\" y=\"106\">Ж (В)</text>\n<path d=\"M 545 90 Q 565 80 580 90\" fill=\"none\" stroke=\"#fbbf24\" stroke-width=\"2.5\"></path>\n<path d=\"M 500 110 Q 480 120 465 110\" fill=\"none\" stroke=\"#fbbf24\" stroke-width=\"2.5\"></path>\n<path d=\"M 530 80 Q 540 65 530 55\" fill=\"none\" stroke=\"#fbbf24\" stroke-width=\"2.5\"></path>\n<path d=\"M 515 120 Q 505 135 515 145\" fill=\"none\" stroke=\"#fbbf24\" stroke-width=\"2.5\"></path>\n<text fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"522\" y=\"165\">Воздух опускается -&gt; Ясно, сухо, без осадков</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"522\" y=\"185\">В сев. полушарии по часовой стрелке</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>4. Ветры и общая циркуляция атмосферы</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Ветер</b> — движение воздуха параллельно земной поверхности. <b class=\"text-cyan-300 font-bold\">Главная причина ветра — разность атмосферного давления</b>. Воздух всегда перемещается из зоны высокого давления в зону низкого.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Классификация ветров:</b></li>\n</ul>\n<ol class=\"space-y-3 my-2.5 ml-6 list-none\"><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Бриз (франц. <i class=\"text-slate-300\">brise</i> — легкий ветер):</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Дует на берегах морей, озер и крупных водохранилищ.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Меняет направление дважды в сутки: <b class=\"text-cyan-300 font-bold\">дневной бриз</b> дует с прохладной воды на нагретую сушу; <b class=\"text-cyan-300 font-bold\">ночной бриз</b> — с быстро остывшей суши на теплое море.</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Муссон (араб. <i class=\"text-slate-300\">маусим</i> — сезон):</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Мощный сезонный ветер между материком и океаном.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Меняет направление дважды в год: <b class=\"text-cyan-300 font-bold\">летний муссон</b> несет влагу с океана на континент (ливни); <b class=\"text-cyan-300 font-bold\">зимний муссон</b> дует с суши на океан (сухо и морозно).</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Пассаты:</b> Постоянные ветры, круглый год дующие из тропических поясов высокого давления (30°) к экваториальному поясу низкого давления.</li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">4.</span><b class=\"text-emerald-300 font-bold\">Западный перенос (Западные ветры):</b> Господствующие ветры умеренных широт (30°–60°), приносящие влажные океанические массы с Атлантики вглубь Евразии.</li></ol>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>💨</span>\n<span>4-СЫЗБА: СИСТЕМА ПОСТОЯННЫХ И СЕЗОННЫХ ВЕТРОВ</span>\n</span>\n<span class=\"text-[10px] bg-purple-500/10 text-purple-300 px-2.5 py-0.5 rounded-full border border-purple-500/20 font-mono\">Бриз • Муссон • Пассаттар • Батыс желдері</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"205\" x=\"20\" y=\"20\"></rect>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"122\" y=\"45\">БРИЗ (Суточный ветер)</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"122\" y=\"70\">Днем: с моря на сушу</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"122\" y=\"90\">Ночью: с суши на море</text>\n<line stroke=\"#1e293b\" x1=\"40\" x2=\"200\" y1=\"105\" y2=\"105\"></line>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"122\" y=\"130\">Франц. brise — «легкий ветер»</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"122\" y=\"150\">Причина: разница нагрева</text>\n<text fill=\"#38bdf8\" font-size=\"9\" text-anchor=\"middle\" x=\"122\" y=\"170\">суши и воды за сутки</text>\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"210\" x=\"245\" y=\"20\"></rect>\n<text fill=\"#34d399\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"45\">МУССОН (Сезонный ветер)</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"70\">Летом: с океана на сушу</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"90\">Зимой: с суши на океан</text>\n<line stroke=\"#1e293b\" x1=\"265\" x2=\"435\" y1=\"105\" y2=\"105\"></line>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"350\" y=\"130\">Араб. «маусим» — сезон</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"350\" y=\"150\">Меняет направление 2 раза в год</text>\n<text fill=\"#34d399\" font-size=\"9\" text-anchor=\"middle\" x=\"350\" y=\"170\">Южная и Восточная Азия</text>\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"205\" x=\"475\" y=\"20\"></rect>\n<text fill=\"#fbbf24\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"577\" y=\"45\">ПОСТОЯННЫЕ ВЕТРЫ</text>\n<text fill=\"#fbbf24\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"577\" y=\"70\">ПАССАТЫ (от 30° к 0°)</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"577\" y=\"88\">Из тропиков к экватору</text>\n<line stroke=\"#1e293b\" x1=\"495\" x2=\"660\" y1=\"105\" y2=\"105\"></line>\n<text fill=\"#38bdf8\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"577\" y=\"130\">ЗАПАДНЫЙ ПЕРЕНОС</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"577\" y=\"150\">В умеренных широтах</text>\n<text fill=\"#38bdf8\" font-size=\"9\" text-anchor=\"middle\" x=\"577\" y=\"170\">Приносит осадки в Казахстан</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>5. Влажность воздуха, облака и климатические типы</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Влажность воздуха:</b> Содержание водяного пара в воздухе (абсолютная в г/м³ и относительная в %).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Основные типы облаков:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Перистые облака:</b> Формируются выше 6 км при отрицательных температурах и целиком состоят из <b class=\"text-cyan-300 font-bold\">мелких кристалликов льда</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Кучевые облака:</b> Белые купола и башни; при сильном развитии превращаются в кучево-дождевые грозовые тучи с ливнями и градом.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Слоистые облака:</b> Сплошная серая пелена в нижнем ярусе (&lt;2 км), дающая моросящие затяжные дожди.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Гумидный и аридный климат:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Гумидный (влажный) климат:</b> Осадков выпадает больше, чем испаряется.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Аридный (засушливый) климат:</b> Испаряемость во много раз превышает скудное количество осадков (пустыни).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Влияние холодных течений:</b> Холодные морские течения охлаждают воздух у побережий, блокируют восходящие потоки и препятствуют конденсации влаги, формируя прибрежные береговые пустыни (Атакама, Намиб).</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🌡️</span>\n<span>5-СЫЗБА: ОБЛАКА И ВЕРТИКАЛЬНЫЙ ТЕМПЕРАТУРНЫЙ ГРАДИЕНТ</span>\n</span>\n<span class=\"text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono\">Әр 1000 м биіктегенде T - 6°C кемиді</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<polygon fill=\"#1e293b\" points=\"50,180 200,60 350,180\" stroke=\"#475569\" stroke-width=\"2\"></polygon>\n<circle cx=\"50\" cy=\"180\" fill=\"#10b981\" r=\"4\"></circle>\n<text fill=\"#10b981\" font-size=\"10\" font-weight=\"bold\" x=\"60\" y=\"195\">0 м (+22°C)</text>\n<line stroke=\"#38bdf8\" stroke-dasharray=\"2 2\" x1=\"125\" x2=\"160\" y1=\"120\" y2=\"120\"></line>\n<text fill=\"#38bdf8\" font-size=\"10\" font-weight=\"bold\" x=\"170\" y=\"124\">1000 м (+16°C)</text>\n<circle cx=\"200\" cy=\"60\" fill=\"#ef4444\" r=\"4\"></circle>\n<text fill=\"#fca5a5\" font-size=\"11\" font-weight=\"bold\" x=\"210\" y=\"64\">2000 м (+10°C)</text>\n<text fill=\"#f87171\" font-size=\"9\" text-anchor=\"middle\" x=\"200\" y=\"45\">22°C - (2 × 6°C) = +10°C</text>\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"300\" x=\"380\" y=\"20\"></rect>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"530\" y=\"42\">ОСНОВНЫЕ ВИДЫ ОБЛАКОВ</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" x=\"400\" y=\"70\">1. Перистые (&gt;6 км):</text>\n<text fill=\"#94a3b8\" font-size=\"9\" x=\"410\" y=\"88\">Состоят только из кристалликов льда</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" x=\"400\" y=\"115\">2. Кучевые (2–6 км):</text>\n<text fill=\"#94a3b8\" font-size=\"9\" x=\"410\" y=\"133\">Кучево-дождевые дают ливни и грозы</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" x=\"400\" y=\"160\">3. Слоистые (&lt;2 км):</text>\n<text fill=\"#94a3b8\" font-size=\"9\" x=\"410\" y=\"178\">Затягивают все небо, моросящий дождь</text>\n</svg>\n</div>", "traps": ["⚠️ Назар аударыңыз: Атмосфера бойынша сұрақтар ҰБТ-ның контексттік тесттерінде жиі кездеседі."], "quiz": [{"q": "Атмосфера бойынша негізгі ұғымды атаңыз?", "options": ["Атмосфера", "Жалпы ұғым", "Қосымша фактор", "Байланыссыз"], "answer": 0, "exp": "Бұл сабақтың өзегі — Атмосфера заңдылықтарын түсіну."}], "blooket": "https://dashboard.blooket.com/set/6a84d716aa52753c4b93279a", "test": {"passingScore": 80, "questions": [{"id": 1, "q_kz": "Ауа температурасы күндіз -6°C, ал түнде -10°C болғанда тәуліктік температуралық амплитуда қандай болады?", "q_ru": "Какова суточная амплитуда температуры воздуха, если днем термометр показал -6°C, а ночью -10°C?", "options_kz": ["-16°C", "16°C", "4°C", "6°C"], "options_ru": ["-16°C", "16°C", "4°C", "6°C"], "answer": 2, "exp_kz": "Амплитуда дегеніміз — ең жоғарғы және ең төменгі температуралардың айырмасы: -6 - (-10) = 4°C.", "exp_ru": "Амплитуда — это разница между наивысшей и наинизшей температурой: -6 - (-10) = 4°C."}, {"id": 2, "q_kz": "Француз тілінен аударғанда «жеңіл жел» деген мағына беретін, бағытын тәулігіне екі рет өзгертетін жел:", "q_ru": "Ветер, меняющий направление дважды в сутки, название которого в переводе с французского означает «легкий ветер»:", "options_kz": ["Муссон", "Пассат", "Бриз", "Торнадо"], "options_ru": ["Муссон", "Пассат", "Бриз", "Торнадо"], "answer": 2, "exp_kz": "Бриз (франц. brise) — теңіздер мен көлдер жағасында күндіз теңізден құрлыққа, түнде құрлықтан теңізге соғатын жеңіл жел.", "exp_ru": "Бриз — суточный прибрежный ветер, дующий днем с моря на нагретую сушу, а ночью — с остывшей суши на море."}, {"id": 3, "q_kz": "Тропосфераның 6 км-ден жоғары қабатында түзілетін, тек майда мұз кристалдарынан тұратын бұлт түрі:", "q_ru": "Вид облаков верхнего яруса (выше 6 км), состоящих исключительно из мелких кристалликов льда:", "options_kz": ["Қатпарлы бұлттар", "Будақ бұлттар", "Шарбы бұлттар", "Қатпарлы-жаңбырлы"], "options_ru": ["Слоистые облака", "Кучевые облака", "Перистые облака", "Слоисто-дождевые"], "answer": 2, "exp_kz": "Шарбы (перистые) бұлттар тропосфераның ең жоғарғы өте суық қабатында майда мұз кристалдарынан түзіледі.", "exp_ru": "Перистые облака формируются на высотах более 6 км при очень низких температурах и состоят исключительно из ледяных кристаллов."}, {"id": 4, "q_kz": "Түнгі бриз қай бағытта соғады және оның себебі неде?", "q_ru": "В каком направлении дует ночной бриз и какова физическая причина его движения?", "options_kz": ["Теңізден құрлыққа", "Құрлықтан теңізге қарай", "Экватордан полюске", "Таудан аңғарға"], "options_ru": ["С моря на сушу", "С суши на море", "От экватора к полюсу", "С гор в долину"], "answer": 1, "exp_kz": "Түнде құрлық тез суып, үстінде жоғары қысым пайда болады. Суық ауа жылырақ теңізге (төмен қысымға) қарай ағады.", "exp_ru": "Ночью суша остывает быстрее воды, давление над ней повышается, и ветер устремляется с суши на более теплое море."}, {"id": 5, "q_kz": "Жер бетінде кез келген желдің пайда болуының басты қозғаушы себебі не болып табылады?", "q_ru": "Что является главной первопричиной возникновения ветра в атмосфере Земли?", "options_kz": ["Атмосфералық қысымның айырмашылығы", "Ауа ылғалдылығының төмендеуі", "Жердің орбита бойымен қозғалысы", "Бұлттардың көлемі"], "options_ru": ["Разница атмосферного давления", "Снижение влажности воздуха", "Движение Земли по орбите", "Объем облаков"], "answer": 0, "exp_kz": "Ауа әрқашан қысымы жоғары аймақтан қысымы төмен аймаққа қарай ағады, бұл ауа ағыны — желді тудырады.", "exp_ru": "Главная причина движения воздуха (ветра) — неравномерное распределение атмосферного давления на поверхности планеты."}, {"id": 6, "q_kz": "Барлық ауа райы құбылыстары қалыптасатын, ауа массасының 80%-ы шоғырланған атмосфера қабаты:", "q_ru": "Слой атмосферы, где образуются все погодные явления и сосредоточено 80% массы воздуха:", "options_kz": ["Стратосфера", "Тропосфера", "Мезосфера", "Ионосфера"], "options_ru": ["Стратосфера", "Тропосфера", "Мезосфера", "Ионосфера"], "answer": 1, "exp_kz": "Тропосфера — Жер бетіне ең жақын, бүкіл су буы мен ауа массасының 80%-ы шоғырланған ауа райы «фабрикасы».", "exp_ru": "Тропосфера вмещает 80% массы воздуха и весь водяной пар, именно здесь формируются облака, циклоны и осадки."}, {"id": 7, "q_kz": "30° тропиктік жоғары қысым белдеуінен экваторға қарай жыл бойы соғатын тұрақты желдер:", "q_ru": "Постоянные ветры, круглый год дующие из тропиков высокого давления (30°) к экватору:", "options_kz": ["Муссондар", "Пассаттар", "Батыс желдері", "Самумдар"], "options_ru": ["Муссоны", "Пассаты", "Западный перенос", "Самумы"], "answer": 1, "exp_kz": "Пассаттар — тропиктік белдеулерден (30°) экваторлық төмен қысым белдеуіне соғатын тұрақты планеталық желдер.", "exp_ru": "Пассаты — устойчивые круглогодичные ветры, направленные от 30-х широт к экватору."}, {"id": 8, "q_kz": "Теңіз деңгейінде ауа температурасы +22°C болса, 2000 м биіктіктегі тау шыңында температура қандай болады?", "q_ru": "Если у подножия на уровне моря температура воздуха +22°C, какова она на вершине горы высотой 2000 м?", "options_kz": ["+16°C", "+10°C", "+12°C", "0°C"], "options_ru": ["+16°C", "+10°C", "+12°C", "0°C"], "answer": 1, "exp_kz": "Тропосферада әр 1000 м биіктеген сайын температура 6°C-қа кемиді. 2000 м-де: 2 × 6 = 12°C-қа азаяды. 22 - 12 = +10°C.", "exp_ru": "В тропосфере на каждый километр подъема температура падает на 6°C. На 2000 м: 2 × 6 = 12°C. 22 - 12 = +10°C."}, {"id": 9, "q_kz": "Жауын-шашын мөлшері жыл бойы буланушылықтан әлдеқайда артық болатын өте ылғалды климат түрі:", "q_ru": "Тип климата, при котором количество осадков в течение года значительно превышает испаряемость:", "options_kz": ["Аридті климат", "Гумидті климат", "Континенттік шөлді", "Нивальды климат"], "options_ru": ["Аридный климат", "Гумидный климат", "Континентальный пустынный", "Нивальный климат"], "answer": 1, "exp_kz": "Гумидті (латынша humidus — ылғалды) климатта жауын-шашын мол болып, өзендер мен ормандар жақсы дамиды.", "exp_ru": "Гумидный климат характеризуется избыточным увлажнением, когда осадков выпадает больше, чем способно испариться."}, {"id": 10, "q_kz": "Тропиктік ендіктерде материктердің батыс жағалауларындағы суық мұхит ағыстары жауын-шашынға қалай әсер етеді?", "q_ru": "Как холодные океанические течения у западных берегов материков в тропиках влияют на осадки?", "options_kz": ["Жауын-шашын мөлшерін күрт көбейтеді", "Жауын-шашын түзілуіне кедергі келтіріп, шөлдер туғызады", "Әсер етпейді", "Тек қыста жаңбыр әкеледі"], "options_ru": ["Резко увеличивают количество осадков", "Препятствуют образованию осадков, способствуя образованию пустынь", "Не оказывают влияния", "Приносят дожди только зимой"], "answer": 1, "exp_kz": "Суық ағыстар төменгі ауаны суытып, оның жоғары көтерілуіне және бұлт түзілуіне кедергі жасайды (мысалы, Атакама шөлі).", "exp_ru": "Холодные течения охлаждают приземный воздух, подавляя конвекцию и конденсацию, что приводит к формированию прибрежных пустынь."}]}, "pdf_kz": "https://drive.google.com/file/d/1qYM5i6mhxA2H0Pc9sFuAXxAhaUJdxkjT/view?usp=sharing", "pdf_ru": "https://drive.google.com/file/d/16kDn6yfGF2IbftnfJj3LZSQ1VFL0xZcR/view?usp=drive_link"};
+    const currentLang = 'ru';
+    let userTestAnswers = {};
+    let isTestSubmitted = false;
+
+    // Render Test Questions
+    function renderTestQuestions() {
+      const container = document.getElementById('testQuestionsList');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const testObj = lessonData.test;
+      if (!testObj || !testObj.questions || testObj.questions.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-400">Тест готовится / Тест дайындалуда.</p>';
+        return;
+      }
+
+      const isRu = (currentLang === 'ru');
+      const letters = ['A', 'B', 'C', 'D', 'E'];
+
+      testObj.questions.forEach((q, idx) => {
+        const qCard = document.createElement('div');
+        qCard.className = 'p-5 rounded-2xl bg-space-850 border border-slate-800 space-y-3';
+
+        const qPrompt = isRu ? (q.q_ru || q.q_kz) : q.q_kz;
+        const options = isRu ? (q.options_ru || q.options_kz) : q.options_kz;
+        const exp = isRu ? (q.exp_ru || q.exp_kz) : q.exp_kz;
+
+        qCard.innerHTML = `
+          <div class="flex items-center justify-between gap-2 border-b border-slate-800/80 pb-2">
+            <span class="text-xs font-bold text-slate-400 uppercase">
+              ${isRu ? 'Вопрос ' + (idx + 1) : 'Сұрақ ' + (idx + 1)}
+            </span>
+            <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-bold">1 балл</span>
+          </div>
+          <p class="text-xs sm:text-sm font-semibold text-slate-100 leading-relaxed">${qPrompt}</p>
+        `;
+
+        const optContainer = document.createElement('div');
+        optContainer.className = 'space-y-2 pt-1';
+
+        const selectedAnswer = userTestAnswers[q.id];
+
+        options.forEach((optText, optIdx) => {
+          const isSelected = selectedAnswer === optIdx;
+          const isCorrect = q.answer === optIdx;
+
+          const optDiv = document.createElement('div');
+          optDiv.className = 'p-3 rounded-xl border text-xs font-medium cursor-pointer transition flex items-center space-x-2.5 ';
+
+          if (isTestSubmitted) {
+            if (isCorrect) {
+              optDiv.className += 'bg-emerald-500/15 border-emerald-500 text-emerald-200 font-bold';
+            } else if (isSelected) {
+              optDiv.className += 'bg-rose-500/15 border-rose-500 text-rose-200';
+            } else {
+              optDiv.className += 'bg-space-900/50 border-slate-800 text-slate-500';
+            }
+          } else {
+            if (isSelected) {
+              optDiv.className += 'bg-cyan-500/15 border-cyan-500 text-cyan-200 font-bold';
+            } else {
+              optDiv.className += 'bg-space-900 hover:bg-space-800 border-slate-800 hover:border-slate-700 text-slate-300';
+            }
+          }
+
+          const badge = document.createElement('span');
+          badge.className = 'w-5 h-5 rounded-md text-[10px] font-black flex items-center justify-center shrink-0 ' +
+            (isSelected ? 'bg-cyan-500 text-space-950' : 'bg-space-850 text-slate-400 border border-slate-700');
+          badge.textContent = letters[optIdx] || String(optIdx + 1);
+          optDiv.appendChild(badge);
+
+          const txt = document.createElement('span');
+          txt.className = 'flex-1';
+          txt.textContent = optText;
+          optDiv.appendChild(txt);
+
+          optDiv.onclick = () => {
+            if (isTestSubmitted) return;
+            userTestAnswers[q.id] = optIdx;
+            renderTestQuestions();
+          };
+
+          optContainer.appendChild(optDiv);
+        });
+
+        qCard.appendChild(optContainer);
+
+        // Explanation Box after submission
+        if (isTestSubmitted) {
+          const expBox = document.createElement('div');
+          expBox.className = 'p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-xs text-cyan-200 space-y-1';
+          expBox.innerHTML = `
+            <span class="font-bold text-cyan-300 block">💡 ${isRu ? 'Пояснение:' : 'Түсіндірме:'}</span>
+            <p class="text-slate-300 leading-relaxed">${exp || (isRu ? 'Авторское пояснение к вопросу.' : 'Сұраққа арналған түсіндірме.')}</p>
+          `;
+          qCard.appendChild(expBox);
+        }
+
+        container.appendChild(qCard);
+      });
+    }
+
+    function submitLessonTest() {
+      const testObj = lessonData.test;
+      if (!testObj || !testObj.questions) return;
+
+      const answeredCount = Object.keys(userTestAnswers).length;
+      const total = testObj.questions.length;
+      const isRu = (currentLang === 'ru');
+
+      if (answeredCount < total) {
+        const msg = isRu 
+          ? `Вы ответили только на ${answeredCount} из ${total} вопросов. Завершить тест?` 
+          : `Сіз ${total} сұрақтың ${answeredCount}-не жауап бердіңіз. Тестті аяқтайсыз ба?`;
+        if (!confirm(msg)) return;
+      }
+
+      isTestSubmitted = true;
+      let correct = 0;
+
+      testObj.questions.forEach(q => {
+        if (userTestAnswers[q.id] === q.answer) {
+          correct++;
+        }
+      });
+
+      const percentage = Math.round((correct / total) * 100);
+      const isPassed = percentage >= 80;
+
+      // Update badges & UI
+      const scoreBadge = document.getElementById('testScoreBadge');
+      if (scoreBadge) {
+        scoreBadge.classList.remove('hidden');
+        scoreBadge.textContent = `${correct} / ${total} (${percentage}%)`;
+        scoreBadge.className = 'px-3 py-1 rounded-xl text-xs font-bold font-mono border ' +
+          (isPassed ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-rose-500/20 text-rose-300 border-rose-500/40');
+      }
+
+      const info = document.getElementById('testProgressInfo');
+      if (info) {
+        info.textContent = isPassed 
+          ? (isRu ? `🎉 Поздравляем! Вы сдали тест на ${percentage}% (+30 XP)` : `🎉 Құттықтаймыз! Сіз тестті ${percentage}%-ға тапсырдыңыз (+30 XP)`)
+          : (isRu ? `Результат: ${percentage}%. Для зачета требуется 80%. Попробуйте еще раз.` : `Нәтиже: ${percentage}%. Өту үшін 80% қажет. Қайта тапсырып көріңіз.`);
+      }
+
+      document.getElementById('btnSubmitTest').classList.add('hidden');
+      document.getElementById('btnResetTest').classList.remove('hidden');
+
+      // Save to localStorage
+      try {
+        let scores = JSON.parse(localStorage.getItem('geotany_lesson_scores') || '{}');
+        scores[lessonData.id] = percentage;
+        localStorage.setItem('geotany_lesson_scores', JSON.stringify(scores));
+
+        if (isPassed) {
+          let completed = JSON.parse(localStorage.getItem('geotany_completed_lessons') || '[]');
+          if (!completed.includes(lessonData.id)) {
+            completed.push(lessonData.id);
+            localStorage.setItem('geotany_completed_lessons', JSON.stringify(completed));
+          }
+          let curXp = parseInt(localStorage.getItem('geotany_user_xp') || '0', 10);
+          curXp += 30;
+          localStorage.setItem('geotany_user_xp', curXp.toString());
+        }
+      } catch(e) {}
+
+      renderTestQuestions();
+      updateCompleteButtons();
+    }
+
+    function resetLessonTest() {
+      userTestAnswers = {};
+      isTestSubmitted = false;
+      document.getElementById('testScoreBadge').classList.add('hidden');
+      document.getElementById('btnSubmitTest').classList.remove('hidden');
+      document.getElementById('btnResetTest').classList.add('hidden');
+      document.getElementById('testProgressInfo').textContent = (currentLang === 'ru') 
+        ? 'Ответьте на все вопросы и проверьте свои знания.' 
+        : 'Барлық сұрақтарға жауап беріп, өзіңізді тексеріңіз.';
+      renderTestQuestions();
+    }
+
+    // Toggle Lesson Complete Status
+    function toggleLessonComplete() {
+      let completed = [];
+      try {
+        completed = JSON.parse(localStorage.getItem('geotany_completed_lessons') || '[]');
+      } catch(e) {}
+
+      const isDone = completed.includes(lessonData.id);
+      let curXp = parseInt(localStorage.getItem('geotany_user_xp') || '0', 10);
+
+      if (isDone) {
+        completed = completed.filter(id => id !== lessonData.id);
+        curXp = Math.max(0, curXp - 30);
+      } else {
+        completed.push(lessonData.id);
+        curXp += 30;
+      }
+
+      try {
+        localStorage.setItem('geotany_completed_lessons', JSON.stringify(completed));
+        localStorage.setItem('geotany_user_xp', curXp.toString());
+      } catch(e) {}
+
+      updateCompleteButtons();
+    }
+
+    function updateCompleteButtons() {
+      let completed = [];
+      try {
+        completed = JSON.parse(localStorage.getItem('geotany_completed_lessons') || '[]');
+      } catch(e) {}
+
+      const isDone = completed.includes(lessonData.id);
+      const isRu = (currentLang === 'ru');
+
+      const banner = document.getElementById('lessonCompletedBanner');
+      if (banner) banner.classList.toggle('hidden', !isDone);
+
+      const headerBtn = document.getElementById('btnHeaderComplete');
+      const headerIcon = document.getElementById('headerCheckIcon');
+      const headerText = document.getElementById('headerCompleteText');
+
+      if (headerBtn) {
+        if (isDone) {
+          headerBtn.className = 'px-3 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold transition flex items-center space-x-1.5';
+          if (headerIcon) headerIcon.textContent = '✓';
+          if (headerText) headerText.textContent = isRu ? 'Прочитано' : 'Оқылды';
+        } else {
+          headerBtn.className = 'px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-emerald-400 text-xs font-bold transition flex items-center space-x-1.5';
+          if (headerIcon) headerIcon.textContent = '○';
+          if (headerText) headerText.textContent = isRu ? 'Отметить' : 'Белгілеу';
+        }
+      }
+
+      const bottomLbl = document.getElementById('lblBottomComplete');
+      if (bottomLbl) {
+        bottomLbl.textContent = isDone 
+          ? (isRu ? '✓ Прочитано (Нажмите, чтобы отменить)' : '✓ Оқылды (Өшіру үшін басыңыз)')
+          : (isRu ? 'Отметить как прочитанное (+30 XP)' : 'Сабақты оқылды деп белгілеу (+30 XP)');
+      }
+    }
+
+    // Boot
+    window.addEventListener('DOMContentLoaded', () => {
+      renderTestQuestions();
+      updateCompleteButtons();
+    });
+  </script>
+
+</body>
+</html>

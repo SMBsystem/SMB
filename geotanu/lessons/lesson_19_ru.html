@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>19 урок. Геополитика | GEOTANY</title>
+
+  <!-- AUTH GUARD: RESTRICT DIRECT ACCESS WITHOUT VALID SESSION -->
+  <style id="authCloak">body { display: none !important; }</style>
+  <script>
+    (function() {
+      try {
+        var isAdmin = localStorage.getItem('geotany_admin_auth') === 'true';
+        var sessionStr = localStorage.getItem('geotany_user_session');
+        var isAuthorized = isAdmin;
+        if (!isAuthorized && sessionStr) {
+          var s = JSON.parse(sessionStr);
+          if (s && s.email && (s.courseCode || s.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        var profileStr = localStorage.getItem('geotany_user_profile');
+        if (!isAuthorized && profileStr) {
+          var p = JSON.parse(profileStr);
+          if (p && p.email && (p.courseCode || p.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        if (!isAuthorized) {
+          window.location.replace('../index.html?error=unauthorized_course');
+          return;
+        }
+        var cloak = document.getElementById('authCloak');
+        if (cloak) cloak.remove();
+      } catch (e) {
+        window.location.replace('../index.html?error=unauthorized_course');
+      }
+    })();
+  </script>
+
+  <!-- TAILWIND CSS & FONTS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            space: {
+              800: '#1E293B',
+              850: '#151E2E',
+              900: '#0F172A',
+              950: '#0B0F19',
+            },
+            brand: {
+              400: '#34D399',
+              500: '#10B981',
+              600: '#059669',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0B0F19;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1E293B;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+    .prose-theory h1, .prose-theory h2, .prose-theory h3, .prose-theory h4 {
+      color: #F8FAFC;
+      font-weight: 800;
+    }
+    .prose-theory p {
+      color: #CBD5E1;
+      line-height: 1.75;
+      font-size: 0.875rem;
+    }
+    .prose-theory ul {
+      list-style-type: disc;
+      margin-left: 1.25rem;
+      color: #CBD5E1;
+      font-size: 0.875rem;
+    }
+    .prose-theory table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.75rem;
+    }
+    .prose-theory th, .prose-theory td {
+      border: 1px solid #334155;
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+    }
+    .prose-theory th {
+      background: #1E293B;
+      color: #F8FAFC;
+      font-weight: 700;
+    }
+    .prose-theory tr:nth-child(even) {
+      background: rgba(15, 23, 42, 0.6);
+    }
+  </style>
+</head>
+<body class="bg-space-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-brand-500/30 selection:text-brand-400">
+
+  <!-- TOP APP BAR -->
+  <header class="sticky top-0 z-40 bg-space-950/90 backdrop-blur-xl border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+      
+      <!-- Left: Back Button & Title -->
+      <div class="flex items-center space-x-3">
+        <a href="../index.html?lang=ru#section-sabaktar_reading" class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 text-slate-300 hover:text-white border border-slate-700/80 text-xs sm:text-sm font-bold transition shadow-sm">
+          <span>←</span>
+          <span>Назад</span>
+        </a>
+        <div class="h-6 w-px bg-slate-800 hidden sm:block"></div>
+        <div class="flex items-center space-x-2">
+          <span class="text-xs px-2.5 py-1 rounded-lg bg-cyan-500/10 text-cyan-400 font-extrabold border border-cyan-500/20">
+            19 / 20 урок
+          </span>
+          <span class="text-sm font-bold text-slate-200 hidden md:inline truncate max-w-xs">
+            19 урок. Геополитика
+          </span>
+        </div>
+      </div>
+
+      <!-- Center: Reading Time Badge -->
+      <div class="hidden sm:flex items-center space-x-1.5 bg-space-900 border border-slate-800 px-3 py-1.5 rounded-xl text-xs text-slate-400 font-medium">
+        <span>⏱️</span>
+        <span>7 мин</span>
+      </div>
+
+      <!-- Right: Direct Language Page Switcher & Complete Button -->
+      <div class="flex items-center space-x-2 sm:space-x-3">
+        
+        <!-- Language Switcher linking directly to counterpart page -->
+        <div class="flex items-center bg-space-900 p-0.5 rounded-xl border border-slate-800 text-xs font-bold">
+          <a href="lesson_19_kz.html" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition">
+            🇰🇿 KZ
+          </a>
+          <a href="lesson_19_ru.html" class="px-2.5 py-1 rounded-lg bg-brand-500 text-space-950 font-black transition">
+            🇷🇺 RU
+          </a>
+        </div>
+
+        <!-- Mark as Completed Toggle Button -->
+        <button id="btnHeaderComplete" onclick="toggleLessonComplete()" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-emerald-400 text-xs font-bold transition flex items-center space-x-1.5 shadow-sm">
+          <span id="headerCheckIcon">○</span>
+          <span id="headerCompleteText" class="hidden sm:inline">Прочитано</span>
+        </button>
+
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-8">
+
+    <!-- HERO LESSON BANNER -->
+    <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-space-900 via-space-850 to-space-900 border border-slate-800 shadow-xl relative overflow-hidden">
+      <!-- Glow decoration -->
+      <div class="absolute -right-20 -top-20 w-60 h-60 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-20 -bottom-20 w-60 h-60 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10 space-y-4">
+        
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <span class="px-3 py-1 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 font-extrabold text-xs tracking-wider uppercase">
+              📖 ЕНТ ГЕОГРАФИЯ • УРОК №19
+            </span>
+            <span class="px-3 py-1 rounded-xl bg-brand-500/10 border border-brand-500/30 text-brand-400 font-bold text-xs">
+              Русское отделение
+            </span>
+          </div>
+
+          <!-- Prev / Next Navigation -->
+          <div class="flex items-center space-x-2 text-xs font-bold">
+            <a href="lesson_18_ru.html" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition flex items-center space-x-1"><span>←</span><span>Предыдущий</span></a>
+            <span class="text-slate-500">|</span>
+            <a href="lesson_20_ru.html" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition flex items-center space-x-1"><span>Следующий</span><span>→</span></a>
+          </div>
+        </div>
+
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            19 урок. Геополитика
+          </h1>
+          <h2 class="text-sm font-semibold text-cyan-300/80 mt-1">
+            19-сабақ. Геосаясат
+          </h2>
+        </div>
+
+        <!-- Tags Row -->
+        <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-800/80">
+          <span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">##геосаясат</span><span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">##Челлен</span><span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">##Хартленд</span><span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">##цессия</span><span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">##анклав</span>
+        </div>
+
+        <!-- Completed Banner -->
+        <div id="lessonCompletedBanner" class="hidden p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-xs sm:text-sm text-emerald-300 flex items-center justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <span>✅</span>
+            <span>Этот урок отмечен как прочитанный.</span>
+          </div>
+          <span class="text-xs px-2.5 py-1 rounded-xl bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40">
+            +30 XP получено
+          </span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SECTION 1: KEY TERMS & DEFINITIONS -->
+    <section class="p-6 sm:p-7 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-base sm:text-lg font-black text-white flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center text-sm font-black">1</span>
+          <span>Ключевые термины и понятия</span>
+        </h3>
+        <span class="text-xs text-slate-400 font-semibold">
+          5 терминов
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Геополитика</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Дисциплина, изучающая зависимость внешней политики государств от их географического положения.</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Хартленд</span>
+          <p class="text-xs text-slate-300 leading-relaxed">«Сердцевинная земля» — ключевая континентальная зона Евразии в концепции Х. Маккиндера.</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Цессия</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Уступка территории одного государства другому по взаимному мирному соглашению (договору).</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Аккреция</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Приращение государственной территории путем искусственного намыва суши или осушения шельфа.</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Анклав</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Государство, полностью окруженное со всех сторон сухопутной территорией другой страны.</p>
+        </div>
+        
+      </div>
+    </section>
+
+    <!-- SECTION 2: FULL COMPREHENSIVE THEORY -->
+    <section class="p-6 sm:p-8 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-5">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-base sm:text-lg font-black text-white flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-brand-500/10 border border-brand-500/20 text-brand-400 flex items-center justify-center text-sm font-black">2</span>
+          <span>Полный теоретический конспект и иллюстрации</span>
+        </h3>
+        <span class="text-xs text-slate-400 font-medium hidden sm:inline">
+          Интерактивное чтение
+        </span>
+      </div>
+
+      <!-- Theory Body Container -->
+      <div class="prose-theory leading-relaxed space-y-4 overflow-x-auto">
+        <p class="text-xs text-slate-300 leading-relaxed my-2"># Урок 19: Основы геополитики</p>
+<p class="text-xs text-slate-300 leading-relaxed my-2">Геополитика изучает влияние географических факторов (пространственного положения, климата, ресурсов, границ) на внешнюю и внутреннюю политику государств и расстановку сил на мировой арене.</p>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>1. Зарождение геополитики</span></h4>
+<p class="text-xs text-slate-300 leading-relaxed my-2">Термин «геополитика» был введен в научный оборот в 1899 году шведским ученым <b class="text-cyan-300 font-bold">Рудольфом Челленом</b>. Развивая идеи немецкого географа Фридриха Ратцеля, Челлен трактовал государство как живой пространственный организм, стремящийся к территориальному развитию.</p>
+<svg height="220" viewbox="0 0 700 220" width="100%" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#0f172a" height="220" rx="12" width="700"></rect>
+<text fill="#38bdf8" font-size="16" font-weight="bold" text-anchor="middle" x="350" y="28">Геосаясаттың пайда болуы мен негізгі түсініктері</text>
+<rect fill="#1e293b" height="135" rx="8" stroke="#3b82f6" stroke-width="1.5" width="280" x="50" y="55"></rect>
+<text fill="#38bdf8" font-size="14" font-weight="bold" text-anchor="middle" x="190" y="80">Рудольф Челлен (1899 ж.)</text>
+<text fill="#f8fafc" font-size="12" text-anchor="middle" x="190" y="105">«Геосаясат» терминінің авторы</text>
+<text fill="#94a3b8" font-size="11" text-anchor="middle" x="190" y="125">Швед саясаттанушысы әрі ғалымы</text>
+<text fill="#cbd5e1" font-size="11" text-anchor="middle" x="190" y="150">Мемлекетті «тірі ағза» деп қарастырды</text>
+<text fill="#34d399" font-size="11" text-anchor="middle" x="190" y="170">Ф. Ратцельдің органикалық теориясы</text>
+<rect fill="#1e293b" height="135" rx="8" stroke="#10b981" stroke-width="1.5" width="280" x="370" y="55"></rect>
+<text fill="#34d399" font-size="14" font-weight="bold" text-anchor="middle" x="510" y="80">Геосаясат нені зерттейді?</text>
+<text fill="#f8fafc" font-size="12" text-anchor="middle" x="510" y="105">Мемлекеттің кеңістіктегі орны</text>
+<text fill="#cbd5e1" font-size="11" text-anchor="middle" x="510" y="125">Күштер тепе-теңдігі және геосаяси ықпал</text>
+<text fill="#94a3b8" font-size="11" text-anchor="middle" x="510" y="150">Шекаралар мен аумақтық қатынастар</text>
+<text fill="#fbbf24" font-size="11" text-anchor="middle" x="510" y="170">Халықаралық қауіпсіздік жүйесі</text>
+</svg>
+<p class="text-xs text-slate-300 leading-relaxed my-2">Главная задача геополитики — анализ баланса сил и стратегического взаимодействия государств в планетарном масштабе.</p>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>2. Концепция «Хартленда» Хэлфорда Маккиндера</span></h4>
+<p class="text-xs text-slate-300 leading-relaxed my-2">В 1904 году британский географ Х. Маккиндер представил доклад «Географическая ось истории», выделив неприступную внутреннюю часть Евразии под названием <b class="text-cyan-300 font-bold">Хартленд («Сердцевинная земля»)</b>.</p>
+<svg height="220" viewbox="0 0 700 220" width="100%" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#0f172a" height="220" rx="12" width="700"></rect>
+<text fill="#38bdf8" font-size="16" font-weight="bold" text-anchor="middle" x="350" y="28">Хэлфорд Маккиндердің «Хартленд» теориясы (1904 ж.)</text>
+<circle cx="350" cy="120" fill="#991b1b" opacity="0.8" r="65"></circle>
+<text fill="#ffffff" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="115">ХАРТЛЕНД</text>
+<text fill="#fecaca" font-size="11" text-anchor="middle" x="350" y="135">(Жер кіндігі / Еуразия)</text>
+<path d="M 230,120 A 120,60 0 0,0 470,120" fill="none" stroke="#f59e0b" stroke-dasharray="6,4" stroke-width="3"></path>
+<text fill="#fbbf24" font-size="12" font-weight="bold" text-anchor="middle" x="350" y="195">«Ішкі жарты ай» (Rimland) — Еуразия жағалауы</text>
+<text fill="#38bdf8" font-size="12" text-anchor="middle" x="350" y="60">«Кім Шығыс Еуропаға билік етсе, сол Хартлендті билейді»</text>
+</svg>
+<p class="text-xs text-slate-300 leading-relaxed my-2">Знаменитая триада Маккиндера гласит:</p>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><i class="text-slate-300">«Кто контролирует Восточную Европу, тот командует Хартлендом;</i></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><i class="text-slate-300">Кто командует Хартлендом, тот командует Мировым островом;</i></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><i class="text-slate-300">Кто командует Мировым островом, тот командует миром»</i>.</li>
+</ul>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>3. Морская мощь (Мэхэн) и концепция «Римленда» (Спикмен)</span></h4>
+<p class="text-xs text-slate-300 leading-relaxed my-2">В геополитике выделяют противостояние сухопутных континентальных держав (теллурократия) и морских держав (талассократия):</p>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Альфред Мэхэн</b> (США) доказал решающее значение контроля морских торговых путей и проливов.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Николас Спикмен</b> выдвинул концепцию <b class="text-cyan-300 font-bold">Римленда (дуги прибрежных евразийских земель)</b>: «Кто контролирует Римленд, тот управляет Евразией, а кто управляет Евразией, тот держит судьбу мира в своих руках».</li>
+</ul>
+<svg height="220" viewbox="0 0 700 220" width="100%" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#0f172a" height="220" rx="12" width="700"></rect>
+<text fill="#38bdf8" font-size="16" font-weight="bold" text-anchor="middle" x="350" y="28">Теңіздік (Мэхэн) және Құрлықтық (Спайкмен) геосаясат</text>
+<rect fill="#1e293b" height="130" rx="8" stroke="#3b82f6" stroke-width="1.5" width="280" x="50" y="60"></rect>
+<text fill="#38bdf8" font-size="14" font-weight="bold" text-anchor="middle" x="190" y="85">Альфред Мэхэн: «Теңіз күші»</text>
+<text fill="#f8fafc" font-size="12" text-anchor="middle" x="190" y="110">Талассократия — теңіздік мемлекеттер</text>
+<text fill="#cbd5e1" font-size="11" text-anchor="middle" x="190" y="130">Мұхит жолдары мен бұғаздарды бақылау</text>
+<text fill="#94a3b8" font-size="11" text-anchor="middle" x="190" y="150">АҚШ және Ұлыбритания стратегиясы</text>
+<text fill="#34d399" font-size="11" text-anchor="middle" x="190" y="172">Флот пен сауда порттарының қуаты</text>
+<rect fill="#1e293b" height="130" rx="8" stroke="#f59e0b" stroke-width="1.5" width="280" x="370" y="60"></rect>
+<text fill="#fbbf24" font-size="14" font-weight="bold" text-anchor="middle" x="510" y="85">Николас Спайкмен: «Римленд»</text>
+<text fill="#f8fafc" font-size="12" text-anchor="middle" x="510" y="110">Еуразияның жағалаулық белдеуі</text>
+<text fill="#cbd5e1" font-size="11" text-anchor="middle" x="510" y="130">«Кім Римлендті бақыласа, сол Еуразияны билейді»</text>
+<text fill="#94a3b8" font-size="11" text-anchor="middle" x="510" y="150">Құрлық пен теңіздің түйісу аймағы</text>
+<text fill="#a855f7" font-size="11" text-anchor="middle" x="510" y="172">Батыс Еуропа, Таяу Шығыс, Шығыс Азия</text>
+</svg>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>4. Способы изменения государственной территории</span></h4>
+<p class="text-xs text-slate-300 leading-relaxed my-2">В международном праве выделяют несколько законных и незаконных механизмов изменения территории:</p>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Цессия</b> — передача территории одного государства другому по взаимному соглашению или договору (например, покупка Аляски США у Российской империи в 1867 г.);</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Аккреция</b> — естественное или искусственное приращение сухопутной территории путем осушения шельфа, строительства дамб и намыва грунта (Нидерланды, Сингапур, ОАЭ);</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Экспансия</b> — насильственное или одностороннее распространение военно-политического и экономического влияния государства на внешние пространства.</li>
+</ul>
+<svg height="220" viewbox="0 0 700 220" width="100%" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#0f172a" height="220" rx="12" width="700"></rect>
+<text fill="#38bdf8" font-size="16" font-weight="bold" text-anchor="middle" x="350" y="28">Мемлекет аумағының өзгеру жолдары</text>
+<rect fill="#1e293b" height="135" rx="8" stroke="#10b981" stroke-width="1.5" width="190" x="40" y="55"></rect>
+<text fill="#34d399" font-size="14" font-weight="bold" text-anchor="middle" x="135" y="80">Цессия</text>
+<text fill="#f8fafc" font-size="12" text-anchor="middle" x="135" y="105">Келісім бойынша беру</text>
+<text fill="#cbd5e1" font-size="11" text-anchor="middle" x="135" y="128">Сату, сатып алу не айырбас</text>
+<text fill="#94a3b8" font-size="11" text-anchor="middle" x="135" y="150">Мысалы: 1867 жылы</text>
+<text fill="#38bdf8" font-size="11" text-anchor="middle" x="135" y="170">АҚШ-тың Алясканы сатып алуы</text>
+<rect fill="#1e293b" height="135" rx="8" stroke="#3b82f6" stroke-width="1.5" width="190" x="255" y="55"></rect>
+<text fill="#38bdf8" font-size="14" font-weight="bold" text-anchor="middle" x="350" y="80">Аккреция</text>
+<text fill="#f8fafc" font-size="12" text-anchor="middle" x="350" y="105">Жағалауды ұлғайту</text>
+<text fill="#cbd5e1" font-size="11" text-anchor="middle" x="350" y="128">Жасанды топырақ төгу,</text>
+<text fill="#cbd5e1" font-size="11" text-anchor="middle" x="350" y="150">теңізден дамбамен жер алу</text>
+<text fill="#34d399" font-size="11" text-anchor="middle" x="350" y="170">Нидерланд, БАӘ, Сингапур</text>
+<rect fill="#1e293b" height="135" rx="8" stroke="#ef4444" stroke-width="1.5" width="190" x="470" y="55"></rect>
+<text fill="#f87171" font-size="14" font-weight="bold" text-anchor="middle" x="565" y="80">Экспансия</text>
+<text fill="#f8fafc" font-size="12" text-anchor="middle" x="565" y="105">Күштеп кеңейту</text>
+<text fill="#cbd5e1" font-size="11" text-anchor="middle" x="565" y="128">Мемлекеттің өз ықпалын</text>
+<text fill="#cbd5e1" font-size="11" text-anchor="middle" x="565" y="150">әскери немесе саяси</text>
+<text fill="#fca5a5" font-size="11" text-anchor="middle" x="565" y="170">қысыммен таратуы</text>
+</svg>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>5. Географическая форма территории: Анклавы и эксклавы</span></h4>
+<p class="text-xs text-slate-300 leading-relaxed my-2">Компактная (округлая) форма территории снижает транспортные издержки и облегчает оборону рубежей.</p>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Анклав</b> — государство, территория которого со всех сторон окружена сухопутной территорией одного другого государства (Лесото внутри ЮАР, Ватикан и Сан-Марино внутри Италии).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Эксклав</b> — несуверенная часть территории страны, оторванная от метрополии и окруженная чужими государствами (Калининградская область РФ, Нахичевань в Азербайджане, Аляска в США).</li>
+</ul>
+<svg height="220" viewbox="0 0 700 220" width="100%" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#0f172a" height="220" rx="12" width="700"></rect>
+<text fill="#38bdf8" font-size="16" font-weight="bold" text-anchor="middle" x="350" y="28">Мемлекеттердің геосаяси пішіні: Анклав пен Эксклав</text>
+<rect fill="#1e293b" height="130" rx="8" stroke="#a855f7" stroke-width="1.5" width="280" x="50" y="60"></rect>
+<text fill="#c084fc" font-size="14" font-weight="bold" text-anchor="middle" x="190" y="85">Анклав мемлекеттер</text>
+<text fill="#f8fafc" font-size="12" text-anchor="middle" x="190" y="110">Басқа бір ел аумағымен толық қоршалған</text>
+<text fill="#cbd5e1" font-size="11" text-anchor="middle" x="190" y="130">Лесото (ОАР ішінде орналасқан)</text>
+<text fill="#cbd5e1" font-size="11" text-anchor="middle" x="190" y="150">Ватикан және Сан-Марино (Италия ішінде)</text>
+<text fill="#34d399" font-size="11" text-anchor="middle" x="190" y="172">Теңізге тікелей шыға алмайды</text>
+<rect fill="#1e293b" height="130" rx="8" stroke="#f59e0b" stroke-width="1.5" width="280" x="370" y="60"></rect>
+<text fill="#fbbf24" font-size="14" font-weight="bold" text-anchor="middle" x="510" y="85">Эксклав аумақтар</text>
+<text fill="#f8fafc" font-size="12" text-anchor="middle" x="510" y="110">Негізгі аумақтан бөлек жатқан бөлік</text>
+<text fill="#cbd5e1" font-size="11" text-anchor="middle" x="510" y="130">Калининград облысы (Ресейдің эксклавы)</text>
+<text fill="#cbd5e1" font-size="11" text-anchor="middle" x="510" y="150">Нахчыван автономиясы (Әзербайжан)</text>
+<text fill="#38bdf8" font-size="11" text-anchor="middle" x="510" y="172">Аляска штаты (АҚШ-тың эксклавы)</text>
+</svg>
+      </div>
+    </section>
+
+    <!-- SECTION 3: COMMON EXAM TRAPS & PITFALLS (if available) -->
+    
+
+    <!-- SECTION 4: END-OF-LESSON TEST -->
+    <section class="p-6 sm:p-8 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-6">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-brand-500/10 border border-brand-500/20 text-brand-400 flex items-center justify-center text-sm font-black">3</span>
+          <div>
+            <h3 class="text-base sm:text-lg font-black text-white">
+              Итоговый тест по теме
+            </h3>
+            <p class="text-xs text-slate-400 mt-0.5">
+              Проходной балл: 80% • Награда: +30 XP
+            </p>
+          </div>
+        </div>
+
+        <div id="testScoreBadge" class="hidden px-3 py-1 rounded-xl bg-space-850 border border-slate-700 text-xs font-bold text-amber-400 font-mono">
+          0%
+        </div>
+      </div>
+
+      <!-- Test Questions Container -->
+      <div id="testQuestionsList" class="space-y-6">
+        <!-- Dynamically populated test questions via JS -->
+      </div>
+
+      <!-- Test Submit & Score Action Bar -->
+      <div class="pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="text-xs text-slate-400" id="testProgressInfo">
+          Ответьте на все вопросы и проверьте свои знания.
+        </div>
+        <div class="flex items-center space-x-2.5 w-full sm:w-auto">
+          <button id="btnSubmitTest" onclick="submitLessonTest()" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-brand-500 hover:from-amber-400 hover:to-brand-400 text-space-950 font-black text-xs sm:text-sm shadow-md transition flex items-center justify-center space-x-2">
+            <span>🏁</span>
+            <span>Проверить ответы</span>
+          </button>
+          <button id="btnResetTest" onclick="resetLessonTest()" class="hidden px-4 py-2.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-bold transition flex items-center justify-center space-x-1">
+            <span>🔄</span>
+            <span>Пересдать</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- BOTTOM NAVIGATION & FOOTER -->
+    <div class="p-6 rounded-3xl bg-space-900 border border-slate-800 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleLessonComplete()" class="px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-400 text-space-950 font-black text-xs sm:text-sm shadow-md transition flex items-center space-x-2">
+          <span>✓</span>
+          <span id="lblBottomComplete">Отметить как прочитанное (+30 XP)</span>
+        </button>
+      </div>
+
+      <div class="flex items-center space-x-2 text-xs font-bold">
+        <a href="lesson_18_ru.html" class="px-4 py-2 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition">← Предыдущий</a>
+        <a href="../index.html?lang=ru#section-sabaktar_reading" class="px-4 py-2 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition">
+          Каталог уроков
+        </a>
+        <a href="lesson_20_ru.html" class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-space-950 transition font-black">Следующий →</a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- LESSON SCRIPT ENGINE -->
+  <script>
+    const lessonData = {"id": 19, "title_kz": "19-сабақ. Геосаясат", "title_ru": "19 урок. Геополитика", "tags": ["#геосаясат", "#Челлен", "#Хартленд", "#цессия", "#анклав"], "terms": [{"kz": "Геосаясат", "ru": "Геополитика", "desc_kz": "Мемлекеттің кеңістіктік орны мен сыртқы саясатының арақатынасын зерттейтін ғылым.", "desc_ru": "Дисциплина, изучающая зависимость внешней политики государств от их географического положения."}, {"kz": "Хартленд", "ru": "Хартленд", "desc_kz": "Х. Маккиндер теориясындағы Еуразияның ішкі қолжетімсіз құрлықтық кіндігі.", "desc_ru": "«Сердцевинная земля» — ключевая континентальная зона Евразии в концепции Х. Маккиндера."}, {"kz": "Цессия", "ru": "Цессия", "desc_kz": "Екі мемлекеттің бейбіт өзара келісімі бойынша белгілі бір жер аумағын беру (сату, айырбастау).", "desc_ru": "Уступка территории одного государства другому по взаимному мирному соглашению (договору)."}, {"kz": "Аккреция", "ru": "Аккреция", "desc_kz": "Теңізден жер тартып алу немесе топырақ төгу арқылы мемлекет аумағын жасанды үлкейту.", "desc_ru": "Приращение государственной территории путем искусственного намыва суши или осушения шельфа."}, {"kz": "Анклав", "ru": "Анклав", "desc_kz": "Басқа мемлекеттің аумағымен барлық жағынан қоршалған дербес ел (Лесото, Ватикан).", "desc_ru": "Государство, полностью окруженное со всех сторон сухопутной территорией другой страны."}], "theory_kz": "<p class=\"text-xs text-slate-300 leading-relaxed my-2\"># 19-сабақ: Геосаясат негіздері</p>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Геосаясат — мемлекеттің немесе мемлекеттер одағының саясаты мен оның географиялық кеңістіктегі орнының, табиғи ресурстары мен күштер тепе-теңдігінің өзара байланысын зерттейтін ғылым.</p>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>1. Геосаясат ғылымының қалыптасуы</span></h4>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">«Геосаясат» (геополитика) терминін 1899 жылы швед ғалымы әрі саясаткері <b class=\"text-cyan-300 font-bold\">Рудольф Челлен</b> ғылыми айналымға енгізді. Ол неміс ғалымы Фридрих Ратцельдің еңбектеріне сүйене отырып, мемлекетті үздіксіз кеңістікке ұмтылатын «тірі биологиялық ағза» ретінде қарастырды.</p>\n<svg height=\"220\" viewbox=\"0 0 700 220\" width=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n<rect fill=\"#0f172a\" height=\"220\" rx=\"12\" width=\"700\"></rect>\n<text fill=\"#38bdf8\" font-size=\"16\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"28\">Геосаясаттың пайда болуы мен негізгі түсініктері</text>\n<rect fill=\"#1e293b\" height=\"135\" rx=\"8\" stroke=\"#3b82f6\" stroke-width=\"1.5\" width=\"280\" x=\"50\" y=\"55\"></rect>\n<text fill=\"#38bdf8\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"190\" y=\"80\">Рудольф Челлен (1899 ж.)</text>\n<text fill=\"#f8fafc\" font-size=\"12\" text-anchor=\"middle\" x=\"190\" y=\"105\">«Геосаясат» терминінің авторы</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"190\" y=\"125\">Швед саясаттанушысы әрі ғалымы</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"190\" y=\"150\">Мемлекетті «тірі ағза» деп қарастырды</text>\n<text fill=\"#34d399\" font-size=\"11\" text-anchor=\"middle\" x=\"190\" y=\"170\">Ф. Ратцельдің органикалық теориясы</text>\n<rect fill=\"#1e293b\" height=\"135\" rx=\"8\" stroke=\"#10b981\" stroke-width=\"1.5\" width=\"280\" x=\"370\" y=\"55\"></rect>\n<text fill=\"#34d399\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"510\" y=\"80\">Геосаясат нені зерттейді?</text>\n<text fill=\"#f8fafc\" font-size=\"12\" text-anchor=\"middle\" x=\"510\" y=\"105\">Мемлекеттің кеңістіктегі орны</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"510\" y=\"125\">Күштер тепе-теңдігі және геосаяси ықпал</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"510\" y=\"150\">Шекаралар мен аумақтық қатынастар</text>\n<text fill=\"#fbbf24\" font-size=\"11\" text-anchor=\"middle\" x=\"510\" y=\"170\">Халықаралық қауіпсіздік жүйесі</text>\n</svg>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Геосаясаттың негізгі міндеті — мемлекеттің географиялық орнының саяси шешімдерге, қауіпсіздікке және шекараларға тигізетін ықпалын айқындау.</p>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>2. Хэлфорд Маккиндердің «Хартленд» теориясы</span></h4>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">1904 жылы ағылшын географы Хэлфорд Маккиндер өзінің тарихи моделін ұсынды. Ол Еуразияның қолжетімсіз ішкі құрлықтық өңірін <b class=\"text-cyan-300 font-bold\">Хартленд («Жер жүрегі»)</b> деп атады.</p>\n<svg height=\"220\" viewbox=\"0 0 700 220\" width=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n<rect fill=\"#0f172a\" height=\"220\" rx=\"12\" width=\"700\"></rect>\n<text fill=\"#38bdf8\" font-size=\"16\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"28\">Хэлфорд Маккиндердің «Хартленд» теориясы (1904 ж.)</text>\n<circle cx=\"350\" cy=\"120\" fill=\"#991b1b\" opacity=\"0.8\" r=\"65\"></circle>\n<text fill=\"#ffffff\" font-size=\"15\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"115\">ХАРТЛЕНД</text>\n<text fill=\"#fecaca\" font-size=\"11\" text-anchor=\"middle\" x=\"350\" y=\"135\">(Жер кіндігі / Еуразия)</text>\n<path d=\"M 230,120 A 120,60 0 0,0 470,120\" fill=\"none\" stroke=\"#f59e0b\" stroke-dasharray=\"6,4\" stroke-width=\"3\"></path>\n<text fill=\"#fbbf24\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"195\">«Ішкі жарты ай» (Rimland) — Еуразия жағалауы</text>\n<text fill=\"#38bdf8\" font-size=\"12\" text-anchor=\"middle\" x=\"350\" y=\"60\">«Кім Шығыс Еуропаға билік етсе, сол Хартлендті билейді»</text>\n</svg>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Маккиндер формуласы:</p>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><i class=\"text-slate-300\">«Кім Шығыс Еуропаға билік етсе, сол Хартлендке үстемдік етеді;</i></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><i class=\"text-slate-300\">Кім Хартлендке үстемдік етсе, сол Дүниежүзілік аралға билік етеді;</i></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><i class=\"text-slate-300\">Кім Дүниежүзілік аралға билік етсе, сол бүкіл әлемді билейді»</i>.</li>\n</ul>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>3. Теңіз күші (Мэхэн) және Римленд (Спайкмен)</span></h4>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Классикалық геосаясат құрлықтық (теллурократия) және теңіздік (талассократия) державалардың тартысын сипаттайды:</p>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Альфред Мэхэн</b> (АҚШ) теңіз күші мен сауда жолдарын, бұғаздарды бақылаудың шешуші маңызын дәлелдеді.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Николас Спайкмен</b> Маккиндерге қарсы <b class=\"text-cyan-300 font-bold\">Римленд («Жағалық белдеу»)</b> тұжырымдамасын ұсынды: «Кім Римлендті бақыласа, сол Еуразияны билейді, ал кім Еуразияны билесе, бүкіл дүние тағдырын шешеді».</li>\n</ul>\n<svg height=\"220\" viewbox=\"0 0 700 220\" width=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n<rect fill=\"#0f172a\" height=\"220\" rx=\"12\" width=\"700\"></rect>\n<text fill=\"#38bdf8\" font-size=\"16\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"28\">Теңіздік (Мэхэн) және Құрлықтық (Спайкмен) геосаясат</text>\n<rect fill=\"#1e293b\" height=\"130\" rx=\"8\" stroke=\"#3b82f6\" stroke-width=\"1.5\" width=\"280\" x=\"50\" y=\"60\"></rect>\n<text fill=\"#38bdf8\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"190\" y=\"85\">Альфред Мэхэн: «Теңіз күші»</text>\n<text fill=\"#f8fafc\" font-size=\"12\" text-anchor=\"middle\" x=\"190\" y=\"110\">Талассократия — теңіздік мемлекеттер</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"190\" y=\"130\">Мұхит жолдары мен бұғаздарды бақылау</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"190\" y=\"150\">АҚШ және Ұлыбритания стратегиясы</text>\n<text fill=\"#34d399\" font-size=\"11\" text-anchor=\"middle\" x=\"190\" y=\"172\">Флот пен сауда порттарының қуаты</text>\n<rect fill=\"#1e293b\" height=\"130\" rx=\"8\" stroke=\"#f59e0b\" stroke-width=\"1.5\" width=\"280\" x=\"370\" y=\"60\"></rect>\n<text fill=\"#fbbf24\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"510\" y=\"85\">Николас Спайкмен: «Римленд»</text>\n<text fill=\"#f8fafc\" font-size=\"12\" text-anchor=\"middle\" x=\"510\" y=\"110\">Еуразияның жағалаулық белдеуі</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"510\" y=\"130\">«Кім Римлендті бақыласа, сол Еуразияны билейді»</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"510\" y=\"150\">Құрлық пен теңіздің түйісу аймағы</text>\n<text fill=\"#a855f7\" font-size=\"11\" text-anchor=\"middle\" x=\"510\" y=\"172\">Батыс Еуропа, Таяу Шығыс, Шығыс Азия</text>\n</svg>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>4. Мемлекет аумағының кеңею және өзгеру жолдары</span></h4>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Халықаралық құқықта мемлекеттер шекарасы мен жер аумағы мынадай тәсілдермен өзгереді:</p>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Цессия</b> — екі немесе бірнеше мемлекеттің өзара бейбіт келісімі (сату, сатып алу немесе алмасу) бойынша аумақты беру (мысалы, 1867 жылы АҚШ-тың Ресейден Алясканы сатып алуы);</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Аккреция</b> — теңіз немесе көл жағалауларын жасанды құрғату немесе топырақ төгу арқылы мемлекет жерін үлкейту (Нидерланд, Сингапур, БАӘ);</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Экспансия</b> — басқа елдерге күш көрсету, қысым жасау немесе басып алу арқылы өз ықпал ету аймағын күштеп кеңейту.</li>\n</ul>\n<svg height=\"220\" viewbox=\"0 0 700 220\" width=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n<rect fill=\"#0f172a\" height=\"220\" rx=\"12\" width=\"700\"></rect>\n<text fill=\"#38bdf8\" font-size=\"16\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"28\">Мемлекет аумағының өзгеру жолдары</text>\n<rect fill=\"#1e293b\" height=\"135\" rx=\"8\" stroke=\"#10b981\" stroke-width=\"1.5\" width=\"190\" x=\"40\" y=\"55\"></rect>\n<text fill=\"#34d399\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"135\" y=\"80\">Цессия</text>\n<text fill=\"#f8fafc\" font-size=\"12\" text-anchor=\"middle\" x=\"135\" y=\"105\">Келісім бойынша беру</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"135\" y=\"128\">Сату, сатып алу не айырбас</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"135\" y=\"150\">Мысалы: 1867 жылы</text>\n<text fill=\"#38bdf8\" font-size=\"11\" text-anchor=\"middle\" x=\"135\" y=\"170\">АҚШ-тың Алясканы сатып алуы</text>\n<rect fill=\"#1e293b\" height=\"135\" rx=\"8\" stroke=\"#3b82f6\" stroke-width=\"1.5\" width=\"190\" x=\"255\" y=\"55\"></rect>\n<text fill=\"#38bdf8\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"80\">Аккреция</text>\n<text fill=\"#f8fafc\" font-size=\"12\" text-anchor=\"middle\" x=\"350\" y=\"105\">Жағалауды ұлғайту</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"350\" y=\"128\">Жасанды топырақ төгу,</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"350\" y=\"150\">теңізден дамбамен жер алу</text>\n<text fill=\"#34d399\" font-size=\"11\" text-anchor=\"middle\" x=\"350\" y=\"170\">Нидерланд, БАӘ, Сингапур</text>\n<rect fill=\"#1e293b\" height=\"135\" rx=\"8\" stroke=\"#ef4444\" stroke-width=\"1.5\" width=\"190\" x=\"470\" y=\"55\"></rect>\n<text fill=\"#f87171\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"565\" y=\"80\">Экспансия</text>\n<text fill=\"#f8fafc\" font-size=\"12\" text-anchor=\"middle\" x=\"565\" y=\"105\">Күштеп кеңейту</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"565\" y=\"128\">Мемлекеттің өз ықпалын</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"565\" y=\"150\">әскери немесе саяси</text>\n<text fill=\"#fca5a5\" font-size=\"11\" text-anchor=\"middle\" x=\"565\" y=\"170\">қысыммен таратуы</text>\n</svg>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>5. Мемлекеттердің кеңістіктік пішіні, анклавтар мен эксклавтар</span></h4>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Ел аумағының шеңбер немесе жинақы пішінді болуы оның шекарасын қорғауға және орталықтан басқаруға өте қолайлы.</p>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Анклав</b> — басқа бір мемлекеттің құрлық аумағымен толық қоршалған және теңізге шыға алмайтын ел (мысалы, ОАР ішіндегі Лесото, Италия аумағындағы Ватикан мен Сан-Марино).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Эксклав</b> — өз елінің негізгі аумағынан басқа мемлекет жерімен бөлініп жатқан аймақ (мысалы, Ресейдің Калининград облысы, Әзербайжанның Нахчыван автономиясы).</li>\n</ul>\n<svg height=\"220\" viewbox=\"0 0 700 220\" width=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n<rect fill=\"#0f172a\" height=\"220\" rx=\"12\" width=\"700\"></rect>\n<text fill=\"#38bdf8\" font-size=\"16\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"28\">Мемлекеттердің геосаяси пішіні: Анклав пен Эксклав</text>\n<rect fill=\"#1e293b\" height=\"130\" rx=\"8\" stroke=\"#a855f7\" stroke-width=\"1.5\" width=\"280\" x=\"50\" y=\"60\"></rect>\n<text fill=\"#c084fc\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"190\" y=\"85\">Анклав мемлекеттер</text>\n<text fill=\"#f8fafc\" font-size=\"12\" text-anchor=\"middle\" x=\"190\" y=\"110\">Басқа бір ел аумағымен толық қоршалған</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"190\" y=\"130\">Лесото (ОАР ішінде орналасқан)</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"190\" y=\"150\">Ватикан және Сан-Марино (Италия ішінде)</text>\n<text fill=\"#34d399\" font-size=\"11\" text-anchor=\"middle\" x=\"190\" y=\"172\">Теңізге тікелей шыға алмайды</text>\n<rect fill=\"#1e293b\" height=\"130\" rx=\"8\" stroke=\"#f59e0b\" stroke-width=\"1.5\" width=\"280\" x=\"370\" y=\"60\"></rect>\n<text fill=\"#fbbf24\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"510\" y=\"85\">Эксклав аумақтар</text>\n<text fill=\"#f8fafc\" font-size=\"12\" text-anchor=\"middle\" x=\"510\" y=\"110\">Негізгі аумақтан бөлек жатқан бөлік</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"510\" y=\"130\">Калининград облысы (Ресейдің эксклавы)</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"510\" y=\"150\">Нахчыван автономиясы (Әзербайжан)</text>\n<text fill=\"#38bdf8\" font-size=\"11\" text-anchor=\"middle\" x=\"510\" y=\"172\">Аляска штаты (АҚШ-тың эксклавы)</text>\n</svg>", "theory_ru": "<p class=\"text-xs text-slate-300 leading-relaxed my-2\"># Урок 19: Основы геополитики</p>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Геополитика изучает влияние географических факторов (пространственного положения, климата, ресурсов, границ) на внешнюю и внутреннюю политику государств и расстановку сил на мировой арене.</p>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>1. Зарождение геополитики</span></h4>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Термин «геополитика» был введен в научный оборот в 1899 году шведским ученым <b class=\"text-cyan-300 font-bold\">Рудольфом Челленом</b>. Развивая идеи немецкого географа Фридриха Ратцеля, Челлен трактовал государство как живой пространственный организм, стремящийся к территориальному развитию.</p>\n<svg height=\"220\" viewbox=\"0 0 700 220\" width=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n<rect fill=\"#0f172a\" height=\"220\" rx=\"12\" width=\"700\"></rect>\n<text fill=\"#38bdf8\" font-size=\"16\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"28\">Геосаясаттың пайда болуы мен негізгі түсініктері</text>\n<rect fill=\"#1e293b\" height=\"135\" rx=\"8\" stroke=\"#3b82f6\" stroke-width=\"1.5\" width=\"280\" x=\"50\" y=\"55\"></rect>\n<text fill=\"#38bdf8\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"190\" y=\"80\">Рудольф Челлен (1899 ж.)</text>\n<text fill=\"#f8fafc\" font-size=\"12\" text-anchor=\"middle\" x=\"190\" y=\"105\">«Геосаясат» терминінің авторы</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"190\" y=\"125\">Швед саясаттанушысы әрі ғалымы</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"190\" y=\"150\">Мемлекетті «тірі ағза» деп қарастырды</text>\n<text fill=\"#34d399\" font-size=\"11\" text-anchor=\"middle\" x=\"190\" y=\"170\">Ф. Ратцельдің органикалық теориясы</text>\n<rect fill=\"#1e293b\" height=\"135\" rx=\"8\" stroke=\"#10b981\" stroke-width=\"1.5\" width=\"280\" x=\"370\" y=\"55\"></rect>\n<text fill=\"#34d399\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"510\" y=\"80\">Геосаясат нені зерттейді?</text>\n<text fill=\"#f8fafc\" font-size=\"12\" text-anchor=\"middle\" x=\"510\" y=\"105\">Мемлекеттің кеңістіктегі орны</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"510\" y=\"125\">Күштер тепе-теңдігі және геосаяси ықпал</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"510\" y=\"150\">Шекаралар мен аумақтық қатынастар</text>\n<text fill=\"#fbbf24\" font-size=\"11\" text-anchor=\"middle\" x=\"510\" y=\"170\">Халықаралық қауіпсіздік жүйесі</text>\n</svg>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Главная задача геополитики — анализ баланса сил и стратегического взаимодействия государств в планетарном масштабе.</p>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>2. Концепция «Хартленда» Хэлфорда Маккиндера</span></h4>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">В 1904 году британский географ Х. Маккиндер представил доклад «Географическая ось истории», выделив неприступную внутреннюю часть Евразии под названием <b class=\"text-cyan-300 font-bold\">Хартленд («Сердцевинная земля»)</b>.</p>\n<svg height=\"220\" viewbox=\"0 0 700 220\" width=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n<rect fill=\"#0f172a\" height=\"220\" rx=\"12\" width=\"700\"></rect>\n<text fill=\"#38bdf8\" font-size=\"16\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"28\">Хэлфорд Маккиндердің «Хартленд» теориясы (1904 ж.)</text>\n<circle cx=\"350\" cy=\"120\" fill=\"#991b1b\" opacity=\"0.8\" r=\"65\"></circle>\n<text fill=\"#ffffff\" font-size=\"15\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"115\">ХАРТЛЕНД</text>\n<text fill=\"#fecaca\" font-size=\"11\" text-anchor=\"middle\" x=\"350\" y=\"135\">(Жер кіндігі / Еуразия)</text>\n<path d=\"M 230,120 A 120,60 0 0,0 470,120\" fill=\"none\" stroke=\"#f59e0b\" stroke-dasharray=\"6,4\" stroke-width=\"3\"></path>\n<text fill=\"#fbbf24\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"195\">«Ішкі жарты ай» (Rimland) — Еуразия жағалауы</text>\n<text fill=\"#38bdf8\" font-size=\"12\" text-anchor=\"middle\" x=\"350\" y=\"60\">«Кім Шығыс Еуропаға билік етсе, сол Хартлендті билейді»</text>\n</svg>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Знаменитая триада Маккиндера гласит:</p>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><i class=\"text-slate-300\">«Кто контролирует Восточную Европу, тот командует Хартлендом;</i></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><i class=\"text-slate-300\">Кто командует Хартлендом, тот командует Мировым островом;</i></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><i class=\"text-slate-300\">Кто командует Мировым островом, тот командует миром»</i>.</li>\n</ul>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>3. Морская мощь (Мэхэн) и концепция «Римленда» (Спикмен)</span></h4>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">В геополитике выделяют противостояние сухопутных континентальных держав (теллурократия) и морских держав (талассократия):</p>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Альфред Мэхэн</b> (США) доказал решающее значение контроля морских торговых путей и проливов.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Николас Спикмен</b> выдвинул концепцию <b class=\"text-cyan-300 font-bold\">Римленда (дуги прибрежных евразийских земель)</b>: «Кто контролирует Римленд, тот управляет Евразией, а кто управляет Евразией, тот держит судьбу мира в своих руках».</li>\n</ul>\n<svg height=\"220\" viewbox=\"0 0 700 220\" width=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n<rect fill=\"#0f172a\" height=\"220\" rx=\"12\" width=\"700\"></rect>\n<text fill=\"#38bdf8\" font-size=\"16\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"28\">Теңіздік (Мэхэн) және Құрлықтық (Спайкмен) геосаясат</text>\n<rect fill=\"#1e293b\" height=\"130\" rx=\"8\" stroke=\"#3b82f6\" stroke-width=\"1.5\" width=\"280\" x=\"50\" y=\"60\"></rect>\n<text fill=\"#38bdf8\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"190\" y=\"85\">Альфред Мэхэн: «Теңіз күші»</text>\n<text fill=\"#f8fafc\" font-size=\"12\" text-anchor=\"middle\" x=\"190\" y=\"110\">Талассократия — теңіздік мемлекеттер</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"190\" y=\"130\">Мұхит жолдары мен бұғаздарды бақылау</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"190\" y=\"150\">АҚШ және Ұлыбритания стратегиясы</text>\n<text fill=\"#34d399\" font-size=\"11\" text-anchor=\"middle\" x=\"190\" y=\"172\">Флот пен сауда порттарының қуаты</text>\n<rect fill=\"#1e293b\" height=\"130\" rx=\"8\" stroke=\"#f59e0b\" stroke-width=\"1.5\" width=\"280\" x=\"370\" y=\"60\"></rect>\n<text fill=\"#fbbf24\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"510\" y=\"85\">Николас Спайкмен: «Римленд»</text>\n<text fill=\"#f8fafc\" font-size=\"12\" text-anchor=\"middle\" x=\"510\" y=\"110\">Еуразияның жағалаулық белдеуі</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"510\" y=\"130\">«Кім Римлендті бақыласа, сол Еуразияны билейді»</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"510\" y=\"150\">Құрлық пен теңіздің түйісу аймағы</text>\n<text fill=\"#a855f7\" font-size=\"11\" text-anchor=\"middle\" x=\"510\" y=\"172\">Батыс Еуропа, Таяу Шығыс, Шығыс Азия</text>\n</svg>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>4. Способы изменения государственной территории</span></h4>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">В международном праве выделяют несколько законных и незаконных механизмов изменения территории:</p>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Цессия</b> — передача территории одного государства другому по взаимному соглашению или договору (например, покупка Аляски США у Российской империи в 1867 г.);</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Аккреция</b> — естественное или искусственное приращение сухопутной территории путем осушения шельфа, строительства дамб и намыва грунта (Нидерланды, Сингапур, ОАЭ);</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Экспансия</b> — насильственное или одностороннее распространение военно-политического и экономического влияния государства на внешние пространства.</li>\n</ul>\n<svg height=\"220\" viewbox=\"0 0 700 220\" width=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n<rect fill=\"#0f172a\" height=\"220\" rx=\"12\" width=\"700\"></rect>\n<text fill=\"#38bdf8\" font-size=\"16\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"28\">Мемлекет аумағының өзгеру жолдары</text>\n<rect fill=\"#1e293b\" height=\"135\" rx=\"8\" stroke=\"#10b981\" stroke-width=\"1.5\" width=\"190\" x=\"40\" y=\"55\"></rect>\n<text fill=\"#34d399\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"135\" y=\"80\">Цессия</text>\n<text fill=\"#f8fafc\" font-size=\"12\" text-anchor=\"middle\" x=\"135\" y=\"105\">Келісім бойынша беру</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"135\" y=\"128\">Сату, сатып алу не айырбас</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"135\" y=\"150\">Мысалы: 1867 жылы</text>\n<text fill=\"#38bdf8\" font-size=\"11\" text-anchor=\"middle\" x=\"135\" y=\"170\">АҚШ-тың Алясканы сатып алуы</text>\n<rect fill=\"#1e293b\" height=\"135\" rx=\"8\" stroke=\"#3b82f6\" stroke-width=\"1.5\" width=\"190\" x=\"255\" y=\"55\"></rect>\n<text fill=\"#38bdf8\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"80\">Аккреция</text>\n<text fill=\"#f8fafc\" font-size=\"12\" text-anchor=\"middle\" x=\"350\" y=\"105\">Жағалауды ұлғайту</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"350\" y=\"128\">Жасанды топырақ төгу,</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"350\" y=\"150\">теңізден дамбамен жер алу</text>\n<text fill=\"#34d399\" font-size=\"11\" text-anchor=\"middle\" x=\"350\" y=\"170\">Нидерланд, БАӘ, Сингапур</text>\n<rect fill=\"#1e293b\" height=\"135\" rx=\"8\" stroke=\"#ef4444\" stroke-width=\"1.5\" width=\"190\" x=\"470\" y=\"55\"></rect>\n<text fill=\"#f87171\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"565\" y=\"80\">Экспансия</text>\n<text fill=\"#f8fafc\" font-size=\"12\" text-anchor=\"middle\" x=\"565\" y=\"105\">Күштеп кеңейту</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"565\" y=\"128\">Мемлекеттің өз ықпалын</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"565\" y=\"150\">әскери немесе саяси</text>\n<text fill=\"#fca5a5\" font-size=\"11\" text-anchor=\"middle\" x=\"565\" y=\"170\">қысыммен таратуы</text>\n</svg>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>5. Географическая форма территории: Анклавы и эксклавы</span></h4>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Компактная (округлая) форма территории снижает транспортные издержки и облегчает оборону рубежей.</p>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Анклав</b> — государство, территория которого со всех сторон окружена сухопутной территорией одного другого государства (Лесото внутри ЮАР, Ватикан и Сан-Марино внутри Италии).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Эксклав</b> — несуверенная часть территории страны, оторванная от метрополии и окруженная чужими государствами (Калининградская область РФ, Нахичевань в Азербайджане, Аляска в США).</li>\n</ul>\n<svg height=\"220\" viewbox=\"0 0 700 220\" width=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n<rect fill=\"#0f172a\" height=\"220\" rx=\"12\" width=\"700\"></rect>\n<text fill=\"#38bdf8\" font-size=\"16\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"28\">Мемлекеттердің геосаяси пішіні: Анклав пен Эксклав</text>\n<rect fill=\"#1e293b\" height=\"130\" rx=\"8\" stroke=\"#a855f7\" stroke-width=\"1.5\" width=\"280\" x=\"50\" y=\"60\"></rect>\n<text fill=\"#c084fc\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"190\" y=\"85\">Анклав мемлекеттер</text>\n<text fill=\"#f8fafc\" font-size=\"12\" text-anchor=\"middle\" x=\"190\" y=\"110\">Басқа бір ел аумағымен толық қоршалған</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"190\" y=\"130\">Лесото (ОАР ішінде орналасқан)</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"190\" y=\"150\">Ватикан және Сан-Марино (Италия ішінде)</text>\n<text fill=\"#34d399\" font-size=\"11\" text-anchor=\"middle\" x=\"190\" y=\"172\">Теңізге тікелей шыға алмайды</text>\n<rect fill=\"#1e293b\" height=\"130\" rx=\"8\" stroke=\"#f59e0b\" stroke-width=\"1.5\" width=\"280\" x=\"370\" y=\"60\"></rect>\n<text fill=\"#fbbf24\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"510\" y=\"85\">Эксклав аумақтар</text>\n<text fill=\"#f8fafc\" font-size=\"12\" text-anchor=\"middle\" x=\"510\" y=\"110\">Негізгі аумақтан бөлек жатқан бөлік</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"510\" y=\"130\">Калининград облысы (Ресейдің эксклавы)</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"510\" y=\"150\">Нахчыван автономиясы (Әзербайжан)</text>\n<text fill=\"#38bdf8\" font-size=\"11\" text-anchor=\"middle\" x=\"510\" y=\"172\">Аляска штаты (АҚШ-тың эксклавы)</text>\n</svg>", "test": {"passingScore": 80, "questions": [{"id": 1, "q_kz": "«Геосаясат» терминін 1899 жылы ғылымға алғаш рет енгізген ғалым:", "q_ru": "Ученый, впервые введший термин «геополитика» в научный оборот в 1899 году:", "options_kz": ["Р. Челлен", "Х. Маккиндер", "А. Мэхэн", "Ф. Ратцель"], "options_ru": ["Р. Челлен", "Х. Маккиндер", "А. Мэхэн", "Ф. Ратцель"], "answer": 0, "exp_kz": "«Геосаясат» терминін 1899 жылы швед ғалымы әрі саясаткері Рудольф Челлен алғаш рет ғылыми айналымға енгізді.", "exp_ru": "Термин «геополитика» был сформулирован и предложен шведским ученым Рудольфом Челленом в 1899 году."}, {"id": 2, "q_kz": "Геосаясаттың негізгі міндеттеріне жатпайтын бағытты көрсетіңіз:", "q_ru": "Укажите направление, не относящееся к прямым задачам классической геополитики:", "options_kz": ["Әлемдегі күштер тепе-теңдігін зерттеу", "Экономикалық субъектілердің ішкі өндірістік даму стратегияларын анықтау", "Мемлекеттердің аумақтық кеңістіктік ықпалын зерделеу", "Шекаралар мен геостратегиялық түйіндерді анықтау"], "options_ru": ["Изучение баланса сил на мировой арене", "Определение внутренних стратегий коммерческих предприятий", "Исследование пространственного влияния государств", "Анализ границ и геостратегических узлов"], "answer": 1, "exp_kz": "Жеке кәсіпорындардың ішкі экономикалық стратегиясын анықтау микроэкономикаға жатады, ал геосаясат мемлекеттер мен одақтардың кеңістіктік саясатын зерттейді.", "exp_ru": "Определение внутренних стратегий компаний относится к экономике предприятия, тогда как геополитика изучает глобальные пространства."}, {"id": 3, "q_kz": "Еуропаның геосаяси кеңістігіне тән басты сипатты табыңыз:", "q_ru": "Укажите ключевую черту современного геополитического пространства Европы:", "options_kz": ["Жоғары деңгейдегі интеграциялық үдерістер (Еуропалық Одақ)", "Тұрақты мемлекетаралық шекаралық қақтығыстар", "Экономикалық оқшаулану және автономия", "Теңіз сауда жолдарының мүлдем болмауы"], "options_ru": ["Глубокие интеграционные процессы (Европейский союз)", "Постоянные межгосударственные пограничные войны", "Экономическая изоляция и автаркия", "Полное отсутствие морских коммуникаций"], "answer": 0, "exp_kz": "Еуропада әлемдегі ең жоғары интеграциялық бірлестік — Еуропалық Одақ қалыптасқан.", "exp_ru": "Европейское пространство отличается высочайшим уровнем политико-экономической интеграции в рамках ЕС."}, {"id": 4, "q_kz": "Экономикалық, саяси және мәдени тұрғыдан салыстырмалы біртекті ірі геосаяси бірліктер:", "q_ru": "Крупные, относительно однородные по политическим и культурным признакам регионы мира называются:", "options_kz": ["Геосаяси аймақтар", "Экономикалық зоналар", "Анклавты аумақтар", "Федеративті округтер"], "options_ru": ["Геополитические регионы", "Экономические зоны", "Анклавные территории", "Федеративные округа"], "answer": 0, "exp_kz": "Ортақ тарихи, мәдени және геосаяси мүдделері біріккен ірі аймақтар (мысалы, Таяу Шығыс, Орталық Азия) «геосаяси аймақтар» деп аталады.", "exp_ru": "Крупные пространственные единицы с общими культурно-политическими признаками определяются как геополитические регионы."}, {"id": 5, "q_kz": "Орталығына дейін барлық шетінен қашықтық бірдей, шекарасы қысқа, қорғауға қолайлы аумақ пішіні:", "q_ru": "Форма территории с минимальной протяженностью границ и равноудаленностью от центра (наиболее удобная для обороны):", "options_kz": ["Жинақы / Дөңгелек пішінді (компактты)", "Созылыңқы (лента тәрізді)", "Шашыраңқы аралдық", "Бөлшектелген эксклавты"], "options_ru": ["Компактная / Округлая форма", "Вытянутая (ленточная) форма", "Раздробленная островная", "Фрагментированная эксклавная"], "answer": 0, "exp_kz": "Шеңбер немесе шаршыға жуық жинақы (компактты) мемлекет аумағын қорғау және орталықтан басқару ең тиімді болып табылады.", "exp_ru": "Компактная (округлая) форма территории минимизирует протяженность сухопутных границ и обеспечивает транспортную доступность столицы."}, {"id": 6, "q_kz": "Өзара бейбіт келісім негізінде белгілі бір аумақтың бір мемлекеттен екіншісіне өтуі қалай аталады?", "q_ru": "Как в международном праве называется мирная передача территории одного государства другому по соглашению?", "options_kz": ["Аннексия", "Оккупация", "Экспансия", "Цессия"], "options_ru": ["Аннексия", "Оккупация", "Экспансия", "Цессия"], "answer": 3, "exp_kz": "Мемлекеттердің келісімшарты (сату, сыйға тарту, алмасу) арқылы жердің бейбіт өтуі цессия деп аталады (мысалы, Алясканы АҚШ-қа сату).", "exp_ru": "Цессия — добровольная уступка территории одним государством другому на основе международного договора."}, {"id": 7, "q_kz": "Экспансия дегеніміз не?", "q_ru": "Что означает термин «экспансия»?", "options_kz": ["Аумақты бейбіт келісіммен сату", "Мемлекеттің күш көрсету арқылы өз ықпал ету аймақтарын кеңейтуі", "Теңізден жасанды түрде жағажай жасау", "Халықаралық ұйымдарға өз еркімен мүше болу"], "options_ru": ["Мирная продажа территории по соглашению", "Расширение сфер влияния государства путем силы или давления", "Искусственное намывание морского берега", "Добровольное вступление в международные союзы"], "answer": 1, "exp_kz": "Экспансия — бір мемлекеттің басқа аумақтарға өз ықпалын күшпен не қысыммен таратуы, кеңейтуі.", "exp_ru": "Экспансия — территориальное, экономическое или военное распространение влияния одного государства на другие страны."}, {"id": 8, "q_kz": "Аккреция (дамбалар салып, теңізден жер тартып алу) нәтижесінде жағалық бөлігі кеңейген ел:", "q_ru": "Государство, значительно увеличившее свою территорию путем аккреции (осушения моря и насыпки суши):", "options_kz": ["Нидерланд", "Моңғолия", "Ауғанстан", "Боливия"], "options_ru": ["Нидерланды", "Монголия", "Афганистан", "Боливия"], "answer": 0, "exp_kz": "Нидерланд елі ғасырлар бойы Солтүстік теңізден бөгеттер (польдерлер) арқылы көптеген жаңа құрлықтық жерлер тартып алған.", "exp_ru": "Нидерланды исторически увеличивали территорию путем осушения морских участков (польдеров) и возведения дамб."}, {"id": 9, "q_kz": "Мемлекеттің геосаяси жағдайын айқындайтын ең басты іргелі фактор:", "q_ru": "Фундаментальный фактор, определяющий геополитическое положение любого государства:", "options_kz": ["Елдің географиялық орны", "Парламент депутаттарының саны", "Ұлттық валютаның атауы", "Ауылшаруашылық дақылдарының түрі"], "options_ru": ["Географическое положение страны", "Численность депутатов парламента", "Название национальной валюты", "Виды сельскохозяйственных культур"], "answer": 0, "exp_kz": "Геосаясаттың іргетасы — елдің кеңістіктегі орны: мұхиттарға шығу мүмкіндігі, көршілері және табиғи кедергілері.", "exp_ru": "Географическое положение (отношение к океанам, транспортным коридорам и соседям) является стержнем геополитики."}, {"id": 10, "q_kz": "Өз ішінде толыққанды анклав мемлекеттер орналасқан елдерді көрсетіңіз:", "q_ru": "Укажите страны, внутри территории которых целиком расположены государства-анклавы:", "options_kz": ["Италия (Ватикан, Сан-Марино), ОАР (Лесото)", "Германия және Франция", "Қытай және Моңғолия", "АҚШ және Канада"], "options_ru": ["Италия (Ватикан, Сан-Марино), ЮАР (Лесото)", "Германия и Франция", "Китай и Монголия", "США и Канада"], "answer": 0, "exp_kz": "Италияның ішінде екі тәуелсіз анклав мемлекет — Ватикан мен Сан-Марино, ал Оңтүстік Африка Республикасының ішінде Лесото патшалығы орналасқан.", "exp_ru": "Классическими примерами государств, содержащих внутри анклавы, являются Италия (Ватикан, Сан-Марино) и ЮАР (Лесото)."}]}, "pdf_kz": "https://drive.google.com/file/d/1lP-gbziijubc-WPpNjFuNq38Wv5NMeJk/view?usp=sharing", "pdf_ru": "https://drive.google.com/file/d/1YmS03dQPSF3YjRkGN559YSIxSPuv70Ri/view?usp=drive_link", "blooket": "https://dashboard.blooket.com/set/6a84da744251940f2584c98c"};
+    const currentLang = 'ru';
+    let userTestAnswers = {};
+    let isTestSubmitted = false;
+
+    // Render Test Questions
+    function renderTestQuestions() {
+      const container = document.getElementById('testQuestionsList');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const testObj = lessonData.test;
+      if (!testObj || !testObj.questions || testObj.questions.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-400">Тест готовится / Тест дайындалуда.</p>';
+        return;
+      }
+
+      const isRu = (currentLang === 'ru');
+      const letters = ['A', 'B', 'C', 'D', 'E'];
+
+      testObj.questions.forEach((q, idx) => {
+        const qCard = document.createElement('div');
+        qCard.className = 'p-5 rounded-2xl bg-space-850 border border-slate-800 space-y-3';
+
+        const qPrompt = isRu ? (q.q_ru || q.q_kz) : q.q_kz;
+        const options = isRu ? (q.options_ru || q.options_kz) : q.options_kz;
+        const exp = isRu ? (q.exp_ru || q.exp_kz) : q.exp_kz;
+
+        qCard.innerHTML = `
+          <div class="flex items-center justify-between gap-2 border-b border-slate-800/80 pb-2">
+            <span class="text-xs font-bold text-slate-400 uppercase">
+              ${isRu ? 'Вопрос ' + (idx + 1) : 'Сұрақ ' + (idx + 1)}
+            </span>
+            <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-bold">1 балл</span>
+          </div>
+          <p class="text-xs sm:text-sm font-semibold text-slate-100 leading-relaxed">${qPrompt}</p>
+        `;
+
+        const optContainer = document.createElement('div');
+        optContainer.className = 'space-y-2 pt-1';
+
+        const selectedAnswer = userTestAnswers[q.id];
+
+        options.forEach((optText, optIdx) => {
+          const isSelected = selectedAnswer === optIdx;
+          const isCorrect = q.answer === optIdx;
+
+          const optDiv = document.createElement('div');
+          optDiv.className = 'p-3 rounded-xl border text-xs font-medium cursor-pointer transition flex items-center space-x-2.5 ';
+
+          if (isTestSubmitted) {
+            if (isCorrect) {
+              optDiv.className += 'bg-emerald-500/15 border-emerald-500 text-emerald-200 font-bold';
+            } else if (isSelected) {
+              optDiv.className += 'bg-rose-500/15 border-rose-500 text-rose-200';
+            } else {
+              optDiv.className += 'bg-space-900/50 border-slate-800 text-slate-500';
+            }
+          } else {
+            if (isSelected) {
+              optDiv.className += 'bg-cyan-500/15 border-cyan-500 text-cyan-200 font-bold';
+            } else {
+              optDiv.className += 'bg-space-900 hover:bg-space-800 border-slate-800 hover:border-slate-700 text-slate-300';
+            }
+          }
+
+          const badge = document.createElement('span');
+          badge.className = 'w-5 h-5 rounded-md text-[10px] font-black flex items-center justify-center shrink-0 ' +
+            (isSelected ? 'bg-cyan-500 text-space-950' : 'bg-space-850 text-slate-400 border border-slate-700');
+          badge.textContent = letters[optIdx] || String(optIdx + 1);
+          optDiv.appendChild(badge);
+
+          const txt = document.createElement('span');
+          txt.className = 'flex-1';
+          txt.textContent = optText;
+          optDiv.appendChild(txt);
+
+          optDiv.onclick = () => {
+            if (isTestSubmitted) return;
+            userTestAnswers[q.id] = optIdx;
+            renderTestQuestions();
+          };
+
+          optContainer.appendChild(optDiv);
+        });
+
+        qCard.appendChild(optContainer);
+
+        // Explanation Box after submission
+        if (isTestSubmitted) {
+          const expBox = document.createElement('div');
+          expBox.className = 'p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-xs text-cyan-200 space-y-1';
+          expBox.innerHTML = `
+            <span class="font-bold text-cyan-300 block">💡 ${isRu ? 'Пояснение:' : 'Түсіндірме:'}</span>
+            <p class="text-slate-300 leading-relaxed">${exp || (isRu ? 'Авторское пояснение к вопросу.' : 'Сұраққа арналған түсіндірме.')}</p>
+          `;
+          qCard.appendChild(expBox);
+        }
+
+        container.appendChild(qCard);
+      });
+    }
+
+    function submitLessonTest() {
+      const testObj = lessonData.test;
+      if (!testObj || !testObj.questions) return;
+
+      const answeredCount = Object.keys(userTestAnswers).length;
+      const total = testObj.questions.length;
+      const isRu = (currentLang === 'ru');
+
+      if (answeredCount < total) {
+        const msg = isRu 
+          ? `Вы ответили только на ${answeredCount} из ${total} вопросов. Завершить тест?` 
+          : `Сіз ${total} сұрақтың ${answeredCount}-не жауап бердіңіз. Тестті аяқтайсыз ба?`;
+        if (!confirm(msg)) return;
+      }
+
+      isTestSubmitted = true;
+      let correct = 0;
+
+      testObj.questions.forEach(q => {
+        if (userTestAnswers[q.id] === q.answer) {
+          correct++;
+        }
+      });
+
+      const percentage = Math.round((correct / total) * 100);
+      const isPassed = percentage >= 80;
+
+      // Update badges & UI
+      const scoreBadge = document.getElementById('testScoreBadge');
+      if (scoreBadge) {
+        scoreBadge.classList.remove('hidden');
+        scoreBadge.textContent = `${correct} / ${total} (${percentage}%)`;
+        scoreBadge.className = 'px-3 py-1 rounded-xl text-xs font-bold font-mono border ' +
+          (isPassed ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-rose-500/20 text-rose-300 border-rose-500/40');
+      }
+
+      const info = document.getElementById('testProgressInfo');
+      if (info) {
+        info.textContent = isPassed 
+          ? (isRu ? `🎉 Поздравляем! Вы сдали тест на ${percentage}% (+30 XP)` : `🎉 Құттықтаймыз! Сіз тестті ${percentage}%-ға тапсырдыңыз (+30 XP)`)
+          : (isRu ? `Результат: ${percentage}%. Для зачета требуется 80%. Попробуйте еще раз.` : `Нәтиже: ${percentage}%. Өту үшін 80% қажет. Қайта тапсырып көріңіз.`);
+      }
+
+      document.getElementById('btnSubmitTest').classList.add('hidden');
+      document.getElementById('btnResetTest').classList.remove('hidden');
+
+      // Save to localStorage
+      try {
+        let scores = JSON.parse(localStorage.getItem('geotany_lesson_scores') || '{}');
+        scores[lessonData.id] = percentage;
+        localStorage.setItem('geotany_lesson_scores', JSON.stringify(scores));
+
+        if (isPassed) {
+          let completed = JSON.parse(localStorage.getItem('geotany_completed_lessons') || '[]');
+          if (!completed.includes(lessonData.id)) {
+            completed.push(lessonData.id);
+            localStorage.setItem('geotany_completed_lessons', JSON.stringify(completed));
+          }
+          let curXp = parseInt(localStorage.getItem('geotany_user_xp') || '0', 10);
+          curXp += 30;
+          localStorage.setItem('geotany_user_xp', curXp.toString());
+        }
+      } catch(e) {}
+
+      renderTestQuestions();
+      updateCompleteButtons();
+    }
+
+    function resetLessonTest() {
+      userTestAnswers = {};
+      isTestSubmitted = false;
+      document.getElementById('testScoreBadge').classList.add('hidden');
+      document.getElementById('btnSubmitTest').classList.remove('hidden');
+      document.getElementById('btnResetTest').classList.add('hidden');
+      document.getElementById('testProgressInfo').textContent = (currentLang === 'ru') 
+        ? 'Ответьте на все вопросы и проверьте свои знания.' 
+        : 'Барлық сұрақтарға жауап беріп, өзіңізді тексеріңіз.';
+      renderTestQuestions();
+    }
+
+    // Toggle Lesson Complete Status
+    function toggleLessonComplete() {
+      let completed = [];
+      try {
+        completed = JSON.parse(localStorage.getItem('geotany_completed_lessons') || '[]');
+      } catch(e) {}
+
+      const isDone = completed.includes(lessonData.id);
+      let curXp = parseInt(localStorage.getItem('geotany_user_xp') || '0', 10);
+
+      if (isDone) {
+        completed = completed.filter(id => id !== lessonData.id);
+        curXp = Math.max(0, curXp - 30);
+      } else {
+        completed.push(lessonData.id);
+        curXp += 30;
+      }
+
+      try {
+        localStorage.setItem('geotany_completed_lessons', JSON.stringify(completed));
+        localStorage.setItem('geotany_user_xp', curXp.toString());
+      } catch(e) {}
+
+      updateCompleteButtons();
+    }
+
+    function updateCompleteButtons() {
+      let completed = [];
+      try {
+        completed = JSON.parse(localStorage.getItem('geotany_completed_lessons') || '[]');
+      } catch(e) {}
+
+      const isDone = completed.includes(lessonData.id);
+      const isRu = (currentLang === 'ru');
+
+      const banner = document.getElementById('lessonCompletedBanner');
+      if (banner) banner.classList.toggle('hidden', !isDone);
+
+      const headerBtn = document.getElementById('btnHeaderComplete');
+      const headerIcon = document.getElementById('headerCheckIcon');
+      const headerText = document.getElementById('headerCompleteText');
+
+      if (headerBtn) {
+        if (isDone) {
+          headerBtn.className = 'px-3 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold transition flex items-center space-x-1.5';
+          if (headerIcon) headerIcon.textContent = '✓';
+          if (headerText) headerText.textContent = isRu ? 'Прочитано' : 'Оқылды';
+        } else {
+          headerBtn.className = 'px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-emerald-400 text-xs font-bold transition flex items-center space-x-1.5';
+          if (headerIcon) headerIcon.textContent = '○';
+          if (headerText) headerText.textContent = isRu ? 'Отметить' : 'Белгілеу';
+        }
+      }
+
+      const bottomLbl = document.getElementById('lblBottomComplete');
+      if (bottomLbl) {
+        bottomLbl.textContent = isDone 
+          ? (isRu ? '✓ Прочитано (Нажмите, чтобы отменить)' : '✓ Оқылды (Өшіру үшін басыңыз)')
+          : (isRu ? 'Отметить как прочитанное (+30 XP)' : 'Сабақты оқылды деп белгілеу (+30 XP)');
+      }
+    }
+
+    // Boot
+    window.addEventListener('DOMContentLoaded', () => {
+      renderTestQuestions();
+      updateCompleteButtons();
+    });
+  </script>
+
+</body>
+</html>
