@@ -223,9 +223,7 @@
           <h3 class="text-xs font-black uppercase tracking-wider text-slate-400" id="lblLegendTitle">
             Картаның шарты белгілері (Легенда)
           </h3>
-          <span class="text-[10px] px-2 py-0.5 rounded-md bg-space-850 text-cyan-400 font-bold border border-slate-700">
-            3 санат
-          </span>
+          <span class="text-[10px] px-2 py-0.5 rounded-md bg-space-850 text-cyan-400 font-bold border border-slate-700" id="legendCountBadge"></span>
         </div>
 
         <!-- Legend Items Grid -->
@@ -273,7 +271,7 @@
 
   <!-- MAP CLIENT ENGINE -->
   <script>
-    const currentMapData = {"id": 10, "category": "geopolitics", "scope": "world", "title_kz": "10. Жаһандық қаржы орталықтары мен қор биржалары", "title_ru": "10. Мировые центры финансово-экономического влияния", "desc_kz": "Әлемдік капитал хабтары мен биржалары (NYSE, LSE, AIFC).", "desc_ru": "Финансовые центры и крупнейшие фондовые биржи планеты.", "theory_kz": "Нью-Йорк, Лондон, Токио және Шанхай әлемдік инвестиция ағынын басқарады. Астанадағы АХҚО (AIFC) Орталық Азияның қаржылық көпірі қызметін атқарады.", "theory_ru": "Нью-Йорк и Лондон лидируют по объему торгов. Астана (AIFC) — ведущий финансовый хаб Центральной Азии.", "legend": [{"id": "tier1", "label_kz": "Альфа-қаржы орталықтары (Нью-Йорк, Лондон)", "label_ru": "Глобальные альфа-центры (NYSE, LSE)", "color": "#F59E0B"}, {"id": "tier2", "label_kz": "Азиялық қаржы хабтары (Токио, Шанхай, Сингапур)", "label_ru": "Азиатские гиганты (Токио, Шанхай)", "color": "#10B981"}, {"id": "tier3", "label_kz": "Өңірлік хабтар (Астана, Дубай)", "label_ru": "Региональные хабы (Астана, Дубай)", "color": "#06B6D4"}], "assignments": {"tier1": ["USA", "GBR"], "tier2": ["JPN", "CHN", "SGP", "KOR", "ARE"], "tier3": ["KAZ", "DEU", "CHE", "FRA", "AUS"]}};
+    const currentMapData = {"id":10,"category":"geopolitics","category_kz":"Экономикалық география","category_ru":"Экономическая география","scope":"world","title_kz":"10. Жаһандық қаржы орталықтары мен қор биржалары","title_ru":"10. Мировые центры финансово-экономического влияния","desc_kz":"Әлемдік, азиялық, еуропалық және өңірлік қаржы орталықтары; Астана халықаралық қаржы орталығы (АХҚО).","desc_ru":"Мировые, азиатские, европейские и региональные финансовые центры; Международный финансовый центр «Астана» (МФЦА).","theory_kz":"\u003cul\u003e\u003cli\u003e\u003cb\u003eЖаһандық көшбасшылар\u003c/b\u003e — Нью-Йорк (NYSE және Nasdaq — капиталдандыру бойынша әлемдегі ең ірі биржалар) және Лондон (LSE).\u003c/li\u003e\u003cli\u003e\u003cb\u003eАзиялық орталықтар\u003c/b\u003e — Гонконг, Сингапур, Шанхай, Токио, Сеул.\u003c/li\u003e\u003cli\u003e\u003cb\u003eЕуропалық орталықтар\u003c/b\u003e — Франкфурт (Еуропалық орталық банк), Париж (Euronext), Цюрих, Амстердам, Люксембург.\u003c/li\u003e\u003cli\u003e\u003cb\u003eӨңірлік хабтар\u003c/b\u003e — Дубай, Торонто, Сидней, Мумбаи, Астана — \u003cb\u003eАХҚО\u003c/b\u003e («Астана» халықаралық қаржы орталығы, 2018 жылдан, AIX биржасы).\u003c/li\u003e\u003c/ul\u003e\u003cp\u003e2024–2025 жылдардағы GFCI индексі бойынша алғашқы төрттік: Нью-Йорк, Лондон, Гонконг, Сингапур.\u003c/p\u003e\u003cp\u003e🔗 Қаржы орталықтары ірі капитал, сенімді құқық (көбіне ағылшын құқығы), ыңғайлы уақыт белдеуі мен әлемдік нарықтармен байланыс тоғысқан жерде өседі.\u003c/p\u003e\u003cp\u003e⚠️ ҰБТ: АХҚО-да ағылшынның жалпы құқығы қолданылады — шетелдік инвесторлардың сенімі үшін. Сингапур нүктемен көрсетілген.\u003c/p\u003e","theory_ru":"\u003cul\u003e\u003cli\u003e\u003cb\u003eГлобальные лидеры\u003c/b\u003e — Нью-Йорк (NYSE и Nasdaq — крупнейшие биржи мира по капитализации) и Лондон (LSE).\u003c/li\u003e\u003cli\u003e\u003cb\u003eАзиатские центры\u003c/b\u003e — Гонконг, Сингапур, Шанхай, Токио, Сеул.\u003c/li\u003e\u003cli\u003e\u003cb\u003eЕвропейские центры\u003c/b\u003e — Франкфурт (Европейский центральный банк), Париж (Euronext), Цюрих, Амстердам, Люксембург.\u003c/li\u003e\u003cli\u003e\u003cb\u003eРегиональные хабы\u003c/b\u003e — Дубай, Торонто, Сидней, Мумбаи, Астана — \u003cb\u003eМФЦА\u003c/b\u003e (Международный финансовый центр «Астана», с 2018 г., биржа AIX).\u003c/li\u003e\u003c/ul\u003e\u003cp\u003eПо индексу GFCI 2024–2025 гг. первая четвёрка: Нью-Йорк, Лондон, Гонконг, Сингапур.\u003c/p\u003e\u003cp\u003e🔗 Финансовые центры растут там, где сочетаются крупный капитал, надёжное право (часто английское), удобный часовой пояс и связи с мировыми рынками.\u003c/p\u003e\u003cp\u003e⚠️ ЕНТ: в МФЦА действует английское общее право — для доверия иностранных инвесторов. Сингапур показан точкой.\u003c/p\u003e","legend":[{"id":"tier1","label_kz":"Жаһандық көшбасшылар (Нью-Йорк, Лондон)","label_ru":"Глобальные лидеры (Нью-Йорк, Лондон)","color":"#F59E0B"},{"id":"tier2","label_kz":"Азиялық орталықтар (Гонконг, Сингапур, Шанхай, Токио, Сеул)","label_ru":"Азиатские центры (Гонконг, Сингапур, Шанхай, Токио, Сеул)","color":"#10B981"},{"id":"tier3","label_kz":"Еуропалық орталықтар (Франкфурт, Париж, Цюрих, Амстердам)","label_ru":"Европейские центры (Франкфурт, Париж, Цюрих, Амстердам)","color":"#3B82F6"},{"id":"tier4","label_kz":"Өңірлік хабтар (Дубай, Торонто, Сидней, Мумбаи, Астана)","label_ru":"Региональные хабы (Дубай, Торонто, Сидней, Мумбаи, Астана)","color":"#06B6D4"}],"assignments":{"tier1":["USA","GBR"],"tier2":["CHN","SGP","JPN","KOR"],"tier3":["DEU","France","CHE","NLD","LUX"],"tier4":["ARE","CAN","AUS","IND","KAZ"]}};
 
     let currentLang = 'kz';
     let currentHighlightedCategory = null;
@@ -328,6 +326,37 @@
       document.getElementById('lblBtnGeoJson').textContent = isRu ? 'Скачать данные GeoJSON' : 'GeoJSON дерегін жүктеп алу';
     }
 
+    // Государства без контура на карте — рисуем точками по координатам столиц (lon, lat)
+    const EXTRA_POINTS = {
+      SGP: { lon: 103.82, lat: 1.35, ru: 'Сингапур', kz: 'Сингапур' },
+      BHR: { lon: 50.55, lat: 26.07, ru: 'Бахрейн', kz: 'Бахрейн' },
+      MLT: { lon: 14.38, lat: 35.94, ru: 'Мальта', kz: 'Мальта' },
+      VAT: { lon: 12.45, lat: 41.90, ru: 'Ватикан', kz: 'Ватикан' },
+      MCO: { lon: 7.42, lat: 43.74, ru: 'Монако', kz: 'Монако' },
+      LIE: { lon: 9.55, lat: 47.17, ru: 'Лихтенштейн', kz: 'Лихтенштейн' },
+      AND: { lon: 1.52, lat: 42.51, ru: 'Андорра', kz: 'Андорра' },
+      SMR: { lon: 12.46, lat: 43.94, ru: 'Сан-Марино', kz: 'Сан-Марино' },
+      MDV: { lon: 73.22, lat: 3.20, ru: 'Мальдивы', kz: 'Мальдив аралдары' },
+      TON: { lon: -175.20, lat: -21.18, ru: 'Тонга', kz: 'Тонга' },
+      COM: { lon: 43.33, lat: -11.70, ru: 'Коморы', kz: 'Комор аралдары' },
+      FSM: { lon: 158.22, lat: 6.92, ru: 'Микронезия', kz: 'Микронезия' },
+      KNA: { lon: -62.78, lat: 17.34, ru: 'Сент-Китс и Невис', kz: 'Сент-Китс және Невис' }
+    };
+
+    // Та же проекция, что у контуров стран: Робинсон, подогнанный под холст 1000×540
+    const ROB_X = [1.0000, 0.9986, 0.9954, 0.9900, 0.9822, 0.9730, 0.9600, 0.9427, 0.9216, 0.8962, 0.8679, 0.8350, 0.7986, 0.7597, 0.7186, 0.6732, 0.6213, 0.5722, 0.5322];
+    const ROB_Y = [0.0000, 0.0620, 0.1240, 0.1860, 0.2480, 0.3100, 0.3720, 0.4340, 0.4958, 0.5571, 0.6176, 0.6769, 0.7346, 0.7903, 0.8435, 0.8936, 0.9394, 0.9761, 1.0000];
+    function robinsonXY(lon, lat) {
+      const a = Math.min(Math.abs(lat), 89.99) / 5, i = Math.floor(a), f = a - i;
+      const X = ROB_X[i] + (ROB_X[i + 1] - ROB_X[i]) * f;
+      const Y = ROB_Y[i] + (ROB_Y[i + 1] - ROB_Y[i]) * f;
+      return { x: 503 + 2.676 * X * lon, y: 304.3 - 242.7 * Y * Math.sign(lat) };
+    }
+
+    function updateLegendBadge() {
+      const badge = document.getElementById('legendCountBadge');
+      if (badge) badge.textContent = (currentMapData.legend || []).length + (currentLang === 'ru' ? ' кат.' : ' санат');
+    }
     // Render Polygons
     function renderMapPolygons() {
       const container = document.getElementById('mapPanZoomLayer');
@@ -388,6 +417,28 @@
         container.appendChild(path);
       });
 
+      // Малые государства без контура — точками
+      const drawnIds = new Set(WORLD_COUNTRIES.map(c => c.id));
+      Object.entries(countryGroupMap).forEach(([cId, groupId]) => {
+        const pt = EXTRA_POINTS[cId];
+        if (!pt || drawnIds.has(cId)) return;
+        const pos = robinsonXY(pt.lon, pt.lat);
+        const groupInfo = legendMap[groupId];
+        const country = { id: cId, name_ru: pt.ru, name_kz: pt.kz };
+        const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        dot.setAttribute('cx', pos.x.toFixed(1));
+        dot.setAttribute('cy', pos.y.toFixed(1));
+        dot.setAttribute('r', '2.6');
+        dot.setAttribute('class', 'country-polygon');
+        dot.setAttribute('fill', groupInfo ? groupInfo.color : '#94A3B8');
+        dot.setAttribute('opacity', currentHighlightedCategory && currentHighlightedCategory !== groupId ? '0.2' : '1');
+        dot.style.stroke = '#FFFFFF';
+        dot.style.strokeWidth = '0.7px';
+        dot.addEventListener('mousemove', (e) => showTooltip(e, country, groupInfo));
+        dot.addEventListener('mouseleave', hideTooltip);
+        dot.addEventListener('click', (e) => { e.stopPropagation(); showTooltip(e, country, groupInfo, true); });
+        container.appendChild(dot);
+      });
       // Kazakhstan Zoom logic if scope is kazakhstan
       if (currentMapData.scope === 'kazakhstan') {
         viewBox = { x: 600, y: 120, w: 180, h: 100 };
@@ -397,6 +448,7 @@
 
     // Render Legend
     function renderLegend() {
+      updateLegendBadge();
       const container = document.getElementById('legendContainer');
       if (!container) return;
       container.innerHTML = '';

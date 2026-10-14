@@ -223,9 +223,7 @@
           <h3 class="text-xs font-black uppercase tracking-wider text-slate-400" id="lblLegendTitle">
             Картаның шарты белгілері (Легенда)
           </h3>
-          <span class="text-[10px] px-2 py-0.5 rounded-md bg-space-850 text-cyan-400 font-bold border border-slate-700">
-            3 санат
-          </span>
+          <span class="text-[10px] px-2 py-0.5 rounded-md bg-space-850 text-cyan-400 font-bold border border-slate-700" id="legendCountBadge"></span>
         </div>
 
         <!-- Legend Items Grid -->
@@ -273,7 +271,7 @@
 
   <!-- MAP CLIENT ENGINE -->
   <script>
-    const currentMapData = {"id": 2, "category": "geopolitics", "scope": "world", "title_kz": "2. Х. Маккиндердің «Хартленд» тұжырымдамасы", "title_ru": "2. Геополитическая модель «Хартленд» Х. Маккиндера", "desc_kz": "Еуразия құрлығының кіндігі («Сердце Земли») және теңіз бен құрлық державаларының күресі.", "desc_ru": "Концепция континентального «Хартленда» и противостояния суши и моря.", "theory_kz": "Хэлфорд Маккиндер Хартлендті Еуразияның ешбір теңіз флоты ене алмайтын құрлықтық өзегі деп анықтады. Қазақстан — Хартлендтің орталығында.", "theory_ru": "Маккиндер обозначил Хартленд как недосягаемое для морских держав континентальное ядро. Казахстан лежит в самом сердце Хартленда.", "legend": [{"id": "heartland", "label_kz": "Хартленд (Құрлықтық өзек)", "label_ru": "Хартленд (Осевой регион)", "color": "#DC2626"}, {"id": "inner", "label_kz": "Ішкі жартыай (Жағалаулық дуга)", "label_ru": "Внутренний полумесяц (Римленд)", "color": "#F59E0B"}, {"id": "outer", "label_kz": "Сыртқы жартыай (Мұхиттық шеңбер)", "label_ru": "Внешний полумесяц (Океанический круг)", "color": "#2563EB"}], "assignments": {"heartland": ["KAZ", "RUS", "BLR", "UKR", "UZB", "TKM", "KGZ", "TJK", "MNG", "AFG"], "inner": ["DEU", "FRA", "TUR", "IRN", "PAK", "IND", "CHN", "KOR", "THA", "VNM", "MMR", "IRQ", "SYR", "SAU", "EGY"], "outer": ["GBR", "JPN", "USA", "CAN", "AUS", "NZL", "ZAF", "IDN", "PHL", "BRA", "ARG", "CHL", "MEX"]}};
+    const currentMapData = {"id":2,"category":"geopolitics","category_kz":"Геосаясат","category_ru":"Геополитика","scope":"world","title_kz":"2. Х. Маккиндердің «Хартленд» тұжырымдамасы","title_ru":"2. Геополитическая модель «Хартленд» Х. Маккиндера","desc_kz":"Хартленд («әлемнің жүрегі»), Шығыс Еуропа — оның «қақпасы», ішкі және сыртқы жарты ай.","desc_ru":"Хартленд («сердце мира»), Восточная Европа — его «ворота», внутренний и внешний полумесяцы.","theory_kz":"\u003cp\u003e\u003cb\u003eХ. Маккиндер\u003c/b\u003e (1904, «Тарихтың географиялық осі»; 1919 — формула) әлемді теңіз державаларына қолжетімділігі бойынша бөлді.\u003c/p\u003e\u003cul\u003e\u003cli\u003e\u003cb\u003eХартленд\u003c/b\u003e — флоттар жете алмайтын ішкі Еуразия (Ресей, Қазақстанмен бірге Орталық Азия, Моңғолия). Темір жолдар оны ресурсы мол «бекініске» айналдырады. Беларусь пен Украина 1919 жылғы нұсқа бойынша Хартлендке жатады.\u003c/li\u003e\u003cli\u003e\u003cb\u003eШығыс Еуропа\u003c/b\u003e — Хартлендке апаратын «қақпа»: «Шығыс Еуропаны билеген Хартлендті басқарады».\u003c/li\u003e\u003cli\u003e\u003cb\u003eІшкі (шеткі) жарты ай\u003c/b\u003e — Еуразия мен Солтүстік Африканың жағалау елдері: Батыс Еуропа, Жерорта теңізі, Таяу Шығыс, Үндістан, Қытай.\u003c/li\u003e\u003cli\u003e\u003cb\u003eСыртқы (аралдық) жарты ай\u003c/b\u003e — Ұлыбритания, Жапония, Америка, Сахарадан оңтүстіктегі Африка, Аустралия мен Мұхит аралдары.\u003c/li\u003e\u003c/ul\u003e\u003cp\u003e⚠️ ҰБТ: «Әлемнің жүрегі» = Хартленд. Маккиндердің «ішкі жарты айы» мен Спикменнің «Римленді» ұқсас, бірақ әртүрлі ұғымдар (№3 картаны қараңыз).\u003c/p\u003e","theory_ru":"\u003cp\u003e\u003cb\u003eХ. Маккиндер\u003c/b\u003e (1904, «Географическая ось истории»; 1919 — формула) делил мир по доступности для морских держав.\u003c/p\u003e\u003cul\u003e\u003cli\u003e\u003cb\u003eХартленд\u003c/b\u003e — недоступная для флотов внутренняя Евразия (Россия, Центральная Азия вместе с Казахстаном, Монголия). Железные дороги превращают её в «крепость» с огромными ресурсами. Беларусь и Украина относятся к Хартленду по версии 1919 г.\u003c/li\u003e\u003cli\u003e\u003cb\u003eВосточная Европа\u003c/b\u003e — «ворота» в Хартленд: «Кто правит Восточной Европой — командует Хартлендом».\u003c/li\u003e\u003cli\u003e\u003cb\u003eВнутренний (окраинный) полумесяц\u003c/b\u003e — прибрежные страны Евразии и Северной Африки: Западная Европа, Средиземноморье, Ближний Восток, Индия, Китай.\u003c/li\u003e\u003cli\u003e\u003cb\u003eВнешний (островной) полумесяц\u003c/b\u003e — Великобритания, Япония, Америка, Африка южнее Сахары, Австралия и Океания.\u003c/li\u003e\u003c/ul\u003e\u003cp\u003e⚠️ ЕНТ: «Сердце мира» = Хартленд. «Внутренний полумесяц» Маккиндера и «Римленд» Спикмена — близкие, но разные понятия (см. карту №3).\u003c/p\u003e","legend":[{"id":"heartland","label_kz":"Хартленд — «әлемнің жүрегі»","label_ru":"Хартленд — «сердце мира»","color":"#DC2626"},{"id":"easteurope","label_kz":"Шығыс Еуропа — Хартлендтің «қақпасы»","label_ru":"Восточная Европа — «ворота» Хартленда","color":"#F97316"},{"id":"inner","label_kz":"Ішкі (шеткі) жарты ай","label_ru":"Внутренний (окраинный) полумесяц","color":"#F59E0B"},{"id":"outer","label_kz":"Сыртқы (аралдық) жарты ай","label_ru":"Внешний (островной) полумесяц","color":"#2563EB"}],"assignments":{"heartland":["RUS","KAZ","UZB","TKM","KGZ","TJK","MNG","AFG","BLR","UKR"],"easteurope":["POL","LTU","LVA","EST","MDA","ROU","BGR","HUN","CZE","SVK","SVN","HRV","BIH","SRB","MNE","MKD","ALB","Kosovo"],"inner":["DEU","France","ITA","ESP","PRT","NLD","BEL","LUX","CHE","AUT","DNK","Norway","SWE","FIN","GRC","CYP","TUR","SYR","LBN","ISR","JOR","IRQ","IRN","SAU","YEM","OMN","ARE","QAT","KWT","AZE","ARM","GEO","PAK","IND","BGD","NPL","BTN","LKA","CHN","PRK","KOR","MMR","THA","LAO","KHM","VNM","MYS","EGY","LBY","TUN","DZA","MAR"],"outer":["GBR","IRL","ISL","JPN","PHL","IDN","TLS","BRN","PNG","AUS","NZL","SLB","VUT","FJI","USA","CAN","MEX","GTM","BLZ","HND","SLV","NIC","CRI","PAN","CUB","JAM","HTI","DOM","BHS","TTO","COL","VEN","GUY","SUR","ECU","PER","BOL","BRA","PRY","URY","ARG","CHL","MRT","MLI","NER","TCD","SDN","SSD","ERI","ETH","DJI","SOM","KEN","UGA","RWA","BDI","TZA","COD","COG","GAB","GNQ","CMR","CAF","NGA","BEN","TGO","GHA","CIV","BFA","LBR","SLE","GIN","GNB","SEN","GMB","AGO","ZMB","MWI","MOZ","ZWE","BWA","NAM","ZAF","LSO","SWZ","MDG"]}};
 
     let currentLang = 'kz';
     let currentHighlightedCategory = null;
@@ -328,6 +326,37 @@
       document.getElementById('lblBtnGeoJson').textContent = isRu ? 'Скачать данные GeoJSON' : 'GeoJSON дерегін жүктеп алу';
     }
 
+    // Государства без контура на карте — рисуем точками по координатам столиц (lon, lat)
+    const EXTRA_POINTS = {
+      SGP: { lon: 103.82, lat: 1.35, ru: 'Сингапур', kz: 'Сингапур' },
+      BHR: { lon: 50.55, lat: 26.07, ru: 'Бахрейн', kz: 'Бахрейн' },
+      MLT: { lon: 14.38, lat: 35.94, ru: 'Мальта', kz: 'Мальта' },
+      VAT: { lon: 12.45, lat: 41.90, ru: 'Ватикан', kz: 'Ватикан' },
+      MCO: { lon: 7.42, lat: 43.74, ru: 'Монако', kz: 'Монако' },
+      LIE: { lon: 9.55, lat: 47.17, ru: 'Лихтенштейн', kz: 'Лихтенштейн' },
+      AND: { lon: 1.52, lat: 42.51, ru: 'Андорра', kz: 'Андорра' },
+      SMR: { lon: 12.46, lat: 43.94, ru: 'Сан-Марино', kz: 'Сан-Марино' },
+      MDV: { lon: 73.22, lat: 3.20, ru: 'Мальдивы', kz: 'Мальдив аралдары' },
+      TON: { lon: -175.20, lat: -21.18, ru: 'Тонга', kz: 'Тонга' },
+      COM: { lon: 43.33, lat: -11.70, ru: 'Коморы', kz: 'Комор аралдары' },
+      FSM: { lon: 158.22, lat: 6.92, ru: 'Микронезия', kz: 'Микронезия' },
+      KNA: { lon: -62.78, lat: 17.34, ru: 'Сент-Китс и Невис', kz: 'Сент-Китс және Невис' }
+    };
+
+    // Та же проекция, что у контуров стран: Робинсон, подогнанный под холст 1000×540
+    const ROB_X = [1.0000, 0.9986, 0.9954, 0.9900, 0.9822, 0.9730, 0.9600, 0.9427, 0.9216, 0.8962, 0.8679, 0.8350, 0.7986, 0.7597, 0.7186, 0.6732, 0.6213, 0.5722, 0.5322];
+    const ROB_Y = [0.0000, 0.0620, 0.1240, 0.1860, 0.2480, 0.3100, 0.3720, 0.4340, 0.4958, 0.5571, 0.6176, 0.6769, 0.7346, 0.7903, 0.8435, 0.8936, 0.9394, 0.9761, 1.0000];
+    function robinsonXY(lon, lat) {
+      const a = Math.min(Math.abs(lat), 89.99) / 5, i = Math.floor(a), f = a - i;
+      const X = ROB_X[i] + (ROB_X[i + 1] - ROB_X[i]) * f;
+      const Y = ROB_Y[i] + (ROB_Y[i + 1] - ROB_Y[i]) * f;
+      return { x: 503 + 2.676 * X * lon, y: 304.3 - 242.7 * Y * Math.sign(lat) };
+    }
+
+    function updateLegendBadge() {
+      const badge = document.getElementById('legendCountBadge');
+      if (badge) badge.textContent = (currentMapData.legend || []).length + (currentLang === 'ru' ? ' кат.' : ' санат');
+    }
     // Render Polygons
     function renderMapPolygons() {
       const container = document.getElementById('mapPanZoomLayer');
@@ -388,6 +417,28 @@
         container.appendChild(path);
       });
 
+      // Малые государства без контура — точками
+      const drawnIds = new Set(WORLD_COUNTRIES.map(c => c.id));
+      Object.entries(countryGroupMap).forEach(([cId, groupId]) => {
+        const pt = EXTRA_POINTS[cId];
+        if (!pt || drawnIds.has(cId)) return;
+        const pos = robinsonXY(pt.lon, pt.lat);
+        const groupInfo = legendMap[groupId];
+        const country = { id: cId, name_ru: pt.ru, name_kz: pt.kz };
+        const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        dot.setAttribute('cx', pos.x.toFixed(1));
+        dot.setAttribute('cy', pos.y.toFixed(1));
+        dot.setAttribute('r', '2.6');
+        dot.setAttribute('class', 'country-polygon');
+        dot.setAttribute('fill', groupInfo ? groupInfo.color : '#94A3B8');
+        dot.setAttribute('opacity', currentHighlightedCategory && currentHighlightedCategory !== groupId ? '0.2' : '1');
+        dot.style.stroke = '#FFFFFF';
+        dot.style.strokeWidth = '0.7px';
+        dot.addEventListener('mousemove', (e) => showTooltip(e, country, groupInfo));
+        dot.addEventListener('mouseleave', hideTooltip);
+        dot.addEventListener('click', (e) => { e.stopPropagation(); showTooltip(e, country, groupInfo, true); });
+        container.appendChild(dot);
+      });
       // Kazakhstan Zoom logic if scope is kazakhstan
       if (currentMapData.scope === 'kazakhstan') {
         viewBox = { x: 600, y: 120, w: 180, h: 100 };
@@ -397,6 +448,7 @@
 
     // Render Legend
     function renderLegend() {
+      updateLegendBadge();
       const container = document.getElementById('legendContainer');
       if (!container) return;
       container.innerHTML = '';

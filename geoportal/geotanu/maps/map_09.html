@@ -223,9 +223,7 @@
           <h3 class="text-xs font-black uppercase tracking-wider text-slate-400" id="lblLegendTitle">
             Картаның шарты белгілері (Легенда)
           </h3>
-          <span class="text-[10px] px-2 py-0.5 rounded-md bg-space-850 text-cyan-400 font-bold border border-slate-700">
-            3 санат
-          </span>
+          <span class="text-[10px] px-2 py-0.5 rounded-md bg-space-850 text-cyan-400 font-bold border border-slate-700" id="legendCountBadge"></span>
         </div>
 
         <!-- Legend Items Grid -->
@@ -273,7 +271,7 @@
 
   <!-- MAP CLIENT ENGINE -->
   <script>
-    const currentMapData = {"id": 9, "category": "geopolitics", "scope": "world", "title_kz": "9. Қазақстанның геосаяси жағдайы және шекаралық тораптары", "title_ru": "9. Геополитическое положение Казахстана и границы", "desc_kz": "Қазақстан және оның көршілерімен шекаралық сызықтары.", "desc_ru": "Протяженность границ Казахстана и геостратегические узлы.", "theory_kz": "Шекара ұзындығы: Ресеймен — 7591 км (әлем рекорды), Өзбекстанмен — 2354 км, Қытаймен — 1782 км, Қырғызстанмен — 1241 км, Түрікменстанмен — 426 км.", "theory_ru": "Граница РК с РФ (7591 км) — самая длинная непрерывная сухопутная граница в мире.", "legend": [{"id": "kaz", "label_kz": "Қазақстан Республикасы", "label_ru": "Республика Казахстан", "color": "#06B6D4"}, {"id": "neighbors", "label_kz": "Шекаралас көрші елдер (5 ел)", "label_ru": "Сопредельные государства", "color": "#F59E0B"}, {"id": "caspian", "label_kz": "Каспий өңірі елдері", "label_ru": "Прикаспийский бассейн", "color": "#3B82F6"}], "assignments": {"kaz": ["KAZ"], "neighbors": ["RUS", "CHN", "UZB", "KGZ", "TKM"], "caspian": ["AZE", "IRN"]}};
+    const currentMapData = {"id":9,"category":"geopolitics","category_kz":"Геосаясат","category_ru":"Геополитика","scope":"kazakhstan","title_kz":"9. Қазақстанның геосаяси жағдайы және шекаралық тораптары","title_ru":"9. Геополитическое положение Казахстана и границы","desc_kz":"Қазақстанның 5 көршісі, шекара ұзындықтары, Каспий елдері және Транскаспий бағыты.","desc_ru":"5 соседей Казахстана, протяжённость границ, прикаспийские страны и Транскаспийский маршрут.","theory_kz":"\u003cp\u003eҚазақстан — әлемдегі ең ірі құрлықішілік ел, аумағы бойынша 9-орын (2 724 900 км²). Құрлықтағы шекараның жалпы ұзындығы — шамамен 13,4 мың км; 5 көрші:\u003c/p\u003e\u003cul\u003e\u003cli\u003e\u003cb\u003eРесей\u003c/b\u003e — ≈7,6 мың км (әлемдегі ең ұзын үздіксіз құрлық шекараларының бірі);\u003c/li\u003e\u003cli\u003e\u003cb\u003eӨзбекстан\u003c/b\u003e — ≈2,35 мың км;\u003c/li\u003e\u003cli\u003e\u003cb\u003eҚытай\u003c/b\u003e — ≈1,78 мың км (негізгі өткелдер: Қорғас, Достық);\u003c/li\u003e\u003cli\u003e\u003cb\u003eҚырғызстан\u003c/b\u003e — ≈1,24 мың км;\u003c/li\u003e\u003cli\u003e\u003cb\u003eТүрікменстан\u003c/b\u003e — ≈0,4 мың км.\u003c/li\u003e\u003c/ul\u003e\u003cp\u003eКаспий арқылы Қазақстан Әзербайжан және Иранмен де шектеседі. Ақтау мен Құрық порттары арқылы Транскаспий халықаралық көлік бағыты өтеді: Қазақстан → Каспий → Әзербайжан → Грузия → Түркия → Еуропа.\u003c/p\u003e\u003cp\u003e⚠️ ҰБТ: Тәжікстан — Орталық Азиядағы көрші, бірақ Қазақстанмен ортақ шекарасы жоқ.\u003c/p\u003e","theory_ru":"\u003cp\u003eКазахстан — крупнейшая внутриконтинентальная страна мира и 9-я по площади (2 724 900 км²). Общая протяжённость сухопутной границы — около 13,4 тыс. км; 5 соседей:\u003c/p\u003e\u003cul\u003e\u003cli\u003e\u003cb\u003eРоссия\u003c/b\u003e — ≈7,6 тыс. км (одна из самых длинных непрерывных сухопутных границ мира);\u003c/li\u003e\u003cli\u003e\u003cb\u003eУзбекистан\u003c/b\u003e — ≈2,35 тыс. км;\u003c/li\u003e\u003cli\u003e\u003cb\u003eКитай\u003c/b\u003e — ≈1,78 тыс. км (ключевые переходы: Хоргос, Достык);\u003c/li\u003e\u003cli\u003e\u003cb\u003eКыргызстан\u003c/b\u003e — ≈1,24 тыс. км;\u003c/li\u003e\u003cli\u003e\u003cb\u003eТуркменистан\u003c/b\u003e — ≈0,4 тыс. км.\u003c/li\u003e\u003c/ul\u003e\u003cp\u003eПо Каспию Казахстан граничит также с Азербайджаном и Ираном. Через порты Актау и Курык проходит Транскаспийский международный транспортный маршрут: Казахстан → Каспий → Азербайджан → Грузия → Турция → Европа.\u003c/p\u003e\u003cp\u003e⚠️ ЕНТ: Таджикистан — сосед по Центральной Азии, но общей границы с Казахстаном не имеет.\u003c/p\u003e","legend":[{"id":"kaz","label_kz":"Қазақстан Республикасы","label_ru":"Республика Казахстан","color":"#06B6D4"},{"id":"neighbors","label_kz":"Шекаралас көршілер (5 ел)","label_ru":"Сопредельные государства (5 стран)","color":"#F59E0B"},{"id":"ca","label_kz":"Орталық Азия (ортақ шекарасыз)","label_ru":"Центральная Азия (без общей границы)","color":"#A3E635"},{"id":"caspian","label_kz":"Каспий арқылы көршілер","label_ru":"Соседи по Каспию","color":"#3B82F6"},{"id":"corridor","label_kz":"Транскаспий бағыты (Еуропаға дейін)","label_ru":"Транскаспийский маршрут (до Европы)","color":"#A855F7"}],"assignments":{"kaz":["KAZ"],"neighbors":["RUS","CHN","UZB","KGZ","TKM"],"ca":["TJK"],"caspian":["AZE","IRN"],"corridor":["GEO","TUR"]}};
 
     let currentLang = 'kz';
     let currentHighlightedCategory = null;
@@ -328,6 +326,37 @@
       document.getElementById('lblBtnGeoJson').textContent = isRu ? 'Скачать данные GeoJSON' : 'GeoJSON дерегін жүктеп алу';
     }
 
+    // Государства без контура на карте — рисуем точками по координатам столиц (lon, lat)
+    const EXTRA_POINTS = {
+      SGP: { lon: 103.82, lat: 1.35, ru: 'Сингапур', kz: 'Сингапур' },
+      BHR: { lon: 50.55, lat: 26.07, ru: 'Бахрейн', kz: 'Бахрейн' },
+      MLT: { lon: 14.38, lat: 35.94, ru: 'Мальта', kz: 'Мальта' },
+      VAT: { lon: 12.45, lat: 41.90, ru: 'Ватикан', kz: 'Ватикан' },
+      MCO: { lon: 7.42, lat: 43.74, ru: 'Монако', kz: 'Монако' },
+      LIE: { lon: 9.55, lat: 47.17, ru: 'Лихтенштейн', kz: 'Лихтенштейн' },
+      AND: { lon: 1.52, lat: 42.51, ru: 'Андорра', kz: 'Андорра' },
+      SMR: { lon: 12.46, lat: 43.94, ru: 'Сан-Марино', kz: 'Сан-Марино' },
+      MDV: { lon: 73.22, lat: 3.20, ru: 'Мальдивы', kz: 'Мальдив аралдары' },
+      TON: { lon: -175.20, lat: -21.18, ru: 'Тонга', kz: 'Тонга' },
+      COM: { lon: 43.33, lat: -11.70, ru: 'Коморы', kz: 'Комор аралдары' },
+      FSM: { lon: 158.22, lat: 6.92, ru: 'Микронезия', kz: 'Микронезия' },
+      KNA: { lon: -62.78, lat: 17.34, ru: 'Сент-Китс и Невис', kz: 'Сент-Китс және Невис' }
+    };
+
+    // Та же проекция, что у контуров стран: Робинсон, подогнанный под холст 1000×540
+    const ROB_X = [1.0000, 0.9986, 0.9954, 0.9900, 0.9822, 0.9730, 0.9600, 0.9427, 0.9216, 0.8962, 0.8679, 0.8350, 0.7986, 0.7597, 0.7186, 0.6732, 0.6213, 0.5722, 0.5322];
+    const ROB_Y = [0.0000, 0.0620, 0.1240, 0.1860, 0.2480, 0.3100, 0.3720, 0.4340, 0.4958, 0.5571, 0.6176, 0.6769, 0.7346, 0.7903, 0.8435, 0.8936, 0.9394, 0.9761, 1.0000];
+    function robinsonXY(lon, lat) {
+      const a = Math.min(Math.abs(lat), 89.99) / 5, i = Math.floor(a), f = a - i;
+      const X = ROB_X[i] + (ROB_X[i + 1] - ROB_X[i]) * f;
+      const Y = ROB_Y[i] + (ROB_Y[i + 1] - ROB_Y[i]) * f;
+      return { x: 503 + 2.676 * X * lon, y: 304.3 - 242.7 * Y * Math.sign(lat) };
+    }
+
+    function updateLegendBadge() {
+      const badge = document.getElementById('legendCountBadge');
+      if (badge) badge.textContent = (currentMapData.legend || []).length + (currentLang === 'ru' ? ' кат.' : ' санат');
+    }
     // Render Polygons
     function renderMapPolygons() {
       const container = document.getElementById('mapPanZoomLayer');
@@ -388,15 +417,38 @@
         container.appendChild(path);
       });
 
+      // Малые государства без контура — точками
+      const drawnIds = new Set(WORLD_COUNTRIES.map(c => c.id));
+      Object.entries(countryGroupMap).forEach(([cId, groupId]) => {
+        const pt = EXTRA_POINTS[cId];
+        if (!pt || drawnIds.has(cId)) return;
+        const pos = robinsonXY(pt.lon, pt.lat);
+        const groupInfo = legendMap[groupId];
+        const country = { id: cId, name_ru: pt.ru, name_kz: pt.kz };
+        const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        dot.setAttribute('cx', pos.x.toFixed(1));
+        dot.setAttribute('cy', pos.y.toFixed(1));
+        dot.setAttribute('r', '2.6');
+        dot.setAttribute('class', 'country-polygon');
+        dot.setAttribute('fill', groupInfo ? groupInfo.color : '#94A3B8');
+        dot.setAttribute('opacity', currentHighlightedCategory && currentHighlightedCategory !== groupId ? '0.2' : '1');
+        dot.style.stroke = '#FFFFFF';
+        dot.style.strokeWidth = '0.7px';
+        dot.addEventListener('mousemove', (e) => showTooltip(e, country, groupInfo));
+        dot.addEventListener('mouseleave', hideTooltip);
+        dot.addEventListener('click', (e) => { e.stopPropagation(); showTooltip(e, country, groupInfo, true); });
+        container.appendChild(dot);
+      });
       // Kazakhstan Zoom logic if scope is kazakhstan
       if (currentMapData.scope === 'kazakhstan') {
-        viewBox = { x: 600, y: 120, w: 180, h: 100 };
+        viewBox = { x: 558, y: 104, w: 252, h: 136 };
         updateSvgViewBox();
       }
     }
 
     // Render Legend
     function renderLegend() {
+      updateLegendBadge();
       const container = document.getElementById('legendContainer');
       if (!container) return;
       container.innerHTML = '';
@@ -507,7 +559,7 @@
 
     function resetMapView() {
       viewBox = (currentMapData.scope === 'kazakhstan') 
-        ? { x: 600, y: 120, w: 180, h: 100 } 
+        ? { x: 558, y: 104, w: 252, h: 136 } 
         : { ...baseViewBox };
       updateSvgViewBox();
       highlightCategory(null);

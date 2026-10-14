@@ -223,9 +223,7 @@
           <h3 class="text-xs font-black uppercase tracking-wider text-slate-400" id="lblLegendTitle">
             Картаның шарты белгілері (Легенда)
           </h3>
-          <span class="text-[10px] px-2 py-0.5 rounded-md bg-space-850 text-cyan-400 font-bold border border-slate-700">
-            4 санат
-          </span>
+          <span class="text-[10px] px-2 py-0.5 rounded-md bg-space-850 text-cyan-400 font-bold border border-slate-700" id="legendCountBadge"></span>
         </div>
 
         <!-- Legend Items Grid -->
@@ -273,7 +271,7 @@
 
   <!-- MAP CLIENT ENGINE -->
   <script>
-    const currentMapData = {"id": 4, "category": "geopolitics", "scope": "world", "title_kz": "4. Дүниежүзі елдерінің басқару нысандары", "title_ru": "4. Формы государственного правления стран мира", "desc_kz": "Президенттік, парламенттік республикалар және монархиялар түрлері.", "desc_ru": "Типология государств: президентские, парламентские республики и монархии.", "theory_kz": "Республикаларда билік сайланады, ал монархияларда мұрагерлікпен беріледі. Сауд Арабиясында абсолютті монархия, Ұлыбритания мен Жапонияда конституциялық монархия сақталған.", "theory_ru": "В монархиях глава государства наследует власть. Конституционные монархии преобладают в Европе, абсолютные — на Ближнем Востоке.", "legend": [{"id": "pres", "label_kz": "Президенттік республикалар", "label_ru": "Президентские республики", "color": "#059669"}, {"id": "parl", "label_kz": "Парламенттік және аралас республикалар", "label_ru": "Парламентские и смешанные", "color": "#0284C7"}, {"id": "mon_const", "label_kz": "Конституциялық монархиялар", "label_ru": "Конституционные монархии", "color": "#F59E0B"}, {"id": "mon_abs", "label_kz": "Абсолюттік монархиялар", "label_ru": "Абсолютные монархии", "color": "#9333EA"}], "assignments": {"pres": ["USA", "BRA", "ARG", "MEX", "KAZ", "UZB", "TUR", "EGY", "IDN", "PHL", "COL", "VEN", "PER", "CHL", "NGA", "KEN"], "parl": ["DEU", "ITA", "IND", "FRA", "RUS", "FIN", "POL", "GRC", "AUT", "ZAF", "UKR", "PAK", "BGD", "IRL", "ISR"], "mon_const": ["GBR", "JPN", "ESP", "SWE", "NOR", "DNK", "NLD", "BEL", "CAN", "AUS", "NZL", "THA", "MYS", "MAR", "JOR"], "mon_abs": ["SAU", "OMN", "QAT", "ARE", "KWT", "BRN"]}};
+    const currentMapData = {"id":4,"category":"geopolitics","category_kz":"Саяси география","category_ru":"Политическая география","scope":"world","title_kz":"4. Дүниежүзі елдерінің басқару нысандары","title_ru":"4. Формы государственного правления стран мира","desc_kz":"Президенттік, аралас, парламенттік және социалистік республикалар, монархиялар және теократиялық режимдер.","desc_ru":"Президентские, смешанные, парламентские и социалистические республики, монархии и теократические режимы.","theory_kz":"\u003cp\u003e\u003cb\u003eБасқару формасы\u003c/b\u003e биліктің көзі кім екенін және ол қалай берілетінін көрсетеді.\u003c/p\u003e\u003cul\u003e\u003cli\u003e\u003cb\u003eПрезиденттік республика\u003c/b\u003e — президент мемлекет пен үкіметті басқарады (АҚШ, Бразилия, Қазақстан).\u003c/li\u003e\u003cli\u003e\u003cb\u003eАралас (жартылай президенттік)\u003c/b\u003e — күшті президент және парламент алдында жауапты үкімет (Франция, Португалия).\u003c/li\u003e\u003cli\u003e\u003cb\u003eПарламенттік\u003c/b\u003e — үкіметті парламент құрады, президент — символдық тұлға (Германия, Италия, Үндістан).\u003c/li\u003e\u003cli\u003e\u003cb\u003eСоциалистік республикалар\u003c/b\u003e — коммунистік партияның жетекші рөлі (Қытай, Вьетнам, Лаос, КХДР, Куба).\u003c/li\u003e\u003cli\u003e\u003cb\u003eКонституциялық монархия\u003c/b\u003e — монарх «патшалық етеді, бірақ басқармайды» (Ұлыбритания, Жапония, Испания); Достастықтың ~15 елі де осында (Канада, Аустралия).\u003c/li\u003e\u003cli\u003e\u003cb\u003eАбсолюттік және теократиялық монархия\u003c/b\u003e — монарх билігі шектелмеген (Сауд Арабиясы, Оман, Катар, БАӘ, Кувейт, Бахрейн, Бруней, Эсватини, Ватикан).\u003c/li\u003e\u003cli\u003e\u003cb\u003eТеократиялық режимдер\u003c/b\u003e — Иран (ислам республикасы), Ауғанстан.\u003c/li\u003e\u003c/ul\u003e\u003cp\u003e⚠️ Шағын мемлекеттер нүктемен көрсетілген. Кейбір елдерде (Мьянма, Мали, Буркина-Фасо, Нигер, Судан, Гаити) билік уақытша әскерилерде немесе өтпелі органдарда — картада конституциялық форма берілген. Ливия бөлінген, сондықтан санатқа кірмейді.\u003c/p\u003e","theory_ru":"\u003cp\u003e\u003cb\u003eФорма правления\u003c/b\u003e показывает, кто является источником власти и как она передаётся.\u003c/p\u003e\u003cul\u003e\u003cli\u003e\u003cb\u003eПрезидентская республика\u003c/b\u003e — президент возглавляет государство и правительство (США, Бразилия, Казахстан).\u003c/li\u003e\u003cli\u003e\u003cb\u003eСмешанная (полупрезидентская)\u003c/b\u003e — сильный президент и ответственное перед парламентом правительство (Франция, Португалия).\u003c/li\u003e\u003cli\u003e\u003cb\u003eПарламентская\u003c/b\u003e — правительство формирует парламент, президент — символическая фигура (Германия, Италия, Индия).\u003c/li\u003e\u003cli\u003e\u003cb\u003eСоциалистические республики\u003c/b\u003e — руководящая роль компартии (Китай, Вьетнам, Лаос, КНДР, Куба).\u003c/li\u003e\u003cli\u003e\u003cb\u003eКонституционная монархия\u003c/b\u003e — монарх «царствует, но не правит» (Великобритания, Япония, Испания); сюда же ~15 стран Содружества (Канада, Австралия).\u003c/li\u003e\u003cli\u003e\u003cb\u003eАбсолютная и теократическая монархия\u003c/b\u003e — власть монарха не ограничена (Саудовская Аравия, Оман, Катар, ОАЭ, Кувейт, Бахрейн, Бруней, Эсватини, Ватикан).\u003c/li\u003e\u003cli\u003e\u003cb\u003eТеократические режимы\u003c/b\u003e — Иран (исламская республика), Афганистан.\u003c/li\u003e\u003c/ul\u003e\u003cp\u003e⚠️ Мелкие государства показаны точками. В ряде стран (Мьянма, Мали, Буркина-Фасо, Нигер, Судан, Гаити) власть временно у военных или переходных органов — на карте указана конституционная форма. Ливия разделена, поэтому без классификации.\u003c/p\u003e","legend":[{"id":"pres","label_kz":"Президенттік республикалар","label_ru":"Президентские республики","color":"#059669"},{"id":"mixed","label_kz":"Аралас (жартылай президенттік) республикалар","label_ru":"Смешанные (полупрезидентские) республики","color":"#14B8A6"},{"id":"parl","label_kz":"Парламенттік республикалар","label_ru":"Парламентские республики","color":"#0284C7"},{"id":"socialist","label_kz":"Социалистік республикалар","label_ru":"Социалистические республики","color":"#E11D48"},{"id":"mon_const","label_kz":"Конституциялық монархиялар","label_ru":"Конституционные монархии","color":"#F59E0B"},{"id":"mon_abs","label_kz":"Абсолюттік және теократиялық монархиялар","label_ru":"Абсолютные и теократические монархии","color":"#9333EA"},{"id":"theo","label_kz":"Теократиялық режимдер","label_ru":"Теократические режимы","color":"#78716C"}],"assignments":{"pres":["KAZ","UZB","KGZ","TJK","TKM","AZE","BLR","CYP","TUR","KOR","IDN","PHL","LKA","MDV","MMR","YEM","SYR","USA","MEX","GTM","HND","SLV","NIC","CRI","PAN","DOM","HTI","COL","VEN","ECU","PER","BOL","BRA","PRY","URY","ARG","CHL","GUY","SUR","EGY","TUN","DZA","MRT","MLI","NER","TCD","SDN","SSD","ERI","DJI","SOM","KEN","UGA","RWA","BDI","TZA","COD","COG","GAB","GNQ","CMR","CAF","NGA","BEN","GHA","CIV","BFA","LBR","SLE","GIN","GNB","SEN","GMB","AGO","ZMB","MWI","MOZ","ZWE","NAM","MDG"],"mixed":["France","PRT","ROU","LTU","RUS","UKR","TLS"],"parl":["DEU","ITA","AUT","CHE","IRL","ISL","FIN","POL","CZE","SVK","HUN","SVN","HRV","BGR","GRC","ALB","MKD","SRB","MNE","BIH","Kosovo","MDA","EST","LVA","MLT","SMR","ARM","GEO","ISR","LBN","IRQ","PAK","IND","NPL","BGD","MNG","SGP","ETH","BWA","ZAF","TGO","TTO","VUT","FJI"],"socialist":["CHN","VNM","LAO","PRK","CUB"],"mon_const":["GBR","ESP","Norway","SWE","DNK","NLD","BEL","LUX","MCO","LIE","AND","JPN","THA","KHM","MYS","BTN","JOR","MAR","LSO","CAN","AUS","NZL","JAM","BHS","BLZ","PNG","SLB","TON"],"mon_abs":["SAU","OMN","ARE","QAT","KWT","BHR","BRN","SWZ","VAT"],"theo":["IRN","AFG"]}};
 
     let currentLang = 'kz';
     let currentHighlightedCategory = null;
@@ -328,6 +326,37 @@
       document.getElementById('lblBtnGeoJson').textContent = isRu ? 'Скачать данные GeoJSON' : 'GeoJSON дерегін жүктеп алу';
     }
 
+    // Государства без контура на карте — рисуем точками по координатам столиц (lon, lat)
+    const EXTRA_POINTS = {
+      SGP: { lon: 103.82, lat: 1.35, ru: 'Сингапур', kz: 'Сингапур' },
+      BHR: { lon: 50.55, lat: 26.07, ru: 'Бахрейн', kz: 'Бахрейн' },
+      MLT: { lon: 14.38, lat: 35.94, ru: 'Мальта', kz: 'Мальта' },
+      VAT: { lon: 12.45, lat: 41.90, ru: 'Ватикан', kz: 'Ватикан' },
+      MCO: { lon: 7.42, lat: 43.74, ru: 'Монако', kz: 'Монако' },
+      LIE: { lon: 9.55, lat: 47.17, ru: 'Лихтенштейн', kz: 'Лихтенштейн' },
+      AND: { lon: 1.52, lat: 42.51, ru: 'Андорра', kz: 'Андорра' },
+      SMR: { lon: 12.46, lat: 43.94, ru: 'Сан-Марино', kz: 'Сан-Марино' },
+      MDV: { lon: 73.22, lat: 3.20, ru: 'Мальдивы', kz: 'Мальдив аралдары' },
+      TON: { lon: -175.20, lat: -21.18, ru: 'Тонга', kz: 'Тонга' },
+      COM: { lon: 43.33, lat: -11.70, ru: 'Коморы', kz: 'Комор аралдары' },
+      FSM: { lon: 158.22, lat: 6.92, ru: 'Микронезия', kz: 'Микронезия' },
+      KNA: { lon: -62.78, lat: 17.34, ru: 'Сент-Китс и Невис', kz: 'Сент-Китс және Невис' }
+    };
+
+    // Та же проекция, что у контуров стран: Робинсон, подогнанный под холст 1000×540
+    const ROB_X = [1.0000, 0.9986, 0.9954, 0.9900, 0.9822, 0.9730, 0.9600, 0.9427, 0.9216, 0.8962, 0.8679, 0.8350, 0.7986, 0.7597, 0.7186, 0.6732, 0.6213, 0.5722, 0.5322];
+    const ROB_Y = [0.0000, 0.0620, 0.1240, 0.1860, 0.2480, 0.3100, 0.3720, 0.4340, 0.4958, 0.5571, 0.6176, 0.6769, 0.7346, 0.7903, 0.8435, 0.8936, 0.9394, 0.9761, 1.0000];
+    function robinsonXY(lon, lat) {
+      const a = Math.min(Math.abs(lat), 89.99) / 5, i = Math.floor(a), f = a - i;
+      const X = ROB_X[i] + (ROB_X[i + 1] - ROB_X[i]) * f;
+      const Y = ROB_Y[i] + (ROB_Y[i + 1] - ROB_Y[i]) * f;
+      return { x: 503 + 2.676 * X * lon, y: 304.3 - 242.7 * Y * Math.sign(lat) };
+    }
+
+    function updateLegendBadge() {
+      const badge = document.getElementById('legendCountBadge');
+      if (badge) badge.textContent = (currentMapData.legend || []).length + (currentLang === 'ru' ? ' кат.' : ' санат');
+    }
     // Render Polygons
     function renderMapPolygons() {
       const container = document.getElementById('mapPanZoomLayer');
@@ -388,6 +417,28 @@
         container.appendChild(path);
       });
 
+      // Малые государства без контура — точками
+      const drawnIds = new Set(WORLD_COUNTRIES.map(c => c.id));
+      Object.entries(countryGroupMap).forEach(([cId, groupId]) => {
+        const pt = EXTRA_POINTS[cId];
+        if (!pt || drawnIds.has(cId)) return;
+        const pos = robinsonXY(pt.lon, pt.lat);
+        const groupInfo = legendMap[groupId];
+        const country = { id: cId, name_ru: pt.ru, name_kz: pt.kz };
+        const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        dot.setAttribute('cx', pos.x.toFixed(1));
+        dot.setAttribute('cy', pos.y.toFixed(1));
+        dot.setAttribute('r', '2.6');
+        dot.setAttribute('class', 'country-polygon');
+        dot.setAttribute('fill', groupInfo ? groupInfo.color : '#94A3B8');
+        dot.setAttribute('opacity', currentHighlightedCategory && currentHighlightedCategory !== groupId ? '0.2' : '1');
+        dot.style.stroke = '#FFFFFF';
+        dot.style.strokeWidth = '0.7px';
+        dot.addEventListener('mousemove', (e) => showTooltip(e, country, groupInfo));
+        dot.addEventListener('mouseleave', hideTooltip);
+        dot.addEventListener('click', (e) => { e.stopPropagation(); showTooltip(e, country, groupInfo, true); });
+        container.appendChild(dot);
+      });
       // Kazakhstan Zoom logic if scope is kazakhstan
       if (currentMapData.scope === 'kazakhstan') {
         viewBox = { x: 600, y: 120, w: 180, h: 100 };
@@ -397,6 +448,7 @@
 
     // Render Legend
     function renderLegend() {
+      updateLegendBadge();
       const container = document.getElementById('legendContainer');
       if (!container) return;
       container.innerHTML = '';

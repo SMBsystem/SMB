@@ -223,9 +223,7 @@
           <h3 class="text-xs font-black uppercase tracking-wider text-slate-400" id="lblLegendTitle">
             Картаның шарты белгілері (Легенда)
           </h3>
-          <span class="text-[10px] px-2 py-0.5 rounded-md bg-space-850 text-cyan-400 font-bold border border-slate-700">
-            2 санат
-          </span>
+          <span class="text-[10px] px-2 py-0.5 rounded-md bg-space-850 text-cyan-400 font-bold border border-slate-700" id="legendCountBadge"></span>
         </div>
 
         <!-- Legend Items Grid -->
@@ -273,7 +271,7 @@
 
   <!-- MAP CLIENT ENGINE -->
   <script>
-    const currentMapData = {"id": 5, "category": "geopolitics", "scope": "world", "title_kz": "5. Мемлекеттік құрылым: Унитарлы vs Федеративті", "title_ru": "5. Формы государственного устройства: Унитарные vs Федерации", "desc_kz": "Аумақтың саяси-әкімшілік ұйымдастырылуы.", "desc_ru": "Унитарные государства и федерации мира.", "theory_kz": "Унитарлы мемлекеттерде (Қазақстан, Франция, Жапония) орталықтанған бірыңғай жүйе, ал федерацияларда (Ресей, АҚШ, Германия) штаттар мен облыстар автономияға ие.", "theory_ru": "Унитарные государства централизованы (Казахстан, Франция, Китай), федерации наделяют субъекты законодательной властью (США, РФ, ФРГ, Индия).", "legend": [{"id": "unitary", "label_kz": "Унитарлы мемлекеттер", "label_ru": "Унитарные государства", "color": "#06B6D4"}, {"id": "federal", "label_kz": "Федеративті мемлекеттер", "label_ru": "Федеративные государства", "color": "#8B5CF6"}], "assignments": {"federal": ["USA", "CAN", "RUS", "BRA", "IND", "AUS", "DEU", "MEX", "ARG", "NGA", "ETH", "ARE", "MYS", "PAK", "BEL", "AUT", "CHE"], "unitary": ["KAZ", "CHN", "FRA", "GBR", "JPN", "TUR", "ITA", "ESP", "EGY", "SAU", "UZB", "UKR", "POL", "KOR", "IDN", "ZAF", "COL", "IRN", "SWE", "NOR"]}};
+    const currentMapData = {"id":5,"category":"geopolitics","category_kz":"Саяси география","category_ru":"Политическая география","scope":"world","title_kz":"5. Мемлекеттік құрылым: Унитарлы vs Федеративті","title_ru":"5. Формы государственного устройства: Унитарные vs Федерации","desc_kz":"Унитарлы, федеративті және регионалистік мемлекеттер (барлық елдер).","desc_ru":"Унитарные, федеративные и регионалистские государства (все страны мира).","theory_kz":"\u003cp\u003e\u003cb\u003eМемлекеттік құрылым\u003c/b\u003e аумақтың қалай ұйымдастырылғанын көрсетеді.\u003c/p\u003e\u003cul\u003e\u003cli\u003e\u003cb\u003eУнитарлы мемлекет\u003c/b\u003e — біртұтас конституция мен парламент, аймақтарда мемлекеттілік жоқ (Қазақстан, Франция, Қытай, Жапония). Мұндай елдер — көпшілік.\u003c/li\u003e\u003cli\u003e\u003cb\u003eФедерация\u003c/b\u003e — субъектілердің өз конституциясы/заңдары бар (~25 ел: АҚШ, Ресей, Германия, Үндістан, Бразилия, Канада, Аустралия, Нигерия, БАӘ, Бельгия, Швейцария, Аустрия; шағындары — Комор аралдары, Микронезия, Сент-Китс және Невис — нүктемен).\u003c/li\u003e\u003cli\u003e\u003cb\u003eРегионалистік мемлекеттер\u003c/b\u003e — унитарлы, бірақ аймақтардың автономиясы кең (Испания, Италия, Ұлыбритания).\u003c/li\u003e\u003cli\u003e\u003cb\u003eКонфедерация\u003c/b\u003e — тәуелсіз мемлекеттер одағы; бүгін таза конфедерация жоқ.\u003c/li\u003e\u003c/ul\u003e\u003cp\u003e🔗 Федерацияны әдетте ірі және көпұлтты елдер таңдайды: бұл әртүрлілік жағдайында бірлікті сақтау тәсілі.\u003c/p\u003e\u003cp\u003e⚠️ ҰБТ: Қазақстан — унитарлы; Швейцария атауы бойынша конфедерация, мәні бойынша федерация; Бельгия 1993 жылы федерацияға айналды.\u003c/p\u003e","theory_ru":"\u003cp\u003e\u003cb\u003eФорма государственного устройства\u003c/b\u003e показывает, как организована территория.\u003c/p\u003e\u003cul\u003e\u003cli\u003e\u003cb\u003eУнитарное государство\u003c/b\u003e — единая конституция и парламент, регионы не имеют государственности (Казахстан, Франция, Китай, Япония). Таких стран большинство.\u003c/li\u003e\u003cli\u003e\u003cb\u003eФедерация\u003c/b\u003e — субъекты с собственными конституциями/законами (~25 стран: США, Россия, Германия, Индия, Бразилия, Канада, Австралия, Нигерия, ОАЭ, Бельгия, Швейцария, Австрия; малые — Коморы, Микронезия, Сент-Китс и Невис — точками).\u003c/li\u003e\u003cli\u003e\u003cb\u003eРегионалистские государства\u003c/b\u003e — унитарные, но с широкой автономией регионов (Испания, Италия, Великобритания).\u003c/li\u003e\u003cli\u003e\u003cb\u003eКонфедерация\u003c/b\u003e — союз суверенных государств; сегодня чистых конфедераций нет.\u003c/li\u003e\u003c/ul\u003e\u003cp\u003e🔗 Федерацию обычно выбирают крупные и многонациональные страны: это способ сохранить единство при разнообразии.\u003c/p\u003e\u003cp\u003e⚠️ ЕНТ: Казахстан — унитарный; Швейцария по названию конфедерация, по сути федерация; Бельгия стала федерацией в 1993 г.\u003c/p\u003e","legend":[{"id":"unitary","label_kz":"Унитарлы мемлекеттер","label_ru":"Унитарные государства","color":"#06B6D4"},{"id":"regional","label_kz":"Регионалистік (кең автономиялы унитарлы)","label_ru":"Регионалистские (унитарные с широкой автономией)","color":"#F59E0B"},{"id":"federal","label_kz":"Федеративті мемлекеттер","label_ru":"Федеративные государства","color":"#8B5CF6"}],"assignments":{"unitary":["KAZ","UZB","KGZ","TJK","TKM","AFG","MNG","CHN","PRK","KOR","JPN","VNM","LAO","KHM","THA","MMR","BGD","BTN","LKA","MDV","IDN","PHL","TLS","BRN","SGP","IRN","TUR","SYR","LBN","ISR","JOR","SAU","YEM","OMN","QAT","KWT","BHR","AZE","ARM","GEO","CYP","France","PRT","IRL","ISL","Norway","SWE","FIN","DNK","NLD","LUX","POL","CZE","SVK","HUN","SVN","HRV","SRB","MNE","MKD","ALB","Kosovo","ROU","BGR","GRC","MDA","UKR","BLR","EST","LVA","LTU","MLT","MCO","LIE","AND","SMR","VAT","EGY","LBY","TUN","DZA","MAR","MRT","MLI","NER","TCD","ERI","DJI","KEN","UGA","RWA","BDI","TZA","COD","COG","GAB","GNQ","CMR","CAF","BEN","TGO","GHA","CIV","BFA","LBR","SLE","GIN","GNB","SEN","GMB","AGO","ZMB","MWI","MOZ","ZWE","BWA","NAM","ZAF","LSO","SWZ","MDG","GTM","BLZ","HND","SLV","NIC","CRI","PAN","CUB","JAM","HTI","DOM","BHS","TTO","COL","GUY","SUR","ECU","PER","BOL","PRY","URY","CHL","NZL","PNG","SLB","VUT","FJI","TON"],"regional":["ESP","ITA","GBR"],"federal":["USA","CAN","MEX","VEN","BRA","ARG","RUS","DEU","AUT","BEL","CHE","BIH","IND","PAK","NPL","MYS","IRQ","ARE","NGA","ETH","SOM","SDN","SSD","AUS","COM","FSM","KNA"]}};
 
     let currentLang = 'kz';
     let currentHighlightedCategory = null;
@@ -328,6 +326,37 @@
       document.getElementById('lblBtnGeoJson').textContent = isRu ? 'Скачать данные GeoJSON' : 'GeoJSON дерегін жүктеп алу';
     }
 
+    // Государства без контура на карте — рисуем точками по координатам столиц (lon, lat)
+    const EXTRA_POINTS = {
+      SGP: { lon: 103.82, lat: 1.35, ru: 'Сингапур', kz: 'Сингапур' },
+      BHR: { lon: 50.55, lat: 26.07, ru: 'Бахрейн', kz: 'Бахрейн' },
+      MLT: { lon: 14.38, lat: 35.94, ru: 'Мальта', kz: 'Мальта' },
+      VAT: { lon: 12.45, lat: 41.90, ru: 'Ватикан', kz: 'Ватикан' },
+      MCO: { lon: 7.42, lat: 43.74, ru: 'Монако', kz: 'Монако' },
+      LIE: { lon: 9.55, lat: 47.17, ru: 'Лихтенштейн', kz: 'Лихтенштейн' },
+      AND: { lon: 1.52, lat: 42.51, ru: 'Андорра', kz: 'Андорра' },
+      SMR: { lon: 12.46, lat: 43.94, ru: 'Сан-Марино', kz: 'Сан-Марино' },
+      MDV: { lon: 73.22, lat: 3.20, ru: 'Мальдивы', kz: 'Мальдив аралдары' },
+      TON: { lon: -175.20, lat: -21.18, ru: 'Тонга', kz: 'Тонга' },
+      COM: { lon: 43.33, lat: -11.70, ru: 'Коморы', kz: 'Комор аралдары' },
+      FSM: { lon: 158.22, lat: 6.92, ru: 'Микронезия', kz: 'Микронезия' },
+      KNA: { lon: -62.78, lat: 17.34, ru: 'Сент-Китс и Невис', kz: 'Сент-Китс және Невис' }
+    };
+
+    // Та же проекция, что у контуров стран: Робинсон, подогнанный под холст 1000×540
+    const ROB_X = [1.0000, 0.9986, 0.9954, 0.9900, 0.9822, 0.9730, 0.9600, 0.9427, 0.9216, 0.8962, 0.8679, 0.8350, 0.7986, 0.7597, 0.7186, 0.6732, 0.6213, 0.5722, 0.5322];
+    const ROB_Y = [0.0000, 0.0620, 0.1240, 0.1860, 0.2480, 0.3100, 0.3720, 0.4340, 0.4958, 0.5571, 0.6176, 0.6769, 0.7346, 0.7903, 0.8435, 0.8936, 0.9394, 0.9761, 1.0000];
+    function robinsonXY(lon, lat) {
+      const a = Math.min(Math.abs(lat), 89.99) / 5, i = Math.floor(a), f = a - i;
+      const X = ROB_X[i] + (ROB_X[i + 1] - ROB_X[i]) * f;
+      const Y = ROB_Y[i] + (ROB_Y[i + 1] - ROB_Y[i]) * f;
+      return { x: 503 + 2.676 * X * lon, y: 304.3 - 242.7 * Y * Math.sign(lat) };
+    }
+
+    function updateLegendBadge() {
+      const badge = document.getElementById('legendCountBadge');
+      if (badge) badge.textContent = (currentMapData.legend || []).length + (currentLang === 'ru' ? ' кат.' : ' санат');
+    }
     // Render Polygons
     function renderMapPolygons() {
       const container = document.getElementById('mapPanZoomLayer');
@@ -388,6 +417,28 @@
         container.appendChild(path);
       });
 
+      // Малые государства без контура — точками
+      const drawnIds = new Set(WORLD_COUNTRIES.map(c => c.id));
+      Object.entries(countryGroupMap).forEach(([cId, groupId]) => {
+        const pt = EXTRA_POINTS[cId];
+        if (!pt || drawnIds.has(cId)) return;
+        const pos = robinsonXY(pt.lon, pt.lat);
+        const groupInfo = legendMap[groupId];
+        const country = { id: cId, name_ru: pt.ru, name_kz: pt.kz };
+        const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        dot.setAttribute('cx', pos.x.toFixed(1));
+        dot.setAttribute('cy', pos.y.toFixed(1));
+        dot.setAttribute('r', '2.6');
+        dot.setAttribute('class', 'country-polygon');
+        dot.setAttribute('fill', groupInfo ? groupInfo.color : '#94A3B8');
+        dot.setAttribute('opacity', currentHighlightedCategory && currentHighlightedCategory !== groupId ? '0.2' : '1');
+        dot.style.stroke = '#FFFFFF';
+        dot.style.strokeWidth = '0.7px';
+        dot.addEventListener('mousemove', (e) => showTooltip(e, country, groupInfo));
+        dot.addEventListener('mouseleave', hideTooltip);
+        dot.addEventListener('click', (e) => { e.stopPropagation(); showTooltip(e, country, groupInfo, true); });
+        container.appendChild(dot);
+      });
       // Kazakhstan Zoom logic if scope is kazakhstan
       if (currentMapData.scope === 'kazakhstan') {
         viewBox = { x: 600, y: 120, w: 180, h: 100 };
@@ -397,6 +448,7 @@
 
     // Render Legend
     function renderLegend() {
+      updateLegendBadge();
       const container = document.getElementById('legendContainer');
       if (!container) return;
       container.innerHTML = '';
