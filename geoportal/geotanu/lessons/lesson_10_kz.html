@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="kz" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>10-сабақ. Қазақстан гидросферасы | GEOTANY</title>
+
+  <!-- AUTH GUARD: RESTRICT DIRECT ACCESS WITHOUT VALID SESSION -->
+  <style id="authCloak">body { display: none !important; }</style>
+  <script>
+    (function() {
+      try {
+        var isAdmin = localStorage.getItem('geotany_admin_auth') === 'true';
+        var sessionStr = localStorage.getItem('geotany_user_session');
+        var isAuthorized = isAdmin;
+        if (!isAuthorized && sessionStr) {
+          var s = JSON.parse(sessionStr);
+          if (s && s.email && (s.courseCode || s.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        var profileStr = localStorage.getItem('geotany_user_profile');
+        if (!isAuthorized && profileStr) {
+          var p = JSON.parse(profileStr);
+          if (p && p.email && (p.courseCode || p.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        if (!isAuthorized) {
+          window.location.replace('../geotanu.html?error=unauthorized_course');
+          return;
+        }
+        var cloak = document.getElementById('authCloak');
+        if (cloak) cloak.remove();
+      } catch (e) {
+        window.location.replace('../geotanu.html?error=unauthorized_course');
+      }
+    })();
+  </script>
+
+  <!-- TAILWIND CSS & FONTS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            space: {
+              800: '#1E293B',
+              850: '#151E2E',
+              900: '#0F172A',
+              950: '#0B0F19',
+            },
+            brand: {
+              400: '#34D399',
+              500: '#10B981',
+              600: '#059669',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0B0F19;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1E293B;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+    .prose-theory h1, .prose-theory h2, .prose-theory h3, .prose-theory h4 {
+      color: #F8FAFC;
+      font-weight: 800;
+    }
+    .prose-theory p {
+      color: #CBD5E1;
+      line-height: 1.75;
+      font-size: 0.875rem;
+    }
+    .prose-theory ul {
+      list-style-type: disc;
+      margin-left: 1.25rem;
+      color: #CBD5E1;
+      font-size: 0.875rem;
+    }
+    .prose-theory table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.75rem;
+    }
+    .prose-theory th, .prose-theory td {
+      border: 1px solid #334155;
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+    }
+    .prose-theory th {
+      background: #1E293B;
+      color: #F8FAFC;
+      font-weight: 700;
+    }
+    .prose-theory tr:nth-child(even) {
+      background: rgba(15, 23, 42, 0.6);
+    }
+  </style>
+</head>
+<body class="bg-space-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-brand-500/30 selection:text-brand-400">
+
+  <!-- TOP APP BAR -->
+  <header class="sticky top-0 z-40 bg-space-950/90 backdrop-blur-xl border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+      
+      <!-- Left: Back Button & Title -->
+      <div class="flex items-center space-x-3">
+        <a href="../geotanu.html?lang=kz#section-sabaktar_reading" class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 text-slate-300 hover:text-white border border-slate-700/80 text-xs sm:text-sm font-bold transition shadow-sm">
+          <span>←</span>
+          <span>Артқа</span>
+        </a>
+        <div class="h-6 w-px bg-slate-800 hidden sm:block"></div>
+        <div class="flex items-center space-x-2">
+          <span class="text-xs px-2.5 py-1 rounded-lg bg-cyan-500/10 text-cyan-400 font-extrabold border border-cyan-500/20">
+            10 / 20 сабақ
+          </span>
+          <span class="text-sm font-bold text-slate-200 hidden md:inline truncate max-w-xs">
+            10-сабақ. Қазақстан гидросферасы
+          </span>
+        </div>
+      </div>
+
+      <!-- Center: Reading Time Badge -->
+      <div class="hidden sm:flex items-center space-x-1.5 bg-space-900 border border-slate-800 px-3 py-1.5 rounded-xl text-xs text-slate-400 font-medium">
+        <span>⏱️</span>
+        <span>8 мин</span>
+      </div>
+
+      <!-- Right: Direct Language Page Switcher & Complete Button -->
+      <div class="flex items-center space-x-2 sm:space-x-3">
+        
+        <!-- Language Switcher linking directly to counterpart page -->
+        <div class="flex items-center bg-space-900 p-0.5 rounded-xl border border-slate-800 text-xs font-bold">
+          <a href="lesson_10_kz.html" class="px-2.5 py-1 rounded-lg bg-brand-500 text-space-950 font-black transition">
+            🇰🇿 KZ
+          </a>
+          <a href="lesson_10_ru.html" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition">
+            🇷🇺 RU
+          </a>
+        </div>
+
+        <!-- Mark as Completed Toggle Button -->
+        <button id="btnHeaderComplete" onclick="toggleLessonComplete()" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-emerald-400 text-xs font-bold transition flex items-center space-x-1.5 shadow-sm">
+          <span id="headerCheckIcon">○</span>
+          <span id="headerCompleteText" class="hidden sm:inline">Оқылды</span>
+        </button>
+
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-8">
+
+    <!-- HERO LESSON BANNER -->
+    <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-space-900 via-space-850 to-space-900 border border-slate-800 shadow-xl relative overflow-hidden">
+      <!-- Glow decoration -->
+      <div class="absolute -right-20 -top-20 w-60 h-60 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-20 -bottom-20 w-60 h-60 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10 space-y-4">
+        
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <span class="px-3 py-1 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 font-extrabold text-xs tracking-wider uppercase">
+              📖 ҰБТ ГЕОГРАФИЯ • САБАҚ №10
+            </span>
+            <span class="px-3 py-1 rounded-xl bg-brand-500/10 border border-brand-500/30 text-brand-400 font-bold text-xs">
+              Қазақ бөлімі
+            </span>
+          </div>
+
+          <!-- Prev / Next Navigation -->
+          <div class="flex items-center space-x-2 text-xs font-bold">
+            <a href="lesson_09_kz.html" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition flex items-center space-x-1"><span>←</span><span>Алдыңғы сабақ</span></a>
+            <span class="text-slate-500">|</span>
+            <a href="lesson_11_kz.html" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition flex items-center space-x-1"><span>Келесі сабақ</span><span>→</span></a>
+          </div>
+        </div>
+
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            10-сабақ. Қазақстан гидросферасы
+          </h1>
+          <h2 class="text-sm font-semibold text-cyan-300/80 mt-1">
+            10 урок. Гидросфера Казахстана
+          </h2>
+        </div>
+
+        <!-- Tags Row -->
+        <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-800/80">
+          <span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">#Қазақстан гидросферасы</span><span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">#Гидросфера Казахстана</span>
+        </div>
+
+        <!-- Completed Banner -->
+        <div id="lessonCompletedBanner" class="hidden p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-xs sm:text-sm text-emerald-300 flex items-center justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <span>✅</span>
+            <span>Бұл сабақ оқылды деп белгіленген.</span>
+          </div>
+          <span class="text-xs px-2.5 py-1 rounded-xl bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40">
+            +30 XP алынды
+          </span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SECTION 1: KEY TERMS & DEFINITIONS -->
+    <section class="p-6 sm:p-7 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-base sm:text-lg font-black text-white flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center text-sm font-black">1</span>
+          <span>Негізгі терминдер мен ұғымдар</span>
+        </h3>
+        <span class="text-xs text-slate-400 font-semibold">
+          5 термин
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Ішкі тұйық алап</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Қазақстанның 80%-дан астам өзен-көлдерінің Дүниежүзілік мұхитқа шыға алмайтын ерекше су жинау жүйесі.</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Ертіс өзені</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Қазақстан аумағындағы ең суы мол әрі кеме қатынайтын трансшекаралық өзен (Обь алабы).</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Балқаш көлі</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Батыс жартысы тұщы, ал шығыс жартысы ащы (тұзды) болып келетін дүниежүзіндегі бірегей көл.</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Жер асты сулары</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Қазақстанның шөл және қуаң аймақтарын тіршілік суымен қамтамасыз ететін артезиандық алаптар қоры.</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Тұйықсу мұздығы</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Іле Алатауында орналасқан, Алматы қаласы мен Шу-Іле аймағын суландыратын эталондық тау мұздығы.</p>
+        </div>
+        
+      </div>
+    </section>
+
+    <!-- SECTION 2: FULL COMPREHENSIVE THEORY -->
+    <section class="p-6 sm:p-8 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-5">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-base sm:text-lg font-black text-white flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-brand-500/10 border border-brand-500/20 text-brand-400 flex items-center justify-center text-sm font-black">2</span>
+          <span>Толық теориялық конспект және иллюстрациялар</span>
+        </h3>
+        <span class="text-xs text-slate-400 font-medium hidden sm:inline">
+          Интерактивті оқу
+        </span>
+      </div>
+
+      <!-- Theory Body Container -->
+      <div class="prose-theory leading-relaxed space-y-4 overflow-x-auto">
+        <h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>1. Қазақстанның су қорлары және өзен алаптары</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Қазақстан өзендері мен көлдері географиялық орнына байланысты <b class="text-cyan-300 font-bold">2 негізгі алапқа</b> бөлінеді:</li>
+</ul>
+<ol class="space-y-3 my-2.5 ml-6 list-none"><li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">1.</span><b class="text-emerald-300 font-bold">Солтүстік Мұзды мұхит алабы (аумақтың 12%-ы):</b><ul class="space-y-1.5 my-2 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Бұл алапқа Обь өзеніне құятын <b class="text-cyan-300 font-bold">Ертіс, Есіл, Тобыл</b> өзендері жатады.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Бұл — Қазақстаннан шығып, Дүниежүзілік мұхитқа суы жететін жалғыз өзен жүйесі.</li>
+</ul></li><li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">2.</span><b class="text-emerald-300 font-bold">Ішкі тұйық көлдер алабы (аумақтың 88%-ы):</b><ul class="space-y-1.5 my-2 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Суы мұхитқа жетпейтін, ішкі тұйық көлдер мен шөлдерге сіңіп кететін өзендер:</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><i class="text-slate-300">Каспий теңізі алабы:</i> Жайық, Жем;</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><i class="text-slate-300">Арал теңізі алабы:</i> Сырдария (бастауы Тянь-Шаньнан келеді);</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><i class="text-slate-300">Балқаш-Алакөл алабы:</i> Іле, Қаратал, Лепсі, Ақсу, Аягөз (Жетісу өзендері).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Өзендердің қоректенуі:</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Қазақстанның жазық өзендері (Есіл, Тобыл, Нұра) <b class="text-cyan-300 font-bold">80%-дан астам еріген қар суымен</b> қоректенеді, сондықтан көктемде қатты тасиды.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Тау өзендері (Ертіс, Сырдария, Іле) <b class="text-cyan-300 font-bold">мұздық және қар суымен</b> аралас қоректенеді, су деңгейі жазғы шілде-тамыз айларында көтеріледі.</li>
+</ul></li></ol>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>💧</span>
+<span>1-СЫЗБА: ҚАЗАҚСТАН ӨЗЕН АЛАПТАРЫ: СОЛТҮСТІК МҰЗДЫ МҰХИТ ЖӘНЕ ІШКІ ТҰЙЫҚ</span>
+</span>
+<span class="text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono">Солтүстік мұхит (Ертіс, Есіл, Тобыл) vs Ішкі тұйық (88%)</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 220">
+<!-- Arctic basin -->
+<rect fill="#0b1329" height="180" rx="8" stroke="#38bdf8" width="315" x="20" y="20"></rect>
+<text fill="#38bdf8" font-size="11" font-weight="bold" text-anchor="middle" x="177" y="45">СОЛТҮСТІК МҰЗДЫ МҰХИТ АЛАБЫ</text>
+<rect fill="#0284c7" fill-opacity="0.25" height="40" rx="4" stroke="#38bdf8" width="285" x="35" y="60"></rect>
+<text fill="#f8fafc" font-size="10" font-weight="bold" text-anchor="middle" x="177" y="78">ЕРТІС, ЕСІЛ, ТОБЫЛ (Обь өзені жүйесі)</text>
+<text fill="#cbd5e1" font-size="8" text-anchor="middle" x="177" y="92">Қазақстан өзен ағысының ~12%-ы ғана</text>
+<text fill="#34d399" font-size="10" font-weight="bold" text-anchor="middle" x="177" y="125">Дүниежүзілік мұхитқа суы жететін жалғыз алап</text>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="177" y="145">Есіл жағасында: Астана және Петропавл</text>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="177" y="165">Тобылдың оң саласы — Обаған (Құсмұрын)</text>
+<text fill="#fde047" font-size="9" text-anchor="middle" x="177" y="185">Қар суымен қоректенеді (80%)</text>
+<!-- Internal Endorheic Basin -->
+<rect fill="#0b1329" height="180" rx="8" stroke="#10b981" width="315" x="365" y="20"></rect>
+<text fill="#34d399" font-size="11" font-weight="bold" text-anchor="middle" x="522" y="45">ІШКІ ТҰЙЫҚ КӨЛДЕР АЛАБЫ (88%)</text>
+<!-- Sub-basins -->
+<text fill="#f8fafc" font-size="9" font-weight="bold" x="385" y="75">1. Каспий теңізі алабы: <tspan fill="#38bdf8">Жайық, Жем</tspan></text>
+<text fill="#f8fafc" font-size="9" font-weight="bold" x="385" y="98">2. Арал теңізі алабы: <tspan fill="#ef4444">Сырдария (лайлылық 1200 г/м³)</tspan></text>
+<text fill="#f8fafc" font-size="9" font-weight="bold" x="385" y="121">3. Балқаш-Алакөл алабы: <tspan fill="#10b981">Іле, Қаратал, Лепсі, Ақсу</tspan></text>
+<text fill="#f8fafc" font-size="9" font-weight="bold" x="385" y="144">4. Теңіз-Қорғалжын алабы: <tspan fill="#f59e0b">Нұра өзені</tspan></text>
+<line stroke="#1e293b" x1="385" x2="660" y1="155" y2="155"></line>
+<text fill="#ef4444" font-size="9" font-weight="bold" text-anchor="middle" x="522" y="175">Мұхитқа шығысы жоқ тұйық су жүйесі</text>
+<text fill="#94a3b8" font-size="8" text-anchor="middle" x="522" y="192">Суы булану мен суғаруға жұмсалады</text>
+</svg>
+</div>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>2. Қазақстанның басты өзендері және олардың көрсеткіштері</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Ертіс (Иртыш):</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Жалпы ұзындығы 4248 км (Қазақстан жерінде — 1700 км).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Еліміздегі <b class="text-cyan-300 font-bold">суы ең мол өзен</b> (орташа шығыны 960 м³/с).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Бастауын Қытайдағы Алтайдан алады (Қара Ертіс), <b class="text-cyan-300 font-bold">Зайсан көліне құйып</b>, одан тазарып <b class="text-cyan-300 font-bold">Ақ Ертіс</b> болып шығады.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Бұқтырма, Өскемен, Шүлбі ГЭС-тері салынған.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Сырдария:</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Ұзындығы 2212 км (Қазақстанда — 1400 км), шығыны 703 м³/с.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Орта Азия мен Қазақстандағы <b class="text-cyan-300 font-bold">ең лайлы өзен (1200 г/м³)</b>, себебі борпылдақ сазды-шөгінді жыныстарды шайып ағады. Суы Арал теңізін құтқаруға және күріш егістіктеріне жұмсалады.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Іле:</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Ұзындығы 1436 км (Қазақстанда — 815 км), шығыны 464 м³/с.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Балқаш көліне құятын ең үлкен, сулы өзен. Жағасында Қапшағай ГЭС-і мен Қонаев қаласы орналасқан.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Есіл (Ишим):</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Сарыарқадан басталып, Солтүстік Қазақстанмен ағып, Ресейде Ертіске құяды.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Есіл жағасында елордамыз <b class="text-cyan-300 font-bold">Астана</b> және <b class="text-cyan-300 font-bold">Петропавл</b> қалалары орналасқан.</li>
+</ul>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>🌊</span>
+<span>2-СЫЗБА: ҚАЗАҚСТАННЫҢ БАСТЫ ӨЗЕНДЕРІ МЕН КӨРСЕТКІШТЕРІ</span>
+</span>
+<span class="text-[10px] bg-emerald-500/10 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-500/20 font-mono">Ертіс • Сырдария • Іле • Жайық • Есіл</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 220">
+<!-- River cards 4 items -->
+<rect fill="#0b1329" height="180" rx="8" stroke="#38bdf8" width="155" x="20" y="20"></rect>
+<text fill="#38bdf8" font-size="12" font-weight="bold" text-anchor="middle" x="97" y="45">ЕРТІС (ИРТЫШ)</text>
+<text fill="#f8fafc" font-size="10" font-weight="bold" text-anchor="middle" x="97" y="70">4248 км (ҚР: 1700 км)</text>
+<text fill="#34d399" font-size="9" text-anchor="middle" x="97" y="90">Суы ең мол өзен</text>
+<text fill="#94a3b8" font-size="8" text-anchor="middle" x="97" y="115">Қара Ертіс -&gt; Зайсан көлі</text>
+<text fill="#94a3b8" font-size="8" text-anchor="middle" x="97" y="130">-&gt; Ақ Ертіс болып шығады</text>
+<text fill="#f59e0b" font-size="9" font-weight="bold" text-anchor="middle" x="97" y="160">ГЭС-тер: Бұқтырма, Өскемен</text>
+<text fill="#38bdf8" font-size="8" text-anchor="middle" x="97" y="180">Ертіс-Қарағанды каналы</text>
+<rect fill="#0b1329" height="180" rx="8" stroke="#ef4444" width="155" x="185" y="20"></rect>
+<text fill="#f87171" font-size="12" font-weight="bold" text-anchor="middle" x="262" y="45">СЫРДАРИЯ</text>
+<text fill="#f8fafc" font-size="10" font-weight="bold" text-anchor="middle" x="262" y="70">2212 км (ҚР: 1400 км)</text>
+<text fill="#ef4444" font-size="9" font-weight="bold" text-anchor="middle" x="262" y="90">ЕҢ ЛАЙЛЫ ӨЗЕН (1200 г/м³)</text>
+<text fill="#94a3b8" font-size="8" text-anchor="middle" x="262" y="115">Тянь-Шаньнан Аралға</text>
+<text fill="#f8fafc" font-family="monospace" font-size="9" x="262" y="135">Q = 703 м³/с</text>
+<text fill="#f59e0b" font-size="9" font-weight="bold" text-anchor="middle" x="262" y="160">Шардара суқоймасы</text>
+<text fill="#34d399" font-size="8" text-anchor="middle" x="262" y="180">Күріш алқаптары</text>
+<rect fill="#0b1329" height="180" rx="8" stroke="#10b981" width="160" x="355" y="20"></rect>
+<text fill="#34d399" font-size="12" font-weight="bold" text-anchor="middle" x="435" y="45">ІЛЕ (ИЛИ)</text>
+<text fill="#f8fafc" font-size="10" font-weight="bold" text-anchor="middle" x="435" y="70">1436 км (ҚР: 815 км)</text>
+<text fill="#34d399" font-size="9" text-anchor="middle" x="435" y="90">Балқашқа құятын бас өзен</text>
+<text fill="#94a3b8" font-size="8" text-anchor="middle" x="435" y="115">Тянь-Шань мұздықтары</text>
+<text fill="#f8fafc" font-family="monospace" font-size="9" x="435" y="135">Q = 464 м³/с</text>
+<text fill="#f59e0b" font-size="9" font-weight="bold" text-anchor="middle" x="435" y="160">Қапшағай ГЭС-і</text>
+<text fill="#38bdf8" font-size="8" text-anchor="middle" x="435" y="180">Жетісу су артериясы</text>
+<rect fill="#0b1329" height="180" rx="8" stroke="#fbbf24" width="155" x="525" y="20"></rect>
+<text fill="#fbbf24" font-size="12" font-weight="bold" text-anchor="middle" x="602" y="45">ЖАЙЫҚ (УРАЛ)</text>
+<text fill="#f8fafc" font-size="10" font-weight="bold" text-anchor="middle" x="602" y="70">2428 км (ҚР: 1082 км)</text>
+<text fill="#fbbf24" font-size="9" text-anchor="middle" x="602" y="90">Каспийге құяды</text>
+<text fill="#94a3b8" font-size="8" text-anchor="middle" x="602" y="115">Еуропа мен Азия шекарасы</text>
+<text fill="#f8fafc" font-family="monospace" font-size="9" x="602" y="135">Қар суы (80%)</text>
+<text fill="#f59e0b" font-size="9" font-weight="bold" text-anchor="middle" x="602" y="160">Бекіре балығы</text>
+<text fill="#34d399" font-size="8" text-anchor="middle" x="602" y="180">Батыс Қазақстан</text>
+</svg>
+</div>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>3. Қазақстан көлдері және Балқаш феномені</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Қазақстанда 48 мыңнан астам көл бар, бірақ олардың 95%-ының ауданы 1 км²-ден кіші.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Балқаш көлінің табиғи феномені:</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Көлді ортасындағы жіңішке <b class="text-cyan-300 font-bold">Сарыесік түбегі мен Ұзынарал бұғазы</b> екіге бөліп тұр.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Батыс бөлігі — тұщы:</b> оған мол сулы Іле өзені келіп құяды.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Шығыс бөлігі — ащы (тұзды):</b> су алмасу баяу, булану жоғары, құятын өзендер аз.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Көлдердің пайда болуы:</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Реликті (қалдық) көлдер:</b> Ежелгі Тетис мұхитының сарқыны: <b class="text-cyan-300 font-bold">Каспий, Арал, Балқаш, Теңіз</b>.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Тектоникалық көлдер:</b> Жер қыртысының жарығында жатқан терең көлдер: <b class="text-cyan-300 font-bold">Зайсан, Марқакөл</b>.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Тұщы көлдер:</b> Тұздылығы 1‰-ден (литріне 1 грамнан) аз сулар.</li>
+</ul>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>🏞️</span>
+<span>3-СЫЗБА: ҚАЗАҚСТАННЫҢ КӨЛДЕРІ ЖӘНЕ БАЛҚАШ ФЕНОМЕНІ</span>
+</span>
+<span class="text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono">Балқаш: батысы тұщы, шығысы ащы</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 220">
+<!-- Balkhash split lake illustration -->
+<rect fill="#0b1329" height="180" rx="8" stroke="#1e293b" width="360" x="20" y="20"></rect>
+<text fill="#38bdf8" font-size="12" font-weight="bold" text-anchor="middle" x="200" y="45">БАЛҚАШ КӨЛІ (ЖАРТЫЛАЙ ТҰЩЫ, ЖАРТЫЛАЙ АЩЫ)</text>
+<!-- Lake body split by strait -->
+<ellipse cx="130" cy="110" fill="#0284c7" fill-opacity="0.4" rx="75" ry="35" stroke="#38bdf8"></ellipse>
+<ellipse cx="270" cy="110" fill="#ca8a04" fill-opacity="0.4" rx="75" ry="30" stroke="#eab308"></ellipse>
+<!-- Saryesik peninsula dividing -->
+<polygon fill="#334155" points="195,75 205,115 195,145"></polygon>
+<text fill="#f8fafc" font-size="8" text-anchor="middle" x="200" y="70">Сарыесік</text>
+<text fill="#38bdf8" font-size="11" font-weight="black" text-anchor="middle" x="130" y="112">ТҰЩЫ СУ</text>
+<text fill="#e2e8f0" font-size="8" text-anchor="middle" x="130" y="128">Іле өзені құяды</text>
+<text fill="#fde047" font-size="11" font-weight="black" text-anchor="middle" x="270" y="112">АЩЫ СУ (Тұзды)</text>
+<text fill="#e2e8f0" font-size="8" text-anchor="middle" x="270" y="128">Булану жоғары, өзен аз</text>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="200" y="180">Дүниежүзіндегі ерекше жартылай тұщы көл</text>
+<!-- Lake Types Panel -->
+<rect fill="#0b1329" height="180" rx="8" stroke="#1e293b" width="285" x="395" y="20"></rect>
+<text fill="#34d399" font-size="11" font-weight="bold" text-anchor="middle" x="537" y="45">КӨЛДЕРДІҢ ПАЙДА БОЛУ ТИПТЕРІ</text>
+<text fill="#38bdf8" font-size="9" font-weight="bold" x="410" y="75">1. Реликті (қалдық):</text>
+<text fill="#cbd5e1" font-size="9" x="420" y="92">Каспий, Арал, Балқаш, Теңіз</text>
+<text fill="#34d399" font-size="9" font-weight="bold" x="410" y="118">2. Тектоникалық:</text>
+<text fill="#cbd5e1" font-size="9" x="420" y="135">Зайсан, Марқакөл (Алтайда)</text>
+<text fill="#fbbf24" font-size="9" font-weight="bold" x="410" y="160">3. Мұздықтық:</text>
+<text fill="#cbd5e1" font-size="9" x="420" y="177">Үлкен Алматы көлі, Жасылкөл</text>
+</svg>
+</div>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>4. Жасанды су қоймалары мен каналдар</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Ертіс-Қарағанды каналы (Қ. Сәтбаев атындағы канал):</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Ұзындығы <b class="text-cyan-300 font-bold">458 км</b>. Орталық Қазақстанның құрғақ өнеркәсіпті аймақтарын (Екібастұз, Қарағанды, Теміртау) Ертіс суымен қамтамасыз етеді.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Су табиғи еңіске қарсы ағатындықтан, 22 сорғы станциясы суды 418 метр биіктікке көтереді.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Ірі суқоймалар:</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Бұқтырма суқоймасы:</b> Ертісте орналасқан (5490 км²), Қазақстандағы ең ірі суқойма.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Қапшағай суқоймасы:</b> Іле өзенінде (1847 км²).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Шардара суқоймасы:</b> Сырдария өзенінде.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Самарқанд суқоймасы:</b> Нұра өзенінде, Теміртау металлургиясын сумен қамту үшін салынған.</li>
+</ul>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>🏗️</span>
+<span>4-СЫЗБА: СУҚОЙМАЛАР МЕН ЕРТІС-ҚАРАҒАНДЫ КАНАЛЫ</span>
+</span>
+<span class="text-[10px] bg-purple-500/10 text-purple-300 px-2.5 py-0.5 rounded-full border border-purple-500/20 font-mono">Бұқтырма • Қапшағай • Шардара • Самарқанд</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 220">
+<rect fill="#0b1329" height="180" rx="8" stroke="#1e293b" width="315" x="20" y="20"></rect>
+<text fill="#38bdf8" font-size="11" font-weight="bold" text-anchor="middle" x="177" y="45">ЕРТІС-ҚАРАҒАНДЫ КАНАЛЫ</text>
+<text fill="#f8fafc" font-size="10" font-weight="bold" text-anchor="middle" x="177" y="70">Ұзындығы: 458 км</text>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="177" y="95">Суды 418 м биіктікке 22 сорғы станциясы көтереді</text>
+<line stroke="#1e293b" x1="40" x2="315" y1="110" y2="110"></line>
+<text fill="#34d399" font-size="10" font-weight="bold" text-anchor="middle" x="177" y="135">Қамтамасыз ететін өңірлер:</text>
+<text fill="#cbd5e1" font-size="9" text-anchor="middle" x="177" y="155">Павлодар, Екібастұз, Қарағанды, Теміртау</text>
+<text fill="#f59e0b" font-size="9" font-weight="bold" text-anchor="middle" x="177" y="175">Астана қаласына дейін құбыр тартылған</text>
+<!-- Reservoirs list -->
+<rect fill="#0b1329" height="180" rx="8" stroke="#1e293b" width="315" x="365" y="20"></rect>
+<text fill="#34d399" font-size="11" font-weight="bold" text-anchor="middle" x="522" y="45">ІРІ СУҚОЙМАЛАР</text>
+<text fill="#f8fafc" font-size="9" font-weight="bold" x="385" y="75">1. Бұқтырма суқоймасы (Ертісте): <tspan fill="#38bdf8">5490 км²</tspan></text>
+<text fill="#94a3b8" font-size="8" x="385" y="92">Ауданы бойынша әлемдегі ең ірілердің бірі</text>
+<text fill="#f8fafc" font-size="9" font-weight="bold" x="385" y="115">2. Қапшағай суқоймасы (Іледе): <tspan fill="#10b981">1847 км²</tspan></text>
+<text fill="#94a3b8" font-size="8" x="385" y="132">Алматы облысын электрмен және сумен қамтиды</text>
+<text fill="#f8fafc" font-size="9" font-weight="bold" x="385" y="155">3. Самарқанд суқоймасы (Нұрада):</text>
+<text fill="#fbbf24" font-size="8" x="385" y="172">Теміртау металлургия комбинатын сумен қамту</text>
+</svg>
+</div>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>5. Мұздықтар, сарқырамалар және жерасты сулары</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Қазақстан мұздықтары:</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Елімізде 2700-ден астам мұздық бар. Мұздықтардың <b class="text-cyan-300 font-bold">79%-ын тау-аңғарлық мұздықтар</b> құрайды.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Қар сызығы:</b> Солтүстіктегі Алтай тауларында қар сызығы төмендеу (2600–3000 м), ал оңтүстіктегі Тянь-Шаньда жоғарырақ (3600–4000 м) жатыр.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Бұрқанбұлақ сарқырамасы:</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Жетісу (Жоңғар) Алатауының Қора өзені шатқалындағы <b class="text-cyan-300 font-bold">Қазақстандағы ең биік сарқырама (112 м)</b>.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Жерасты сулары:</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Қазақстан артезиан алаптарына бай: <b class="text-cyan-300 font-bold">Торғай, Қызылқұм, Мойынқұм, Бетпақдала</b>.</li>
+</ul>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>🏔️</span>
+<span>5-СЫЗБА: ҚАЗАҚСТАН МҰЗДЫҚТАРЫ ЖӘНЕ БҰРҚАНБҰЛАҚ</span>
+</span>
+<span class="text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono">79% аңғарлық мұздықтар • Бұрқанбұлақ (112 м)</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 220">
+<rect fill="#0b1329" height="180" rx="8" stroke="#1e293b" width="315" x="20" y="20"></rect>
+<text fill="#38bdf8" font-size="11" font-weight="bold" text-anchor="middle" x="177" y="45">ТАУ МҰЗДЫҚТАРЫ (2700-ден астам)</text>
+<text fill="#f8fafc" font-size="10" font-weight="bold" text-anchor="middle" x="177" y="70">79%-ы — АҢҒАРЛЫҚ МҰЗДЫҚТАР</text>
+<text fill="#cbd5e1" font-size="9" text-anchor="middle" x="177" y="95">Іле Алатауы: Тұйықсу, Богатырь, Корженевский</text>
+<line stroke="#1e293b" x1="40" x2="315" y1="110" y2="110"></line>
+<text fill="#f59e0b" font-size="10" font-weight="bold" text-anchor="middle" x="177" y="135">ҚАР СЫЗЫҒЫНЫҢ БИІКТІГІ:</text>
+<text fill="#38bdf8" font-size="9" text-anchor="middle" x="177" y="155">Алтайда — 2600–3000 м (солтүстікте, төмен)</text>
+<text fill="#ef4444" font-size="9" text-anchor="middle" x="177" y="175">Тянь-Шаньда — 3600–4000 м (оңтүстікте, жоғары)</text>
+<!-- Waterfall & Groundwater -->
+<rect fill="#0b1329" height="180" rx="8" stroke="#1e293b" width="315" x="365" y="20"></rect>
+<text fill="#34d399" font-size="11" font-weight="bold" text-anchor="middle" x="522" y="45">БҰРҚАНБҰЛАҚ ЖӘНЕ АРТЕЗИАН</text>
+<rect fill="#0284c7" fill-opacity="0.25" height="50" rx="4" stroke="#38bdf8" width="285" x="380" y="60"></rect>
+<text fill="#38bdf8" font-size="10" font-weight="bold" text-anchor="middle" x="522" y="80">БҰРҚАНБҰЛАҚ САРҚЫРАМАСЫ (112 м):</text>
+<text fill="#f8fafc" font-size="9" text-anchor="middle" x="522" y="98">Қазақстандағы ең биік сарқырама (Жетісу Алатауы, Қора)</text>
+<rect fill="#10b981" fill-opacity="0.25" height="50" rx="4" stroke="#34d399" width="285" x="380" y="125"></rect>
+<text fill="#34d399" font-size="10" font-weight="bold" text-anchor="middle" x="522" y="145">ТОРҒАЙ АРТЕЗИАН АЛАБЫ:</text>
+<text fill="#f8fafc" font-size="9" text-anchor="middle" x="522" y="163">Еліміздегі ең ірі жерасты тұщы су қоймасы</text>
+</svg>
+</div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: COMMON EXAM TRAPS & PITFALLS (if available) -->
+    <section class="p-6 sm:p-7 rounded-3xl bg-amber-500/5 border border-amber-500/20 shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-amber-500/20 pb-3">
+        <h3 class="text-base sm:text-lg font-black text-amber-300 flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center text-sm font-black">⚠️</span>
+          <span>ҰБТ қақпандары мен ерекше ескертулер</span>
+        </h3>
+        <span class="text-xs text-amber-400/80 font-bold">
+          Мұқият есте сақтаңыз
+        </span>
+      </div>
+
+      <div class="space-y-2.5 text-xs sm:text-sm text-slate-200">
+        <p class="leading-relaxed flex items-start space-x-2"><span class="text-amber-400 shrink-0 mt-0.5">⚠️</span><span>⚠️ Назар аударыңыз: Қазақстан гидросферасы бойынша сұрақтар ҰБТ-ның контексттік тесттерінде жиі кездеседі.</span></p>
+      </div>
+    </section>
+
+    <!-- SECTION 4: END-OF-LESSON TEST -->
+    <section class="p-6 sm:p-8 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-6">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-brand-500/10 border border-brand-500/20 text-brand-400 flex items-center justify-center text-sm font-black">3</span>
+          <div>
+            <h3 class="text-base sm:text-lg font-black text-white">
+              Тақырыптық қорытынды тест
+            </h3>
+            <p class="text-xs text-slate-400 mt-0.5">
+              Өту шегі: 80% • Сыйлық: +30 XP
+            </p>
+          </div>
+        </div>
+
+        <div id="testScoreBadge" class="hidden px-3 py-1 rounded-xl bg-space-850 border border-slate-700 text-xs font-bold text-amber-400 font-mono">
+          0%
+        </div>
+      </div>
+
+      <!-- Test Questions Container -->
+      <div id="testQuestionsList" class="space-y-6">
+        <!-- Dynamically populated test questions via JS -->
+      </div>
+
+      <!-- Test Submit & Score Action Bar -->
+      <div class="pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="text-xs text-slate-400" id="testProgressInfo">
+          Барлық сұрақтарға жауап беріп, өзіңізді тексеріңіз.
+        </div>
+        <div class="flex items-center space-x-2.5 w-full sm:w-auto">
+          <button id="btnSubmitTest" onclick="submitLessonTest()" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-brand-500 hover:from-amber-400 hover:to-brand-400 text-space-950 font-black text-xs sm:text-sm shadow-md transition flex items-center justify-center space-x-2">
+            <span>🏁</span>
+            <span>Тестті тексеру</span>
+          </button>
+          <button id="btnResetTest" onclick="resetLessonTest()" class="hidden px-4 py-2.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-bold transition flex items-center justify-center space-x-1">
+            <span>🔄</span>
+            <span>Қайта тапсыру</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- BOTTOM NAVIGATION & FOOTER -->
+    <div class="p-6 rounded-3xl bg-space-900 border border-slate-800 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleLessonComplete()" class="px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-400 text-space-950 font-black text-xs sm:text-sm shadow-md transition flex items-center space-x-2">
+          <span>✓</span>
+          <span id="lblBottomComplete">Сабақты оқылды деп белгілеу (+30 XP)</span>
+        </button>
+      </div>
+
+      <div class="flex items-center space-x-2 text-xs font-bold">
+        <a href="lesson_09_kz.html" class="px-4 py-2 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition">← Алдыңғы сабақ</a>
+        <a href="../geotanu.html?lang=kz#section-sabaktar_reading" class="px-4 py-2 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition">
+          Сабақтар тізімі
+        </a>
+        <a href="lesson_11_kz.html" class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-space-950 transition font-black">Келесі сабақ →</a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- LESSON SCRIPT ENGINE -->
+  <script>
+    const lessonData = {"id": 10, "title_kz": "10-сабақ. Қазақстан гидросферасы", "title_ru": "10 урок. Гидросфера Казахстана", "time": "8 мин", "tags": ["Қазақстан гидросферасы", "Гидросфера Казахстана"], "terms": [{"kz": "Ішкі тұйық алап", "ru": "Бессточный бассейн", "desc_kz": "Қазақстанның 80%-дан астам өзен-көлдерінің Дүниежүзілік мұхитқа шыға алмайтын ерекше су жинау жүйесі.", "desc_ru": "Область внутреннего стока, реки которой не имеют естественного выхода в Мировой океан."}, {"kz": "Ертіс өзені", "ru": "Река Иртыш", "desc_kz": "Қазақстан аумағындағы ең суы мол әрі кеме қатынайтын трансшекаралық өзен (Обь алабы).", "desc_ru": "Самая многоводная река Казахстана, впадающая в Обь и принадлежащая бассейну СЛО."}, {"kz": "Балқаш көлі", "ru": "Озеро Балхаш", "desc_kz": "Батыс жартысы тұщы, ал шығыс жартысы ащы (тұзды) болып келетін дүниежүзіндегі бірегей көл.", "desc_ru": "Уникальный полуводный водоем, разделенный проливом Узунарал на пресную и солоноватую части."}, {"kz": "Жер асты сулары", "ru": "Подземные воды", "desc_kz": "Қазақстанның шөл және қуаң аймақтарын тіршілік суымен қамтамасыз ететін артезиандық алаптар қоры.", "desc_ru": "Глубокие напорные артезианские бассейны, служащие стратегическим водным резервом засушливых зон."}, {"kz": "Тұйықсу мұздығы", "ru": "Ледник Туюксу", "desc_kz": "Іле Алатауында орналасқан, Алматы қаласы мен Шу-Іле аймағын суландыратын эталондық тау мұздығы.", "desc_ru": "Эталонный долинный ледник Заилийского Алатау в бассейне реки Малая Алматинка."}], "theory_kz": "<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>1. Қазақстанның су қорлары және өзен алаптары</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Қазақстан өзендері мен көлдері географиялық орнына байланысты <b class=\"text-cyan-300 font-bold\">2 негізгі алапқа</b> бөлінеді:</li>\n</ul>\n<ol class=\"space-y-3 my-2.5 ml-6 list-none\"><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Солтүстік Мұзды мұхит алабы (аумақтың 12%-ы):</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Бұл алапқа Обь өзеніне құятын <b class=\"text-cyan-300 font-bold\">Ертіс, Есіл, Тобыл</b> өзендері жатады.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Бұл — Қазақстаннан шығып, Дүниежүзілік мұхитқа суы жететін жалғыз өзен жүйесі.</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Ішкі тұйық көлдер алабы (аумақтың 88%-ы):</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Суы мұхитқа жетпейтін, ішкі тұйық көлдер мен шөлдерге сіңіп кететін өзендер:</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><i class=\"text-slate-300\">Каспий теңізі алабы:</i> Жайық, Жем;</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><i class=\"text-slate-300\">Арал теңізі алабы:</i> Сырдария (бастауы Тянь-Шаньнан келеді);</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><i class=\"text-slate-300\">Балқаш-Алакөл алабы:</i> Іле, Қаратал, Лепсі, Ақсу, Аягөз (Жетісу өзендері).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Өзендердің қоректенуі:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Қазақстанның жазық өзендері (Есіл, Тобыл, Нұра) <b class=\"text-cyan-300 font-bold\">80%-дан астам еріген қар суымен</b> қоректенеді, сондықтан көктемде қатты тасиды.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Тау өзендері (Ертіс, Сырдария, Іле) <b class=\"text-cyan-300 font-bold\">мұздық және қар суымен</b> аралас қоректенеді, су деңгейі жазғы шілде-тамыз айларында көтеріледі.</li>\n</ul></li></ol>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>💧</span>\n<span>1-СЫЗБА: ҚАЗАҚСТАН ӨЗЕН АЛАПТАРЫ: СОЛТҮСТІК МҰЗДЫ МҰХИТ ЖӘНЕ ІШКІ ТҰЙЫҚ</span>\n</span>\n<span class=\"text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono\">Солтүстік мұхит (Ертіс, Есіл, Тобыл) vs Ішкі тұйық (88%)</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<!-- Arctic basin -->\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#38bdf8\" width=\"315\" x=\"20\" y=\"20\"></rect>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"45\">СОЛТҮСТІК МҰЗДЫ МҰХИТ АЛАБЫ</text>\n<rect fill=\"#0284c7\" fill-opacity=\"0.25\" height=\"40\" rx=\"4\" stroke=\"#38bdf8\" width=\"285\" x=\"35\" y=\"60\"></rect>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"78\">ЕРТІС, ЕСІЛ, ТОБЫЛ (Обь өзені жүйесі)</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\" x=\"177\" y=\"92\">Қазақстан өзен ағысының ~12%-ы ғана</text>\n<text fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"125\">Дүниежүзілік мұхитқа суы жететін жалғыз алап</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"177\" y=\"145\">Есіл жағасында: Астана және Петропавл</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"177\" y=\"165\">Тобылдың оң саласы — Обаған (Құсмұрын)</text>\n<text fill=\"#fde047\" font-size=\"9\" text-anchor=\"middle\" x=\"177\" y=\"185\">Қар суымен қоректенеді (80%)</text>\n<!-- Internal Endorheic Basin -->\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#10b981\" width=\"315\" x=\"365\" y=\"20\"></rect>\n<text fill=\"#34d399\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"522\" y=\"45\">ІШКІ ТҰЙЫҚ КӨЛДЕР АЛАБЫ (88%)</text>\n<!-- Sub-basins -->\n<text fill=\"#f8fafc\" font-size=\"9\" font-weight=\"bold\" x=\"385\" y=\"75\">1. Каспий теңізі алабы: <tspan fill=\"#38bdf8\">Жайық, Жем</tspan></text>\n<text fill=\"#f8fafc\" font-size=\"9\" font-weight=\"bold\" x=\"385\" y=\"98\">2. Арал теңізі алабы: <tspan fill=\"#ef4444\">Сырдария (лайлылық 1200 г/м³)</tspan></text>\n<text fill=\"#f8fafc\" font-size=\"9\" font-weight=\"bold\" x=\"385\" y=\"121\">3. Балқаш-Алакөл алабы: <tspan fill=\"#10b981\">Іле, Қаратал, Лепсі, Ақсу</tspan></text>\n<text fill=\"#f8fafc\" font-size=\"9\" font-weight=\"bold\" x=\"385\" y=\"144\">4. Теңіз-Қорғалжын алабы: <tspan fill=\"#f59e0b\">Нұра өзені</tspan></text>\n<line stroke=\"#1e293b\" x1=\"385\" x2=\"660\" y1=\"155\" y2=\"155\"></line>\n<text fill=\"#ef4444\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"522\" y=\"175\">Мұхитқа шығысы жоқ тұйық су жүйесі</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"522\" y=\"192\">Суы булану мен суғаруға жұмсалады</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>2. Қазақстанның басты өзендері және олардың көрсеткіштері</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Ертіс (Иртыш):</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Жалпы ұзындығы 4248 км (Қазақстан жерінде — 1700 км).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Еліміздегі <b class=\"text-cyan-300 font-bold\">суы ең мол өзен</b> (орташа шығыны 960 м³/с).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Бастауын Қытайдағы Алтайдан алады (Қара Ертіс), <b class=\"text-cyan-300 font-bold\">Зайсан көліне құйып</b>, одан тазарып <b class=\"text-cyan-300 font-bold\">Ақ Ертіс</b> болып шығады.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Бұқтырма, Өскемен, Шүлбі ГЭС-тері салынған.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Сырдария:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Ұзындығы 2212 км (Қазақстанда — 1400 км), шығыны 703 м³/с.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Орта Азия мен Қазақстандағы <b class=\"text-cyan-300 font-bold\">ең лайлы өзен (1200 г/м³)</b>, себебі борпылдақ сазды-шөгінді жыныстарды шайып ағады. Суы Арал теңізін құтқаруға және күріш егістіктеріне жұмсалады.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Іле:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Ұзындығы 1436 км (Қазақстанда — 815 км), шығыны 464 м³/с.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Балқаш көліне құятын ең үлкен, сулы өзен. Жағасында Қапшағай ГЭС-і мен Қонаев қаласы орналасқан.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Есіл (Ишим):</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Сарыарқадан басталып, Солтүстік Қазақстанмен ағып, Ресейде Ертіске құяды.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Есіл жағасында елордамыз <b class=\"text-cyan-300 font-bold\">Астана</b> және <b class=\"text-cyan-300 font-bold\">Петропавл</b> қалалары орналасқан.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🌊</span>\n<span>2-СЫЗБА: ҚАЗАҚСТАННЫҢ БАСТЫ ӨЗЕНДЕРІ МЕН КӨРСЕТКІШТЕРІ</span>\n</span>\n<span class=\"text-[10px] bg-emerald-500/10 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-500/20 font-mono\">Ертіс • Сырдария • Іле • Жайық • Есіл</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<!-- River cards 4 items -->\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#38bdf8\" width=\"155\" x=\"20\" y=\"20\"></rect>\n<text fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"97\" y=\"45\">ЕРТІС (ИРТЫШ)</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"97\" y=\"70\">4248 км (ҚР: 1700 км)</text>\n<text fill=\"#34d399\" font-size=\"9\" text-anchor=\"middle\" x=\"97\" y=\"90\">Суы ең мол өзен</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"97\" y=\"115\">Қара Ертіс -&gt; Зайсан көлі</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"97\" y=\"130\">-&gt; Ақ Ертіс болып шығады</text>\n<text fill=\"#f59e0b\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"97\" y=\"160\">ГЭС-тер: Бұқтырма, Өскемен</text>\n<text fill=\"#38bdf8\" font-size=\"8\" text-anchor=\"middle\" x=\"97\" y=\"180\">Ертіс-Қарағанды каналы</text>\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#ef4444\" width=\"155\" x=\"185\" y=\"20\"></rect>\n<text fill=\"#f87171\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"262\" y=\"45\">СЫРДАРИЯ</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"262\" y=\"70\">2212 км (ҚР: 1400 км)</text>\n<text fill=\"#ef4444\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"262\" y=\"90\">ЕҢ ЛАЙЛЫ ӨЗЕН (1200 г/м³)</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"262\" y=\"115\">Тянь-Шаньнан Аралға</text>\n<text fill=\"#f8fafc\" font-family=\"monospace\" font-size=\"9\" x=\"262\" y=\"135\">Q = 703 м³/с</text>\n<text fill=\"#f59e0b\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"262\" y=\"160\">Шардара суқоймасы</text>\n<text fill=\"#34d399\" font-size=\"8\" text-anchor=\"middle\" x=\"262\" y=\"180\">Күріш алқаптары</text>\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#10b981\" width=\"160\" x=\"355\" y=\"20\"></rect>\n<text fill=\"#34d399\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"435\" y=\"45\">ІЛЕ (ИЛИ)</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"435\" y=\"70\">1436 км (ҚР: 815 км)</text>\n<text fill=\"#34d399\" font-size=\"9\" text-anchor=\"middle\" x=\"435\" y=\"90\">Балқашқа құятын бас өзен</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"435\" y=\"115\">Тянь-Шань мұздықтары</text>\n<text fill=\"#f8fafc\" font-family=\"monospace\" font-size=\"9\" x=\"435\" y=\"135\">Q = 464 м³/с</text>\n<text fill=\"#f59e0b\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"435\" y=\"160\">Қапшағай ГЭС-і</text>\n<text fill=\"#38bdf8\" font-size=\"8\" text-anchor=\"middle\" x=\"435\" y=\"180\">Жетісу су артериясы</text>\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#fbbf24\" width=\"155\" x=\"525\" y=\"20\"></rect>\n<text fill=\"#fbbf24\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"602\" y=\"45\">ЖАЙЫҚ (УРАЛ)</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"602\" y=\"70\">2428 км (ҚР: 1082 км)</text>\n<text fill=\"#fbbf24\" font-size=\"9\" text-anchor=\"middle\" x=\"602\" y=\"90\">Каспийге құяды</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"602\" y=\"115\">Еуропа мен Азия шекарасы</text>\n<text fill=\"#f8fafc\" font-family=\"monospace\" font-size=\"9\" x=\"602\" y=\"135\">Қар суы (80%)</text>\n<text fill=\"#f59e0b\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"602\" y=\"160\">Бекіре балығы</text>\n<text fill=\"#34d399\" font-size=\"8\" text-anchor=\"middle\" x=\"602\" y=\"180\">Батыс Қазақстан</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>3. Қазақстан көлдері және Балқаш феномені</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Қазақстанда 48 мыңнан астам көл бар, бірақ олардың 95%-ының ауданы 1 км²-ден кіші.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Балқаш көлінің табиғи феномені:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Көлді ортасындағы жіңішке <b class=\"text-cyan-300 font-bold\">Сарыесік түбегі мен Ұзынарал бұғазы</b> екіге бөліп тұр.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Батыс бөлігі — тұщы:</b> оған мол сулы Іле өзені келіп құяды.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Шығыс бөлігі — ащы (тұзды):</b> су алмасу баяу, булану жоғары, құятын өзендер аз.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Көлдердің пайда болуы:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Реликті (қалдық) көлдер:</b> Ежелгі Тетис мұхитының сарқыны: <b class=\"text-cyan-300 font-bold\">Каспий, Арал, Балқаш, Теңіз</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Тектоникалық көлдер:</b> Жер қыртысының жарығында жатқан терең көлдер: <b class=\"text-cyan-300 font-bold\">Зайсан, Марқакөл</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Тұщы көлдер:</b> Тұздылығы 1‰-ден (литріне 1 грамнан) аз сулар.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🏞️</span>\n<span>3-СЫЗБА: ҚАЗАҚСТАННЫҢ КӨЛДЕРІ ЖӘНЕ БАЛҚАШ ФЕНОМЕНІ</span>\n</span>\n<span class=\"text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono\">Балқаш: батысы тұщы, шығысы ащы</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<!-- Balkhash split lake illustration -->\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"360\" x=\"20\" y=\"20\"></rect>\n<text fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"200\" y=\"45\">БАЛҚАШ КӨЛІ (ЖАРТЫЛАЙ ТҰЩЫ, ЖАРТЫЛАЙ АЩЫ)</text>\n<!-- Lake body split by strait -->\n<ellipse cx=\"130\" cy=\"110\" fill=\"#0284c7\" fill-opacity=\"0.4\" rx=\"75\" ry=\"35\" stroke=\"#38bdf8\"></ellipse>\n<ellipse cx=\"270\" cy=\"110\" fill=\"#ca8a04\" fill-opacity=\"0.4\" rx=\"75\" ry=\"30\" stroke=\"#eab308\"></ellipse>\n<!-- Saryesik peninsula dividing -->\n<polygon fill=\"#334155\" points=\"195,75 205,115 195,145\"></polygon>\n<text fill=\"#f8fafc\" font-size=\"8\" text-anchor=\"middle\" x=\"200\" y=\"70\">Сарыесік</text>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"black\" text-anchor=\"middle\" x=\"130\" y=\"112\">ТҰЩЫ СУ</text>\n<text fill=\"#e2e8f0\" font-size=\"8\" text-anchor=\"middle\" x=\"130\" y=\"128\">Іле өзені құяды</text>\n<text fill=\"#fde047\" font-size=\"11\" font-weight=\"black\" text-anchor=\"middle\" x=\"270\" y=\"112\">АЩЫ СУ (Тұзды)</text>\n<text fill=\"#e2e8f0\" font-size=\"8\" text-anchor=\"middle\" x=\"270\" y=\"128\">Булану жоғары, өзен аз</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"200\" y=\"180\">Дүниежүзіндегі ерекше жартылай тұщы көл</text>\n<!-- Lake Types Panel -->\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"285\" x=\"395\" y=\"20\"></rect>\n<text fill=\"#34d399\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"537\" y=\"45\">КӨЛДЕРДІҢ ПАЙДА БОЛУ ТИПТЕРІ</text>\n<text fill=\"#38bdf8\" font-size=\"9\" font-weight=\"bold\" x=\"410\" y=\"75\">1. Реликті (қалдық):</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"420\" y=\"92\">Каспий, Арал, Балқаш, Теңіз</text>\n<text fill=\"#34d399\" font-size=\"9\" font-weight=\"bold\" x=\"410\" y=\"118\">2. Тектоникалық:</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"420\" y=\"135\">Зайсан, Марқакөл (Алтайда)</text>\n<text fill=\"#fbbf24\" font-size=\"9\" font-weight=\"bold\" x=\"410\" y=\"160\">3. Мұздықтық:</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"420\" y=\"177\">Үлкен Алматы көлі, Жасылкөл</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>4. Жасанды су қоймалары мен каналдар</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Ертіс-Қарағанды каналы (Қ. Сәтбаев атындағы канал):</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Ұзындығы <b class=\"text-cyan-300 font-bold\">458 км</b>. Орталық Қазақстанның құрғақ өнеркәсіпті аймақтарын (Екібастұз, Қарағанды, Теміртау) Ертіс суымен қамтамасыз етеді.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Су табиғи еңіске қарсы ағатындықтан, 22 сорғы станциясы суды 418 метр биіктікке көтереді.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Ірі суқоймалар:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Бұқтырма суқоймасы:</b> Ертісте орналасқан (5490 км²), Қазақстандағы ең ірі суқойма.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Қапшағай суқоймасы:</b> Іле өзенінде (1847 км²).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Шардара суқоймасы:</b> Сырдария өзенінде.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Самарқанд суқоймасы:</b> Нұра өзенінде, Теміртау металлургиясын сумен қамту үшін салынған.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🏗️</span>\n<span>4-СЫЗБА: СУҚОЙМАЛАР МЕН ЕРТІС-ҚАРАҒАНДЫ КАНАЛЫ</span>\n</span>\n<span class=\"text-[10px] bg-purple-500/10 text-purple-300 px-2.5 py-0.5 rounded-full border border-purple-500/20 font-mono\">Бұқтырма • Қапшағай • Шардара • Самарқанд</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"315\" x=\"20\" y=\"20\"></rect>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"45\">ЕРТІС-ҚАРАҒАНДЫ КАНАЛЫ</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"70\">Ұзындығы: 458 км</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"177\" y=\"95\">Суды 418 м биіктікке 22 сорғы станциясы көтереді</text>\n<line stroke=\"#1e293b\" x1=\"40\" x2=\"315\" y1=\"110\" y2=\"110\"></line>\n<text fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"135\">Қамтамасыз ететін өңірлер:</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" text-anchor=\"middle\" x=\"177\" y=\"155\">Павлодар, Екібастұз, Қарағанды, Теміртау</text>\n<text fill=\"#f59e0b\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"175\">Астана қаласына дейін құбыр тартылған</text>\n<!-- Reservoirs list -->\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"315\" x=\"365\" y=\"20\"></rect>\n<text fill=\"#34d399\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"522\" y=\"45\">ІРІ СУҚОЙМАЛАР</text>\n<text fill=\"#f8fafc\" font-size=\"9\" font-weight=\"bold\" x=\"385\" y=\"75\">1. Бұқтырма суқоймасы (Ертісте): <tspan fill=\"#38bdf8\">5490 км²</tspan></text>\n<text fill=\"#94a3b8\" font-size=\"8\" x=\"385\" y=\"92\">Ауданы бойынша әлемдегі ең ірілердің бірі</text>\n<text fill=\"#f8fafc\" font-size=\"9\" font-weight=\"bold\" x=\"385\" y=\"115\">2. Қапшағай суқоймасы (Іледе): <tspan fill=\"#10b981\">1847 км²</tspan></text>\n<text fill=\"#94a3b8\" font-size=\"8\" x=\"385\" y=\"132\">Алматы облысын электрмен және сумен қамтиды</text>\n<text fill=\"#f8fafc\" font-size=\"9\" font-weight=\"bold\" x=\"385\" y=\"155\">3. Самарқанд суқоймасы (Нұрада):</text>\n<text fill=\"#fbbf24\" font-size=\"8\" x=\"385\" y=\"172\">Теміртау металлургия комбинатын сумен қамту</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>5. Мұздықтар, сарқырамалар және жерасты сулары</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Қазақстан мұздықтары:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Елімізде 2700-ден астам мұздық бар. Мұздықтардың <b class=\"text-cyan-300 font-bold\">79%-ын тау-аңғарлық мұздықтар</b> құрайды.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Қар сызығы:</b> Солтүстіктегі Алтай тауларында қар сызығы төмендеу (2600–3000 м), ал оңтүстіктегі Тянь-Шаньда жоғарырақ (3600–4000 м) жатыр.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Бұрқанбұлақ сарқырамасы:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Жетісу (Жоңғар) Алатауының Қора өзені шатқалындағы <b class=\"text-cyan-300 font-bold\">Қазақстандағы ең биік сарқырама (112 м)</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Жерасты сулары:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Қазақстан артезиан алаптарына бай: <b class=\"text-cyan-300 font-bold\">Торғай, Қызылқұм, Мойынқұм, Бетпақдала</b>.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🏔️</span>\n<span>5-СЫЗБА: ҚАЗАҚСТАН МҰЗДЫҚТАРЫ ЖӘНЕ БҰРҚАНБҰЛАҚ</span>\n</span>\n<span class=\"text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono\">79% аңғарлық мұздықтар • Бұрқанбұлақ (112 м)</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"315\" x=\"20\" y=\"20\"></rect>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"45\">ТАУ МҰЗДЫҚТАРЫ (2700-ден астам)</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"70\">79%-ы — АҢҒАРЛЫҚ МҰЗДЫҚТАР</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" text-anchor=\"middle\" x=\"177\" y=\"95\">Іле Алатауы: Тұйықсу, Богатырь, Корженевский</text>\n<line stroke=\"#1e293b\" x1=\"40\" x2=\"315\" y1=\"110\" y2=\"110\"></line>\n<text fill=\"#f59e0b\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"135\">ҚАР СЫЗЫҒЫНЫҢ БИІКТІГІ:</text>\n<text fill=\"#38bdf8\" font-size=\"9\" text-anchor=\"middle\" x=\"177\" y=\"155\">Алтайда — 2600–3000 м (солтүстікте, төмен)</text>\n<text fill=\"#ef4444\" font-size=\"9\" text-anchor=\"middle\" x=\"177\" y=\"175\">Тянь-Шаньда — 3600–4000 м (оңтүстікте, жоғары)</text>\n<!-- Waterfall & Groundwater -->\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"315\" x=\"365\" y=\"20\"></rect>\n<text fill=\"#34d399\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"522\" y=\"45\">БҰРҚАНБҰЛАҚ ЖӘНЕ АРТЕЗИАН</text>\n<rect fill=\"#0284c7\" fill-opacity=\"0.25\" height=\"50\" rx=\"4\" stroke=\"#38bdf8\" width=\"285\" x=\"380\" y=\"60\"></rect>\n<text fill=\"#38bdf8\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"522\" y=\"80\">БҰРҚАНБҰЛАҚ САРҚЫРАМАСЫ (112 м):</text>\n<text fill=\"#f8fafc\" font-size=\"9\" text-anchor=\"middle\" x=\"522\" y=\"98\">Қазақстандағы ең биік сарқырама (Жетісу Алатауы, Қора)</text>\n<rect fill=\"#10b981\" fill-opacity=\"0.25\" height=\"50\" rx=\"4\" stroke=\"#34d399\" width=\"285\" x=\"380\" y=\"125\"></rect>\n<text fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"522\" y=\"145\">ТОРҒАЙ АРТЕЗИАН АЛАБЫ:</text>\n<text fill=\"#f8fafc\" font-size=\"9\" text-anchor=\"middle\" x=\"522\" y=\"163\">Еліміздегі ең ірі жерасты тұщы су қоймасы</text>\n</svg>\n</div>", "theory_ru": "<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>1. Водные ресурсы и речные бассейны Казахстана</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Все реки и озера Казахстана делятся на <b class=\"text-cyan-300 font-bold\">2 основных бассейна</b>:</li>\n</ul>\n<ol class=\"space-y-3 my-2.5 ml-6 list-none\"><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Бассейн Северного Ледовитого океана (12% территории):</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Реки <b class=\"text-cyan-300 font-bold\">Иртыш, Ишим, Тобол</b>, несущие свои воды в реку Обь.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Единственный речной бассейн страны, имеющий сток в Мировой океан.</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Бассейн внутреннего бессточного стока (88% территории):</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Реки, не доходящие до океана и теряющиеся в бессточных озерах и песках:</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><i class=\"text-slate-300\">Бассейн Каспийского моря:</i> Урал (Жайык), Эмба (Жем);</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><i class=\"text-slate-300\">Бассейн Аральского моря:</i> Сырдарья;</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><i class=\"text-slate-300\">Балхаш-Алакольский бассейн:</i> Или, Каратал, Лепсы, Аксу, Аягоз (Семиречье).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Типы питания рек:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Равнинные реки (Ишим, Тобол, Нура) имеют резко выраженное <b class=\"text-cyan-300 font-bold\">весеннее половодье за счет снегового питания (&gt;80%)</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Горные реки (Иртыш, Или, Сырдарья) имеют <b class=\"text-cyan-300 font-bold\">ледниково-снеговое питание</b> с высоким стоком в летнее время (июль–август).</li>\n</ul></li></ol>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>💧</span>\n<span>1-СЫЗБА: РЕЧНЫЕ БАССЕЙНЫ КАЗАХСТАНА</span>\n</span>\n<span class=\"text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono\">Солтүстік мұхит (Ертіс, Есіл, Тобыл) vs Ішкі тұйық (88%)</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<!-- Arctic basin -->\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#38bdf8\" width=\"315\" x=\"20\" y=\"20\"></rect>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"45\">БАССЕЙН СЕВЕРНОГО ЛЕДОВИТОГО ОКЕАНА</text>\n<rect fill=\"#0284c7\" fill-opacity=\"0.25\" height=\"40\" rx=\"4\" stroke=\"#38bdf8\" width=\"285\" x=\"35\" y=\"60\"></rect>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"78\">ИРТЫШ, ИШИМ, ТОБОЛ (бассейн Оби)</text>\n<text fill=\"#cbd5e1\" font-size=\"8\" text-anchor=\"middle\" x=\"177\" y=\"92\">Около 12% территории Казахстана</text>\n<text fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"125\">Единственный сток в Мировой океан</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"177\" y=\"145\">На Ишиме: Астана и Петропавловск</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"177\" y=\"165\">Правый приток Тобола — Обаган</text>\n<text fill=\"#fde047\" font-size=\"9\" text-anchor=\"middle\" x=\"177\" y=\"185\">Снеговое питание (более 80%)</text>\n<!-- Internal Endorheic Basin -->\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#10b981\" width=\"315\" x=\"365\" y=\"20\"></rect>\n<text fill=\"#34d399\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"522\" y=\"45\">БАССЕЙН ВНУТРЕННЕГО СТОКА (88%)</text>\n<!-- Sub-basins -->\n<text fill=\"#f8fafc\" font-size=\"9\" font-weight=\"bold\" x=\"385\" y=\"75\">1. Бассейн Каспийского моря: <tspan fill=\"#38bdf8\">Жайық, Жем</tspan></text>\n<text fill=\"#f8fafc\" font-size=\"9\" font-weight=\"bold\" x=\"385\" y=\"98\">2. Бассейн Аральского моря: <tspan fill=\"#ef4444\">Сырдария (лайлылық 1200 г/м³)</tspan></text>\n<text fill=\"#f8fafc\" font-size=\"9\" font-weight=\"bold\" x=\"385\" y=\"121\">3. Балхаш-Алакольский бассейн: <tspan fill=\"#10b981\">Іле, Қаратал, Лепсі, Ақсу</tspan></text>\n<text fill=\"#f8fafc\" font-size=\"9\" font-weight=\"bold\" x=\"385\" y=\"144\">4. Тенгиз-Коргалжынский: <tspan fill=\"#f59e0b\">Нұра өзені</tspan></text>\n<line stroke=\"#1e293b\" x1=\"385\" x2=\"660\" y1=\"155\" y2=\"155\"></line>\n<text fill=\"#ef4444\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"522\" y=\"175\">Бессточные озера и высыхающие русла</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"522\" y=\"192\">Вода расходуется на орошение и испарение</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>2. Главные реки Казахстана и их гидрологический режим</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Иртыш (Ертіс):</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Длина 4248 км (в пределах РК — 1700 км).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Самая полноводная река Казахстана</b> (расход воды 960 м³/с).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Исток в Китае (Черный Иртыш), <b class=\"text-cyan-300 font-bold\">впадает в озеро Зайсан</b> и вытекает из него очищенным полноводным Белым Иртышом.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Каскад мощных ГЭС: Бухтарминская, Усть-Каменогорская, Шульбинская.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Сырдарья:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Длина 2212 км (в РК — 1400 км), расход 703 м³/с.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Самая мутная река региона (1200 г/м³)</b> из-за размыва рыхлых лёссовых и глинистых пород. Вода активно разбирается на орошение рисовых чеков.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Или:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Длина 1436 км (в РК — 815 км), расход 464 м³/с.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Главная водная артерия Жетысу, питающая озеро Балхаш. На реке создана Капчагайская ГЭС.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Ишим (Есіл):</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Равнинная река, на берегах которой расположены столица <b class=\"text-cyan-300 font-bold\">Астана</b> и областной центр <b class=\"text-cyan-300 font-bold\">Петропавловск</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Правый приток Тобола — река <b class=\"text-cyan-300 font-bold\">Обаган</b> (вытекает из озера Кушмурун).</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🌊</span>\n<span>2-СЫЗБА: ГЛАВНЫЕ РЕКИ КАЗАХСТАНА И ИХ ХАРАКТЕРИСТИКИ</span>\n</span>\n<span class=\"text-[10px] bg-emerald-500/10 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-500/20 font-mono\">Ертіс • Сырдария • Іле • Жайық • Есіл</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<!-- River cards 4 items -->\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#38bdf8\" width=\"155\" x=\"20\" y=\"20\"></rect>\n<text fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"97\" y=\"45\">ЕРТІС (ИРТЫШ)</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"97\" y=\"70\">4248 км (ҚР: 1700 км)</text>\n<text fill=\"#34d399\" font-size=\"9\" text-anchor=\"middle\" x=\"97\" y=\"90\">Самая многоводная</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"97\" y=\"115\">Черный Иртыш -&gt; Зайсан</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"97\" y=\"130\">-&gt; вытекает Белый Иртыш</text>\n<text fill=\"#f59e0b\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"97\" y=\"160\">ГЭС-тер: Бұқтырма, Өскемен</text>\n<text fill=\"#38bdf8\" font-size=\"8\" text-anchor=\"middle\" x=\"97\" y=\"180\">Ертіс-Қарағанды каналы</text>\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#ef4444\" width=\"155\" x=\"185\" y=\"20\"></rect>\n<text fill=\"#f87171\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"262\" y=\"45\">СЫРДАРИЯ</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"262\" y=\"70\">2212 км (ҚР: 1400 км)</text>\n<text fill=\"#ef4444\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"262\" y=\"90\">САМАЯ МУТНАЯ (1200 г/м³)</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"262\" y=\"115\">С Тянь-Шаня в Арал</text>\n<text fill=\"#f8fafc\" font-family=\"monospace\" font-size=\"9\" x=\"262\" y=\"135\">Q = 703 м³/с</text>\n<text fill=\"#f59e0b\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"262\" y=\"160\">Шардара суқоймасы</text>\n<text fill=\"#34d399\" font-size=\"8\" text-anchor=\"middle\" x=\"262\" y=\"180\">Күріш алқаптары</text>\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#10b981\" width=\"160\" x=\"355\" y=\"20\"></rect>\n<text fill=\"#34d399\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"435\" y=\"45\">ІЛЕ (ИЛИ)</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"435\" y=\"70\">1436 км (ҚР: 815 км)</text>\n<text fill=\"#34d399\" font-size=\"9\" text-anchor=\"middle\" x=\"435\" y=\"90\">Главный приток Балхаша</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"435\" y=\"115\">Ледниковое питание</text>\n<text fill=\"#f8fafc\" font-family=\"monospace\" font-size=\"9\" x=\"435\" y=\"135\">Q = 464 м³/с</text>\n<text fill=\"#f59e0b\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"435\" y=\"160\">Қапшағай ГЭС-і</text>\n<text fill=\"#38bdf8\" font-size=\"8\" text-anchor=\"middle\" x=\"435\" y=\"180\">Жетісу су артериясы</text>\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#fbbf24\" width=\"155\" x=\"525\" y=\"20\"></rect>\n<text fill=\"#fbbf24\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"602\" y=\"45\">ЖАЙЫҚ (УРАЛ)</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"602\" y=\"70\">2428 км (ҚР: 1082 км)</text>\n<text fill=\"#fbbf24\" font-size=\"9\" text-anchor=\"middle\" x=\"602\" y=\"90\">Впадает в Каспий</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"602\" y=\"115\">Граница Европы и Азии</text>\n<text fill=\"#f8fafc\" font-family=\"monospace\" font-size=\"9\" x=\"602\" y=\"135\">Қар суы (80%)</text>\n<text fill=\"#f59e0b\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"602\" y=\"160\">Бекіре балығы</text>\n<text fill=\"#34d399\" font-size=\"8\" text-anchor=\"middle\" x=\"602\" y=\"180\">Батыс Қазақстан</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>3. Озера Казахстана и феномен Балхаша</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">В стране более 48 тысяч озер, абсолютное большинство из которых мелководные.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Уникальный феномен озера Балхаш:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Полуостров <b class=\"text-cyan-300 font-bold\">Сарыесик и пролив Узынарал</b> делят озеро на две совершенно разные гидрологические части:</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Западная часть — пресная:</b> сюда впадает мощная река Или.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Восточная часть — соленая:</b> рек впадает мало, испарение велико.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Генетические типы озер:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Реликтовые (остаточные):</b> осколки океана Тетис: <b class=\"text-cyan-300 font-bold\">Каспий, Арал, Балхаш, Тенгиз</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Тектонические:</b> глубокие озера в разломах земной коры: <b class=\"text-cyan-300 font-bold\">Зайсан, Маркаколь</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Пресные озера:</b> Соленость менее 1‰ (менее 1 грамма соли на литр).</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🏞️</span>\n<span>3-СЫЗБА: ОЗЕРА КАЗАХСТАНА И ФЕНОМЕН БАЛХАША</span>\n</span>\n<span class=\"text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono\">Балқаш: батысы тұщы, шығысы ащы</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<!-- Balkhash split lake illustration -->\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"360\" x=\"20\" y=\"20\"></rect>\n<text fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"200\" y=\"45\">БАЛҚАШ КӨЛІ (ЖАРТЫЛАЙ ТҰЩЫ, ЖАРТЫЛАЙ АЩЫ)</text>\n<!-- Lake body split by strait -->\n<ellipse cx=\"130\" cy=\"110\" fill=\"#0284c7\" fill-opacity=\"0.4\" rx=\"75\" ry=\"35\" stroke=\"#38bdf8\"></ellipse>\n<ellipse cx=\"270\" cy=\"110\" fill=\"#ca8a04\" fill-opacity=\"0.4\" rx=\"75\" ry=\"30\" stroke=\"#eab308\"></ellipse>\n<!-- Saryesik peninsula dividing -->\n<polygon fill=\"#334155\" points=\"195,75 205,115 195,145\"></polygon>\n<text fill=\"#f8fafc\" font-size=\"8\" text-anchor=\"middle\" x=\"200\" y=\"70\">Сарыесік</text>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"black\" text-anchor=\"middle\" x=\"130\" y=\"112\">ТҰЩЫ СУ</text>\n<text fill=\"#e2e8f0\" font-size=\"8\" text-anchor=\"middle\" x=\"130\" y=\"128\">Іле өзені құяды</text>\n<text fill=\"#fde047\" font-size=\"11\" font-weight=\"black\" text-anchor=\"middle\" x=\"270\" y=\"112\">АЩЫ СУ (Тұзды)</text>\n<text fill=\"#e2e8f0\" font-size=\"8\" text-anchor=\"middle\" x=\"270\" y=\"128\">Булану жоғары, өзен аз</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"200\" y=\"180\">Уникальное полупресноводное озеро мира</text>\n<!-- Lake Types Panel -->\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"285\" x=\"395\" y=\"20\"></rect>\n<text fill=\"#34d399\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"537\" y=\"45\">ТИПЫ ПРОИСХОЖДЕНИЯ ОЗЕР</text>\n<text fill=\"#38bdf8\" font-size=\"9\" font-weight=\"bold\" x=\"410\" y=\"75\">1. Реликтовые (остаточные):</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"420\" y=\"92\">Каспий, Арал, Балқаш, Теңіз</text>\n<text fill=\"#34d399\" font-size=\"9\" font-weight=\"bold\" x=\"410\" y=\"118\">2. Тектонические:</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"420\" y=\"135\">Зайсан, Марқакөл (Алтайда)</text>\n<text fill=\"#fbbf24\" font-size=\"9\" font-weight=\"bold\" x=\"410\" y=\"160\">3. Ледниковые (моренные):</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" x=\"420\" y=\"177\">Үлкен Алматы көлі, Жасылкөл</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>4. Искусственные водоемы и каналы</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Канал Иртыш-Караганда (имени К. Сатпаева):</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Протяженность <b class=\"text-cyan-300 font-bold\">458 км</b>. Снабжает водой Центральный Казахстан (Экибастуз, Караганду, Темиртау).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Вода подается искусственно вверх: 22 насосные станции поднимают воду на высоту 418 метров.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Крупнейшие водохранилища:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Бухтарминское водохранилище:</b> на Иртыше (5490 км²), крупнейшее в стране.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Капчагайское водохранилище:</b> на реке Или (1847 км²).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Шардаринское водохранилище:</b> на Сырдарье.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Самаркандское водохранилище:</b> на реке Нура для металлургического гиганта Темиртау.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🏗️</span>\n<span>4-СЫЗБА: ВОДОХРАНИЛИЩА И КАНАЛ ИРТЫШ-КАРАГАНДА</span>\n</span>\n<span class=\"text-[10px] bg-purple-500/10 text-purple-300 px-2.5 py-0.5 rounded-full border border-purple-500/20 font-mono\">Бұқтырма • Қапшағай • Шардара • Самарқанд</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"315\" x=\"20\" y=\"20\"></rect>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"45\">КАНАЛ ИРТЫШ-КАРАГАНДА (им. К. Сатпаева)</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"70\">Ұзындығы: 458 км</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"177\" y=\"95\">22 насосные станции поднимают воду на 418 м</text>\n<line stroke=\"#1e293b\" x1=\"40\" x2=\"315\" y1=\"110\" y2=\"110\"></line>\n<text fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"135\">Снабжает водой:</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" text-anchor=\"middle\" x=\"177\" y=\"155\">Павлодар, Екібастұз, Қарағанды, Теміртау</text>\n<text fill=\"#f59e0b\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"175\">Построен водовод до Астаны</text>\n<!-- Reservoirs list -->\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"315\" x=\"365\" y=\"20\"></rect>\n<text fill=\"#34d399\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"522\" y=\"45\">КРУПНЕЙШИЕ ВОДОХРАНИЛИЩА</text>\n<text fill=\"#f8fafc\" font-size=\"9\" font-weight=\"bold\" x=\"385\" y=\"75\">1. Бухтарминское (на Иртыше): <tspan fill=\"#38bdf8\">5490 км²</tspan></text>\n<text fill=\"#94a3b8\" font-size=\"8\" x=\"385\" y=\"92\">Крупнейшее по площади в Казахстане</text>\n<text fill=\"#f8fafc\" font-size=\"9\" font-weight=\"bold\" x=\"385\" y=\"115\">2. Капчагайское (на реке Или): <tspan fill=\"#10b981\">1847 км²</tspan></text>\n<text fill=\"#94a3b8\" font-size=\"8\" x=\"385\" y=\"132\">ГЭС и зона отдыха г. Конаев</text>\n<text fill=\"#f8fafc\" font-size=\"9\" font-weight=\"bold\" x=\"385\" y=\"155\">3. Самаркандское (на реке Нура):</text>\n<text fill=\"#fbbf24\" font-size=\"8\" x=\"385\" y=\"172\">Для металлургии г. Темиртау</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>5. Ледники, водопады и подземные воды</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Ледники Казахстана:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Свыше 2700 ледников. <b class=\"text-cyan-300 font-bold\">79% всех ледников составляют долинные ледники</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Снеговая линия:</b> На северном Алтае лежит ниже (2600–3000 м), а на южном Тянь-Шане — выше (3600–4000 м).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Водопад Бурхан-Булак:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Высочайший каскадный водопад Казахстана (<b class=\"text-cyan-300 font-bold\">112 метров</b>), расположенный в ущелье реки Кора в Джунгарском Алатау.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Подземные воды:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Огромные артезианские бассейны: <b class=\"text-cyan-300 font-bold\">Тургайский, Кызылкумский, Мойынкумский</b>.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🏔️</span>\n<span>5-СЫЗБА: ЛЕДНИКИ КАЗАХСТАНА И БУРХАН-БУЛАК</span>\n</span>\n<span class=\"text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono\">79% аңғарлық мұздықтар • Бұрқанбұлақ (112 м)</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"315\" x=\"20\" y=\"20\"></rect>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"45\">ГОРНЫЕ ЛЕДНИКИ (более 2700)</text>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"70\">79% — ДОЛИННЫЕ ЛЕДНИКИ</text>\n<text fill=\"#cbd5e1\" font-size=\"9\" text-anchor=\"middle\" x=\"177\" y=\"95\">Заилийский Алатау: Туюксу, Корженевского</text>\n<line stroke=\"#1e293b\" x1=\"40\" x2=\"315\" y1=\"110\" y2=\"110\"></line>\n<text fill=\"#f59e0b\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"135\">ВЫСОТА СНЕГОВОЙ ЛИНИИ:</text>\n<text fill=\"#38bdf8\" font-size=\"9\" text-anchor=\"middle\" x=\"177\" y=\"155\">На Алтае — 2600–3000 м (севернее, ниже)</text>\n<text fill=\"#ef4444\" font-size=\"9\" text-anchor=\"middle\" x=\"177\" y=\"175\">На Тянь-Шане — 3600–4000 м (южнее, выше)</text>\n<!-- Waterfall & Groundwater -->\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"315\" x=\"365\" y=\"20\"></rect>\n<text fill=\"#34d399\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"522\" y=\"45\">БУРХАН-БУЛАК И АРТЕЗИАН</text>\n<rect fill=\"#0284c7\" fill-opacity=\"0.25\" height=\"50\" rx=\"4\" stroke=\"#38bdf8\" width=\"285\" x=\"380\" y=\"60\"></rect>\n<text fill=\"#38bdf8\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"522\" y=\"80\">ВОДОПАД БУРХАН-БУЛАК (112 м):</text>\n<text fill=\"#f8fafc\" font-size=\"9\" text-anchor=\"middle\" x=\"522\" y=\"98\">Высочайший водопад Казахстана (Джунгария, р. Кора)</text>\n<rect fill=\"#10b981\" fill-opacity=\"0.25\" height=\"50\" rx=\"4\" stroke=\"#34d399\" width=\"285\" x=\"380\" y=\"125\"></rect>\n<text fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"522\" y=\"145\">ТУРГАЙСКИЙ АРТЕЗИАНСКИЙ БАССЕЙН:</text>\n<text fill=\"#f8fafc\" font-size=\"9\" text-anchor=\"middle\" x=\"522\" y=\"163\">Крупнейший бассейн подземных вод Казахстана</text>\n</svg>\n</div>", "traps": ["⚠️ Назар аударыңыз: Қазақстан гидросферасы бойынша сұрақтар ҰБТ-ның контексттік тесттерінде жиі кездеседі."], "quiz": [{"q": "Қазақстан гидросферасы бойынша негізгі ұғымды атаңыз?", "options": ["Қазақстан гидросферасы", "Жалпы ұғым", "Қосымша фактор", "Байланыссыз"], "answer": 0, "exp": "Бұл сабақтың өзегі — Қазақстан гидросферасы заңдылықтарын түсіну."}], "blooket": "https://dashboard.blooket.com/set/6a84d7fbaa52753c4b9327c8", "test": {"passingScore": 80, "questions": [{"id": 1, "q_kz": "Борпылдақ жыныстарды шайып өтетіндіктен лайлылығы 1200 г/м³-ге жететін Қазақстандағы ең лайлы өзен:", "q_ru": "Самая мутная река Казахстана (мутность до 1200 г/м³), размывающая рыхлые породы русла:", "options_kz": ["Ертіс", "Сырдария", "Есіл", "Жайық"], "options_ru": ["Иртыш", "Сырдарья", "Ишим", "Урал"], "answer": 1, "exp_kz": "Сырдария өзені Орта Азия мен еліміздегі ең лайлы өзен (1200 г/м³), оның суы шөгіндіге өте бай.", "exp_ru": "Сырдарья переносит колоссальное количество взвешенных частиц (1200 г/м³), являясь самой мутной рекой."}, {"id": 2, "q_kz": "Қостанай облысындағы Құсмұрын көлінен басталатын Тобыл өзенінің ең ірі оң жақ саласы:", "q_ru": "Крупнейший правый приток реки Тобол, берущий начало из озера Кушмурун в Костанайской области:", "options_kz": ["Аят", "Үй", "Обаған", "Ырғыз"], "options_ru": ["Аят", "Уй", "Обаган", "Иргиз"], "answer": 2, "exp_kz": "Обаған өзені — Құсмұрын көлінен ағып шығып, Тобылға оң жағынан құятын басты сала.", "exp_ru": "Река Обаган вытекает из озера Кушмурун и служит главным правым притоком Тобола."}, {"id": 3, "q_kz": "Қаратал, Лепсі, Ақсу және Аягөз өзендері Қазақстанның қай ірі тұйық су алабына жатады?", "q_ru": "К какому крупному бессточному бассейну Казахстана относятся реки Каратал, Лепсы, Аксу и Аягоз?", "options_kz": ["Балқаш-Алакөл алабы", "Каспий алабы", "Арал алабы", "Солтүстік Мұзды мұхит"], "options_ru": ["Балхаш-Алакольский бассейн", "Каспийский бассейн", "Аральский бассейн", "Северный Ледовитый океан"], "answer": 0, "exp_kz": "Бұл өзендер Жетісу мен Тарбағатайдан басталып, Балқаш-Алакөл тұйық көлдер алабына құяды.", "exp_ru": "Каратал, Лепсы, Аксу и Аягоз стекают с гор Семиречья в Балхаш-Алакольскую котловину."}, {"id": 4, "q_kz": "Қазақстанның ең биік сарқырамасы — Бұрқанбұлақ (112 м) қай таудың шатқалында орналасқан?", "q_ru": "В каком горном хребте находится высочайший водопад Казахстана Бурхан-Булак (112 м)?", "options_kz": ["Іле Алатауы", "Алтай", "Жетісу (Жоңғар) Алатауы", "Қаратау"], "options_ru": ["Заилийский Алатау", "Алтай", "Жетысуский (Джунгарский) Алатау", "Каратау"], "answer": 2, "exp_kz": "Бұрқанбұлақ — Жетісу Алатауындағы Қора өзенінің шатқалындағы биіктігі 112 метрлік сарқырама.", "exp_ru": "Водопад Бурхан-Булак высотой 112 м низвергается в ущелье реки Кора в Джунгарском Алатау."}, {"id": 5, "q_kz": "Ежелгі біртұтас Тетис теңізінің тартылуынан қалған реликті (қалдық) көлдер қатары:", "q_ru": "Группа реликтовых (остаточных) озер Казахстана, оставшихся после отступания древнего океана Тетис:", "options_kz": ["Марқакөл, Жасылкөл", "Каспий, Арал, Балқаш, Теңіз", "Үлкен Алматы, Қайыңды", "Шалқар, Сілетітеңіз"], "options_ru": ["Маркаколь, Жасылколь", "Каспий, Арал, Балхаш, Тенгиз", "Большое Алматинское, Каинды", "Шалкар, Селетытениз"], "answer": 1, "exp_kz": "Каспий, Арал, Балқаш және Теңіз көлдері көне Тетис мұхитының қалдығы болып табылады.", "exp_ru": "Каспий, Арал, Балхаш и Тенгиз представляют собой реликтовые водоемы древнего Тетиса."}, {"id": 6, "q_kz": "Қытайдан келіп Зайсан көліне құйып, одан Ақ Ертіс болып ағып шығатын өзен арнасы:", "q_ru": "Русло реки, приходящее из Китая в озеро Зайсан, откуда вытекает уже полноводный Белый Иртыш:", "options_kz": ["Қара Ертіс", "Бұқтырма", "Үлбі", "Күрті"], "options_ru": ["Черный Иртыш", "Бухтарма", "Ульба", "Курты"], "answer": 0, "exp_kz": "Зайсан көліне Қара Ертіс құяды да, көлден тазарып Ақ Ертіс (немесе жай Ертіс) болып шығады.", "exp_ru": "В озеро Зайсан впадает Черный Иртыш, а вытекает Белый Иртыш (собственно Иртыш)."}, {"id": 7, "q_kz": "Қазақстандағы барлық тау мұздықтарының 79%-ын құрайтын негізгі мұздық түрі:", "q_ru": "Преобладающий морфологический тип ледников Казахстана, составляющий 79% от их общего числа:", "options_kz": ["Жамылғы мұздықтар", "Аңғарлық (тау-аңғарлық) мұздықтар", "Тек қазаншұңқырлық", "Шельфтік"], "options_ru": ["Покровные ледники", "Долинные (горно-долинные) ледники", "Котловинные", "Шельфовые"], "answer": 1, "exp_kz": "Қазақстан тауларындағы мұздықтардың басым бөлігі (79%) тау аңғарларында созылған аңғарлық мұздықтар.", "exp_ru": "В высокогорьях Тянь-Шаня и Алтая 79% массы оледенения сосредоточено в долинных ледниках."}, {"id": 8, "q_kz": "Есіл өзенінің аңғарында орналасқан Қазақстанның ірі қалалары:", "q_ru": "Крупные города Казахстана, расположенные в долине реки Ишим (Есіл):", "options_kz": ["Алматы және Шымкент", "Астана және Петропавл", "Павлодар және Семей", "Өскемен және Атырау"], "options_ru": ["Алматы и Шымкент", "Астана и Петропавловск", "Павлодар и Семей", "Усть-Каменогорск и Атырау"], "answer": 1, "exp_kz": "Есіл өзенінің бойында елордамыз Астана және Солтүстік Қазақстан облысының орталығы Петропавл орналасқан.", "exp_ru": "На берегах равнинной реки Ишим построены столица Астана и город Петропавловск."}, {"id": 9, "q_kz": "Теміртау металлургия комбинатын және Қарағанды өнеркәсіп аймағын сумен қамту үшін Нұра өзенінде салынған суқойма:", "q_ru": "Водохранилище на реке Нура, построенное для снабжения металлургии Темиртау и Карагандинского промузла:", "options_kz": ["Самарқанд суқоймасы", "Қапшағай", "Бұқтырма", "Шардара"], "options_ru": ["Самаркандское водохранилище", "Капчагайское", "Бухтарминское", "Шардаринское"], "answer": 0, "exp_kz": "Нұра өзеніндегі Самарқанд суқоймасы Теміртау қаласындағы қара металлургия комбинатын сумен қамтиды.", "exp_ru": "Самаркандское водохранилище на реке Нура обеспечивает водой металлургию города Темиртау."}, {"id": 10, "q_kz": "Салыстырмалы түрде қар сызығы неғұрлым төмен (2600–3000 м) жатқан Қазақстанның тау жүйесі:", "q_ru": "Горная система Казахстана с относительно наиболее низкой снеговой линией (2600–3000 м):", "options_kz": ["Тянь-Шань", "Алтай", "Жоңғар Алатауы", "Сауыр"], "options_ru": ["Тянь-Шань", "Алтай", "Джунгарский Алатау", "Саур"], "answer": 1, "exp_kz": "Қар сызығы солтүстікке қарай төмендейді. Алтай таулары солтүстікте орналасқандықтан, онда қар сызығы төменде жатыр.", "exp_ru": "Алтай расположен севернее Тянь-Шаня, поэтому снеговая граница на нем проходит на высотах 2600–3000 м."}]}, "pdf_kz": "https://drive.google.com/file/d/14nPiNw7RV6YUBNYbZAk0sGesh8vtT4YK/view?usp=sharing", "pdf_ru": "https://drive.google.com/file/d/1l8BAJQjZBaDLdXtco-_bV0SrD8k2iioV/view?usp=drive_link"};
+    const currentLang = 'kz';
+    let userTestAnswers = {};
+    let isTestSubmitted = false;
+
+    // Render Test Questions
+    function renderTestQuestions() {
+      const container = document.getElementById('testQuestionsList');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const testObj = lessonData.test;
+      if (!testObj || !testObj.questions || testObj.questions.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-400">Тест готовится / Тест дайындалуда.</p>';
+        return;
+      }
+
+      const isRu = (currentLang === 'ru');
+      const letters = ['A', 'B', 'C', 'D', 'E'];
+
+      testObj.questions.forEach((q, idx) => {
+        const qCard = document.createElement('div');
+        qCard.className = 'p-5 rounded-2xl bg-space-850 border border-slate-800 space-y-3';
+
+        const qPrompt = isRu ? (q.q_ru || q.q_kz) : q.q_kz;
+        const options = isRu ? (q.options_ru || q.options_kz) : q.options_kz;
+        const exp = isRu ? (q.exp_ru || q.exp_kz) : q.exp_kz;
+
+        qCard.innerHTML = `
+          <div class="flex items-center justify-between gap-2 border-b border-slate-800/80 pb-2">
+            <span class="text-xs font-bold text-slate-400 uppercase">
+              ${isRu ? 'Вопрос ' + (idx + 1) : 'Сұрақ ' + (idx + 1)}
+            </span>
+            <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-bold">1 балл</span>
+          </div>
+          <p class="text-xs sm:text-sm font-semibold text-slate-100 leading-relaxed">${qPrompt}</p>
+        `;
+
+        const optContainer = document.createElement('div');
+        optContainer.className = 'space-y-2 pt-1';
+
+        const selectedAnswer = userTestAnswers[q.id];
+
+        options.forEach((optText, optIdx) => {
+          const isSelected = selectedAnswer === optIdx;
+          const isCorrect = q.answer === optIdx;
+
+          const optDiv = document.createElement('div');
+          optDiv.className = 'p-3 rounded-xl border text-xs font-medium cursor-pointer transition flex items-center space-x-2.5 ';
+
+          if (isTestSubmitted) {
+            if (isCorrect) {
+              optDiv.className += 'bg-emerald-500/15 border-emerald-500 text-emerald-200 font-bold';
+            } else if (isSelected) {
+              optDiv.className += 'bg-rose-500/15 border-rose-500 text-rose-200';
+            } else {
+              optDiv.className += 'bg-space-900/50 border-slate-800 text-slate-500';
+            }
+          } else {
+            if (isSelected) {
+              optDiv.className += 'bg-cyan-500/15 border-cyan-500 text-cyan-200 font-bold';
+            } else {
+              optDiv.className += 'bg-space-900 hover:bg-space-800 border-slate-800 hover:border-slate-700 text-slate-300';
+            }
+          }
+
+          const badge = document.createElement('span');
+          badge.className = 'w-5 h-5 rounded-md text-[10px] font-black flex items-center justify-center shrink-0 ' +
+            (isSelected ? 'bg-cyan-500 text-space-950' : 'bg-space-850 text-slate-400 border border-slate-700');
+          badge.textContent = letters[optIdx] || String(optIdx + 1);
+          optDiv.appendChild(badge);
+
+          const txt = document.createElement('span');
+          txt.className = 'flex-1';
+          txt.textContent = optText;
+          optDiv.appendChild(txt);
+
+          optDiv.onclick = () => {
+            if (isTestSubmitted) return;
+            userTestAnswers[q.id] = optIdx;
+            renderTestQuestions();
+          };
+
+          optContainer.appendChild(optDiv);
+        });
+
+        qCard.appendChild(optContainer);
+
+        // Explanation Box after submission
+        if (isTestSubmitted) {
+          const expBox = document.createElement('div');
+          expBox.className = 'p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-xs text-cyan-200 space-y-1';
+          expBox.innerHTML = `
+            <span class="font-bold text-cyan-300 block">💡 ${isRu ? 'Пояснение:' : 'Түсіндірме:'}</span>
+            <p class="text-slate-300 leading-relaxed">${exp || (isRu ? 'Авторское пояснение к вопросу.' : 'Сұраққа арналған түсіндірме.')}</p>
+          `;
+          qCard.appendChild(expBox);
+        }
+
+        container.appendChild(qCard);
+      });
+    }
+
+    function submitLessonTest() {
+      const testObj = lessonData.test;
+      if (!testObj || !testObj.questions) return;
+
+      const answeredCount = Object.keys(userTestAnswers).length;
+      const total = testObj.questions.length;
+      const isRu = (currentLang === 'ru');
+
+      if (answeredCount < total) {
+        const msg = isRu 
+          ? `Вы ответили только на ${answeredCount} из ${total} вопросов. Завершить тест?` 
+          : `Сіз ${total} сұрақтың ${answeredCount}-не жауап бердіңіз. Тестті аяқтайсыз ба?`;
+        if (!confirm(msg)) return;
+      }
+
+      isTestSubmitted = true;
+      let correct = 0;
+
+      testObj.questions.forEach(q => {
+        if (userTestAnswers[q.id] === q.answer) {
+          correct++;
+        }
+      });
+
+      const percentage = Math.round((correct / total) * 100);
+      const isPassed = percentage >= 80;
+
+      // Update badges & UI
+      const scoreBadge = document.getElementById('testScoreBadge');
+      if (scoreBadge) {
+        scoreBadge.classList.remove('hidden');
+        scoreBadge.textContent = `${correct} / ${total} (${percentage}%)`;
+        scoreBadge.className = 'px-3 py-1 rounded-xl text-xs font-bold font-mono border ' +
+          (isPassed ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-rose-500/20 text-rose-300 border-rose-500/40');
+      }
+
+      const info = document.getElementById('testProgressInfo');
+      if (info) {
+        info.textContent = isPassed 
+          ? (isRu ? `🎉 Поздравляем! Вы сдали тест на ${percentage}% (+30 XP)` : `🎉 Құттықтаймыз! Сіз тестті ${percentage}%-ға тапсырдыңыз (+30 XP)`)
+          : (isRu ? `Результат: ${percentage}%. Для зачета требуется 80%. Попробуйте еще раз.` : `Нәтиже: ${percentage}%. Өту үшін 80% қажет. Қайта тапсырып көріңіз.`);
+      }
+
+      document.getElementById('btnSubmitTest').classList.add('hidden');
+      document.getElementById('btnResetTest').classList.remove('hidden');
+
+      // Save to localStorage
+      try {
+        let scores = JSON.parse(localStorage.getItem('geotany_lesson_scores') || '{}');
+        scores[lessonData.id] = percentage;
+        localStorage.setItem('geotany_lesson_scores', JSON.stringify(scores));
+
+        if (isPassed) {
+          let completed = JSON.parse(localStorage.getItem('geotany_completed_lessons') || '[]');
+          if (!completed.includes(lessonData.id)) {
+            completed.push(lessonData.id);
+            localStorage.setItem('geotany_completed_lessons', JSON.stringify(completed));
+          }
+          let curXp = parseInt(localStorage.getItem('geotany_user_xp') || '0', 10);
+          curXp += 30;
+          localStorage.setItem('geotany_user_xp', curXp.toString());
+        }
+      } catch(e) {}
+
+      renderTestQuestions();
+      updateCompleteButtons();
+    }
+
+    function resetLessonTest() {
+      userTestAnswers = {};
+      isTestSubmitted = false;
+      document.getElementById('testScoreBadge').classList.add('hidden');
+      document.getElementById('btnSubmitTest').classList.remove('hidden');
+      document.getElementById('btnResetTest').classList.add('hidden');
+      document.getElementById('testProgressInfo').textContent = (currentLang === 'ru') 
+        ? 'Ответьте на все вопросы и проверьте свои знания.' 
+        : 'Барлық сұрақтарға жауап беріп, өзіңізді тексеріңіз.';
+      renderTestQuestions();
+    }
+
+    // Toggle Lesson Complete Status
+    function toggleLessonComplete() {
+      let completed = [];
+      try {
+        completed = JSON.parse(localStorage.getItem('geotany_completed_lessons') || '[]');
+      } catch(e) {}
+
+      const isDone = completed.includes(lessonData.id);
+      let curXp = parseInt(localStorage.getItem('geotany_user_xp') || '0', 10);
+
+      if (isDone) {
+        completed = completed.filter(id => id !== lessonData.id);
+        curXp = Math.max(0, curXp - 30);
+      } else {
+        completed.push(lessonData.id);
+        curXp += 30;
+      }
+
+      try {
+        localStorage.setItem('geotany_completed_lessons', JSON.stringify(completed));
+        localStorage.setItem('geotany_user_xp', curXp.toString());
+      } catch(e) {}
+
+      updateCompleteButtons();
+    }
+
+    function updateCompleteButtons() {
+      let completed = [];
+      try {
+        completed = JSON.parse(localStorage.getItem('geotany_completed_lessons') || '[]');
+      } catch(e) {}
+
+      const isDone = completed.includes(lessonData.id);
+      const isRu = (currentLang === 'ru');
+
+      const banner = document.getElementById('lessonCompletedBanner');
+      if (banner) banner.classList.toggle('hidden', !isDone);
+
+      const headerBtn = document.getElementById('btnHeaderComplete');
+      const headerIcon = document.getElementById('headerCheckIcon');
+      const headerText = document.getElementById('headerCompleteText');
+
+      if (headerBtn) {
+        if (isDone) {
+          headerBtn.className = 'px-3 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold transition flex items-center space-x-1.5';
+          if (headerIcon) headerIcon.textContent = '✓';
+          if (headerText) headerText.textContent = isRu ? 'Прочитано' : 'Оқылды';
+        } else {
+          headerBtn.className = 'px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-emerald-400 text-xs font-bold transition flex items-center space-x-1.5';
+          if (headerIcon) headerIcon.textContent = '○';
+          if (headerText) headerText.textContent = isRu ? 'Отметить' : 'Белгілеу';
+        }
+      }
+
+      const bottomLbl = document.getElementById('lblBottomComplete');
+      if (bottomLbl) {
+        bottomLbl.textContent = isDone 
+          ? (isRu ? '✓ Прочитано (Нажмите, чтобы отменить)' : '✓ Оқылды (Өшіру үшін басыңыз)')
+          : (isRu ? 'Отметить как прочитанное (+30 XP)' : 'Сабақты оқылды деп белгілеу (+30 XP)');
+      }
+    }
+
+    // Boot
+    window.addEventListener('DOMContentLoaded', () => {
+      renderTestQuestions();
+      updateCompleteButtons();
+    });
+  </script>
+
+</body>
+</html>

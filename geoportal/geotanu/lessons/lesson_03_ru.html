@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3 урок. Основы картографии | GEOTANY</title>
+
+  <!-- AUTH GUARD: RESTRICT DIRECT ACCESS WITHOUT VALID SESSION -->
+  <style id="authCloak">body { display: none !important; }</style>
+  <script>
+    (function() {
+      try {
+        var isAdmin = localStorage.getItem('geotany_admin_auth') === 'true';
+        var sessionStr = localStorage.getItem('geotany_user_session');
+        var isAuthorized = isAdmin;
+        if (!isAuthorized && sessionStr) {
+          var s = JSON.parse(sessionStr);
+          if (s && s.email && (s.courseCode || s.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        var profileStr = localStorage.getItem('geotany_user_profile');
+        if (!isAuthorized && profileStr) {
+          var p = JSON.parse(profileStr);
+          if (p && p.email && (p.courseCode || p.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        if (!isAuthorized) {
+          window.location.replace('../geotanu.html?error=unauthorized_course');
+          return;
+        }
+        var cloak = document.getElementById('authCloak');
+        if (cloak) cloak.remove();
+      } catch (e) {
+        window.location.replace('../geotanu.html?error=unauthorized_course');
+      }
+    })();
+  </script>
+
+  <!-- TAILWIND CSS & FONTS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            space: {
+              800: '#1E293B',
+              850: '#151E2E',
+              900: '#0F172A',
+              950: '#0B0F19',
+            },
+            brand: {
+              400: '#34D399',
+              500: '#10B981',
+              600: '#059669',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0B0F19;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1E293B;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+    .prose-theory h1, .prose-theory h2, .prose-theory h3, .prose-theory h4 {
+      color: #F8FAFC;
+      font-weight: 800;
+    }
+    .prose-theory p {
+      color: #CBD5E1;
+      line-height: 1.75;
+      font-size: 0.875rem;
+    }
+    .prose-theory ul {
+      list-style-type: disc;
+      margin-left: 1.25rem;
+      color: #CBD5E1;
+      font-size: 0.875rem;
+    }
+    .prose-theory table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.75rem;
+    }
+    .prose-theory th, .prose-theory td {
+      border: 1px solid #334155;
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+    }
+    .prose-theory th {
+      background: #1E293B;
+      color: #F8FAFC;
+      font-weight: 700;
+    }
+    .prose-theory tr:nth-child(even) {
+      background: rgba(15, 23, 42, 0.6);
+    }
+  </style>
+</head>
+<body class="bg-space-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-brand-500/30 selection:text-brand-400">
+
+  <!-- TOP APP BAR -->
+  <header class="sticky top-0 z-40 bg-space-950/90 backdrop-blur-xl border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+      
+      <!-- Left: Back Button & Title -->
+      <div class="flex items-center space-x-3">
+        <a href="../geotanu.html?lang=ru#section-sabaktar_reading" class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 text-slate-300 hover:text-white border border-slate-700/80 text-xs sm:text-sm font-bold transition shadow-sm">
+          <span>←</span>
+          <span>Назад</span>
+        </a>
+        <div class="h-6 w-px bg-slate-800 hidden sm:block"></div>
+        <div class="flex items-center space-x-2">
+          <span class="text-xs px-2.5 py-1 rounded-lg bg-cyan-500/10 text-cyan-400 font-extrabold border border-cyan-500/20">
+            3 / 20 урок
+          </span>
+          <span class="text-sm font-bold text-slate-200 hidden md:inline truncate max-w-xs">
+            3 урок. Основы картографии
+          </span>
+        </div>
+      </div>
+
+      <!-- Center: Reading Time Badge -->
+      <div class="hidden sm:flex items-center space-x-1.5 bg-space-900 border border-slate-800 px-3 py-1.5 rounded-xl text-xs text-slate-400 font-medium">
+        <span>⏱️</span>
+        <span>8 мин</span>
+      </div>
+
+      <!-- Right: Direct Language Page Switcher & Complete Button -->
+      <div class="flex items-center space-x-2 sm:space-x-3">
+        
+        <!-- Language Switcher linking directly to counterpart page -->
+        <div class="flex items-center bg-space-900 p-0.5 rounded-xl border border-slate-800 text-xs font-bold">
+          <a href="lesson_03_kz.html" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition">
+            🇰🇿 KZ
+          </a>
+          <a href="lesson_03_ru.html" class="px-2.5 py-1 rounded-lg bg-brand-500 text-space-950 font-black transition">
+            🇷🇺 RU
+          </a>
+        </div>
+
+        <!-- Mark as Completed Toggle Button -->
+        <button id="btnHeaderComplete" onclick="toggleLessonComplete()" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-emerald-400 text-xs font-bold transition flex items-center space-x-1.5 shadow-sm">
+          <span id="headerCheckIcon">○</span>
+          <span id="headerCompleteText" class="hidden sm:inline">Прочитано</span>
+        </button>
+
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-8">
+
+    <!-- HERO LESSON BANNER -->
+    <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-space-900 via-space-850 to-space-900 border border-slate-800 shadow-xl relative overflow-hidden">
+      <!-- Glow decoration -->
+      <div class="absolute -right-20 -top-20 w-60 h-60 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-20 -bottom-20 w-60 h-60 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10 space-y-4">
+        
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <span class="px-3 py-1 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 font-extrabold text-xs tracking-wider uppercase">
+              📖 ЕНТ ГЕОГРАФИЯ • УРОК №3
+            </span>
+            <span class="px-3 py-1 rounded-xl bg-brand-500/10 border border-brand-500/30 text-brand-400 font-bold text-xs">
+              Русское отделение
+            </span>
+          </div>
+
+          <!-- Prev / Next Navigation -->
+          <div class="flex items-center space-x-2 text-xs font-bold">
+            <a href="lesson_02_ru.html" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition flex items-center space-x-1"><span>←</span><span>Предыдущий</span></a>
+            <span class="text-slate-500">|</span>
+            <a href="lesson_04_ru.html" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition flex items-center space-x-1"><span>Следующий</span><span>→</span></a>
+          </div>
+        </div>
+
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            3 урок. Основы картографии
+          </h1>
+          <h2 class="text-sm font-semibold text-cyan-300/80 mt-1">
+            3-сабақ. Картография негіздері
+          </h2>
+        </div>
+
+        <!-- Tags Row -->
+        <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-800/80">
+          <span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">#Картография</span><span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">#Масштаб</span><span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">#Курвиметр</span><span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">#Палетка</span><span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">#Горизонтали</span><span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">#Проекции</span><span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">#Градусная сеть</span>
+        </div>
+
+        <!-- Completed Banner -->
+        <div id="lessonCompletedBanner" class="hidden p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-xs sm:text-sm text-emerald-300 flex items-center justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <span>✅</span>
+            <span>Этот урок отмечен как прочитанный.</span>
+          </div>
+          <span class="text-xs px-2.5 py-1 rounded-xl bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40">
+            +30 XP получено
+          </span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SECTION 1: KEY TERMS & DEFINITIONS -->
+    <section class="p-6 sm:p-7 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-base sm:text-lg font-black text-white flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center text-sm font-black">1</span>
+          <span>Ключевые термины и понятия</span>
+        </h3>
+        <span class="text-xs text-slate-400 font-semibold">
+          5 терминов
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Масштаб</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Отношение длины отрезка на карте к его действительной длине на местности.</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Горизонталь (Изогипса)</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Линии на карте, соединяющие точки земной поверхности с одинаковой абсолютной высотой.</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Бергштрих</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Короткая черточка, перпендикулярная горизонтали, указывающая направление склона (наружу — холм, внутрь — впадина).</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Курвиметр</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Прибор с колесиком для точного измерения длины извилистых линий на карте.</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Азимутальная проекция</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Проекция на плоскость, касающуюся земного шара в одной точке, используемая для изображения полярных областей.</p>
+        </div>
+        
+      </div>
+    </section>
+
+    <!-- SECTION 2: FULL COMPREHENSIVE THEORY -->
+    <section class="p-6 sm:p-8 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-5">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-base sm:text-lg font-black text-white flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-brand-500/10 border border-brand-500/20 text-brand-400 flex items-center justify-center text-sm font-black">2</span>
+          <span>Полный теоретический конспект и иллюстрации</span>
+        </h3>
+        <span class="text-xs text-slate-400 font-medium hidden sm:inline">
+          Интерактивное чтение
+        </span>
+      </div>
+
+      <!-- Theory Body Container -->
+      <div class="prose-theory leading-relaxed space-y-4 overflow-x-auto">
+        <h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>1. Виды и классификация масштабов</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Масштаб</b> (нем. <i class="text-slate-300">Maßstab</i> — «мерная палочка») — это отношение длины отрезка на карте к действительной длине соответствующего отрезка на местности.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Формы записи масштаба:</b></li>
+</ul>
+<ol class="space-y-2 my-2.5 ml-6 list-none">
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">1.</span><b class="text-emerald-300 font-bold">Численный масштаб:</b> Записывается в виде дроби с числителем 1 (например, <b class="text-emerald-300 font-bold">1:40 000</b>, что означает: 1 см на карте равен 40 000 см на местности).</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">2.</span><b class="text-emerald-300 font-bold">Именованный масштаб:</b> Поясняет словами соотношение расстояний. Для перевода из численного в именованный убираем два нуля для метров или пять нулей для километров. Например: <i class="text-slate-300">в 1 см — 400 м</i>.</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">3.</span><b class="text-emerald-300 font-bold">Линейный масштаб:</b> Графический масштаб в виде шкалы с делениями у рамки карты. Удобен для прямого измерения расстояний циркулем-измерителем.</li>
+</ol>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Классификация карт по масштабу:</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Крупномасштабные (Топографические):</b> от <b class="text-cyan-300 font-bold">1:10 000 до 1:200 000</b>. Максимально детализированы, рельеф показан горизонталями, отображаются отдельные строения и дороги.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Среднемасштабные (Обзорно-топографические):</b> от <b class="text-cyan-300 font-bold">1:200 000 до 1:1 000 000</b>.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Мелкомасштабные (Обзорные):</b> мельче <b class="text-cyan-300 font-bold">1:1 000 000</b> (например, 1:5 000 000, 1:25 000 000). Показывают материки, океаны и весь мир в целом.</li>
+</ul>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>📏</span>
+<span>1-СЫЗБА: КЛАССИФИКАЦИЯ И ВИДЫ МАСШТАБА</span>
+</span>
+<span class="text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono">1:40 000 | 1 см = 400 м</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 240">
+<defs>
+<lineargradient id="scaleBarGrad" x1="0" x2="1" y1="0" y2="0">
+<stop offset="0%" stop-color="#06b6d4"></stop>
+<stop offset="100%" stop-color="#10b981"></stop>
+</lineargradient>
+</defs>
+<!-- Scale types columns -->
+<rect fill="#0b1329" height="110" rx="8" stroke="#1e293b" width="200" x="20" y="20"></rect>
+<text fill="#38bdf8" font-size="12" font-weight="bold" text-anchor="middle" x="120" y="45">1. ЧИСЛЕННЫЙ</text>
+<text fill="#f8fafc" font-family="monospace" font-size="14" font-weight="bold" text-anchor="middle" x="120" y="70">1 : 40 000</text>
+<text fill="#94a3b8" font-size="10" text-anchor="middle" x="120" y="92">1 см на карте = 40 000 см на земле</text>
+<text fill="#06b6d4" font-size="10" text-anchor="middle" x="120" y="112">Меньше знам-ль = Крупнее</text>
+<rect fill="#0b1329" height="110" rx="8" stroke="#1e293b" width="200" x="250" y="20"></rect>
+<text fill="#34d399" font-size="12" font-weight="bold" text-anchor="middle" x="350" y="45">2. ИМЕНОВАННЫЙ</text>
+<text fill="#f8fafc" font-family="monospace" font-size="14" font-weight="bold" text-anchor="middle" x="350" y="70">в 1 см — 400 м</text>
+<text fill="#94a3b8" font-size="10" text-anchor="middle" x="350" y="92">40 000 см ÷ 100 = 400 метров</text>
+<text fill="#10b981" font-size="10" text-anchor="middle" x="350" y="112">в 1 см — 1 км (1:100 000)</text>
+<rect fill="#0b1329" height="110" rx="8" stroke="#1e293b" width="200" x="480" y="20"></rect>
+<text fill="#fbbf24" font-size="12" font-weight="bold" text-anchor="middle" x="580" y="45">3. ЛИНЕЙНЫЙ</text>
+<!-- Graphical ruler -->
+<rect fill="#06b6d4" height="12" width="40" x="500" y="65"></rect>
+<rect fill="#334155" height="12" width="40" x="540" y="65"></rect>
+<rect fill="#06b6d4" height="12" width="40" x="580" y="65"></rect>
+<rect fill="#334155" height="12" width="40" x="620" y="65"></rect>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="500" y="92">0</text>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="540" y="92">400м</text>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="580" y="92">800м</text>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="620" y="92">1.2км</text>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="660" y="92">1.6км</text>
+<text fill="#fbbf24" font-size="10" text-anchor="middle" x="580" y="112">Для измерения циркулем</text>
+<!-- Scale groups tier -->
+<rect fill="#0f172a" height="80" rx="8" stroke="#334155" width="660" x="20" y="145"></rect>
+<text fill="#38bdf8" font-size="11" font-weight="bold" x="40" y="170">КРУПНОМАСШТАБНЫЕ (Топографические): 1:10 000 — 1:200 000</text>
+<text fill="#94a3b8" font-size="10" x="40" y="188">Максимальная детализация, рельеф показан горизонталями</text>
+<line stroke="#1e293b" x1="40" x2="660" y1="196" y2="196"></line>
+<text fill="#fbbf24" font-size="10" x="40" y="213">СРЕДНЕМАСШТАБНЫЕ: 1:200 000 — 1:1 000 000</text>
+<text fill="#f87171" font-size="10" x="380" y="213">МЕЛКОМАСШТАБНЫЕ (Обзорные): мельче 1:1 000 000</text>
+</svg>
+</div>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>2. Картометрические приборы и методы измерений</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Картометрия</b> — раздел картографии, изучающий методы измерения по картам расстояний, площадей, углов, координат и высот.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Основные приборы:</b></li>
+</ul>
+<ol class="space-y-2 my-2.5 ml-6 list-none">
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">1.</span><b class="text-emerald-300 font-bold">Курвиметр:</b> Прибор с вращающимся маленьким колесиком со стрелочной или цифровой шкалой для точного измерения извилистых линий на карте (рек, береговых линий, дорог, границ).</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">2.</span><b class="text-emerald-300 font-bold">Палетка:</b> Прозрачная пластина, расчерченная на квадраты известного размера (обычно 1х1 см или 2х2 см). Накладывается на объекты сложной формы (озера, леса) для вычисления их площади методом подсчета квадратов.</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">3.</span><b class="text-emerald-300 font-bold">Транспортир:</b> Полукруглый инструмент для измерения углов и азимутов (от 0° до 360°) между объектами на карте.</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">4.</span><b class="text-emerald-300 font-bold">Метод шагов на местности:</b> Измерение расстояния подсчетом шагов. Для калибровки проходят 100 м 3 раза, находят среднее арифметическое число шагов.</li>
+</ol>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Формула расчета длины шага:</b> Длина шага = 100 м / Среднее количество шагов</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><i class="text-slate-300">Пример:</i> При прохождении 100 м насчитали 149, 148 и 150 шагов. Среднее = 149 шагов. Длина одного шага: 100 / 149 = <b class="text-cyan-300 font-bold">0,67 м</b>.</li>
+</ul>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>📐</span>
+<span>2-СЫЗБА: КАРТОМЕТРИЧЕСКИЕ ПРИБОРЫ И МЕТОДЫ ИЗМЕРЕНИЙ</span>
+</span>
+<span class="text-[10px] bg-emerald-500/10 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-500/20 font-mono">Курвиметр • Палетка • Транспортир • Қадам</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 230">
+<!-- 4 cards for 4 tools -->
+<!-- Tool 1: Curvimeter -->
+<rect fill="#0b1329" height="200" rx="8" stroke="#1e293b" width="155" x="15" y="15"></rect>
+<circle cx="92" cy="65" fill="#1e293b" r="30" stroke="#06b6d4" stroke-width="2"></circle>
+<circle cx="92" cy="65" fill="#06b6d4" r="3"></circle>
+<line stroke="#38bdf8" stroke-width="2" x1="92" x2="105" y1="65" y2="52"></line>
+<path d="M92 95 L92 110 L87 115 L97 115 Z" fill="#94a3b8"></path>
+<circle cx="92" cy="118" fill="#f59e0b" r="5"></circle>
+<text fill="#38bdf8" font-size="12" font-weight="bold" text-anchor="middle" x="92" y="145">КУРВИМЕТР</text>
+<text fill="#e2e8f0" font-size="10" text-anchor="middle" x="92" y="165">Длина извилистых линий</text>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="92" y="182">Реки, дороги, границы</text>
+<!-- Tool 2: Palette -->
+<rect fill="#0b1329" height="200" rx="8" stroke="#1e293b" width="155" x="185" y="15"></rect>
+<rect fill="none" height="60" stroke="#10b981" stroke-dasharray="10 10" stroke-width="1.5" width="75" x="225" y="40"></rect>
+<path d="M235 60 Q250 45 270 55 T290 75 T260 90 T235 60 Z" fill="#06b6d4" fill-opacity="0.3" stroke="#38bdf8"></path>
+<text fill="#34d399" font-size="12" font-weight="bold" text-anchor="middle" x="262" y="145">ПАЛЕТКА</text>
+<text fill="#e2e8f0" font-size="10" text-anchor="middle" x="262" y="165">Площадь объектов</text>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="262" y="182">Метод сетки квадратов</text>
+<text fill="#10b981" font-size="9" font-weight="bold" text-anchor="middle" x="262" y="198">S = N_ячеек × S_ячейки</text>
+<!-- Tool 3: Protractor -->
+<rect fill="#0b1329" height="200" rx="8" stroke="#1e293b" width="155" x="355" y="15"></rect>
+<path d="M 385 95 A 45 45 0 0 1 475 95 Z" fill="#1e293b" stroke="#fbbf24" stroke-width="2"></path>
+<line stroke="#f59e0b" stroke-width="2" x1="430" x2="455" y1="95" y2="70"></line>
+<text fill="#fbbf24" font-size="12" font-weight="bold" text-anchor="middle" x="432" y="145">ТРАНСПОРТИР</text>
+<text fill="#e2e8f0" font-size="10" text-anchor="middle" x="432" y="165">Углы и азимуты</text>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="432" y="182">Измерение от 0° до 360°</text>
+<!-- Tool 4: Pacing -->
+<rect fill="#0b1329" height="200" rx="8" stroke="#1e293b" width="160" x="525" y="15"></rect>
+<!-- Footstep icons -->
+<ellipse cx="585" cy="55" fill="#a855f7" rx="7" ry="14" transform="rotate(-15 585 55)"></ellipse>
+<ellipse cx="625" cy="85" fill="#c084fc" rx="7" ry="14" transform="rotate(15 625 85)"></ellipse>
+<text fill="#c084fc" font-size="12" font-weight="bold" text-anchor="middle" x="605" y="145">МЕТОД ШАГОВ</text>
+<text fill="#e2e8f0" font-size="10" text-anchor="middle" x="605" y="165">Через калибровку 100 м</text>
+<text fill="#38bdf8" font-family="monospace" font-size="9" text-anchor="middle" x="605" y="185">100 / 149 = 0,67 м</text>
+</svg>
+</div>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>3. Изображение рельефа и шкала высот</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Горизонтали (Изогипсы):</b> Линии на карте, соединяющие точки земной поверхности с одинаковой абсолютной высотой над уровнем моря.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Бергштрихи:</b> Короткие черточки, перпендикулярные горизонталям, которые всегда указывают <b class="text-cyan-300 font-bold">направление склона (ската)</b>.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Если бергштрихи направлены наружу — это <b class="text-cyan-300 font-bold">ХОЛМ (ТӨБЕ)</b>;</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Если бергштрихи направлены внутрь — это <b class="text-cyan-300 font-bold">ВПАДИНА (ҚАЗАНШҰҢҚЫР)</b>.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Высота сечения рельефа:</b> Разность высот между двумя соседними секущими плоскостями (горизонталями).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Послойная окраска рельефа на физических картах:</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Темно-зеленый и зеленый цвет:</b> Низменности от 0 до 200 м (например, Прикаспийская низменность);</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Желтый цвет:</b> Возвышенности от 200 до 500 м;</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Коричневый цвет:</b> Горы выше 500 м (чем выше горы, тем темнее коричневый оттенок).</li>
+</ul>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>🏔️</span>
+<span>3-СЫЗБА: ГОРИЗОНТАЛИ И БЕРГШТРИХИ: ХОЛМ И ВПАДИНА</span>
+</span>
+<span class="text-[10px] bg-amber-500/10 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/20 font-mono">Бергштрих: Сырты = Төбе • Іші = Ойыс</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 230">
+<!-- Left: Hill (Төбе / Холм) -->
+<rect fill="#0b1329" height="200" rx="8" stroke="#1e293b" width="315" x="20" y="15"></rect>
+<text fill="#34d399" font-size="13" font-weight="bold" text-anchor="middle" x="177" y="38">ХОЛМ — Бергштрихи НАРУЖУ</text>
+<!-- Contours for hill -->
+<ellipse cx="177" cy="115" fill="none" rx="90" ry="55" stroke="#10b981" stroke-width="2"></ellipse>
+<ellipse cx="177" cy="115" fill="none" rx="60" ry="38" stroke="#10b981" stroke-width="2"></ellipse>
+<ellipse cx="177" cy="115" fill="none" rx="30" ry="20" stroke="#10b981" stroke-width="2"></ellipse>
+<circle cx="177" cy="115" fill="#f59e0b" r="2.5"></circle>
+<text fill="#f59e0b" font-size="9" font-weight="bold" text-anchor="middle" x="177" y="119">• 158.4</text>
+<!-- Outward ticks (bergstrich) -->
+<line stroke="#34d399" stroke-width="2" x1="267" x2="280" y1="115" y2="115"></line>
+<line stroke="#34d399" stroke-width="2" x1="87" x2="74" y1="115" y2="115"></line>
+<line stroke="#34d399" stroke-width="2" x1="177" x2="177" y1="60" y2="47"></line>
+<line stroke="#34d399" stroke-width="2" x1="177" x2="177" y1="170" y2="183"></line>
+<text fill="#94a3b8" font-size="10" text-anchor="middle" x="177" y="200">Скат направлен наружу (Высота в центре максимальна)</text>
+<!-- Right: Depression (Қазаншұңқыр / Впадина) -->
+<rect fill="#0b1329" height="200" rx="8" stroke="#1e293b" width="315" x="365" y="15"></rect>
+<text fill="#38bdf8" font-size="13" font-weight="bold" text-anchor="middle" x="522" y="38">ВПАДИНА — Бергштрихи ВНУТРЬ</text>
+<!-- Contours for depression -->
+<ellipse cx="522" cy="115" fill="none" rx="90" ry="55" stroke="#06b6d4" stroke-width="2"></ellipse>
+<ellipse cx="522" cy="115" fill="none" rx="60" ry="38" stroke="#06b6d4" stroke-width="2"></ellipse>
+<ellipse cx="522" cy="115" fill="none" rx="30" ry="20" stroke="#06b6d4" stroke-width="2"></ellipse>
+<circle cx="522" cy="115" fill="#f87171" r="2.5"></circle>
+<text fill="#f87171" font-size="9" font-weight="bold" text-anchor="middle" x="522" y="119">• -28.0</text>
+<!-- Inward ticks (bergstrich) -->
+<line stroke="#38bdf8" stroke-width="2" x1="612" x2="600" y1="115" y2="115"></line>
+<line stroke="#38bdf8" stroke-width="2" x1="432" x2="444" y1="115" y2="115"></line>
+<line stroke="#38bdf8" stroke-width="2" x1="522" x2="522" y1="60" y2="72"></line>
+<line stroke="#38bdf8" stroke-width="2" x1="522" x2="522" y1="170" y2="158"></line>
+<text fill="#94a3b8" font-size="10" text-anchor="middle" x="522" y="200">Скат направлен внутрь (Дно впадины, котловина)</text>
+</svg>
+</div>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>4. Картографические проекции</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Поверхность эллипсоида Земли невозможно развернуть на плоскость без разрывов или складок. Для отображения поверхности Земли применяют математические законы — <b class="text-cyan-300 font-bold">картографические проекции</b>.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">По виду вспомогательной поверхности:</b></li>
+</ul>
+<ol class="space-y-2 my-2.5 ml-6 list-none">
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">1.</span><b class="text-emerald-300 font-bold">Цилиндрическая проекция (Меркатора):</b> Земной шар проецируется на боковую поверхность цилиндра. Вблизи экватора искажений практически нет, но к полюсам площади сильно растягиваются (Гренландия кажется равной Африке). Идеальна для морской и авиационной навигации.</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">2.</span><b class="text-emerald-300 font-bold">Коническая проекция:</b> Проектирование ведется на конус, касающийся земного шара. Наиболее точна для средних широт (идеальна для карт Казахстана, России, Европы).</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">3.</span><b class="text-emerald-300 font-bold">Азимутальная проекция:</b> Проектирование на плоскость, касающуюся шара в одной точке (обычно на полюсе). Применяется для изображения Арктики и Антарктиды.</li>
+</ol>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">По характеру искажений:</b> Равноугольные (сохраняют углы и формы), Равновеликие (сохраняют площади), Произвольные.</li>
+</ul>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>🌐</span>
+<span>4-СЫЗБА: 3 ОСНОВНЫХ ВИДА КАРТОГРАФИЧЕСКИХ ПРОЕКЦИЙ</span>
+</span>
+<span class="text-[10px] bg-purple-500/10 text-purple-300 px-2.5 py-0.5 rounded-full border border-purple-500/20 font-mono">Цилиндрлік • Конустық • Азимуттық</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 220">
+<!-- Cylindrical -->
+<rect fill="#0b1329" height="190" rx="8" stroke="#1e293b" width="205" x="20" y="15"></rect>
+<text fill="#38bdf8" font-size="12" font-weight="bold" text-anchor="middle" x="122" y="38">ЦИЛИНДРИЧЕСКАЯ</text>
+<!-- Globe inside cylinder -->
+<rect fill="none" height="90" stroke="#06b6d4" stroke-dasharray="4 4" stroke-width="1.5" width="100" x="72" y="55"></rect>
+<circle cx="122" cy="100" fill="#0f172a" r="35" stroke="#38bdf8" stroke-width="2"></circle>
+<line stroke="#f59e0b" stroke-width="1.5" x1="87" x2="157" y1="100" y2="100"></line>
+<text fill="#f8fafc" font-size="10" font-weight="bold" text-anchor="middle" x="122" y="160">Экваториальные области</text>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="122" y="178">Морская навигация, карты мира</text>
+<text fill="#38bdf8" font-size="9" text-anchor="middle" x="122" y="194">Искажает площади у полюсов</text>
+<!-- Conic -->
+<rect fill="#0b1329" height="190" rx="8" stroke="#1e293b" width="210" x="245" y="15"></rect>
+<text fill="#34d399" font-size="12" font-weight="bold" text-anchor="middle" x="350" y="38">КОНИЧЕСКАЯ</text>
+<!-- Cone over globe -->
+<polygon fill="none" points="350,50 290,140 410,140" stroke="#10b981" stroke-dasharray="4 4" stroke-width="1.5"></polygon>
+<circle cx="350" cy="115" fill="#0f172a" r="30" stroke="#34d399" stroke-width="2"></circle>
+<text fill="#f8fafc" font-size="10" font-weight="bold" text-anchor="middle" x="350" y="160">Умеренные широты</text>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="350" y="178">Карты Казахстана, Евразии</text>
+<text fill="#10b981" font-size="9" text-anchor="middle" x="350" y="194">Минимум искажений в 40°-60°</text>
+<!-- Azimuthal -->
+<rect fill="#0b1329" height="190" rx="8" stroke="#1e293b" width="205" x="475" y="15"></rect>
+<text fill="#c084fc" font-size="12" font-weight="bold" text-anchor="middle" x="577" y="38">АЗИМУТАЛЬНАЯ</text>
+<!-- Plane touching pole -->
+<line stroke="#a855f7" stroke-width="2" x1="517" x2="637" y1="65" y2="65"></line>
+<circle cx="577" cy="100" fill="#0f172a" r="35" stroke="#c084fc" stroke-width="2"></circle>
+<circle cx="577" cy="65" fill="#f59e0b" r="3"></circle>
+<text fill="#f8fafc" font-size="10" font-weight="bold" text-anchor="middle" x="577" y="160">Полярные области</text>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="577" y="178">Антарктида, Арктика</text>
+<text fill="#c084fc" font-size="9" text-anchor="middle" x="577" y="194">Касается шара в одной точке</text>
+</svg>
+</div>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>5. Градусная сетка и географические координаты</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Градусная сетка</b> — система взаимно пересекающихся меридианов и параллелей на карте или глобусе.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Меридианы:</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Линии сечения поверхности земного шара плоскостями, проходящими через ось вращения Земли от Северного полюса к Южному.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Длина всех меридианов ОДИНАКОВА:</b> около <b class="text-cyan-300 font-bold">20 000 км</b> (длина дуги 1° меридиана везде равна примерно <b class="text-cyan-300 font-bold">111,1 км</b>).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Нулевой (Гринвичский) меридиан:</b> проходит через Гринвичскую обсерваторию в Лондоне.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Ближайший казахстанский город к нулевому меридиану — <b class="text-cyan-300 font-bold">Актау</b> на побережье Каспия.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Материк, который пересекают все меридианы Земли — <b class="text-cyan-300 font-bold">Антарктида</b>.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Параллели:</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Линии сечения поверхности земного шара плоскостями, параллельными плоскости экватора.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Самая длинная параллель — <b class="text-cyan-300 font-bold">Экватор (40 075 км)</b>. К полюсам длина параллелей уменьшается до 0.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Географические координаты:</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Положение любой точки задается <b class="text-cyan-300 font-bold">географической широтой (0°–90° с.ш. или ю.ш.)</b> и <b class="text-cyan-300 font-bold">географической долготой (0°–180° в.д. или з.д.)</b>.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Координаты столицы Казахстана (Астаны):</b> <b class="text-cyan-300 font-bold">51° с.ш. и 71° в.д.</b></li>
+</ul>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>📍</span>
+<span>5-СЫЗБА: ГРАДУСНАЯ СЕТКА И ГЕОГРАФИЧЕСКИЕ КООРДИНАТЫ</span>
+</span>
+<span class="text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono">Астана: 51°N, 71°E</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 220">
+<!-- Globe circle -->
+<circle cx="160" cy="110" fill="#0b1329" r="85" stroke="#38bdf8" stroke-width="2"></circle>
+<!-- Equator -->
+<line stroke="#f59e0b" stroke-width="2" x1="75" x2="245" y1="110" y2="110"></line>
+<text fill="#f59e0b" font-size="9" font-weight="bold" x="210" y="105">Экватор 0°</text>
+<!-- Parallels -->
+<ellipse cx="160" cy="70" fill="none" rx="74" ry="12" stroke="#64748b" stroke-dasharray="3 3"></ellipse>
+<text fill="#94a3b8" font-size="8" x="220" y="68">51°N</text>
+<ellipse cx="160" cy="150" fill="none" rx="74" ry="12" stroke="#64748b" stroke-dasharray="3 3"></ellipse>
+<!-- Prime meridian (Greenwich) -->
+<line stroke="#10b981" stroke-width="2" x1="160" x2="160" y1="25" y2="195"></line>
+<text fill="#10b981" font-size="8" font-weight="bold" x="165" y="40">Гринвич 0°</text>
+<!-- 71 E meridian -->
+<ellipse cx="160" cy="110" fill="none" rx="45" ry="85" stroke="#38bdf8" stroke-dasharray="3 3"></ellipse>
+<!-- Astana point -->
+<circle cx="195" cy="70" fill="#ef4444" r="4.5" stroke="#ffffff" stroke-width="1.5"></circle>
+<text fill="#f87171" font-size="10" font-weight="black" x="204" y="66">Астана (51°N, 71°E)</text>
+<!-- Info side panel -->
+<rect fill="#0b1329" height="180" rx="8" stroke="#1e293b" width="390" x="290" y="20"></rect>
+<text fill="#38bdf8" font-size="12" font-weight="bold" x="310" y="45">МЕРИДИАНЫ И ПАРАЛЛЕЛИ:</text>
+<text fill="#e2e8f0" font-size="11" x="310" y="70">• Все меридианы ОДИНАКОВОЙ длины (~20 000 км)</text>
+<text fill="#94a3b8" font-size="10" x="310" y="90">  Длина дуги 1° меридиана везде ≈ 111,1 км</text>
+<text fill="#e2e8f0" font-size="11" x="310" y="112">• Длина параллелей уменьшается от Экватора (40 075 км)</text>
+<text fill="#94a3b8" font-size="10" x="310" y="132">  На полюсах параллель превращается в точку (0 км)</text>
+<line stroke="#1e293b" x1="310" x2="660" y1="145" y2="145"></line>
+<text fill="#f59e0b" font-size="11" font-weight="bold" x="310" y="165">БЛИЖАЙШИЙ К ГРИНВИЧУ ГОРОД РК:</text>
+<text fill="#34d399" font-size="11" x="310" y="185">г. Актау (побережье Каспия, самый западный)</text>
+</svg>
+</div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: COMMON EXAM TRAPS & PITFALLS (if available) -->
+    <section class="p-6 sm:p-7 rounded-3xl bg-amber-500/5 border border-amber-500/20 shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-amber-500/20 pb-3">
+        <h3 class="text-base sm:text-lg font-black text-amber-300 flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center text-sm font-black">⚠️</span>
+          <span>Экзаменационные ловушки и нюансы ЕНТ</span>
+        </h3>
+        <span class="text-xs text-amber-400/80 font-bold">
+          Обратите внимание
+        </span>
+      </div>
+
+      <div class="space-y-2.5 text-xs sm:text-sm text-slate-200">
+        <p class="leading-relaxed flex items-start space-x-2"><span class="text-amber-400 shrink-0 mt-0.5">⚠️</span><span>⚠️ 1:100 000 масштабы 1:1 000 000 масштабынан 10 есе ІРІ (бөлгіші кіші сан болса, масштаб ірі болады)!</span></p><p class="leading-relaxed flex items-start space-x-2"><span class="text-amber-400 shrink-0 mt-0.5">⚠️</span><span>⚠️ Қазақстан аумағы қоңыржай белдеуде созылып жатқандықтан, КОНУСТЫҚ проекция таңдалады.</span></p>
+      </div>
+    </section>
+
+    <!-- SECTION 4: END-OF-LESSON TEST -->
+    <section class="p-6 sm:p-8 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-6">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-brand-500/10 border border-brand-500/20 text-brand-400 flex items-center justify-center text-sm font-black">3</span>
+          <div>
+            <h3 class="text-base sm:text-lg font-black text-white">
+              Итоговый тест по теме
+            </h3>
+            <p class="text-xs text-slate-400 mt-0.5">
+              Проходной балл: 80% • Награда: +30 XP
+            </p>
+          </div>
+        </div>
+
+        <div id="testScoreBadge" class="hidden px-3 py-1 rounded-xl bg-space-850 border border-slate-700 text-xs font-bold text-amber-400 font-mono">
+          0%
+        </div>
+      </div>
+
+      <!-- Test Questions Container -->
+      <div id="testQuestionsList" class="space-y-6">
+        <!-- Dynamically populated test questions via JS -->
+      </div>
+
+      <!-- Test Submit & Score Action Bar -->
+      <div class="pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="text-xs text-slate-400" id="testProgressInfo">
+          Ответьте на все вопросы и проверьте свои знания.
+        </div>
+        <div class="flex items-center space-x-2.5 w-full sm:w-auto">
+          <button id="btnSubmitTest" onclick="submitLessonTest()" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-brand-500 hover:from-amber-400 hover:to-brand-400 text-space-950 font-black text-xs sm:text-sm shadow-md transition flex items-center justify-center space-x-2">
+            <span>🏁</span>
+            <span>Проверить ответы</span>
+          </button>
+          <button id="btnResetTest" onclick="resetLessonTest()" class="hidden px-4 py-2.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-bold transition flex items-center justify-center space-x-1">
+            <span>🔄</span>
+            <span>Пересдать</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- BOTTOM NAVIGATION & FOOTER -->
+    <div class="p-6 rounded-3xl bg-space-900 border border-slate-800 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleLessonComplete()" class="px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-400 text-space-950 font-black text-xs sm:text-sm shadow-md transition flex items-center space-x-2">
+          <span>✓</span>
+          <span id="lblBottomComplete">Отметить как прочитанное (+30 XP)</span>
+        </button>
+      </div>
+
+      <div class="flex items-center space-x-2 text-xs font-bold">
+        <a href="lesson_02_ru.html" class="px-4 py-2 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition">← Предыдущий</a>
+        <a href="../geotanu.html?lang=ru#section-sabaktar_reading" class="px-4 py-2 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition">
+          Каталог уроков
+        </a>
+        <a href="lesson_04_ru.html" class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-space-950 transition font-black">Следующий →</a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- LESSON SCRIPT ENGINE -->
+  <script>
+    const lessonData = {"id": 3, "title_kz": "3-сабақ. Картография негіздері", "title_ru": "3 урок. Основы картографии", "time": "8 мин", "tags": ["Картография", "Масштаб", "Курвиметр", "Палетка", "Горизонтальдар", "Проекциялар", "Градус торы"], "terms": [{"kz": "Масштаб", "ru": "Масштаб", "desc_kz": "Жер бетіндегі қашықтықтың қағазға түсіргенде неше есе кішірейтілгенін көрсететін сан немесе бөлшек.", "desc_ru": "Отношение длины отрезка на карте к его действительной длине на местности."}, {"kz": "Горизонталь (Изогипса)", "ru": "Горизонталь (Изогипса)", "desc_kz": "Жергілікті жердегі абсолюттік биіктіктері бірдей нүктелерді қосатын тұйық қисық сызықтар.", "desc_ru": "Линии на карте, соединяющие точки земной поверхности с одинаковой абсолютной высотой."}, {"kz": "Бергштрих", "ru": "Бергштрих", "desc_kz": "Горизонтальға перпендикуляр қойылып, ылдидың (еңістің) бағытын көрсететін қысқа сызықша (сыртқа — төбе, ішке — қазаншұңқыр).", "desc_ru": "Короткая черточка, перпендикулярная горизонтали, указывающая направление склона (наружу — холм, внутрь — впадина)."}, {"kz": "Курвиметр", "ru": "Курвиметр", "desc_kz": "Картадағы ирек сызықтардың (өзендер, шекаралар, жолдар) ұзындығын өлшейтін дөңгелекті картометриялық құрал.", "desc_ru": "Прибор с колесиком для точного измерения длины извилистых линий на карте."}, {"kz": "Азимуттық проекция", "ru": "Азимутальная проекция", "desc_kz": "Жер шары жазықтықпен бір нүктеде (полюстерде) жанасатын, Арктика мен Антарктиданы бейнелеуге арналған проекция.", "desc_ru": "Проекция на плоскость, касающуюся земного шара в одной точке, используемая для изображения полярных областей."}], "theory_kz": "<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>1. Масштаб түрлері мен жіктелуі</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Масштаб</b> (нем. <i class=\"text-slate-300\">Maßstab</i> — «өлшеуіш таяқша») — жер бетіндегі қашықтықтың қағаз бетіне түсірілгенде неше есе кішірейтілгенін көрсететін сан немесе бөлшек.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Масштабтың жазылу формалары:</b></li>\n</ul>\n<ol class=\"space-y-2 my-2.5 ml-6 list-none\">\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Сандық масштаб (Численный):</b> Бөлшек түрінде жазылады (алымы әрқашан 1, ал бөлімі кішірейту еселігі). Мысалы: <b class=\"text-emerald-300 font-bold\">1:40 000</b> (яғни картадағы 1 см жер бетіндегі 40 000 см-ге сәйкес).</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Атаулы масштаб (Именованный):</b> Сөзбен жазылады. Сандық масштабты атаулыға айналдыру үшін бөліміндегі сантиметрді метрге (екі нөлді сызып тастау) немесе километрге (бес нөлді сызып тастау) айналдырамыз. Мысалы: <i class=\"text-slate-300\">1 см-де 400 м</i>.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Сызықтық масштаб (Линейный):</b> Карта жиегіндегі сызғыш тәрізді бөліктерге бөлінген графикалық сызық. Ол циркуль-өлшеуіш арқылы тікелей картадан қашықтықты өлшеуге өте ыңғайлы.</li>\n</ol>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Масштаб бойынша карталардың 3 тобы:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Ірі масштабты (Топографиялық):</b> <b class=\"text-cyan-300 font-bold\">1:10 000 — 1:200 000</b> аралығы. Жергілікті жер аса нақты, горизонтальдармен, жекелеген үйлер мен жолдарға дейін егжей-тегжейлі бейнеленеді.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Орта масштабты (Шолу-топографиялық):</b> <b class=\"text-cyan-300 font-bold\">1:200 000 — 1:1 000 000</b> аралығы.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Ұсақ масштабты (Шолу карталары):</b> <b class=\"text-cyan-300 font-bold\">1:1 000 000-нан кіші</b> (мысалы, 1:5 000 000, 1:25 000 000). Материктер, мұхиттар және бүкіл дүниежүзі бейнеленеді.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>📏</span>\n<span>1-СЫЗБА: МАСШТАБТЫҢ ЖІКТЕЛУІ МЕН САНДЫҚ ТҮРЛЕРІ</span>\n</span>\n<span class=\"text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono\">1:40 000 | 1 см = 400 м</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 240\">\n<defs>\n<lineargradient id=\"scaleBarGrad\" x1=\"0\" x2=\"1\" y1=\"0\" y2=\"0\">\n<stop offset=\"0%\" stop-color=\"#06b6d4\"></stop>\n<stop offset=\"100%\" stop-color=\"#10b981\"></stop>\n</lineargradient>\n</defs>\n<!-- Scale types columns -->\n<rect fill=\"#0b1329\" height=\"110\" rx=\"8\" stroke=\"#1e293b\" width=\"200\" x=\"20\" y=\"20\"></rect>\n<text fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"120\" y=\"45\">1. САНДЫҚ (Численный)</text>\n<text fill=\"#f8fafc\" font-family=\"monospace\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"120\" y=\"70\">1 : 40 000</text>\n<text fill=\"#94a3b8\" font-size=\"10\" text-anchor=\"middle\" x=\"120\" y=\"92\">Картада 1 см = Жерде 40 000 см</text>\n<text fill=\"#06b6d4\" font-size=\"10\" text-anchor=\"middle\" x=\"120\" y=\"112\">Бөлімі кіші = Масштаб ірі</text>\n<rect fill=\"#0b1329\" height=\"110\" rx=\"8\" stroke=\"#1e293b\" width=\"200\" x=\"250\" y=\"20\"></rect>\n<text fill=\"#34d399\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"45\">2. АТАУЛЫ (Именованный)</text>\n<text fill=\"#f8fafc\" font-family=\"monospace\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"70\">1 см-де 400 м</text>\n<text fill=\"#94a3b8\" font-size=\"10\" text-anchor=\"middle\" x=\"350\" y=\"92\">40 000 см ÷ 100 = 400 метр</text>\n<text fill=\"#10b981\" font-size=\"10\" text-anchor=\"middle\" x=\"350\" y=\"112\">1 см-де 1 км (1:100 000)</text>\n<rect fill=\"#0b1329\" height=\"110\" rx=\"8\" stroke=\"#1e293b\" width=\"200\" x=\"480\" y=\"20\"></rect>\n<text fill=\"#fbbf24\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"580\" y=\"45\">3. СЫЗЫҚТЫҚ (Линейный)</text>\n<!-- Graphical ruler -->\n<rect fill=\"#06b6d4\" height=\"12\" width=\"40\" x=\"500\" y=\"65\"></rect>\n<rect fill=\"#334155\" height=\"12\" width=\"40\" x=\"540\" y=\"65\"></rect>\n<rect fill=\"#06b6d4\" height=\"12\" width=\"40\" x=\"580\" y=\"65\"></rect>\n<rect fill=\"#334155\" height=\"12\" width=\"40\" x=\"620\" y=\"65\"></rect>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"500\" y=\"92\">0</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"540\" y=\"92\">400м</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"580\" y=\"92\">800м</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"620\" y=\"92\">1.2км</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"660\" y=\"92\">1.6км</text>\n<text fill=\"#fbbf24\" font-size=\"10\" text-anchor=\"middle\" x=\"580\" y=\"112\">Циркульмен өлшеуге арналған</text>\n<!-- Scale groups tier -->\n<rect fill=\"#0f172a\" height=\"80\" rx=\"8\" stroke=\"#334155\" width=\"660\" x=\"20\" y=\"145\"></rect>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" x=\"40\" y=\"170\">ІРІ МАСШТАБТЫ (Топографиялық): 1:10 000 — 1:200 000</text>\n<text fill=\"#94a3b8\" font-size=\"10\" x=\"40\" y=\"188\">Егжей-тегжейлі жергілікті жер, рельеф горизонтальдармен бейнеленеді</text>\n<line stroke=\"#1e293b\" x1=\"40\" x2=\"660\" y1=\"196\" y2=\"196\"></line>\n<text fill=\"#fbbf24\" font-size=\"10\" x=\"40\" y=\"213\">ОРТА МАСШТАБТЫ: 1:200 000 — 1:1 000 000</text>\n<text fill=\"#f87171\" font-size=\"10\" x=\"380\" y=\"213\">ҰСАҚ МАСШТАБТЫ (Шолу): 1:1 000 000-нан ұсақ</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>2. Картометриялық құралдар мен өлшеу әдістері</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Картометрия</b> — карталар бойынша қашықтықтарды, бұрыштарды, аудандар мен биіктіктерді өлшеу туралы картография саласы.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Негізгі құралдар:</b></li>\n</ul>\n<ol class=\"space-y-2 my-2.5 ml-6 list-none\">\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Курвиметр (Curvimeter):</b> Картадағы ирек, қисық сызықтардың (өзендердің, теміржолдар мен тасжолдардың, мемлекеттік шекаралардың) ұзындығын өлшеуге арналған дөңгелекті механикалық не электронды құрал.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Палетка (Palette):</b> Ауданы белгілі кішкентай торларға (көбінесе 1x1 см не 2x2 см) бөлінген мөлдір пластина. Оны көлдер, ормандар сияқты пішіні күрделі нысандардың үстіне қойып, торлардың санын есептеу арқылы аудан табылады.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Транспортир (Protractor):</b> Картадағы нысандар арасындағы бағытты, бұрыштар мен азимутты (0°-тан 360°-қа дейін) өлшеуге арналған жартылай шеңберлі құрал.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">4.</span><b class=\"text-emerald-300 font-bold\">Қадаммен өлшеу әдісі:</b> Жергілікті жерде қашықтықты өлшеуде қолданылады. Алдымен 100 м қашықтықты жүріп өтіп, қадамдар санын 3 рет есептеп, орташа арифметикалық мәнін табады.</li>\n</ol>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Қадам ұзындығын есептеу формуласы:</b> Қадам ұзындығы = 100 метр / Орташа қадамдар саны</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><i class=\"text-slate-300\">Мысалы:</i> 100 метрде 149, 148, 150 қадам болса, орташа = 149 қадам. Бір қадам ұзындығы: 100 / 149 = <b class=\"text-cyan-300 font-bold\">0,67 м</b>.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>📐</span>\n<span>2-СЫЗБА: КАРТОМЕТРИЯЛЫҚ ҚҰРАЛДАР ЖӘНЕ ӨЛШЕУ ӘДІСТЕРІ</span>\n</span>\n<span class=\"text-[10px] bg-emerald-500/10 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-500/20 font-mono\">Курвиметр • Палетка • Транспортир • Қадам</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 230\">\n<!-- 4 cards for 4 tools -->\n<!-- Tool 1: Curvimeter -->\n<rect fill=\"#0b1329\" height=\"200\" rx=\"8\" stroke=\"#1e293b\" width=\"155\" x=\"15\" y=\"15\"></rect>\n<circle cx=\"92\" cy=\"65\" fill=\"#1e293b\" r=\"30\" stroke=\"#06b6d4\" stroke-width=\"2\"></circle>\n<circle cx=\"92\" cy=\"65\" fill=\"#06b6d4\" r=\"3\"></circle>\n<line stroke=\"#38bdf8\" stroke-width=\"2\" x1=\"92\" x2=\"105\" y1=\"65\" y2=\"52\"></line>\n<path d=\"M92 95 L92 110 L87 115 L97 115 Z\" fill=\"#94a3b8\"></path>\n<circle cx=\"92\" cy=\"118\" fill=\"#f59e0b\" r=\"5\"></circle>\n<text fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"92\" y=\"145\">КУРВИМЕТР</text>\n<text fill=\"#e2e8f0\" font-size=\"10\" text-anchor=\"middle\" x=\"92\" y=\"165\">Ирек сызықтар ұзындығы</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"92\" y=\"182\">Өзендер, жолдар, шекара</text>\n<!-- Tool 2: Palette -->\n<rect fill=\"#0b1329\" height=\"200\" rx=\"8\" stroke=\"#1e293b\" width=\"155\" x=\"185\" y=\"15\"></rect>\n<rect fill=\"none\" height=\"60\" stroke=\"#10b981\" stroke-dasharray=\"10 10\" stroke-width=\"1.5\" width=\"75\" x=\"225\" y=\"40\"></rect>\n<path d=\"M235 60 Q250 45 270 55 T290 75 T260 90 T235 60 Z\" fill=\"#06b6d4\" fill-opacity=\"0.3\" stroke=\"#38bdf8\"></path>\n<text fill=\"#34d399\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"262\" y=\"145\">ПАЛЕТКА</text>\n<text fill=\"#e2e8f0\" font-size=\"10\" text-anchor=\"middle\" x=\"262\" y=\"165\">Нысандардың ауданы</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"262\" y=\"182\">Торларды санау әдісі</text>\n<text fill=\"#10b981\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"262\" y=\"198\">S = тор саны × S_квадрат</text>\n<!-- Tool 3: Protractor -->\n<rect fill=\"#0b1329\" height=\"200\" rx=\"8\" stroke=\"#1e293b\" width=\"155\" x=\"355\" y=\"15\"></rect>\n<path d=\"M 385 95 A 45 45 0 0 1 475 95 Z\" fill=\"#1e293b\" stroke=\"#fbbf24\" stroke-width=\"2\"></path>\n<line stroke=\"#f59e0b\" stroke-width=\"2\" x1=\"430\" x2=\"455\" y1=\"95\" y2=\"70\"></line>\n<text fill=\"#fbbf24\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"432\" y=\"145\">ТРАНСПОРТИР</text>\n<text fill=\"#e2e8f0\" font-size=\"10\" text-anchor=\"middle\" x=\"432\" y=\"165\">Бұрыштар мен азимут</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"432\" y=\"182\">0° — 360° бағыт өлшеу</text>\n<!-- Tool 4: Pacing -->\n<rect fill=\"#0b1329\" height=\"200\" rx=\"8\" stroke=\"#1e293b\" width=\"160\" x=\"525\" y=\"15\"></rect>\n<!-- Footstep icons -->\n<ellipse cx=\"585\" cy=\"55\" fill=\"#a855f7\" rx=\"7\" ry=\"14\" transform=\"rotate(-15 585 55)\"></ellipse>\n<ellipse cx=\"625\" cy=\"85\" fill=\"#c084fc\" rx=\"7\" ry=\"14\" transform=\"rotate(15 625 85)\"></ellipse>\n<text fill=\"#c084fc\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"605\" y=\"145\">ҚАДАММЕН ӨЛШЕУ</text>\n<text fill=\"#e2e8f0\" font-size=\"10\" text-anchor=\"middle\" x=\"605\" y=\"165\">100 м қашықтық арқылы</text>\n<text fill=\"#38bdf8\" font-family=\"monospace\" font-size=\"9\" text-anchor=\"middle\" x=\"605\" y=\"185\">100 / 149 = 0,67 м</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>3. Жер бедерін бейнелеу және биіктік белдеулері</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Горизонтальдар (Изогипстер):</b> Жергілікті жердегі абсолюттік биіктіктері бірдей нүктелерді қосатын тұйық ирек қисық сызықтар.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Бергштрихтар:</b> Горизонталь сызықтарына перпендикуляр қойылатын қысқа сызықшалар. Олар әрқашан <b class=\"text-cyan-300 font-bold\">ылдидың (еңістің) бағытын</b> көрсетеді.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Егер бергштрихтар сыртқа бағытталса — бұл <b class=\"text-cyan-300 font-bold\">ТӨБЕ (Холм)</b>;</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Егер бергштрихтар ішке қаратылса — бұл <b class=\"text-cyan-300 font-bold\">ҚАЗАНШҰҢҚЫР (Впадина)</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Қима биіктігі (Высота сечения):</b> Көршілес екі горизонталь сызығының арасындағы тік биіктік айырмашылығы.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Физикалық карталардағы түстер шкаласы:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Қою жасыл және жасыл түс:</b> Теңіз деңгейінен 0–200 м биіктіктегі ойпаттар (мысалы, Каспий маңы ойпаты);</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Сары түс:</b> 200–500 м биіктіктегі қыраттар;</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Қоңыр түс:</b> 500 м-ден жоғары таулар (қоңыр түс неғұрлым қоюланса, тау соғұрлым биік).</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🏔️</span>\n<span>3-СЫЗБА: ГОРИЗОНТАЛЬДАР МЕН БЕРГШТРИХ: ТӨБЕ ЖӘНЕ ҚАЗАНШҰҢҚЫР</span>\n</span>\n<span class=\"text-[10px] bg-amber-500/10 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/20 font-mono\">Бергштрих: Сырты = Төбе • Іші = Ойыс</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 230\">\n<!-- Left: Hill (Төбе / Холм) -->\n<rect fill=\"#0b1329\" height=\"200\" rx=\"8\" stroke=\"#1e293b\" width=\"315\" x=\"20\" y=\"15\"></rect>\n<text fill=\"#34d399\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"38\">ТӨБЕ (Холм) — Бергштрих СЫРТҚА</text>\n<!-- Contours for hill -->\n<ellipse cx=\"177\" cy=\"115\" fill=\"none\" rx=\"90\" ry=\"55\" stroke=\"#10b981\" stroke-width=\"2\"></ellipse>\n<ellipse cx=\"177\" cy=\"115\" fill=\"none\" rx=\"60\" ry=\"38\" stroke=\"#10b981\" stroke-width=\"2\"></ellipse>\n<ellipse cx=\"177\" cy=\"115\" fill=\"none\" rx=\"30\" ry=\"20\" stroke=\"#10b981\" stroke-width=\"2\"></ellipse>\n<circle cx=\"177\" cy=\"115\" fill=\"#f59e0b\" r=\"2.5\"></circle>\n<text fill=\"#f59e0b\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"119\">• 158.4</text>\n<!-- Outward ticks (bergstrich) -->\n<line stroke=\"#34d399\" stroke-width=\"2\" x1=\"267\" x2=\"280\" y1=\"115\" y2=\"115\"></line>\n<line stroke=\"#34d399\" stroke-width=\"2\" x1=\"87\" x2=\"74\" y1=\"115\" y2=\"115\"></line>\n<line stroke=\"#34d399\" stroke-width=\"2\" x1=\"177\" x2=\"177\" y1=\"60\" y2=\"47\"></line>\n<line stroke=\"#34d399\" stroke-width=\"2\" x1=\"177\" x2=\"177\" y1=\"170\" y2=\"183\"></line>\n<text fill=\"#94a3b8\" font-size=\"10\" text-anchor=\"middle\" x=\"177\" y=\"200\">Ылди сыртқа қарай бағытталған (Биіктік ортада ең жоғары)</text>\n<!-- Right: Depression (Қазаншұңқыр / Впадина) -->\n<rect fill=\"#0b1329\" height=\"200\" rx=\"8\" stroke=\"#1e293b\" width=\"315\" x=\"365\" y=\"15\"></rect>\n<text fill=\"#38bdf8\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"522\" y=\"38\">ҚАЗАНШҰҢҚЫР (Впадина) — Бергштрих ІШКЕ</text>\n<!-- Contours for depression -->\n<ellipse cx=\"522\" cy=\"115\" fill=\"none\" rx=\"90\" ry=\"55\" stroke=\"#06b6d4\" stroke-width=\"2\"></ellipse>\n<ellipse cx=\"522\" cy=\"115\" fill=\"none\" rx=\"60\" ry=\"38\" stroke=\"#06b6d4\" stroke-width=\"2\"></ellipse>\n<ellipse cx=\"522\" cy=\"115\" fill=\"none\" rx=\"30\" ry=\"20\" stroke=\"#06b6d4\" stroke-width=\"2\"></ellipse>\n<circle cx=\"522\" cy=\"115\" fill=\"#f87171\" r=\"2.5\"></circle>\n<text fill=\"#f87171\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"522\" y=\"119\">• -28.0</text>\n<!-- Inward ticks (bergstrich) -->\n<line stroke=\"#38bdf8\" stroke-width=\"2\" x1=\"612\" x2=\"600\" y1=\"115\" y2=\"115\"></line>\n<line stroke=\"#38bdf8\" stroke-width=\"2\" x1=\"432\" x2=\"444\" y1=\"115\" y2=\"115\"></line>\n<line stroke=\"#38bdf8\" stroke-width=\"2\" x1=\"522\" x2=\"522\" y1=\"60\" y2=\"72\"></line>\n<line stroke=\"#38bdf8\" stroke-width=\"2\" x1=\"522\" x2=\"522\" y1=\"170\" y2=\"158\"></line>\n<text fill=\"#94a3b8\" font-size=\"10\" text-anchor=\"middle\" x=\"522\" y=\"200\">Ылди ортаға қарай түседі (Ойыс, ойпат табаны)</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>4. Картографиялық проекциялар</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Жер шарының шар тәріздес дөңес бетін жазық қағазға көшіргенде бұрмалануларсыз бейнелеу мүмкін емес. Бұрмалануларды азайту үшін арнайы математикалық тәсілдер — <b class=\"text-cyan-300 font-bold\">картографиялық проекциялар</b> қолданылады.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Жанасу бетіне қарай жіктелуі:</b></li>\n</ul>\n<ol class=\"space-y-2 my-2.5 ml-6 list-none\">\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Цилиндрлік проекция (Меркатор):</b> Жер шары шар тәрізді цилиндр ішіне орналастырылады. Экватор маңында бұрмаланулар мүлдем болмайды, бірақ полюстерге қарай аудандар орасан зор ұлғайып бұрмаланады (мысалы, Гренландия Африкамен бірдей болып көрінеді). Дүниежүзілік теңіз навигациялық карталары осымен жасалады.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Конустық проекция:</b> Жер шарына жанасатын конус қолданылады. Қоңыржай ендіктердегі мемлекеттерді (мысалы, Қазақстанды, Ресейді) бейнелеуге ең қолайлы.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Азимуттық проекция:</b> Жазықтық жер шарына бір ғана нүктеде (көбінесе полюстерде) жанасады. Полюстер мен полярлық аймақтарды (Антарктида, Солтүстік Мұзды мұхит) бейнелеуге таптырмас әдіс.</li>\n</ol>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Бұрмалану сипатына қарай:</b> Тең бұрышты (ұшақ пен кеме жүргізуге), Тең ауданды (мемлекеттердің ауданын салыстыруға), Еркін (тең аралықты) проекциялар.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🌐</span>\n<span>4-СЫЗБА: КАРТОГРАФИЯЛЫҚ ПРОЕКЦИЯЛАРДЫҢ 3 НЕГІЗГІ ТҮРІ</span>\n</span>\n<span class=\"text-[10px] bg-purple-500/10 text-purple-300 px-2.5 py-0.5 rounded-full border border-purple-500/20 font-mono\">Цилиндрлік • Конустық • Азимуттық</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<!-- Cylindrical -->\n<rect fill=\"#0b1329\" height=\"190\" rx=\"8\" stroke=\"#1e293b\" width=\"205\" x=\"20\" y=\"15\"></rect>\n<text fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"122\" y=\"38\">ЦИЛИНДРЛІК (Меркатор)</text>\n<!-- Globe inside cylinder -->\n<rect fill=\"none\" height=\"90\" stroke=\"#06b6d4\" stroke-dasharray=\"4 4\" stroke-width=\"1.5\" width=\"100\" x=\"72\" y=\"55\"></rect>\n<circle cx=\"122\" cy=\"100\" fill=\"#0f172a\" r=\"35\" stroke=\"#38bdf8\" stroke-width=\"2\"></circle>\n<line stroke=\"#f59e0b\" stroke-width=\"1.5\" x1=\"87\" x2=\"157\" y1=\"100\" y2=\"100\"></line>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"122\" y=\"160\">Экватор маңы аймақтар</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"122\" y=\"178\">Теңіз навигациялық карталары</text>\n<text fill=\"#38bdf8\" font-size=\"9\" text-anchor=\"middle\" x=\"122\" y=\"194\">Полюстерде аудан бұрмаланады</text>\n<!-- Conic -->\n<rect fill=\"#0b1329\" height=\"190\" rx=\"8\" stroke=\"#1e293b\" width=\"210\" x=\"245\" y=\"15\"></rect>\n<text fill=\"#34d399\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"38\">КОНУСТЫҚ (Коническая)</text>\n<!-- Cone over globe -->\n<polygon fill=\"none\" points=\"350,50 290,140 410,140\" stroke=\"#10b981\" stroke-dasharray=\"4 4\" stroke-width=\"1.5\"></polygon>\n<circle cx=\"350\" cy=\"115\" fill=\"#0f172a\" r=\"30\" stroke=\"#34d399\" stroke-width=\"2\"></circle>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"160\">Қоңыржай ендіктер</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"350\" y=\"178\">Қазақстан, Еуразия карталары</text>\n<text fill=\"#10b981\" font-size=\"9\" text-anchor=\"middle\" x=\"350\" y=\"194\">Орта ендіктерде дәлдік жоғары</text>\n<!-- Azimuthal -->\n<rect fill=\"#0b1329\" height=\"190\" rx=\"8\" stroke=\"#1e293b\" width=\"205\" x=\"475\" y=\"15\"></rect>\n<text fill=\"#c084fc\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"577\" y=\"38\">АЗИМУТТЫҚ (Азимутальная)</text>\n<!-- Plane touching pole -->\n<line stroke=\"#a855f7\" stroke-width=\"2\" x1=\"517\" x2=\"637\" y1=\"65\" y2=\"65\"></line>\n<circle cx=\"577\" cy=\"100\" fill=\"#0f172a\" r=\"35\" stroke=\"#c084fc\" stroke-width=\"2\"></circle>\n<circle cx=\"577\" cy=\"65\" fill=\"#f59e0b\" r=\"3\"></circle>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"577\" y=\"160\">Полюстік аймақтар</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"577\" y=\"178\">Антарктида, Солтүстік мұхит</text>\n<text fill=\"#c084fc\" font-size=\"9\" text-anchor=\"middle\" x=\"577\" y=\"194\">Бір нүктеде жанасады</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>5. Градус торы мен географиялық координаттар</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Градус торы</b> — карта мен глобустағы меридиандар мен параллель сызықтарының қиылысуынан түзілетін тор.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Меридиандар:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Солтүстік және Оңтүстік полюстерді қосатын жартышеңберлер.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Барлық меридиандардың ұзындығы БІРДЕЙ:</b> шамамен <b class=\"text-cyan-300 font-bold\">20 000 км</b> (1° доғасы барлық жерде шамамен <b class=\"text-cyan-300 font-bold\">111,1 км</b>).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Бастапқы меридиан:</b> Ұлыбританиядағы Гринвич обсерваториясынан өтетін 0°-дік меридиан.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Қазақстанның Гринвич меридианына ең жақын орналасқан қаласы — <b class=\"text-cyan-300 font-bold\">Ақтау</b> (батыс қақпамыз).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Барлық меридиан сызықтары бір нүктеге түйісетін оңтүстік материк — <b class=\"text-cyan-300 font-bold\">Антарктида</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Параллельдер:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Экваторға параллель жүргізілген көлденең шеңберлер.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Ұзындықтары экватордан (40 075 км) полюстерге қарай кішірейіп, полюсте нүктеге (0 км) айналады.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Географиялық координаттар:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Жер бетіндегі кез келген нүктенің нақты орны <b class=\"text-cyan-300 font-bold\">географиялық ендік (солтүстік не оңтүстік, 0°–90°)</b> пен <b class=\"text-cyan-300 font-bold\">географиялық бойлықтың (шығыс не батыс, 0°–180°)</b> қиылысуы арқылы анықталады.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Астана қаласының координатасы:</b> <b class=\"text-cyan-300 font-bold\">51° с.е. және 71° ш.б.</b></li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>📍</span>\n<span>5-СЫЗБА: ГРАДУС ТОРЫ ЖӘНЕ ГЕОГРАФИЯЛЫҚ КООРДИНАТТАР</span>\n</span>\n<span class=\"text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono\">Астана: 51°N, 71°E</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<!-- Globe circle -->\n<circle cx=\"160\" cy=\"110\" fill=\"#0b1329\" r=\"85\" stroke=\"#38bdf8\" stroke-width=\"2\"></circle>\n<!-- Equator -->\n<line stroke=\"#f59e0b\" stroke-width=\"2\" x1=\"75\" x2=\"245\" y1=\"110\" y2=\"110\"></line>\n<text fill=\"#f59e0b\" font-size=\"9\" font-weight=\"bold\" x=\"210\" y=\"105\">Экватор 0°</text>\n<!-- Parallels -->\n<ellipse cx=\"160\" cy=\"70\" fill=\"none\" rx=\"74\" ry=\"12\" stroke=\"#64748b\" stroke-dasharray=\"3 3\"></ellipse>\n<text fill=\"#94a3b8\" font-size=\"8\" x=\"220\" y=\"68\">51°N</text>\n<ellipse cx=\"160\" cy=\"150\" fill=\"none\" rx=\"74\" ry=\"12\" stroke=\"#64748b\" stroke-dasharray=\"3 3\"></ellipse>\n<!-- Prime meridian (Greenwich) -->\n<line stroke=\"#10b981\" stroke-width=\"2\" x1=\"160\" x2=\"160\" y1=\"25\" y2=\"195\"></line>\n<text fill=\"#10b981\" font-size=\"8\" font-weight=\"bold\" x=\"165\" y=\"40\">Гринвич 0°</text>\n<!-- 71 E meridian -->\n<ellipse cx=\"160\" cy=\"110\" fill=\"none\" rx=\"45\" ry=\"85\" stroke=\"#38bdf8\" stroke-dasharray=\"3 3\"></ellipse>\n<!-- Astana point -->\n<circle cx=\"195\" cy=\"70\" fill=\"#ef4444\" r=\"4.5\" stroke=\"#ffffff\" stroke-width=\"1.5\"></circle>\n<text fill=\"#f87171\" font-size=\"10\" font-weight=\"black\" x=\"204\" y=\"66\">Астана (51°N, 71°E)</text>\n<!-- Info side panel -->\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"390\" x=\"290\" y=\"20\"></rect>\n<text fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\" x=\"310\" y=\"45\">МЕРИДИАНДАР ЖӘНЕ ПАРАЛЛЕЛЬДЕР:</text>\n<text fill=\"#e2e8f0\" font-size=\"11\" x=\"310\" y=\"70\">• Барлық меридиандар ұзындығы БІРДЕЙ (~20 000 км)</text>\n<text fill=\"#94a3b8\" font-size=\"10\" x=\"310\" y=\"90\">  1° меридиан доғасы = 111,1 км</text>\n<text fill=\"#e2e8f0\" font-size=\"11\" x=\"310\" y=\"112\">• Параллельдер ұзындығы Экватордан (40 075 км) кемиді</text>\n<text fill=\"#94a3b8\" font-size=\"10\" x=\"310\" y=\"132\">  Полюстерде нүктеге (0 км) айналады</text>\n<line stroke=\"#1e293b\" x1=\"310\" x2=\"660\" y1=\"145\" y2=\"145\"></line>\n<text fill=\"#f59e0b\" font-size=\"11\" font-weight=\"bold\" x=\"310\" y=\"165\">ГРИНВИЧКЕ ЕҢ ЖАҚЫН ҚР ҚАЛАСЫ:</text>\n<text fill=\"#34d399\" font-size=\"11\" x=\"310\" y=\"185\">Ақтау қаласы (Каспий жағалауы, ең батыста)</text>\n</svg>\n</div>", "theory_ru": "<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>1. Виды и классификация масштабов</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Масштаб</b> (нем. <i class=\"text-slate-300\">Maßstab</i> — «мерная палочка») — это отношение длины отрезка на карте к действительной длине соответствующего отрезка на местности.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Формы записи масштаба:</b></li>\n</ul>\n<ol class=\"space-y-2 my-2.5 ml-6 list-none\">\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Численный масштаб:</b> Записывается в виде дроби с числителем 1 (например, <b class=\"text-emerald-300 font-bold\">1:40 000</b>, что означает: 1 см на карте равен 40 000 см на местности).</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Именованный масштаб:</b> Поясняет словами соотношение расстояний. Для перевода из численного в именованный убираем два нуля для метров или пять нулей для километров. Например: <i class=\"text-slate-300\">в 1 см — 400 м</i>.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Линейный масштаб:</b> Графический масштаб в виде шкалы с делениями у рамки карты. Удобен для прямого измерения расстояний циркулем-измерителем.</li>\n</ol>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Классификация карт по масштабу:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Крупномасштабные (Топографические):</b> от <b class=\"text-cyan-300 font-bold\">1:10 000 до 1:200 000</b>. Максимально детализированы, рельеф показан горизонталями, отображаются отдельные строения и дороги.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Среднемасштабные (Обзорно-топографические):</b> от <b class=\"text-cyan-300 font-bold\">1:200 000 до 1:1 000 000</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Мелкомасштабные (Обзорные):</b> мельче <b class=\"text-cyan-300 font-bold\">1:1 000 000</b> (например, 1:5 000 000, 1:25 000 000). Показывают материки, океаны и весь мир в целом.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>📏</span>\n<span>1-СЫЗБА: КЛАССИФИКАЦИЯ И ВИДЫ МАСШТАБА</span>\n</span>\n<span class=\"text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono\">1:40 000 | 1 см = 400 м</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 240\">\n<defs>\n<lineargradient id=\"scaleBarGrad\" x1=\"0\" x2=\"1\" y1=\"0\" y2=\"0\">\n<stop offset=\"0%\" stop-color=\"#06b6d4\"></stop>\n<stop offset=\"100%\" stop-color=\"#10b981\"></stop>\n</lineargradient>\n</defs>\n<!-- Scale types columns -->\n<rect fill=\"#0b1329\" height=\"110\" rx=\"8\" stroke=\"#1e293b\" width=\"200\" x=\"20\" y=\"20\"></rect>\n<text fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"120\" y=\"45\">1. ЧИСЛЕННЫЙ</text>\n<text fill=\"#f8fafc\" font-family=\"monospace\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"120\" y=\"70\">1 : 40 000</text>\n<text fill=\"#94a3b8\" font-size=\"10\" text-anchor=\"middle\" x=\"120\" y=\"92\">1 см на карте = 40 000 см на земле</text>\n<text fill=\"#06b6d4\" font-size=\"10\" text-anchor=\"middle\" x=\"120\" y=\"112\">Меньше знам-ль = Крупнее</text>\n<rect fill=\"#0b1329\" height=\"110\" rx=\"8\" stroke=\"#1e293b\" width=\"200\" x=\"250\" y=\"20\"></rect>\n<text fill=\"#34d399\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"45\">2. ИМЕНОВАННЫЙ</text>\n<text fill=\"#f8fafc\" font-family=\"monospace\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"70\">в 1 см — 400 м</text>\n<text fill=\"#94a3b8\" font-size=\"10\" text-anchor=\"middle\" x=\"350\" y=\"92\">40 000 см ÷ 100 = 400 метров</text>\n<text fill=\"#10b981\" font-size=\"10\" text-anchor=\"middle\" x=\"350\" y=\"112\">в 1 см — 1 км (1:100 000)</text>\n<rect fill=\"#0b1329\" height=\"110\" rx=\"8\" stroke=\"#1e293b\" width=\"200\" x=\"480\" y=\"20\"></rect>\n<text fill=\"#fbbf24\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"580\" y=\"45\">3. ЛИНЕЙНЫЙ</text>\n<!-- Graphical ruler -->\n<rect fill=\"#06b6d4\" height=\"12\" width=\"40\" x=\"500\" y=\"65\"></rect>\n<rect fill=\"#334155\" height=\"12\" width=\"40\" x=\"540\" y=\"65\"></rect>\n<rect fill=\"#06b6d4\" height=\"12\" width=\"40\" x=\"580\" y=\"65\"></rect>\n<rect fill=\"#334155\" height=\"12\" width=\"40\" x=\"620\" y=\"65\"></rect>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"500\" y=\"92\">0</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"540\" y=\"92\">400м</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"580\" y=\"92\">800м</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"620\" y=\"92\">1.2км</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"660\" y=\"92\">1.6км</text>\n<text fill=\"#fbbf24\" font-size=\"10\" text-anchor=\"middle\" x=\"580\" y=\"112\">Для измерения циркулем</text>\n<!-- Scale groups tier -->\n<rect fill=\"#0f172a\" height=\"80\" rx=\"8\" stroke=\"#334155\" width=\"660\" x=\"20\" y=\"145\"></rect>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" x=\"40\" y=\"170\">КРУПНОМАСШТАБНЫЕ (Топографические): 1:10 000 — 1:200 000</text>\n<text fill=\"#94a3b8\" font-size=\"10\" x=\"40\" y=\"188\">Максимальная детализация, рельеф показан горизонталями</text>\n<line stroke=\"#1e293b\" x1=\"40\" x2=\"660\" y1=\"196\" y2=\"196\"></line>\n<text fill=\"#fbbf24\" font-size=\"10\" x=\"40\" y=\"213\">СРЕДНЕМАСШТАБНЫЕ: 1:200 000 — 1:1 000 000</text>\n<text fill=\"#f87171\" font-size=\"10\" x=\"380\" y=\"213\">МЕЛКОМАСШТАБНЫЕ (Обзорные): мельче 1:1 000 000</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>2. Картометрические приборы и методы измерений</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Картометрия</b> — раздел картографии, изучающий методы измерения по картам расстояний, площадей, углов, координат и высот.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Основные приборы:</b></li>\n</ul>\n<ol class=\"space-y-2 my-2.5 ml-6 list-none\">\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Курвиметр:</b> Прибор с вращающимся маленьким колесиком со стрелочной или цифровой шкалой для точного измерения извилистых линий на карте (рек, береговых линий, дорог, границ).</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Палетка:</b> Прозрачная пластина, расчерченная на квадраты известного размера (обычно 1х1 см или 2х2 см). Накладывается на объекты сложной формы (озера, леса) для вычисления их площади методом подсчета квадратов.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Транспортир:</b> Полукруглый инструмент для измерения углов и азимутов (от 0° до 360°) между объектами на карте.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">4.</span><b class=\"text-emerald-300 font-bold\">Метод шагов на местности:</b> Измерение расстояния подсчетом шагов. Для калибровки проходят 100 м 3 раза, находят среднее арифметическое число шагов.</li>\n</ol>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Формула расчета длины шага:</b> Длина шага = 100 м / Среднее количество шагов</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><i class=\"text-slate-300\">Пример:</i> При прохождении 100 м насчитали 149, 148 и 150 шагов. Среднее = 149 шагов. Длина одного шага: 100 / 149 = <b class=\"text-cyan-300 font-bold\">0,67 м</b>.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>📐</span>\n<span>2-СЫЗБА: КАРТОМЕТРИЧЕСКИЕ ПРИБОРЫ И МЕТОДЫ ИЗМЕРЕНИЙ</span>\n</span>\n<span class=\"text-[10px] bg-emerald-500/10 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-500/20 font-mono\">Курвиметр • Палетка • Транспортир • Қадам</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 230\">\n<!-- 4 cards for 4 tools -->\n<!-- Tool 1: Curvimeter -->\n<rect fill=\"#0b1329\" height=\"200\" rx=\"8\" stroke=\"#1e293b\" width=\"155\" x=\"15\" y=\"15\"></rect>\n<circle cx=\"92\" cy=\"65\" fill=\"#1e293b\" r=\"30\" stroke=\"#06b6d4\" stroke-width=\"2\"></circle>\n<circle cx=\"92\" cy=\"65\" fill=\"#06b6d4\" r=\"3\"></circle>\n<line stroke=\"#38bdf8\" stroke-width=\"2\" x1=\"92\" x2=\"105\" y1=\"65\" y2=\"52\"></line>\n<path d=\"M92 95 L92 110 L87 115 L97 115 Z\" fill=\"#94a3b8\"></path>\n<circle cx=\"92\" cy=\"118\" fill=\"#f59e0b\" r=\"5\"></circle>\n<text fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"92\" y=\"145\">КУРВИМЕТР</text>\n<text fill=\"#e2e8f0\" font-size=\"10\" text-anchor=\"middle\" x=\"92\" y=\"165\">Длина извилистых линий</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"92\" y=\"182\">Реки, дороги, границы</text>\n<!-- Tool 2: Palette -->\n<rect fill=\"#0b1329\" height=\"200\" rx=\"8\" stroke=\"#1e293b\" width=\"155\" x=\"185\" y=\"15\"></rect>\n<rect fill=\"none\" height=\"60\" stroke=\"#10b981\" stroke-dasharray=\"10 10\" stroke-width=\"1.5\" width=\"75\" x=\"225\" y=\"40\"></rect>\n<path d=\"M235 60 Q250 45 270 55 T290 75 T260 90 T235 60 Z\" fill=\"#06b6d4\" fill-opacity=\"0.3\" stroke=\"#38bdf8\"></path>\n<text fill=\"#34d399\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"262\" y=\"145\">ПАЛЕТКА</text>\n<text fill=\"#e2e8f0\" font-size=\"10\" text-anchor=\"middle\" x=\"262\" y=\"165\">Площадь объектов</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"262\" y=\"182\">Метод сетки квадратов</text>\n<text fill=\"#10b981\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"262\" y=\"198\">S = N_ячеек × S_ячейки</text>\n<!-- Tool 3: Protractor -->\n<rect fill=\"#0b1329\" height=\"200\" rx=\"8\" stroke=\"#1e293b\" width=\"155\" x=\"355\" y=\"15\"></rect>\n<path d=\"M 385 95 A 45 45 0 0 1 475 95 Z\" fill=\"#1e293b\" stroke=\"#fbbf24\" stroke-width=\"2\"></path>\n<line stroke=\"#f59e0b\" stroke-width=\"2\" x1=\"430\" x2=\"455\" y1=\"95\" y2=\"70\"></line>\n<text fill=\"#fbbf24\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"432\" y=\"145\">ТРАНСПОРТИР</text>\n<text fill=\"#e2e8f0\" font-size=\"10\" text-anchor=\"middle\" x=\"432\" y=\"165\">Углы и азимуты</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"432\" y=\"182\">Измерение от 0° до 360°</text>\n<!-- Tool 4: Pacing -->\n<rect fill=\"#0b1329\" height=\"200\" rx=\"8\" stroke=\"#1e293b\" width=\"160\" x=\"525\" y=\"15\"></rect>\n<!-- Footstep icons -->\n<ellipse cx=\"585\" cy=\"55\" fill=\"#a855f7\" rx=\"7\" ry=\"14\" transform=\"rotate(-15 585 55)\"></ellipse>\n<ellipse cx=\"625\" cy=\"85\" fill=\"#c084fc\" rx=\"7\" ry=\"14\" transform=\"rotate(15 625 85)\"></ellipse>\n<text fill=\"#c084fc\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"605\" y=\"145\">МЕТОД ШАГОВ</text>\n<text fill=\"#e2e8f0\" font-size=\"10\" text-anchor=\"middle\" x=\"605\" y=\"165\">Через калибровку 100 м</text>\n<text fill=\"#38bdf8\" font-family=\"monospace\" font-size=\"9\" text-anchor=\"middle\" x=\"605\" y=\"185\">100 / 149 = 0,67 м</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>3. Изображение рельефа и шкала высот</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Горизонтали (Изогипсы):</b> Линии на карте, соединяющие точки земной поверхности с одинаковой абсолютной высотой над уровнем моря.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Бергштрихи:</b> Короткие черточки, перпендикулярные горизонталям, которые всегда указывают <b class=\"text-cyan-300 font-bold\">направление склона (ската)</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Если бергштрихи направлены наружу — это <b class=\"text-cyan-300 font-bold\">ХОЛМ (ТӨБЕ)</b>;</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Если бергштрихи направлены внутрь — это <b class=\"text-cyan-300 font-bold\">ВПАДИНА (ҚАЗАНШҰҢҚЫР)</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Высота сечения рельефа:</b> Разность высот между двумя соседними секущими плоскостями (горизонталями).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Послойная окраска рельефа на физических картах:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Темно-зеленый и зеленый цвет:</b> Низменности от 0 до 200 м (например, Прикаспийская низменность);</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Желтый цвет:</b> Возвышенности от 200 до 500 м;</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Коричневый цвет:</b> Горы выше 500 м (чем выше горы, тем темнее коричневый оттенок).</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🏔️</span>\n<span>3-СЫЗБА: ГОРИЗОНТАЛИ И БЕРГШТРИХИ: ХОЛМ И ВПАДИНА</span>\n</span>\n<span class=\"text-[10px] bg-amber-500/10 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/20 font-mono\">Бергштрих: Сырты = Төбе • Іші = Ойыс</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 230\">\n<!-- Left: Hill (Төбе / Холм) -->\n<rect fill=\"#0b1329\" height=\"200\" rx=\"8\" stroke=\"#1e293b\" width=\"315\" x=\"20\" y=\"15\"></rect>\n<text fill=\"#34d399\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"38\">ХОЛМ — Бергштрихи НАРУЖУ</text>\n<!-- Contours for hill -->\n<ellipse cx=\"177\" cy=\"115\" fill=\"none\" rx=\"90\" ry=\"55\" stroke=\"#10b981\" stroke-width=\"2\"></ellipse>\n<ellipse cx=\"177\" cy=\"115\" fill=\"none\" rx=\"60\" ry=\"38\" stroke=\"#10b981\" stroke-width=\"2\"></ellipse>\n<ellipse cx=\"177\" cy=\"115\" fill=\"none\" rx=\"30\" ry=\"20\" stroke=\"#10b981\" stroke-width=\"2\"></ellipse>\n<circle cx=\"177\" cy=\"115\" fill=\"#f59e0b\" r=\"2.5\"></circle>\n<text fill=\"#f59e0b\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"119\">• 158.4</text>\n<!-- Outward ticks (bergstrich) -->\n<line stroke=\"#34d399\" stroke-width=\"2\" x1=\"267\" x2=\"280\" y1=\"115\" y2=\"115\"></line>\n<line stroke=\"#34d399\" stroke-width=\"2\" x1=\"87\" x2=\"74\" y1=\"115\" y2=\"115\"></line>\n<line stroke=\"#34d399\" stroke-width=\"2\" x1=\"177\" x2=\"177\" y1=\"60\" y2=\"47\"></line>\n<line stroke=\"#34d399\" stroke-width=\"2\" x1=\"177\" x2=\"177\" y1=\"170\" y2=\"183\"></line>\n<text fill=\"#94a3b8\" font-size=\"10\" text-anchor=\"middle\" x=\"177\" y=\"200\">Скат направлен наружу (Высота в центре максимальна)</text>\n<!-- Right: Depression (Қазаншұңқыр / Впадина) -->\n<rect fill=\"#0b1329\" height=\"200\" rx=\"8\" stroke=\"#1e293b\" width=\"315\" x=\"365\" y=\"15\"></rect>\n<text fill=\"#38bdf8\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"522\" y=\"38\">ВПАДИНА — Бергштрихи ВНУТРЬ</text>\n<!-- Contours for depression -->\n<ellipse cx=\"522\" cy=\"115\" fill=\"none\" rx=\"90\" ry=\"55\" stroke=\"#06b6d4\" stroke-width=\"2\"></ellipse>\n<ellipse cx=\"522\" cy=\"115\" fill=\"none\" rx=\"60\" ry=\"38\" stroke=\"#06b6d4\" stroke-width=\"2\"></ellipse>\n<ellipse cx=\"522\" cy=\"115\" fill=\"none\" rx=\"30\" ry=\"20\" stroke=\"#06b6d4\" stroke-width=\"2\"></ellipse>\n<circle cx=\"522\" cy=\"115\" fill=\"#f87171\" r=\"2.5\"></circle>\n<text fill=\"#f87171\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"522\" y=\"119\">• -28.0</text>\n<!-- Inward ticks (bergstrich) -->\n<line stroke=\"#38bdf8\" stroke-width=\"2\" x1=\"612\" x2=\"600\" y1=\"115\" y2=\"115\"></line>\n<line stroke=\"#38bdf8\" stroke-width=\"2\" x1=\"432\" x2=\"444\" y1=\"115\" y2=\"115\"></line>\n<line stroke=\"#38bdf8\" stroke-width=\"2\" x1=\"522\" x2=\"522\" y1=\"60\" y2=\"72\"></line>\n<line stroke=\"#38bdf8\" stroke-width=\"2\" x1=\"522\" x2=\"522\" y1=\"170\" y2=\"158\"></line>\n<text fill=\"#94a3b8\" font-size=\"10\" text-anchor=\"middle\" x=\"522\" y=\"200\">Скат направлен внутрь (Дно впадины, котловина)</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>4. Картографические проекции</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Поверхность эллипсоида Земли невозможно развернуть на плоскость без разрывов или складок. Для отображения поверхности Земли применяют математические законы — <b class=\"text-cyan-300 font-bold\">картографические проекции</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">По виду вспомогательной поверхности:</b></li>\n</ul>\n<ol class=\"space-y-2 my-2.5 ml-6 list-none\">\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Цилиндрическая проекция (Меркатора):</b> Земной шар проецируется на боковую поверхность цилиндра. Вблизи экватора искажений практически нет, но к полюсам площади сильно растягиваются (Гренландия кажется равной Африке). Идеальна для морской и авиационной навигации.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Коническая проекция:</b> Проектирование ведется на конус, касающийся земного шара. Наиболее точна для средних широт (идеальна для карт Казахстана, России, Европы).</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Азимутальная проекция:</b> Проектирование на плоскость, касающуюся шара в одной точке (обычно на полюсе). Применяется для изображения Арктики и Антарктиды.</li>\n</ol>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">По характеру искажений:</b> Равноугольные (сохраняют углы и формы), Равновеликие (сохраняют площади), Произвольные.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🌐</span>\n<span>4-СЫЗБА: 3 ОСНОВНЫХ ВИДА КАРТОГРАФИЧЕСКИХ ПРОЕКЦИЙ</span>\n</span>\n<span class=\"text-[10px] bg-purple-500/10 text-purple-300 px-2.5 py-0.5 rounded-full border border-purple-500/20 font-mono\">Цилиндрлік • Конустық • Азимуттық</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<!-- Cylindrical -->\n<rect fill=\"#0b1329\" height=\"190\" rx=\"8\" stroke=\"#1e293b\" width=\"205\" x=\"20\" y=\"15\"></rect>\n<text fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"122\" y=\"38\">ЦИЛИНДРИЧЕСКАЯ</text>\n<!-- Globe inside cylinder -->\n<rect fill=\"none\" height=\"90\" stroke=\"#06b6d4\" stroke-dasharray=\"4 4\" stroke-width=\"1.5\" width=\"100\" x=\"72\" y=\"55\"></rect>\n<circle cx=\"122\" cy=\"100\" fill=\"#0f172a\" r=\"35\" stroke=\"#38bdf8\" stroke-width=\"2\"></circle>\n<line stroke=\"#f59e0b\" stroke-width=\"1.5\" x1=\"87\" x2=\"157\" y1=\"100\" y2=\"100\"></line>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"122\" y=\"160\">Экваториальные области</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"122\" y=\"178\">Морская навигация, карты мира</text>\n<text fill=\"#38bdf8\" font-size=\"9\" text-anchor=\"middle\" x=\"122\" y=\"194\">Искажает площади у полюсов</text>\n<!-- Conic -->\n<rect fill=\"#0b1329\" height=\"190\" rx=\"8\" stroke=\"#1e293b\" width=\"210\" x=\"245\" y=\"15\"></rect>\n<text fill=\"#34d399\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"38\">КОНИЧЕСКАЯ</text>\n<!-- Cone over globe -->\n<polygon fill=\"none\" points=\"350,50 290,140 410,140\" stroke=\"#10b981\" stroke-dasharray=\"4 4\" stroke-width=\"1.5\"></polygon>\n<circle cx=\"350\" cy=\"115\" fill=\"#0f172a\" r=\"30\" stroke=\"#34d399\" stroke-width=\"2\"></circle>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"160\">Умеренные широты</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"350\" y=\"178\">Карты Казахстана, Евразии</text>\n<text fill=\"#10b981\" font-size=\"9\" text-anchor=\"middle\" x=\"350\" y=\"194\">Минимум искажений в 40°-60°</text>\n<!-- Azimuthal -->\n<rect fill=\"#0b1329\" height=\"190\" rx=\"8\" stroke=\"#1e293b\" width=\"205\" x=\"475\" y=\"15\"></rect>\n<text fill=\"#c084fc\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"577\" y=\"38\">АЗИМУТАЛЬНАЯ</text>\n<!-- Plane touching pole -->\n<line stroke=\"#a855f7\" stroke-width=\"2\" x1=\"517\" x2=\"637\" y1=\"65\" y2=\"65\"></line>\n<circle cx=\"577\" cy=\"100\" fill=\"#0f172a\" r=\"35\" stroke=\"#c084fc\" stroke-width=\"2\"></circle>\n<circle cx=\"577\" cy=\"65\" fill=\"#f59e0b\" r=\"3\"></circle>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"577\" y=\"160\">Полярные области</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"577\" y=\"178\">Антарктида, Арктика</text>\n<text fill=\"#c084fc\" font-size=\"9\" text-anchor=\"middle\" x=\"577\" y=\"194\">Касается шара в одной точке</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>5. Градусная сетка и географические координаты</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Градусная сетка</b> — система взаимно пересекающихся меридианов и параллелей на карте или глобусе.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Меридианы:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Линии сечения поверхности земного шара плоскостями, проходящими через ось вращения Земли от Северного полюса к Южному.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Длина всех меридианов ОДИНАКОВА:</b> около <b class=\"text-cyan-300 font-bold\">20 000 км</b> (длина дуги 1° меридиана везде равна примерно <b class=\"text-cyan-300 font-bold\">111,1 км</b>).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Нулевой (Гринвичский) меридиан:</b> проходит через Гринвичскую обсерваторию в Лондоне.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Ближайший казахстанский город к нулевому меридиану — <b class=\"text-cyan-300 font-bold\">Актау</b> на побережье Каспия.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Материк, который пересекают все меридианы Земли — <b class=\"text-cyan-300 font-bold\">Антарктида</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Параллели:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Линии сечения поверхности земного шара плоскостями, параллельными плоскости экватора.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Самая длинная параллель — <b class=\"text-cyan-300 font-bold\">Экватор (40 075 км)</b>. К полюсам длина параллелей уменьшается до 0.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Географические координаты:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Положение любой точки задается <b class=\"text-cyan-300 font-bold\">географической широтой (0°–90° с.ш. или ю.ш.)</b> и <b class=\"text-cyan-300 font-bold\">географической долготой (0°–180° в.д. или з.д.)</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Координаты столицы Казахстана (Астаны):</b> <b class=\"text-cyan-300 font-bold\">51° с.ш. и 71° в.д.</b></li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>📍</span>\n<span>5-СЫЗБА: ГРАДУСНАЯ СЕТКА И ГЕОГРАФИЧЕСКИЕ КООРДИНАТЫ</span>\n</span>\n<span class=\"text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono\">Астана: 51°N, 71°E</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<!-- Globe circle -->\n<circle cx=\"160\" cy=\"110\" fill=\"#0b1329\" r=\"85\" stroke=\"#38bdf8\" stroke-width=\"2\"></circle>\n<!-- Equator -->\n<line stroke=\"#f59e0b\" stroke-width=\"2\" x1=\"75\" x2=\"245\" y1=\"110\" y2=\"110\"></line>\n<text fill=\"#f59e0b\" font-size=\"9\" font-weight=\"bold\" x=\"210\" y=\"105\">Экватор 0°</text>\n<!-- Parallels -->\n<ellipse cx=\"160\" cy=\"70\" fill=\"none\" rx=\"74\" ry=\"12\" stroke=\"#64748b\" stroke-dasharray=\"3 3\"></ellipse>\n<text fill=\"#94a3b8\" font-size=\"8\" x=\"220\" y=\"68\">51°N</text>\n<ellipse cx=\"160\" cy=\"150\" fill=\"none\" rx=\"74\" ry=\"12\" stroke=\"#64748b\" stroke-dasharray=\"3 3\"></ellipse>\n<!-- Prime meridian (Greenwich) -->\n<line stroke=\"#10b981\" stroke-width=\"2\" x1=\"160\" x2=\"160\" y1=\"25\" y2=\"195\"></line>\n<text fill=\"#10b981\" font-size=\"8\" font-weight=\"bold\" x=\"165\" y=\"40\">Гринвич 0°</text>\n<!-- 71 E meridian -->\n<ellipse cx=\"160\" cy=\"110\" fill=\"none\" rx=\"45\" ry=\"85\" stroke=\"#38bdf8\" stroke-dasharray=\"3 3\"></ellipse>\n<!-- Astana point -->\n<circle cx=\"195\" cy=\"70\" fill=\"#ef4444\" r=\"4.5\" stroke=\"#ffffff\" stroke-width=\"1.5\"></circle>\n<text fill=\"#f87171\" font-size=\"10\" font-weight=\"black\" x=\"204\" y=\"66\">Астана (51°N, 71°E)</text>\n<!-- Info side panel -->\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"390\" x=\"290\" y=\"20\"></rect>\n<text fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\" x=\"310\" y=\"45\">МЕРИДИАНЫ И ПАРАЛЛЕЛИ:</text>\n<text fill=\"#e2e8f0\" font-size=\"11\" x=\"310\" y=\"70\">• Все меридианы ОДИНАКОВОЙ длины (~20 000 км)</text>\n<text fill=\"#94a3b8\" font-size=\"10\" x=\"310\" y=\"90\">  Длина дуги 1° меридиана везде ≈ 111,1 км</text>\n<text fill=\"#e2e8f0\" font-size=\"11\" x=\"310\" y=\"112\">• Длина параллелей уменьшается от Экватора (40 075 км)</text>\n<text fill=\"#94a3b8\" font-size=\"10\" x=\"310\" y=\"132\">  На полюсах параллель превращается в точку (0 км)</text>\n<line stroke=\"#1e293b\" x1=\"310\" x2=\"660\" y1=\"145\" y2=\"145\"></line>\n<text fill=\"#f59e0b\" font-size=\"11\" font-weight=\"bold\" x=\"310\" y=\"165\">БЛИЖАЙШИЙ К ГРИНВИЧУ ГОРОД РК:</text>\n<text fill=\"#34d399\" font-size=\"11\" x=\"310\" y=\"185\">г. Актау (побережье Каспия, самый западный)</text>\n</svg>\n</div>", "traps": ["⚠️ 1:100 000 масштабы 1:1 000 000 масштабынан 10 есе ІРІ (бөлгіші кіші сан болса, масштаб ірі болады)!", "⚠️ Қазақстан аумағы қоңыржай белдеуде созылып жатқандықтан, КОНУСТЫҚ проекция таңдалады."], "quiz": [{"q": "Қазақстан аумағын бейнелеу үшін ең қолайлы картографиялық проекция қайсы?", "options": ["Цилиндрлік", "Конустық", "Азимуттық", "Поликонустық"], "answer": 1, "exp": "Қазақстан қоңыржай ендіктерде орналасқандықтан, бұрмалануы аз конустық проекция қолданылады."}], "blooket": "https://dashboard.blooket.com/set/6a752bce00224b785ed9b16e", "test": {"passingScore": 80, "questions": [{"id": 1, "q_kz": "Физикалық картада қою жасыл және жасыл түспен бейнеленетін жер бедерінің нысаны:", "q_ru": "Форма рельефа, обозначаемая на физических картах зеленым и темно-зеленым цветом:", "options_kz": ["Ойпат (0–200 м)", "Қырат (200–500 м)", "Тау жотасы (>500 м)", "Үстірт"], "options_ru": ["Низменность (0–200 м)", "Возвышенность (200–500 м)", "Горный хребет (>500 м)", "Плато"], "answer": 0, "exp_kz": "Физикалық карталарда абсолюттік биіктігі 0-ден 200 метрге дейінгі жазықтар мен ойпаттар (мысалы, Каспий маңы ойпаты) жасыл және қою жасыл түспен беріледі.", "exp_ru": "На физических картах равнины с абсолютной высотой от 0 до 200 м (низменности, напр. Прикаспийская) изображаются зелеными и темно-зелеными оттенками."}, {"id": 2, "q_kz": "Барлық меридиан сызықтары түйісетін және кесіп өтетін жер шарындағы материк:", "q_ru": "Материк Земли, который пересекают абсолютно все меридианы:", "options_kz": ["Африка", "Еуразия", "Антарктида", "Аустралия"], "options_ru": ["Африка", "Евразия", "Антарктида", "Австралия"], "answer": 2, "exp_kz": "Меридиандар Солтүстік және Оңтүстік полюстерде түйіседі. Оңтүстік полюс Антарктида материгінің ішінде орналасқандықтан, барлық меридиандар оны кесіп өтеді.", "exp_ru": "Все меридианы сходятся на полюсах. Поскольку Южный полюс находится в центре Антарктиды, все меридианы сходятся и пересекают этот материк."}, {"id": 3, "q_kz": "«1 см-де 400 м» атаулы масштабының сандық эквиваленті қандай болады?", "q_ru": "Каков численный эквивалент именованного масштаба «в 1 см — 400 м»?", "options_kz": ["1:4 000", "1:40 000", "1:400 000", "1:400"], "options_ru": ["1:4 000", "1:40 000", "1:400 000", "1:400"], "answer": 1, "exp_kz": "Сандық масштабта екі жағы да сантиметрмен өлшенеді. 400 метрді сантиметрге айналдыру үшін 100-ге көбейтеміз (екі нөл қосамыз): 400 м = 40 000 см. Яғни 1:40 000.", "exp_ru": "В численном масштабе обе части выражаются в сантиметрах. 400 метров умножаем на 100 (добавляем 2 нуля) = 40 000 см. Получаем 1:40 000."}, {"id": 4, "q_kz": "Жер бедері горизонтальдармен, су торабы, жолдар мен елді мекендері өте нақты әрі егжей-тегжейлі көрсетілетін ірі масштабты карта түрі:", "q_ru": "Вид крупномасштабной карты, где подробно изображен рельеф горизонталями, гидрография, дороги и поселения:", "options_kz": ["Топографиялық карта", "Шолу картасы", "Климаттық карта", "Дүниежүзілік карта"], "options_ru": ["Топографическая карта", "Обзорная карта", "Климатическая карта", "Карта мира"], "answer": 0, "exp_kz": "Масштабы 1:10 000 - 1:200 000 аралығындағы жергілікті жерді аса дәл сипаттайтын карталар топографиялық карталар деп аталады.", "exp_ru": "Карты масштаба от 1:10 000 до 1:200 000 с детальным отображением местности и рельефа горизонталями называются топографическими."}, {"id": 5, "q_kz": "Оқушы 100 метрді өлшегенде 149, 148 және 150 қадам жасады. Оның бір қадамының орташа ұзындығы қанша?", "q_ru": "При измерении 100 м ученик сделал 149, 148 и 150 шагов. Какова средняя длина его шага?", "options_kz": ["0,55 м", "0,60 м", "0,67 м", "0,75 м"], "options_ru": ["0,55 м", "0,60 м", "0,67 м", "0,75 м"], "answer": 2, "exp_kz": "Орташа қадам саны: (149 + 148 + 150) / 3 = 149 қадам. Қадам ұзындығы: 100 м / 149 ≈ 0,67 м.", "exp_ru": "Среднее число шагов: (149 + 148 + 150) / 3 = 149 шагов. Длина шага: 100 м / 149 ≈ 0,67 м."}, {"id": 6, "q_kz": "Карта мен планда нысандар арасындағы бұрышты немесе азимутты градуспен өлшеуге арналған картометриялық құрал:", "q_ru": "Картометрический прибор для измерения углов и азимута в градусах на плане и карте:", "options_kz": ["Курвиметр", "Палетка", "Транспортир", "Нивелир"], "options_ru": ["Курвиметр", "Палетка", "Транспортир", "Нивелир"], "answer": 2, "exp_kz": "Транспортир планда не картада 0-ден 360 градусқа дейінгі азимуттар мен бағыт бұрыштарын дәл өлшеуге арналған.", "exp_ru": "Транспортир предназначен для измерения углов и азимута от 0 до 360 градусов на картах и планах местности."}, {"id": 7, "q_kz": "Қазақстанның елордасы Астана қаласының жуықталған географиялық координаталары:", "q_ru": "Приблизительные географические координаты столицы Казахстана — города Астаны:", "options_kz": ["43° с.е. пен 76° ш.б.", "51° с.е. пен 71° ш.б.", "51° о.е. пен 71° б.б.", "55° с.е. пен 69° ш.б."], "options_ru": ["43° с.ш. и 76° в.д.", "51° с.ш. и 71° в.д.", "51° ю.ш. и 71° з.д.", "55° с.ш. и 69° в.д."], "answer": 1, "exp_kz": "Астана қаласы солтүстік ендіктің 51-параллелі мен шығыс бойлықтың 71-меридианының қиылысында (51° с.е., 71° ш.б.) орналасқан.", "exp_ru": "Астана расположена примерно на 51° северной широты и 71° восточной долготы (51° с.ш. и 71° в.д.)."}, {"id": 8, "q_kz": "Картадағы ирек сызықтардың (өзендер, шекаралар, жолдар) ұзындығын өлшеуге арналған құрал:", "q_ru": "Прибор для точного измерения длины извилистых линий на карте (рек, дорог, границ):", "options_kz": ["Курвиметр", "Транспортир", "Экер", "Барометр"], "options_ru": ["Курвиметр", "Транспортир", "Экер", "Барометр"], "answer": 0, "exp_kz": "Курвиметр — дөңгелегін картадағы ирек сызық бойымен домалату арқылы сызықтың ұзындығын есептейтін арнайы картометриялық құрал.", "exp_ru": "Курвиметр — специальный прибор с колесиком, позволяющий прокатыванием по извилистой линии точно измерить ее длину на карте."}, {"id": 9, "q_kz": "Масштабы 1:200 000 картада қабырғасы 2 см болатын палетканың 1 квадраты табиғаттағы қандай ауданға тең?", "q_ru": "На карте масштаба 1:200 000 квадрат палетки со стороной 2 см соответствует реальной площади:", "options_kz": ["4 км²", "8 км²", "16 км²", "32 км²"], "options_ru": ["4 км²", "8 км²", "16 км²", "32 км²"], "answer": 2, "exp_kz": "1:200 000 масштабта 1 см = 2 км. Демек, 2 см = 4 км. Квадраттың ауданы: 4 км * 4 км = 16 км².", "exp_ru": "В масштабе 1:200 000 в 1 см — 2 км. Значит сторона квадрата 2 см равна 4 км на местности. Площадь: 4 км * 4 км = 16 км²."}, {"id": 10, "q_kz": "Жер шарындағы барлық меридиан сызықтарының ұзындығы туралы қай тұжырым ақиқат?", "q_ru": "Какое утверждение о длине всех меридианов на земном шаре является верным?", "options_kz": ["Экваторда ең ұзын, полюстерде қысқа", "Барлық жерінде өзара бірдей (шамамен 20 000 км)", "Гринвич меридианы басқаларынан ұзынырақ", "Бойлықтың артуымен ұзарады"], "options_ru": ["На экваторе длиннее, на полюсах короче", "Везде одинакова между собой (около 20 000 км)", "Гринвичский меридиан длиннее остальных", "Увеличивается с ростом долготы"], "answer": 1, "exp_kz": "Барлық меридиандар Солтүстік полюстен Оңтүстік полюске созылған бірдей жартышеңберлер болғандықтан, олардың ұзындығы барлық жерде бірдей (~20 000 км).", "exp_ru": "Поскольку все меридианы соединяют полюса по кратчайшей дуге, их длины абсолютно одинаковы и равны примерно 20 000 км."}]}, "pdf_kz": "https://drive.google.com/file/d/1FVfggo2CtfK06fXn8E-04qqTJe9_Ok5c/view?usp=sharing", "pdf_ru": "https://drive.google.com/file/d/1e_5X4i7HNdfRjxjzm0dKzeuRZFWSM614/view?usp=drive_link"};
+    const currentLang = 'ru';
+    let userTestAnswers = {};
+    let isTestSubmitted = false;
+
+    // Render Test Questions
+    function renderTestQuestions() {
+      const container = document.getElementById('testQuestionsList');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const testObj = lessonData.test;
+      if (!testObj || !testObj.questions || testObj.questions.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-400">Тест готовится / Тест дайындалуда.</p>';
+        return;
+      }
+
+      const isRu = (currentLang === 'ru');
+      const letters = ['A', 'B', 'C', 'D', 'E'];
+
+      testObj.questions.forEach((q, idx) => {
+        const qCard = document.createElement('div');
+        qCard.className = 'p-5 rounded-2xl bg-space-850 border border-slate-800 space-y-3';
+
+        const qPrompt = isRu ? (q.q_ru || q.q_kz) : q.q_kz;
+        const options = isRu ? (q.options_ru || q.options_kz) : q.options_kz;
+        const exp = isRu ? (q.exp_ru || q.exp_kz) : q.exp_kz;
+
+        qCard.innerHTML = `
+          <div class="flex items-center justify-between gap-2 border-b border-slate-800/80 pb-2">
+            <span class="text-xs font-bold text-slate-400 uppercase">
+              ${isRu ? 'Вопрос ' + (idx + 1) : 'Сұрақ ' + (idx + 1)}
+            </span>
+            <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-bold">1 балл</span>
+          </div>
+          <p class="text-xs sm:text-sm font-semibold text-slate-100 leading-relaxed">${qPrompt}</p>
+        `;
+
+        const optContainer = document.createElement('div');
+        optContainer.className = 'space-y-2 pt-1';
+
+        const selectedAnswer = userTestAnswers[q.id];
+
+        options.forEach((optText, optIdx) => {
+          const isSelected = selectedAnswer === optIdx;
+          const isCorrect = q.answer === optIdx;
+
+          const optDiv = document.createElement('div');
+          optDiv.className = 'p-3 rounded-xl border text-xs font-medium cursor-pointer transition flex items-center space-x-2.5 ';
+
+          if (isTestSubmitted) {
+            if (isCorrect) {
+              optDiv.className += 'bg-emerald-500/15 border-emerald-500 text-emerald-200 font-bold';
+            } else if (isSelected) {
+              optDiv.className += 'bg-rose-500/15 border-rose-500 text-rose-200';
+            } else {
+              optDiv.className += 'bg-space-900/50 border-slate-800 text-slate-500';
+            }
+          } else {
+            if (isSelected) {
+              optDiv.className += 'bg-cyan-500/15 border-cyan-500 text-cyan-200 font-bold';
+            } else {
+              optDiv.className += 'bg-space-900 hover:bg-space-800 border-slate-800 hover:border-slate-700 text-slate-300';
+            }
+          }
+
+          const badge = document.createElement('span');
+          badge.className = 'w-5 h-5 rounded-md text-[10px] font-black flex items-center justify-center shrink-0 ' +
+            (isSelected ? 'bg-cyan-500 text-space-950' : 'bg-space-850 text-slate-400 border border-slate-700');
+          badge.textContent = letters[optIdx] || String(optIdx + 1);
+          optDiv.appendChild(badge);
+
+          const txt = document.createElement('span');
+          txt.className = 'flex-1';
+          txt.textContent = optText;
+          optDiv.appendChild(txt);
+
+          optDiv.onclick = () => {
+            if (isTestSubmitted) return;
+            userTestAnswers[q.id] = optIdx;
+            renderTestQuestions();
+          };
+
+          optContainer.appendChild(optDiv);
+        });
+
+        qCard.appendChild(optContainer);
+
+        // Explanation Box after submission
+        if (isTestSubmitted) {
+          const expBox = document.createElement('div');
+          expBox.className = 'p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-xs text-cyan-200 space-y-1';
+          expBox.innerHTML = `
+            <span class="font-bold text-cyan-300 block">💡 ${isRu ? 'Пояснение:' : 'Түсіндірме:'}</span>
+            <p class="text-slate-300 leading-relaxed">${exp || (isRu ? 'Авторское пояснение к вопросу.' : 'Сұраққа арналған түсіндірме.')}</p>
+          `;
+          qCard.appendChild(expBox);
+        }
+
+        container.appendChild(qCard);
+      });
+    }
+
+    function submitLessonTest() {
+      const testObj = lessonData.test;
+      if (!testObj || !testObj.questions) return;
+
+      const answeredCount = Object.keys(userTestAnswers).length;
+      const total = testObj.questions.length;
+      const isRu = (currentLang === 'ru');
+
+      if (answeredCount < total) {
+        const msg = isRu 
+          ? `Вы ответили только на ${answeredCount} из ${total} вопросов. Завершить тест?` 
+          : `Сіз ${total} сұрақтың ${answeredCount}-не жауап бердіңіз. Тестті аяқтайсыз ба?`;
+        if (!confirm(msg)) return;
+      }
+
+      isTestSubmitted = true;
+      let correct = 0;
+
+      testObj.questions.forEach(q => {
+        if (userTestAnswers[q.id] === q.answer) {
+          correct++;
+        }
+      });
+
+      const percentage = Math.round((correct / total) * 100);
+      const isPassed = percentage >= 80;
+
+      // Update badges & UI
+      const scoreBadge = document.getElementById('testScoreBadge');
+      if (scoreBadge) {
+        scoreBadge.classList.remove('hidden');
+        scoreBadge.textContent = `${correct} / ${total} (${percentage}%)`;
+        scoreBadge.className = 'px-3 py-1 rounded-xl text-xs font-bold font-mono border ' +
+          (isPassed ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-rose-500/20 text-rose-300 border-rose-500/40');
+      }
+
+      const info = document.getElementById('testProgressInfo');
+      if (info) {
+        info.textContent = isPassed 
+          ? (isRu ? `🎉 Поздравляем! Вы сдали тест на ${percentage}% (+30 XP)` : `🎉 Құттықтаймыз! Сіз тестті ${percentage}%-ға тапсырдыңыз (+30 XP)`)
+          : (isRu ? `Результат: ${percentage}%. Для зачета требуется 80%. Попробуйте еще раз.` : `Нәтиже: ${percentage}%. Өту үшін 80% қажет. Қайта тапсырып көріңіз.`);
+      }
+
+      document.getElementById('btnSubmitTest').classList.add('hidden');
+      document.getElementById('btnResetTest').classList.remove('hidden');
+
+      // Save to localStorage
+      try {
+        let scores = JSON.parse(localStorage.getItem('geotany_lesson_scores') || '{}');
+        scores[lessonData.id] = percentage;
+        localStorage.setItem('geotany_lesson_scores', JSON.stringify(scores));
+
+        if (isPassed) {
+          let completed = JSON.parse(localStorage.getItem('geotany_completed_lessons') || '[]');
+          if (!completed.includes(lessonData.id)) {
+            completed.push(lessonData.id);
+            localStorage.setItem('geotany_completed_lessons', JSON.stringify(completed));
+          }
+          let curXp = parseInt(localStorage.getItem('geotany_user_xp') || '0', 10);
+          curXp += 30;
+          localStorage.setItem('geotany_user_xp', curXp.toString());
+        }
+      } catch(e) {}
+
+      renderTestQuestions();
+      updateCompleteButtons();
+    }
+
+    function resetLessonTest() {
+      userTestAnswers = {};
+      isTestSubmitted = false;
+      document.getElementById('testScoreBadge').classList.add('hidden');
+      document.getElementById('btnSubmitTest').classList.remove('hidden');
+      document.getElementById('btnResetTest').classList.add('hidden');
+      document.getElementById('testProgressInfo').textContent = (currentLang === 'ru') 
+        ? 'Ответьте на все вопросы и проверьте свои знания.' 
+        : 'Барлық сұрақтарға жауап беріп, өзіңізді тексеріңіз.';
+      renderTestQuestions();
+    }
+
+    // Toggle Lesson Complete Status
+    function toggleLessonComplete() {
+      let completed = [];
+      try {
+        completed = JSON.parse(localStorage.getItem('geotany_completed_lessons') || '[]');
+      } catch(e) {}
+
+      const isDone = completed.includes(lessonData.id);
+      let curXp = parseInt(localStorage.getItem('geotany_user_xp') || '0', 10);
+
+      if (isDone) {
+        completed = completed.filter(id => id !== lessonData.id);
+        curXp = Math.max(0, curXp - 30);
+      } else {
+        completed.push(lessonData.id);
+        curXp += 30;
+      }
+
+      try {
+        localStorage.setItem('geotany_completed_lessons', JSON.stringify(completed));
+        localStorage.setItem('geotany_user_xp', curXp.toString());
+      } catch(e) {}
+
+      updateCompleteButtons();
+    }
+
+    function updateCompleteButtons() {
+      let completed = [];
+      try {
+        completed = JSON.parse(localStorage.getItem('geotany_completed_lessons') || '[]');
+      } catch(e) {}
+
+      const isDone = completed.includes(lessonData.id);
+      const isRu = (currentLang === 'ru');
+
+      const banner = document.getElementById('lessonCompletedBanner');
+      if (banner) banner.classList.toggle('hidden', !isDone);
+
+      const headerBtn = document.getElementById('btnHeaderComplete');
+      const headerIcon = document.getElementById('headerCheckIcon');
+      const headerText = document.getElementById('headerCompleteText');
+
+      if (headerBtn) {
+        if (isDone) {
+          headerBtn.className = 'px-3 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold transition flex items-center space-x-1.5';
+          if (headerIcon) headerIcon.textContent = '✓';
+          if (headerText) headerText.textContent = isRu ? 'Прочитано' : 'Оқылды';
+        } else {
+          headerBtn.className = 'px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-emerald-400 text-xs font-bold transition flex items-center space-x-1.5';
+          if (headerIcon) headerIcon.textContent = '○';
+          if (headerText) headerText.textContent = isRu ? 'Отметить' : 'Белгілеу';
+        }
+      }
+
+      const bottomLbl = document.getElementById('lblBottomComplete');
+      if (bottomLbl) {
+        bottomLbl.textContent = isDone 
+          ? (isRu ? '✓ Прочитано (Нажмите, чтобы отменить)' : '✓ Оқылды (Өшіру үшін басыңыз)')
+          : (isRu ? 'Отметить как прочитанное (+30 XP)' : 'Сабақты оқылды деп белгілеу (+30 XP)');
+      }
+    }
+
+    // Boot
+    window.addEventListener('DOMContentLoaded', () => {
+      renderTestQuestions();
+      updateCompleteButtons();
+    });
+  </script>
+
+</body>
+</html>

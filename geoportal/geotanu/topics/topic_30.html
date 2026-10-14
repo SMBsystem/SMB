@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="kk" class="dark">
+<head>
+  <!-- COURSE ACCESS GUARD: RESTRICT DIRECT ACCESS WITHOUT VALID CODE -->
+  <style id="authCloak">body { display: none !important; }</style>
+  <script>
+    (function() {
+      try {
+        var isAdmin = localStorage.getItem('geotany_admin_auth') === 'true';
+        var sessionStr = localStorage.getItem('geotany_user_session');
+        var isAuthorized = isAdmin;
+        if (!isAuthorized && sessionStr) {
+          var s = JSON.parse(sessionStr);
+          if (s && s.email && (s.courseCode || s.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        var profileStr = localStorage.getItem('geotany_user_profile');
+        if (!isAuthorized && profileStr) {
+          var p = JSON.parse(profileStr);
+          if (p && p.isRegistered && p.email && p.courseCode) {
+            isAuthorized = true;
+          }
+        }
+        if (!isAuthorized) {
+          var target = window.location.pathname.split('/').pop() || 'topics.html';
+          window.location.replace('../geotanu.html?need_course=GEOTANY&redirect=' + encodeURIComponent(target));
+          return;
+        }
+        var cloak = document.getElementById('authCloak');
+        if (cloak) cloak.remove();
+      } catch (err) {
+        window.location.replace('../geotanu.html');
+      }
+    })();
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>#30 Экономикалық география (ҚР табиғи-ресурстық әлеуеті) | GeoTany</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50: '#eef2ff', 100: '#e0e7ff', 200: '#c7d2fe', 300: '#a5b4fc', 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 800: '#3730a3', 900: '#312e81' },
+            space: { 800: '#1e293b', 850: '#172033', 900: '#0f172a', 950: '#0b1120' }
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Outfit', 'Inter', sans-serif; }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #0b1120; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+  </style>
+</head>
+<body class="bg-[#070b14] text-slate-100 min-h-screen flex flex-col selection:bg-cyan-500 selection:text-space-950">
+
+  <!-- STICKY TOP NAVBAR -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-space-950/85 border-b border-slate-800/80 px-4 sm:px-8 py-3">
+    <div class="max-w-6xl mx-auto flex items-center justify-between gap-3">
+      <!-- Left: Back Button & Badges -->
+      <div class="flex items-center space-x-2.5 sm:space-x-3 shrink-0">
+        <a href="../geotanu.html#section-zhattau_grammar" id="btnBackToCourse" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white transition"><span>←</span><span id="btnBackToCourseText">Артқа</span></a>
+        <span class="px-2.5 py-1 rounded-full text-xs font-black bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
+          #30
+        </span>
+        <span id="navCatBadge" class="text-xs text-slate-400 font-bold hidden md:inline truncate max-w-[200px]">
+          Экономикалық география және табиғи ресурстар
+        </span>
+      </div>
+
+      <!-- Right: Controls (Lang Switcher & Mark Complete) -->
+      <div class="flex items-center space-x-2 sm:space-x-3 shrink-0">
+        <!-- Language Switcher -->
+        <div class="inline-flex p-1 bg-space-900 border border-slate-800 rounded-xl space-x-1">
+          <button id="btnLangKz" onclick="setLang('kz')" class="px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow">
+            KZ
+          </button>
+          <button id="btnLangRu" onclick="setLang('ru')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">
+            RU
+          </button>
+        </div>
+
+        <!-- Mark as Completed Button -->
+        <button id="btnComplete" onclick="toggleComplete()" class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition border border-slate-700 bg-space-900 text-slate-300 hover:text-white hover:border-slate-600">
+          <span id="completeIcon" class="text-sm">○</span>
+          <span id="completeText" class="hidden sm:inline">Меңгерілді</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN TOPIC CONTAINER -->
+  <main class="max-w-5xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-8 space-y-6 flex-1">
+
+    <!-- HERO HEADER CARD -->
+    <div class="p-6 sm:p-7 rounded-2xl bg-space-950/90 border border-slate-800 space-y-3.5 shadow-xl relative overflow-hidden">
+      <div class="absolute -right-12 -top-12 w-48 h-48 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="flex items-center space-x-2">
+        <span id="heroCatBadge" class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-space-850 text-cyan-400 border border-cyan-500/20">
+          Экономикалық география және табиғи ресурстар
+        </span>
+        <span class="text-xs text-slate-400">⏱️ ~8-12 мин оқу</span>
+      </div>
+      <h1 id="heroTitle" class="text-xl sm:text-2xl md:text-3xl font-black text-white tracking-tight leading-snug">
+        Экономикалық география (ҚР табиғи-ресурстық әлеуеті)
+      </h1>
+      <!-- External Links Bar -->
+      <div class="flex flex-wrap items-center gap-2 pt-1">
+        <a id="btnBlooket" href="https://dashboard.blooket.com/set/6a96eb9aab599b2e92eceaa9" target="_blank" class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 border border-purple-500/40 text-xs font-bold transition shadow-sm">
+          <span>🎮</span>
+          <span id="btnBlooketText">Blooket ойыны</span>
+        </a>
+        
+      </div>
+    </div>
+
+    <!-- 1. BRIEF SUMMARY CARD -->
+    <section class="p-5 rounded-2xl bg-space-950 border border-brand-500/40 text-xs sm:text-sm text-slate-200 leading-relaxed shadow-lg">
+      <div class="flex items-center space-x-2 text-brand-400 font-extrabold text-xs mb-2">
+        <span>📖</span>
+        <span id="summaryHeader">ТАҚЫРЫПҚА ҚЫСҚАША ШОЛУ</span>
+      </div>
+      <p id="summaryText" class="leading-relaxed">
+        Қазақстанның табиғи-ресурстық әлеуеті: климаттық ресурстар (сарқылмайтын), ішкі су ресурстары (115,3 млрд м³: 60,4 млрд м³ жергілікті, 54,9 млрд м³ трансшекаралық), Ертіс СЭС каскады (1,7 млн кВт: Өскемен, Бұқтырма, Шүлбі), Ақтау АЭС-і (1973-1992 ж.), жер ресурстары (270,1 млн га: ауыл шаруашылығына 82%, егістік 15%), орман қоры (4,2%: сексеуіл 47,9%), биологиялық ресурстар (бекіре).
+      </p>
+    </section>
+
+    <!-- 2. FULL THEORY SECTION -->
+    <section class="p-5 sm:p-7 rounded-2xl bg-space-950 border border-slate-800 space-y-4 shadow-xl">
+      <div class="flex items-center space-x-2 border-b border-slate-800 pb-3">
+        <span class="text-base text-cyan-400 font-black">📚</span>
+        <h2 id="theoryHeader" class="text-xs sm:text-sm font-black text-white uppercase tracking-wider">
+          ТОЛЫҚ ТЕОРИЯЛЫҚ МАТЕРИАЛ МЕН КОНСПЕКТ
+        </h2>
+      </div>
+      <div id="theoryContent">
+        <div class="space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed">
+<div class="p-5 rounded-2xl bg-space-900/90 border border-sky-500/30 space-y-4 shadow-xl">
+  <div class="flex items-center space-x-3 text-sky-400">
+    <span class="text-2xl">💎</span>
+    <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-wider">1. Қазақстанның табиғи-ресурстық әлеуеті және оның ерекшеліктері</h3>
+  </div>
+  <div class="space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed">
+    <p class="leading-relaxed">• <b>Табиғи-ресурстық әлеует ұғымы</b>: Белгілі бір аумақтың әлеуметтік-экономикалық дамуының табиғи негізі болып табылатын, қоғамның өндірістік қажеттіліктерін қамтамасыз ете алатын табиғат ресурстарының жиынтығы.</p><p class="leading-relaxed">• <b>Қазақстанның табиғат ресурстарының басты 4 ерекшелігі</b>:</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b class="text-amber-400">1)</b> Көлемі жағынан аса алуан түрлі, кешенді таралған және өндірістік сапасы өте жоғары;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b class="text-amber-400">2)</b> Елдің ішкі қажеттіліктерін толық өтей алады әрі экспорттық әлеуеті мол;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b class="text-amber-400">3)</b> Мемлекет қазынасына түсетін қаржылық түсімдер мен валюталық табыстың негізгі көзі;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b class="text-amber-400">4)</b> <b>Ел аумағы бойынша біркелкі таралмаған</b> (аймақтық диспропорция бар: батыста мұнай, орталықта көмір мен металдар, шығыста полиметалдар мен су қоры шоғырланған).</p>
+  </div>
+</div>
+<div class="p-5 rounded-2xl bg-space-900/90 border border-amber-500/30 space-y-4 shadow-xl">
+  <div class="flex items-center space-x-3 text-amber-400">
+    <span class="text-2xl">☀️</span>
+    <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-wider">2. Сарқылмайтын ресурстар: Климаттық және энергетикалық әлеует</h3>
+  </div>
+  <div class="space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed">
+    <p class="leading-relaxed">• <b>Сарқылмайтын табиғат ресурстары</b>: <b>Климаттық ресурстар</b> (күн энергиясы, жел қуаты, ауа қозғалысы, судың кинетикалық энергиясы).</p><p class="leading-relaxed">• <b>Климаттық ресурстар пайдаланылуына қарай 3 түрге бөлінеді</b>:</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b class="text-amber-400">1)</b> <b>Энергетикалық ресурстар</b>: Күн, жел энергиясы (Жоңғар қақпасы, Шелек дәлізі, Қордай асуы);</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b class="text-amber-400">2)</b> <b>Агроклиматтық ресурстар</b>: Ауыл шаруашылығы дақылдарының пісіп-жетілуіне қажетті күннің белсенді температуралар қосындысы, жарық пен ылғал;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b class="text-amber-400">3)</b> <b>Рекреациялық ресурстар</b>: Адамдардың демалуына, емделуіне, сауығуына және туризмді дамытуға қолайлы табиғи климаттық жағдайлар (Бурабай, Алтай, Іле Алатауы курорттары).</p><p class="leading-relaxed">• <b>Жаңартылатын баламалы энергия көздері</b>: 2018 жылы елдегі барлық электр энергиясының Жел және Күн станциялары өндірген үлесі небәрі <b>0,5%-ды</b> құрады (қазіргі таңда 5%-ға дейін артты).</p>
+  </div>
+</div>
+<div class="p-5 rounded-2xl bg-space-900/90 border border-cyan-500/30 space-y-4 shadow-xl">
+  <div class="flex items-center space-x-3 text-cyan-400">
+    <span class="text-2xl">💧</span>
+    <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-wider">3. Су ресурстары және гидроэнергетика</h3>
+  </div>
+  <div class="space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed">
+    <p class="leading-relaxed">• <b>Ішкі су ресурстарының жалпы қоры</b>: <b>115,3 млрд м³</b>.</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Ел аумағында қалыптасатын ішкі су қоры — <b>60,4 млрд м³ (52,4%)</b>;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Көршілес шет елдерден келетін трансшекаралық су ресурсының қоры — <b>54,9 млрд м³ (47,6%)</b> (Қытайдан Іле, Ертіс; Өзбекстан мен Қырғызстаннан Сырдария; Ресейден Жайық келеді).</p><p class="leading-relaxed">• <b>Өзен ағындарының басым бөлігі тиесілі негізгі өзендер</b>: <b>Ертіс, Есіл, Тобыл, Сырдария, Іле</b>.</p><p class="leading-relaxed">• <b>Су ресурстарының аймақтық таралуы</b>:</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b>Оңтүстік Қазақстанға</b> тиесілі судың үлесі — <b>62%</b>;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b>Солтүстік Қазақстанға</b> тиесілі судың үлесі — <b>30%</b>;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Батыс пен Орталық Қазақстанда су тапшылығы айқын байқалады.</p><p class="leading-relaxed">• <b>Ертіс өзеніндегі аса ірі СЭС каскады (жалпы қуаты 1,7 млн кВт-тан асады)</b>:</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b class="text-amber-400">1)</b> <b>Шүлбі СЭС</b> — қуаты <b>702 МВт</b> (Қазақстандағы ең ірі су электр станциясы);</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b class="text-amber-400">2)</b> <b>Бұқтырма СЭС</b> — қуаты <b>675 МВт</b> (Бұқтырма су қоймасымен бірге);</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b class="text-amber-400">3)</b> <b>Өскемен СЭС</b> — қуаты <b>334 МВт</b>.</p><p class="leading-relaxed">• <b>Ақтау АЭС-і (Атом электр станциясы)</b>: 1973 - 1992 жылдары Маңғыстау облысы Ақтау қаласында жылдам нейтрондармен жұмыс істейтін <b>әлемдегі тұңғыш өндірістік АЭС (БН-350 реакторы)</b> жұмыс жасап, Каспий суын тұщытып, қаланы жылу мен қуатпен қамтамасыз етті.</p>
+  </div>
+</div>
+<div class="p-5 rounded-2xl bg-space-900/90 border border-emerald-500/30 space-y-4 shadow-xl">
+  <div class="flex items-center space-x-3 text-emerald-400">
+    <span class="text-2xl">🌾</span>
+    <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-wider">4. Жер қоры, орман және биологиялық ресурстар</h3>
+  </div>
+  <div class="space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed">
+    <p class="leading-relaxed">• <b>Жер ресурстары</b>:</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Қазақстанның жалпы жер қоры — <b>270,1 млн га</b> (дүниежүзінде 9-орын);</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Ауыл шаруашылығына жарамды жердің үлесі — <b>82% (222 млн га)</b>;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Егістікке (жыртылған жерге) тиесілі жердің үлесі — <b>15% (36 млн га)</b> (әлемде 6-орын);</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Жайылымдар мен шабындықтар — шамамен <b>70% (190 млн га)</b> (әлемде 4-орын).</p><p class="leading-relaxed">• <b>Орман қоры</b>: Қазақстан орманға кедей елдердің қатарына жатады, орманмен қамтылған жердің үлесі республика аумағының небәрі <b>4,2%-ын</b> құрайды.</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b>Орман түрлерінің үлесі</b>:</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b>Сексеуіл ормандары</b> — <b>47,9%</b> (орман қорының жартысына жуығы, шөл-шөлейтті өңірлерде);</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b>Қайыңды ормандар</b> — <b>8,3%</b> (солтүстіктің қайың шоқтары — колкалар);</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b>Қарағайлы ормандар</b> — <b>7,8%</b> (Ертіс маңындағы таспалы боралар, Сарыарқа, Алтай);</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b>Майқарағай (пихта)</b> — <b>3,6%</b> (Кенді Алтай таулары).</p><p class="leading-relaxed">• <b>Биологиялық ресурстар</b>: Өсімдіктер мен жануарлар әлемі. Ең маңызды кәсіптік биологиялық байлық — <b>балық ресурстары</b>, оның ішінде әлемдік маңызы бар құнды балық түрі — <b>Каспий теңізінің бекіре балығы (осетр, қортпа, шоқыр)</b>.</p>
+  </div>
+</div>
+</div>
+      </div>
+    </section>
+
+    <!-- 3. VISUAL SVG DIAGRAM / ILLUSTRATION -->
+    <section id="svgSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl">
+      <div class="flex items-center space-x-2 text-amber-400 font-extrabold text-xs">
+        <span>🎨</span>
+        <span id="svgHeader">КӨРНЕКІ СХЕМА МЕН ИНФОГРАФИКА</span>
+      </div>
+      <div id="svgContainer" class="w-full flex justify-center overflow-x-auto">
+        <svg viewBox="0 0 800 480" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg" style="background:#0b1120; border-radius:16px;">
+  <defs>
+    <linearGradient id="topG30" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0284c7"/><stop offset="100%" stop-color="#0369a1"/></linearGradient>
+    <linearGradient id="cg30" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1e293b"/><stop offset="100%" stop-color="#0f172a"/></linearGradient>
+    <filter id="sh30" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.5"/></filter>
+  </defs>
+  <rect width="800" height="480" fill="#0b1120" rx="16"/>
+  <rect x="30" y="20" width="740" height="55" rx="12" fill="url(#topG30)" filter="url(#sh30)"/>
+  <text x="400" y="45" fill="#fff" font-size="17" font-weight="bold" text-anchor="middle" font-family="system-ui, sans-serif">ҚАЗАҚСТАННЫҢ ТАБИҒИ-РЕСУРСТЫҚ ӘЛЕУЕТІ</text>
+  <text x="400" y="64" fill="#bae6fd" font-size="12" text-anchor="middle" font-family="system-ui, sans-serif">Су ресурстары (115,3 млрд м³) • Жер қоры (270,1 млн га) • Ертіс СЭС каскады • Орман қоры (4,2%)</text>
+  
+  <!-- Col 1: Water Resources & Geography -->
+  <g transform="translate(30, 95)" filter="url(#sh30)">
+    <rect width="235" height="175" rx="12" fill="url(#cg30)" stroke="#38bdf8" stroke-width="1.5"/>
+    <text x="15" y="26" fill="#38bdf8" font-size="12" font-weight="bold">СУ РЕСУРСТАРЫ (115,3 МЛРД М³)</text>
+    <text x="15" y="48" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• Ел аумағынан:</tspan> 60,4 млрд м³ (52,4%). Трансшекаралық (сырттан): 54,9 млрд м³ (47,6%).</text>
+    <text x="15" y="90" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• Өзендер:</tspan> Ертіс, Есіл, Тобыл, Сырдария, Іле.</text>
+    <text x="15" y="122" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• Аймақтық үлесі:</tspan> Оңтүстік ҚР — 62%, Солтүстік ҚР — 30%, Батыста су тапшы.</text>
+  </g>
+
+  <!-- Col 2: Hydropower & Nuclear -->
+  <g transform="translate(282, 95)" filter="url(#sh30)">
+    <rect width="235" height="175" rx="12" fill="url(#cg30)" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="15" y="26" fill="#f59e0b" font-size="12" font-weight="bold">ГИДРО- ЖӘНЕ АТОМ ЭНЕРГЕТИКАСЫ</text>
+    <text x="15" y="48" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• Ертіс СЭС каскады (1,7 млн кВт):</tspan> Шүлбі (702 МВт, ең ірісі), Бұқтырма (675 МВт), Өскемен (334 МВт).</text>
+    <text x="15" y="100" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• Ақтау АЭС (1973-1992):</tspan> Шапшаң нейтронды әлемдегі 1-өндірістік АЭС (БН-350, тұщыту).</text>
+    <text x="15" y="146" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• Баламалы энергия:</tspan> Жел және Күн станцияларының үлесі (2018 ж.) — 0,5%.</text>
+  </g>
+
+  <!-- Col 3: Land, Forests & Biology -->
+  <g transform="translate(535, 95)" filter="url(#sh30)">
+    <rect width="235" height="175" rx="12" fill="url(#cg30)" stroke="#10b981" stroke-width="1.5"/>
+    <text x="15" y="26" fill="#10b981" font-size="12" font-weight="bold">ЖЕР ЖӘНЕ ОРМАН РЕСУРСТАРЫ</text>
+    <text x="15" y="48" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• Жер қоры:</tspan> 270,1 млн га. Ауыл шаруашылығына жарамдысы — 82% (егістік — 15%).</text>
+    <text x="15" y="92" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• Орман үлесі (4,2%):</tspan> Сексеуіл (47,9%), қайың (8,3%), қарағай (7,8%), майқарағай (3,6%).</text>
+    <text x="15" y="140" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• Биоресурстар:</tspan> Каспий бекіресі (осетр), ақсерке, бекіре уылдырығы.</text>
+  </g>
+
+  <!-- Bottom Panel: Climate & Resource Classification -->
+  <g transform="translate(30, 285)" filter="url(#sh30)">
+    <rect width="740" height="175" rx="12" fill="url(#cg30)" stroke="#c084fc" stroke-width="1.5"/>
+    <text x="20" y="24" fill="#c084fc" font-size="12" font-weight="bold">ТАБИҒИ РЕСУРСТАРДЫҢ СИПАТТАМАСЫ МЕН ПАЙДАЛАНЫЛУЫ:</text>
+    <text x="20" y="48" fill="#e2e8f0" font-size="11"><tspan font-weight="bold" fill="#fde047">Табиғи-ресурстық әлеует:</tspan> Аумақтың экономикалық дамуының негізі болып табылатын табиғат байлықтары мен ресурстарының жиынтығы.</text>
+    <text x="20" y="70" fill="#e2e8f0" font-size="11"><tspan font-weight="bold" fill="#fde047">Сарқылмайтын ресурстар:</tspan> Климаттық ресурстар — энергетикалық (күн, жел), агроклиматтық (жылу, жарық) және рекреациялық (туризм).</text>
+    <text x="20" y="92" fill="#e2e8f0" font-size="11"><tspan font-weight="bold" fill="#38bdf8">Су теңгерімі:</tspan> Ел ішіндегі ағын — 60,4 млрд м³, сырттан келетін су — 54,9 млрд м³ (Қытай, Өзбекстан, Қырғызстан, Ресей шекараларынан).</text>
+    <text x="20" y="114" fill="#e2e8f0" font-size="11"><tspan font-weight="bold" fill="#34d399">Ертіс өзенінің маңызы:</tspan> Қазақстанның басты гидроэнергетикалық өзегі; Шүлбі (702 МВт) — ҚР-дағы ең ірі СЭС.</text>
+    <text x="20" y="136" fill="#e2e8f0" font-size="11"><tspan font-weight="bold" fill="#f43f5e">Орман ағаштары:</tspan> Сексеуіл ҚР ормандарының жартысына жуығын (47,9%) құрайды және құм тоқтатуда маңызы зор.</text>
+    <text x="20" y="156" fill="#94a3b8" font-size="10.5">⚠️ Басты ерекшелік: Қазақстан ресурстары алуан түрлі, кешенді, жоғары сапалы, бірақ аумақ бойынша біркелкі таралмаған!</text>
+  </g>
+</svg>
+      </div>
+    </section>
+
+    <!-- 4. STRUCTURED DATA TABLE -->
+    <section id="tableSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl overflow-x-auto">
+      <h3 class="text-xs font-black text-cyan-400 flex items-center space-x-2">
+        <span>📊</span>
+        <span id="tableHeader">НАҚТЫ КӨРСЕТКІШТЕР МЕН КЛАССИФИКАЦИЯ КЕСТЕСІ</span>
+      </h3>
+      <div id="tableContainer">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- 5. KEY FACTS FOR UNT / ЕНТ -->
+    <section id="factsSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl">
+      <h3 class="text-xs font-black text-amber-400 flex items-center space-x-2">
+        <span>⚡</span>
+        <span id="factsHeader">ҰБТ-ҒА ҚАЖЕТТІ НЕГІЗГІ ЕРЕЖЕЛЕР МЕН ФАКТІЛЕР</span>
+      </h3>
+      <ul id="factsList" class="space-y-2 text-xs text-slate-300">
+        <!-- Rendered via JS -->
+      </ul>
+    </section>
+
+    <!-- 6. TRAPS AND HACKS -->
+    <section id="trapsSection" class="p-5 rounded-2xl bg-gradient-to-r from-amber-950/40 via-space-950 to-space-950 border border-amber-500/40 space-y-3 shadow-xl">
+      <h3 class="text-xs font-black text-amber-400 flex items-center space-x-2">
+        <span>💡</span>
+        <span id="trapsHeader">ҰБТ ҚАҚПАНДАРЫ МЕН ЛАЙФХАКТАР</span>
+      </h3>
+      <div id="trapsList" class="space-y-2 text-xs text-slate-200">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- FOOTER NAVIGATION -->
+    <nav class="pt-4 pb-8 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3 text-xs">
+      <a href="topic_29.html" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white transition shadow-sm">
+      <span>←</span>
+      <span>#29 Алдыңғы тақырып</span>
+    </a>
+      <a href="../geotanu.html#section-zhattau_grammar" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-400 hover:text-white transition">
+        <span>🏠</span>
+        <span>Барлық тақырыптар</span>
+      </a>
+      <a href="topic_31.html" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-xs font-bold text-cyan-300 hover:text-white transition shadow-sm">
+      <span>Келесі тақырып #31</span>
+      <span>→</span>
+    </a>
+    </nav>
+
+  </main>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="xpToast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300 flex items-center space-x-2 px-4 py-3 rounded-2xl bg-space-900 border border-cyan-500/40 shadow-2xl text-xs font-bold text-white">
+    <span class="text-cyan-400 text-base">✨</span>
+    <span id="toastMsg">+20 XP! Тақырып меңгерілді</span>
+  </div>
+
+  <script>
+    const topicData = {"num": 30, "title_kz": "Экономикалық география (ҚР табиғи-ресурстық әлеуеті)", "title_ru": "Экономическая география (Природно-ресурсный потенциал РК)", "category_kz": "Экономикалық география және табиғи ресурстар", "category_ru": "Экономическая география и природные ресурсы", "summary_kz": "Қазақстанның табиғи-ресурстық әлеуеті: климаттық ресурстар (сарқылмайтын), ішкі су ресурстары (115,3 млрд м³: 60,4 млрд м³ жергілікті, 54,9 млрд м³ трансшекаралық), Ертіс СЭС каскады (1,7 млн кВт: Өскемен, Бұқтырма, Шүлбі), Ақтау АЭС-і (1973-1992 ж.), жер ресурстары (270,1 млн га: ауыл шаруашылығына 82%, егістік 15%), орман қоры (4,2%: сексеуіл 47,9%), биологиялық ресурстар (бекіре).", "summary_ru": "Природно-ресурсный потенциал Казахстана: климатические ресурсы (неисчерпаемые), водные ресурсы (115,3 млрд м³: 60,4 млрд м³ внутренний сток, 54,9 млрд м³ трансграничный), каскад ГЭС на Иртыше (1,7 млн кВт: Усть-Каменогорская, Бухтарминская, Шульбинская), Актауская АЭС (1973-1992 гг.), земельные ресурсы (270,1 млн га: сельхозугодья 82%, пашня 15%), лесной фонд (4,2%: саксаул 47,9%), биоресурсы (осетровые).", "full_theory_kz": "<div class=\"space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed\">\n<div class=\"p-5 rounded-2xl bg-space-900/90 border border-sky-500/30 space-y-4 shadow-xl\">\n  <div class=\"flex items-center space-x-3 text-sky-400\">\n    <span class=\"text-2xl\">💎</span>\n    <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">1. Қазақстанның табиғи-ресурстық әлеуеті және оның ерекшеліктері</h3>\n  </div>\n  <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n    <p class=\"leading-relaxed\">• <b>Табиғи-ресурстық әлеует ұғымы</b>: Белгілі бір аумақтың әлеуметтік-экономикалық дамуының табиғи негізі болып табылатын, қоғамның өндірістік қажеттіліктерін қамтамасыз ете алатын табиғат ресурстарының жиынтығы.</p><p class=\"leading-relaxed\">• <b>Қазақстанның табиғат ресурстарының басты 4 ерекшелігі</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">1)</b> Көлемі жағынан аса алуан түрлі, кешенді таралған және өндірістік сапасы өте жоғары;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">2)</b> Елдің ішкі қажеттіліктерін толық өтей алады әрі экспорттық әлеуеті мол;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">3)</b> Мемлекет қазынасына түсетін қаржылық түсімдер мен валюталық табыстың негізгі көзі;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">4)</b> <b>Ел аумағы бойынша біркелкі таралмаған</b> (аймақтық диспропорция бар: батыста мұнай, орталықта көмір мен металдар, шығыста полиметалдар мен су қоры шоғырланған).</p>\n  </div>\n</div>\n<div class=\"p-5 rounded-2xl bg-space-900/90 border border-amber-500/30 space-y-4 shadow-xl\">\n  <div class=\"flex items-center space-x-3 text-amber-400\">\n    <span class=\"text-2xl\">☀️</span>\n    <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">2. Сарқылмайтын ресурстар: Климаттық және энергетикалық әлеует</h3>\n  </div>\n  <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n    <p class=\"leading-relaxed\">• <b>Сарқылмайтын табиғат ресурстары</b>: <b>Климаттық ресурстар</b> (күн энергиясы, жел қуаты, ауа қозғалысы, судың кинетикалық энергиясы).</p><p class=\"leading-relaxed\">• <b>Климаттық ресурстар пайдаланылуына қарай 3 түрге бөлінеді</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">1)</b> <b>Энергетикалық ресурстар</b>: Күн, жел энергиясы (Жоңғар қақпасы, Шелек дәлізі, Қордай асуы);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">2)</b> <b>Агроклиматтық ресурстар</b>: Ауыл шаруашылығы дақылдарының пісіп-жетілуіне қажетті күннің белсенді температуралар қосындысы, жарық пен ылғал;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">3)</b> <b>Рекреациялық ресурстар</b>: Адамдардың демалуына, емделуіне, сауығуына және туризмді дамытуға қолайлы табиғи климаттық жағдайлар (Бурабай, Алтай, Іле Алатауы курорттары).</p><p class=\"leading-relaxed\">• <b>Жаңартылатын баламалы энергия көздері</b>: 2018 жылы елдегі барлық электр энергиясының Жел және Күн станциялары өндірген үлесі небәрі <b>0,5%-ды</b> құрады (қазіргі таңда 5%-ға дейін артты).</p>\n  </div>\n</div>\n<div class=\"p-5 rounded-2xl bg-space-900/90 border border-cyan-500/30 space-y-4 shadow-xl\">\n  <div class=\"flex items-center space-x-3 text-cyan-400\">\n    <span class=\"text-2xl\">💧</span>\n    <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">3. Су ресурстары және гидроэнергетика</h3>\n  </div>\n  <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n    <p class=\"leading-relaxed\">• <b>Ішкі су ресурстарының жалпы қоры</b>: <b>115,3 млрд м³</b>.</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Ел аумағында қалыптасатын ішкі су қоры — <b>60,4 млрд м³ (52,4%)</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Көршілес шет елдерден келетін трансшекаралық су ресурсының қоры — <b>54,9 млрд м³ (47,6%)</b> (Қытайдан Іле, Ертіс; Өзбекстан мен Қырғызстаннан Сырдария; Ресейден Жайық келеді).</p><p class=\"leading-relaxed\">• <b>Өзен ағындарының басым бөлігі тиесілі негізгі өзендер</b>: <b>Ертіс, Есіл, Тобыл, Сырдария, Іле</b>.</p><p class=\"leading-relaxed\">• <b>Су ресурстарының аймақтық таралуы</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Оңтүстік Қазақстанға</b> тиесілі судың үлесі — <b>62%</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Солтүстік Қазақстанға</b> тиесілі судың үлесі — <b>30%</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Батыс пен Орталық Қазақстанда су тапшылығы айқын байқалады.</p><p class=\"leading-relaxed\">• <b>Ертіс өзеніндегі аса ірі СЭС каскады (жалпы қуаты 1,7 млн кВт-тан асады)</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">1)</b> <b>Шүлбі СЭС</b> — қуаты <b>702 МВт</b> (Қазақстандағы ең ірі су электр станциясы);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">2)</b> <b>Бұқтырма СЭС</b> — қуаты <b>675 МВт</b> (Бұқтырма су қоймасымен бірге);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">3)</b> <b>Өскемен СЭС</b> — қуаты <b>334 МВт</b>.</p><p class=\"leading-relaxed\">• <b>Ақтау АЭС-і (Атом электр станциясы)</b>: 1973 - 1992 жылдары Маңғыстау облысы Ақтау қаласында жылдам нейтрондармен жұмыс істейтін <b>әлемдегі тұңғыш өндірістік АЭС (БН-350 реакторы)</b> жұмыс жасап, Каспий суын тұщытып, қаланы жылу мен қуатпен қамтамасыз етті.</p>\n  </div>\n</div>\n<div class=\"p-5 rounded-2xl bg-space-900/90 border border-emerald-500/30 space-y-4 shadow-xl\">\n  <div class=\"flex items-center space-x-3 text-emerald-400\">\n    <span class=\"text-2xl\">🌾</span>\n    <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">4. Жер қоры, орман және биологиялық ресурстар</h3>\n  </div>\n  <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n    <p class=\"leading-relaxed\">• <b>Жер ресурстары</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Қазақстанның жалпы жер қоры — <b>270,1 млн га</b> (дүниежүзінде 9-орын);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Ауыл шаруашылығына жарамды жердің үлесі — <b>82% (222 млн га)</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Егістікке (жыртылған жерге) тиесілі жердің үлесі — <b>15% (36 млн га)</b> (әлемде 6-орын);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Жайылымдар мен шабындықтар — шамамен <b>70% (190 млн га)</b> (әлемде 4-орын).</p><p class=\"leading-relaxed\">• <b>Орман қоры</b>: Қазақстан орманға кедей елдердің қатарына жатады, орманмен қамтылған жердің үлесі республика аумағының небәрі <b>4,2%-ын</b> құрайды.</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Орман түрлерінің үлесі</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Сексеуіл ормандары</b> — <b>47,9%</b> (орман қорының жартысына жуығы, шөл-шөлейтті өңірлерде);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Қайыңды ормандар</b> — <b>8,3%</b> (солтүстіктің қайың шоқтары — колкалар);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Қарағайлы ормандар</b> — <b>7,8%</b> (Ертіс маңындағы таспалы боралар, Сарыарқа, Алтай);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Майқарағай (пихта)</b> — <b>3,6%</b> (Кенді Алтай таулары).</p><p class=\"leading-relaxed\">• <b>Биологиялық ресурстар</b>: Өсімдіктер мен жануарлар әлемі. Ең маңызды кәсіптік биологиялық байлық — <b>балық ресурстары</b>, оның ішінде әлемдік маңызы бар құнды балық түрі — <b>Каспий теңізінің бекіре балығы (осетр, қортпа, шоқыр)</b>.</p>\n  </div>\n</div>\n</div>", "full_theory_ru": "<div class=\"space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed\">\n<div class=\"p-5 rounded-2xl bg-space-900/90 border border-sky-500/30 space-y-4 shadow-xl\">\n  <div class=\"flex items-center space-x-3 text-sky-400\">\n    <span class=\"text-2xl\">💎</span>\n    <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">1. Природно-ресурсный потенциал Казахстана и его особенности</h3>\n  </div>\n  <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n    <p class=\"leading-relaxed\">• <b>Понятие природно-ресурсного потенциала (ПРП)</b>: Совокупность всех естественных природных богатств и ресурсов территории, которые служат материальной базой социально-экономического развития общества.</p><p class=\"leading-relaxed\">• <b>4 ключевые особенности природных ресурсов Казахстана</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">1)</b> Огромное разнообразие видов, комплексное залегание и высокое качество сырья;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">2)</b> Способность полностью обеспечивать внутренние потребности страны и высокий экспортный потенциал;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">3)</b> Главный источник валютных поступлений и формирования государственного бюджета;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">4)</b> <b>Крайне неравномерное размещение по территории страны</b> (нефть и газ — на западе, уголь и черные металлы — в центре, руды цветных металлов и гидроэнергия — на востоке).</p>\n  </div>\n</div>\n<div class=\"p-5 rounded-2xl bg-space-900/90 border border-amber-500/30 space-y-4 shadow-xl\">\n  <div class=\"flex items-center space-x-3 text-amber-400\">\n    <span class=\"text-2xl\">☀️</span>\n    <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">2. Неисчерпаемые ресурсы: Климатический потенциал и ВИЭ</h3>\n  </div>\n  <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n    <p class=\"leading-relaxed\">• <b>Неисчерпаемые природные ресурсы</b>: <b>Климатические ресурсы</b> (солнечная радиация, энергия ветра, кинетическая энергия рек).</p><p class=\"leading-relaxed\">• <b>Классификация климатических ресурсов по направлениям использования</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">1)</b> <b>Энергетические ресурсы</b>: Энергия солнца и ветра (Джунгарские ворота, Шелекский коридор, перевал Кордай);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">2)</b> <b>Агроклиматические ресурсы</b>: Сумма активных температур воздуха выше +10°C, продолжительность вегетационного периода, солнечный свет и обеспеченность влагой;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">3)</b> <b>Рекреационные ресурсы</b>: Благоприятные климатические факторы для отдыха, туризма и санаторно-курортного лечения (Бурабай, Каркаралы, Заилийский Алатау, Алтай).</p><p class=\"leading-relaxed\">• <b>Возобновляемые источники энергии (ВИЭ)</b>: В 2018 году доля ветровых и солнечных электростанций в общей генерации электроэнергии в РК составляла всего <b>0,5%</b> (к настоящему времени превысила 5%).</p>\n  </div>\n</div>\n<div class=\"p-5 rounded-2xl bg-space-900/90 border border-cyan-500/30 space-y-4 shadow-xl\">\n  <div class=\"flex items-center space-x-3 text-cyan-400\">\n    <span class=\"text-2xl\">💧</span>\n    <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">3. Водные ресурсы и гидроэнергетика</h3>\n  </div>\n  <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n    <p class=\"leading-relaxed\">• <b>Общие запасы водных ресурсов речного стока</b>: <b>115,3 млрд м³</b>.</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Собственный внутренний сток Казахстана — <b>60,4 млрд м³ (52,4%)</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Приток трансграничных рек из сопредельных стран — <b>54,9 млрд м³ (47,6%)</b> (Или и Иртыш из Китая; Сырдарья из Узбекистана и Кыргызстана; Урал из России).</p><p class=\"leading-relaxed\">• <b>Главные реки, формирующие основной поверхностный сток</b>: <b>Иртыш, Ишим, Тобол, Сырдарья, Или</b>.</p><p class=\"leading-relaxed\">• <b>Территориальная дифференциация водных ресурсов</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Южный Казахстан</b> аккумулирует <b>62%</b> водных ресурсов;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Северный Казахстан</b> — <b>30%</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Западный и Центральный Казахстан испытывают сильнейший естественный дефицит пресной воды.</p><p class=\"leading-relaxed\">• <b>Крупнейший каскад ГЭС на реке Иртыш (суммарная мощность более 1,7 млн кВт)</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">1)</b> <b>Шульбинская ГЭС</b> — мощность <b>702 МВт</b> (крупнейшая гидроэлектростанция Казахстана);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">2)</b> <b>Бухтарминская ГЭС</b> — мощность <b>675 МВт</b> (с крупнейшим Бухтарминским водохранилищем);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">3)</b> <b>Усть-Каменогорская ГЭС</b> — мощность <b>334 МВт</b>.</p><p class=\"leading-relaxed\">• <b>Актауская АЭС</b>: В 1973 - 1992 гг. в городе Актау Мангистауской области успешно эксплуатировалась <b>первая в мире промышленная атомная электростанция на быстрых нейтронах (реактор БН-350)</b>, совмещенная с опреснительной установкой морской воды.</p>\n  </div>\n</div>\n<div class=\"p-5 rounded-2xl bg-space-900/90 border border-emerald-500/30 space-y-4 shadow-xl\">\n  <div class=\"flex items-center space-x-3 text-emerald-400\">\n    <span class=\"text-2xl\">🌾</span>\n    <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">4. Земельные, лесные и биологические ресурсы</h3>\n  </div>\n  <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n    <p class=\"leading-relaxed\">• <b>Земельный фонд</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Общая площадь земельного фонда — <b>270,1 млн га</b> (9-е место в мире);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Доля сельскохозяйственных угодий — <b>82% (222 млн га)</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Доля пахотных земель (пашни) — <b>15% (36 млн га)</b> (6-е место в мире по площади пашни);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Пастбища и сенокосы — около <b>70% (190 млн га)</b> (4-е место в мире).</p><p class=\"leading-relaxed\">• <b>Лесной фонд</b>: Казахстан является малолесной страной: леса покрывают лишь <b>4,2%</b> территории республики.</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Породный состав лесов</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Саксауловые леса</b> — <b>47,9%</b> (почти половина всего лесного фонда страны);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Березовые леса</b> — <b>8,3%</b> (северные березовые колки);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Сосновые боры</b> — <b>7,8%</b> (ленточные боры Прииртышья, сопки Сарыарки, Алтай);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Пихтовые леса</b> — <b>3,6%</b> (черневая тайга Рудного Алтая).</p><p class=\"leading-relaxed\">• <b>Биологические ресурсы</b>: Крупнейшее промысловое значение имеют <b>рыбные ресурсы</b>, среди которых мировым достоянием являются <b>осетровые рыбы Каспийского бассейна (белуга, осетр, севрюга)</b>.</p>\n  </div>\n</div>\n</div>", "svg_diagram": "<svg viewBox=\"0 0 800 480\" width=\"100%\" height=\"auto\" xmlns=\"http://www.w3.org/2000/svg\" style=\"background:#0b1120; border-radius:16px;\">\n  <defs>\n    <linearGradient id=\"topG30\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" stop-color=\"#0284c7\"/><stop offset=\"100%\" stop-color=\"#0369a1\"/></linearGradient>\n    <linearGradient id=\"cg30\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" stop-color=\"#1e293b\"/><stop offset=\"100%\" stop-color=\"#0f172a\"/></linearGradient>\n    <filter id=\"sh30\" x=\"-10%\" y=\"-10%\" width=\"120%\" height=\"120%\"><feDropShadow dx=\"0\" dy=\"4\" stdDeviation=\"6\" flood-color=\"#000\" flood-opacity=\"0.5\"/></filter>\n  </defs>\n  <rect width=\"800\" height=\"480\" fill=\"#0b1120\" rx=\"16\"/>\n  <rect x=\"30\" y=\"20\" width=\"740\" height=\"55\" rx=\"12\" fill=\"url(#topG30)\" filter=\"url(#sh30)\"/>\n  <text x=\"400\" y=\"45\" fill=\"#fff\" font-size=\"17\" font-weight=\"bold\" text-anchor=\"middle\" font-family=\"system-ui, sans-serif\">ҚАЗАҚСТАННЫҢ ТАБИҒИ-РЕСУРСТЫҚ ӘЛЕУЕТІ</text>\n  <text x=\"400\" y=\"64\" fill=\"#bae6fd\" font-size=\"12\" text-anchor=\"middle\" font-family=\"system-ui, sans-serif\">Су ресурстары (115,3 млрд м³) • Жер қоры (270,1 млн га) • Ертіс СЭС каскады • Орман қоры (4,2%)</text>\n  \n  <!-- Col 1: Water Resources & Geography -->\n  <g transform=\"translate(30, 95)\" filter=\"url(#sh30)\">\n    <rect width=\"235\" height=\"175\" rx=\"12\" fill=\"url(#cg30)\" stroke=\"#38bdf8\" stroke-width=\"1.5\"/>\n    <text x=\"15\" y=\"26\" fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\">СУ РЕСУРСТАРЫ (115,3 МЛРД М³)</text>\n    <text x=\"15\" y=\"48\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Ел аумағынан:</tspan> 60,4 млрд м³ (52,4%). Трансшекаралық (сырттан): 54,9 млрд м³ (47,6%).</text>\n    <text x=\"15\" y=\"90\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Өзендер:</tspan> Ертіс, Есіл, Тобыл, Сырдария, Іле.</text>\n    <text x=\"15\" y=\"122\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Аймақтық үлесі:</tspan> Оңтүстік ҚР — 62%, Солтүстік ҚР — 30%, Батыста су тапшы.</text>\n  </g>\n\n  <!-- Col 2: Hydropower & Nuclear -->\n  <g transform=\"translate(282, 95)\" filter=\"url(#sh30)\">\n    <rect width=\"235\" height=\"175\" rx=\"12\" fill=\"url(#cg30)\" stroke=\"#f59e0b\" stroke-width=\"1.5\"/>\n    <text x=\"15\" y=\"26\" fill=\"#f59e0b\" font-size=\"12\" font-weight=\"bold\">ГИДРО- ЖӘНЕ АТОМ ЭНЕРГЕТИКАСЫ</text>\n    <text x=\"15\" y=\"48\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Ертіс СЭС каскады (1,7 млн кВт):</tspan> Шүлбі (702 МВт, ең ірісі), Бұқтырма (675 МВт), Өскемен (334 МВт).</text>\n    <text x=\"15\" y=\"100\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Ақтау АЭС (1973-1992):</tspan> Шапшаң нейтронды әлемдегі 1-өндірістік АЭС (БН-350, тұщыту).</text>\n    <text x=\"15\" y=\"146\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Баламалы энергия:</tspan> Жел және Күн станцияларының үлесі (2018 ж.) — 0,5%.</text>\n  </g>\n\n  <!-- Col 3: Land, Forests & Biology -->\n  <g transform=\"translate(535, 95)\" filter=\"url(#sh30)\">\n    <rect width=\"235\" height=\"175\" rx=\"12\" fill=\"url(#cg30)\" stroke=\"#10b981\" stroke-width=\"1.5\"/>\n    <text x=\"15\" y=\"26\" fill=\"#10b981\" font-size=\"12\" font-weight=\"bold\">ЖЕР ЖӘНЕ ОРМАН РЕСУРСТАРЫ</text>\n    <text x=\"15\" y=\"48\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Жер қоры:</tspan> 270,1 млн га. Ауыл шаруашылығына жарамдысы — 82% (егістік — 15%).</text>\n    <text x=\"15\" y=\"92\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Орман үлесі (4,2%):</tspan> Сексеуіл (47,9%), қайың (8,3%), қарағай (7,8%), майқарағай (3,6%).</text>\n    <text x=\"15\" y=\"140\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Биоресурстар:</tspan> Каспий бекіресі (осетр), ақсерке, бекіре уылдырығы.</text>\n  </g>\n\n  <!-- Bottom Panel: Climate & Resource Classification -->\n  <g transform=\"translate(30, 285)\" filter=\"url(#sh30)\">\n    <rect width=\"740\" height=\"175\" rx=\"12\" fill=\"url(#cg30)\" stroke=\"#c084fc\" stroke-width=\"1.5\"/>\n    <text x=\"20\" y=\"24\" fill=\"#c084fc\" font-size=\"12\" font-weight=\"bold\">ТАБИҒИ РЕСУРСТАРДЫҢ СИПАТТАМАСЫ МЕН ПАЙДАЛАНЫЛУЫ:</text>\n    <text x=\"20\" y=\"48\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#fde047\">Табиғи-ресурстық әлеует:</tspan> Аумақтың экономикалық дамуының негізі болып табылатын табиғат байлықтары мен ресурстарының жиынтығы.</text>\n    <text x=\"20\" y=\"70\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#fde047\">Сарқылмайтын ресурстар:</tspan> Климаттық ресурстар — энергетикалық (күн, жел), агроклиматтық (жылу, жарық) және рекреациялық (туризм).</text>\n    <text x=\"20\" y=\"92\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#38bdf8\">Су теңгерімі:</tspan> Ел ішіндегі ағын — 60,4 млрд м³, сырттан келетін су — 54,9 млрд м³ (Қытай, Өзбекстан, Қырғызстан, Ресей шекараларынан).</text>\n    <text x=\"20\" y=\"114\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#34d399\">Ертіс өзенінің маңызы:</tspan> Қазақстанның басты гидроэнергетикалық өзегі; Шүлбі (702 МВт) — ҚР-дағы ең ірі СЭС.</text>\n    <text x=\"20\" y=\"136\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#f43f5e\">Орман ағаштары:</tspan> Сексеуіл ҚР ормандарының жартысына жуығын (47,9%) құрайды және құм тоқтатуда маңызы зор.</text>\n    <text x=\"20\" y=\"156\" fill=\"#94a3b8\" font-size=\"10.5\">⚠️ Басты ерекшелік: Қазақстан ресурстары алуан түрлі, кешенді, жоғары сапалы, бірақ аумақ бойынша біркелкі таралмаған!</text>\n  </g>\n</svg>", "svg_diagram_ru": "<svg viewBox=\"0 0 800 480\" width=\"100%\" height=\"auto\" xmlns=\"http://www.w3.org/2000/svg\" style=\"background:#0b1120; border-radius:16px;\">\n  <defs>\n    <linearGradient id=\"topG30\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" stop-color=\"#0284c7\"/><stop offset=\"100%\" stop-color=\"#0369a1\"/></linearGradient>\n    <linearGradient id=\"cg30\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" stop-color=\"#1e293b\"/><stop offset=\"100%\" stop-color=\"#0f172a\"/></linearGradient>\n    <filter id=\"sh30\" x=\"-10%\" y=\"-10%\" width=\"120%\" height=\"120%\"><feDropShadow dx=\"0\" dy=\"4\" stdDeviation=\"6\" flood-color=\"#000\" flood-opacity=\"0.5\"/></filter>\n  </defs>\n  <rect width=\"800\" height=\"480\" fill=\"#0b1120\" rx=\"16\"/>\n  <rect x=\"30\" y=\"20\" width=\"740\" height=\"55\" rx=\"12\" fill=\"url(#topG30)\" filter=\"url(#sh30)\"/>\n  <text x=\"400\" y=\"45\" fill=\"#fff\" font-size=\"17\" font-weight=\"bold\" text-anchor=\"middle\" font-family=\"system-ui, sans-serif\">ПРИРОДНО-РЕСУРСНЫЙ ПОТЕНЦИАЛ КАЗАХСТАНА</text>\n  <text x=\"400\" y=\"64\" fill=\"#bae6fd\" font-size=\"12\" text-anchor=\"middle\" font-family=\"system-ui, sans-serif\">Водные ресурсы (115,3 млрд м³) • Земля (270,1 млн га) • Каскад ГЭС на Иртыше • Леса (4,2%)</text>\n  \n  <!-- Col 1: Water Resources & Geography -->\n  <g transform=\"translate(30, 95)\" filter=\"url(#sh30)\">\n    <rect width=\"235\" height=\"175\" rx=\"12\" fill=\"url(#cg30)\" stroke=\"#38bdf8\" stroke-width=\"1.5\"/>\n    <text x=\"15\" y=\"26\" fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\">ВОДНЫЕ РЕСУРСЫ (115,3 МЛРД М³)</text>\n    <text x=\"15\" y=\"48\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Внутренний сток:</tspan> 60,4 млрд м³ (52,4%). Трансграничный (извне): 54,9 млрд м³ (47,6%).</text>\n    <text x=\"15\" y=\"90\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Реки:</tspan> Иртыш, Ишим, Тобол, Сырдарья, Или.</text>\n    <text x=\"15\" y=\"122\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Доли регионов:</tspan> Южный Казахстан — 62%, Северный — 30%, на западе острый дефицит.</text>\n  </g>\n\n  <!-- Col 2: Hydropower & Nuclear -->\n  <g transform=\"translate(282, 95)\" filter=\"url(#sh30)\">\n    <rect width=\"235\" height=\"175\" rx=\"12\" fill=\"url(#cg30)\" stroke=\"#f59e0b\" stroke-width=\"1.5\"/>\n    <text x=\"15\" y=\"26\" fill=\"#f59e0b\" font-size=\"12\" font-weight=\"bold\">ГИДРО- И АТОМНАЯ ЭНЕРГЕТИКА</text>\n    <text x=\"15\" y=\"48\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Каскад ГЭС на Иртыше (1,7 млн кВт):</tspan> Шульбинская (702 МВт, крупнейшая), Бухтарминская (675 МВт), Усть-Каменогорская (334 МВт).</text>\n    <text x=\"15\" y=\"100\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Актауская АЭС (1973-1992):</tspan> 1-я в мире пром. АЭС на быстрых нейтронах (БН-350, опреснение).</text>\n    <text x=\"15\" y=\"146\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• ВИЭ:</tspan> Доля ветровых и солнечных станций (2018 г.) — 0,5%.</text>\n  </g>\n\n  <!-- Col 3: Land, Forests & Biology -->\n  <g transform=\"translate(535, 95)\" filter=\"url(#sh30)\">\n    <rect width=\"235\" height=\"175\" rx=\"12\" fill=\"url(#cg30)\" stroke=\"#10b981\" stroke-width=\"1.5\"/>\n    <text x=\"15\" y=\"26\" fill=\"#10b981\" font-size=\"12\" font-weight=\"bold\">ЗЕМЕЛЬНЫЕ И ЛЕСНЫЕ РЕСУРСЫ</text>\n    <text x=\"15\" y=\"48\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Земельный фонд:</tspan> 270,1 млн га. Сельхозугодья — 82% (пашня — 15%).</text>\n    <text x=\"15\" y=\"92\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Доля лесов (4,2%):</tspan> Саксаул (47,9%), береза (8,3%), сосна (7,8%), пихта (3,6%).</text>\n    <text x=\"15\" y=\"140\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Биоресурсы:</tspan> Осетр Каспия, белуга, севрюга, черная икра.</text>\n  </g>\n\n  <!-- Bottom Panel: Climate & Resource Classification -->\n  <g transform=\"translate(30, 285)\" filter=\"url(#sh30)\">\n    <rect width=\"740\" height=\"175\" rx=\"12\" fill=\"url(#cg30)\" stroke=\"#c084fc\" stroke-width=\"1.5\"/>\n    <text x=\"20\" y=\"24\" fill=\"#c084fc\" font-size=\"12\" font-weight=\"bold\">ХАРАКТЕРИСТИКА И ИСПОЛЬЗОВАНИЕ РЕСУРСОВ:</text>\n    <text x=\"20\" y=\"48\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#fde047\">Природно-ресурсный потенциал:</tspan> Совокупность природных ресурсов территории, служащих основой ее экономического развития.</text>\n    <text x=\"20\" y=\"70\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#fde047\">Неисчерпаемые ресурсы:</tspan> Климатические ресурсы — энергетические (солнце, ветер), агроклиматические и рекреационные.</text>\n    <text x=\"20\" y=\"92\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#38bdf8\">Водный баланс:</tspan> Внутренний сток — 60,4 млрд м³, приток извне — 54,9 млрд м³ (Китай, Узбекистан, Кыргызстан, РФ).</text>\n    <text x=\"20\" y=\"114\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#34d399\">Значение реки Иртыш:</tspan> Главный гидроэнергетический стержень РК; Шульбинская ГЭС (702 МВт) — крупнейшая в стране.</text>\n    <text x=\"20\" y=\"136\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#f43f5e\">Лесной покров:</tspan> Саксаул занимает почти половину лесов РК (47,9%) и сдерживает наступление песков.</text>\n    <text x=\"20\" y=\"156\" fill=\"#94a3b8\" font-size=\"10.5\">⚠️ Главная черта: ресурсы РК богаты и разнообразны, но размещены по территории крайне неравномерно!</text>\n  </g>\n</svg>", "table_kz": {"cols": ["Ресурс түрі", "Жалпы көлемі / Қоры", "Құрамдас бөліктері және көрсеткіштері", "Негізгі шоғырланған өңірлері мен ерекшелігі"], "rows": [["Су ресурстары (өзен ағыны)", "115,3 млрд м³", "Өз аумағындағы: 60,4 млрд м³ (52,4%); Сырттан келетін: 54,9 млрд м³ (47,6%)", "Оңтүстік Қазақстанға 62%, Солтүстікке 30% тиесілі. Ертіс, Есіл, Сырдария, Іле"], ["Гидроэнергетика (СЭС)", "1,7 млн кВт-тан асады (Ертіс)", "Шүлбі СЭС (702 МВт — ең ірісі), Бұқтырма (675 МВт), Өскемен (334 МВт)", "Ертіс өзені бойындағы ірі СЭС каскады (Шығыс Қазақстан)"], ["Атом энергетикасы (АЭС)", "БН-350 реакторы", "1973-1992 жж. жұмыс істеген шапшаң нейтронды әлемдегі тұңғыш өндірістік АЭС", "Ақтау қаласы (Маңғыстау), Каспий теңізі суын тұщыту кешені"], ["Жер ресурстары", "270,1 млн га", "Ауыл шаруашылығына жарамдысы 82% (222 млн га), егістік 15% (36 млн га)", "Жайылымдар 190 млн га (әлемде 4-орын), егістік көлемі бойынша 6-орын"], ["Орман қоры", "Аумақтың 4,2 %-ы", "Сексеуіл (47,9%), қайың (8,3%), қарағай (7,8%), майқарағай (3,6%)", "Сексеуіл — шөлдерде; қайың — солтүстікте; қарағай — Ертіс, Сарыарқа, Алтайда"], ["Климаттық ресурстар", "Сарқылмайтын ресурс", "Энергетикалық (күн, жел — 2018 ж. 0,5%), агроклиматтық, рекреациялық", "Жел дәліздері: Жоңғар қақпасы, Шелек дәлізі, Қордай асуы"], ["Биологиялық ресурстар", "Кәсіптік жануарлар мен балықтар", "Каспий бекіре тұқымдастары: қортпа, бекіре, шоқыр, қара уылдырық", "Каспий теңізі, Жайық өзенінің сағасы"]]}, "table_ru": {"cols": ["Вид ресурса", "Общий объем / Запасы", "Структура и показатели", "Регионы концентрации и особенности"], "rows": [["Водные ресурсы (сток рек)", "115,3 млрд м³", "Внутренний сток: 60,4 млрд м³ (52,4%); Трансграничный: 54,9 млрд м³ (47,6%)", "Южный Казахстан — 62%, Северный — 30%. Иртыш, Ишим, Сырдарья, Или"], ["Гидроэнергетика (ГЭС)", "Свыше 1,7 млн кВт (Иртыш)", "Шульбинская (702 МВт — крупнейшая), Бухтарминская (675 МВт), Усть-Каменогорская (334 МВт)", "Каскад ГЭС на реке Иртыш в Восточном Казахстане"], ["Атомная энергетика (АЭС)", "Реактор БН-350", "Первая в мире промышленная АЭС на быстрых нейтронах (1973-1992 гг.)", "Город Актау (Мангистау), совмещена с опреснением воды Каспия"], ["Земельные ресурсы", "270,1 млн га", "Сельхозугодья — 82% (222 млн га), пашня — 15% (36 млн га)", "Пастбища — 190 млн га (4-е место в мире), пашня — 6-е место в мире"], ["Лесные ресурсы", "4,2 % территории", "Саксаул (47,9%), береза (8,3%), сосна (7,8%), пихта (3,6%)", "Саксаул — в пустынях; березовые колки — на севере; сосна — Прииртышье и Алтай"], ["Климатические ресурсы", "Неисчерпаемые", "Энергетические (солнце, ветер — в 2018 г. 0,5%), агроклиматические, рекреационные", "Ветровые коридоры: Джунгарские ворота, Шелекский коридор, Кордай"], ["Биологические ресурсы", "Промысловые биоресурсы", "Осетровые Каспия: белуга, осетр, севрюга, черная икра", "Акватория Каспийского моря, дельта реки Урал"]]}, "key_facts_kz": ["Табиғи-ресурстық әлеует — аумақтың экономикалық дамуының негізі болып табылатын табиғат байлықтарының жиынтығы.", "Климаттық ресурстар сарқылмайтын табиғат ресурстарына жатады және 3-ке бөлінеді: энергетикалық, агроклиматтық, рекреациялық.", "Қазақстанның ішкі су ресурстарының жалпы қоры — 115,3 млрд м³ (елде қалыптасатыны 60,4 млрд м³, сырттан келетіні 54,9 млрд м³).", "Су ресурстарының 62%-ы Оңтүстік Қазақстанға, 30%-ы Солтүстік Қазақстанға тиесілі.", "Ертіс бойындағы ірі СЭС каскадының қуаты 1,7 млн кВт-тан асады (Шүлбі 702 МВт, Бұқтырма 675 МВт, Өскемен 334 МВт).", "Шүлбі СЭС-і (702 МВт) — Қазақстандағы ең ірі су электр станциясы.", "1973-1992 жылдары Ақтауда шапшаң нейтронды әлемдегі тұңғыш өндірістік АЭС (БН-350) жұмыс істеді.", "2018 жылы Қазақстандағы Жел және Күн станциялары өндірген электр энергиясының үлесі 0,5%-ды құрады.", "Қазақстанның жер ресурсының жалпы қоры — 270,1 млн га; ауыл шаруашылығына жарамды жер үлесі — 82%.", "Жыртылған егістік жер көлемі 36 млн га (15%), бұл көрсеткіш бойынша ҚР әлемде 6-орында тұр.", "Қазақстанда орман қоры небәрі 4,2%-ды құрайды; оның жартысына жуығы — сексеуіл ормандары (47,9%).", "Қазақстан биологиялық ресурстарының ішіндегі ең бағалысы — Каспийдің бекіре тұқымдас балықтары."], "key_facts_ru": ["Природно-ресурсный потенциал — совокупность всех природных ресурсов, составляющих основу экономики региона.", "Климатические ресурсы относятся к неисчерпаемым и делятся на энергетические, агроклиматические и рекреационные.", "Общие ресурсы речного стока РК — 115,3 млрд м³ (собственный сток 60,4 млрд м³, трансграничный приток 54,9 млрд м³).", "62% водных ресурсов сосредоточено в Южном Казахстане, 30% — в Северном Казахстане.", "Каскад ГЭС на Иртыше имеет суммарную мощность свыше 1,7 млн кВт (Шульбинская 702 МВт, Бухтарминская 675 МВт, Усть-Каменогорская 334 МВт).", "Шульбинская ГЭС (702 МВт) — самая мощная гидроэлектростанция Республики Казахстан.", "В 1973-1992 гг. в г. Актау функционировала первая в мире промышленная АЭС на быстрых нейтронах (БН-350).", "В 2018 году доля ветровых и солнечных электростанций в энергобалансе страны составляла 0,5%.", "Земельный фонд Казахстана составляет 270,1 млн га; сельхозугодья занимают 82% (222 млн га).", "Площадь пашни — 36 млн га (15%), по этому показателю Казахстан занимает 6-е место в мире.", "Лесистость Казахстана составляет всего 4,2%; почти половина лесов представлена саксаулом (47,9%).", "Среди биоресурсов особое мировое значение имеют осетровые рыбы бассейна Каспийского моря."], "traps_kz": ["⚠️ Су балансындағы трансшекаралық су үлесі: Қазақстан өзен ағысының (115,3 млрд м³) жартысына жуығы — 54,9 млрд м³ (47,6%) шет елдерден (Қытай, Өзбекстан, Қырғызстан, Ресей) келеді! Ал ел ішінде 60,4 млрд м³ қалыптасады.", "⚠️ Ең ірі СЭС: Қазақстандағы ең қуатты СЭС — Шүлбі СЭС-і (702 МВт). Оны Бұқтырмамен (675 МВт) немесе Қапшағаймен шатастырмаңыз!", "⚠️ Қазақстан ормандарының құрамы: Ормандар аумақтың 4,2%-ын ғана алып жатыр. Оның БАСЫМ БӨЛІГІ (47,9%) — қарағай немесе қайың емес, шөлде өсетін СЕКСЕУІЛ! Қайың 8,3%, қарағай 7,8% ғана.", "⚠️ Ақтау АЭС-інің ерекшелігі: 1973-1992 жылдары жұмыс істеген Ақтау АЭС-і — әлемдегі тұңғыш ШАПШАҢ НЕЙТРОНДЫ өндірістік реактор (БН-350). Ол теңіз суын тұщытумен бірге жұмыс істеді."], "traps_ru": ["⚠️ Трансграничный сток Казахстана: Из общего объема водных ресурсов (115,3 млрд м³) почти половина — 54,9 млрд м³ (47,6%) поступает из сопредельных стран (Китая, Узбекистана, Кыргызстана, РФ). Внутренний сток — 60,4 млрд м³.", "⚠️ Крупнейшая ГЭС Казахстана: Самая мощная ГЭС страны — Шульбинская (702 МВт). Не путайте ее с Бухтарминской (675 МВт) или Капшагайской!", "⚠️ Породный состав лесов РК: Леса занимают всего 4,2% площади. При этом 47,9% (почти половина) — это САКСАУЛ, а не хвойные деревья! Береза занимает 8,3%, сосна — 7,8%.", "⚠️ Уникальность Актауской АЭС: Действовавшая в 1973-1992 гг. АЭС в Актау была первой в мире промышленной станцией на БЫСТРЫХ НЕЙТРОНАХ (БН-350), работавшей на опреснение морской воды."]};
+    const blooketData = {"kz": "https://dashboard.blooket.com/set/6a96eb9aab599b2e92eceaa9", "ru": "https://dashboard.blooket.com/set/6a95eafdbf8b5b050f4c1c17", "doc_kz": "https://docs.google.com/document/d/1BuEgvWPgY2HMMQ9BS7dj16OhZulLGCFm6Ngh6Fws-GM/edit?usp=sharing", "doc_ru": "https://drive.google.com/file/d/1D41mkyGPg5Jrp6wWIufhYw8JsBqkV_vr/view?usp=drive_link"};
+    let currentLang = 'kz';
+
+    // Safe localStorage helper
+    const safeStorage = {
+      getItem(k) {
+        try { return localStorage.getItem(k); } catch (e) { return null; }
+      },
+      setItem(k, v) {
+        try { localStorage.setItem(k, v); } catch (e) {}
+      }
+    };
+
+    function getCompletedSet() {
+      try {
+        return new Set(JSON.parse(safeStorage.getItem('geotany_grammar_completed') || '[]'));
+      } catch (e) {
+        return new Set();
+      }
+    }
+
+    function saveCompletedSet(setObj) {
+      safeStorage.setItem('geotany_grammar_completed', JSON.stringify(Array.from(setObj)));
+    }
+
+    function updateCompleteButton() {
+      const setObj = getCompletedSet();
+      const isDone = setObj.has(topicData.num);
+      const btn = document.getElementById('btnComplete');
+      const icon = document.getElementById('completeIcon');
+      const text = document.getElementById('completeText');
+
+      if (isDone) {
+        btn.className = "inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black transition border border-emerald-500/50 bg-emerald-500/20 text-emerald-300 shadow-md shadow-emerald-500/10";
+        icon.textContent = "✓";
+        text.textContent = (currentLang === 'ru') ? "Изучено" : "Меңгерілді";
+      } else {
+        btn.className = "inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition border border-slate-700 bg-space-900 text-slate-300 hover:text-white hover:border-slate-600";
+        icon.textContent = "○";
+        text.textContent = (currentLang === 'ru') ? "Отметить изученным" : "Меңгерілді деп белгілеу";
+      }
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('xpToast');
+      const m = document.getElementById('toastMsg');
+      m.textContent = msg;
+      t.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        t.classList.add('translate-y-20', 'opacity-0');
+      }, 2500);
+    }
+
+    function toggleComplete() {
+      const setObj = getCompletedSet();
+      const isDone = setObj.has(topicData.num);
+      let xp = parseInt(safeStorage.getItem('geotany_user_xp') || '0', 10);
+
+      if (isDone) {
+        setObj.delete(topicData.num);
+        xp = Math.max(0, xp - 20);
+        showToast((currentLang === 'ru') ? "-20 XP. Отметка снята" : "-20 XP. Белгі алынды");
+      } else {
+        setObj.add(topicData.num);
+        xp += 20;
+        showToast((currentLang === 'ru') ? "+20 XP! Тема изучена" : "+20 XP! Тақырып меңгерілді");
+      }
+
+      saveCompletedSet(setObj);
+      safeStorage.setItem('geotany_user_xp', xp.toString());
+      updateCompleteButton();
+    }
+
+    function renderTable(isRu) {
+      const tbl = isRu ? (topicData.table_ru || topicData.table_kz) : topicData.table_kz;
+      const container = document.getElementById('tableContainer');
+      if (!tbl || !tbl.cols || !tbl.rows || tbl.rows.length === 0) {
+        document.getElementById('tableSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('tableSection').classList.remove('hidden');
+
+      let html = '<table class="w-full text-left text-xs border-collapse">';
+      html += '<thead><tr class="border-b border-slate-800 text-slate-400 font-bold">';
+      tbl.cols.forEach(col => {
+        html += `<th class="p-2.5 sm:p-3 bg-space-900/60 rounded-lg whitespace-nowrap text-cyan-300 font-bold">${col}</th>`;
+      });
+      html += '</tr></thead><tbody class="divide-y divide-slate-800/60">';
+      tbl.rows.forEach(row => {
+        html += '<tr class="hover:bg-space-900/40 transition">';
+        row.forEach((cell, idx) => {
+          const cls = idx === 0 ? "font-bold text-white whitespace-nowrap" : (idx === 1 ? "text-cyan-300 font-medium" : "text-slate-300");
+          html += `<td class="p-2.5 sm:p-3 ${cls}">${cell}</td>`;
+        });
+        html += '</tr>';
+      });
+      html += '</tbody></table>';
+      container.innerHTML = html;
+    }
+
+    function renderFacts(isRu) {
+      const facts = isRu ? (topicData.key_facts_ru || topicData.key_facts_kz) : topicData.key_facts_kz;
+      const list = document.getElementById('factsList');
+      if (!facts || facts.length === 0) {
+        document.getElementById('factsSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('factsSection').classList.remove('hidden');
+      list.innerHTML = facts.map(f => `<li class="flex items-start space-x-2"><span class="text-amber-400 font-bold shrink-0 mt-0.5">•</span><span>${f}</span></li>`).join('');
+    }
+
+    function renderTraps(isRu) {
+      const traps = isRu ? (topicData.traps_ru || topicData.traps_kz) : topicData.traps_kz;
+      const list = document.getElementById('trapsList');
+      if (!traps || traps.length === 0) {
+        document.getElementById('trapsSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('trapsSection').classList.remove('hidden');
+      list.innerHTML = traps.map(tr => {
+        const str = String(tr);
+        const icon = str.startsWith('⚠️') ? '' : '<span class="text-amber-400 shrink-0 mt-0.5">⚠️</span> ';
+        return `<p class="leading-relaxed flex items-start space-x-2">${icon}<span>${str}</span></p>`;
+      }).join('');
+    }
+
+    function setLang(lang) {
+      currentLang = lang;
+      safeStorage.setItem('geotany_lang', lang);
+      const isRu = (lang === 'ru');
+
+      // Update lang buttons
+      const btnKz = document.getElementById('btnLangKz');
+      const btnRu = document.getElementById('btnLangRu');
+      if (isRu) {
+        btnRu.className = "px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow";
+        btnKz.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+      } else {
+        btnKz.className = "px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow";
+        btnRu.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+      }
+
+      // Update text fields
+      document.getElementById('navCatBadge').textContent = isRu ? (topicData.category_ru || 'География') : (topicData.category_kz || 'География');
+      document.getElementById('heroCatBadge').textContent = isRu ? (topicData.category_ru || 'География') : (topicData.category_kz || 'География');
+      document.getElementById('heroTitle').textContent = isRu ? topicData.title_ru : topicData.title_kz;
+
+      // Summary
+      document.getElementById('summaryHeader').textContent = isRu ? "КРАТКИЙ ОБЗОР ТЕМЫ" : "ТАҚЫРЫПҚА ҚЫСҚАША ШОЛУ";
+      document.getElementById('summaryText').textContent = isRu ? topicData.summary_ru : topicData.summary_kz;
+
+      // Theory
+      document.getElementById('theoryHeader').textContent = isRu ? "ПОЛНЫЙ ТЕОРЕТИЧЕСКИЙ МАТЕРИАЛ И КОНСПЕКТ" : "ТОЛЫҚ ТЕОРИЯЛЫҚ МАТЕРИАЛ МЕН КОНСПЕКТ";
+      document.getElementById('theoryContent').innerHTML = isRu ? topicData.full_theory_ru : topicData.full_theory_kz;
+
+      // SVG
+      document.getElementById('svgHeader').textContent = isRu ? "НАГЛЯДНАЯ СХЕМА И ИНФОГРАФИКА" : "КӨРНЕКІ СХЕМА МЕН ИНФОГРАФИКА";
+      const svgCode = isRu ? (topicData.svg_diagram_ru || topicData.svg_diagram) : topicData.svg_diagram;
+      document.getElementById('svgContainer').innerHTML = svgCode || '';
+
+      // Table, Facts, Traps
+      document.getElementById('tableHeader').textContent = isRu ? "СТРУКТУРИРОВАННАЯ ТАБЛИЦА ПОКАЗАТЕЛЕЙ И КЛАССИФИКАЦИИ" : "НАҚТЫ КӨРСЕТКІШТЕР МЕН КЛАССИФИКАЦИЯ КЕСТЕСІ";
+      renderTable(isRu);
+
+      document.getElementById('factsHeader').textContent = isRu ? "ГЛАВНЫЕ ФАКТЫ ДЛЯ ЕНТ И ЗАПОМИНАНИЯ" : "ҰБТ-ҒА ҚАЖЕТТІ НЕГІЗГІ ЕРЕЖЕЛЕР МЕН ФАКТІЛЕР";
+      renderFacts(isRu);
+
+      document.getElementById('trapsHeader').textContent = isRu ? "ЛОВУШКИ И ЛАЙФХАКИ ЕНТ" : "ҰБТ ҚАҚПАНДАРЫ МЕН ЛАЙФХАКТАР";
+      renderTraps(isRu);
+
+      // Blooket & Doc links
+      const btnB = document.getElementById('btnBlooket');
+      const bUrl = isRu ? (blooketData.ru || blooketData.kz) : (blooketData.kz || blooketData.ru);
+      if (bUrl) {
+        btnB.href = bUrl;
+        btnB.classList.remove('hidden');
+      } else {
+        btnB.classList.add('hidden');
+      }
+
+      const btnD = document.getElementById('btnDoc');
+      if (btnD) { const dUrl = isRu ? (blooketData.doc_ru || blooketData.doc_kz) : (blooketData.doc_kz || blooketData.doc_ru); if (dUrl) { btnD.href = dUrl; btnD.classList.remove('hidden'); } else { btnD.classList.add('hidden'); } }
+
+      updateCompleteButton();
+    }
+
+    // Initialization on page load with URL param and localStorage sync
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const queryLang = urlParams.get('lang');
+      let langToSet = 'kz';
+      if (queryLang === 'ru' || queryLang === 'kz') {
+        langToSet = queryLang;
+        safeStorage.setItem('geotany_lang', queryLang);
+      } else {
+        const savedLang = safeStorage.getItem('geotany_lang');
+        if (savedLang === 'ru') langToSet = 'ru';
+        else langToSet = 'kz';
+      }
+      setLang(langToSet);
+    });
+  </script>
+</body>
+</html>

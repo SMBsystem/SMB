@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="kk" class="dark">
+<head>
+  <!-- COURSE ACCESS GUARD: RESTRICT DIRECT ACCESS WITHOUT VALID CODE -->
+  <style id="authCloak">body { display: none !important; }</style>
+  <script>
+    (function() {
+      try {
+        var isAdmin = localStorage.getItem('geotany_admin_auth') === 'true';
+        var sessionStr = localStorage.getItem('geotany_user_session');
+        var isAuthorized = isAdmin;
+        if (!isAuthorized && sessionStr) {
+          var s = JSON.parse(sessionStr);
+          if (s && s.email && (s.courseCode || s.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        var profileStr = localStorage.getItem('geotany_user_profile');
+        if (!isAuthorized && profileStr) {
+          var p = JSON.parse(profileStr);
+          if (p && p.isRegistered && p.email && p.courseCode) {
+            isAuthorized = true;
+          }
+        }
+        if (!isAuthorized) {
+          var target = window.location.pathname.split('/').pop() || 'topics.html';
+          window.location.replace('../geotanu.html?need_course=GEOTANY&redirect=' + encodeURIComponent(target));
+          return;
+        }
+        var cloak = document.getElementById('authCloak');
+        if (cloak) cloak.remove();
+      } catch (err) {
+        window.location.replace('../geotanu.html');
+      }
+    })();
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>#29 Халықтар географиясы (ҚР Демографиясы) | GeoTany</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50: '#eef2ff', 100: '#e0e7ff', 200: '#c7d2fe', 300: '#a5b4fc', 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 800: '#3730a3', 900: '#312e81' },
+            space: { 800: '#1e293b', 850: '#172033', 900: '#0f172a', 950: '#0b1120' }
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Outfit', 'Inter', sans-serif; }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #0b1120; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+  </style>
+</head>
+<body class="bg-[#070b14] text-slate-100 min-h-screen flex flex-col selection:bg-cyan-500 selection:text-space-950">
+
+  <!-- STICKY TOP NAVBAR -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-space-950/85 border-b border-slate-800/80 px-4 sm:px-8 py-3">
+    <div class="max-w-6xl mx-auto flex items-center justify-between gap-3">
+      <!-- Left: Back Button & Badges -->
+      <div class="flex items-center space-x-2.5 sm:space-x-3 shrink-0">
+        <a href="../geotanu.html#section-zhattau_grammar" id="btnBackToCourse" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white transition"><span>←</span><span id="btnBackToCourseText">Артқа</span></a>
+        <span class="px-2.5 py-1 rounded-full text-xs font-black bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
+          #29
+        </span>
+        <span id="navCatBadge" class="text-xs text-slate-400 font-bold hidden md:inline truncate max-w-[200px]">
+          Халықтар географиясы және демография
+        </span>
+      </div>
+
+      <!-- Right: Controls (Lang Switcher & Mark Complete) -->
+      <div class="flex items-center space-x-2 sm:space-x-3 shrink-0">
+        <!-- Language Switcher -->
+        <div class="inline-flex p-1 bg-space-900 border border-slate-800 rounded-xl space-x-1">
+          <button id="btnLangKz" onclick="setLang('kz')" class="px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow">
+            KZ
+          </button>
+          <button id="btnLangRu" onclick="setLang('ru')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">
+            RU
+          </button>
+        </div>
+
+        <!-- Mark as Completed Button -->
+        <button id="btnComplete" onclick="toggleComplete()" class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition border border-slate-700 bg-space-900 text-slate-300 hover:text-white hover:border-slate-600">
+          <span id="completeIcon" class="text-sm">○</span>
+          <span id="completeText" class="hidden sm:inline">Меңгерілді</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN TOPIC CONTAINER -->
+  <main class="max-w-5xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-8 space-y-6 flex-1">
+
+    <!-- HERO HEADER CARD -->
+    <div class="p-6 sm:p-7 rounded-2xl bg-space-950/90 border border-slate-800 space-y-3.5 shadow-xl relative overflow-hidden">
+      <div class="absolute -right-12 -top-12 w-48 h-48 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="flex items-center space-x-2">
+        <span id="heroCatBadge" class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-space-850 text-cyan-400 border border-cyan-500/20">
+          Халықтар географиясы және демография
+        </span>
+        <span class="text-xs text-slate-400">⏱️ ~8-12 мин оқу</span>
+      </div>
+      <h1 id="heroTitle" class="text-xl sm:text-2xl md:text-3xl font-black text-white tracking-tight leading-snug">
+        Халықтар географиясы (ҚР Демографиясы)
+      </h1>
+      <!-- External Links Bar -->
+      <div class="flex flex-wrap items-center gap-2 pt-1">
+        <a id="btnBlooket" href="https://dashboard.blooket.com/set/6a96eb7b483f23716988d46b" target="_blank" class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 border border-purple-500/40 text-xs font-bold transition shadow-sm">
+          <span>🎮</span>
+          <span id="btnBlooketText">Blooket ойыны</span>
+        </a>
+        
+      </div>
+    </div>
+
+    <!-- 1. BRIEF SUMMARY CARD -->
+    <section class="p-5 rounded-2xl bg-space-950 border border-brand-500/40 text-xs sm:text-sm text-slate-200 leading-relaxed shadow-lg">
+      <div class="flex items-center space-x-2 text-brand-400 font-extrabold text-xs mb-2">
+        <span>📖</span>
+        <span id="summaryHeader">ТАҚЫРЫПҚА ҚЫСҚАША ШОЛУ</span>
+      </div>
+      <p id="summaryText" class="leading-relaxed">
+        Қазақстан халқының демографиялық көрсеткіштері, ұлттық құрамы (140-қа жуық ұлт), 5 тілдік әулет, конфессиялар, дүниежүзі қазақтарының диаспорасы (16 млн адам), көші-қон түрлері мен сальдосы, еңбек ресурстары (ЭБХ 9,1 млн), урбандалу деңгейі (57,8%), 5 хаб қала және агломерациялар.
+      </p>
+    </section>
+
+    <!-- 2. FULL THEORY SECTION -->
+    <section class="p-5 sm:p-7 rounded-2xl bg-space-950 border border-slate-800 space-y-4 shadow-xl">
+      <div class="flex items-center space-x-2 border-b border-slate-800 pb-3">
+        <span class="text-base text-cyan-400 font-black">📚</span>
+        <h2 id="theoryHeader" class="text-xs sm:text-sm font-black text-white uppercase tracking-wider">
+          ТОЛЫҚ ТЕОРИЯЛЫҚ МАТЕРИАЛ МЕН КОНСПЕКТ
+        </h2>
+      </div>
+      <div id="theoryContent">
+        <div class="space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed">
+<div class="p-5 rounded-2xl bg-space-900/90 border border-indigo-500/30 space-y-4 shadow-xl">
+  <div class="flex items-center space-x-3 text-indigo-400">
+    <span class="text-2xl">👥</span>
+    <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-wider">1. Қазақстанның этникалық құрамы мен тілдік әулеттері</h3>
+  </div>
+  <div class="space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed">
+    <p class="leading-relaxed">• <b>Ұлттар саны</b>: Қазақстанда <b>140-қа жуық</b> ұлттар мен ұлыстар өкілдері тату-тәтті өмір сүреді. Еліміздің негізін қалаушы мемлекеттік ұлт — <b>қазақтар</b> (12,3 млн-нан астам).</p><p class="leading-relaxed">• <b>Этнос (халық) ұғымы</b>: Тілінің, аумағының, тіршілігінің ерекшеліктері, мәдениеті және этникалық сана-сезімі ортақтығымен сипатталатын тұрақты қалыптасқан адамдар тобы.</p><p class="leading-relaxed">• <b>Этникалық топтардың тарихи шығу тегі</b>:</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Бұрынғы КСРО одақтас республикаларынан: <b>орыстар, украиндар, белорустар, молдовандар, өзбектер</b>.</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Алыс шет елдерден жер аударылған немесе көшіп келген: <b>немістер, поляктар, еврейлер, кәрістер, гректер</b>.</p><p class="leading-relaxed">• <b>Диаспора</b>: Туып-өскен тарихи отанынан тыс елде өмір сүріп жатқан ұлттың (халықтың) бөлігі. Қазақстандағы ең үлкен диаспора — <b>орыстар</b>.</p><p class="leading-relaxed">• <b>Ірі этностар</b>: Халқы 100 мыңнан асатын этностар саны — <b>8</b>. Қазақстан халқының <b>97%-ын құрайтын 10 ұлт</b>: <b>қазақ, орыс, өзбек, украин, ұйғыр, татар, неміс, түрік, әзірбайжан, кәріс</b>.</p><p class="leading-relaxed">• <b>Қазақстан халқының 5 тілдік әулеті</b>:</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b class="text-amber-400">1)</b> <b>Алтай тілдік әулеті</b> (түркі тобы т.б.) — халықтың <b>73%-ы</b>;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b class="text-amber-400">2)</b> <b>Үндіеуропа тілдік әулеті</b> (славян, герман топтары) — <b>26%-ы</b>;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b class="text-amber-400">3)</b> <b>Солтүстік Кавказ тілдік әулеті</b> — <b>0,4%-ы</b>;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b class="text-amber-400">4)</b> <b>Сино-тибет тілдік әулеті</b> (дүнгендер т.б.) — <b>0,2%-ы</b>;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b class="text-amber-400">5)</b> <b>Орал-юкагир тілдік әулеті</b> — <b>0,2%-ы</b>.</p>
+  </div>
+</div>
+<div class="p-5 rounded-2xl bg-space-900/90 border border-rose-500/30 space-y-4 shadow-xl">
+  <div class="flex items-center space-x-3 text-rose-400">
+    <span class="text-2xl">🌐</span>
+    <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-wider">2. Қазақ ұлтының динамикасы және шетелдегі қазақ диаспорасы</h3>
+  </div>
+  <div class="space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed">
+    <p class="leading-relaxed">• <b>Қазақтар үлесінің тарихи өсімі</b>:</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• 1999 жылғы халық санағы: 7 млн 985 мың адам (<b>53,4%</b>);</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• 2009 жылғы халық санағы: <b>63,3%</b>;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• 2017 жылғы дерек бойынша: <b>66,97%</b>-ға жетті (қазіргі таңда 70%-дан асты).</p><p class="leading-relaxed">• <b>Әлемдегі қазақтар</b>: Дүниежүзіндегі қазақ этносының жалпы саны — <b>16 млн адам</b>. Оның <b>12,3 млн-нан астамы</b> Қазақстанда, ал <b>3,7 млн-ы әлемнің 54 елінде</b> тұрады (кейбір басылымдарда 5 млн-ға жуық).</p><p class="leading-relaxed">• <b>Шет елдегі қазақтар саны</b>:</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b>Өзбекстанда</b> — 1 млн 700 мың;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b>Қытайда</b> — 1 млн 440 мың;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b>Ресейде</b> — 648 мың;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b>Моңғолияда</b> — 102 мың;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b>Ауғанстанда</b> — 40 мың;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b>Қырғызстанда</b> — 39 мың.</p>
+  </div>
+</div>
+<div class="p-5 rounded-2xl bg-space-900/90 border border-teal-500/30 space-y-4 shadow-xl">
+  <div class="flex items-center space-x-3 text-teal-400">
+    <span class="text-2xl">📈</span>
+    <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-wider">3. Демографиялық саясат, халық саны мен қоныстануы</h3>
+  </div>
+  <div class="space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed">
+    <p class="leading-relaxed">• <b>Демографиялық саясат</b>: Әкімшілік-экономикалық, әлеуметтік және құқықтық іс-шаралар арқылы халықтың табиғи өсіп-өнуіне мемлекетке қажетті бағытта ықпал ету жүйесі.</p><p class="leading-relaxed">• <b>Халық санақтарының тарихы</b>:</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Ресей империясы құрамындағы алғашқы жалпыға бірдей санақ — <b>1897 жылы</b> өтті;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Егеменді Қазақстандағы 1-санақ — <b>1999 жылы</b>;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Еліміздегі 2-санақ — <b>2009 жылы</b> жүргізілді.</p><p class="leading-relaxed">• <b>Халық саны мен өсімі</b>: 2017 жылы — 18 млн адам; 2018 жылдың соңында — 18 млн 395,7 мың адам (қазіргі таңда 20 млн-нан асты). Халықтың табиғи өсімінің жартысынан астамы <b>Астана мен Шымкент</b> қалаларына тиесілі.</p><p class="leading-relaxed">• <b>Қоныстану географиясы</b>: Қазақстан халқының <b>1/3 бөлігі Алматы қаласы (2 млн-нан астам) мен Алматы облысына</b> тиесілі.</p><p class="leading-relaxed">• <b>Халық тығыздығы</b>: Орташа есеппен 1 км²-ге <b>6,8 адамнан</b> аспайды.</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Ең жоғарғы тығыздық: <b>Түркістан облысында — 1 км²-ге 17 адам</b>;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Ең төменгі тығыздық: <b>Ақтөбе облысында — 1 км²-ге 3 адам</b>.</p><p class="leading-relaxed">• <b>Этностардың шоғырлануы</b>:</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Қазақтардың жартысына жуығы (1/2): Түркістан, Алматы, Шығыс Қазақстан және Жамбыл облыстарында;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Барлық облыстарда біркелкі таралған ұлт — <b>татарлар</b>;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Орыстар, украиндар, немістер, белорустар — солтүстік, орталық, шығыс аймақтарда;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b>Ұйғырлардың 96%-ы</b> — Алматы қаласы мен Алматы облысында;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b>Өзбектердің 9/10 бөлігі</b> — Түркістан облысында шоғырланған.</p><p class="leading-relaxed">• <b>Діни конфессиялар</b>:</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b>Ислам (сүннит бағыты)</b> — халықтың <b>70%-ы</b> (қазақ, өзбек, татар, түрік, ұйғыр, башқұрт, қырғыз);</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b>Христиан (православие бағыты)</b> — халықтың <b>26%-ы</b> (орыс, украин, белорус, болгар, молдаван, грек, чуваш, мордва);</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Кәріс халқы — көбінесе <b>протестанттар</b>;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Поляк халқы — <b>католиктер</b>.</p>
+  </div>
+</div>
+<div class="p-5 rounded-2xl bg-space-900/90 border border-amber-500/30 space-y-4 shadow-xl">
+  <div class="flex items-center space-x-3 text-amber-400">
+    <span class="text-2xl">🧭</span>
+    <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-wider">4. Миграция (көші-қон) үдерістері және оның жіктелуі</h3>
+  </div>
+  <div class="space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed">
+    <p class="leading-relaxed">• <b>Ұғымдар</b>:</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Миграция (латынша <i>migratio</i> — «орын ауыстыру, көшу») — халықтың қоныс аударуы;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b>Иммиграция</b> — елге тұрақты тұру үшін келу;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b>Эмиграция</b> — тұрақты тұру үшін елден кету;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b>Реэмиграция</b> — эмигранттардың өз еліне қайта оралуы;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b>Репатриация</b> — эмигранттың тарихи Отанына қайтарылуы (қандастардың оралуы);</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b>Депортация</b> — адамдарды мәжбүрлі түрде өзге елге жер аудару;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b>Депопуляция</b> — халықтың табиғи азаю үдерісі;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b>Гастарбайтер</b> — қандай да бір елге уақытша ақша табу үшін келетін шетелдік жалдамалы жұмысшы.</p><p class="leading-relaxed">• <b>Миграциялық сальдо</b>: Елге келушілер (И) мен елден кетушілер (Э) арасындағы айырма: <b>МС = И - Э</b>.</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• 2017 жылы Қазақстанға 16 081 адам көшіп келсе, 37 704 адам көшіп кетті (<b>теріс сальдо: -21 623 адам</b>).</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• ТМД елдерінен келгендер үлесі — 71,4%, ТМД-ға көшіп кеткендер үлесі — 89,5%.</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Эмиграция ең жоғары облыстар: Солтүстік Қазақстан, Шығыс Қазақстан, Қостанай, Павлодар, Қарағанды.</p><div class="p-4 rounded-xl bg-space-950/80 border border-slate-800 space-y-2 mt-3 shadow-inner">
+<h4 class="font-bold text-xs sm:text-sm text-cyan-300 flex items-center space-x-2 border-b border-slate-800/80 pb-1.5"><span>📌</span><span>Миграция типтері:</span></h4>
+<div class="space-y-1.5 pl-2 text-xs text-slate-300">
+<p class="leading-relaxed">• <b class="text-amber-400">1)</b> <b>Ішкі немесе ауданаралық</b>: Облыстар, департаменттер, аудандар арасындағы орын ауыстыру.</p>
+<p class="leading-relaxed">• <b class="text-amber-400">2)</b> <b>Тұрақты (қайтымсыз)</b>: Қабылдаушы елге/өңірге толығымен көшу.</p>
+<p class="leading-relaxed">• <b class="text-amber-400">3)</b> <b>Маусымдық</b>: Шаруашылықтың маусымдық салаларына уақытша шығу (АҚШ Калифорниясында цитрустарды мексикалықтардың жинауы, Швейцариядағы қонақүй қызметі).</p>
+<p class="leading-relaxed">• <b class="text-amber-400">4)</b> <b>Вахталық</b>: Пайдалы қазбаларды өндіретін шалғай, жетуі қиын аудандарға кезектесіп барып істеу.</p>
+<p class="leading-relaxed">• <b class="text-amber-400">5)</b> <b>Қатынамалы (маятниковая)</b>: Ауылдық мекендер мен қала маңы тұрғындарының үлкен қалаға күнделікті жұмысқа келіп-кетуі.</p>
+<p class="leading-relaxed">• <b class="text-amber-400">6)</b> <b>Отбасылық-тұрмыстық</b>: Қызмет бабына немесе отбасының бірігуіне байланысты.</p>
+<p class="leading-relaxed">• <b class="text-amber-400">7)</b> <b>Ауылдан қалаға</b>: Дамушы және өтпелі экономика елдеріне тән урбандалу көші-қоны.</p>
+<p class="leading-relaxed">• <b class="text-amber-400">8)</b> <b>Қаладан ауылға</b>: Дамыған елдерге тән (субурбанизация).</p>
+</div></div>
+  </div>
+</div>
+<div class="p-5 rounded-2xl bg-space-900/90 border border-cyan-500/30 space-y-4 shadow-xl">
+  <div class="flex items-center space-x-3 text-cyan-400">
+    <span class="text-2xl">🏙️</span>
+    <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-wider">5. Еңбек ресурстары, елді мекендер және урбандалу</h3>
+  </div>
+  <div class="space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed">
+    <p class="leading-relaxed">• <b>Еңбек ресурстары</b>: Еңбекке жарамды жастағы азаматтар:</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Еңбек жасынан төмен: 16 жасқа дейінгі жасөспірімдер;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Еңбекке жарамды жас: ерлер 16-63 жас, әйелдер 16-60,5 жас (2027 жылға қарай әйелдер 63 жас);</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• 63 жастан асқан жұмыс істейтін зейнеткерлер.</p><p class="leading-relaxed">• <b>Экономикалық белсенді халық (ЭБХ)</b>: Жұмыспен қамтылғандар мен ресми тіркелген жұмыссыздар.</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• ҚР еңбек нарығында ұсыныс — <b>9,1 млн ЭБХ</b>;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Ресми жұмыссыздық (2018 ж.) — <b>4,8% (438 мың адам)</b>;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Нағыз еңбекке жарамды алтын жас аралығы — <b>25 - 49 жас</b>.</p><p class="leading-relaxed">• <b>Қазақстанның әлеуметтік пирамидасы</b>:</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Кәсіпкерлер — <b>1% (111 мың адам)</b>;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Ұсақ меншік иелері — <b>23% (1 970 мың адам)</b>;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Жалдамалы жұмысшылар — <b>76% (6 610 мың адам)</b>.</p><p class="leading-relaxed">• <b>Елді мекендер мен урбандалу</b>:</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Қала халқының үлесі — <b>57,8%</b> (87 қала, 30 кент);</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Ауыл халқының үлесі — <b>42,2% (7,66 млн адам)</b>;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Ауыл халқы жоғары облыстар: <b>Алматы (76,5%), Жамбыл (59,9%)</b>;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Ауыл халқының басым бөлігі шоғырланған: Оңтүстік Қазақстан (20,4%), Алматы (17,1%), ШҚО (9,2%), Жамбыл (8,4%).</p><p class="leading-relaxed">• <b>Қалалар жіктелуі</b>:</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Республикалық маңызы бар қалалар (миллионерлер, 1 млн+): <b>Алматы (2 млн+), Астана, Шымкент</b>;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Өте ірі қалалар (250 мың – 1 млн): <b>Қарағанды, Ақтөбе</b>;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Ірі қалалар (100 – 250 мың): <b>Ақтау, Теміртау</b>;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Орташа қалалар (50 – 100 мың): <b>Балқаш, Құлсары</b>;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• Шағын қалалар (50 мыңнан төмен): <b>Риддер, Лисаковск</b>.</p><p class="leading-relaxed">• <b>5 Хаб қала</b>: Астана (Солтүстік), Алматы мен Шымкент (Оңтүстік), Ақтөбе (Батыс), Өскемен (Орталық-Шығыс).</p><p class="leading-relaxed">• <b>Агломерациялар</b>:</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b>Қарағанды-Теміртау агломерациясы</b>: Саран, Абай, Шахтинск, Топар, Долинка қалалары;</p><p class="pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5">• <b>Алматы агломерациясы</b>: Қапшағай (Қонаев), Есік, Талғар, Қаскелең қалалары арасында «G4 Сити» жобасы.</p>
+  </div>
+</div>
+</div>
+      </div>
+    </section>
+
+    <!-- 3. VISUAL SVG DIAGRAM / ILLUSTRATION -->
+    <section id="svgSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl">
+      <div class="flex items-center space-x-2 text-amber-400 font-extrabold text-xs">
+        <span>🎨</span>
+        <span id="svgHeader">КӨРНЕКІ СХЕМА МЕН ИНФОГРАФИКА</span>
+      </div>
+      <div id="svgContainer" class="w-full flex justify-center overflow-x-auto">
+        <svg viewBox="0 0 800 480" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg" style="background:#0b1120; border-radius:16px;">
+  <defs>
+    <linearGradient id="topG29" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4f46e5"/><stop offset="100%" stop-color="#3730a3"/></linearGradient>
+    <linearGradient id="cg29" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1e293b"/><stop offset="100%" stop-color="#0f172a"/></linearGradient>
+    <filter id="sh29" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.5"/></filter>
+  </defs>
+  <rect width="800" height="480" fill="#0b1120" rx="16"/>
+  <rect x="30" y="20" width="740" height="55" rx="12" fill="url(#topG29)" filter="url(#sh29)"/>
+  <text x="400" y="45" fill="#fff" font-size="17" font-weight="bold" text-anchor="middle" font-family="system-ui, sans-serif">ҚАЗАҚСТАН ХАЛҚЫНЫҢ ГЕОГРАФИЯСЫ ЖӘНЕ ДЕМОГРАФИЯСЫ</text>
+  <text x="400" y="64" fill="#c7d2fe" font-size="12" text-anchor="middle" font-family="system-ui, sans-serif">140 жуық этнос • 5 тілдік әулет • 16 млн қазақ (3,7 млн диаспора) • 5 хаб қала • Урбандалу 57,8%</text>
+  
+  <!-- Col 1: Ethnos & Language Families -->
+  <g transform="translate(30, 95)" filter="url(#sh29)">
+    <rect width="235" height="175" rx="12" fill="url(#cg29)" stroke="#6366f1" stroke-width="1.5"/>
+    <text x="15" y="26" fill="#6366f1" font-size="12" font-weight="bold">ЭТНИКА ЖӘНЕ ТІЛДІК ӘУЛЕТ</text>
+    <text x="15" y="48" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• 5 тілдік әулет:</tspan> Алтай (73%), Үндіеуропа (26%), Солт. Кавказ (0,4%), Сино-тибет (0,2%), Орал-юкагир (0,2%).</text>
+    <text x="15" y="94" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• 10 негізгі ұлт (97%):</tspan> Қазақ, орыс, өзбек, украин, ұйғыр, татар, неміс, түрік, әзірбайжан, кәріс.</text>
+    <text x="15" y="140" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• Діндер:</tspan> Ислам (сүннит, 70%), Христиан (православие, 26%), Протестант, Католик.</text>
+  </g>
+
+  <!-- Col 2: Diaspora & Population Dynamics -->
+  <g transform="translate(282, 95)" filter="url(#sh29)">
+    <rect width="235" height="175" rx="12" fill="url(#cg29)" stroke="#ec4899" stroke-width="1.5"/>
+    <text x="15" y="26" fill="#ec4899" font-size="12" font-weight="bold">ДИАСПОРА ЖӘНЕ ДЕМОГРАФИЯ</text>
+    <text x="15" y="48" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• Әлемде 16 млн қазақ:</tspan> ҚР-да 12,3 млн+, шет елде 3,7 млн (54 елде).</text>
+    <text x="15" y="82" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• Шет елдегі қазақтар:</tspan> Өзбекстан (1,7 млн), Қытай (1,44 млн), Ресей (648 мың), Моңғолия (102 мың).</text>
+    <text x="15" y="130" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• Санақ жылдары:</tspan> Ресейде — 1897 ж. Тәуелсіз ҚР-да: 1-санақ 1999 ж., 2-санақ 2009 ж.</text>
+  </g>
+
+  <!-- Col 3: Density & Cities -->
+  <g transform="translate(535, 95)" filter="url(#sh29)">
+    <rect width="235" height="175" rx="12" fill="url(#cg29)" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="15" y="26" fill="#14b8a6" font-size="12" font-weight="bold">ТЫҒЫЗДЫҚ ЖӘНЕ ҚАЛАЛАР</text>
+    <text x="15" y="48" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• Халық тығыздығы:</tspan> 6,8 адам/км². Түркістан — 17 (ең жоғары), Ақтөбе — 3 (ең төмен).</text>
+    <text x="15" y="88" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• Қоныстану:</tspan> Қала халқы — 57,8% (87 қала, 30 кент). Ауыл халқы — 42,2%.</text>
+    <text x="15" y="128" fill="#e2e8f0" font-size="10.5"><tspan font-weight="bold" fill="#fde047">• 5 хаб қала:</tspan> Астана, Алматы, Шымкент, Ақтөбе (батыс), Өскемен (шығыс).</text>
+  </g>
+
+  <!-- Bottom Panel: Labor & Migration -->
+  <g transform="translate(30, 285)" filter="url(#sh29)">
+    <rect width="740" height="175" rx="12" fill="url(#cg29)" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="20" y="24" fill="#f59e0b" font-size="12" font-weight="bold">КӨШІ-ҚОН ТИПТЕРІ, ЕҢБЕК РЕСУРСТАРЫ ЖӘНЕ АГЛОМЕРАЦИЯЛАР:</text>
+    <text x="20" y="48" fill="#e2e8f0" font-size="11"><tspan font-weight="bold" fill="#fde047">Миграциялық сальдо:</tspan> МС = Иммиграция - Эмиграция. 2017 ж. 16 081 келді, 37 704 кетті (теріс сальдо). ТМД елдерімен негізгі байланыс (келгендер 71,4%, кеткендер 89,5%).</text>
+    <text x="20" y="70" fill="#e2e8f0" font-size="11"><tspan font-weight="bold" fill="#fde047">Миграция типтері:</tspan> Ішкі, тұрақты, маусымдық (Калифорния цитрусы), вахталық (кен орындары), қатынамалы (маятниковая), отбасылық, ауылдан қалаға.</text>
+    <text x="20" y="92" fill="#e2e8f0" font-size="11"><tspan font-weight="bold" fill="#38bdf8">Еңбек ресурстары:</tspan> ЭБХ — 9,1 млн адам, ресми жұмыссыздық — 4,8% (438 мың адам). Нағыз еңбек жасы — 25-49 жас.</text>
+    <text x="20" y="114" fill="#e2e8f0" font-size="11"><tspan font-weight="bold" fill="#34d399">Әлеуметтік пирамида:</tspan> Кәсіпкерлер — 1% (111 мың), ұсақ меншік иелері — 23% (1970 мың), жалдамалы жұмысшылар — 76% (6610 мың).</text>
+    <text x="20" y="136" fill="#e2e8f0" font-size="11"><tspan font-weight="bold" fill="#c084fc">Агломерациялар:</tspan> Қарағанды-Теміртау (Саран, Абай, Шахтинск, Топар); Алматы агломерациясы («G4 Сити»: Қапшағай, Есік, Талғар, Қаскелең).</text>
+    <text x="20" y="156" fill="#94a3b8" font-size="10.5">🏙️ Миллионер қалалар (1 млн+): Алматы (2 млн+), Астана, Шымкент • Ауыл халқы ең көп: Алматы (76,5%) және Жамбыл (59,9%) облыстары.</text>
+  </g>
+</svg>
+      </div>
+    </section>
+
+    <!-- 4. STRUCTURED DATA TABLE -->
+    <section id="tableSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl overflow-x-auto">
+      <h3 class="text-xs font-black text-cyan-400 flex items-center space-x-2">
+        <span>📊</span>
+        <span id="tableHeader">НАҚТЫ КӨРСЕТКІШТЕР МЕН КЛАССИФИКАЦИЯ КЕСТЕСІ</span>
+      </h3>
+      <div id="tableContainer">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- 5. KEY FACTS FOR UNT / ЕНТ -->
+    <section id="factsSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl">
+      <h3 class="text-xs font-black text-amber-400 flex items-center space-x-2">
+        <span>⚡</span>
+        <span id="factsHeader">ҰБТ-ҒА ҚАЖЕТТІ НЕГІЗГІ ЕРЕЖЕЛЕР МЕН ФАКТІЛЕР</span>
+      </h3>
+      <ul id="factsList" class="space-y-2 text-xs text-slate-300">
+        <!-- Rendered via JS -->
+      </ul>
+    </section>
+
+    <!-- 6. TRAPS AND HACKS -->
+    <section id="trapsSection" class="p-5 rounded-2xl bg-gradient-to-r from-amber-950/40 via-space-950 to-space-950 border border-amber-500/40 space-y-3 shadow-xl">
+      <h3 class="text-xs font-black text-amber-400 flex items-center space-x-2">
+        <span>💡</span>
+        <span id="trapsHeader">ҰБТ ҚАҚПАНДАРЫ МЕН ЛАЙФХАКТАР</span>
+      </h3>
+      <div id="trapsList" class="space-y-2 text-xs text-slate-200">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- FOOTER NAVIGATION -->
+    <nav class="pt-4 pb-8 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3 text-xs">
+      <a href="topic_28.html" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white transition shadow-sm">
+      <span>←</span>
+      <span>#28 Алдыңғы тақырып</span>
+    </a>
+      <a href="../geotanu.html#section-zhattau_grammar" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-400 hover:text-white transition">
+        <span>🏠</span>
+        <span>Барлық тақырыптар</span>
+      </a>
+      <a href="topic_30.html" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-xs font-bold text-cyan-300 hover:text-white transition shadow-sm">
+      <span>Келесі тақырып #30</span>
+      <span>→</span>
+    </a>
+    </nav>
+
+  </main>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="xpToast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300 flex items-center space-x-2 px-4 py-3 rounded-2xl bg-space-900 border border-cyan-500/40 shadow-2xl text-xs font-bold text-white">
+    <span class="text-cyan-400 text-base">✨</span>
+    <span id="toastMsg">+20 XP! Тақырып меңгерілді</span>
+  </div>
+
+  <script>
+    const topicData = {"num": 29, "title_kz": "Халықтар географиясы (ҚР Демографиясы)", "title_ru": "География населения Казахстана", "category_kz": "Халықтар географиясы және демография", "category_ru": "География населения и демография", "summary_kz": "Қазақстан халқының демографиялық көрсеткіштері, ұлттық құрамы (140-қа жуық ұлт), 5 тілдік әулет, конфессиялар, дүниежүзі қазақтарының диаспорасы (16 млн адам), көші-қон түрлері мен сальдосы, еңбек ресурстары (ЭБХ 9,1 млн), урбандалу деңгейі (57,8%), 5 хаб қала және агломерациялар.", "summary_ru": "Демографические показатели населения РК, национальный состав (около 140 этносов), 5 языковых семей, конфессии, казахская диаспора в мире (16 млн чел.), виды миграций и сальдо, трудовые ресурсы (ЭАН 9,1 млн), уровень урбанизации (57,8%), 5 городов-хабов и агломерации.", "full_theory_kz": "<div class=\"space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed\">\n<div class=\"p-5 rounded-2xl bg-space-900/90 border border-indigo-500/30 space-y-4 shadow-xl\">\n  <div class=\"flex items-center space-x-3 text-indigo-400\">\n    <span class=\"text-2xl\">👥</span>\n    <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">1. Қазақстанның этникалық құрамы мен тілдік әулеттері</h3>\n  </div>\n  <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n    <p class=\"leading-relaxed\">• <b>Ұлттар саны</b>: Қазақстанда <b>140-қа жуық</b> ұлттар мен ұлыстар өкілдері тату-тәтті өмір сүреді. Еліміздің негізін қалаушы мемлекеттік ұлт — <b>қазақтар</b> (12,3 млн-нан астам).</p><p class=\"leading-relaxed\">• <b>Этнос (халық) ұғымы</b>: Тілінің, аумағының, тіршілігінің ерекшеліктері, мәдениеті және этникалық сана-сезімі ортақтығымен сипатталатын тұрақты қалыптасқан адамдар тобы.</p><p class=\"leading-relaxed\">• <b>Этникалық топтардың тарихи шығу тегі</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Бұрынғы КСРО одақтас республикаларынан: <b>орыстар, украиндар, белорустар, молдовандар, өзбектер</b>.</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Алыс шет елдерден жер аударылған немесе көшіп келген: <b>немістер, поляктар, еврейлер, кәрістер, гректер</b>.</p><p class=\"leading-relaxed\">• <b>Диаспора</b>: Туып-өскен тарихи отанынан тыс елде өмір сүріп жатқан ұлттың (халықтың) бөлігі. Қазақстандағы ең үлкен диаспора — <b>орыстар</b>.</p><p class=\"leading-relaxed\">• <b>Ірі этностар</b>: Халқы 100 мыңнан асатын этностар саны — <b>8</b>. Қазақстан халқының <b>97%-ын құрайтын 10 ұлт</b>: <b>қазақ, орыс, өзбек, украин, ұйғыр, татар, неміс, түрік, әзірбайжан, кәріс</b>.</p><p class=\"leading-relaxed\">• <b>Қазақстан халқының 5 тілдік әулеті</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">1)</b> <b>Алтай тілдік әулеті</b> (түркі тобы т.б.) — халықтың <b>73%-ы</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">2)</b> <b>Үндіеуропа тілдік әулеті</b> (славян, герман топтары) — <b>26%-ы</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">3)</b> <b>Солтүстік Кавказ тілдік әулеті</b> — <b>0,4%-ы</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">4)</b> <b>Сино-тибет тілдік әулеті</b> (дүнгендер т.б.) — <b>0,2%-ы</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">5)</b> <b>Орал-юкагир тілдік әулеті</b> — <b>0,2%-ы</b>.</p>\n  </div>\n</div>\n<div class=\"p-5 rounded-2xl bg-space-900/90 border border-rose-500/30 space-y-4 shadow-xl\">\n  <div class=\"flex items-center space-x-3 text-rose-400\">\n    <span class=\"text-2xl\">🌐</span>\n    <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">2. Қазақ ұлтының динамикасы және шетелдегі қазақ диаспорасы</h3>\n  </div>\n  <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n    <p class=\"leading-relaxed\">• <b>Қазақтар үлесінің тарихи өсімі</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• 1999 жылғы халық санағы: 7 млн 985 мың адам (<b>53,4%</b>);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• 2009 жылғы халық санағы: <b>63,3%</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• 2017 жылғы дерек бойынша: <b>66,97%</b>-ға жетті (қазіргі таңда 70%-дан асты).</p><p class=\"leading-relaxed\">• <b>Әлемдегі қазақтар</b>: Дүниежүзіндегі қазақ этносының жалпы саны — <b>16 млн адам</b>. Оның <b>12,3 млн-нан астамы</b> Қазақстанда, ал <b>3,7 млн-ы әлемнің 54 елінде</b> тұрады (кейбір басылымдарда 5 млн-ға жуық).</p><p class=\"leading-relaxed\">• <b>Шет елдегі қазақтар саны</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Өзбекстанда</b> — 1 млн 700 мың;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Қытайда</b> — 1 млн 440 мың;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Ресейде</b> — 648 мың;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Моңғолияда</b> — 102 мың;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Ауғанстанда</b> — 40 мың;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Қырғызстанда</b> — 39 мың.</p>\n  </div>\n</div>\n<div class=\"p-5 rounded-2xl bg-space-900/90 border border-teal-500/30 space-y-4 shadow-xl\">\n  <div class=\"flex items-center space-x-3 text-teal-400\">\n    <span class=\"text-2xl\">📈</span>\n    <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">3. Демографиялық саясат, халық саны мен қоныстануы</h3>\n  </div>\n  <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n    <p class=\"leading-relaxed\">• <b>Демографиялық саясат</b>: Әкімшілік-экономикалық, әлеуметтік және құқықтық іс-шаралар арқылы халықтың табиғи өсіп-өнуіне мемлекетке қажетті бағытта ықпал ету жүйесі.</p><p class=\"leading-relaxed\">• <b>Халық санақтарының тарихы</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Ресей империясы құрамындағы алғашқы жалпыға бірдей санақ — <b>1897 жылы</b> өтті;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Егеменді Қазақстандағы 1-санақ — <b>1999 жылы</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Еліміздегі 2-санақ — <b>2009 жылы</b> жүргізілді.</p><p class=\"leading-relaxed\">• <b>Халық саны мен өсімі</b>: 2017 жылы — 18 млн адам; 2018 жылдың соңында — 18 млн 395,7 мың адам (қазіргі таңда 20 млн-нан асты). Халықтың табиғи өсімінің жартысынан астамы <b>Астана мен Шымкент</b> қалаларына тиесілі.</p><p class=\"leading-relaxed\">• <b>Қоныстану географиясы</b>: Қазақстан халқының <b>1/3 бөлігі Алматы қаласы (2 млн-нан астам) мен Алматы облысына</b> тиесілі.</p><p class=\"leading-relaxed\">• <b>Халық тығыздығы</b>: Орташа есеппен 1 км²-ге <b>6,8 адамнан</b> аспайды.</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Ең жоғарғы тығыздық: <b>Түркістан облысында — 1 км²-ге 17 адам</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Ең төменгі тығыздық: <b>Ақтөбе облысында — 1 км²-ге 3 адам</b>.</p><p class=\"leading-relaxed\">• <b>Этностардың шоғырлануы</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Қазақтардың жартысына жуығы (1/2): Түркістан, Алматы, Шығыс Қазақстан және Жамбыл облыстарында;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Барлық облыстарда біркелкі таралған ұлт — <b>татарлар</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Орыстар, украиндар, немістер, белорустар — солтүстік, орталық, шығыс аймақтарда;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Ұйғырлардың 96%-ы</b> — Алматы қаласы мен Алматы облысында;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Өзбектердің 9/10 бөлігі</b> — Түркістан облысында шоғырланған.</p><p class=\"leading-relaxed\">• <b>Діни конфессиялар</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Ислам (сүннит бағыты)</b> — халықтың <b>70%-ы</b> (қазақ, өзбек, татар, түрік, ұйғыр, башқұрт, қырғыз);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Христиан (православие бағыты)</b> — халықтың <b>26%-ы</b> (орыс, украин, белорус, болгар, молдаван, грек, чуваш, мордва);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Кәріс халқы — көбінесе <b>протестанттар</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Поляк халқы — <b>католиктер</b>.</p>\n  </div>\n</div>\n<div class=\"p-5 rounded-2xl bg-space-900/90 border border-amber-500/30 space-y-4 shadow-xl\">\n  <div class=\"flex items-center space-x-3 text-amber-400\">\n    <span class=\"text-2xl\">🧭</span>\n    <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">4. Миграция (көші-қон) үдерістері және оның жіктелуі</h3>\n  </div>\n  <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n    <p class=\"leading-relaxed\">• <b>Ұғымдар</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Миграция (латынша <i>migratio</i> — «орын ауыстыру, көшу») — халықтың қоныс аударуы;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Иммиграция</b> — елге тұрақты тұру үшін келу;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Эмиграция</b> — тұрақты тұру үшін елден кету;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Реэмиграция</b> — эмигранттардың өз еліне қайта оралуы;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Репатриация</b> — эмигранттың тарихи Отанына қайтарылуы (қандастардың оралуы);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Депортация</b> — адамдарды мәжбүрлі түрде өзге елге жер аудару;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Депопуляция</b> — халықтың табиғи азаю үдерісі;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Гастарбайтер</b> — қандай да бір елге уақытша ақша табу үшін келетін шетелдік жалдамалы жұмысшы.</p><p class=\"leading-relaxed\">• <b>Миграциялық сальдо</b>: Елге келушілер (И) мен елден кетушілер (Э) арасындағы айырма: <b>МС = И - Э</b>.</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• 2017 жылы Қазақстанға 16 081 адам көшіп келсе, 37 704 адам көшіп кетті (<b>теріс сальдо: -21 623 адам</b>).</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• ТМД елдерінен келгендер үлесі — 71,4%, ТМД-ға көшіп кеткендер үлесі — 89,5%.</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Эмиграция ең жоғары облыстар: Солтүстік Қазақстан, Шығыс Қазақстан, Қостанай, Павлодар, Қарағанды.</p><div class=\"p-4 rounded-xl bg-space-950/80 border border-slate-800 space-y-2 mt-3 shadow-inner\">\n<h4 class=\"font-bold text-xs sm:text-sm text-cyan-300 flex items-center space-x-2 border-b border-slate-800/80 pb-1.5\"><span>📌</span><span>Миграция типтері:</span></h4>\n<div class=\"space-y-1.5 pl-2 text-xs text-slate-300\">\n<p class=\"leading-relaxed\">• <b class=\"text-amber-400\">1)</b> <b>Ішкі немесе ауданаралық</b>: Облыстар, департаменттер, аудандар арасындағы орын ауыстыру.</p>\n<p class=\"leading-relaxed\">• <b class=\"text-amber-400\">2)</b> <b>Тұрақты (қайтымсыз)</b>: Қабылдаушы елге/өңірге толығымен көшу.</p>\n<p class=\"leading-relaxed\">• <b class=\"text-amber-400\">3)</b> <b>Маусымдық</b>: Шаруашылықтың маусымдық салаларына уақытша шығу (АҚШ Калифорниясында цитрустарды мексикалықтардың жинауы, Швейцариядағы қонақүй қызметі).</p>\n<p class=\"leading-relaxed\">• <b class=\"text-amber-400\">4)</b> <b>Вахталық</b>: Пайдалы қазбаларды өндіретін шалғай, жетуі қиын аудандарға кезектесіп барып істеу.</p>\n<p class=\"leading-relaxed\">• <b class=\"text-amber-400\">5)</b> <b>Қатынамалы (маятниковая)</b>: Ауылдық мекендер мен қала маңы тұрғындарының үлкен қалаға күнделікті жұмысқа келіп-кетуі.</p>\n<p class=\"leading-relaxed\">• <b class=\"text-amber-400\">6)</b> <b>Отбасылық-тұрмыстық</b>: Қызмет бабына немесе отбасының бірігуіне байланысты.</p>\n<p class=\"leading-relaxed\">• <b class=\"text-amber-400\">7)</b> <b>Ауылдан қалаға</b>: Дамушы және өтпелі экономика елдеріне тән урбандалу көші-қоны.</p>\n<p class=\"leading-relaxed\">• <b class=\"text-amber-400\">8)</b> <b>Қаладан ауылға</b>: Дамыған елдерге тән (субурбанизация).</p>\n</div></div>\n  </div>\n</div>\n<div class=\"p-5 rounded-2xl bg-space-900/90 border border-cyan-500/30 space-y-4 shadow-xl\">\n  <div class=\"flex items-center space-x-3 text-cyan-400\">\n    <span class=\"text-2xl\">🏙️</span>\n    <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">5. Еңбек ресурстары, елді мекендер және урбандалу</h3>\n  </div>\n  <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n    <p class=\"leading-relaxed\">• <b>Еңбек ресурстары</b>: Еңбекке жарамды жастағы азаматтар:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Еңбек жасынан төмен: 16 жасқа дейінгі жасөспірімдер;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Еңбекке жарамды жас: ерлер 16-63 жас, әйелдер 16-60,5 жас (2027 жылға қарай әйелдер 63 жас);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• 63 жастан асқан жұмыс істейтін зейнеткерлер.</p><p class=\"leading-relaxed\">• <b>Экономикалық белсенді халық (ЭБХ)</b>: Жұмыспен қамтылғандар мен ресми тіркелген жұмыссыздар.</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• ҚР еңбек нарығында ұсыныс — <b>9,1 млн ЭБХ</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Ресми жұмыссыздық (2018 ж.) — <b>4,8% (438 мың адам)</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Нағыз еңбекке жарамды алтын жас аралығы — <b>25 - 49 жас</b>.</p><p class=\"leading-relaxed\">• <b>Қазақстанның әлеуметтік пирамидасы</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Кәсіпкерлер — <b>1% (111 мың адам)</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Ұсақ меншік иелері — <b>23% (1 970 мың адам)</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Жалдамалы жұмысшылар — <b>76% (6 610 мың адам)</b>.</p><p class=\"leading-relaxed\">• <b>Елді мекендер мен урбандалу</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Қала халқының үлесі — <b>57,8%</b> (87 қала, 30 кент);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Ауыл халқының үлесі — <b>42,2% (7,66 млн адам)</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Ауыл халқы жоғары облыстар: <b>Алматы (76,5%), Жамбыл (59,9%)</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Ауыл халқының басым бөлігі шоғырланған: Оңтүстік Қазақстан (20,4%), Алматы (17,1%), ШҚО (9,2%), Жамбыл (8,4%).</p><p class=\"leading-relaxed\">• <b>Қалалар жіктелуі</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Республикалық маңызы бар қалалар (миллионерлер, 1 млн+): <b>Алматы (2 млн+), Астана, Шымкент</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Өте ірі қалалар (250 мың – 1 млн): <b>Қарағанды, Ақтөбе</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Ірі қалалар (100 – 250 мың): <b>Ақтау, Теміртау</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Орташа қалалар (50 – 100 мың): <b>Балқаш, Құлсары</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Шағын қалалар (50 мыңнан төмен): <b>Риддер, Лисаковск</b>.</p><p class=\"leading-relaxed\">• <b>5 Хаб қала</b>: Астана (Солтүстік), Алматы мен Шымкент (Оңтүстік), Ақтөбе (Батыс), Өскемен (Орталық-Шығыс).</p><p class=\"leading-relaxed\">• <b>Агломерациялар</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Қарағанды-Теміртау агломерациясы</b>: Саран, Абай, Шахтинск, Топар, Долинка қалалары;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Алматы агломерациясы</b>: Қапшағай (Қонаев), Есік, Талғар, Қаскелең қалалары арасында «G4 Сити» жобасы.</p>\n  </div>\n</div>\n</div>", "full_theory_ru": "<div class=\"space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed\">\n<div class=\"p-5 rounded-2xl bg-space-900/90 border border-indigo-500/30 space-y-4 shadow-xl\">\n  <div class=\"flex items-center space-x-3 text-indigo-400\">\n    <span class=\"text-2xl\">👥</span>\n    <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">1. Этнический состав и языковые семьи Казахстана</h3>\n  </div>\n  <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n    <p class=\"leading-relaxed\">• <b>Количество этносов</b>: В Казахстане проживают представители около <b>140 наций и народностей</b>. Государствообразующий этнос — <b>казахи</b> (более 12,3 млн человек).</p><p class=\"leading-relaxed\">• <b>Понятие этноса</b>: Исторически сложившаяся устойчивая общность людей, обладающая единым языком, территорией, особенностями быта, культурой и этническим самосознанием.</p><p class=\"leading-relaxed\">• <b>Категории этнических групп</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Выходцы из республик бывшего СССР: <b>русские, украинцы, белорусы, молдаване, узбеки</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Народы из дальнего зарубежья (депортированные и переселенцы): <b>немцы, поляки, евреи, корейцы, греки</b>.</p><p class=\"leading-relaxed\">• <b>Диаспора</b>: Часть народа, проживающая за пределами своей исторической родины. Крупнейшая диаспора Казахстана — <b>русские</b>.</p><p class=\"leading-relaxed\">• <b>Этносы с численностью более 100 тыс. человек</b>: В РК насчитывается <b>8</b> таких этносов. 10 этносов, составляющих <b>97% населения страны</b>: <b>казахи, русские, узбеки, украинцы, уйгуры, татары, немцы, турки, азербайджанцы, корейцы</b>.</p><p class=\"leading-relaxed\">• <b>5 языковых семей Казахстана</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">1)</b> <b>Алтайская языковая семья</b> (тюркская группа и др.) — <b>73%</b> населения;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">2)</b> <b>Индоевропейская языковая семья</b> (славянская, германская группы) — <b>26%</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">3)</b> <b>Северокавказская семья</b> — <b>0,4%</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">4)</b> <b>Сино-тибетская семья</b> (дунгане и др.) — <b>0,2%</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">5)</b> <b>Урало-юкагирская семья</b> — <b>0,2%</b>.</p>\n  </div>\n</div>\n<div class=\"p-5 rounded-2xl bg-space-900/90 border border-rose-500/30 space-y-4 shadow-xl\">\n  <div class=\"flex items-center space-x-3 text-rose-400\">\n    <span class=\"text-2xl\">🌐</span>\n    <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">2. Динамика казахского этноса и всемирная диаспора</h3>\n  </div>\n  <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n    <p class=\"leading-relaxed\">• <b>Рост доли казахов в РК</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Перепись 1999 г.: 7 млн 985 тыс. человек (<b>53,4%</b>);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Перепись 2009 г.: <b>63,3%</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Данные 2017 г.: <b>66,97%</b> (в настоящее время свыше 70%).</p><p class=\"leading-relaxed\">• <b>Численность казахов в мире</b>: Всего в мире насчитывается около <b>16 млн казахов</b>. Из них <b>более 12,3 млн</b> живут в Казахстане, а <b>3,7 млн — в 54 странах мира</b> (по некоторым оценкам около 5 млн).</p><p class=\"leading-relaxed\">• <b>Казахская диаспора за рубежом</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>В Узбекистане</b> — 1 млн 700 тыс.;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>В Китае</b> — 1 млн 440 тыс.;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>В России</b> — 648 тыс.;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>В Монголии</b> — 102 тыс.;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>В Афганистане</b> — 40 тыс.;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>В Кыргызстане</b> — 39 тыс.</p>\n  </div>\n</div>\n<div class=\"p-5 rounded-2xl bg-space-900/90 border border-teal-500/30 space-y-4 shadow-xl\">\n  <div class=\"flex items-center space-x-3 text-teal-400\">\n    <span class=\"text-2xl\">📈</span>\n    <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">3. Демографическая политика, расселение и плотность</h3>\n  </div>\n  <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n    <p class=\"leading-relaxed\">• <b>Демографическая политика</b>: Система мер по государственному регулированию процессов естественного движения населения.</p><p class=\"leading-relaxed\">• <b>История переписей</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Первая всеобщая перепись Российской империи — <b>1897 г.</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Первая перепись независимого Казахстана — <b>1999 г.</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Вторая перепись — <b>2009 г.</b></p><p class=\"leading-relaxed\">• <b>Численность населения</b>: 2017 г. — 18 млн человек; конец 2018 г. — 18 млн 395,7 тыс. чел. Более половины естественного прироста приходится на города <b>Астана и Шымкент</b>.</p><p class=\"leading-relaxed\">• <b>Концентрация населения</b>: Около <b>1/3 населения страны</b> сосредоточено в г. Алматы (свыше 2 млн) и Алматинской области.</p><p class=\"leading-relaxed\">• <b>Плотность населения</b>: Средняя плотность — <b>6,8 чел./км²</b>.</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Наивысшая: <b>Туркестанская область — 17 чел./км²</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Наименьшая: <b>Актюбинская область — 3 чел./км²</b>.</p><p class=\"leading-relaxed\">• <b>Расселение этносов</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Около половины казахов проживают в Туркестанской, Алматинской, Восточно-Казахстанской и Жамбылской областях;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Равномерно во всех областях расселены <b>татары</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Русские, украинцы, немцы, белорусы преобладают на севере, в центре и на востоке;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>96% уйгуров</b> живут в Алматы и Алматинской области;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>9/10 узбеков</b> сосредоточены в Туркестанской области.</p><p class=\"leading-relaxed\">• <b>Религиозные конфессии</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Ислам суннитского толка — 70%</b> (казахи, узбеки, татары, уйгуры и др.);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b>Христианство (православие) — 26%</b> (русские, украинцы, белорусы и др.);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Корейцы исповедуют преимущественно <b>протестантизм</b>;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• Поляки — <b>католицизм</b>.</p>\n  </div>\n</div>\n<div class=\"p-5 rounded-2xl bg-space-900/90 border border-amber-500/30 space-y-4 shadow-xl\">\n  <div class=\"flex items-center space-x-3 text-amber-400\">\n    <span class=\"text-2xl\">🧭</span>\n    <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">4. Миграционные процессы и их типология</h3>\n  </div>\n  <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n    <p class=\"leading-relaxed\">• <b>Основные термины</b>: Иммиграция (въезд), эмиграция (выезд), реэмиграция (возврат), репатриация (возвращение на родину — кандасы), депортация (насильственное выселение), депопуляция (сокращение населения), гастарбайтеры (иностранные рабочие).</p><p class=\"leading-relaxed\">• <b>Сальдо миграции</b>: Разница между числом прибывших и выбывших: <b>СМ = И - Э</b>. В 2017 г. в РК прибыло 16 081 чел., выбыло 37 704 чел. (<b>сальдо отрицательное: -21 623 чел.</b>). На страны СНГ приходится 71,4% прибывших и 89,5% выбывших.</p><p class=\"leading-relaxed\">• <b>Типы миграции</b>:</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">1)</b> Внутренняя (межрайонная);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">2)</b> Постоянная (безвозвратная);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">3)</b> Сезонная (сбор урожая в Калифорнии, туризм в Швейцарии);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">4)</b> Вахтовая (добыча ресурсов в труднодоступных районах);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">5)</b> Маятниковая (ежедневные поездки пригород-город на работу);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">6)</b> Семейно-бытовая;</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">7)</b> Из села в город (урбанизация);</p><p class=\"pl-4 text-slate-300 leading-relaxed border-l-2 border-slate-800/80 py-0.5\">• <b class=\"text-amber-400\">8)</b> Из города в село (субурбанизация).</p>\n  </div>\n</div>\n<div class=\"p-5 rounded-2xl bg-space-900/90 border border-cyan-500/30 space-y-4 shadow-xl\">\n  <div class=\"flex items-center space-x-3 text-cyan-400\">\n    <span class=\"text-2xl\">🏙️</span>\n    <h3 class=\"text-base sm:text-lg font-black text-white uppercase tracking-wider\">5. Трудовые ресурсы, типы поселений и урбанизация</h3>\n  </div>\n  <div class=\"space-y-2.5 pt-1 text-xs text-slate-300 leading-relaxed\">\n    <p class=\"leading-relaxed\">• <b>Трудовые ресурсы</b>: Население в трудоспособном возрасте (мужчины 16-63 года, женщины 16-60,5 лет, к 2027 г. — 63 года).</p><p class=\"leading-relaxed\">• <b>Экономически активное население (ЭАН)</b>: <b>9,1 млн человек</b>; официальная безработица — <b>4,8% (438 тыс. чел.)</b>. Самый продуктивный возраст — <b>25-49 лет</b>.</p><p class=\"leading-relaxed\">• <b>Социальная пирамида</b>: Предприниматели — <b>1%</b>, мелкие собственники — <b>23%</b>, наемные работники — <b>76%</b>.</p><p class=\"leading-relaxed\">• <b>Урбанизация</b>: Городское население — <b>57,8%</b> (87 городов, 30 поселков), сельское — <b>42,2% (7,66 млн чел.)</b>. Наибольшая доля сельского населения: <b>Алматинская (76,5%) и Жамбылская (59,9%) области</b>.</p><p class=\"leading-relaxed\">• <b>Иерархия городов</b>: Миллионеры (Алматы, Астана, Шымкент), крупнейшие (Караганда, Актобе), крупные (Актау, Темиртау), средние (Балхаш, Кульсары), малые (Риддер, Лисаковск).</p><p class=\"leading-relaxed\">• <b>5 хаб-городов</b>: Астана, Алматы, Шымкент, Актобе, Усть-Каменогорск.</p><p class=\"leading-relaxed\">• <b>Агломерации</b>: Караганда-Темиртау и Алматинская агломерация (проект «G4 City»).</p>\n  </div>\n</div>\n</div>", "svg_diagram": "<svg viewBox=\"0 0 800 480\" width=\"100%\" height=\"auto\" xmlns=\"http://www.w3.org/2000/svg\" style=\"background:#0b1120; border-radius:16px;\">\n  <defs>\n    <linearGradient id=\"topG29\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" stop-color=\"#4f46e5\"/><stop offset=\"100%\" stop-color=\"#3730a3\"/></linearGradient>\n    <linearGradient id=\"cg29\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" stop-color=\"#1e293b\"/><stop offset=\"100%\" stop-color=\"#0f172a\"/></linearGradient>\n    <filter id=\"sh29\" x=\"-10%\" y=\"-10%\" width=\"120%\" height=\"120%\"><feDropShadow dx=\"0\" dy=\"4\" stdDeviation=\"6\" flood-color=\"#000\" flood-opacity=\"0.5\"/></filter>\n  </defs>\n  <rect width=\"800\" height=\"480\" fill=\"#0b1120\" rx=\"16\"/>\n  <rect x=\"30\" y=\"20\" width=\"740\" height=\"55\" rx=\"12\" fill=\"url(#topG29)\" filter=\"url(#sh29)\"/>\n  <text x=\"400\" y=\"45\" fill=\"#fff\" font-size=\"17\" font-weight=\"bold\" text-anchor=\"middle\" font-family=\"system-ui, sans-serif\">ҚАЗАҚСТАН ХАЛҚЫНЫҢ ГЕОГРАФИЯСЫ ЖӘНЕ ДЕМОГРАФИЯСЫ</text>\n  <text x=\"400\" y=\"64\" fill=\"#c7d2fe\" font-size=\"12\" text-anchor=\"middle\" font-family=\"system-ui, sans-serif\">140 жуық этнос • 5 тілдік әулет • 16 млн қазақ (3,7 млн диаспора) • 5 хаб қала • Урбандалу 57,8%</text>\n  \n  <!-- Col 1: Ethnos & Language Families -->\n  <g transform=\"translate(30, 95)\" filter=\"url(#sh29)\">\n    <rect width=\"235\" height=\"175\" rx=\"12\" fill=\"url(#cg29)\" stroke=\"#6366f1\" stroke-width=\"1.5\"/>\n    <text x=\"15\" y=\"26\" fill=\"#6366f1\" font-size=\"12\" font-weight=\"bold\">ЭТНИКА ЖӘНЕ ТІЛДІК ӘУЛЕТ</text>\n    <text x=\"15\" y=\"48\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• 5 тілдік әулет:</tspan> Алтай (73%), Үндіеуропа (26%), Солт. Кавказ (0,4%), Сино-тибет (0,2%), Орал-юкагир (0,2%).</text>\n    <text x=\"15\" y=\"94\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• 10 негізгі ұлт (97%):</tspan> Қазақ, орыс, өзбек, украин, ұйғыр, татар, неміс, түрік, әзірбайжан, кәріс.</text>\n    <text x=\"15\" y=\"140\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Діндер:</tspan> Ислам (сүннит, 70%), Христиан (православие, 26%), Протестант, Католик.</text>\n  </g>\n\n  <!-- Col 2: Diaspora & Population Dynamics -->\n  <g transform=\"translate(282, 95)\" filter=\"url(#sh29)\">\n    <rect width=\"235\" height=\"175\" rx=\"12\" fill=\"url(#cg29)\" stroke=\"#ec4899\" stroke-width=\"1.5\"/>\n    <text x=\"15\" y=\"26\" fill=\"#ec4899\" font-size=\"12\" font-weight=\"bold\">ДИАСПОРА ЖӘНЕ ДЕМОГРАФИЯ</text>\n    <text x=\"15\" y=\"48\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Әлемде 16 млн қазақ:</tspan> ҚР-да 12,3 млн+, шет елде 3,7 млн (54 елде).</text>\n    <text x=\"15\" y=\"82\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Шет елдегі қазақтар:</tspan> Өзбекстан (1,7 млн), Қытай (1,44 млн), Ресей (648 мың), Моңғолия (102 мың).</text>\n    <text x=\"15\" y=\"130\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Санақ жылдары:</tspan> Ресейде — 1897 ж. Тәуелсіз ҚР-да: 1-санақ 1999 ж., 2-санақ 2009 ж.</text>\n  </g>\n\n  <!-- Col 3: Density & Cities -->\n  <g transform=\"translate(535, 95)\" filter=\"url(#sh29)\">\n    <rect width=\"235\" height=\"175\" rx=\"12\" fill=\"url(#cg29)\" stroke=\"#14b8a6\" stroke-width=\"1.5\"/>\n    <text x=\"15\" y=\"26\" fill=\"#14b8a6\" font-size=\"12\" font-weight=\"bold\">ТЫҒЫЗДЫҚ ЖӘНЕ ҚАЛАЛАР</text>\n    <text x=\"15\" y=\"48\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Халық тығыздығы:</tspan> 6,8 адам/км². Түркістан — 17 (ең жоғары), Ақтөбе — 3 (ең төмен).</text>\n    <text x=\"15\" y=\"88\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Қоныстану:</tspan> Қала халқы — 57,8% (87 қала, 30 кент). Ауыл халқы — 42,2%.</text>\n    <text x=\"15\" y=\"128\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• 5 хаб қала:</tspan> Астана, Алматы, Шымкент, Ақтөбе (батыс), Өскемен (шығыс).</text>\n  </g>\n\n  <!-- Bottom Panel: Labor & Migration -->\n  <g transform=\"translate(30, 285)\" filter=\"url(#sh29)\">\n    <rect width=\"740\" height=\"175\" rx=\"12\" fill=\"url(#cg29)\" stroke=\"#f59e0b\" stroke-width=\"1.5\"/>\n    <text x=\"20\" y=\"24\" fill=\"#f59e0b\" font-size=\"12\" font-weight=\"bold\">КӨШІ-ҚОН ТИПТЕРІ, ЕҢБЕК РЕСУРСТАРЫ ЖӘНЕ АГЛОМЕРАЦИЯЛАР:</text>\n    <text x=\"20\" y=\"48\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#fde047\">Миграциялық сальдо:</tspan> МС = Иммиграция - Эмиграция. 2017 ж. 16 081 келді, 37 704 кетті (теріс сальдо). ТМД елдерімен негізгі байланыс (келгендер 71,4%, кеткендер 89,5%).</text>\n    <text x=\"20\" y=\"70\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#fde047\">Миграция типтері:</tspan> Ішкі, тұрақты, маусымдық (Калифорния цитрусы), вахталық (кен орындары), қатынамалы (маятниковая), отбасылық, ауылдан қалаға.</text>\n    <text x=\"20\" y=\"92\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#38bdf8\">Еңбек ресурстары:</tspan> ЭБХ — 9,1 млн адам, ресми жұмыссыздық — 4,8% (438 мың адам). Нағыз еңбек жасы — 25-49 жас.</text>\n    <text x=\"20\" y=\"114\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#34d399\">Әлеуметтік пирамида:</tspan> Кәсіпкерлер — 1% (111 мың), ұсақ меншік иелері — 23% (1970 мың), жалдамалы жұмысшылар — 76% (6610 мың).</text>\n    <text x=\"20\" y=\"136\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#c084fc\">Агломерациялар:</tspan> Қарағанды-Теміртау (Саран, Абай, Шахтинск, Топар); Алматы агломерациясы («G4 Сити»: Қапшағай, Есік, Талғар, Қаскелең).</text>\n    <text x=\"20\" y=\"156\" fill=\"#94a3b8\" font-size=\"10.5\">🏙️ Миллионер қалалар (1 млн+): Алматы (2 млн+), Астана, Шымкент • Ауыл халқы ең көп: Алматы (76,5%) және Жамбыл (59,9%) облыстары.</text>\n  </g>\n</svg>", "svg_diagram_ru": "<svg viewBox=\"0 0 800 480\" width=\"100%\" height=\"auto\" xmlns=\"http://www.w3.org/2000/svg\" style=\"background:#0b1120; border-radius:16px;\">\n  <defs>\n    <linearGradient id=\"topG29\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" stop-color=\"#4f46e5\"/><stop offset=\"100%\" stop-color=\"#3730a3\"/></linearGradient>\n    <linearGradient id=\"cg29\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" stop-color=\"#1e293b\"/><stop offset=\"100%\" stop-color=\"#0f172a\"/></linearGradient>\n    <filter id=\"sh29\" x=\"-10%\" y=\"-10%\" width=\"120%\" height=\"120%\"><feDropShadow dx=\"0\" dy=\"4\" stdDeviation=\"6\" flood-color=\"#000\" flood-opacity=\"0.5\"/></filter>\n  </defs>\n  <rect width=\"800\" height=\"480\" fill=\"#0b1120\" rx=\"16\"/>\n  <rect x=\"30\" y=\"20\" width=\"740\" height=\"55\" rx=\"12\" fill=\"url(#topG29)\" filter=\"url(#sh29)\"/>\n  <text x=\"400\" y=\"45\" fill=\"#fff\" font-size=\"17\" font-weight=\"bold\" text-anchor=\"middle\" font-family=\"system-ui, sans-serif\">ГЕОГРАФИЯ НАСЕЛЕНИЯ И ДЕМОГРАФИЯ КАЗАХСТАНА</text>\n  <text x=\"400\" y=\"64\" fill=\"#c7d2fe\" font-size=\"12\" text-anchor=\"middle\" font-family=\"system-ui, sans-serif\">Около 140 этносов • 5 языковых семей • 16 млн казахов (3,7 млн диаспора) • 5 хаб-городов • Урбанизация 57,8%</text>\n  \n  <!-- Col 1: Ethnos & Language Families -->\n  <g transform=\"translate(30, 95)\" filter=\"url(#sh29)\">\n    <rect width=\"235\" height=\"175\" rx=\"12\" fill=\"url(#cg29)\" stroke=\"#6366f1\" stroke-width=\"1.5\"/>\n    <text x=\"15\" y=\"26\" fill=\"#6366f1\" font-size=\"12\" font-weight=\"bold\">ЭТНОСЫ И ЯЗЫКОВЫЕ СЕМЬИ</text>\n    <text x=\"15\" y=\"48\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• 5 языковых семей:</tspan> Алтайская (73%), Индоевропейская (26%), Сев.-Кавказская (0,4%), Сино-тибетская (0,2%), Урало-юкагирская (0,2%).</text>\n    <text x=\"15\" y=\"94\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• 10 главных этносов (97%):</tspan> Казахи, русские, узбеки, украинцы, уйгуры, татары, немцы, турки, азербайджанцы, корейцы.</text>\n    <text x=\"15\" y=\"140\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Религии:</tspan> Ислам (сунниты, 70%), Христианство (православие, 26%), Протестанты, Католики.</text>\n  </g>\n\n  <!-- Col 2: Diaspora & Population Dynamics -->\n  <g transform=\"translate(282, 95)\" filter=\"url(#sh29)\">\n    <rect width=\"235\" height=\"175\" rx=\"12\" fill=\"url(#cg29)\" stroke=\"#ec4899\" stroke-width=\"1.5\"/>\n    <text x=\"15\" y=\"26\" fill=\"#ec4899\" font-size=\"12\" font-weight=\"bold\">ДИАСПОРА И ДЕМОГРАФИЯ</text>\n    <text x=\"15\" y=\"48\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• В мире 16 млн казахов:</tspan> В РК 12,3 млн+, за рубежом 3,7 млн (в 54 странах).</text>\n    <text x=\"15\" y=\"82\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Казахи за рубежом:</tspan> Узбекистан (1,7 млн), Китай (1,44 млн), Россия (648 тыс.), Монголия (102 тыс.).</text>\n    <text x=\"15\" y=\"130\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Переписи населения:</tspan> В РИ — 1897 г. В независимом Казахстане: 1-я — 1999 г., 2-я — 2009 г.</text>\n  </g>\n\n  <!-- Col 3: Density & Cities -->\n  <g transform=\"translate(535, 95)\" filter=\"url(#sh29)\">\n    <rect width=\"235\" height=\"175\" rx=\"12\" fill=\"url(#cg29)\" stroke=\"#14b8a6\" stroke-width=\"1.5\"/>\n    <text x=\"15\" y=\"26\" fill=\"#14b8a6\" font-size=\"12\" font-weight=\"bold\">ПЛОТНОСТЬ И ГОРОДА</text>\n    <text x=\"15\" y=\"48\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Плотность населения:</tspan> 6,8 чел/км². Туркестанская — 17 (максимум), Актюбинская — 3 (минимум).</text>\n    <text x=\"15\" y=\"88\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• Расселение:</tspan> Городское — 57,8% (87 городов, 30 пос.). Сельское — 42,2%.</text>\n    <text x=\"15\" y=\"128\" fill=\"#e2e8f0\" font-size=\"10.5\"><tspan font-weight=\"bold\" fill=\"#fde047\">• 5 городов-хабов:</tspan> Астана, Алматы, Шымкент, Актобе (запад), Усть-Каменогорск (восток).</text>\n  </g>\n\n  <!-- Bottom Panel: Labor & Migration -->\n  <g transform=\"translate(30, 285)\" filter=\"url(#sh29)\">\n    <rect width=\"740\" height=\"175\" rx=\"12\" fill=\"url(#cg29)\" stroke=\"#f59e0b\" stroke-width=\"1.5\"/>\n    <text x=\"20\" y=\"24\" fill=\"#f59e0b\" font-size=\"12\" font-weight=\"bold\">ВИДЫ МИГРАЦИЙ, ТРУДОВЫЕ РЕСУРСЫ И АГЛОМЕРАЦИИ:</text>\n    <text x=\"20\" y=\"48\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#fde047\">Сальдо миграции:</tspan> СМ = Иммиграция - Эмиграция. В 2017 г. прибыло 16 081, выбыло 37 704 (отрицательное сальдо). Основной обмен со странами СНГ.</text>\n    <text x=\"20\" y=\"70\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#fde047\">Типы миграции:</tspan> Внутренняя, постоянная, сезонная, вахтовая, маятниковая, семейно-бытовая, село-город.</text>\n    <text x=\"20\" y=\"92\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#38bdf8\">Трудовые ресурсы:</tspan> ЭАН — 9,1 млн чел., официальная безработица — 4,8% (438 тыс. чел.). Пик трудоспособности — 25-49 лет.</text>\n    <text x=\"20\" y=\"114\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#34d399\">Социальная пирамида:</tspan> Предприниматели — 1% (111 тыс.), мелкие собственники — 23% (1970 тыс.), наемные рабочие — 76% (6610 тыс.).</text>\n    <text x=\"20\" y=\"136\" fill=\"#e2e8f0\" font-size=\"11\"><tspan font-weight=\"bold\" fill=\"#c084fc\">Агломерации:</tspan> Караганда-Темиртау (Сарань, Абай, Шахтинск); Алматинская агломерация (проект G4 City: Конаев, Иссык, Талгар, Каскелен).</text>\n    <text x=\"20\" y=\"156\" fill=\"#94a3b8\" font-size=\"10.5\">🏙️ Города-миллионеры (1 млн+): Алматы (2 млн+), Астана, Шымкент • Макс. доля селян: Алматинская (76,5%) и Жамбылская (59,9%) обл.</text>\n  </g>\n</svg>", "table_kz": {"cols": ["Санат / Көрсеткіш", "Сандық мәні / Үлесі", "Негізгі өкілдері немесе аймақтары", "Сипаттамасы мен маңызы"], "rows": [["Алтай тілдік әулеті", "73 %", "Қазақтар, өзбектер, ұйғырлар, татарлар, түріктер, әзірбайжандар", "Қазақстандағы ең ірі тілдік әулет, түркі тобы басым"], ["Үндіеуропа тілдік әулеті", "26 %", "Орыстар, украиндар, немістер, белорустар, поляктар", "Славян және герман тіл топтары, солтүстік және шығыста"], ["Шетелдегі қазақ диаспорасы", "3,7 млн адам (54 елде)", "Өзбекстан (1,7 млн), Қытай (1,44 млн), Ресей (648 мың), Моңғолия (102 мың)", "Дүниежүзінде барлығы 16 млн қазақ өмір сүреді"], ["Халық тығыздығы", "Орташа 6,8 адам/км²", "Түркістан (17 адам/км² — макс.), Ақтөбе (3 адам/км² — мин.)", "Оңтүстікте суармалы жерлер мен қалаларда тығыздық жоғары"], ["Экономикалық белсенді халық (ЭБХ)", "9,1 млн адам", "Нағыз еңбекке жарамды жас — 25-49 жас", "Ресми жұмыссыздық — 4,8% (438 мың адам)"], ["Әлеуметтік құрылым пирамидасы", "Кәсіпкерлер 1%, ұсақ меншік 23%, жалдамалы 76%", "Кәсіпкерлер (111 мың), жалдамалы жұмысшылар (6,6 млн)", "Нарықтық экономиканың әлеуметтік базасы"], ["Қала халқы (Урбандалу)", "57,8 %", "87 қала, 30 кент. Миллионер қалалар: Алматы, Астана, Шымкент", "Урбандалу қарқынды облыстар: Қарағанды, ШҚО, Ақтөбе"], ["Ауыл халқы", "42,2 % (7,66 млн адам)", "Алматы (76,5%), Жамбыл (59,9%) облыстары", "Ауыл халқының жартысынан астамы оңтүстік өңірде шоғырланған"], ["5 Хаб қала", "5 түйінді орталық", "Астана (солтүстік), Алматы, Шымкент (оңтүстік), Ақтөбе (батыс), Өскемен (шығыс)", "Макроаймақтық халықаралық маңызы бар түйін орталықтар"], ["Агломерациялар", "2 ірі агломерация", "Қарағанды-Теміртау, Алматы («G4 Сити» жобасы)", "Біртұтас өндірістік және мәдени-тұрмыстық қалалар тобы"]]}, "table_ru": {"cols": ["Категория / Показатель", "Численное значение / Доля", "Основные представители / Регионы", "Характеристика и значение"], "rows": [["Алтайская языковая семья", "73 %", "Казахи, узбеки, уйгуры, татары, турки, азербайджанцы", "Крупнейшая языковая семья Казахстана (тюркская группа)"], ["Индоевропейская семья", "26 %", "Русские, украинцы, немцы, белорусы, поляки", "Славянская и германская группы (север, восток, центр)"], ["Казахская диаспора за рубежом", "3,7 млн чел. (в 54 странах)", "Узбекистан (1,7 млн), Китай (1,44 млн), РФ (648 тыс.), Монголия (102 тыс.)", "Всего в мире насчитывается 16 млн казахов"], ["Плотность населения", "В среднем 6,8 чел./км²", "Туркестанская (17 чел./км² — макс.), Актюбинская (3 чел./км² — мин.)", "Наибольшая концентрация в оазисах юга и предгорьях"], ["Экономически активное население", "9,1 млн человек", "Пик трудоспособности — возраст 25-49 лет", "Официальный уровень безработицы — 4,8% (438 тыс. чел.)"], ["Социальная пирамида", "Бизнесмены 1%, мелкие 23%, наемные 76%", "Предприниматели (111 тыс.), наемные рабочие (6,6 млн)", "Структура занятого населения страны"], ["Городское население (Урбанизация)", "57,8 %", "87 городов, 30 поселков. Миллионеры: Алматы, Астана, Шымкент", "Высокий уровень урбанизации: Карагандинская, ВКО, Актюбинская"], ["Сельское население", "42,2 % (7,66 млн чел.)", "Алматинская (76,5%), Жамбылская (59,9%) области", "Более половины селян сосредоточено на юге республики"], ["5 городов-хабов", "5 узловых центров", "Астана (север), Алматы, Шымкент (юг), Актобе (запад), Усть-Каменогорск (восток)", "Опорные центры развития макрорегионов"], ["Агломерации", "2 ведущие агломерации", "Караганда-Темиртау, Алматинская (проект G4 City)", "Сформированные системы взаимосвязанных городов"]]}, "key_facts_kz": ["Қазақстанда 140-қа жуық этнос өкілі тұрады; мемлекет құраушы ұлт — қазақтар (12,3 млн-нан астам).", "Қазақстан халқының 97%-ын 10 ұлт құрайды; халықтың 73%-ы Алтай, 26%-ы Үндіеуропа тілдік әулетіне жатады.", "Дүниежүзінде 16 млн қазақ бар: 12,3 млн-нан астамы Қазақстанда, ал 3,7 млн-ы әлемнің 54 елінде диаспора ретінде тұрады.", "Шетелдегі қазақтардың ең көбі Өзбекстанда (1,7 млн), Қытайда (1,44 млн) және Ресейде (648 мың) шоғырланған.", "Тәуелсіз Қазақстанда 1-халық санағы 1999 жылы, ал 2-санақ 2009 жылы өткізілді.", "Халық тығыздығы орташа 6,8 адам/км²; ең жоғарғысы — Түркістан облысы (17 адам/км²), ең төменгісі — Ақтөбе облысы (3 адам/км²).", "Қазақстанда ислам дінін 70%, ал христиан дінін (православие) 26% халық ұстанады.", "Миграциялық сальдо — келгендер мен кеткендердің айырмасы (МС = И - Э); 2017 жылы ҚР-да сальдо теріс болды (-21 623 адам).", "Еңбек нарығындағы ұсыныс (ЭБХ) — 9,1 млн адам, ресми жұмыссыздық — 4,8% (438 мың адам).", "Қала халқының үлесі 57,8% (87 қала, 30 кент), ауыл халқының үлесі — 42,2% (7,66 млн адам).", "Қазақстанда 5 хаб қала бар: Астана, Алматы, Шымкент, Ақтөбе (батыс), Өскемен (орталық-шығыс).", "Ірі агломерациялар: Қарағанды-Теміртау (Саран, Абай, Шахтинск, Топар) және Алматы агломерациясы («G4 Сити»)."], "key_facts_ru": ["В Казахстане проживают представители около 140 этносов; государствообразующий этнос — казахи (свыше 12,3 млн чел.).", "97% населения РК составляют 10 национальностей; 73% относятся к алтайской, 26% — к индоевропейской языковой семье.", "Всего в мире 16 млн казахов: более 12,3 млн проживают в Казахстане, 3,7 млн — в 54 странах мира.", "Крупнейшие казахские диаспоры за рубежом: в Узбекистане (1,7 млн), Китае (1,44 млн) и России (648 тыс.).", "В независимом Казахстане первая перепись прошла в 1999 г., вторая — в 2009 г. (первая в Российской империи — в 1897 г.).", "Средняя плотность населения 6,8 чел./км²; максимум в Туркестанской области (17), минимум — в Актюбинской (3).", "70% населения исповедуют ислам суннитского толка, 26% — христианство (православие).", "Сальдо миграции: разница прибывших и выбывших (СМ = И - Э); в 2017 г. сальдо было отрицательным (-21 623 чел.).", "Экономически активное население (ЭАН) составляет 9,1 млн человек, официальная безработица — 4,8% (438 тыс.).", "Доля городского населения — 57,8% (87 городов, 30 поселков), сельского — 42,2% (7,66 млн чел.).", "Определены 5 городов-хабов: Астана, Алматы, Шымкент, Актобе (запад) и Усть-Каменогорск (восток).", "Крупнейшие агломерации: Караганда-Темиртау и Алматинская агломерация (проект G4 City)."], "traps_kz": ["⚠️ Халық санақтарының жылдары: Ресей империясындағы алғашқы санақ — 1897 ж. Қазақстан Тәуелсіздік алғаннан кейінгі БІРІНШІ санақ — 1999 ж., ал ЕКІНШІ санақ — 2009 ж. Бұл жылдарды ҰБТ-да жиі шатастырады!", "⚠️ Халық тығыздығының рекорды: Ең ЖОҒАРЫ тығыздық — Түркістан облысында (1 км²-ге 17 адам). Ең ТӨМЕН тығыздық — Ақтөбе облысында (1 км²-ге 3 адам). Орташа көрсеткіш — 6,8 адам/км².", "⚠️ Тілдік әулеттердің пайыздары: Алтай әулеті (түркі) — 73%; Үндіеуропа (славян, герман) — 26%. Солтүстік Кавказ — 0,4%, Сино-тибет — 0,2%, Орал-юкагир — 0,2%.", "⚠️ 5 Хаб қала: Батыс макроаймақтың хабы — АҚТӨБЕ, Шығыстың хабы — ӨСКЕМЕН. Солтүстіктің хабы — Астана, Оңтүстіктің хабтары — Алматы мен Шымкент."], "traps_ru": ["⚠️ Годы переписей населения: Первая всеобщая перепись в Российской империи — 1897 г. Первая перепись суверенного Казахстана — 1999 г., вторая — 2009 г. Не путайте эти даты!", "⚠️ Экстремумы плотности населения: Наибольшая плотность — Туркестанская область (17 чел./км²). Наименьшая плотность — Актюбинская область (3 чел./км²). Средняя по РК — 6,8 чел./км².", "⚠️ Доли языковых семей: Алтайская семья — 73%; Индоевропейская — 26%; Северокавказская — 0,4%; Сино-тибетская — 0,2%; Урало-юкагирская — 0,2%.", "⚠️ 5 городов-хабов Казахстана: Хаб запада — АКТОБЕ, хаб востока — УСТЬ-КАМЕНОГОРСК. Северный хаб — Астана, южные хабы — Алматы и Шымкент."]};
+    const blooketData = {"kz": "https://dashboard.blooket.com/set/6a96eb7b483f23716988d46b", "ru": "https://dashboard.blooket.com/set/6a95eae1bf781c9110dd698e", "doc_kz": "https://docs.google.com/document/d/103RYujMwiNH68t5C7X9myCa_y6MkXIVGwGqkBGMklLM/edit?usp=sharing", "doc_ru": "https://drive.google.com/file/d/1SJY2E0B1uX34FNmFAW2H-i8Cul00jrwz/view?usp=drive_link"};
+    let currentLang = 'kz';
+
+    // Safe localStorage helper
+    const safeStorage = {
+      getItem(k) {
+        try { return localStorage.getItem(k); } catch (e) { return null; }
+      },
+      setItem(k, v) {
+        try { localStorage.setItem(k, v); } catch (e) {}
+      }
+    };
+
+    function getCompletedSet() {
+      try {
+        return new Set(JSON.parse(safeStorage.getItem('geotany_grammar_completed') || '[]'));
+      } catch (e) {
+        return new Set();
+      }
+    }
+
+    function saveCompletedSet(setObj) {
+      safeStorage.setItem('geotany_grammar_completed', JSON.stringify(Array.from(setObj)));
+    }
+
+    function updateCompleteButton() {
+      const setObj = getCompletedSet();
+      const isDone = setObj.has(topicData.num);
+      const btn = document.getElementById('btnComplete');
+      const icon = document.getElementById('completeIcon');
+      const text = document.getElementById('completeText');
+
+      if (isDone) {
+        btn.className = "inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black transition border border-emerald-500/50 bg-emerald-500/20 text-emerald-300 shadow-md shadow-emerald-500/10";
+        icon.textContent = "✓";
+        text.textContent = (currentLang === 'ru') ? "Изучено" : "Меңгерілді";
+      } else {
+        btn.className = "inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition border border-slate-700 bg-space-900 text-slate-300 hover:text-white hover:border-slate-600";
+        icon.textContent = "○";
+        text.textContent = (currentLang === 'ru') ? "Отметить изученным" : "Меңгерілді деп белгілеу";
+      }
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('xpToast');
+      const m = document.getElementById('toastMsg');
+      m.textContent = msg;
+      t.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        t.classList.add('translate-y-20', 'opacity-0');
+      }, 2500);
+    }
+
+    function toggleComplete() {
+      const setObj = getCompletedSet();
+      const isDone = setObj.has(topicData.num);
+      let xp = parseInt(safeStorage.getItem('geotany_user_xp') || '0', 10);
+
+      if (isDone) {
+        setObj.delete(topicData.num);
+        xp = Math.max(0, xp - 20);
+        showToast((currentLang === 'ru') ? "-20 XP. Отметка снята" : "-20 XP. Белгі алынды");
+      } else {
+        setObj.add(topicData.num);
+        xp += 20;
+        showToast((currentLang === 'ru') ? "+20 XP! Тема изучена" : "+20 XP! Тақырып меңгерілді");
+      }
+
+      saveCompletedSet(setObj);
+      safeStorage.setItem('geotany_user_xp', xp.toString());
+      updateCompleteButton();
+    }
+
+    function renderTable(isRu) {
+      const tbl = isRu ? (topicData.table_ru || topicData.table_kz) : topicData.table_kz;
+      const container = document.getElementById('tableContainer');
+      if (!tbl || !tbl.cols || !tbl.rows || tbl.rows.length === 0) {
+        document.getElementById('tableSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('tableSection').classList.remove('hidden');
+
+      let html = '<table class="w-full text-left text-xs border-collapse">';
+      html += '<thead><tr class="border-b border-slate-800 text-slate-400 font-bold">';
+      tbl.cols.forEach(col => {
+        html += `<th class="p-2.5 sm:p-3 bg-space-900/60 rounded-lg whitespace-nowrap text-cyan-300 font-bold">${col}</th>`;
+      });
+      html += '</tr></thead><tbody class="divide-y divide-slate-800/60">';
+      tbl.rows.forEach(row => {
+        html += '<tr class="hover:bg-space-900/40 transition">';
+        row.forEach((cell, idx) => {
+          const cls = idx === 0 ? "font-bold text-white whitespace-nowrap" : (idx === 1 ? "text-cyan-300 font-medium" : "text-slate-300");
+          html += `<td class="p-2.5 sm:p-3 ${cls}">${cell}</td>`;
+        });
+        html += '</tr>';
+      });
+      html += '</tbody></table>';
+      container.innerHTML = html;
+    }
+
+    function renderFacts(isRu) {
+      const facts = isRu ? (topicData.key_facts_ru || topicData.key_facts_kz) : topicData.key_facts_kz;
+      const list = document.getElementById('factsList');
+      if (!facts || facts.length === 0) {
+        document.getElementById('factsSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('factsSection').classList.remove('hidden');
+      list.innerHTML = facts.map(f => `<li class="flex items-start space-x-2"><span class="text-amber-400 font-bold shrink-0 mt-0.5">•</span><span>${f}</span></li>`).join('');
+    }
+
+    function renderTraps(isRu) {
+      const traps = isRu ? (topicData.traps_ru || topicData.traps_kz) : topicData.traps_kz;
+      const list = document.getElementById('trapsList');
+      if (!traps || traps.length === 0) {
+        document.getElementById('trapsSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('trapsSection').classList.remove('hidden');
+      list.innerHTML = traps.map(tr => {
+        const str = String(tr);
+        const icon = str.startsWith('⚠️') ? '' : '<span class="text-amber-400 shrink-0 mt-0.5">⚠️</span> ';
+        return `<p class="leading-relaxed flex items-start space-x-2">${icon}<span>${str}</span></p>`;
+      }).join('');
+    }
+
+    function setLang(lang) {
+      currentLang = lang;
+      safeStorage.setItem('geotany_lang', lang);
+      const isRu = (lang === 'ru');
+
+      // Update lang buttons
+      const btnKz = document.getElementById('btnLangKz');
+      const btnRu = document.getElementById('btnLangRu');
+      if (isRu) {
+        btnRu.className = "px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow";
+        btnKz.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+      } else {
+        btnKz.className = "px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow";
+        btnRu.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+      }
+
+      // Update text fields
+      document.getElementById('navCatBadge').textContent = isRu ? (topicData.category_ru || 'География') : (topicData.category_kz || 'География');
+      document.getElementById('heroCatBadge').textContent = isRu ? (topicData.category_ru || 'География') : (topicData.category_kz || 'География');
+      document.getElementById('heroTitle').textContent = isRu ? topicData.title_ru : topicData.title_kz;
+
+      // Summary
+      document.getElementById('summaryHeader').textContent = isRu ? "КРАТКИЙ ОБЗОР ТЕМЫ" : "ТАҚЫРЫПҚА ҚЫСҚАША ШОЛУ";
+      document.getElementById('summaryText').textContent = isRu ? topicData.summary_ru : topicData.summary_kz;
+
+      // Theory
+      document.getElementById('theoryHeader').textContent = isRu ? "ПОЛНЫЙ ТЕОРЕТИЧЕСКИЙ МАТЕРИАЛ И КОНСПЕКТ" : "ТОЛЫҚ ТЕОРИЯЛЫҚ МАТЕРИАЛ МЕН КОНСПЕКТ";
+      document.getElementById('theoryContent').innerHTML = isRu ? topicData.full_theory_ru : topicData.full_theory_kz;
+
+      // SVG
+      document.getElementById('svgHeader').textContent = isRu ? "НАГЛЯДНАЯ СХЕМА И ИНФОГРАФИКА" : "КӨРНЕКІ СХЕМА МЕН ИНФОГРАФИКА";
+      const svgCode = isRu ? (topicData.svg_diagram_ru || topicData.svg_diagram) : topicData.svg_diagram;
+      document.getElementById('svgContainer').innerHTML = svgCode || '';
+
+      // Table, Facts, Traps
+      document.getElementById('tableHeader').textContent = isRu ? "СТРУКТУРИРОВАННАЯ ТАБЛИЦА ПОКАЗАТЕЛЕЙ И КЛАССИФИКАЦИИ" : "НАҚТЫ КӨРСЕТКІШТЕР МЕН КЛАССИФИКАЦИЯ КЕСТЕСІ";
+      renderTable(isRu);
+
+      document.getElementById('factsHeader').textContent = isRu ? "ГЛАВНЫЕ ФАКТЫ ДЛЯ ЕНТ И ЗАПОМИНАНИЯ" : "ҰБТ-ҒА ҚАЖЕТТІ НЕГІЗГІ ЕРЕЖЕЛЕР МЕН ФАКТІЛЕР";
+      renderFacts(isRu);
+
+      document.getElementById('trapsHeader').textContent = isRu ? "ЛОВУШКИ И ЛАЙФХАКИ ЕНТ" : "ҰБТ ҚАҚПАНДАРЫ МЕН ЛАЙФХАКТАР";
+      renderTraps(isRu);
+
+      // Blooket & Doc links
+      const btnB = document.getElementById('btnBlooket');
+      const bUrl = isRu ? (blooketData.ru || blooketData.kz) : (blooketData.kz || blooketData.ru);
+      if (bUrl) {
+        btnB.href = bUrl;
+        btnB.classList.remove('hidden');
+      } else {
+        btnB.classList.add('hidden');
+      }
+
+      const btnD = document.getElementById('btnDoc');
+      if (btnD) { const dUrl = isRu ? (blooketData.doc_ru || blooketData.doc_kz) : (blooketData.doc_kz || blooketData.doc_ru); if (dUrl) { btnD.href = dUrl; btnD.classList.remove('hidden'); } else { btnD.classList.add('hidden'); } }
+
+      updateCompleteButton();
+    }
+
+    // Initialization on page load with URL param and localStorage sync
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const queryLang = urlParams.get('lang');
+      let langToSet = 'kz';
+      if (queryLang === 'ru' || queryLang === 'kz') {
+        langToSet = queryLang;
+        safeStorage.setItem('geotany_lang', queryLang);
+      } else {
+        const savedLang = safeStorage.getItem('geotany_lang');
+        if (savedLang === 'ru') langToSet = 'ru';
+        else langToSet = 'kz';
+      }
+      setLang(langToSet);
+    });
+  </script>
+</body>
+</html>

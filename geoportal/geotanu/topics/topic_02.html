@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="kk" class="dark">
+<head>
+  <!-- COURSE ACCESS GUARD: RESTRICT DIRECT ACCESS WITHOUT VALID CODE -->
+  <style id="authCloak">body { display: none !important; }</style>
+  <script>
+    (function() {
+      try {
+        var isAdmin = localStorage.getItem('geotany_admin_auth') === 'true';
+        var sessionStr = localStorage.getItem('geotany_user_session');
+        var isAuthorized = isAdmin;
+        if (!isAuthorized && sessionStr) {
+          var s = JSON.parse(sessionStr);
+          if (s && s.email && (s.courseCode || s.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        var profileStr = localStorage.getItem('geotany_user_profile');
+        if (!isAuthorized && profileStr) {
+          var p = JSON.parse(profileStr);
+          if (p && p.isRegistered && p.email && p.courseCode) {
+            isAuthorized = true;
+          }
+        }
+        if (!isAuthorized) {
+          var target = window.location.pathname.split('/').pop() || 'topics.html';
+          window.location.replace('../geotanu.html?need_course=GEOTANY&redirect=' + encodeURIComponent(target));
+          return;
+        }
+        var cloak = document.getElementById('authCloak');
+        if (cloak) cloak.remove();
+      } catch (err) {
+        window.location.replace('../geotanu.html');
+      }
+    })();
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>#2 География ұғымы және Зерттеулер мен зерттеушілер (География ғылымының дамуы) | GeoTany</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50: '#eef2ff', 100: '#e0e7ff', 200: '#c7d2fe', 300: '#a5b4fc', 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 800: '#3730a3', 900: '#312e81' },
+            space: { 800: '#1e293b', 850: '#172033', 900: '#0f172a', 950: '#0b1120' }
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Outfit', 'Inter', sans-serif; }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #0b1120; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+  </style>
+</head>
+<body class="bg-[#070b14] text-slate-100 min-h-screen flex flex-col selection:bg-cyan-500 selection:text-space-950">
+
+  <!-- STICKY TOP NAVBAR -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-space-950/85 border-b border-slate-800/80 px-4 sm:px-8 py-3">
+    <div class="max-w-6xl mx-auto flex items-center justify-between gap-3">
+      <!-- Left: Back Button & Badges -->
+      <div class="flex items-center space-x-2.5 sm:space-x-3 shrink-0">
+        <a href="../geotanu.html#section-zhattau_grammar" id="btnBackToCourse" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white transition"><span>←</span><span id="btnBackToCourseText">Артқа</span></a>
+        <span class="px-2.5 py-1 rounded-full text-xs font-black bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
+          #2
+        </span>
+        <span id="navCatBadge" class="text-xs text-slate-400 font-bold hidden md:inline truncate max-w-[200px]">
+          Ғылым тарихы
+        </span>
+      </div>
+
+      <!-- Right: Controls (Lang Switcher & Mark Complete) -->
+      <div class="flex items-center space-x-2 sm:space-x-3 shrink-0">
+        <!-- Language Switcher -->
+        <div class="inline-flex p-1 bg-space-900 border border-slate-800 rounded-xl space-x-1">
+          <button id="btnLangKz" onclick="setLang('kz')" class="px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow">
+            KZ
+          </button>
+          <button id="btnLangRu" onclick="setLang('ru')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">
+            RU
+          </button>
+        </div>
+
+        <!-- Mark as Completed Button -->
+        <button id="btnComplete" onclick="toggleComplete()" class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition border border-slate-700 bg-space-900 text-slate-300 hover:text-white hover:border-slate-600">
+          <span id="completeIcon" class="text-sm">○</span>
+          <span id="completeText" class="hidden sm:inline">Меңгерілді</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN TOPIC CONTAINER -->
+  <main class="max-w-5xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-8 space-y-6 flex-1">
+
+    <!-- HERO HEADER CARD -->
+    <div class="p-6 sm:p-7 rounded-2xl bg-space-950/90 border border-slate-800 space-y-3.5 shadow-xl relative overflow-hidden">
+      <div class="absolute -right-12 -top-12 w-48 h-48 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="flex items-center space-x-2">
+        <span id="heroCatBadge" class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-space-850 text-cyan-400 border border-cyan-500/20">
+          Ғылым тарихы
+        </span>
+        <span class="text-xs text-slate-400">⏱️ ~8-12 мин оқу</span>
+      </div>
+      <h1 id="heroTitle" class="text-xl sm:text-2xl md:text-3xl font-black text-white tracking-tight leading-snug">
+        География ұғымы және Зерттеулер мен зерттеушілер (География ғылымының дамуы)
+      </h1>
+      <!-- External Links Bar -->
+      <div class="flex flex-wrap items-center gap-2 pt-1">
+        <a id="btnBlooket" href="https://dashboard.blooket.com/set/6a95f1be89dce25739b5d309" target="_blank" class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 border border-purple-500/40 text-xs font-bold transition shadow-sm">
+          <span>🎮</span>
+          <span id="btnBlooketText">Blooket ойыны</span>
+        </a>
+        
+      </div>
+    </div>
+
+    <!-- 1. BRIEF SUMMARY CARD -->
+    <section class="p-5 rounded-2xl bg-space-950 border border-brand-500/40 text-xs sm:text-sm text-slate-200 leading-relaxed shadow-lg">
+      <div class="flex items-center space-x-2 text-brand-400 font-extrabold text-xs mb-2">
+        <span>📖</span>
+        <span id="summaryHeader">ТАҚЫРЫПҚА ҚЫСҚАША ШОЛУ</span>
+      </div>
+      <p id="summaryText" class="leading-relaxed">
+        «География» — грекше «жерді сипаттау» (Эратосфен, Б.з.б. III ғ.). Физикалық (табиғат) және экономикалық (халық, шаруашылық) болып бөлінеді. Дамудың 4 кезеңі: Ежелгі (Птолемей, Геродот, Страбон, Аристотель, Пифей, Вавилон), Ортағасырлық (Қашғари «Дөңгелек карта», Бируни, Ибн Батута, Марко Поло, Никитин), Ұлы ашылулар (Колумб 1492, Васко да Гама 1498, Бехайм, Магеллан-Элькано 1519-1522, Тасман), Жаңа заман (Беллинсгаузен-Лазарев 1820, Пири 1909, Амундсен 1911, Кусто 1943).
+      </p>
+    </section>
+
+    <!-- 2. FULL THEORY SECTION -->
+    <section class="p-5 sm:p-7 rounded-2xl bg-space-950 border border-slate-800 space-y-4 shadow-xl">
+      <div class="flex items-center space-x-2 border-b border-slate-800 pb-3">
+        <span class="text-base text-cyan-400 font-black">📚</span>
+        <h2 id="theoryHeader" class="text-xs sm:text-sm font-black text-white uppercase tracking-wider">
+          ТОЛЫҚ ТЕОРИЯЛЫҚ МАТЕРИАЛ МЕН КОНСПЕКТ
+        </h2>
+      </div>
+      <div id="theoryContent">
+        <div class="space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed">
+
+  <!-- 1. ГЕОГРАФИЯ ҰҒЫМЫ МЕН НЕГІЗГІ САЛАЛАРЫ -->
+  <div class="p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3">
+    <h4 class="text-sm sm:text-base font-black text-cyan-400 flex items-center space-x-2 border-b border-slate-800 pb-2">
+      <span>🌐</span>
+      <span>1. География ұғымы және оның басты салалары</span>
+    </h4>
+    <div class="space-y-2">
+      <p>• <b>«География» ұғымы:</b> Грек тілінен аударғанда <b>«жерді сипаттау»</b> деген мағына береді (<i>гео</i> — жер, <i>графо</i> — жазамын, сипаттаймын).</p>
+      <p>• <b>Ғылым ретінде пайда болуы:</b> География ғылым ретінде алғаш <b>Грекияда</b> дамыған. Пайда болған уақыты — <b>Б.з.б. III ғасыр</b>. Бұл ұғымды ғылымға алғаш енгізген ғалым — <b>Эратосфен</b> (құжатта <i>Эротосфен</i>).</p>
+      <p>• <b>География ғылымының негізгі салалық тармақталуы:</b></p>
+      <ul class="list-disc pl-5 space-y-1.5">
+        <li><b>Физикалық география:</b> Жер шары бетінің табиғатын, табиғатта болатын процестер мен құбылыстардың себептерін және олардың даму заңдылықтарын анықтайды.</li>
+        <li><b>Экономикалық география:</b> Халқын, оның шаруашылық қызметін, өндірісті (зауыттарды, фабрикаларды, егістік жерлерді, жайылымдарды, қатынас жолдарын) орналастыру заңдылықтарын зерттейді.</li>
+        <li><b>Саяси география / Елтану:</b> Елтану бағытында мемлекеттер және оның тұрғындарымен саяси география айналысты.</li>
+      </ul>
+    </div>
+
+    <!-- ВЕКТОРЛЫҚ СХЕМА: САЛАЛАР -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 230" class="w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2">
+  <text x="350" y="22" fill="#38bdf8" font-size="11.5" font-weight="900" text-anchor="middle">ГЕОГРАФИЯ ҒЫЛЫМЫНЫҢ НЕГІЗГІ ҚҰРЫЛЫМЫ МЕН САЛАЛАРЫ</text>
+
+  <!-- Top Root Node -->
+  <rect x="230" y="38" width="240" height="34" rx="8" fill="#0284c7" />
+  <text x="350" y="59" fill="#ffffff" font-size="11" font-weight="900" text-anchor="middle">ГЕОГРАФИЯ («ЖЕРДІ СИПАТТАУ»)</text>
+
+  <!-- Connecting Lines -->
+  <path d="M 350 72 L 350 90 L 120 90 L 120 105" fill="none" stroke="#64748b" stroke-width="1.8" />
+  <path d="M 350 72 L 350 105" fill="none" stroke="#64748b" stroke-width="1.8" />
+  <path d="M 350 72 L 350 90 L 580 90 L 580 105" fill="none" stroke="#64748b" stroke-width="1.8" />
+
+  <!-- Left: Physical Geography -->
+  <rect x="15" y="105" width="210" height="110" rx="8" fill="#0f172a" stroke="#10b981" stroke-width="1.5" />
+  <rect x="25" y="115" width="190" height="22" rx="5" fill="#10b981" fill-opacity="0.15" />
+  <text x="120" y="130" fill="#34d399" font-size="10" font-weight="900" text-anchor="middle">ФИЗИКАЛЫҚ ГЕОГРАФИЯ</text>
+  <text x="25" y="152" fill="#cbd5e1" font-size="9">• Жер бетінің табиғатын,</text>
+  <text x="25" y="167" fill="#cbd5e1" font-size="9">• Табиғи процестер мен құбылыстарды,</text>
+  <text x="25" y="182" fill="#cbd5e1" font-size="9">• Олардың даму заңдылықтарын</text>
+  <text x="25" y="198" fill="#94a3b8" font-size="8.5">жүйелі зерттейтін басты сала.</text>
+
+  <!-- Middle: Economic Geography -->
+  <rect x="245" y="105" width="210" height="110" rx="8" fill="#0f172a" stroke="#f59e0b" stroke-width="1.5" />
+  <rect x="255" y="115" width="190" height="22" rx="5" fill="#f59e0b" fill-opacity="0.15" />
+  <text x="350" y="130" fill="#fbbf24" font-size="10" font-weight="900" text-anchor="middle">ЭКОНОМИКАЛЫҚ ГЕОГРАФИЯ</text>
+  <text x="255" y="152" fill="#cbd5e1" font-size="9">• Халық пен оның шаруашылығын,</text>
+  <text x="255" y="167" fill="#cbd5e1" font-size="9">• Өндіріс орындарын (зауыт, фабрика),</text>
+  <text x="255" y="182" fill="#cbd5e1" font-size="9">• Егістік, жайылым, көлік жолдарын</text>
+  <text x="255" y="198" fill="#94a3b8" font-size="8.5">орналастыру заңдылықтарын зерттейді.</text>
+
+  <!-- Right: Political & Regional Geography -->
+  <rect x="475" y="105" width="210" height="110" rx="8" fill="#0f172a" stroke="#0ea5e9" stroke-width="1.5" />
+  <rect x="485" y="115" width="190" height="22" rx="5" fill="#0ea5e9" fill-opacity="0.15" />
+  <text x="580" y="130" fill="#38bdf8" font-size="10" font-weight="900" text-anchor="middle">САЯСИ ГЕОГРАФИЯ / ЕЛТАНУ</text>
+  <text x="485" y="152" fill="#cbd5e1" font-size="9">• Мемлекеттердің шекараларын,</text>
+  <text x="485" y="167" fill="#cbd5e1" font-size="9">• Тұрғындары мен саяси құрылымын,</text>
+  <text x="485" y="182" fill="#cbd5e1" font-size="9">• Елтану бағытын Страбон қалаған</text>
+  <text x="485" y="198" fill="#94a3b8" font-size="8.5">(«География» 17 томдық еңбегі).</text>
+</svg>
+  </div>
+
+  <!-- 2. ГЕОГРАФИЯ ДАМУЫНЫҢ 4 ТАРИХИ КЕЗЕҢІ -->
+  <div class="p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3">
+    <h4 class="text-sm sm:text-base font-black text-amber-400 flex items-center space-x-2 border-b border-slate-800 pb-2">
+      <span>📜</span>
+      <span>2. География ғылымы дамуының 4 тарихи кезеңі</span>
+    </h4>
+    <p>География ғылымының тарихи дамуы <b>4 негізгі кезеңге</b> бөлінеді:</p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 my-2">
+      <div class="p-3 bg-space-950 rounded-xl border border-sky-500/40">
+        <span class="text-xs font-black text-sky-400 block mb-1">1-кезең:</span>
+        <span class="text-xs font-bold text-white block">Ежелгі замандағы географиялық зерттеулер</span>
+        <span class="text-[11px] text-slate-400 mt-1 block">Грекия, Рим, Вавилон, Финикия өркениеттері</span>
+      </div>
+      <div class="p-3 bg-space-950 rounded-xl border border-emerald-500/40">
+        <span class="text-xs font-black text-emerald-400 block mb-1">2-кезең:</span>
+        <span class="text-xs font-bold text-white block">Ортағасырлық кезең (V–IX–XV ғғ.)</span>
+        <span class="text-[11px] text-slate-400 mt-1 block">Түркі, Араб ғалымдары мен еуропалық саяхатшылар</span>
+      </div>
+      <div class="p-3 bg-space-950 rounded-xl border border-amber-500/40">
+        <span class="text-xs font-black text-amber-400 block mb-1">3-кезең:</span>
+        <span class="text-xs font-bold text-white block">Ұлы географиялық ашылулар кезеңі</span>
+        <span class="text-[11px] text-slate-400 mt-1 block">XV ғ. аяғы – XVII ғ. ортасы (Колумб, Магеллан, т.б.)</span>
+      </div>
+      <div class="p-3 bg-space-950 rounded-xl border border-rose-500/40">
+        <span class="text-xs font-black text-rose-400 block mb-1">4-кезең:</span>
+        <span class="text-xs font-bold text-white block">Қазақстандағы географиялық ғылым дамуы</span>
+        <span class="text-[11px] text-slate-400 mt-1 block">Жаңа заман зерттеулері мен ұлттық ғылым қалыптасуы</span>
+      </div>
+    </div>
+
+    <!-- ВЕКТОРЛЫҚ СХЕМА: 4 КЕЗЕҢ -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 230" class="w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2">
+  <text x="350" y="22" fill="#38bdf8" font-size="11.5" font-weight="900" text-anchor="middle">ГЕОГРАФИЯ ҒЫЛЫМЫ ДАМУЫНЫҢ 4 ТАРИХИ КЕЗЕҢІ</text>
+
+  <!-- Stage 1 -->
+  <rect x="15" y="42" width="155" height="170" rx="8" fill="#0f172a" stroke="#0ea5e9" stroke-width="1.2" />
+  <rect x="23" y="50" width="139" height="22" rx="4" fill="#0284c7" fill-opacity="0.2" />
+  <text x="92" y="65" fill="#38bdf8" font-size="9" font-weight="bold" text-anchor="middle">1. ЕЖЕЛГІ КЕЗЕҢ</text>
+  <text x="25" y="88" fill="#ffffff" font-size="8.5" font-weight="bold">• Эратосфен (Б.з.б. III ғ.)</text>
+  <text x="32" y="100" fill="#94a3b8" font-size="8">«География» ұғымын енгізді</text>
+  <text x="25" y="116" fill="#ffffff" font-size="8.5" font-weight="bold">• К. Птолемей (Б.з.б. II ғ.)</text>
+  <text x="32" y="128" fill="#94a3b8" font-size="8">Әлем картасының негізі</text>
+  <text x="25" y="144" fill="#ffffff" font-size="8.5" font-weight="bold">• Геродот &amp; Страбон</text>
+  <text x="32" y="156" fill="#94a3b8" font-size="8">Елтану, Сақтар, 17 томдық</text>
+  <text x="25" y="172" fill="#ffffff" font-size="8.5" font-weight="bold">• Аристотель</text>
+  <text x="32" y="184" fill="#94a3b8" font-size="8">Жер шар тәрізді (дәлел)</text>
+  <text x="25" y="200" fill="#34d399" font-size="8" font-weight="bold">• Пифей: Толысу мен қайту</text>
+
+  <!-- Stage 2 -->
+  <rect x="185" y="42" width="155" height="170" rx="8" fill="#0f172a" stroke="#10b981" stroke-width="1.2" />
+  <rect x="193" y="50" width="139" height="22" rx="4" fill="#10b981" fill-opacity="0.2" />
+  <text x="262" y="65" fill="#34d399" font-size="9" font-weight="bold" text-anchor="middle">2. ОРТА ҒАСЫРЛАР</text>
+  <text x="195" y="88" fill="#ffffff" font-size="8.5" font-weight="bold">• Махмұд Қашғари</text>
+  <text x="202" y="100" fill="#94a3b8" font-size="8">«Дөңгелек карта», Түркі сөздігі</text>
+  <text x="195" y="116" fill="#ffffff" font-size="8.5" font-weight="bold">• Әл-Бируни &amp; Әл-Масуди</text>
+  <text x="202" y="128" fill="#94a3b8" font-size="8">Геодезия, Шығыс Африка</text>
+  <text x="195" y="144" fill="#ffffff" font-size="8.5" font-weight="bold">• Әбу ибн Батута</text>
+  <text x="202" y="156" fill="#94a3b8" font-size="8">Сомали, Тимбукту, Мали</text>
+  <text x="195" y="172" fill="#ffffff" font-size="8.5" font-weight="bold">• Марко Поло (1298 ж.)</text>
+  <text x="202" y="184" fill="#94a3b8" font-size="8">Памир, Үндістан, Қытай</text>
+  <text x="195" y="200" fill="#fbbf24" font-size="8" font-weight="bold">• А. Никитин: 3 теңіз саяхаты</text>
+
+  <!-- Stage 3 -->
+  <rect x="355" y="42" width="160" height="170" rx="8" fill="#0f172a" stroke="#f59e0b" stroke-width="1.2" />
+  <rect x="363" y="50" width="144" height="22" rx="4" fill="#f59e0b" fill-opacity="0.2" />
+  <text x="435" y="65" fill="#fbbf24" font-size="9" font-weight="bold" text-anchor="middle">3. ҰЛЫ АШЫЛУЛАР</text>
+  <text x="365" y="88" fill="#ffffff" font-size="8.5" font-weight="bold">• Х. Колумб (1492 ж.)</text>
+  <text x="372" y="100" fill="#94a3b8" font-size="8">3 кеме («Санта-Мария», т.б.)</text>
+  <text x="365" y="116" fill="#ffffff" font-size="8.5" font-weight="bold">• Васко да Гама (1498 ж.)</text>
+  <text x="372" y="128" fill="#94a3b8" font-size="8">Африканы айналып, Үндістан</text>
+  <text x="365" y="144" fill="#ffffff" font-size="8.5" font-weight="bold">• Мартин Бехайм (1492)</text>
+  <text x="372" y="156" fill="#94a3b8" font-size="8">Тұңғыш глобус жасады</text>
+  <text x="365" y="172" fill="#ffffff" font-size="8.5" font-weight="bold">• Магеллан (1519–1522)</text>
+  <text x="372" y="184" fill="#94a3b8" font-size="8">Дүниежүзін айналу саяхаты</text>
+  <text x="365" y="200" fill="#38bdf8" font-size="8" font-weight="bold">• А. Веспуччи: Америка</text>
+
+  <!-- Stage 4 -->
+  <rect x="530" y="42" width="155" height="170" rx="8" fill="#0f172a" stroke="#ef4444" stroke-width="1.2" />
+  <rect x="538" y="50" width="139" height="22" rx="4" fill="#ef4444" fill-opacity="0.2" />
+  <text x="607" y="65" fill="#f87171" font-size="9" font-weight="bold" text-anchor="middle">4. ЖАҢА ЗАМАН &amp; ҚР</text>
+  <text x="538" y="88" fill="#ffffff" font-size="8.5" font-weight="bold">• Беллинсгаузен &amp; Лазарев</text>
+  <text x="545" y="100" fill="#94a3b8" font-size="8">1820 ж. Антарктиданы ашты</text>
+  <text x="538" y="116" fill="#ffffff" font-size="8.5" font-weight="bold">• Миклухо-Маклай</text>
+  <text x="545" y="128" fill="#94a3b8" font-size="8">Жаңа Гвинея, Тынық мұхит</text>
+  <text x="538" y="144" fill="#ffffff" font-size="8.5" font-weight="bold">• Р. Пири (1909 Солтүстік)</text>
+  <text x="538" y="158" fill="#ffffff" font-size="8.5" font-weight="bold">• Р. Амундсен (1911 Оңтүстік)</text>
+  <text x="538" y="174" fill="#ffffff" font-size="8.5" font-weight="bold">• Жак-Ив Кусто (1943 ж.)</text>
+  <text x="545" y="186" fill="#94a3b8" font-size="8">Акваланг, «Калипсо» кемесі</text>
+  <text x="538" y="200" fill="#34d399" font-size="8" font-weight="bold">• Сібір: Дежнев, Хабаров</text>
+</svg>
+  </div>
+
+  <!-- 3. ЕЖЕЛГІ ЗАМАНДАҒЫ ГЕОГРАФИЯЛЫҚ ЗЕРТТЕУЛЕР -->
+  <div class="p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3">
+    <h4 class="text-sm sm:text-base font-black text-emerald-400 flex items-center space-x-2 border-b border-slate-800 pb-2">
+      <span>🏛️</span>
+      <span>3. Ежелгі замандағы географиялық зерттеулер</span>
+    </h4>
+    <div class="space-y-2 text-xs sm:text-sm">
+      <p>• <b>Эратосфен:</b> «География» ұғымын ғылымға алғаш енгізген, б.з.б. III ғасырда Александрияда Жердің меридиан шеңберін үлкен дәлдікпен есептеп шығарды.</p>
+      <p>• <b>Клавдий Птолемей:</b> Біздің заманымыздан бұрын ІІ ғасырда картографиялық бағыт ұстанған. ІV ғасырда К. Птолемей материалдары негізінде тұңғыш толыққанды <b>«Әлем картасы»</b> жасалды.</p>
+      <p>• <b>Геродот:</b> География ұғымына ғылыми тұжырымдама берген («Тарихтың атасы»), Каспий теңізін мекендеген <b>сақтар туралы құнды мәлімет</b> қалдырған.</p>
+      <p>• <b>Страбон:</b> Елтану бағытының негізін қалаған; «География» атты <b>17 томдық</b> классикалық кітап жазған; Каспий теңізін Жерді айнала қоршаған төрт бұғаздың бірі деп есептеген.</p>
+      <p>• <b>Фалес және Анаксимандр:</b> Дүниежүзінде <b>алғаш рет масштабты қолданып карта жасаған</b> антикалық ойшылдар.</p>
+      <p>• <b>Пифей:</b> Батыс Еуропа жайлы құнды еңбек қалдырған. Дүниеде <b>алғаш рет Айдың тартылыс әсерінен мұхит суының толысу және қайтуын</b> ғылыми тұрғыда түсіндірген саяхатшы.</p>
+      <p>• <b>Аристотель:</b> Жердің <b>шар тәріздес</b> екенін алғаш рет ғылыми дәлелдеген (Ай тұтылғанда Жердің көлеңкесі дөңгелек түсетіндігін негіздеген).</p>
+      <p>• <b>Вавилондықтар:</b> Жазуды ойлап тапқан, Жерді шарға ұқсатқан, шеңбердің <b>360 градусқа тең екенін</b> анықтаған, саз балшықтан <b>алғаш карта жасаған</b> (бұл карта қазір Британия мұражайында сақтаулы).</p>
+      <p>• <b>Финикиялықтар:</b> Еуропа (<i>«эреб»</i> — батыс, күннің батуы) мен Азияны (<i>«асу»</i> — шығыс, күннің шығуы) дербес дүние бөліктері ретінде бөлген теңізшілер.</p>
+      <p>• <b>Үнділер:</b> Біздің заманымыздағы I ғасырда Суматра мен Ява аралдарын ашқан, қазіргі Индонезия аралдарында мекендеген көне саудагер-зерттеушілер.</p>
+    </div>
+  </div>
+
+  <!-- 4. ОРТАҒАСЫРЛЫҚ КЕЗЕҢ (V-IX-XV ҒҒ.) ЗЕРТТЕУЛЕРІ -->
+  <div class="p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3">
+    <h4 class="text-sm sm:text-base font-black text-rose-400 flex items-center space-x-2 border-b border-slate-800 pb-2">
+      <span>🕌</span>
+      <span>4. Ортағасырлық кезең (V–IX–XV ғғ.) зерттеулері</span>
+    </h4>
+    <div class="space-y-2 text-xs sm:text-sm">
+      <p>• <b>Махмұд Қашғари (XI ғ.):</b> <b>«Диуани-лұғат-ат-түрік»</b> (Түркі лексикасының жинағы / Түркі сөздігі) атты әлемге әйгілі еңбекті жазған; түркі әлемінің тұңғыш <b>«Дөңгелек картасын»</b> құрастырған.</p>
+      <p>• <b>«Дөңгелек картаны» зерттеген ғалымдар:</b> <b>К. Миллер, А. Герман, И.И. Умняков, Ш.Д. Алиев</b>.</p>
+      <p>• <b>Әл-Масуди:</b> Шығыс Африка, Үнді мұхиты жайлы құнды географиялық мәліметтер қалдырған («Арабтардың Геродоты»).</p>
+      <p>• <b>Әл-Бируни:</b> Геодезия ғылымының дамуына зор үлес қосқан, Жер радиусын өлшеген (6339 км шамасында дәл тапқан), тұңғыш рет глобус жасаған энциклопедияшы ғалым.</p>
+      <p>• <b>Әл-Идриси:</b> Арабтардың әйгілі карта құрастырушысы болған (XII ғ. Сицилия королі II Рожерге арнап белгілі әлем картасын сызған).</p>
+      <p>• <b>Әбу ибн Баттута:</b> Сомали түбегіне, Тимбуктуға, Мали жерлеріне, Азия мен Африка елдеріне 30 жыл бойы 120 000 км саяхат жасаған атақты араб жиһанкезі.</p>
+      <p>• <b>Афанасий Никитин:</b> <b>«Үш теңіздің арғы жағына саяхат»</b> (1466–1472 жж.) атты құнды тарихи-географиялық еңбекті жазған тұңғыш орыс саяхатшысы (Үндістан жерін сипаттаған).</p>
+      <p>• <b>Марко Поло:</b> Жер туралы мәліметті ХІІІ ғасырда (1271–1295 жж.) Азияға жасаған саяхатында Памир табиғаты мен Үндістан, Қытай жерлері туралы жаңалықтармен толықтырған. Оның 1298 жылы жарық көрген <b>«Дүниежүзінің алуантүрлілігі туралы кітап»</b> атты еңбегіндегі негізгі деректер — <b>Қытай туралы</b> болып табылады.</p>
+    </div>
+  </div>
+
+  <!-- 5. ҰЛЫ ГЕОГРАФИЯЛЫҚ АШЫЛУЛАР ЖӘНЕ ПОЛЮСТЕРДІ ЗЕРТТЕУ -->
+  <div class="p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3">
+    <h4 class="text-sm sm:text-base font-black text-violet-400 flex items-center space-x-2 border-b border-slate-800 pb-2">
+      <span>⛵</span>
+      <span>5. Ұлы географиялық ашылулар кезеңі (XV ғ. аяғы – XVII ғ. ортасы) және Полярлық зерттеулер</span>
+    </h4>
+    <div class="space-y-2 text-xs sm:text-sm">
+      <p>• <b>Христофор Колумб:</b> Саяхаты басталған жыл — <b>1492 жылы</b>. Пиреней (құжатта <i>Периней</i>) түбегінен <b>«Санта-Мария», «Пинта» (құжатта <i>Пинте</i>), «Нинья»</b> деген 3 кемемен саяхатқа шығып, Атлант мұхитын кесіп өтіп, Багам аралдарына жетті. Өмірінің соңына дейін «Үндістанға баратын батыс жолды» аштым деп ойлады.</p>
+      <p>• <b>Васко да Гама:</b> Африка материгін айналып, Сомали түбегі арқылы Үндістанның <b>Калькутта</b> жеріне теңіз жолын салды (<b>1498 жылы</b>).</p>
+      <p>• <b>Мартин Бехайм:</b> XV ғасырда (<b>1492 жылы</b>) алғаш рет <b>«Жер алмасы»</b> атты глобус жасаған неміс географы.</p>
+      <p>• <b>Америго Веспуччи:</b> <b>1499–1503 жж.</b> Оңтүстік Америка жағалауын зерттеп, оның мүлде жаңа дүние бөлігі екенін анықтады; құрлық оның есімімен <b>«Америка»</b> деп аталды.</p>
+      <p>• <b>Фернан Магеллан мен Себастьян Элькано:</b> <b>1519–1522 жж.</b> тұңғыш рет дүниежүзін айналып шығып, Жердің <b>шар тәрізді екенін</b> іс жүзінде дәлелдеді. Тынық мұхитын ашып, Оңтүстік Америка жағалауындағы бұғаз арқылы келесі мұхитқа өтті (ол кейін <b>«Магеллан бұғазы»</b> деп аталды).</p>
+      <p>• <b>Абель Тасман:</b> XVII ғасырда Аустралияның жағалауындағы <b>Тонга (құжатта <i>Тонго</i>), Фиджи, Бисмарк архипелагтарын</b>, Тасмания мен Жаңа Зеландияны зерттеген голланд теңізшісі.</p>
+      <p>• <b>Ф. Беллинсгаузен мен М. Лазарев:</b> <b>1819–1821 жж.</b> <b>«Восток»</b> және <b>«Мирный»</b> кемелерімен 1820 жылдың 28 қаңтарында ең соңғы құрлық — <b>Антарктида материгін ашты</b>.</p>
+      <p>• <b>Н.Н. Миклухо-Маклай:</b> <b>1870–1887 жж.</b> Тынық мұхиты аралдары мен Жаңа Гвинея (Маклай жағалауы), Аустралия жағалауына географиялық-этнографиялық зерттеу жүргізді.</p>
+      <p>• <b>Орыс саяхатшылары мен Сібір зерттеулері:</b> XVI ғасырдың аяғы мен XVII ғасырдың басында Сібір мен Қиыр Шығысты зерттегендер — <b>И. Ребров, С. Дежнев, Е. Хабаров, С. Ремезов</b>.</p>
+      <p>• <b>Орыс елшілері:</b> Сібір арқылы Оңтүстік-шығысқа, Орта Азияға, Үндістанға, Моңғолияға және Қытайға саяхат жасаған Орыс елшілері — <b>И. Петлин және Ф. Байков, Н. Спафарий</b> (құжатта <i>Спафариян</i>).</p>
+      <p>• <b>Полюстерді бағындыру және мұхит тереңдігі:</b></p>
+      <ul class="list-disc pl-5 space-y-1">
+        <li><b>1904 жылы:</b> Солтүстік полюстегі магниттік өрісті (магниттік полюсті) ашқан — <b>Р. Амундсен</b>.</li>
+        <li><b>1909 жылы:</b> Солтүстік полюске алғаш жеткен саяхатшы — <b>Роберт Пири</b>.</li>
+        <li><b>1911 жылы:</b> Оңтүстік полюске алғаш жеткен норвег саяхатшысы — <b>Руаль Амундсен</b> (кейін Р. Скотт экспедициясы жетті).</li>
+        <li><b>1943 жылы:</b> Ең алғаш <b>акваланг</b> ойлап тапқан және <b>«Калипсо»</b> ғылыми-зерттеу кемесімен мұхит тереңдіктеріне зерттеу жүргізген — <b>Жак Ив Кусто</b>.</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+      </div>
+    </section>
+
+    <!-- 3. VISUAL SVG DIAGRAM / ILLUSTRATION -->
+    <section id="svgSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl">
+      <div class="flex items-center space-x-2 text-amber-400 font-extrabold text-xs">
+        <span>🎨</span>
+        <span id="svgHeader">КӨРНЕКІ СХЕМА МЕН ИНФОГРАФИКА</span>
+      </div>
+      <div id="svgContainer" class="w-full flex justify-center overflow-x-auto">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 250" class="w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner">
+  <text x="350" y="24" fill="#38bdf8" font-size="12" font-weight="900" text-anchor="middle">ГЕОГРАФИЯЛЫҚ ЗЕРТТЕУЛЕР МЕН ҰЛЫ АШЫЛУЛАР ХРОНОЛОГИЯСЫ</text>
+
+  <!-- Left Card: Ancient and Medieval -->
+  <rect x="15" y="40" width="210" height="195" rx="10" fill="#0f172a" stroke="#0ea5e9" stroke-width="1.5" />
+  <rect x="25" y="50" width="190" height="24" rx="6" fill="#0284c7" fill-opacity="0.15" />
+  <text x="120" y="66" fill="#38bdf8" font-size="10.5" font-weight="900" text-anchor="middle">ЕЖЕЛГІ &amp; ОРТА ҒАСЫР</text>
+  <text x="26" y="92" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#ffffff">Эратосфен (Б.з.б. III ғ.):</tspan> «География»</text>
+  <text x="26" y="108" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#ffffff">К. Птолемей (Б.з.б. II ғ.):</tspan> Карта</text>
+  <text x="26" y="126" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#ffffff">Страбон:</tspan> 17 томдық, Елтану</text>
+  <text x="26" y="144" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#ffffff">Аристотель:</tspan> Жер шар тәрізді</text>
+  <text x="26" y="164" fill="#34d399" font-size="9.5" font-weight="bold">• Махмұд Қашғари (XI ғ.):</text>
+  <text x="34" y="178" fill="#94a3b8" font-size="9">«Дөңгелек карта», Сөздік</text>
+  <text x="26" y="196" fill="#fbbf24" font-size="9.5" font-weight="bold">• Марко Поло (1298 ж.):</text>
+  <text x="34" y="210" fill="#94a3b8" font-size="9">Памир, Үндістан, Қытай</text>
+
+  <!-- Middle Card: Great Geographical Discoveries -->
+  <rect x="245" y="40" width="210" height="195" rx="10" fill="#0f172a" stroke="#f59e0b" stroke-width="1.5" />
+  <rect x="255" y="50" width="190" height="24" rx="6" fill="#f59e0b" fill-opacity="0.15" />
+  <text x="350" y="66" fill="#fbbf24" font-size="10.5" font-weight="900" text-anchor="middle">ҰЛЫ ГЕОГРАФИЯЛЫҚ АШЫЛУЛАР</text>
+  <text x="256" y="92" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#ffffff">Х. Колумб (1492 ж.):</tspan> Америка</text>
+  <text x="264" y="106" fill="#94a3b8" font-size="9">«Санта-Мария», «Пинта», «Нинья»</text>
+  <text x="256" y="126" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#ffffff">Васко да Гама (1498 ж.):</tspan></text>
+  <text x="264" y="140" fill="#94a3b8" font-size="9">Африканы айналып Үндістанға</text>
+  <text x="256" y="160" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#ffffff">Мартин Бехайм (1492 ж.):</tspan></text>
+  <text x="264" y="174" fill="#94a3b8" font-size="9">Тұңғыш глобус жасаушы</text>
+  <text x="256" y="194" fill="#38bdf8" font-size="9.5" font-weight="bold">• Ф. Магеллан (1519–1522):</text>
+  <text x="264" y="208" fill="#94a3b8" font-size="9">Дүниежүзін айналу, Тынық мұхит</text>
+
+  <!-- Right Card: Polar & Modern Discoveries -->
+  <rect x="475" y="40" width="210" height="195" rx="10" fill="#0f172a" stroke="#10b981" stroke-width="1.5" />
+  <rect x="485" y="50" width="190" height="24" rx="6" fill="#10b981" fill-opacity="0.15" />
+  <text x="580" y="66" fill="#34d399" font-size="10.5" font-weight="900" text-anchor="middle">ПОЛЮСТЕР &amp; МҰХИТ ЗЕРТТЕУІ</text>
+  <text x="486" y="92" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#ffffff">Беллинсгаузен-Лазарев (1820):</tspan></text>
+  <text x="494" y="106" fill="#94a3b8" font-size="9">«Восток» &amp; «Мирный» — Антарктида</text>
+  <text x="486" y="126" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#ffffff">А. Тасман (XVII ғ.):</tspan> Аустралия,</text>
+  <text x="494" y="140" fill="#94a3b8" font-size="9">Тонга, Фиджи, Бисмарк аралдары</text>
+  <text x="486" y="160" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#ffffff">Р. Пири (1909 ж.):</tspan> Солтүстік полюс</text>
+  <text x="486" y="178" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#ffffff">Р. Амундсен (1911 ж.):</tspan> Оңтүстік полюс</text>
+  <text x="486" y="198" fill="#34d399" font-size="9.5" font-weight="bold">• Жак-Ив Кусто (1943 ж.):</text>
+  <text x="494" y="212" fill="#94a3b8" font-size="9">Акваланг, «Калипсо» кемесі</text>
+</svg>
+      </div>
+    </section>
+
+    <!-- 4. STRUCTURED DATA TABLE -->
+    <section id="tableSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl overflow-x-auto">
+      <h3 class="text-xs font-black text-cyan-400 flex items-center space-x-2">
+        <span>📊</span>
+        <span id="tableHeader">НАҚТЫ КӨРСЕТКІШТЕР МЕН КЛАССИФИКАЦИЯ КЕСТЕСІ</span>
+      </h3>
+      <div id="tableContainer">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- 5. KEY FACTS FOR UNT / ЕНТ -->
+    <section id="factsSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl">
+      <h3 class="text-xs font-black text-amber-400 flex items-center space-x-2">
+        <span>⚡</span>
+        <span id="factsHeader">ҰБТ-ҒА ҚАЖЕТТІ НЕГІЗГІ ЕРЕЖЕЛЕР МЕН ФАКТІЛЕР</span>
+      </h3>
+      <ul id="factsList" class="space-y-2 text-xs text-slate-300">
+        <!-- Rendered via JS -->
+      </ul>
+    </section>
+
+    <!-- 6. TRAPS AND HACKS -->
+    <section id="trapsSection" class="p-5 rounded-2xl bg-gradient-to-r from-amber-950/40 via-space-950 to-space-950 border border-amber-500/40 space-y-3 shadow-xl">
+      <h3 class="text-xs font-black text-amber-400 flex items-center space-x-2">
+        <span>💡</span>
+        <span id="trapsHeader">ҰБТ ҚАҚПАНДАРЫ МЕН ЛАЙФХАКТАР</span>
+      </h3>
+      <div id="trapsList" class="space-y-2 text-xs text-slate-200">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- FOOTER NAVIGATION -->
+    <nav class="pt-4 pb-8 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3 text-xs">
+      <a href="topic_01.html" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white transition shadow-sm">
+      <span>←</span>
+      <span>#1 Алдыңғы тақырып</span>
+    </a>
+      <a href="../geotanu.html#section-zhattau_grammar" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-400 hover:text-white transition">
+        <span>🏠</span>
+        <span>Барлық тақырыптар</span>
+      </a>
+      <a href="topic_03.html" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-xs font-bold text-cyan-300 hover:text-white transition shadow-sm">
+      <span>Келесі тақырып #3</span>
+      <span>→</span>
+    </a>
+    </nav>
+
+  </main>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="xpToast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300 flex items-center space-x-2 px-4 py-3 rounded-2xl bg-space-900 border border-cyan-500/40 shadow-2xl text-xs font-bold text-white">
+    <span class="text-cyan-400 text-base">✨</span>
+    <span id="toastMsg">+20 XP! Тақырып меңгерілді</span>
+  </div>
+
+  <script>
+    const topicData = {"num": 2, "title_kz": "География ұғымы және Зерттеулер мен зерттеушілер (География ғылымының дамуы)", "title_ru": "Понятие географии, исследования и исследователи (Развитие географической науки)", "category_kz": "Ғылым тарихы", "category_ru": "История науки", "summary_kz": "«География» — грекше «жерді сипаттау» (Эратосфен, Б.з.б. III ғ.). Физикалық (табиғат) және экономикалық (халық, шаруашылық) болып бөлінеді. Дамудың 4 кезеңі: Ежелгі (Птолемей, Геродот, Страбон, Аристотель, Пифей, Вавилон), Ортағасырлық (Қашғари «Дөңгелек карта», Бируни, Ибн Батута, Марко Поло, Никитин), Ұлы ашылулар (Колумб 1492, Васко да Гама 1498, Бехайм, Магеллан-Элькано 1519-1522, Тасман), Жаңа заман (Беллинсгаузен-Лазарев 1820, Пири 1909, Амундсен 1911, Кусто 1943).", "summary_ru": "«География» — греч. «землеописание» (Эратосфен, III в. до н.э.). Делится на физическую (природа) и экономическую (население, хозяйство). 4 этапа: Древний (Птолемей, Геродот, Страбон, Аристотель, Пифей, Вавилон), Средневековый (Кашгари «Круглая карта», Бируни, Ибн Баттута, Марко Поло, Никитин), Великие открытия (Колумб 1492, Васко да Гама 1498, Бехайм, Магеллан-Элькано 1519-1522, Тасман), Новое время (Беллинсгаузен-Лазарев 1820, Пири 1909, Амундсен 1911, Кусто 1943).", "full_theory_kz": "<div class=\"space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed\">\n\n  <!-- 1. ГЕОГРАФИЯ ҰҒЫМЫ МЕН НЕГІЗГІ САЛАЛАРЫ -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-cyan-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🌐</span>\n      <span>1. География ұғымы және оның басты салалары</span>\n    </h4>\n    <div class=\"space-y-2\">\n      <p>• <b>«География» ұғымы:</b> Грек тілінен аударғанда <b>«жерді сипаттау»</b> деген мағына береді (<i>гео</i> — жер, <i>графо</i> — жазамын, сипаттаймын).</p>\n      <p>• <b>Ғылым ретінде пайда болуы:</b> География ғылым ретінде алғаш <b>Грекияда</b> дамыған. Пайда болған уақыты — <b>Б.з.б. III ғасыр</b>. Бұл ұғымды ғылымға алғаш енгізген ғалым — <b>Эратосфен</b> (құжатта <i>Эротосфен</i>).</p>\n      <p>• <b>География ғылымының негізгі салалық тармақталуы:</b></p>\n      <ul class=\"list-disc pl-5 space-y-1.5\">\n        <li><b>Физикалық география:</b> Жер шары бетінің табиғатын, табиғатта болатын процестер мен құбылыстардың себептерін және олардың даму заңдылықтарын анықтайды.</li>\n        <li><b>Экономикалық география:</b> Халқын, оның шаруашылық қызметін, өндірісті (зауыттарды, фабрикаларды, егістік жерлерді, жайылымдарды, қатынас жолдарын) орналастыру заңдылықтарын зерттейді.</li>\n        <li><b>Саяси география / Елтану:</b> Елтану бағытында мемлекеттер және оның тұрғындарымен саяси география айналысты.</li>\n      </ul>\n    </div>\n\n    <!-- ВЕКТОРЛЫҚ СХЕМА: САЛАЛАР -->\n    <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 700 230\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2\">\n  <text x=\"350\" y=\"22\" fill=\"#38bdf8\" font-size=\"11.5\" font-weight=\"900\" text-anchor=\"middle\">ГЕОГРАФИЯ ҒЫЛЫМЫНЫҢ НЕГІЗГІ ҚҰРЫЛЫМЫ МЕН САЛАЛАРЫ</text>\n\n  <!-- Top Root Node -->\n  <rect x=\"230\" y=\"38\" width=\"240\" height=\"34\" rx=\"8\" fill=\"#0284c7\" />\n  <text x=\"350\" y=\"59\" fill=\"#ffffff\" font-size=\"11\" font-weight=\"900\" text-anchor=\"middle\">ГЕОГРАФИЯ («ЖЕРДІ СИПАТТАУ»)</text>\n\n  <!-- Connecting Lines -->\n  <path d=\"M 350 72 L 350 90 L 120 90 L 120 105\" fill=\"none\" stroke=\"#64748b\" stroke-width=\"1.8\" />\n  <path d=\"M 350 72 L 350 105\" fill=\"none\" stroke=\"#64748b\" stroke-width=\"1.8\" />\n  <path d=\"M 350 72 L 350 90 L 580 90 L 580 105\" fill=\"none\" stroke=\"#64748b\" stroke-width=\"1.8\" />\n\n  <!-- Left: Physical Geography -->\n  <rect x=\"15\" y=\"105\" width=\"210\" height=\"110\" rx=\"8\" fill=\"#0f172a\" stroke=\"#10b981\" stroke-width=\"1.5\" />\n  <rect x=\"25\" y=\"115\" width=\"190\" height=\"22\" rx=\"5\" fill=\"#10b981\" fill-opacity=\"0.15\" />\n  <text x=\"120\" y=\"130\" fill=\"#34d399\" font-size=\"10\" font-weight=\"900\" text-anchor=\"middle\">ФИЗИКАЛЫҚ ГЕОГРАФИЯ</text>\n  <text x=\"25\" y=\"152\" fill=\"#cbd5e1\" font-size=\"9\">• Жер бетінің табиғатын,</text>\n  <text x=\"25\" y=\"167\" fill=\"#cbd5e1\" font-size=\"9\">• Табиғи процестер мен құбылыстарды,</text>\n  <text x=\"25\" y=\"182\" fill=\"#cbd5e1\" font-size=\"9\">• Олардың даму заңдылықтарын</text>\n  <text x=\"25\" y=\"198\" fill=\"#94a3b8\" font-size=\"8.5\">жүйелі зерттейтін басты сала.</text>\n\n  <!-- Middle: Economic Geography -->\n  <rect x=\"245\" y=\"105\" width=\"210\" height=\"110\" rx=\"8\" fill=\"#0f172a\" stroke=\"#f59e0b\" stroke-width=\"1.5\" />\n  <rect x=\"255\" y=\"115\" width=\"190\" height=\"22\" rx=\"5\" fill=\"#f59e0b\" fill-opacity=\"0.15\" />\n  <text x=\"350\" y=\"130\" fill=\"#fbbf24\" font-size=\"10\" font-weight=\"900\" text-anchor=\"middle\">ЭКОНОМИКАЛЫҚ ГЕОГРАФИЯ</text>\n  <text x=\"255\" y=\"152\" fill=\"#cbd5e1\" font-size=\"9\">• Халық пен оның шаруашылығын,</text>\n  <text x=\"255\" y=\"167\" fill=\"#cbd5e1\" font-size=\"9\">• Өндіріс орындарын (зауыт, фабрика),</text>\n  <text x=\"255\" y=\"182\" fill=\"#cbd5e1\" font-size=\"9\">• Егістік, жайылым, көлік жолдарын</text>\n  <text x=\"255\" y=\"198\" fill=\"#94a3b8\" font-size=\"8.5\">орналастыру заңдылықтарын зерттейді.</text>\n\n  <!-- Right: Political & Regional Geography -->\n  <rect x=\"475\" y=\"105\" width=\"210\" height=\"110\" rx=\"8\" fill=\"#0f172a\" stroke=\"#0ea5e9\" stroke-width=\"1.5\" />\n  <rect x=\"485\" y=\"115\" width=\"190\" height=\"22\" rx=\"5\" fill=\"#0ea5e9\" fill-opacity=\"0.15\" />\n  <text x=\"580\" y=\"130\" fill=\"#38bdf8\" font-size=\"10\" font-weight=\"900\" text-anchor=\"middle\">САЯСИ ГЕОГРАФИЯ / ЕЛТАНУ</text>\n  <text x=\"485\" y=\"152\" fill=\"#cbd5e1\" font-size=\"9\">• Мемлекеттердің шекараларын,</text>\n  <text x=\"485\" y=\"167\" fill=\"#cbd5e1\" font-size=\"9\">• Тұрғындары мен саяси құрылымын,</text>\n  <text x=\"485\" y=\"182\" fill=\"#cbd5e1\" font-size=\"9\">• Елтану бағытын Страбон қалаған</text>\n  <text x=\"485\" y=\"198\" fill=\"#94a3b8\" font-size=\"8.5\">(«География» 17 томдық еңбегі).</text>\n</svg>\n  </div>\n\n  <!-- 2. ГЕОГРАФИЯ ДАМУЫНЫҢ 4 ТАРИХИ КЕЗЕҢІ -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-amber-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>📜</span>\n      <span>2. География ғылымы дамуының 4 тарихи кезеңі</span>\n    </h4>\n    <p>География ғылымының тарихи дамуы <b>4 негізгі кезеңге</b> бөлінеді:</p>\n    <div class=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 my-2\">\n      <div class=\"p-3 bg-space-950 rounded-xl border border-sky-500/40\">\n        <span class=\"text-xs font-black text-sky-400 block mb-1\">1-кезең:</span>\n        <span class=\"text-xs font-bold text-white block\">Ежелгі замандағы географиялық зерттеулер</span>\n        <span class=\"text-[11px] text-slate-400 mt-1 block\">Грекия, Рим, Вавилон, Финикия өркениеттері</span>\n      </div>\n      <div class=\"p-3 bg-space-950 rounded-xl border border-emerald-500/40\">\n        <span class=\"text-xs font-black text-emerald-400 block mb-1\">2-кезең:</span>\n        <span class=\"text-xs font-bold text-white block\">Ортағасырлық кезең (V–IX–XV ғғ.)</span>\n        <span class=\"text-[11px] text-slate-400 mt-1 block\">Түркі, Араб ғалымдары мен еуропалық саяхатшылар</span>\n      </div>\n      <div class=\"p-3 bg-space-950 rounded-xl border border-amber-500/40\">\n        <span class=\"text-xs font-black text-amber-400 block mb-1\">3-кезең:</span>\n        <span class=\"text-xs font-bold text-white block\">Ұлы географиялық ашылулар кезеңі</span>\n        <span class=\"text-[11px] text-slate-400 mt-1 block\">XV ғ. аяғы – XVII ғ. ортасы (Колумб, Магеллан, т.б.)</span>\n      </div>\n      <div class=\"p-3 bg-space-950 rounded-xl border border-rose-500/40\">\n        <span class=\"text-xs font-black text-rose-400 block mb-1\">4-кезең:</span>\n        <span class=\"text-xs font-bold text-white block\">Қазақстандағы географиялық ғылым дамуы</span>\n        <span class=\"text-[11px] text-slate-400 mt-1 block\">Жаңа заман зерттеулері мен ұлттық ғылым қалыптасуы</span>\n      </div>\n    </div>\n\n    <!-- ВЕКТОРЛЫҚ СХЕМА: 4 КЕЗЕҢ -->\n    <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 700 230\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2\">\n  <text x=\"350\" y=\"22\" fill=\"#38bdf8\" font-size=\"11.5\" font-weight=\"900\" text-anchor=\"middle\">ГЕОГРАФИЯ ҒЫЛЫМЫ ДАМУЫНЫҢ 4 ТАРИХИ КЕЗЕҢІ</text>\n\n  <!-- Stage 1 -->\n  <rect x=\"15\" y=\"42\" width=\"155\" height=\"170\" rx=\"8\" fill=\"#0f172a\" stroke=\"#0ea5e9\" stroke-width=\"1.2\" />\n  <rect x=\"23\" y=\"50\" width=\"139\" height=\"22\" rx=\"4\" fill=\"#0284c7\" fill-opacity=\"0.2\" />\n  <text x=\"92\" y=\"65\" fill=\"#38bdf8\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\">1. ЕЖЕЛГІ КЕЗЕҢ</text>\n  <text x=\"25\" y=\"88\" fill=\"#ffffff\" font-size=\"8.5\" font-weight=\"bold\">• Эратосфен (Б.з.б. III ғ.)</text>\n  <text x=\"32\" y=\"100\" fill=\"#94a3b8\" font-size=\"8\">«География» ұғымын енгізді</text>\n  <text x=\"25\" y=\"116\" fill=\"#ffffff\" font-size=\"8.5\" font-weight=\"bold\">• К. Птолемей (Б.з.б. II ғ.)</text>\n  <text x=\"32\" y=\"128\" fill=\"#94a3b8\" font-size=\"8\">Әлем картасының негізі</text>\n  <text x=\"25\" y=\"144\" fill=\"#ffffff\" font-size=\"8.5\" font-weight=\"bold\">• Геродот &amp; Страбон</text>\n  <text x=\"32\" y=\"156\" fill=\"#94a3b8\" font-size=\"8\">Елтану, Сақтар, 17 томдық</text>\n  <text x=\"25\" y=\"172\" fill=\"#ffffff\" font-size=\"8.5\" font-weight=\"bold\">• Аристотель</text>\n  <text x=\"32\" y=\"184\" fill=\"#94a3b8\" font-size=\"8\">Жер шар тәрізді (дәлел)</text>\n  <text x=\"25\" y=\"200\" fill=\"#34d399\" font-size=\"8\" font-weight=\"bold\">• Пифей: Толысу мен қайту</text>\n\n  <!-- Stage 2 -->\n  <rect x=\"185\" y=\"42\" width=\"155\" height=\"170\" rx=\"8\" fill=\"#0f172a\" stroke=\"#10b981\" stroke-width=\"1.2\" />\n  <rect x=\"193\" y=\"50\" width=\"139\" height=\"22\" rx=\"4\" fill=\"#10b981\" fill-opacity=\"0.2\" />\n  <text x=\"262\" y=\"65\" fill=\"#34d399\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\">2. ОРТА ҒАСЫРЛАР</text>\n  <text x=\"195\" y=\"88\" fill=\"#ffffff\" font-size=\"8.5\" font-weight=\"bold\">• Махмұд Қашғари</text>\n  <text x=\"202\" y=\"100\" fill=\"#94a3b8\" font-size=\"8\">«Дөңгелек карта», Түркі сөздігі</text>\n  <text x=\"195\" y=\"116\" fill=\"#ffffff\" font-size=\"8.5\" font-weight=\"bold\">• Әл-Бируни &amp; Әл-Масуди</text>\n  <text x=\"202\" y=\"128\" fill=\"#94a3b8\" font-size=\"8\">Геодезия, Шығыс Африка</text>\n  <text x=\"195\" y=\"144\" fill=\"#ffffff\" font-size=\"8.5\" font-weight=\"bold\">• Әбу ибн Батута</text>\n  <text x=\"202\" y=\"156\" fill=\"#94a3b8\" font-size=\"8\">Сомали, Тимбукту, Мали</text>\n  <text x=\"195\" y=\"172\" fill=\"#ffffff\" font-size=\"8.5\" font-weight=\"bold\">• Марко Поло (1298 ж.)</text>\n  <text x=\"202\" y=\"184\" fill=\"#94a3b8\" font-size=\"8\">Памир, Үндістан, Қытай</text>\n  <text x=\"195\" y=\"200\" fill=\"#fbbf24\" font-size=\"8\" font-weight=\"bold\">• А. Никитин: 3 теңіз саяхаты</text>\n\n  <!-- Stage 3 -->\n  <rect x=\"355\" y=\"42\" width=\"160\" height=\"170\" rx=\"8\" fill=\"#0f172a\" stroke=\"#f59e0b\" stroke-width=\"1.2\" />\n  <rect x=\"363\" y=\"50\" width=\"144\" height=\"22\" rx=\"4\" fill=\"#f59e0b\" fill-opacity=\"0.2\" />\n  <text x=\"435\" y=\"65\" fill=\"#fbbf24\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\">3. ҰЛЫ АШЫЛУЛАР</text>\n  <text x=\"365\" y=\"88\" fill=\"#ffffff\" font-size=\"8.5\" font-weight=\"bold\">• Х. Колумб (1492 ж.)</text>\n  <text x=\"372\" y=\"100\" fill=\"#94a3b8\" font-size=\"8\">3 кеме («Санта-Мария», т.б.)</text>\n  <text x=\"365\" y=\"116\" fill=\"#ffffff\" font-size=\"8.5\" font-weight=\"bold\">• Васко да Гама (1498 ж.)</text>\n  <text x=\"372\" y=\"128\" fill=\"#94a3b8\" font-size=\"8\">Африканы айналып, Үндістан</text>\n  <text x=\"365\" y=\"144\" fill=\"#ffffff\" font-size=\"8.5\" font-weight=\"bold\">• Мартин Бехайм (1492)</text>\n  <text x=\"372\" y=\"156\" fill=\"#94a3b8\" font-size=\"8\">Тұңғыш глобус жасады</text>\n  <text x=\"365\" y=\"172\" fill=\"#ffffff\" font-size=\"8.5\" font-weight=\"bold\">• Магеллан (1519–1522)</text>\n  <text x=\"372\" y=\"184\" fill=\"#94a3b8\" font-size=\"8\">Дүниежүзін айналу саяхаты</text>\n  <text x=\"365\" y=\"200\" fill=\"#38bdf8\" font-size=\"8\" font-weight=\"bold\">• А. Веспуччи: Америка</text>\n\n  <!-- Stage 4 -->\n  <rect x=\"530\" y=\"42\" width=\"155\" height=\"170\" rx=\"8\" fill=\"#0f172a\" stroke=\"#ef4444\" stroke-width=\"1.2\" />\n  <rect x=\"538\" y=\"50\" width=\"139\" height=\"22\" rx=\"4\" fill=\"#ef4444\" fill-opacity=\"0.2\" />\n  <text x=\"607\" y=\"65\" fill=\"#f87171\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\">4. ЖАҢА ЗАМАН &amp; ҚР</text>\n  <text x=\"538\" y=\"88\" fill=\"#ffffff\" font-size=\"8.5\" font-weight=\"bold\">• Беллинсгаузен &amp; Лазарев</text>\n  <text x=\"545\" y=\"100\" fill=\"#94a3b8\" font-size=\"8\">1820 ж. Антарктиданы ашты</text>\n  <text x=\"538\" y=\"116\" fill=\"#ffffff\" font-size=\"8.5\" font-weight=\"bold\">• Миклухо-Маклай</text>\n  <text x=\"545\" y=\"128\" fill=\"#94a3b8\" font-size=\"8\">Жаңа Гвинея, Тынық мұхит</text>\n  <text x=\"538\" y=\"144\" fill=\"#ffffff\" font-size=\"8.5\" font-weight=\"bold\">• Р. Пири (1909 Солтүстік)</text>\n  <text x=\"538\" y=\"158\" fill=\"#ffffff\" font-size=\"8.5\" font-weight=\"bold\">• Р. Амундсен (1911 Оңтүстік)</text>\n  <text x=\"538\" y=\"174\" fill=\"#ffffff\" font-size=\"8.5\" font-weight=\"bold\">• Жак-Ив Кусто (1943 ж.)</text>\n  <text x=\"545\" y=\"186\" fill=\"#94a3b8\" font-size=\"8\">Акваланг, «Калипсо» кемесі</text>\n  <text x=\"538\" y=\"200\" fill=\"#34d399\" font-size=\"8\" font-weight=\"bold\">• Сібір: Дежнев, Хабаров</text>\n</svg>\n  </div>\n\n  <!-- 3. ЕЖЕЛГІ ЗАМАНДАҒЫ ГЕОГРАФИЯЛЫҚ ЗЕРТТЕУЛЕР -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-emerald-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🏛️</span>\n      <span>3. Ежелгі замандағы географиялық зерттеулер</span>\n    </h4>\n    <div class=\"space-y-2 text-xs sm:text-sm\">\n      <p>• <b>Эратосфен:</b> «География» ұғымын ғылымға алғаш енгізген, б.з.б. III ғасырда Александрияда Жердің меридиан шеңберін үлкен дәлдікпен есептеп шығарды.</p>\n      <p>• <b>Клавдий Птолемей:</b> Біздің заманымыздан бұрын ІІ ғасырда картографиялық бағыт ұстанған. ІV ғасырда К. Птолемей материалдары негізінде тұңғыш толыққанды <b>«Әлем картасы»</b> жасалды.</p>\n      <p>• <b>Геродот:</b> География ұғымына ғылыми тұжырымдама берген («Тарихтың атасы»), Каспий теңізін мекендеген <b>сақтар туралы құнды мәлімет</b> қалдырған.</p>\n      <p>• <b>Страбон:</b> Елтану бағытының негізін қалаған; «География» атты <b>17 томдық</b> классикалық кітап жазған; Каспий теңізін Жерді айнала қоршаған төрт бұғаздың бірі деп есептеген.</p>\n      <p>• <b>Фалес және Анаксимандр:</b> Дүниежүзінде <b>алғаш рет масштабты қолданып карта жасаған</b> антикалық ойшылдар.</p>\n      <p>• <b>Пифей:</b> Батыс Еуропа жайлы құнды еңбек қалдырған. Дүниеде <b>алғаш рет Айдың тартылыс әсерінен мұхит суының толысу және қайтуын</b> ғылыми тұрғыда түсіндірген саяхатшы.</p>\n      <p>• <b>Аристотель:</b> Жердің <b>шар тәріздес</b> екенін алғаш рет ғылыми дәлелдеген (Ай тұтылғанда Жердің көлеңкесі дөңгелек түсетіндігін негіздеген).</p>\n      <p>• <b>Вавилондықтар:</b> Жазуды ойлап тапқан, Жерді шарға ұқсатқан, шеңбердің <b>360 градусқа тең екенін</b> анықтаған, саз балшықтан <b>алғаш карта жасаған</b> (бұл карта қазір Британия мұражайында сақтаулы).</p>\n      <p>• <b>Финикиялықтар:</b> Еуропа (<i>«эреб»</i> — батыс, күннің батуы) мен Азияны (<i>«асу»</i> — шығыс, күннің шығуы) дербес дүние бөліктері ретінде бөлген теңізшілер.</p>\n      <p>• <b>Үнділер:</b> Біздің заманымыздағы I ғасырда Суматра мен Ява аралдарын ашқан, қазіргі Индонезия аралдарында мекендеген көне саудагер-зерттеушілер.</p>\n    </div>\n  </div>\n\n  <!-- 4. ОРТАҒАСЫРЛЫҚ КЕЗЕҢ (V-IX-XV ҒҒ.) ЗЕРТТЕУЛЕРІ -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-rose-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🕌</span>\n      <span>4. Ортағасырлық кезең (V–IX–XV ғғ.) зерттеулері</span>\n    </h4>\n    <div class=\"space-y-2 text-xs sm:text-sm\">\n      <p>• <b>Махмұд Қашғари (XI ғ.):</b> <b>«Диуани-лұғат-ат-түрік»</b> (Түркі лексикасының жинағы / Түркі сөздігі) атты әлемге әйгілі еңбекті жазған; түркі әлемінің тұңғыш <b>«Дөңгелек картасын»</b> құрастырған.</p>\n      <p>• <b>«Дөңгелек картаны» зерттеген ғалымдар:</b> <b>К. Миллер, А. Герман, И.И. Умняков, Ш.Д. Алиев</b>.</p>\n      <p>• <b>Әл-Масуди:</b> Шығыс Африка, Үнді мұхиты жайлы құнды географиялық мәліметтер қалдырған («Арабтардың Геродоты»).</p>\n      <p>• <b>Әл-Бируни:</b> Геодезия ғылымының дамуына зор үлес қосқан, Жер радиусын өлшеген (6339 км шамасында дәл тапқан), тұңғыш рет глобус жасаған энциклопедияшы ғалым.</p>\n      <p>• <b>Әл-Идриси:</b> Арабтардың әйгілі карта құрастырушысы болған (XII ғ. Сицилия королі II Рожерге арнап белгілі әлем картасын сызған).</p>\n      <p>• <b>Әбу ибн Баттута:</b> Сомали түбегіне, Тимбуктуға, Мали жерлеріне, Азия мен Африка елдеріне 30 жыл бойы 120 000 км саяхат жасаған атақты араб жиһанкезі.</p>\n      <p>• <b>Афанасий Никитин:</b> <b>«Үш теңіздің арғы жағына саяхат»</b> (1466–1472 жж.) атты құнды тарихи-географиялық еңбекті жазған тұңғыш орыс саяхатшысы (Үндістан жерін сипаттаған).</p>\n      <p>• <b>Марко Поло:</b> Жер туралы мәліметті ХІІІ ғасырда (1271–1295 жж.) Азияға жасаған саяхатында Памир табиғаты мен Үндістан, Қытай жерлері туралы жаңалықтармен толықтырған. Оның 1298 жылы жарық көрген <b>«Дүниежүзінің алуантүрлілігі туралы кітап»</b> атты еңбегіндегі негізгі деректер — <b>Қытай туралы</b> болып табылады.</p>\n    </div>\n  </div>\n\n  <!-- 5. ҰЛЫ ГЕОГРАФИЯЛЫҚ АШЫЛУЛАР ЖӘНЕ ПОЛЮСТЕРДІ ЗЕРТТЕУ -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-violet-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>⛵</span>\n      <span>5. Ұлы географиялық ашылулар кезеңі (XV ғ. аяғы – XVII ғ. ортасы) және Полярлық зерттеулер</span>\n    </h4>\n    <div class=\"space-y-2 text-xs sm:text-sm\">\n      <p>• <b>Христофор Колумб:</b> Саяхаты басталған жыл — <b>1492 жылы</b>. Пиреней (құжатта <i>Периней</i>) түбегінен <b>«Санта-Мария», «Пинта» (құжатта <i>Пинте</i>), «Нинья»</b> деген 3 кемемен саяхатқа шығып, Атлант мұхитын кесіп өтіп, Багам аралдарына жетті. Өмірінің соңына дейін «Үндістанға баратын батыс жолды» аштым деп ойлады.</p>\n      <p>• <b>Васко да Гама:</b> Африка материгін айналып, Сомали түбегі арқылы Үндістанның <b>Калькутта</b> жеріне теңіз жолын салды (<b>1498 жылы</b>).</p>\n      <p>• <b>Мартин Бехайм:</b> XV ғасырда (<b>1492 жылы</b>) алғаш рет <b>«Жер алмасы»</b> атты глобус жасаған неміс географы.</p>\n      <p>• <b>Америго Веспуччи:</b> <b>1499–1503 жж.</b> Оңтүстік Америка жағалауын зерттеп, оның мүлде жаңа дүние бөлігі екенін анықтады; құрлық оның есімімен <b>«Америка»</b> деп аталды.</p>\n      <p>• <b>Фернан Магеллан мен Себастьян Элькано:</b> <b>1519–1522 жж.</b> тұңғыш рет дүниежүзін айналып шығып, Жердің <b>шар тәрізді екенін</b> іс жүзінде дәлелдеді. Тынық мұхитын ашып, Оңтүстік Америка жағалауындағы бұғаз арқылы келесі мұхитқа өтті (ол кейін <b>«Магеллан бұғазы»</b> деп аталды).</p>\n      <p>• <b>Абель Тасман:</b> XVII ғасырда Аустралияның жағалауындағы <b>Тонга (құжатта <i>Тонго</i>), Фиджи, Бисмарк архипелагтарын</b>, Тасмания мен Жаңа Зеландияны зерттеген голланд теңізшісі.</p>\n      <p>• <b>Ф. Беллинсгаузен мен М. Лазарев:</b> <b>1819–1821 жж.</b> <b>«Восток»</b> және <b>«Мирный»</b> кемелерімен 1820 жылдың 28 қаңтарында ең соңғы құрлық — <b>Антарктида материгін ашты</b>.</p>\n      <p>• <b>Н.Н. Миклухо-Маклай:</b> <b>1870–1887 жж.</b> Тынық мұхиты аралдары мен Жаңа Гвинея (Маклай жағалауы), Аустралия жағалауына географиялық-этнографиялық зерттеу жүргізді.</p>\n      <p>• <b>Орыс саяхатшылары мен Сібір зерттеулері:</b> XVI ғасырдың аяғы мен XVII ғасырдың басында Сібір мен Қиыр Шығысты зерттегендер — <b>И. Ребров, С. Дежнев, Е. Хабаров, С. Ремезов</b>.</p>\n      <p>• <b>Орыс елшілері:</b> Сібір арқылы Оңтүстік-шығысқа, Орта Азияға, Үндістанға, Моңғолияға және Қытайға саяхат жасаған Орыс елшілері — <b>И. Петлин және Ф. Байков, Н. Спафарий</b> (құжатта <i>Спафариян</i>).</p>\n      <p>• <b>Полюстерді бағындыру және мұхит тереңдігі:</b></p>\n      <ul class=\"list-disc pl-5 space-y-1\">\n        <li><b>1904 жылы:</b> Солтүстік полюстегі магниттік өрісті (магниттік полюсті) ашқан — <b>Р. Амундсен</b>.</li>\n        <li><b>1909 жылы:</b> Солтүстік полюске алғаш жеткен саяхатшы — <b>Роберт Пири</b>.</li>\n        <li><b>1911 жылы:</b> Оңтүстік полюске алғаш жеткен норвег саяхатшысы — <b>Руаль Амундсен</b> (кейін Р. Скотт экспедициясы жетті).</li>\n        <li><b>1943 жылы:</b> Ең алғаш <b>акваланг</b> ойлап тапқан және <b>«Калипсо»</b> ғылыми-зерттеу кемесімен мұхит тереңдіктеріне зерттеу жүргізген — <b>Жак Ив Кусто</b>.</li>\n      </ul>\n    </div>\n  </div>\n\n</div>", "full_theory_ru": "<div class=\"space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed\">\n\n  <!-- 1. ПОНЯТИЕ ГЕОГРАФИИ И ЕЕ ОТРАСЛИ -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-cyan-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🌐</span>\n      <span>1. Понятие географии и ее главные отрасли</span>\n    </h4>\n    <div class=\"space-y-2\">\n      <p>• <b>Понятие «География»:</b> В переводе с греческого языка означает <b>«землеописание»</b> (<i>гео</i> — Земля, <i>графо</i> — пишу, описываю).</p>\n      <p>• <b>Возникновение как науки:</b> Впервые развивалась в <b>Древней Греции</b>. Время возникновения — <b>III век до нашей эры</b>. Ввел термин «география» в науку выдающийся ученый — <b>Эратосфен</b>.</p>\n      <p>• <b>Главные отрасли географической науки:</b></p>\n      <ul class=\"list-disc pl-5 space-y-1.5\">\n        <li><b>Физическая география:</b> Изучает природу поверхности земного шара, причины природных процессов и явлений и определяет закономерности их развития.</li>\n        <li><b>Экономическая география:</b> Изучает население, его хозяйственную деятельность, закономерности размещения производства (заводов, фабрик, посевных площадей, пастбищ, путей сообщения).</li>\n        <li><b>Политическая география / Страноведение:</b> В страноведческом направлении государствами и их населением занимается политическая география.</li>\n      </ul>\n    </div>\n\n    <!-- ВЕКТОРНАЯ СХЕМА: ОТРАСЛИ -->\n    <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 700 230\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2\">\n  <text x=\"350\" y=\"22\" fill=\"#38bdf8\" font-size=\"11.5\" font-weight=\"900\" text-anchor=\"middle\">ОСНОВНАЯ СТРУКТУРА И ОТРАСЛИ ГЕОГРАФИЧЕСКОЙ НАУКИ</text>\n\n  <rect x=\"230\" y=\"38\" width=\"240\" height=\"34\" rx=\"8\" fill=\"#0284c7\" />\n  <text x=\"350\" y=\"59\" fill=\"#ffffff\" font-size=\"11\" font-weight=\"900\" text-anchor=\"middle\">ГЕОГРАФИЯ («ЗЕМЛЕОПИСАНИЕ»)</text>\n\n  <path d=\"M 350 72 L 350 90 L 120 90 L 120 105\" fill=\"none\" stroke=\"#64748b\" stroke-width=\"1.8\" />\n  <path d=\"M 350 72 L 350 105\" fill=\"none\" stroke=\"#64748b\" stroke-width=\"1.8\" />\n  <path d=\"M 350 72 L 350 90 L 580 90 L 580 105\" fill=\"none\" stroke=\"#64748b\" stroke-width=\"1.8\" />\n\n  <rect x=\"15\" y=\"105\" width=\"210\" height=\"110\" rx=\"8\" fill=\"#0f172a\" stroke=\"#10b981\" stroke-width=\"1.5\" />\n  <rect x=\"25\" y=\"115\" width=\"190\" height=\"22\" rx=\"5\" fill=\"#10b981\" fill-opacity=\"0.15\" />\n  <text x=\"120\" y=\"130\" fill=\"#34d399\" font-size=\"10\" font-weight=\"900\" text-anchor=\"middle\">ФИЗИЧЕСКАЯ ГЕОГРАФИЯ</text>\n  <text x=\"25\" y=\"152\" fill=\"#cbd5e1\" font-size=\"9\">• Природу земной поверхности,</text>\n  <text x=\"25\" y=\"167\" fill=\"#cbd5e1\" font-size=\"9\">• Природные процессы и явления,</text>\n  <text x=\"25\" y=\"182\" fill=\"#cbd5e1\" font-size=\"9\">• Закономерности их развития</text>\n  <text x=\"25\" y=\"198\" fill=\"#94a3b8\" font-size=\"8.5\">изучает естественная ветвь науки.</text>\n\n  <rect x=\"245\" y=\"105\" width=\"210\" height=\"110\" rx=\"8\" fill=\"#0f172a\" stroke=\"#f59e0b\" stroke-width=\"1.5\" />\n  <rect x=\"255\" y=\"115\" width=\"190\" height=\"22\" rx=\"5\" fill=\"#f59e0b\" fill-opacity=\"0.15\" />\n  <text x=\"350\" y=\"130\" fill=\"#fbbf24\" font-size=\"10\" font-weight=\"900\" text-anchor=\"middle\">ЭКОНОМИЧЕСКАЯ ГЕОГРАФИЯ</text>\n  <text x=\"255\" y=\"152\" fill=\"#cbd5e1\" font-size=\"9\">• Население и его хозяйство,</text>\n  <text x=\"255\" y=\"167\" fill=\"#cbd5e1\" font-size=\"9\">• Промышленные предприятия,</text>\n  <text x=\"255\" y=\"182\" fill=\"#cbd5e1\" font-size=\"9\">• Поля, пастбища и пути сообщения,</text>\n  <text x=\"255\" y=\"198\" fill=\"#94a3b8\" font-size=\"8.5\">закономерности их размещения.</text>\n\n  <rect x=\"475\" y=\"105\" width=\"210\" height=\"110\" rx=\"8\" fill=\"#0f172a\" stroke=\"#0ea5e9\" stroke-width=\"1.5\" />\n  <rect x=\"485\" y=\"115\" width=\"190\" height=\"22\" rx=\"5\" fill=\"#0ea5e9\" fill-opacity=\"0.15\" />\n  <text x=\"580\" y=\"130\" fill=\"#38bdf8\" font-size=\"10\" font-weight=\"900\" text-anchor=\"middle\">ПОЛИТИЧЕСКАЯ / СТРАНОВЕДЕНИЕ</text>\n  <text x=\"485\" y=\"152\" fill=\"#cbd5e1\" font-size=\"9\">• Государства и их границы,</text>\n  <text x=\"485\" y=\"167\" fill=\"#cbd5e1\" font-size=\"9\">• Население и политический строй,</text>\n  <text x=\"485\" y=\"182\" fill=\"#cbd5e1\" font-size=\"9\">• Страноведение основал Страбон</text>\n  <text x=\"485\" y=\"198\" fill=\"#94a3b8\" font-size=\"8.5\">(труд «География» в 17 томах).</text>\n</svg>\n  </div>\n\n  <!-- 2. 4 ЭТАПА РАЗВИТИЯ ГЕОГРАФИЧЕСКОЙ НАУКИ -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-amber-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>📜</span>\n      <span>2. 4 исторических этапа развития географической науки</span>\n    </h4>\n    <p>Развитие географической науки подразделяется на <b>4 основных исторических этапа</b>:</p>\n    <div class=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 my-2\">\n      <div class=\"p-3 bg-space-950 rounded-xl border border-sky-500/40\">\n        <span class=\"text-xs font-black text-sky-400 block mb-1\">Этап 1:</span>\n        <span class=\"text-xs font-bold text-white block\">Географические исследования древности</span>\n        <span class=\"text-[11px] text-slate-400 mt-1 block\">Цивилизации Греции, Рима, Вавилона, Финикии</span>\n      </div>\n      <div class=\"p-3 bg-space-950 rounded-xl border border-emerald-500/40\">\n        <span class=\"text-xs font-black text-emerald-400 block mb-1\">Этап 2:</span>\n        <span class=\"text-xs font-bold text-white block\">Средневековый период (V–IX–XV вв.)</span>\n        <span class=\"text-[11px] text-slate-400 mt-1 block\">Тюркские, арабские ученые и европейские купцы</span>\n      </div>\n      <div class=\"p-3 bg-space-950 rounded-xl border border-amber-500/40\">\n        <span class=\"text-xs font-black text-amber-400 block mb-1\">Этап 3:</span>\n        <span class=\"text-xs font-bold text-white block\">Эпоха Великих географических открытий</span>\n        <span class=\"text-[11px] text-slate-400 mt-1 block\">Конец XV – середина XVII вв. (Колумб, Магеллан и др.)</span>\n      </div>\n      <div class=\"p-3 bg-space-950 rounded-xl border border-rose-500/40\">\n        <span class=\"text-xs font-black text-rose-400 block mb-1\">Этап 4:</span>\n        <span class=\"text-xs font-bold text-white block\">Историческое развитие науки в Казахстане</span>\n        <span class=\"text-[11px] text-slate-400 mt-1 block\">Исследования Нового времени и становление национальной науки</span>\n      </div>\n    </div>\n\n    <!-- ВЕКТОРНАЯ СХЕМА: 4 ЭТАПА -->\n    <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 700 230\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2\">\n  <text x=\"350\" y=\"22\" fill=\"#38bdf8\" font-size=\"11.5\" font-weight=\"900\" text-anchor=\"middle\">4 ИСТОРИЧЕСКИХ ЭТАПА РАЗВИТИЯ ГЕОГРАФИЧЕСКОЙ НАУКИ</text>\n\n  <rect x=\"15\" y=\"42\" width=\"155\" height=\"170\" rx=\"8\" fill=\"#0f172a\" stroke=\"#0ea5e9\" stroke-width=\"1.2\" />\n  <rect x=\"23\" y=\"50\" width=\"139\" height=\"22\" rx=\"4\" fill=\"#0284c7\" fill-opacity=\"0.2\" />\n  <text x=\"92\" y=\"65\" fill=\"#38bdf8\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\">1. ДРЕВНИЙ МИР</text>\n  <text x=\"25\" y=\"88\" fill=\"#ffffff\" font-size=\"8.5\" font-weight=\"bold\">• Эратосфен (III в. до н.э.)</text>\n  <text x=\"32\" y=\"100\" fill=\"#94a3b8\" font-size=\"8\">Ввел термин «География»</text>\n  <text x=\"25\" y=\"116\" fill=\"#ffffff\" font-size=\"8.5\" font-weight=\"bold\">• К. Птолемей (II в. до н.э.)</text>\n  <text x=\"32\" y=\"128\" fill=\"#94a3b8\" font-size=\"8\">Основа карт мира</text>\n  <text x=\"25\" y=\"144\" fill=\"#ffffff\" font-size=\"8.5\" font-weight=\"bold\">• Геродот &amp; Страбон</text>\n  <text x=\"32\" y=\"156\" fill=\"#94a3b8\" font-size=\"8\">Страноведение, саки, 17 т.</text>\n  <text x=\"25\" y=\"172\" fill=\"#ffffff\" font-size=\"8.5\" font-weight=\"bold\">• Аристотель</text>\n  <text x=\"32\" y=\"184\" fill=\"#94a3b8\" font-size=\"8\">Шарообразность Земли</text>\n  <text x=\"25\" y=\"200\" fill=\"#34d399\" font-size=\"8\" font-weight=\"bold\">• Пифей: Приливы и отливы</text>\n\n  <rect x=\"185\" y=\"42\" width=\"155\" height=\"170\" rx=\"8\" fill=\"#0f172a\" stroke=\"#10b981\" stroke-width=\"1.2\" />\n  <rect x=\"193\" y=\"50\" width=\"139\" height=\"22\" rx=\"4\" fill=\"#10b981\" fill-opacity=\"0.2\" />\n  <text x=\"262\" y=\"65\" fill=\"#34d399\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\">2. СРЕДНИЕ ВЕКА</text>\n  <text x=\"195\" y=\"88\" fill=\"#ffffff\" font-size=\"8.5\" font-weight=\"bold\">• Махмуд Кашгари</text>\n  <text x=\"202\" y=\"100\" fill=\"#94a3b8\" font-size=\"8\">«Круглая карта», Словарь</text>\n  <text x=\"195\" y=\"116\" fill=\"#ffffff\" font-size=\"8.5\" font-weight=\"bold\">• Аль-Бируни, Аль-Масуди</text>\n  <text x=\"202\" y=\"128\" fill=\"#94a3b8\" font-size=\"8\">Геодезия, Вост. Африка</text>\n  <text x=\"195\" y=\"144\" fill=\"#ffffff\" font-size=\"8.5\" font-weight=\"bold\">• Ибн Баттута</text>\n  <text x=\"202\" y=\"156\" fill=\"#94a3b8\" font-size=\"8\">Сомали, Тимбукту, Мали</text>\n  <text x=\"195\" y=\"172\" fill=\"#ffffff\" font-size=\"8.5\" font-weight=\"bold\">• Марко Поло (1298 г.)</text>\n  <text x=\"202\" y=\"184\" fill=\"#94a3b8\" font-size=\"8\">Памир, Индия, Китай</text>\n  <text x=\"195\" y=\"200\" fill=\"#fbbf24\" font-size=\"8\" font-weight=\"bold\">• А. Никитин: Хождение за 3 моря</text>\n\n  <rect x=\"355\" y=\"42\" width=\"160\" height=\"170\" rx=\"8\" fill=\"#0f172a\" stroke=\"#f59e0b\" stroke-width=\"1.2\" />\n  <rect x=\"363\" y=\"50\" width=\"144\" height=\"22\" rx=\"4\" fill=\"#f59e0b\" fill-opacity=\"0.2\" />\n  <text x=\"435\" y=\"65\" fill=\"#fbbf24\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\">3. ВЕЛИКИЕ ОТКРЫТИЯ</text>\n  <text x=\"365\" y=\"88\" fill=\"#ffffff\" font-size=\"8.5\" font-weight=\"bold\">• Х. Колумб (1492 г.)</text>\n  <text x=\"372\" y=\"100\" fill=\"#94a3b8\" font-size=\"8\">3 каравеллы («Санта-Мария»)</text>\n  <text x=\"365\" y=\"116\" fill=\"#ffffff\" font-size=\"8.5\" font-weight=\"bold\">• Васко да Гама (1498 г.)</text>\n  <text x=\"372\" y=\"128\" fill=\"#94a3b8\" font-size=\"8\">Морской путь в Индию</text>\n  <text x=\"365\" y=\"144\" fill=\"#ffffff\" font-size=\"8.5\" font-weight=\"bold\">• Мартин Бехайм (1492)</text>\n  <text x=\"372\" y=\"156\" fill=\"#94a3b8\" font-size=\"8\">Первый глобус Земли</text>\n  <text x=\"365\" y=\"172\" fill=\"#ffffff\" font-size=\"8.5\" font-weight=\"bold\">• Магеллан (1519–1522)</text>\n  <text x=\"372\" y=\"184\" fill=\"#94a3b8\" font-size=\"8\">Кругосветное плавание</text>\n  <text x=\"365\" y=\"200\" fill=\"#38bdf8\" font-size=\"8\" font-weight=\"bold\">• А. Веспуччи: Америка</text>\n\n  <rect x=\"530\" y=\"42\" width=\"155\" height=\"170\" rx=\"8\" fill=\"#0f172a\" stroke=\"#ef4444\" stroke-width=\"1.2\" />\n  <rect x=\"538\" y=\"50\" width=\"139\" height=\"22\" rx=\"4\" fill=\"#ef4444\" fill-opacity=\"0.2\" />\n  <text x=\"607\" y=\"65\" fill=\"#f87171\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\">4. НОВОЕ ВРЕМЯ &amp; РК</text>\n  <text x=\"538\" y=\"88\" fill=\"#ffffff\" font-size=\"8.5\" font-weight=\"bold\">• Беллинсгаузен, Лазарев</text>\n  <text x=\"545\" y=\"100\" fill=\"#94a3b8\" font-size=\"8\">1820 г. Антарктида</text>\n  <text x=\"538\" y=\"116\" fill=\"#ffffff\" font-size=\"8.5\" font-weight=\"bold\">• Миклухо-Маклай</text>\n  <text x=\"545\" y=\"128\" fill=\"#94a3b8\" font-size=\"8\">Новая Гвинея, Океания</text>\n  <text x=\"538\" y=\"144\" fill=\"#ffffff\" font-size=\"8.5\" font-weight=\"bold\">• Р. Пири (1909 Север)</text>\n  <text x=\"538\" y=\"158\" fill=\"#ffffff\" font-size=\"8.5\" font-weight=\"bold\">• Р. Амундсен (1911 Юг)</text>\n  <text x=\"538\" y=\"174\" fill=\"#ffffff\" font-size=\"8.5\" font-weight=\"bold\">• Жак-Ив Кусто (1943 г.)</text>\n  <text x=\"545\" y=\"186\" fill=\"#94a3b8\" font-size=\"8\">Акваланг, судно «Калипсо»</text>\n  <text x=\"538\" y=\"200\" fill=\"#34d399\" font-size=\"8\" font-weight=\"bold\">• Сибирь: Дежнев, Хабаров</text>\n</svg>\n  </div>\n\n  <!-- 3. ГЕОГРАФИЧЕСКИЕ ИССЛЕДОВАНИЯ В ДРЕВНОСТИ -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-emerald-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🏛️</span>\n      <span>3. Географические исследования в древности</span>\n    </h4>\n    <div class=\"space-y-2 text-xs sm:text-sm\">\n      <p>• <b>Эратосфен:</b> Впервые ввел понятие «география», в III веке до н.э. в Александрии с высокой точностью измерил дугу меридиана Земли.</p>\n      <p>• <b>Клавдий Птолемей:</b> Во II веке до н.э. придерживался картографического направления. В IV веке на основе его материалов была создана <b>Карта мира</b>.</p>\n      <p>• <b>Геродот:</b> Дал научную концепцию географии («Отец истории»), оставил ценные сведения о <b>саках, населявших берега Каспийского моря</b>.</p>\n      <p>• <b>Страбон:</b> Заложил основы страноведческого направления; автор монументального <b>17-томного труда «География»</b>; считал Каспийское море одним из четырех проливов, окружающих сушу.</p>\n      <p>• <b>Фалес и Анаксимандр:</b> Впервые в истории составили карту с использованием <b>масштаба</b>.</p>\n      <p>• <b>Пифей:</b> Оставил труды о Западной Европе. Впервые научно объяснил <b>океанические приливы и отливы действием Луны</b>.</p>\n      <p>• <b>Аристотель:</b> Впервые научно обосновал <b>шарообразность Земли</b> (по круглой тени Земли на Луне во время лунных затмений).</p>\n      <p>• <b>Вавилоняне:</b> Изобрели письменность, уподобили Землю шару, установили деление круга на <b>360 градусов</b>, создали <b>первую карту из глины</b> (хранится в Британском музее).</p>\n      <p>• <b>Финикийцы:</b> Впервые разделили части света на Европу (<i>«эреб»</i> — запад, закат) и Азию (<i>«асу»</i> — восток, восход).</p>\n      <p>• <b>Индийцы:</b> В I веке нашей эры открыли острова Суматра и Ява, заселили территорию современной Индонезии.</p>\n    </div>\n  </div>\n\n  <!-- 4. СРЕДНЕВЕКОВЫЙ ПЕРИОД (V-IX-XV ВВ.) ИССЛЕДОВАНИЙ -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-rose-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🕌</span>\n      <span>4. Исследования средневекового периода (V–IX–XV вв.)</span>\n    </h4>\n    <div class=\"space-y-2 text-xs sm:text-sm\">\n      <p>• <b>Махмуд Кашгари (XI в.):</b> Написал фундаментальный труд <b>«Дивани лугат ат-тюрк»</b> (Словарь тюркских наречий); создал первую тюркскую <b>«Круглую карту мира»</b>.</p>\n      <p>• <b>Исследователи «Круглой карты»:</b> <b>К. Миллер, А. Герман, И.И. Умняков, Ш.Д. Алиев</b>.</p>\n      <p>• <b>Аль-Масуди:</b> Оставил ценные сведения о Восточной Африке и Индийском океане («Геродот арабов»).</p>\n      <p>• <b>Аль-Бируни:</b> Внес огромный вклад в развитие геодезии, вычислил радиус Земли (около 6339 км), создал один из первых глобусов.</p>\n      <p>• <b>Аль-Идриси:</b> Выдающийся арабский картограф (в XII в. составил подробную карту мира для сицилийского короля Рожера II).</p>\n      <p>• <b>Абу Ибн Баттута:</b> Великий арабский путешественник, за 30 лет преодолел 120 000 км, посетил полуостров Сомали, Тимбукту, Мали, Азию и Крым.</p>\n      <p>• <b>Афанасий Никитин:</b> Тверской купец, автор знаменитого труда <b>«Хождение за три моря»</b> (1466–1472 гг.), первым из русских достиг Индии.</p>\n      <p>• <b>Марко Поло:</b> В XIII веке (1271–1295 гг.) во время путешествия по Азии дополнил сведения о природе Памира, Индии и Китая. В его вышедшей в 1298 году «Книге о разнообразии мира» основные данные посвящены <b>Китаю</b>.</p>\n    </div>\n  </div>\n\n  <!-- 5. ЭПОХА ВЕЛИКИХ ГЕОГРАФИЧЕСКИХ ОТКРЫТИЙ И ПОЛЯРНЫЕ ИССЛЕДОВАНИЯ -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-violet-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>⛵</span>\n      <span>5. Великие географические открытия (конец XV – середина XVII вв.) и Полярные исследования</span>\n    </h4>\n    <div class=\"space-y-2 text-xs sm:text-sm\">\n      <p>• <b>Христофор Колумб:</b> Начало экспедиции — <b>1492 год</b>. Вышел с Пиренейского полуострова на 3 каравеллах: <b>«Санта-Мария», «Пинта», «Нинья»</b>, пересек Атлантический океан и открыл Багамские острова. До конца жизни считал, что открыл западный путь в Индию.</p>\n      <p>• <b>Васко да Гама:</b> Обогнул Африку и через полуостров Сомали проложил морской путь в Индию (в порт <b>Каликут / Калькутта</b>) в <b>1498 году</b>.</p>\n      <p>• <b>Мартин Бехайм:</b> В XV веке (<b>1492 год</b>) создал первый в истории сохранившийся глобус «Земное яблоко».</p>\n      <p>• <b>Америго Веспуччи:</b> В <b>1499–1503 гг.</b> исследовал побережье Южной Америки и доказал, что открытые земли — это Новый Свет, а не Азия; материк назван его именем — <b>Америка</b>.</p>\n      <p>• <b>Фернан Магеллан и Хуан Себастьян Элькано:</b> В <b>1519–1522 гг.</b> совершили первое кругосветное плавание, практически доказав <b>шарообразность Земли</b> и единство Мирового океана. Магеллан открыл Тихий океан и пролив, названный впоследствии <b>Магеллановым проливом</b>.</p>\n      <p>• <b>Абель Тасман:</b> В XVII веке исследовал побережье Австралии, <b>архипелаги Тонга, Фиджи, Бисмарка</b>, остров Тасмания и Новую Зеландию.</p>\n      <p>• <b>Ф. Беллинсгаузен и М. Лазарев:</b> В <b>1819–1821 гг.</b> на шлюпах <b>«Восток»</b> и <b>«Мирный»</b> 28 января 1820 года открыли шестой материк — <b>Антарктиду</b>.</p>\n      <p>• <b>Н.Н. Миклухо-Маклай:</b> В <b>1870–1887 гг.</b> исследовал острова Тихого океана, берег Новой Гвинеи (Берег Маклая) и побережье Австралии.</p>\n      <p>• <b>Русские землепроходцы в Сибири и на Дальнем Востоке:</b> В конце XVI – начале XVII вв. исследовали Сибирь и Дальний Восток — <b>И. Ребров, С. Дежнев, Е. Хабаров, С. Ремезов</b>.</p>\n      <p>• <b>Русские послы:</b> Совершали дипломатические и географические экспедиции через Сибирь на Юго-Восток, в Среднюю Азию, Индию, Монголию и Китай — <b>И. Петлин, Ф. Байков, Н. Спафарий</b>.</p>\n      <p>• <b>Покорение полюсов и глубины океана:</b></p>\n      <ul class=\"list-disc pl-5 space-y-1\">\n        <li><b>1904 год:</b> Открыл Северный магнитный полюс норвежский исследователь <b>Р. Амундсен</b>.</li>\n        <li><b>1909 год:</b> Достиг Северного географического полюса американец <b>Роберт Пири</b>.</li>\n        <li><b>1911 год:</b> Достиг Южного географического полюса норвежец <b>Руаль Амундсен</b> (14 декабря 1911 г.).</li>\n        <li><b>1943 год:</b> Изобрел акваланг и исследовал глубины Мирового океана на судне <b>«Калипсо»</b> выдающийся океанограф <b>Жак-Ив Кусто</b>.</li>\n      </ul>\n    </div>\n  </div>\n\n</div>", "svg_diagram": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 700 250\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner\">\n  <text x=\"350\" y=\"24\" fill=\"#38bdf8\" font-size=\"12\" font-weight=\"900\" text-anchor=\"middle\">ГЕОГРАФИЯЛЫҚ ЗЕРТТЕУЛЕР МЕН ҰЛЫ АШЫЛУЛАР ХРОНОЛОГИЯСЫ</text>\n\n  <!-- Left Card: Ancient and Medieval -->\n  <rect x=\"15\" y=\"40\" width=\"210\" height=\"195\" rx=\"10\" fill=\"#0f172a\" stroke=\"#0ea5e9\" stroke-width=\"1.5\" />\n  <rect x=\"25\" y=\"50\" width=\"190\" height=\"24\" rx=\"6\" fill=\"#0284c7\" fill-opacity=\"0.15\" />\n  <text x=\"120\" y=\"66\" fill=\"#38bdf8\" font-size=\"10.5\" font-weight=\"900\" text-anchor=\"middle\">ЕЖЕЛГІ &amp; ОРТА ҒАСЫР</text>\n  <text x=\"26\" y=\"92\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Эратосфен (Б.з.б. III ғ.):</tspan> «География»</text>\n  <text x=\"26\" y=\"108\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">К. Птолемей (Б.з.б. II ғ.):</tspan> Карта</text>\n  <text x=\"26\" y=\"126\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Страбон:</tspan> 17 томдық, Елтану</text>\n  <text x=\"26\" y=\"144\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Аристотель:</tspan> Жер шар тәрізді</text>\n  <text x=\"26\" y=\"164\" fill=\"#34d399\" font-size=\"9.5\" font-weight=\"bold\">• Махмұд Қашғари (XI ғ.):</text>\n  <text x=\"34\" y=\"178\" fill=\"#94a3b8\" font-size=\"9\">«Дөңгелек карта», Сөздік</text>\n  <text x=\"26\" y=\"196\" fill=\"#fbbf24\" font-size=\"9.5\" font-weight=\"bold\">• Марко Поло (1298 ж.):</text>\n  <text x=\"34\" y=\"210\" fill=\"#94a3b8\" font-size=\"9\">Памир, Үндістан, Қытай</text>\n\n  <!-- Middle Card: Great Geographical Discoveries -->\n  <rect x=\"245\" y=\"40\" width=\"210\" height=\"195\" rx=\"10\" fill=\"#0f172a\" stroke=\"#f59e0b\" stroke-width=\"1.5\" />\n  <rect x=\"255\" y=\"50\" width=\"190\" height=\"24\" rx=\"6\" fill=\"#f59e0b\" fill-opacity=\"0.15\" />\n  <text x=\"350\" y=\"66\" fill=\"#fbbf24\" font-size=\"10.5\" font-weight=\"900\" text-anchor=\"middle\">ҰЛЫ ГЕОГРАФИЯЛЫҚ АШЫЛУЛАР</text>\n  <text x=\"256\" y=\"92\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Х. Колумб (1492 ж.):</tspan> Америка</text>\n  <text x=\"264\" y=\"106\" fill=\"#94a3b8\" font-size=\"9\">«Санта-Мария», «Пинта», «Нинья»</text>\n  <text x=\"256\" y=\"126\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Васко да Гама (1498 ж.):</tspan></text>\n  <text x=\"264\" y=\"140\" fill=\"#94a3b8\" font-size=\"9\">Африканы айналып Үндістанға</text>\n  <text x=\"256\" y=\"160\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Мартин Бехайм (1492 ж.):</tspan></text>\n  <text x=\"264\" y=\"174\" fill=\"#94a3b8\" font-size=\"9\">Тұңғыш глобус жасаушы</text>\n  <text x=\"256\" y=\"194\" fill=\"#38bdf8\" font-size=\"9.5\" font-weight=\"bold\">• Ф. Магеллан (1519–1522):</text>\n  <text x=\"264\" y=\"208\" fill=\"#94a3b8\" font-size=\"9\">Дүниежүзін айналу, Тынық мұхит</text>\n\n  <!-- Right Card: Polar & Modern Discoveries -->\n  <rect x=\"475\" y=\"40\" width=\"210\" height=\"195\" rx=\"10\" fill=\"#0f172a\" stroke=\"#10b981\" stroke-width=\"1.5\" />\n  <rect x=\"485\" y=\"50\" width=\"190\" height=\"24\" rx=\"6\" fill=\"#10b981\" fill-opacity=\"0.15\" />\n  <text x=\"580\" y=\"66\" fill=\"#34d399\" font-size=\"10.5\" font-weight=\"900\" text-anchor=\"middle\">ПОЛЮСТЕР &amp; МҰХИТ ЗЕРТТЕУІ</text>\n  <text x=\"486\" y=\"92\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Беллинсгаузен-Лазарев (1820):</tspan></text>\n  <text x=\"494\" y=\"106\" fill=\"#94a3b8\" font-size=\"9\">«Восток» &amp; «Мирный» — Антарктида</text>\n  <text x=\"486\" y=\"126\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">А. Тасман (XVII ғ.):</tspan> Аустралия,</text>\n  <text x=\"494\" y=\"140\" fill=\"#94a3b8\" font-size=\"9\">Тонга, Фиджи, Бисмарк аралдары</text>\n  <text x=\"486\" y=\"160\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Р. Пири (1909 ж.):</tspan> Солтүстік полюс</text>\n  <text x=\"486\" y=\"178\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Р. Амундсен (1911 ж.):</tspan> Оңтүстік полюс</text>\n  <text x=\"486\" y=\"198\" fill=\"#34d399\" font-size=\"9.5\" font-weight=\"bold\">• Жак-Ив Кусто (1943 ж.):</text>\n  <text x=\"494\" y=\"212\" fill=\"#94a3b8\" font-size=\"9\">Акваланг, «Калипсо» кемесі</text>\n</svg>", "svg_diagram_ru": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 700 250\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner\">\n  <text x=\"350\" y=\"24\" fill=\"#38bdf8\" font-size=\"12\" font-weight=\"900\" text-anchor=\"middle\">ХРОНОЛОГИЯ ГЕОГРАФИЧЕСКИХ ИССЛЕДОВАНИЙ И ВЕЛИКИХ ОТКРЫТИЙ</text>\n\n  <rect x=\"15\" y=\"40\" width=\"210\" height=\"195\" rx=\"10\" fill=\"#0f172a\" stroke=\"#0ea5e9\" stroke-width=\"1.5\" />\n  <rect x=\"25\" y=\"50\" width=\"190\" height=\"24\" rx=\"6\" fill=\"#0284c7\" fill-opacity=\"0.15\" />\n  <text x=\"120\" y=\"66\" fill=\"#38bdf8\" font-size=\"10.5\" font-weight=\"900\" text-anchor=\"middle\">ДРЕВНОСТЬ &amp; СРЕДНЕВЕКОВЬЕ</text>\n  <text x=\"26\" y=\"92\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Эратосфен (III в. до н.э.):</tspan> География</text>\n  <text x=\"26\" y=\"108\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">К. Птолемей (II в. до н.э.):</tspan> Карты</text>\n  <text x=\"26\" y=\"126\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Страбон:</tspan> 17 томов, страноведение</text>\n  <text x=\"26\" y=\"144\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Аристотель:</tspan> Шарообразность</text>\n  <text x=\"26\" y=\"164\" fill=\"#34d399\" font-size=\"9.5\" font-weight=\"bold\">• Махмуд Кашгари (XI в.):</text>\n  <text x=\"34\" y=\"178\" fill=\"#94a3b8\" font-size=\"9\">«Круглая карта», Словарь</text>\n  <text x=\"26\" y=\"196\" fill=\"#fbbf24\" font-size=\"9.5\" font-weight=\"bold\">• Марко Поло (1298 г.):</text>\n  <text x=\"34\" y=\"210\" fill=\"#94a3b8\" font-size=\"9\">Памир, Индия, Китай</text>\n\n  <rect x=\"245\" y=\"40\" width=\"210\" height=\"195\" rx=\"10\" fill=\"#0f172a\" stroke=\"#f59e0b\" stroke-width=\"1.5\" />\n  <rect x=\"255\" y=\"50\" width=\"190\" height=\"24\" rx=\"6\" fill=\"#f59e0b\" fill-opacity=\"0.15\" />\n  <text x=\"350\" y=\"66\" fill=\"#fbbf24\" font-size=\"10.5\" font-weight=\"900\" text-anchor=\"middle\">ВЕЛИКИЕ ОТКРЫТИЯ</text>\n  <text x=\"256\" y=\"92\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Х. Колумб (1492 г.):</tspan> Америка</text>\n  <text x=\"264\" y=\"106\" fill=\"#94a3b8\" font-size=\"9\">«Санта-Мария», «Пинта», «Нинья»</text>\n  <text x=\"256\" y=\"126\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Васко да Гама (1498 г.):</tspan></text>\n  <text x=\"264\" y=\"140\" fill=\"#94a3b8\" font-size=\"9\">Морской путь в Индию (Каликут)</text>\n  <text x=\"256\" y=\"160\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Мартин Бехайм (1492 г.):</tspan></text>\n  <text x=\"264\" y=\"174\" fill=\"#94a3b8\" font-size=\"9\">Создатель первого глобуса</text>\n  <text x=\"256\" y=\"194\" fill=\"#38bdf8\" font-size=\"9.5\" font-weight=\"bold\">• Ф. Магеллан (1519–1522):</text>\n  <text x=\"264\" y=\"208\" fill=\"#94a3b8\" font-size=\"9\">Кругосветка, Тихий океан</text>\n\n  <rect x=\"475\" y=\"40\" width=\"210\" height=\"195\" rx=\"10\" fill=\"#0f172a\" stroke=\"#10b981\" stroke-width=\"1.5\" />\n  <rect x=\"485\" y=\"50\" width=\"190\" height=\"24\" rx=\"6\" fill=\"#10b981\" fill-opacity=\"0.15\" />\n  <text x=\"580\" y=\"66\" fill=\"#34d399\" font-size=\"10.5\" font-weight=\"900\" text-anchor=\"middle\">ПОЛЮСА &amp; ИССЛЕДОВАНИЕ ОКЕАНА</text>\n  <text x=\"486\" y=\"92\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Беллинсгаузен, Лазарев (1820):</tspan></text>\n  <text x=\"494\" y=\"106\" fill=\"#94a3b8\" font-size=\"9\">Шлюпы «Восток», «Мирный» — Антарктида</text>\n  <text x=\"486\" y=\"126\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">А. Тасман (XVII в.):</tspan> Австралия,</text>\n  <text x=\"494\" y=\"140\" fill=\"#94a3b8\" font-size=\"9\">Тонга, Фиджи, архипелаг Бисмарка</text>\n  <text x=\"486\" y=\"160\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Р. Пири (1909 г.):</tspan> Северный полюс</text>\n  <text x=\"486\" y=\"178\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Р. Амундсен (1911 г.):</tspan> Южный полюс</text>\n  <text x=\"486\" y=\"198\" fill=\"#34d399\" font-size=\"9.5\" font-weight=\"bold\">• Жак-Ив Кусто (1943 г.):</text>\n  <text x=\"494\" y=\"212\" fill=\"#94a3b8\" font-size=\"9\">Акваланг, судно «Калипсо»</text>\n</svg>", "table_kz": {"cols": ["Саяхатшы / Ғалым / Халық", "Уақыты / Дәуірі", "Ашқан жаңалығы және ҰБТ дерегі"], "rows": [["Эратосфен", "Б.з.б. III ғ.", "«География» («жерді сипаттау») ұғымын алғаш ғылымға енгізді, Жерді өлшеді"], ["Клавдий Птолемей", "Б.з.б. II ғ. / IV ғ.", "Картографиялық бағыт; IV ғ. материалдары негізінде тұңғыш Әлем картасы жасалды"], ["Геродот", "Б.з.б. V ғ.", "«Тарихтың атасы», географияға тұжырымдама берді, Каспий сақтары туралы жазды"], ["Страбон", "Б.з.б. I ғ. – б.з. I ғ.", "Елтану бағытының негізін салды, «География» 17 томдық еңбегін жазды"], ["Фалес және Анаксимандр", "Б.з.б. VI ғ.", "Дүниежүзінде алғаш масштабты қолданып карта сызған антикалық ғалымдар"], ["Пифей", "Б.з.б. IV ғ.", "Батыс Еуропаны зерттеді; мұхит суының толысуы мен қайтуын Аймен байланыстырды"], ["Аристотель", "Б.з.б. IV ғ.", "Жердің шар тәріздес екенін Ай тұтылу көлеңкесі арқылы алғаш ғылыми дәлелдеді"], ["Вавилондықтар", "Көне дәуір", "Жазу ойлап тапты, Жерді шарға ұқсатты, шеңберді 360°-қа бөлді, саздан алғаш карта жасады"], ["Финикиялықтар", "Көне дәуір", "Еуропа («эреб» - батыс) мен Азияны («асу» - шығыс) дүние бөліктері ретінде бөлді"], ["Үнділер", "Б.з. I ғ.", "Суматра және Ява аралдарын ашты, Индонезия аралдарында мекендеді"], ["Махмұд Қашғари", "XI ғ. (1072–1074)", "«Диуани-лұғат-ат-түрік» сөздігін жазды; түркі әлемінің «Дөңгелек картасын» жасады"], ["К. Миллер, А. Герман, т.б.", "XX ғ.", "Махмұд Қашғаридің «Дөңгелек картасын» зерттеген ғалымдар тобы"], ["Әл-Масуди", "X ғ.", "Шығыс Африка жайлы құнды мәліметтер қалдырды («Арабтардың Геродоты»)"], ["Әл-Бируни", "X–XI ғғ.", "Геодезияның дамуына үлес қосты, Жер радиусын 6339 км деп өлшеді, глобус жасады"], ["Әл-Идриси", "XII ғ.", "Арабтардың әйгілі карта құрастырушысы (Рожер картасын сызды)"], ["Әбу ибн Батута", "XIV ғ.", "Сомали түбегі, Тимбукту, Мали, Қырым жерлеріне 30 жыл бойы саяхат жасады"], ["Марко Поло", "XIII ғ. (1298 ж.)", "Памир, Үндістанды көрді; «Дүниежүзінің алуантүрлілігі туралы кітапта» Қытайды сипаттады"], ["Афанасий Никитин", "1466–1472 жж.", "«Үш теңіздің арғы жағына саяхат» еңбегін жазды, Үндістанға жеткен тұңғыш орыс"], ["Христофор Колумб", "1492 ж.", "«Санта-Мария», «Пинта», «Нинья» 3 кемесімен Американы (Багам аралдарын) ашты"], ["Васко да Гама", "1498 ж.", "Африканы айналып, Сомали арқылы Үндістанға (Калькуттаға) теңіз жолын ашты"], ["Мартин Бехайм", "1492 ж.", "XV ғасырда тұңғыш рет «Жер алмасы» атты глобус жасаған ғалым"], ["Америго Веспуччи", "1499–1503 жж.", "Америка құрлығын жаңа дүние ретінде ашты, құрлық оның есімімен аталды"], ["Ф. Магеллан, С. Элькано", "1519–1522 жж.", "Тұңғыш дүниежүзін айналып шықты, Жер шар тәрізділігін дәлелдеді, Тынық мұхитын ашты"], ["Абель Тасман", "XVII ғ. (1642–1644)", "Аустралия маңындағы Тонга, Фиджи, Бисмарк архипелагтары мен Тасманияны зерттеді"], ["Беллинсгаузен, Лазарев", "1819–1821 жж.", "«Восток» және «Мирный» кемелерімен 1820 ж. Антарктида материгін ашты"], ["Н.Н. Миклухо-Маклай", "1870–1887 жж.", "Тынық мұхиты аралдары, Жаңа Гвинея (Маклай жағалауы), Аустралияны зерттеді"], ["Дежнев, Хабаров, Ремезов", "XVI–XVII ғғ.", "Сібір мен Қиыр Шығысты зерттеген орыс саяхатшылары мен картографтары"], ["Петлин, Байков, Спафарий", "XVII ғ.", "Сібір арқылы Оңтүстік-шығысқа, Үндістанға, Қытайға саяхат жасаған орыс елшілері"], ["Роберт Пири", "1909 ж.", "Солтүстік полюске алғаш жеткен америкалық саяхатшы"], ["Руаль Амундсен", "1904 ж. / 1911 ж.", "1904 ж. Солтүстік магниттік полюсті ашты; 1911 ж. Оңтүстік полюске алғаш жетті"], ["Жак Ив Кусто", "1943 ж.", "Акваланг ойлап тапты, «Калипсо» зерттеу кемесімен Дүниежүзілік мұхитты зерттеді"]]}, "table_ru": {"cols": ["Путешественник / Ученый / Народ", "Время / Эпоха", "Географическое открытие и данные для ЕНТ"], "rows": [["Эратосфен", "III в. до н.э.", "Ввел термин «География» («землеописание»), с высокой точностью измерил Землю"], ["Клавдий Птолемей", "II в. до н.э. / IV в.", "Картографическое направление; в IV в. по его трудам составлена Карта мира"], ["Геродот", "V в. до н.э.", "«Отец истории», дал концепцию географии, описал саков Прикаспия"], ["Страбон", "I в. до н.э. – I в.", "Основатель страноведения, написал 17-томный фундаментальный труд «География»"], ["Фалес и Анаксимандр", "VI в. до н.э.", "Впервые в мире применили масштаб для создания географических карт"], ["Пифей", "IV в. до н.э.", "Исследовал Западную Европу; научно связал приливы и отливы с действием Луны"], ["Аристотель", "IV в. до н.э.", "Впервые научно доказал шарообразность Земли по тени во время лунных затмений"], ["Вавилоняне", "Древность", "Изобрели письмо, уподобили Землю шару, разделили круг на 360°, создали карту из глины"], ["Финикийцы", "Древность", "Разделили мир на Европу («эреб» — запад) и Азию («асу» — восток)"], ["Индийцы", "I в. н.э.", "Открыли острова Суматра и Ява, заселили острова Индонезии"], ["Махмуд Кашгари", "XI в. (1072–1074)", "Автор словаря «Дивани лугат ат-тюрк»; составил первую тюркскую «Круглую карту»"], ["К. Миллер, А. Герман и др.", "XX в.", "Группа ученых, исследовавших «Круглую карту» Махмуда Кашгари"], ["Аль-Масуди", "X в.", "Оставил ценные описания Восточной Африки («Геродот арабов»)"], ["Аль-Бируни", "X–XI вв.", "Основы геодезии, вычислил радиус Земли (6339 км), создал один из первых глобусов"], ["Аль-Идриси", "XII в.", "Знаменитый арабский картограф (составил карту для сицилийского короля Рожера II)"], ["Абу Ибн Баттута", "XIV в.", "За 30 лет прошел 120 000 км, описал Сомали, Тимбукту, Мали, Азию и Крым"], ["Марко Поло", "XIII в. (1298 г.)", "Описал Памир, Индию; в «Книге о разнообразии мира» основные данные о Китае"], ["Афанасий Никитин", "1466–1472 гг.", "Автор книги «Хождение за три моря», первый русский путешественник в Индии"], ["Христофор Колумб", "1492 г.", "На 3 каравеллах («Санта-Мария», «Пинта», «Нинья») открыл Америку (Багамы)"], ["Васко да Гама", "1498 г.", "Обогнул Африку и через Сомали открыл морской путь в Индию (Каликут)"], ["Мартин Бехайм", "1492 г.", "Создатель первого в истории сохранившегося глобуса «Земное яблоко»"], ["Америго Веспуччи", "1499–1503 гг.", "Доказал, что Новый Свет — отдельный континент; назван его именем — Америка"], ["Ф. Магеллан, С. Элькано", "1519–1522 гг.", "Первое кругосветное плавание, доказательство шарообразности Земли, Тихий океан"], ["Абель Тасман", "XVII в. (1642–1644)", "Исследовал побережье Австралии, архипелаги Тонга, Фиджи, Бисмарка, Тасманию"], ["Беллинсгаузен, Лазарев", "1819–1821 гг.", "На шлюпах «Восток» и «Мирный» 28 января 1820 г. открыли Антарктиду"], ["Н.Н. Миклухо-Маклай", "1870–1887 гг.", "Исследовал острова Океании, Новую Гвинею (Берег Маклая) и Австралию"], ["Дежнев, Хабаров, Ремезов", "XVI–XVII вв.", "Русские землепроходцы и картографы Сибири и Дальнего Востока"], ["Петлин, Байков, Спафарий", "XVII в.", "Русские послы-путешественники через Сибирь в Среднюю Азию, Индию и Китай"], ["Роберт Пири", "1909 г.", "Американский исследователь, первым достигший Северного географического полюса"], ["Руаль Амундсен", "1904 г. / 1911 г.", "1904 г. открыл Северный магнитный полюс; 1911 г. первым достиг Южного полюса"], ["Жак Ив Кусто", "1943 г.", "Изобрел акваланг, исследовал Мировой океан на исследовательском судне «Калипсо»"]]}, "key_facts_kz": ["«География» грекше «жерді сипаттау», ғылымға енгізген — Эратосфен (Б.з.б. III ғ., Грекия).", "Махмұд Қашғари XI ғ. «Диуани-лұғат-ат-түрік» жазып, тұңғыш «Дөңгелек картаны» жасады (оны зерттегендер: К. Миллер, А. Герман, И. Умняков, Ш. Алиев).", "Страбон — елтану негізін қалаушы, «География» 17 томдық кітап жазған; К. Птолемей (Б.з.б. II ғ.) материалдарымен IV ғ. Әлем картасы сызылды.", "Х. Колумб 1492 ж. 3 кемемен («Санта-Мария», «Пинта», «Нинья») саяхатқа шығып, Американы ашты.", "Васко да Гама 1498 ж. Африканы айналып Үндістанға (Калькуттаға) теңіз жолын ашты; Мартин Бехайм 1492 ж. алғаш рет глобус жасады.", "Ф. Магеллан мен С. Элькано (1519–1522 жж.) тұңғыш дүниежүзін айналып, Жердің шар тәрізділігін дәлелдеді.", "Ф. Беллинсгаузен мен М. Лазарев 1820 ж. «Восток» және «Мирный» кемелерімен Антарктиданы ашты.", "Р. Пири 1909 ж. Солтүстік полюске, ал Р. Амундсен 1911 ж. Оңтүстік полюске жетті; Жак Ив Кусто 1943 ж. акваланг ойлап тауып, «Калипсо» кемесімен зерттеу жүргізді."], "key_facts_ru": ["«География» — греч. «землеописание», ввел термин Эратосфен (III в. до н.э., Древняя Греция).", "Махмуд Кашгари в XI в. написал «Дивани лугат ат-тюрк» и создал «Круглую карту» (исследователи: К. Миллер, А. Герман, И. Умняков, Ш. Алиев).", "Страбон — основоположник страноведения (17 томов «Географии»); по материалам К. Птолемея в IV в. создана Карта мира.", "Х. Колумб в 1492 г. на 3 каравеллах («Санта-Мария», «Пинта», «Нинья») открыл Америку.", "Васко да Гама в 1498 г. обогнул Африку и открыл морской путь в Индию (Каликут); Мартин Бехайм в 1492 г. создал первый глобус.", "Ф. Магеллан и Х.С. Элькано (1519–1522 гг.) совершили первое кругосветное плавание, доказав шарообразность Земли.", "Ф. Беллинсгаузен и М. Лазарев в 1820 г. на шлюпах «Восток» и «Мирный» открыли Антарктиду.", "Р. Пири в 1909 г. достиг Северного полюса, Р. Амундсен в 1911 г. — Южного полюса; Жак-Ив Кусто в 1943 г. изобрел акваланг («Калипсо»)."], "traps_kz": ["⚠️ ҰБТ қақпаны: 1492 жылы Х. Колумб Американы ашқан жылы Мартин Бехайм тұңғыш рет «Жер алмасы» атты глобусты жасады!", "⚠️ Колумбтың 3 кемесінің атауын жаттап алыңыз: «Санта-Мария», «Пинта», «Нинья» (өмірінің соңына дейін Үндістанды аштым деп ойлады).", "⚠️ Полюстер: 1909 жылы Солтүстік полюске Р. Пири жетті, ал 1911 жылы Оңтүстік полюске Р. Амундсен жетті. Солтүстік магниттік полюсті де Р. Амундсен 1904 ж. ашқан."], "traps_ru": ["⚠️ Ловушка ЕНТ: В 1492 году, когда Колумб открыл Америку, Мартин Бехайм создал первый в истории глобус «Земное яблоко»!", "⚠️ Названия 3 кораблей Колумба: «Санта-Мария», «Пинта», «Нинья» (до конца жизни он считал, что открыл путь в Индию).", "⚠️ Полюса: В 1909 г. Северного полюса достиг Р. Пири, а в 1911 г. Южного полюса — Р. Амундсен. Северный магнитный полюс также открыл Р. Амундсен в 1904 г."]};
+    const blooketData = {"kz": "https://dashboard.blooket.com/set/6a95f1be89dce25739b5d309", "ru": "https://dashboard.blooket.com/set/6a94d1638bb8084c251f27f9", "doc_kz": "https://docs.google.com/document/d/11eUdgaJSbQfexj0DQT9ZFkatiFxz8FnxKsBGOwT5V98/edit?usp=sharing", "doc_ru": "https://drive.google.com/file/d/1bX8A7nDpxZKS_cMVyzbfj_Z5dPd8ZAet/view?usp=sharing"};
+    let currentLang = 'kz';
+
+    // Safe localStorage helper
+    const safeStorage = {
+      getItem(k) {
+        try { return localStorage.getItem(k); } catch (e) { return null; }
+      },
+      setItem(k, v) {
+        try { localStorage.setItem(k, v); } catch (e) {}
+      }
+    };
+
+    function getCompletedSet() {
+      try {
+        return new Set(JSON.parse(safeStorage.getItem('geotany_grammar_completed') || '[]'));
+      } catch (e) {
+        return new Set();
+      }
+    }
+
+    function saveCompletedSet(setObj) {
+      safeStorage.setItem('geotany_grammar_completed', JSON.stringify(Array.from(setObj)));
+    }
+
+    function updateCompleteButton() {
+      const setObj = getCompletedSet();
+      const isDone = setObj.has(topicData.num);
+      const btn = document.getElementById('btnComplete');
+      const icon = document.getElementById('completeIcon');
+      const text = document.getElementById('completeText');
+
+      if (isDone) {
+        btn.className = "inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black transition border border-emerald-500/50 bg-emerald-500/20 text-emerald-300 shadow-md shadow-emerald-500/10";
+        icon.textContent = "✓";
+        text.textContent = (currentLang === 'ru') ? "Изучено" : "Меңгерілді";
+      } else {
+        btn.className = "inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition border border-slate-700 bg-space-900 text-slate-300 hover:text-white hover:border-slate-600";
+        icon.textContent = "○";
+        text.textContent = (currentLang === 'ru') ? "Отметить изученным" : "Меңгерілді деп белгілеу";
+      }
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('xpToast');
+      const m = document.getElementById('toastMsg');
+      m.textContent = msg;
+      t.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        t.classList.add('translate-y-20', 'opacity-0');
+      }, 2500);
+    }
+
+    function toggleComplete() {
+      const setObj = getCompletedSet();
+      const isDone = setObj.has(topicData.num);
+      let xp = parseInt(safeStorage.getItem('geotany_user_xp') || '0', 10);
+
+      if (isDone) {
+        setObj.delete(topicData.num);
+        xp = Math.max(0, xp - 20);
+        showToast((currentLang === 'ru') ? "-20 XP. Отметка снята" : "-20 XP. Белгі алынды");
+      } else {
+        setObj.add(topicData.num);
+        xp += 20;
+        showToast((currentLang === 'ru') ? "+20 XP! Тема изучена" : "+20 XP! Тақырып меңгерілді");
+      }
+
+      saveCompletedSet(setObj);
+      safeStorage.setItem('geotany_user_xp', xp.toString());
+      updateCompleteButton();
+    }
+
+    function renderTable(isRu) {
+      const tbl = isRu ? (topicData.table_ru || topicData.table_kz) : topicData.table_kz;
+      const container = document.getElementById('tableContainer');
+      if (!tbl || !tbl.cols || !tbl.rows || tbl.rows.length === 0) {
+        document.getElementById('tableSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('tableSection').classList.remove('hidden');
+
+      let html = '<table class="w-full text-left text-xs border-collapse">';
+      html += '<thead><tr class="border-b border-slate-800 text-slate-400 font-bold">';
+      tbl.cols.forEach(col => {
+        html += `<th class="p-2.5 sm:p-3 bg-space-900/60 rounded-lg whitespace-nowrap text-cyan-300 font-bold">${col}</th>`;
+      });
+      html += '</tr></thead><tbody class="divide-y divide-slate-800/60">';
+      tbl.rows.forEach(row => {
+        html += '<tr class="hover:bg-space-900/40 transition">';
+        row.forEach((cell, idx) => {
+          const cls = idx === 0 ? "font-bold text-white whitespace-nowrap" : (idx === 1 ? "text-cyan-300 font-medium" : "text-slate-300");
+          html += `<td class="p-2.5 sm:p-3 ${cls}">${cell}</td>`;
+        });
+        html += '</tr>';
+      });
+      html += '</tbody></table>';
+      container.innerHTML = html;
+    }
+
+    function renderFacts(isRu) {
+      const facts = isRu ? (topicData.key_facts_ru || topicData.key_facts_kz) : topicData.key_facts_kz;
+      const list = document.getElementById('factsList');
+      if (!facts || facts.length === 0) {
+        document.getElementById('factsSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('factsSection').classList.remove('hidden');
+      list.innerHTML = facts.map(f => `<li class="flex items-start space-x-2"><span class="text-amber-400 font-bold shrink-0 mt-0.5">•</span><span>${f}</span></li>`).join('');
+    }
+
+    function renderTraps(isRu) {
+      const traps = isRu ? (topicData.traps_ru || topicData.traps_kz) : topicData.traps_kz;
+      const list = document.getElementById('trapsList');
+      if (!traps || traps.length === 0) {
+        document.getElementById('trapsSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('trapsSection').classList.remove('hidden');
+      list.innerHTML = traps.map(tr => {
+        const str = String(tr);
+        const icon = str.startsWith('⚠️') ? '' : '<span class="text-amber-400 shrink-0 mt-0.5">⚠️</span> ';
+        return `<p class="leading-relaxed flex items-start space-x-2">${icon}<span>${str}</span></p>`;
+      }).join('');
+    }
+
+    function setLang(lang) {
+      currentLang = lang;
+      safeStorage.setItem('geotany_lang', lang);
+      const isRu = (lang === 'ru');
+
+      // Update lang buttons
+      const btnKz = document.getElementById('btnLangKz');
+      const btnRu = document.getElementById('btnLangRu');
+      if (isRu) {
+        btnRu.className = "px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow";
+        btnKz.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+      } else {
+        btnKz.className = "px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow";
+        btnRu.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+      }
+
+      // Update text fields
+      document.getElementById('navCatBadge').textContent = isRu ? (topicData.category_ru || 'География') : (topicData.category_kz || 'География');
+      document.getElementById('heroCatBadge').textContent = isRu ? (topicData.category_ru || 'География') : (topicData.category_kz || 'География');
+      document.getElementById('heroTitle').textContent = isRu ? topicData.title_ru : topicData.title_kz;
+
+      // Summary
+      document.getElementById('summaryHeader').textContent = isRu ? "КРАТКИЙ ОБЗОР ТЕМЫ" : "ТАҚЫРЫПҚА ҚЫСҚАША ШОЛУ";
+      document.getElementById('summaryText').textContent = isRu ? topicData.summary_ru : topicData.summary_kz;
+
+      // Theory
+      document.getElementById('theoryHeader').textContent = isRu ? "ПОЛНЫЙ ТЕОРЕТИЧЕСКИЙ МАТЕРИАЛ И КОНСПЕКТ" : "ТОЛЫҚ ТЕОРИЯЛЫҚ МАТЕРИАЛ МЕН КОНСПЕКТ";
+      document.getElementById('theoryContent').innerHTML = isRu ? topicData.full_theory_ru : topicData.full_theory_kz;
+
+      // SVG
+      document.getElementById('svgHeader').textContent = isRu ? "НАГЛЯДНАЯ СХЕМА И ИНФОГРАФИКА" : "КӨРНЕКІ СХЕМА МЕН ИНФОГРАФИКА";
+      const svgCode = isRu ? (topicData.svg_diagram_ru || topicData.svg_diagram) : topicData.svg_diagram;
+      document.getElementById('svgContainer').innerHTML = svgCode || '';
+
+      // Table, Facts, Traps
+      document.getElementById('tableHeader').textContent = isRu ? "СТРУКТУРИРОВАННАЯ ТАБЛИЦА ПОКАЗАТЕЛЕЙ И КЛАССИФИКАЦИИ" : "НАҚТЫ КӨРСЕТКІШТЕР МЕН КЛАССИФИКАЦИЯ КЕСТЕСІ";
+      renderTable(isRu);
+
+      document.getElementById('factsHeader').textContent = isRu ? "ГЛАВНЫЕ ФАКТЫ ДЛЯ ЕНТ И ЗАПОМИНАНИЯ" : "ҰБТ-ҒА ҚАЖЕТТІ НЕГІЗГІ ЕРЕЖЕЛЕР МЕН ФАКТІЛЕР";
+      renderFacts(isRu);
+
+      document.getElementById('trapsHeader').textContent = isRu ? "ЛОВУШКИ И ЛАЙФХАКИ ЕНТ" : "ҰБТ ҚАҚПАНДАРЫ МЕН ЛАЙФХАКТАР";
+      renderTraps(isRu);
+
+      // Blooket & Doc links
+      const btnB = document.getElementById('btnBlooket');
+      const bUrl = isRu ? (blooketData.ru || blooketData.kz) : (blooketData.kz || blooketData.ru);
+      if (bUrl) {
+        btnB.href = bUrl;
+        btnB.classList.remove('hidden');
+      } else {
+        btnB.classList.add('hidden');
+      }
+
+      const btnD = document.getElementById('btnDoc');
+      if (btnD) { const dUrl = isRu ? (blooketData.doc_ru || blooketData.doc_kz) : (blooketData.doc_kz || blooketData.doc_ru); if (dUrl) { btnD.href = dUrl; btnD.classList.remove('hidden'); } else { btnD.classList.add('hidden'); } }
+
+      updateCompleteButton();
+    }
+
+    // Initialization on page load with URL param and localStorage sync
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const queryLang = urlParams.get('lang');
+      let langToSet = 'kz';
+      if (queryLang === 'ru' || queryLang === 'kz') {
+        langToSet = queryLang;
+        safeStorage.setItem('geotany_lang', queryLang);
+      } else {
+        const savedLang = safeStorage.getItem('geotany_lang');
+        if (savedLang === 'ru') langToSet = 'ru';
+        else langToSet = 'kz';
+      }
+      setLang(langToSet);
+    });
+  </script>
+</body>
+</html>

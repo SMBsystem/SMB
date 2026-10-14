@@ -160,16 +160,16 @@
             <span class="text-sm sm:text-xl">🧭</span>
           </div>
           <div class="flex items-center">
-            <span class="font-extrabold text-base sm:text-xl tracking-tight text-white">Geo<span class="text-brand-400">Tany</span></span>
+            <span class="hidden sm:inline font-extrabold text-base sm:text-xl tracking-tight text-white">Geo<span class="text-brand-400">Tany</span></span>
           </div>
         </a>
 
         <div class="h-4 w-px bg-slate-800 hidden sm:block"></div>
 
         <!-- Back to Central Dashboard Hub -->
-        <a href="index.html" class="inline-flex items-center space-x-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-space-850 hover:bg-space-800 text-slate-300 hover:text-white border border-slate-700 text-xs font-bold transition shadow-sm" title="SMB Порталға қайту">
+        <a href="../index.html" class="inline-flex items-center space-x-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-space-850 hover:bg-space-800 text-slate-300 hover:text-white border border-slate-700 text-xs font-bold transition shadow-sm" title="SMB Порталға қайту">
           <span>🧭</span>
-          <span>SMB Portal</span>
+          <span class="hidden sm:inline">SMB Portal</span>
         </a>
       </div>
       
@@ -178,7 +178,7 @@
       <div class="flex items-center space-x-1.5 sm:space-x-3 shrink-0">
         
         <!-- Day Streak -->
-        <div class="flex items-center space-x-1 bg-space-850 px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl border border-slate-700/60 shadow-inner shrink-0">
+        <div class="hidden sm:flex items-center space-x-1 bg-space-850 px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl border border-slate-700/60 shadow-inner shrink-0">
           <span class="text-amber-400 text-xs sm:text-base">🔥</span>
           <span class="text-[11px] sm:text-xs font-bold text-amber-300 leading-none" id="streakDays">1к</span>
         </div>
@@ -3888,7 +3888,7 @@ function studentLogout() {
 
     // 6. Redirect to main portal index.html
     setTimeout(() => {
-      window.location.href = 'index.html';
+      window.location.href = '../index.html';
     }, 300);
 
   } catch (err) {
@@ -3896,7 +3896,7 @@ function studentLogout() {
     safeStorage.removeItem('geotany_user_profile');
     safeStorage.removeItem('geotany_user_session');
     safeStorage.removeItem('geotany_admin_auth');
-    window.location.href = 'index.html';
+    window.location.href = '../index.html';
   }
 }
 
@@ -3917,10 +3917,10 @@ function adminLogout() {
     showToast(isRu ? 'Вы вышли из режима администратора' : 'Администратор режимінен шықтыңыз');
 
     setTimeout(() => {
-      window.location.href = 'index.html';
+      window.location.href = '../index.html';
     }, 300);
   } catch(e) {
-    window.location.href = 'index.html';
+    window.location.href = '../index.html';
   }
 }
 

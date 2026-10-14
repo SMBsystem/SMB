@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="kk" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ҰБТ География — 29-нұсқа | GEOTANY</title>
+
+  <!-- AUTH GUARD: RESTRICT DIRECT ACCESS WITHOUT VALID SESSION -->
+  <style id="authCloak">body { display: none !important; }</style>
+  <script>
+    (function() {
+      try {
+        var isAdmin = localStorage.getItem('geotany_admin_auth') === 'true';
+        var sessionStr = localStorage.getItem('geotany_user_session');
+        var isAuthorized = isAdmin;
+        if (!isAuthorized && sessionStr) {
+          var s = JSON.parse(sessionStr);
+          if (s && s.email && (s.courseCode || s.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        var profileStr = localStorage.getItem('geotany_user_profile');
+        if (!isAuthorized && profileStr) {
+          var p = JSON.parse(profileStr);
+          if (p && p.email && (p.courseCode || p.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        if (!isAuthorized) {
+          window.location.replace('../geotanu.html?error=unauthorized_course');
+          return;
+        }
+        var cloak = document.getElementById('authCloak');
+        if (cloak) cloak.remove();
+      } catch (e) {
+        window.location.replace('../geotanu.html?error=unauthorized_course');
+      }
+    })();
+  </script>
+
+  <!-- TAILWIND CSS & FONTS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            space: {
+              800: '#1E293B',
+              850: '#151E2E',
+              900: '#0F172A',
+              950: '#0B0F19',
+            },
+            brand: {
+              400: '#34D399',
+              500: '#10B981',
+              600: '#059669',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0B0F19;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1E293B;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+    .glow-gold {
+      box-shadow: 0 0 25px -5px rgba(245, 158, 11, 0.25);
+    }
+    .glow-emerald {
+      box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.25);
+    }
+  </style>
+</head>
+<body class="bg-space-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-brand-500/30 selection:text-brand-400">
+
+  <!-- TOP APP BAR -->
+  <header class="sticky top-0 z-40 bg-space-950/90 backdrop-blur-xl border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+      
+      <!-- Left: Back Button & Title -->
+      <div class="flex items-center space-x-3">
+        <a id="btnBackToPlatform" href="../geotanu.html?lang=kz#section-testter_writing" class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 text-slate-300 hover:text-white border border-slate-700/80 text-xs sm:text-sm font-bold transition shadow-sm">
+          <span>←</span>
+          <span id="navBackText" class="hidden sm:inline">Артқа</span>
+        </a>
+        <div class="h-6 w-px bg-slate-800 hidden sm:block"></div>
+        <div class="flex items-center space-x-2">
+          <span class="text-xs px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-400 font-extrabold border border-amber-500/20">
+            ҰБТ #29
+          </span>
+          <span id="navVariantTitle" class="text-sm font-bold text-slate-200 hidden md:inline truncate max-w-xs">
+            29-нұсқа: ҰБТ кешенді сынағы (35 сұрақ)
+          </span>
+        </div>
+      </div>
+
+      <!-- Center: Exam Timer (Visible in Exam mode) -->
+      <div id="examTimerWrapper" class="flex items-center space-x-2 bg-space-900 border border-slate-800 px-3 py-1.5 rounded-xl shadow-inner">
+        <span class="text-xs text-slate-400 font-medium hidden sm:inline" id="lblTimerText">Уақыт:</span>
+        <span class="text-amber-400 text-sm font-black tracking-wider font-mono" id="examTimer">45:00</span>
+      </div>
+
+      <!-- Right: Mode Switcher & Language Switcher -->
+      <div class="flex items-center space-x-2 sm:space-x-3">
+        
+        <!-- Mode Switcher -->
+        <div class="flex items-center bg-space-900 p-0.5 rounded-xl border border-slate-800 text-xs font-bold">
+          <button id="modeExamBtn" onclick="setMode('exam')" class="px-2.5 py-1 rounded-lg bg-amber-500 text-space-950 font-black transition shadow-sm">
+            <span>🎯</span>
+            <span class="hidden sm:inline ml-1" id="lblModeExam">Емтихан</span>
+          </button>
+          <button id="modeReviewBtn" onclick="setMode('review')" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition">
+            <span>💡</span>
+            <span class="hidden sm:inline ml-1" id="lblModeReview">Талдау</span>
+          </button>
+        </div>
+
+        <!-- Language Switcher -->
+        <div class="flex items-center bg-space-900 p-0.5 rounded-xl border border-slate-800 text-xs font-bold">
+          <button id="langKzBtn" onclick="setLang('kz')" class="px-2 py-1 rounded-lg bg-brand-500 text-space-950 font-black transition">
+            KZ
+          </button>
+          <button id="langRuBtn" onclick="setLang('ru')" class="px-2 py-1 rounded-lg text-slate-400 hover:text-white transition">
+            RU
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN WRAPPER -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
+
+    <!-- HERO META CARD -->
+    <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-space-900 via-space-850 to-space-900 border border-slate-800 shadow-xl relative overflow-hidden">
+      <!-- Glow decoration -->
+      <div class="absolute -right-20 -top-20 w-60 h-60 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-20 -bottom-20 w-60 h-60 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10 space-y-4">
+        
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <span class="px-3 py-1 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 font-extrabold text-xs tracking-wider uppercase">
+              ⚡ ҰБТ ТЕСТ СЫНАҒЫ • НҰСҚА №29
+            </span>
+            <span id="heroDepartmentBadge" class="px-3 py-1 rounded-xl bg-brand-500/10 border border-brand-500/30 text-brand-400 font-bold text-xs">
+              Қазақ бөлімі
+            </span>
+          </div>
+
+          <!-- Prev / Next Variant Nav -->
+          <div class="flex items-center space-x-2 text-xs font-bold">
+            <a href="test_28.html" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition flex items-center space-x-1"><span>←</span><span>Алдыңғы</span></a>
+            <span class="text-slate-500">|</span>
+            <a href="test_30.html" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition flex items-center space-x-1"><span>Келесі</span><span>→</span></a>
+          </div>
+        </div>
+
+        <div>
+          <h1 id="heroTitle" class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            29-нұсқа: ҰБТ кешенді сынағы (35 сұрақ)
+          </h1>
+          <p id="heroDesc" class="text-sm text-slate-300 mt-2 max-w-3xl leading-relaxed">
+            1–25 біртаңдаулы және 26–35 көптаңдаулы ҰБТ сұрақтары. Жалпы балл есебі және толық авторлық разбор.
+          </p>
+        </div>
+
+        <!-- Metrics Row -->
+        <div class="flex flex-wrap gap-2.5 pt-2 border-t border-slate-800/80">
+          <div class="px-3 py-1.5 rounded-xl bg-space-850 border border-slate-800 text-xs font-medium text-slate-300 flex items-center space-x-1.5">
+            <span>📝</span>
+            <span id="lblMetaQuestions">35 сұрақ (42 балл)</span>
+          </div>
+          <div class="px-3 py-1.5 rounded-xl bg-space-850 border border-slate-800 text-xs font-medium text-slate-300 flex items-center space-x-1.5">
+            <span>⏱️</span>
+            <span id="lblMetaTime">40 минут</span>
+          </div>
+          <div class="px-3 py-1.5 rounded-xl bg-space-850 border border-slate-800 text-xs font-medium text-slate-300 flex items-center space-x-1.5">
+            <span>🎯</span>
+            <span id="lblMetaPassing">Шекті балл: 70% (29 балл)</span>
+          </div>
+          <div class="px-3 py-1.5 rounded-xl bg-space-850 border border-slate-800 text-xs font-medium text-amber-400 flex items-center space-x-1.5">
+            <span>🏆</span>
+            <span id="lblMetaXp">Сыйлық: +80 XP</span>
+          </div>
+          <div class="px-3 py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-bold flex items-center space-x-1.5">
+            <span>⚡</span>
+            <span id="lblMetaOnline">100% Онлайн тест</span>
+          </div>
+        </div>
+
+        <!-- Previous Score Alert Banner if already attempted -->
+        <div id="prevScoreBanner" class="hidden p-3.5 rounded-2xl bg-brand-500/10 border border-brand-500/30 text-xs sm:text-sm text-brand-300 flex items-center justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <span>✅</span>
+            <span id="prevScoreText">Сіз бұл нұсқаны бұрын тапсырдыңыз.</span>
+          </div>
+          <button onclick="retakeExam()" class="px-3 py-1 rounded-xl bg-brand-500 text-space-950 font-black text-xs hover:bg-brand-400 transition">
+            Қайта тапсыру
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- MAIN TWO COLUMN LAYOUT: SIDEBAR JUMP MATRIX + QUESTIONS LIST -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+      <!-- LEFT / STICKY SIDEBAR: QUESTION JUMP MATRIX -->
+      <aside class="lg:col-span-4 xl:col-span-3 sticky top-20 z-30 space-y-4">
+        <div class="p-5 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-4">
+          
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-black uppercase tracking-wider text-slate-400" id="lblNavigatorTitle">
+              Сұрақтар навигаторы
+            </h3>
+            <span id="navProgressBadge" class="text-xs px-2 py-0.5 rounded-md bg-space-850 text-amber-400 font-bold border border-slate-700">
+              0 / 35
+            </span>
+          </div>
+
+          <!-- Progress Bar -->
+          <div class="w-full bg-space-850 h-2 rounded-full overflow-hidden border border-slate-800">
+            <div id="examProgressBar" class="h-full bg-gradient-to-r from-amber-500 to-brand-500 w-0 transition-all duration-300"></div>
+          </div>
+
+          <!-- Jump Matrix Grid -->
+          <div id="questionMatrix" class="grid grid-cols-5 sm:grid-cols-8 lg:grid-cols-5 gap-1.5 max-h-[50vh] overflow-y-auto pr-1">
+            <!-- Dynamically populated buttons -->
+          </div>
+
+          <!-- Action Buttons in Sidebar -->
+          <div class="pt-3 border-t border-slate-800/80 space-y-2">
+            <button id="btnFinishExam" onclick="confirmSubmitExam()" class="w-full py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-brand-500 hover:from-amber-400 hover:to-brand-400 text-space-950 font-black text-xs sm:text-sm shadow-lg shadow-amber-500/20 transition flex items-center justify-center space-x-2">
+              <span>🏁</span>
+              <span id="lblBtnFinishExam">Емтиханды аяқтау</span>
+            </button>
+            <button id="btnQuickReview" onclick="setMode('review')" class="w-full py-2.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-bold transition flex items-center justify-center space-x-1.5">
+              <span>💡</span>
+              <span id="lblBtnQuickReview">Талдауды ашу</span>
+            </button>
+          </div>
+
+        </div>
+      </aside>
+
+      <!-- RIGHT COLUMN: QUESTIONS LIST -->
+      <section class="lg:col-span-8 xl:col-span-9 space-y-5">
+        
+        <div id="questionsContainer" class="space-y-5">
+          <!-- Dynamically populated question cards -->
+        </div>
+
+        <!-- BOTTOM FINISH BAR -->
+        <div class="p-6 rounded-3xl bg-space-900 border border-slate-800 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>
+            <h4 class="text-sm font-bold text-white" id="lblBottomBarTitle">Барлық сұрақтарға жауап бердіңіз бе?</h4>
+            <p class="text-xs text-slate-400 mt-0.5" id="lblBottomBarDesc">Нәтижені растап, балл мен XP алу үшін емтиханды аяқтаңыз.</p>
+          </div>
+          <button onclick="confirmSubmitExam()" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-brand-500 hover:from-amber-400 hover:to-brand-400 text-space-950 font-black text-xs sm:text-sm shadow-md transition flex items-center justify-center space-x-2">
+            <span>🏁</span>
+            <span id="lblBottomBarBtn">Тестті аяқтау және тексеру</span>
+          </button>
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- RESULT & CELEBRATION MODAL -->
+  <div id="resultModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden">
+    <div class="bg-space-900 border border-slate-700 w-full max-w-lg rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden space-y-6">
+      
+      <canvas id="confettiCanvas" class="absolute inset-0 pointer-events-none z-10 w-full h-full"></canvas>
+
+      <div class="relative z-20 text-center space-y-3">
+        <div id="modalIcon" class="w-16 h-16 mx-auto rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-3xl">
+          🏆
+        </div>
+        <h3 id="modalTitle" class="text-2xl font-black text-white">
+          Сынақ аяқталды!
+        </h3>
+        <p id="modalSubtitle" class="text-xs text-slate-300">
+          Сіздің осы нұсқа бойынша ресми ҰБТ нәтижеңіз:
+        </p>
+      </div>
+
+      <!-- Score Box -->
+      <div class="relative z-20 p-5 rounded-2xl bg-space-850 border border-slate-800 text-center space-y-2">
+        <div class="text-4xl sm:text-5xl font-black text-amber-400 font-mono" id="modalScoreDisplay">
+          0 / 42
+        </div>
+        <div class="text-xs font-bold text-slate-400" id="modalPercentageDisplay">
+          0% • Нәтиже
+        </div>
+        <div id="modalStatusBadge" class="inline-block px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wide bg-brand-500/20 text-brand-400 border border-brand-500/30">
+          Өтті
+        </div>
+      </div>
+
+      <!-- Breakdown Grid -->
+      <div class="relative z-20 grid grid-cols-3 gap-2 text-center text-xs">
+        <div class="p-3 rounded-xl bg-space-950 border border-slate-800">
+          <div class="text-emerald-400 font-black text-base" id="modalCorrectCount">0</div>
+          <div class="text-slate-400 text-[10px] mt-0.5" id="lblModalCorrect">Дұрыс</div>
+        </div>
+        <div class="p-3 rounded-xl bg-space-950 border border-slate-800">
+          <div class="text-amber-400 font-black text-base" id="modalPartialCount">0</div>
+          <div class="text-slate-400 text-[10px] mt-0.5" id="lblModalPartial">Жартылай</div>
+        </div>
+        <div class="p-3 rounded-xl bg-space-950 border border-slate-800">
+          <div class="text-rose-400 font-black text-base" id="modalWrongCount">0</div>
+          <div class="text-slate-400 text-[10px] mt-0.5" id="lblModalWrong">Қате</div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="relative z-20 space-y-2">
+        <button onclick="closeModalAndShowReview()" class="w-full py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-space-950 font-black text-xs sm:text-sm shadow-md transition flex items-center justify-center space-x-2">
+          <span>🔍</span>
+          <span id="lblModalBtnReview">Қателерді және толық талдауды көру</span>
+        </button>
+        <button onclick="retakeExam()" class="w-full py-2.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-bold transition flex items-center justify-center space-x-2">
+          <span>🔄</span>
+          <span id="lblModalBtnRetake">Қайта тапсыру</span>
+        </button>
+        <a id="modalBackLink" href="../geotanu.html?lang=kz#section-testter_writing" class="w-full py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-slate-400 hover:text-white text-xs font-bold transition flex items-center justify-center space-x-2">
+          <span>📋</span>
+          <span id="lblModalBtnCatalog">Нұсқалар каталогына оралу</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SCRIPT ENGINE -->
+  <script>
+    const variantData = {"id": 29, "title": "29-нұсқа: ҰБТ кешенді сынағы (35 сұрақ)", "desc": "1–25 біртаңдаулы және 26–35 көптаңдаулы ҰБТ сұрақтары. Жалпы балл есебі және толық авторлық разбор.", "timeMinutes": 40, "passingScore": 24, "questions": [{"id": 1, "q": "И. Валлерстайн моделіне сәйкес әлемдік экономикалық кеңістіктің бөлігі", "isMulti": false, "options": ["Франция", "Жапония", "Ғаламдық орталық → D) АҚШ; Жартылай периферия → С) Ресей", "Өзбекстан"], "answer": 2, "explanation": "Дұрыс жауабы: C) Ғаламдық орталық → D) АҚШ; Жартылай периферия → С) Ресей. АҚШ, Еуропа елдері — әлемдік даму орталықтары. Ресей, Бразилия, Үндістан сияқты елдер — орталық пен шеткі аймақ арасындағы жартылай периферия.", "q_ru": "И. Валлерстайн моделіне сәйкес әлемдік экономикалық кеңістіктің бөлігі", "options_ru": ["Франция", "Япония", "Ғаламдық орталық → D) США; Жартылай периферия → С) Россия", "Узбекистан"], "explanation_ru": "Дұрыс жауабы: C) Ғаламдық орталық → D) США; Жартылай периферия → С) Россия. США, Еуропа елдері — әлемдік даму орталықтары. Россия, Бразилия, Индия сияқты елдер — орталық пен шеткі аймақ арасындағы жартылай периферия."}, {"id": 2, "q": "Ерекшелігі мен елдер тобын сәйкестендіріңіз.", "isMulti": false, "options": ["Норвегия", "Сингапур", "ОАР", "Ауыл шаруашылығы мен өндіруші басым → В) Аграрлы-шикізатты"], "answer": 3, "explanation": "Дұрыс жауабы: D) Ауыл шаруашылығы мен өндіруші басым → В) Аграрлы-шикізатты. елдер; Қызмет көрсету саласы басым → Н) Постиндустриалық елдер Артта қалған немесе дамушы елдер тек шикізат пен егіншілікке тәуелді. Дамыған постиндустриялық елдердің табысы негізінен қызмет көрсету саласынан түседі.", "q_ru": "Ерекшелігі мен елдер тобын сәйкестендіріңіз.", "options_ru": ["Норвегия", "Сингапур", "ЮАР", "Ауыл шаруашылығы мен өндіруші басым → В) Аграрлы-шикізатты"], "explanation_ru": "Дұрыс жауабы: D) Ауыл шаруашылығы мен өндіруші басым → В) Аграрлы-шикізатты. елдер; Қызмет көрсету саласы басым → Н) Постиндустриалық елдер Артта қалған немесе дамушы елдер тек шикізат пен егіншілікке тәуелді. Дамыған постиндустриялық елдердің табысы негізінен қызмет көрсету саласынан түседі."}, {"id": 3, "q": "Зерттеу пәні мен ғылым саласын сәйкестендіріңіз.", "isMulti": false, "options": ["Кеңістік арақатынасы → D) Экономикалық география; Экономикалық", "Амазонка", "Меконг", "Енисей"], "answer": 0, "explanation": "Дұрыс жауабы: A) Кеңістік арақатынасы → D) Экономикалық география; Экономикалық. субъектілер, бәсекеге қабілеттілік → F) Геоэкономика Экономикалық география өндірістің кеңістікте орналасуын зерттейді. Г еоэкономика жаһандық бәсеке, стратегиялар және нарықты басқаруды қарастырады.", "q_ru": "Зерттеу пәні мен ғылым саласын сәйкестендіріңіз.", "options_ru": ["Кеңістік арақатынасы → D) Экономикалық география; Экономикалық", "Амазонка", "Меконг", "Енисей"], "explanation_ru": "Дұрыс жауабы: A) Кеңістік арақатынасы → D) Экономикалық география; Экономикалық. субъектілер, бәсекеге қабілеттілік → F) Геоэкономика Экономикалық география өндірістің кеңістікте орналасуын зерттейді. Г еоэкономика жаһандық бәсеке, стратегиялар және нарықты басқаруды қарастырады."}, {"id": 4, "q": "ЭГЖ – аймақтың дамуына ықпалы.", "isMulti": false, "options": ["Түркіменстан", "Үндістан", "Орталық → А) Дамудың жоғары деңгейі; Шеткі → Н) Экономикалық", "қорғасын"], "answer": 2, "explanation": "Дұрыс жауабы: C) Орталық → А) Дамудың жоғары деңгейі; Шеткі → Н) Экономикалық. дамудың тежелуі Еуропаның орталығы сияқты аймақтарда көлік және сауда жолдары көп болғандықтан даму деңгейі жоғары. Ал шалғай, шеткі аймақтарда даму баяу болады.", "q_ru": "ЭГЖ – аймақтың дамуына ықпалы.", "options_ru": ["Түркіменстан", "Индия", "Орталық → А) Дамудың жоғары деңгейі; Шеткі → Н) Экономикалық", "қорғасын"], "explanation_ru": "Дұрыс жауабы: C) Орталық → А) Дамудың жоғары деңгейі; Шеткі → Н) Экономикалық. дамудың тежелуі Еуропаның орталығы сияқты аймақтарда көлік және сауда жолдары көп болғандықтан даму деңгейі жоғары. Ал шалғай, шеткі аймақтарда даму баяу болады."}, {"id": 5, "q": "Жаңа индустриялық елдердің негізгі даму үлгі(-лер)ін көрсетіңіз.", "isMulti": false, "options": ["Қырғызстан", "Қытай", "Азиялық, Е) Латынамерикалық", "Ұлыбритания"], "answer": 2, "explanation": "Дұрыс жауабы: C) Азиялық, Е) Латынамерикалық. Жаңа индустриялық елдердің екі үлкен толқыны бар: бірі Оңтүстік-Шығыс Азияда (экспортқа бағытталған), екіншісі Латын Америкасында (импорт алмастырушы).", "q_ru": "Жаңа индустриялық елдердің негізгі даму үлгі(-лер)ін көрсетіңіз.", "options_ru": ["Кыргызстан", "Китай", "Азиялық, Е) Латынамерикалық", "Великобритания"], "explanation_ru": "Дұрыс жауабы: C) Азиялық, Е) Латынамерикалық. Жаңа индустриялық елдердің екі үлкен толқыны бар: бірі Оңтүстік-Шығыс Азияда (экспортқа бағытталған), екіншісі Латын Америкасында (импорт алмастырушы)."}, {"id": 6, "q": "Дамудың азиялық үлгісі тән жаңа индустриялық елдерді көрсетіңіз.", "isMulti": false, "options": ["Индонезия", "Малайзия, Е) Индонезия, F) Таиланд", "Жапония", "Мексика"], "answer": 1, "explanation": "Дұрыс жауабы: B) Малайзия, Е) Индонезия, F) Таиланд. Бұл елдер «Азия жолбарыстарының» екінші толқынына жатады, олар шетелдік инвестиция мен арзан жұмыс күшін пайдаланып өнеркәсібін тез дамытты.", "q_ru": "Дамудың азиялық үлгісі тән жаңа индустриялық елдерді көрсетіңіз.", "options_ru": ["Индонезия", "Малайзия, Е) Индонезия, F) Таиланд", "Япония", "Мексика"], "explanation_ru": "Дұрыс жауабы: B) Малайзия, Е) Индонезия, F) Таиланд. Бұл елдер «Азия жолбарыстарының» екінші толқынына жатады, олар шетелдік инвестиция мен арзан жұмыс күшін пайдаланып өнеркәсібін тез дамытты."}, {"id": 7, "q": "Ірі қара мал басының саны жоғары ел (-дер)ді анықтаңыз.", "isMulti": false, "options": ["Норвегия", "Аустралия", "Ресей", "Үндістан, F) Бразилия"], "answer": 3, "explanation": "Дұрыс жауабы: D) Үндістан, F) Бразилия. Үндістан ірі қара мал саны бойынша әлемде бірінші орында тұр (сиыр қасиетті жануар саналады), одан кейінгі орындарда Бразилия, Қытай және АҚШ орналасқан.", "q_ru": "Ірі қара мал басының саны жоғары ел (-дер)ді определите.", "options_ru": ["Норвегия", "Австралия", "Россия", "Индия, F) Бразилия"], "explanation_ru": "Дұрыс жауабы: D) Индия, F) Бразилия. Индия ірі қара мал саны бойынша әлемде бірінші орында тұр (сиыр қасиетті жануар саналады), одан кейінгі орындарда Бразилия, Китай және США орналасқан."}, {"id": 8, "q": "Валлерстайн моделі бойынша жартылай периферияға жататын аймақтарды", "isMulti": false, "options": ["Латын Америкасы, F) ТМД мемлекеттері", "АҚШ", "Аргентина", "Сингапур"], "answer": 0, "explanation": "Дұрыс жауабы: A) Латын Америкасы, F) ТМД мемлекеттері. Жартылай периферияға Ресей бастаған ТМД елдері, Бразилия, Мексика бастаған Латын Америкасының негізгі елдері кіреді. Олар дамушы елдердің көшбасшылары.", "q_ru": "Валлерстайн моделі бойынша жартылай периферияға жататын аймақтарды", "options_ru": ["Латын Америкасы, F) ТМД мемлекеттері", "США", "Аргентина", "Сингапур"], "explanation_ru": "Дұрыс жауабы: A) Латын Америкасы, F) ТМД мемлекеттері. Жартылай периферияға Россия бастаған ТМД елдері, Бразилия, Мексика бастаған Латын Америкасының негізгі елдері кіреді. Олар дамушы елдердің көшбасшылары."}, {"id": 9, "q": "Әлемнің интеллектуалды және ғылыми-техникалық орталықтар қызметін", "isMulti": false, "options": ["Түркия", "Германия", "Жапония", "АҚШ, В) Жапония, F) Еуропа елдері"], "answer": 3, "explanation": "Дұрыс жауабы: D) АҚШ, В) Жапония, F) Еуропа елдері. Бұл елдер Валлерстайнның \"орталығы\" болып табылады. Олар әлемдік инновацияларды, жаңа технологияларды және ғылымды қажет ететін өнімдерді жасайды.", "q_ru": "Әлемнің интеллектуалды және ғылыми-техникалық орталықтар қызметін", "options_ru": ["Турция", "Германия", "Япония", "США, В) Япония, F) Еуропа елдері"], "explanation_ru": "Дұрыс жауабы: D) США, В) Япония, F) Еуропа елдері. Бұл елдер Валлерстайнның \"орталығы\" болып табылады. Олар әлемдік инновацияларды, жаңа технологияларды және ғылымды қажет ететін өнімдерді жасайды."}, {"id": 10, "q": "Қазақстан табиғат ресурстарының қоры жөнінен дүниежүзінде алатын орнын", "isMulti": false, "options": ["фосфорит", "6", "Мак-Кинли", "Байкал"], "answer": 1, "explanation": "Дұрыс жауабы: B) 6. Қазақстан қазып алынатын минералдық (табиғи) ресурстардың жалпы көлемі мен әртүрлілігі бойынша әлемде 6-шы орынды иеленеді.", "q_ru": "Казахстан табиғат ресурстарының қоры жөнінен дүниежүзінде алатын орнын", "options_ru": ["фосфорит", "6", "Мак-Кинли (Денали)", "Байкал"], "explanation_ru": "Дұрыс жауабы: B) 6. Казахстан қазып алынатын минералдық (табиғи) ресурстардың жалпы көлемі мен әртүрлілігі бойынша әлемде 6-шы орынды иеленеді."}, {"id": 11, "q": "Адамдардың әлеуметтік және рухани қажеттіліктерін қамтамасыз ететін саланы", "isMulti": false, "options": ["Юкон", "Өндірістік емес", "Лена", "Дунай"], "answer": 1, "explanation": "Дұрыс жауабы: B) Өндірістік емес. Экономика екіге бөлінеді: материалдық игіліктер жасайтын өндірістік сала және халыққа білім, денсаулық, мәдениет сияқты қызметтер көрсететін өндірістік емес сала.", "q_ru": "Адамдардың әлеуметтік және рухани қажеттіліктерін қамтамасыз ететін саланы", "options_ru": ["Юкон", "Өндірістік емес", "Лена", "Дунай"], "explanation_ru": "Дұрыс жауабы: B) Өндірістік емес. Экономика екіге бөлінеді: материалдық игіліктер жасайтын өндірістік сала және халыққа білім, денсаулық, мәдениет сияқты қызметтер көрсететін өндірістік емес сала."}, {"id": 12, "q": "Сызбаны толықтырыңыз. (Экономикалық аудан - Ресурс - Сала - Орталық)", "isMulti": false, "options": ["Шығыс Қазақстан, түсті металлургия, Өскемен", "Енисей", "Муррей", "Меконг"], "answer": 0, "explanation": "Дұрыс жауабы: A) Шығыс Қазақстан, түсті металлургия, Өскемен. Полиметалл кендеріне бай Шығыс Қазақстанның негізгі мамандану саласы — түсті металлургия. Оның басты орталығы — Өскемен қаласы.", "q_ru": "Сызбаны толықтырыңыз. (Экономикалық аудан - Ресурс - Сала - Орталық)", "options_ru": ["Шығыс Казахстан, түсті металлургия, Усть-Каменогорск", "Енисей", "Муррей", "Меконг"], "explanation_ru": "Дұрыс жауабы: A) Шығыс Казахстан, түсті металлургия, Усть-Каменогорск. Полиметалл кендеріне бай Шығыс Қазақстанның негізгі мамандану саласы — түсті металлургия. Оның басты орталығы — Усть-Каменогорск қаласы."}, {"id": 13, "q": "Дұрыс нұсқаны таңдаңыз. (Машина жасау зауыттары мен қалалар)", "isMulti": false, "options": ["Ақтау", "ІІ мен IV", "Теміртау", "Қарағанды"], "answer": 1, "explanation": "Дұрыс жауабы: B) ІІ мен IV. Кентауда трансформатор зауыты, Қарағандыда электромотор және кабель зауыттары бар. Шымкентте кардан біліктері, ал Талдықорғанда аккумулятор зауыты орналасқан.", "q_ru": "Дұрыс нұсқаны таңдаңыз. (Машина жасау зауыттары мен қалалар)", "options_ru": ["Актау", "ІІ мен IV", "Темиртау", "Караганда"], "explanation_ru": "Дұрыс жауабы: B) ІІ мен IV. Кентауда трансформатор зауыты, Қарағандыда электромотор және кабель зауыттары бар. Шымкентте кардан біліктері, ал Талдықорғанда аккумулятор зауыты орналасқан."}, {"id": 14, "q": "Ащысай, Мырғалымсай, Байжансайда өндірілетін пайдалы қазбаны анықтаңыз.", "isMulti": false, "options": ["Әл-Фараби", "Марко Поло", "Полиметалл", "Л. С. Берг"], "answer": 2, "explanation": "Дұрыс жауабы: C) Полиметалл. Оңтүстік Қазақстандағы (Қаратаудағы) Ащысай, Мырғалымсай, Байжансай кен орындары қорғасын- мырыш (полиметалл) өндірудің ежелгі орталықтары. 1-40 сұрақтардың толық шешімі мен түсіндірмесі", "q_ru": "Ащысай, Мырғалымсай, Байжансайда өндірілетін пайдалы қазбаны определите.", "options_ru": ["Әл-Фараби", "Марко Поло", "Полиметалл", "Л. С. Берг"], "explanation_ru": "Дұрыс жауабы: C) Полиметалл. Оңтүстік Қазақстандағы (Қаратаудағы) Ащысай, Мырғалымсай, Байжансай кен орындары қорғасын- мырыш (полиметалл) өндірудің ежелгі орталықтары. 1-40 сұрақтардың толық шешімі мен түсіндірмесі"}, {"id": 15, "q": "Қазақстан жер қорының ауылшаруашылығына жарамды бөлігін анықтаңыз.", "isMulti": false, "options": ["Үндістан", "Жезқазған", "82%", "Нұра"], "answer": 2, "explanation": "Дұрыс жауабы: C) 82%. Қазақстанның жер қоры өте үлкен, оның 80%-дан астамы (шабындық, жайылым, егістік түрінде) ауыл шаруашылығы мақсатында пайдалануға жарамды.", "q_ru": "Казахстан жер қорының ауылшаруашылығына жарамды бөлігін определите.", "options_ru": ["Индия", "Жезказган", "82%", "Нура"], "explanation_ru": "Дұрыс жауабы: C) 82%. Қазақстанның жер қоры өте үлкен, оның 80%-дан астамы (шабындық, жайылым, егістік түрінде) ауыл шаруашылығы мақсатында пайдалануға жарамды."}, {"id": 16, "q": "Аумағы жөнінен республикадағы ең кіші экономикалық ауданды анықтаңыз.", "isMulti": false, "options": ["Аустралия", "Германия", "Аргентина", "Шығыс Қазақстан"], "answer": 3, "explanation": "Дұрыс жауабы: D) Шығыс Қазақстан. Қазақстанда 5 экономикалық аудан бар. Оның ішінде ең үлкені Батыс Қазақстан болса, аумағы жағынан ең кішісі Шығыс Қазақстан (ШҚО және Абай облыстары).", "q_ru": "Аумағы жөнінен республикадағы ең кіші экономикалық ауданды определите.", "options_ru": ["Австралия", "Германия", "Аргентина", "Шығыс Казахстан"], "explanation_ru": "Дұрыс жауабы: D) Шығыс Казахстан. Қазақстанда 5 экономикалық аудан бар. Оның ішінде ең үлкені Батыс Казахстан болса, аумағы жағынан ең кішісі Шығыс Казахстан (ШҚО және Абай облыстары)."}, {"id": 17, "q": "Қазақстан құрылыс материалдарының 80%-ы экспортталатын аймақты", "isMulti": false, "options": ["ЮНЕСКО", "ТМД елдері", "ХВФ", "АСЕАН"], "answer": 1, "explanation": "Дұрыс жауабы: B) ТМД елдері. Елімізден шығарылатын цемент, кірпіш, асбест сияқты құрылыс материалдарының басым бөлігі (80%) көршілес ТМД елдеріне, әсіресе Ресейге экспортталады.", "q_ru": "Казахстан құрылыс материалдарының 80%-ы экспортталатын аймақты", "options_ru": ["ЮНЕСКО", "ТМД елдері", "ХВФ", "АСЕАН"], "explanation_ru": "Дұрыс жауабы: B) ТМД елдері. Елімізден шығарылатын цемент, кірпіш, асбест сияқты құрылыс материалдарының басым бөлігі (80%) көршілес ТМД елдеріне, әсіресе Ресейге экспортталады."}, {"id": 18, "q": "Қазақстан ормандарының 47,9%-ын құрайтын ағашты көрсетіңіз.", "isMulti": false, "options": ["Павлодар", "Сексеуіл", "Сарысу", "Тараз"], "answer": 1, "explanation": "Дұрыс жауабы: B) Сексеуіл. Қазақстан ормандарының жартысына жуығын шөл және шөлейт аймақтарда өсетін қатты ағаш — сексеуіл тоғайлары құрайды.", "q_ru": "Казахстан ормандарының 47,9%-ын құрайтын ағашты көрсетіңіз.", "options_ru": ["Павлодар", "Сексеуіл", "Сарысу", "Тараз"], "explanation_ru": "Дұрыс жауабы: B) Сексеуіл. Казахстан ормандарының жартысына жуығын шөл және шөлейт аймақтарда өсетін қатты ағаш — сексеуіл тоғайлары құрайды."}, {"id": 19, "q": "Қалпына келмейтін табиғат ресурсын көрсетіңіз.", "isMulti": false, "options": ["ОАР", "Отын-энергетикалық", "Мысыр", "Индонезия"], "answer": 1, "explanation": "Дұрыс жауабы: B) Отын-энергетикалық. Су, биологиялық (өсімдік/жануар) және топырақ қалпына келетін ресурстарға жатады. Ал көмір, мұнай, газ сияқты отын-минералдық қорлар сарқылатын, қалпына келмейтін ресурстар. 2-бөлім: 11-20 сұрақтар", "q_ru": "Қалпына келмейтін табиғат ресурсын көрсетіңіз.", "options_ru": ["ЮАР", "Отын-энергетикалық", "Египет", "Индонезия"], "explanation_ru": "Дұрыс жауабы: B) Отын-энергетикалық. Су, биологиялық (өсімдік/жануар) және топырақ қалпына келетін ресурстарға жатады. Ал көмір, мұнай, газ сияқты отын-минералдық қорлар сарқылатын, қалпына келмейтін ресурстар. 2-бөлім: 11-20 сұрақтар"}, {"id": 20, "q": "Ақтөбе қаласында орналасқан зауытты көрсетіңіз.", "isMulti": false, "options": ["Рентген аппаратурасы", "Екібастұз", "Қарағанды", "Қызылорда"], "answer": 0, "explanation": "Дұрыс жауабы: A) Рентген аппаратурасы. Ақтөбеде медициналық және өнеркәсіптік құрал-жабдықтар жасайтын бірегей «Ақтөберентген» зауыты жұмыс істейді.", "q_ru": "Актобе қаласында орналасқан зауытты көрсетіңіз.", "options_ru": ["Рентген аппаратурасы", "Экибастуз", "Караганда", "Кызылорда"], "explanation_ru": "Дұрыс жауабы: A) Рентген аппаратурасы. Ақтөбеде медициналық және өнеркәсіптік құрал-жабдықтар жасайтын бірегей «Ақтөберентген» зауыты жұмыс істейді."}, {"id": 21, "q": "Құнарлы қара топырағы бар экономикалық ауданды көрсетіңіз.", "isMulti": false, "options": ["АҚШ", "Бразилия", "Ұлыбритания", "Солтүстік Қазақстан"], "answer": 3, "explanation": "Дұрыс жауабы: D) Солтүстік Қазақстан. Еліміздің негізгі астық қамбасы саналатын, қара топырақты, ылғалы мол құнарлы жерлер Солтүстік Қазақстан экономикалық ауданында орналасқан.", "q_ru": "Құнарлы қара топырағы бар экономикалық ауданды көрсетіңіз.", "options_ru": ["США", "Бразилия", "Великобритания", "Солтүстік Казахстан"], "explanation_ru": "Дұрыс жауабы: D) Солтүстік Казахстан. Еліміздің негізгі астық қамбасы саналатын, қара топырақты, ылғалы мол құнарлы жерлер Солтүстік Казахстан экономикалық ауданында орналасқан."}, {"id": 22, "q": "Құрылыстағы маңызы зор байланыстырушы материал шығаратын зауытты(-", "isMulti": false, "options": ["Қарағанды", "Мұғалжар", "Памир", "Сарыарқа"], "answer": 0, "explanation": "Дұрыс жауабы: A) Қарағанды. Байланыстырушы құрылыс материалы — цемент. Қазақстандағы ең ірі цемент зауыттары Қарағанды (Ақтау кенті), Өскемен, Семей, Шымкент қалаларында орналасқан.", "q_ru": "Құрылыстағы маңызы зор байланыстырушы материал шығаратын зауытты(-", "options_ru": ["Караганда", "Мугоджары", "Памир", "Сарыарка (Казахский мелкосопочник)"], "explanation_ru": "Дұрыс жауабы: A) Караганда. Байланыстырушы құрылыс материалы — цемент. Қазақстандағы ең ірі цемент зауыттары Караганда (Актау кенті), Усть-Каменогорск, Семей, Шымкент қалаларында орналасқан."}, {"id": 23, "q": "Алюминий зауыты бар қаланы көрсетіңіз.", "isMulti": false, "options": ["Павлодар", "Алматы", "Қостанай", "Өскемен"], "answer": 0, "explanation": "Дұрыс жауабы: A) Павлодар. Павлодарда арзан электр энергиясы (Екібастұз ГРЭС) мен судың арқасында еліміздегі жалғыз алюминий зауыты (балқыту және глинозем өндіру) орналасқан.", "q_ru": "Алюминий зауыты бар қаланы көрсетіңіз.", "options_ru": ["Павлодар", "Алматы", "Костанай", "Усть-Каменогорск"], "explanation_ru": "Дұрыс жауабы: A) Павлодар. Павлодарда арзан электр энергиясы (Экибастуз ГРЭС) мен судың арқасында еліміздегі жалғыз алюминий зауыты (балқыту және глинозем өндіру) орналасқан."}, {"id": 24, "q": "Еліміздегі мұнай алаптарының санын көрсетіңіз.", "isMulti": false, "options": ["Мысыр", "Бразилия", "14", "Канада"], "answer": 2, "explanation": "Дұрыс жауабы: C) 14. Г еологиялық барлау мәліметтеріне сәйкес, Қазақстан аумағында мұнай мен газ шоғырланған 14 перспективалы шөгінді алап анықталған.", "q_ru": "Еліміздегі мұнай алаптарының санын көрсетіңіз.", "options_ru": ["Египет", "Бразилия", "14", "Канада"], "explanation_ru": "Дұрыс жауабы: C) 14. Г еологиялық барлау мәліметтеріне сәйкес, Казахстан аумағында мұнай мен газ шоғырланған 14 перспективалы шөгінді алап анықталған."}, {"id": 25, "q": "Су қорының 62%-ы қай аймаққа тиесілі?", "isMulti": false, "options": ["АҚШ", "Түркия", "ОАР", "Шығыс Қазақстанға"], "answer": 3, "explanation": "Дұрыс жауабы: D) Шығыс Қазақстанға. Биік таулар мен мұздықтардың, сондай-ақ суы мол Ертіс өзенінің арқасында жер үсті су қорларының басым бөлігі (60%-дан астамы) Шығыс Қазақстанға тиесілі.", "q_ru": "Су қорының 62%-ы қай аймаққа тиесілі?", "options_ru": ["США", "Турция", "ЮАР", "Шығыс Қазақстанға"], "explanation_ru": "Дұрыс жауабы: D) Шығыс Қазақстанға. Биік таулар мен мұздықтардың, сондай-ақ суы мол Иртыш өзенінің арқасында жер үсті су қорларының басым бөлігі (60%-дан астамы) Шығыс Қазақстанға тиесілі."}, {"id": 26, "q": "Индер көлінен өндірілетін табиғат ресурсын анықтаңыз.", "isMulti": false, "options": ["Эри", "Калий тұзы", "Байкал", "Онтарио"], "answer": 1, "explanation": "Дұрыс жауабы: B) Калий тұзы. Атырау облысындағы Индер тұзды көлі мен оның күмбезі — калий тұздары мен бораттардың, сондай- ақ ас тұзының бай көзі.", "q_ru": "Индер көлінен өндірілетін табиғат ресурсын определите.", "options_ru": ["Эри", "Калийная соль", "Байкал", "Онтарио"], "explanation_ru": "Дұрыс жауабы: B) Калийная соль. Атырау облысындағы Индер тұзды көлі мен оның күмбезі — калий тұздары мен бораттардың, сондай- ақ ас тұзының бай көзі."}, {"id": 27, "q": "Ірі титан-магний комбинаты орналасқан қаланы көрсетіңіз.", "isMulti": false, "options": ["Өскемен", "Қостанай", "Қызылорда", "Астана"], "answer": 0, "explanation": "Дұрыс жауабы: A) Өскемен. Өскемен қаласында әлемдік нарыққа өнім шығаратын, авиацияға қажетті жеңіл түсті металдар өндіретін ірі титан-магний комбинаты жұмыс істейді.", "q_ru": "Ірі титан-магний комбинаты орналасқан қаланы көрсетіңіз.", "options_ru": ["Усть-Каменогорск", "Костанай", "Кызылорда", "Астана"], "explanation_ru": "Дұрыс жауабы: A) Усть-Каменогорск. Усть-Каменогорск қаласында әлемдік нарыққа өнім шығаратын, авиацияға қажетті жеңіл түсті металдар өндіретін ірі титан-магний комбинаты жұмыс істейді."}, {"id": 28, "q": "Ферроқорытпалар өндірісінің орталықтарын көрсетіңіз.", "isMulti": true, "options": ["Шарын", "Іле", "І мен III", "Ойыл", "Сағыз", "Сарысу"], "answer": [2, 4], "explanation": "Дұрыс жауаптар: C, E. Қазақстанда болатты берік етуге қажетті ферроқорытпалар өндіретін екі ірі зауыт бар: олар Ақтөбе (хром негізінде) және Ақсу (Павлодар облысы) қалаларында орналасқан..", "q_ru": "Ферроқорытпалар өндірісінің орталықтарын көрсетіңіз.", "options_ru": ["Чарын", "Или", "І мен III", "Уил", "Сагыз", "Сарысу"], "explanation_ru": "Дұрыс жауаптар: C, E. Қазақстанда болатты берік етуге қажетті ферроқорытпалар өндіретін екі ірі зауыт бар: олар Актобе (хром негізінде) және Аксу (Павлодар облысы) қалаларында орналасқан.."}, {"id": 29, "q": "Ұлутас (ракушечник) өндірілетін аймақты табыңыз.", "isMulti": true, "options": ["Есіл", "Маңғыстау облысы", "Ертіс", "Тобыл", "Шілік", "Сарысу"], "answer": [1, 2, 5], "explanation": "Дұрыс жауаптар: B, C, F. Каспий теңізі жағалауындағы Маңғыстау түбегі ежелгі теңіз шөгінділеріне бай, сондықтан мұнда құрылысқа қажетті әдемі ұлутас көп өндіріледі (Жетібай, Өзен). 3-бөлім: 21-30 сұрақтар.", "q_ru": "Ұлутас (ракушечник) өндірілетін аймақты найдите.", "options_ru": ["Ишим", "Маңғыстау облысы", "Иртыш", "Тобол", "Чилик", "Сарысу"], "explanation_ru": "Дұрыс жауаптар: B, C, F. Каспийское море теңізі жағалауындағы Маңғыстау түбегі ежелгі теңіз шөгінділеріне бай, сондықтан мұнда құрылысқа қажетті әдемі ұлутас көп өндіріледі (Жетібай, Өзен). 3-бөлім: 21-30 сұрақтар."}, {"id": 30, "q": "Ауыр түсті металды көрсетіңіз.", "isMulti": true, "options": ["Мыс", "Ресей", "Швеция", "Үндістан", "Мексика", "ОАР"], "answer": [0, 1], "explanation": "Дұрыс жауаптар: A, B. Түсті металдар жеңіл (алюминий, магний, титан) және ауыр (мыс, қорғасын, мырыш, қалайы) болып бөлінеді..", "q_ru": "Ауыр түсті металды көрсетіңіз.", "options_ru": ["Медь", "Россия", "Швеция", "Индия", "Мексика", "ЮАР"], "explanation_ru": "Дұрыс жауаптар: A, B. Түсті металдар жеңіл (алюминий, магний, титан) және ауыр (мыс, қорғасын, мырыш, қалайы) болып бөлінеді.."}, {"id": 31, "q": "Шығыс Қазақстанның алтын кен орнын көрсетіңіз.", "isMulti": true, "options": ["Жайық", "Шу", "Ойыл", "Қаратал", "Бақыршық", "Лепсі"], "answer": [4, 5], "explanation": "Дұрыс жауаптар: E, F. Бақыршық — Шығыс Қазақстан облысындағы ең үлкен алтын кен орындарының бірі. Степняк — Ақмолада, Жәйрем — Қарағандыда орналасқан..", "q_ru": "Шығыс Қазақстанның алтын кен орнын көрсетіңіз.", "options_ru": ["Урал (Жайык)", "Чу", "Уил", "Каратал", "Бақыршық", "Лепсы"], "explanation_ru": "Дұрыс жауаптар: E, F. Бақыршық — Шығыс Казахстан облысындағы ең үлкен алтын кен орындарының бірі. Степняк — Ақмолада, Жәйрем — Қарағандыда орналасқан.."}, {"id": 32, "q": "Қазақстан қандай пайдалы қазба түрінің қоры жөнінен әлемде бірінші орында?", "isMulti": true, "options": ["Ақсу", "Қаратал", "Вольфрам", "Ойыл", "Сағыз", "Шарын"], "answer": [2, 3, 4], "explanation": "Дұрыс жауаптар: C, D, E. Қазақстан вольфрамның барланған қоры бойынша әлемде 1-ші орында, сондай-ақ уран, хром және қорғасын-мырыш қорлары бойынша жетекші орындарда..", "q_ru": "Казахстан қандай пайдалы қазба түрінің қоры жөнінен әлемде бірінші орында?", "options_ru": ["Аксу", "Каратал", "Вольфрам", "Уил", "Сагыз", "Чарын"], "explanation_ru": "Дұрыс жауаптар: C, D, E. Казахстан вольфрамның барланған қоры бойынша әлемде 1-ші орында, сондай-ақ уран, хром және қорғасын-мырыш қорлары бойынша жетекші орындарда.."}, {"id": 33, "q": "Қазақстандағы ірі мыс қорыту комбинаты бар қаланы көрсетіңіз.", "isMulti": false, "options": ["Түркістан", "Жезқазған", "Семей", "Қостанай"], "answer": 1, "explanation": "Дұрыс жауабы: B) Жезқазған. Жезқазған («мыс қазған жер») және Балқаш қалалары — Қазақстандағы ең ірі мыс қорыту комбинаттары орналасқан Орталық Қазақстанның орталықтары.", "q_ru": "Қазақстандағы ірі мыс қорыту комбинаты бар қаланы көрсетіңіз.", "options_ru": ["Түркістан", "Жезказган", "Семей", "Костанай"], "explanation_ru": "Дұрыс жауабы: B) Жезказган. Жезказган («мыс қазған жер») және Балхаш қалалары — Қазақстандағы ең ірі мыс қорыту комбинаттары орналасқан Орталық Қазақстанның орталықтары."}, {"id": 34, "q": "Өндірістік саланы көрсетіңіз.", "isMulti": true, "options": ["Машина жасау", "Ертіс", "Нұра", "Шарын", "Сарысу", "Ойыл"], "answer": [0, 3, 5], "explanation": "Дұрыс жауаптар: A, D, F. Машина жасау нақты тауар өндіретін материалдық өндіріс саласына жатады. Денсаулық сақтау, тұрғын үй, қызмет көрсету — өндірістік емес салалар..", "q_ru": "Өндірістік саланы көрсетіңіз.", "options_ru": ["Машина жасау", "Иртыш", "Нура", "Чарын", "Сарысу", "Уил"], "explanation_ru": "Дұрыс жауаптар: A, D, F. Машина жасау нақты тауар өндіретін материалдық өндіріс саласына жатады. Денсаулық сақтау, тұрғын үй, қызмет көрсету — өндірістік емес салалар.."}, {"id": 35, "q": "Қарағанды металлургиялық комбинатының орналасу факторын анықтаңыз.", "isMulti": true, "options": ["Шикізат пен отын", "Қаратал", "Талас", "Шу", "Есіл", "Ырғыз"], "answer": [0, 4], "explanation": "Дұрыс жауаптар: A, E. Қара металлургия өте көп шикізатты қажет етеді. Теміртаудағы комбинат Қарағандының көмірі (отын) мен Атасу, Лисаков темір кендеріне (шикізат) жақын орналасқан..", "q_ru": "Караганда металлургиялық комбинатының орналасу факторын определите.", "options_ru": ["Шикізат пен отын", "Каратал", "Талас", "Чу", "Ишим", "Иргиз"], "explanation_ru": "Дұрыс жауаптар: A, E. Қара металлургия өте көп шикізатты қажет етеді. Теміртаудағы комбинат Қарағандының көмірі (отын) мен Атасу, Лисаков темір кендеріне (шикізат) жақын орналасқан.."}]};
+    const maxPoints = 42;
+    const passingPoints = Math.round(maxPoints * 0.7);
+    const initialTimeSeconds = 40 * 60;
+
+    let currentLang = 'kz';
+    let currentMode = 'exam'; // 'exam' or 'review'
+    let userAnswers = {}; // qId -> single value (int) or array of ints
+    let isSubmitted = false;
+    let timerRemaining = initialTimeSeconds;
+    let timerInterval = null;
+
+    // Initialize from URL params or localStorage
+    (function initSettings() {
+      const params = new URLSearchParams(window.location.search);
+      const urlLang = params.get('lang');
+      if (urlLang === 'ru' || urlLang === 'kz') {
+        currentLang = urlLang;
+      } else {
+        const storedProfile = localStorage.getItem('geotany_user_profile');
+        if (storedProfile) {
+          try {
+            const p = JSON.parse(storedProfile);
+            if (p.language === 'ru') currentLang = 'ru';
+          } catch(e) {}
+        }
+      }
+      
+      const urlMode = params.get('mode');
+      if (urlMode === 'review') {
+        currentMode = 'review';
+      }
+    })();
+
+    // Check previous scores in localStorage
+    function checkPreviousScore() {
+      try {
+        const raw = localStorage.getItem('geotany_writing_scores');
+        if (raw) {
+          const scores = JSON.parse(raw);
+          const prev = scores[variantData.id];
+          if (prev) {
+            const banner = document.getElementById('prevScoreBanner');
+            const txt = document.getElementById('prevScoreText');
+            if (banner && txt) {
+              banner.classList.remove('hidden');
+              txt.textContent = currentLang === 'ru'
+                ? `Предыдущий результат: ${prev.score} / ${prev.maxScore} (${prev.percentage}%) • ${prev.isPassed ? 'Сдано' : 'Не сдано'}`
+                : `Алдыңғы нәтиже: ${prev.score} / ${prev.maxScore} (${prev.percentage}%) • ${prev.isPassed ? 'Өтті' : 'Өтпеді'}`;
+            }
+            if (prev.answers && Object.keys(userAnswers).length === 0) {
+              userAnswers = prev.answers;
+            }
+          }
+        }
+      } catch(e) {}
+    }
+
+    // Switch Language
+    function setLang(lang) {
+      currentLang = lang;
+      
+      // Update toggle buttons UI
+      const kzBtn = document.getElementById('langKzBtn');
+      const ruBtn = document.getElementById('langRuBtn');
+      if (lang === 'kz') {
+        kzBtn.className = 'px-2 py-1 rounded-lg bg-brand-500 text-space-950 font-black transition';
+        ruBtn.className = 'px-2 py-1 rounded-lg text-slate-400 hover:text-white transition';
+      } else {
+        ruBtn.className = 'px-2 py-1 rounded-lg bg-brand-500 text-space-950 font-black transition';
+        kzBtn.className = 'px-2 py-1 rounded-lg text-slate-400 hover:text-white transition';
+      }
+
+      // Update Back Link
+      const backLink = document.getElementById('btnBackToPlatform');
+      if (backLink) backLink.href = `../geotanu.html?lang=${currentLang}#section-testter_writing`;
+      const modalBack = document.getElementById('modalBackLink');
+      if (modalBack) modalBack.href = `../geotanu.html?lang=${currentLang}#section-testter_writing`;
+
+      // Update Static Texts
+      updateLocalizedLabels();
+      renderQuestions();
+      renderMatrix();
+      checkPreviousScore();
+    }
+
+    // Switch Mode
+    function setMode(mode) {
+      currentMode = mode;
+      const examBtn = document.getElementById('modeExamBtn');
+      const reviewBtn = document.getElementById('modeReviewBtn');
+      const timerWrapper = document.getElementById('examTimerWrapper');
+
+      if (mode === 'exam') {
+        examBtn.className = 'px-2.5 py-1 rounded-lg bg-amber-500 text-space-950 font-black transition shadow-sm';
+        reviewBtn.className = 'px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition';
+        if (timerWrapper) timerWrapper.classList.remove('hidden');
+        if (!timerInterval && !isSubmitted) startTimer();
+      } else {
+        reviewBtn.className = 'px-2.5 py-1 rounded-lg bg-cyan-500 text-space-950 font-black transition shadow-sm';
+        examBtn.className = 'px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition';
+        if (timerWrapper) timerWrapper.classList.add('hidden');
+      }
+
+      renderQuestions();
+      renderMatrix();
+    }
+
+    // Localized Text Updates
+    function updateLocalizedLabels() {
+      const isRu = (currentLang === 'ru');
+      
+      document.getElementById('navBackText').textContent = isRu ? 'Назад' : 'Артқа';
+      document.getElementById('navVariantTitle').textContent = isRu 
+        ? `${variantData.id}-вариант: ЕНТ Комплексный тест`
+        : variantData.title;
+      
+      document.getElementById('lblTimerText').textContent = isRu ? 'Время:' : 'Уақыт:';
+      document.getElementById('lblModeExam').textContent = isRu ? 'Экзамен' : 'Емтихан';
+      document.getElementById('lblModeReview').textContent = isRu ? 'Разбор' : 'Талдау';
+
+      document.getElementById('heroDepartmentBadge').textContent = isRu ? 'Русское отделение' : 'Қазақ бөлімі';
+      document.getElementById('heroTitle').textContent = isRu 
+        ? `${variantData.id}-вариант: Тест ЕНТ (${variantData.questions.length} вопросов)`
+        : variantData.title;
+      document.getElementById('heroDesc').textContent = isRu 
+        ? 'Комплексный вариант ЕНТ по географии с подробными авторскими пояснениями к каждому вопросу.'
+        : variantData.desc;
+
+      document.getElementById('lblMetaQuestions').textContent = isRu 
+        ? `${variantData.questions.length} вопросов (${maxPoints} баллов)`
+        : `${variantData.questions.length} сұрақ (${maxPoints} балл)`;
+      document.getElementById('lblMetaTime').textContent = isRu 
+        ? `40 минут`
+        : `40 минут`;
+      document.getElementById('lblMetaPassing').textContent = isRu 
+        ? `Проходной: 70% (${passingPoints} б.)`
+        : `Шекті балл: 70% (${passingPoints} балл)`;
+      document.getElementById('lblMetaXp').textContent = isRu ? 'Награда: +80 XP' : 'Сыйлық: +80 XP';
+      document.getElementById('lblMetaOnline').textContent = isRu ? '100% Онлайн тест' : '100% Онлайн тест';
+
+      document.getElementById('lblNavigatorTitle').textContent = isRu ? 'Навигатор вопросов' : 'Сұрақтар навигаторы';
+      document.getElementById('lblBtnFinishExam').textContent = isRu ? 'Завершить экзамен' : 'Емтиханды аяқтау';
+      document.getElementById('lblBtnQuickReview').textContent = isRu ? 'Открыть разбор' : 'Талдауды ашу';
+
+      document.getElementById('lblBottomBarTitle').textContent = isRu 
+        ? 'Ответили на все вопросы?' 
+        : 'Барлық сұрақтарға жауап бердіңіз бе?';
+      document.getElementById('lblBottomBarDesc').textContent = isRu 
+        ? 'Завершите экзамен для проверки ответов и начисления баллов.' 
+        : 'Нәтижені растап, балл мен XP алу үшін емтиханды аяқтаңыз.';
+      document.getElementById('lblBottomBarBtn').textContent = isRu 
+        ? 'Завершить тест и проверить' 
+        : 'Тестті аяқтау және тексеру';
+
+      document.getElementById('lblModalCorrect').textContent = isRu ? 'Верно' : 'Дұрыс';
+      document.getElementById('lblModalPartial').textContent = isRu ? 'Частично' : 'Жартылай';
+      document.getElementById('lblModalWrong').textContent = isRu ? 'Неверно' : 'Қате';
+      document.getElementById('lblModalBtnReview').textContent = isRu ? 'Посмотреть подробный разбор' : 'Қателерді және толық талдауды көру';
+      document.getElementById('lblModalBtnRetake').textContent = isRu ? 'Пересдать тест' : 'Қайта тапсыру';
+      document.getElementById('lblModalBtnCatalog').textContent = isRu ? 'В каталог вариантов' : 'Нұсқалар каталогына оралу';
+    }
+
+    // Start Countdown Timer
+    function startTimer() {
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        if (timerRemaining > 0) {
+          timerRemaining--;
+          updateTimerDisplay();
+        } else {
+          clearInterval(timerInterval);
+          alert(currentLang === 'ru' ? 'Время вышло! Тест завершается автоматически.' : 'Уақыт аяқталды! Тест автоматты түрде аяқталады.');
+          submitExam();
+        }
+      }, 1000);
+    }
+
+    function updateTimerDisplay() {
+      const timerEl = document.getElementById('examTimer');
+      if (!timerEl) return;
+      const m = Math.floor(timerRemaining / 60);
+      const s = timerRemaining % 60;
+      timerEl.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      if (timerRemaining < 300) {
+        timerEl.classList.remove('text-amber-400');
+        timerEl.classList.add('text-rose-400', 'animate-pulse');
+      } else {
+        timerEl.classList.remove('text-rose-400', 'animate-pulse');
+        timerEl.classList.add('text-amber-400');
+      }
+    }
+
+    // Render Matrix Navigator
+    function renderMatrix() {
+      const container = document.getElementById('questionMatrix');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const total = variantData.questions.length;
+      let answeredCount = 0;
+
+      variantData.questions.forEach((q, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = (idx + 1);
+        btn.className = 'w-full py-2 rounded-xl text-xs font-bold transition flex items-center justify-center border ';
+
+        const ans = userAnswers[q.id];
+        const hasAnswered = ans !== undefined && (Array.isArray(ans) ? ans.length > 0 : true);
+        if (hasAnswered) answeredCount++;
+
+        if (currentMode === 'review' || isSubmitted) {
+          // Review mode evaluation
+          let isCorrect = false;
+          let isPartial = false;
+          if (q.isMulti) {
+            const userChoices = Array.isArray(ans) ? ans : [];
+            const correctChoices = Array.isArray(q.answer) ? q.answer : [q.answer];
+            const missed = correctChoices.filter(x => !userChoices.includes(x)).length;
+            const extra = userChoices.filter(x => !correctChoices.includes(x)).length;
+            if (missed === 0 && extra === 0 && userChoices.length > 0) isCorrect = true;
+            else if (missed + extra === 1 && userChoices.length > 0) isPartial = true;
+          } else {
+            if (ans === q.answer) isCorrect = true;
+          }
+
+          if (isCorrect) {
+            btn.className += 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40 hover:bg-emerald-500/30';
+          } else if (isPartial) {
+            btn.className += 'bg-amber-500/20 text-amber-400 border-amber-500/40 hover:bg-amber-500/30';
+          } else if (hasAnswered) {
+            btn.className += 'bg-rose-500/20 text-rose-400 border-rose-500/40 hover:bg-rose-500/30';
+          } else {
+            btn.className += 'bg-space-850 text-slate-500 border-slate-800 hover:bg-space-800';
+          }
+        } else {
+          // Exam mode
+          if (hasAnswered) {
+            btn.className += 'bg-amber-500 text-space-950 border-amber-400 shadow-sm font-black';
+          } else {
+            btn.className += 'bg-space-850 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-white';
+          }
+        }
+
+        btn.onclick = () => {
+          const target = document.getElementById(`q-card-${q.id}`);
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            target.classList.add('ring-2', 'ring-amber-400');
+            setTimeout(() => target.classList.remove('ring-2', 'ring-amber-400'), 1200);
+          }
+        };
+
+        container.appendChild(btn);
+      });
+
+      // Update progress badges
+      const badge = document.getElementById('navProgressBadge');
+      if (badge) badge.textContent = `${answeredCount} / ${total}`;
+      const bar = document.getElementById('examProgressBar');
+      if (bar) bar.style.width = `${(answeredCount / total) * 100}%`;
+    }
+
+    // Render Question Cards
+    function renderQuestions() {
+      const container = document.getElementById('questionsContainer');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const isRu = (currentLang === 'ru');
+      const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+
+      variantData.questions.forEach((q, idx) => {
+        const card = document.createElement('div');
+        card.id = `q-card-${q.id}`;
+        card.className = 'p-5 sm:p-6 rounded-3xl bg-space-900 border border-slate-800 transition duration-300 space-y-4';
+
+        const qText = (isRu && q.q_ru) ? q.q_ru : q.q;
+        const options = (isRu && q.options_ru) ? q.options_ru : q.options;
+        const explanationText = (isRu && q.explanation_ru) ? q.explanation_ru : q.explanation;
+        const isMulti = !!q.isMulti;
+
+        // Card Header
+        const header = document.createElement('div');
+        header.className = 'flex items-center justify-between gap-2 border-b border-slate-800/80 pb-3';
+        header.innerHTML = `
+          <div class="flex items-center space-x-2">
+            <span class="w-7 h-7 rounded-xl bg-space-850 border border-slate-700 text-amber-400 font-black text-xs flex items-center justify-center">
+              ${idx + 1}
+            </span>
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">
+              ${isRu ? 'Вопрос ' + (idx + 1) : 'Сұрақ ' + (idx + 1)}
+            </span>
+          </div>
+          <span class="text-[11px] px-2.5 py-0.5 rounded-lg ${isMulti ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30' : 'bg-slate-800 text-slate-300 border border-slate-700'} font-bold">
+            ${isMulti ? (isRu ? '2 балла • Несколько ответов' : '2 балл • Көптаңдау') : (isRu ? '1 балл • Один ответ' : '1 балл • Біртаңдау')}
+          </span>
+        `;
+        card.appendChild(header);
+
+        // Prompt
+        const promptEl = document.createElement('div');
+        promptEl.className = 'text-sm sm:text-base font-semibold text-slate-100 leading-relaxed';
+        promptEl.textContent = qText;
+        card.appendChild(promptEl);
+
+        // Options Container
+        const optList = document.createElement('div');
+        optList.className = 'space-y-2 pt-1';
+
+        const currentAnswer = userAnswers[q.id];
+        const correctAnswers = Array.isArray(q.answer) ? q.answer : [q.answer];
+
+        options.forEach((optText, optIdx) => {
+          const isSelected = isMulti 
+            ? (Array.isArray(currentAnswer) && currentAnswer.includes(optIdx))
+            : (currentAnswer === optIdx);
+
+          const optBtn = document.createElement('div');
+          optBtn.className = 'group relative p-3.5 sm:p-4 rounded-2xl border text-xs sm:text-sm font-medium transition cursor-pointer flex items-center space-x-3 ';
+
+          if (currentMode === 'review' || isSubmitted) {
+            // Review mode styling
+            const isCorrect = correctAnswers.includes(optIdx);
+            if (isCorrect) {
+              optBtn.className += 'bg-emerald-500/15 border-emerald-500 text-emerald-200 font-bold';
+            } else if (isSelected) {
+              optBtn.className += 'bg-rose-500/15 border-rose-500 text-rose-200';
+            } else {
+              optBtn.className += 'bg-space-850/50 border-slate-800/80 text-slate-400 opacity-70';
+            }
+          } else {
+            // Exam mode styling
+            if (isSelected) {
+              optBtn.className += 'bg-amber-500/15 border-amber-500 text-amber-200 font-bold shadow-sm';
+            } else {
+              optBtn.className += 'bg-space-850 hover:bg-space-800 border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white';
+            }
+          }
+
+          // Choice Letter Circle
+          const letterBadge = document.createElement('span');
+          letterBadge.className = 'w-6 h-6 rounded-lg text-xs font-black flex items-center justify-center shrink-0 ';
+          if (currentMode === 'review' || isSubmitted) {
+            if (correctAnswers.includes(optIdx)) {
+              letterBadge.className += 'bg-emerald-500 text-space-950';
+            } else if (isSelected) {
+              letterBadge.className += 'bg-rose-500 text-white';
+            } else {
+              letterBadge.className += 'bg-space-900 border border-slate-700 text-slate-400';
+            }
+          } else {
+            if (isSelected) {
+              letterBadge.className += 'bg-amber-500 text-space-950';
+            } else {
+              letterBadge.className += 'bg-space-900 border border-slate-700 text-slate-400 group-hover:border-slate-500 group-hover:text-slate-200';
+            }
+          }
+          letterBadge.textContent = letters[optIdx] || String(optIdx + 1);
+          optBtn.appendChild(letterBadge);
+
+          // Option text
+          const textSpan = document.createElement('span');
+          textSpan.className = 'flex-1 leading-snug';
+          textSpan.textContent = optText;
+          optBtn.appendChild(textSpan);
+
+          // Status icon in review mode
+          if (currentMode === 'review' || isSubmitted) {
+            if (correctAnswers.includes(optIdx)) {
+              const check = document.createElement('span');
+              check.className = 'text-emerald-400 font-black text-sm';
+              check.textContent = '✓';
+              optBtn.appendChild(check);
+            } else if (isSelected) {
+              const cross = document.createElement('span');
+              cross.className = 'text-rose-400 font-black text-sm';
+              cross.textContent = '✕';
+              optBtn.appendChild(cross);
+            }
+          }
+
+          // Click handler (only in Exam mode or allow review interaction)
+          optBtn.onclick = () => {
+            if (isSubmitted && currentMode === 'exam') return;
+            handleOptionSelect(q.id, optIdx, isMulti);
+          };
+
+          optList.appendChild(optBtn);
+        });
+
+        card.appendChild(optList);
+
+        // Explanation Box (In Review Mode or after Submission)
+        if (currentMode === 'review' || isSubmitted) {
+          const expBox = document.createElement('div');
+          expBox.className = 'mt-4 p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-xs text-cyan-200 space-y-1.5';
+          expBox.innerHTML = `
+            <div class="flex items-center space-x-1.5 font-bold text-cyan-300">
+              <span>💡</span>
+              <span>${isRu ? 'Авторское пояснение:' : 'Авторлық түсіндірме:'}</span>
+            </div>
+            <p class="leading-relaxed text-slate-300">${explanationText || (isRu ? 'Пояснение к данному вопросу.' : 'Сұраққа арналған түсіндірме.')}</p>
+          `;
+          card.appendChild(expBox);
+        }
+
+        container.appendChild(card);
+      });
+    }
+
+    // Handle Option Selection
+    function handleOptionSelect(qId, optIdx, isMulti) {
+      if (isMulti) {
+        let selected = Array.isArray(userAnswers[qId]) ? [...userAnswers[qId]] : [];
+        if (selected.includes(optIdx)) {
+          selected = selected.filter(x => x !== optIdx);
+        } else {
+          if (selected.length < 3) {
+            selected.push(optIdx);
+          } else {
+            alert(currentLang === 'ru' ? 'Можно выбрать максимум 3 варианта ответа.' : 'Ең көп дегенде 3 нұсқа таңдауға болады.');
+            return;
+          }
+        }
+        if (selected.length > 0) {
+          userAnswers[qId] = selected;
+        } else {
+          delete userAnswers[qId];
+        }
+      } else {
+        userAnswers[qId] = optIdx;
+      }
+
+      renderQuestions();
+      renderMatrix();
+    }
+
+    // Confirm Submission
+    function confirmSubmitExam() {
+      const answered = Object.keys(userAnswers).length;
+      const total = variantData.questions.length;
+      const isRu = (currentLang === 'ru');
+
+      if (answered < total) {
+        const msg = isRu 
+          ? `Вы ответили на ${answered} из ${total} вопросов. Завершить экзамен сейчас?`
+          : `Сіз ${total} сұрақтың ${answered}-не жауап бердіңіз. Емтиханды қазір аяқтағыңыз келе ме?`;
+        if (!confirm(msg)) return;
+      }
+
+      submitExam();
+    }
+
+    // Submit Exam & Score Calculation
+    function submitExam() {
+      clearInterval(timerInterval);
+      isSubmitted = true;
+
+      let totalEarned = 0;
+      let totalMax = 0;
+      let correctCount = 0;
+      let partialCount = 0;
+      let wrongCount = 0;
+
+      variantData.questions.forEach(q => {
+        if (q.isMulti) {
+          totalMax += 2;
+          const userChoices = Array.isArray(userAnswers[q.id]) ? userAnswers[q.id] : [];
+          const correctChoices = Array.isArray(q.answer) ? q.answer : [q.answer];
+
+          const missed = correctChoices.filter(x => !userChoices.includes(x)).length;
+          const extra = userChoices.filter(x => !correctChoices.includes(x)).length;
+          const errors = missed + extra;
+
+          if (errors === 0 && userChoices.length > 0) {
+            totalEarned += 2;
+            correctCount++;
+          } else if (errors === 1 && userChoices.length > 0) {
+            totalEarned += 1;
+            partialCount++;
+          } else {
+            wrongCount++;
+          }
+        } else {
+          totalMax += 1;
+          if (userAnswers[q.id] === q.answer) {
+            totalEarned += 1;
+            correctCount++;
+          } else {
+            wrongCount++;
+          }
+        }
+      });
+
+      const percentage = Math.round((totalEarned / totalMax) * 100);
+      const isPassed = percentage >= 70;
+      const earnedXp = isPassed ? 80 : Math.round(totalEarned * 2);
+
+      // Save to localStorage
+      try {
+        let scores = JSON.parse(localStorage.getItem('geotany_writing_scores') || '{}');
+        scores[variantData.id] = {
+          score: totalEarned,
+          maxScore: totalMax,
+          total: variantData.questions.length,
+          fullCorrect: correctCount,
+          partiallyCorrect: partialCount,
+          wrong: wrongCount,
+          percentage: percentage,
+          isPassed: isPassed,
+          date: new Date().toISOString(),
+          answers: userAnswers
+        };
+        localStorage.setItem('geotany_writing_scores', JSON.stringify(scores));
+
+        let curXp = parseInt(localStorage.getItem('geotany_user_xp') || '0', 10);
+        curXp += earnedXp;
+        localStorage.setItem('geotany_user_xp', curXp.toString());
+      } catch(e) {}
+
+      // Display Modal
+      showResultModal({
+        score: totalEarned,
+        maxScore: totalMax,
+        percentage,
+        isPassed,
+        correctCount,
+        partialCount,
+        wrongCount,
+        earnedXp
+      });
+
+      renderQuestions();
+      renderMatrix();
+    }
+
+    // Show Result Modal with Confetti
+    function showResultModal(res) {
+      const isRu = (currentLang === 'ru');
+      const modal = document.getElementById('resultModal');
+      if (!modal) return;
+
+      document.getElementById('modalScoreDisplay').textContent = `${res.score} / ${res.maxScore}`;
+      document.getElementById('modalPercentageDisplay').textContent = `${res.percentage}% • ${isRu ? 'Результат' : 'Нәтиже'} (+${res.earnedXp} XP)`;
+      
+      const statusBadge = document.getElementById('modalStatusBadge');
+      if (statusBadge) {
+        if (res.isPassed) {
+          statusBadge.textContent = isRu ? 'Сдано • Успешно' : 'Өтті • Құттықтаймыз';
+          statusBadge.className = 'inline-block px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wide bg-brand-500/20 text-brand-400 border border-brand-500/30';
+          triggerConfetti();
+        } else {
+          statusBadge.textContent = isRu ? 'Не сдано • Требуется 70%' : 'Өтпеді • 70% қажет';
+          statusBadge.className = 'inline-block px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wide bg-rose-500/20 text-rose-400 border border-rose-500/30';
+        }
+      }
+
+      document.getElementById('modalCorrectCount').textContent = res.correctCount;
+      document.getElementById('modalPartialCount').textContent = res.partialCount;
+      document.getElementById('modalWrongCount').textContent = res.wrongCount;
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeModalAndShowReview() {
+      const modal = document.getElementById('resultModal');
+      if (modal) modal.classList.add('hidden');
+      setMode('review');
+    }
+
+    function retakeExam() {
+      const modal = document.getElementById('resultModal');
+      if (modal) modal.classList.add('hidden');
+      userAnswers = {};
+      isSubmitted = false;
+      timerRemaining = initialTimeSeconds;
+      setMode('exam');
+      startTimer();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Lightweight Canvas Confetti
+    function triggerConfetti() {
+      const canvas = document.getElementById('confettiCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      canvas.width = canvas.parentElement.clientWidth;
+      canvas.height = canvas.parentElement.clientHeight;
+
+      const particles = [];
+      const colors = ['#10B981', '#F59E0B', '#06B6D4', '#EC4899', '#8B5CF6'];
+
+      for (let i = 0; i < 75; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          vx: (Math.random() - 0.5) * 10,
+          vy: (Math.random() - 0.5) * 10 - 3,
+          size: Math.random() * 6 + 3,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          alpha: 1,
+          decay: Math.random() * 0.02 + 0.015
+        });
+      }
+
+      function render() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let active = 0;
+        particles.forEach(p => {
+          if (p.alpha > 0) {
+            active++;
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += 0.2;
+            p.alpha -= p.decay;
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = Math.max(0, p.alpha);
+            ctx.fillRect(p.x, p.y, p.size, p.size);
+          }
+        });
+        if (active > 0) requestAnimationFrame(render);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      requestAnimationFrame(render);
+    }
+
+    // Page Load Boot
+    window.addEventListener('DOMContentLoaded', () => {
+      updateLocalizedLabels();
+      renderQuestions();
+      renderMatrix();
+      checkPreviousScore();
+      if (currentMode === 'exam') {
+        startTimer();
+      }
+    });
+  </script>
+
+</body>
+</html>

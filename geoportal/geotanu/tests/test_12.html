@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="kk" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ҰБТ География — 12-нұсқа | GEOTANY</title>
+
+  <!-- AUTH GUARD: RESTRICT DIRECT ACCESS WITHOUT VALID SESSION -->
+  <style id="authCloak">body { display: none !important; }</style>
+  <script>
+    (function() {
+      try {
+        var isAdmin = localStorage.getItem('geotany_admin_auth') === 'true';
+        var sessionStr = localStorage.getItem('geotany_user_session');
+        var isAuthorized = isAdmin;
+        if (!isAuthorized && sessionStr) {
+          var s = JSON.parse(sessionStr);
+          if (s && s.email && (s.courseCode || s.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        var profileStr = localStorage.getItem('geotany_user_profile');
+        if (!isAuthorized && profileStr) {
+          var p = JSON.parse(profileStr);
+          if (p && p.email && (p.courseCode || p.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        if (!isAuthorized) {
+          window.location.replace('../geotanu.html?error=unauthorized_course');
+          return;
+        }
+        var cloak = document.getElementById('authCloak');
+        if (cloak) cloak.remove();
+      } catch (e) {
+        window.location.replace('../geotanu.html?error=unauthorized_course');
+      }
+    })();
+  </script>
+
+  <!-- TAILWIND CSS & FONTS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            space: {
+              800: '#1E293B',
+              850: '#151E2E',
+              900: '#0F172A',
+              950: '#0B0F19',
+            },
+            brand: {
+              400: '#34D399',
+              500: '#10B981',
+              600: '#059669',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0B0F19;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1E293B;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+    .glow-gold {
+      box-shadow: 0 0 25px -5px rgba(245, 158, 11, 0.25);
+    }
+    .glow-emerald {
+      box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.25);
+    }
+  </style>
+</head>
+<body class="bg-space-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-brand-500/30 selection:text-brand-400">
+
+  <!-- TOP APP BAR -->
+  <header class="sticky top-0 z-40 bg-space-950/90 backdrop-blur-xl border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+      
+      <!-- Left: Back Button & Title -->
+      <div class="flex items-center space-x-3">
+        <a id="btnBackToPlatform" href="../geotanu.html?lang=kz#section-testter_writing" class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 text-slate-300 hover:text-white border border-slate-700/80 text-xs sm:text-sm font-bold transition shadow-sm">
+          <span>←</span>
+          <span id="navBackText" class="hidden sm:inline">Артқа</span>
+        </a>
+        <div class="h-6 w-px bg-slate-800 hidden sm:block"></div>
+        <div class="flex items-center space-x-2">
+          <span class="text-xs px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-400 font-extrabold border border-amber-500/20">
+            ҰБТ #12
+          </span>
+          <span id="navVariantTitle" class="text-sm font-bold text-slate-200 hidden md:inline truncate max-w-xs">
+            12-нұсқа: ҰБТ кешенді сынағы (35 сұрақ)
+          </span>
+        </div>
+      </div>
+
+      <!-- Center: Exam Timer (Visible in Exam mode) -->
+      <div id="examTimerWrapper" class="flex items-center space-x-2 bg-space-900 border border-slate-800 px-3 py-1.5 rounded-xl shadow-inner">
+        <span class="text-xs text-slate-400 font-medium hidden sm:inline" id="lblTimerText">Уақыт:</span>
+        <span class="text-amber-400 text-sm font-black tracking-wider font-mono" id="examTimer">45:00</span>
+      </div>
+
+      <!-- Right: Mode Switcher & Language Switcher -->
+      <div class="flex items-center space-x-2 sm:space-x-3">
+        
+        <!-- Mode Switcher -->
+        <div class="flex items-center bg-space-900 p-0.5 rounded-xl border border-slate-800 text-xs font-bold">
+          <button id="modeExamBtn" onclick="setMode('exam')" class="px-2.5 py-1 rounded-lg bg-amber-500 text-space-950 font-black transition shadow-sm">
+            <span>🎯</span>
+            <span class="hidden sm:inline ml-1" id="lblModeExam">Емтихан</span>
+          </button>
+          <button id="modeReviewBtn" onclick="setMode('review')" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition">
+            <span>💡</span>
+            <span class="hidden sm:inline ml-1" id="lblModeReview">Талдау</span>
+          </button>
+        </div>
+
+        <!-- Language Switcher -->
+        <div class="flex items-center bg-space-900 p-0.5 rounded-xl border border-slate-800 text-xs font-bold">
+          <button id="langKzBtn" onclick="setLang('kz')" class="px-2 py-1 rounded-lg bg-brand-500 text-space-950 font-black transition">
+            KZ
+          </button>
+          <button id="langRuBtn" onclick="setLang('ru')" class="px-2 py-1 rounded-lg text-slate-400 hover:text-white transition">
+            RU
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN WRAPPER -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
+
+    <!-- HERO META CARD -->
+    <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-space-900 via-space-850 to-space-900 border border-slate-800 shadow-xl relative overflow-hidden">
+      <!-- Glow decoration -->
+      <div class="absolute -right-20 -top-20 w-60 h-60 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-20 -bottom-20 w-60 h-60 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10 space-y-4">
+        
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <span class="px-3 py-1 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 font-extrabold text-xs tracking-wider uppercase">
+              ⚡ ҰБТ ТЕСТ СЫНАҒЫ • НҰСҚА №12
+            </span>
+            <span id="heroDepartmentBadge" class="px-3 py-1 rounded-xl bg-brand-500/10 border border-brand-500/30 text-brand-400 font-bold text-xs">
+              Қазақ бөлімі
+            </span>
+          </div>
+
+          <!-- Prev / Next Variant Nav -->
+          <div class="flex items-center space-x-2 text-xs font-bold">
+            <a href="test_11.html" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition flex items-center space-x-1"><span>←</span><span>Алдыңғы</span></a>
+            <span class="text-slate-500">|</span>
+            <a href="test_13.html" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition flex items-center space-x-1"><span>Келесі</span><span>→</span></a>
+          </div>
+        </div>
+
+        <div>
+          <h1 id="heroTitle" class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            12-нұсқа: ҰБТ кешенді сынағы (35 сұрақ)
+          </h1>
+          <p id="heroDesc" class="text-sm text-slate-300 mt-2 max-w-3xl leading-relaxed">
+            1–25 біртаңдаулы және 26–35 көптаңдаулы ҰБТ сұрақтары. Жалпы балл есебі және толық авторлық разбор.
+          </p>
+        </div>
+
+        <!-- Metrics Row -->
+        <div class="flex flex-wrap gap-2.5 pt-2 border-t border-slate-800/80">
+          <div class="px-3 py-1.5 rounded-xl bg-space-850 border border-slate-800 text-xs font-medium text-slate-300 flex items-center space-x-1.5">
+            <span>📝</span>
+            <span id="lblMetaQuestions">35 сұрақ (43 балл)</span>
+          </div>
+          <div class="px-3 py-1.5 rounded-xl bg-space-850 border border-slate-800 text-xs font-medium text-slate-300 flex items-center space-x-1.5">
+            <span>⏱️</span>
+            <span id="lblMetaTime">40 минут</span>
+          </div>
+          <div class="px-3 py-1.5 rounded-xl bg-space-850 border border-slate-800 text-xs font-medium text-slate-300 flex items-center space-x-1.5">
+            <span>🎯</span>
+            <span id="lblMetaPassing">Шекті балл: 70% (30 балл)</span>
+          </div>
+          <div class="px-3 py-1.5 rounded-xl bg-space-850 border border-slate-800 text-xs font-medium text-amber-400 flex items-center space-x-1.5">
+            <span>🏆</span>
+            <span id="lblMetaXp">Сыйлық: +80 XP</span>
+          </div>
+          <div class="px-3 py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-bold flex items-center space-x-1.5">
+            <span>⚡</span>
+            <span id="lblMetaOnline">100% Онлайн тест</span>
+          </div>
+        </div>
+
+        <!-- Previous Score Alert Banner if already attempted -->
+        <div id="prevScoreBanner" class="hidden p-3.5 rounded-2xl bg-brand-500/10 border border-brand-500/30 text-xs sm:text-sm text-brand-300 flex items-center justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <span>✅</span>
+            <span id="prevScoreText">Сіз бұл нұсқаны бұрын тапсырдыңыз.</span>
+          </div>
+          <button onclick="retakeExam()" class="px-3 py-1 rounded-xl bg-brand-500 text-space-950 font-black text-xs hover:bg-brand-400 transition">
+            Қайта тапсыру
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- MAIN TWO COLUMN LAYOUT: SIDEBAR JUMP MATRIX + QUESTIONS LIST -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+      <!-- LEFT / STICKY SIDEBAR: QUESTION JUMP MATRIX -->
+      <aside class="lg:col-span-4 xl:col-span-3 sticky top-20 z-30 space-y-4">
+        <div class="p-5 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-4">
+          
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-black uppercase tracking-wider text-slate-400" id="lblNavigatorTitle">
+              Сұрақтар навигаторы
+            </h3>
+            <span id="navProgressBadge" class="text-xs px-2 py-0.5 rounded-md bg-space-850 text-amber-400 font-bold border border-slate-700">
+              0 / 35
+            </span>
+          </div>
+
+          <!-- Progress Bar -->
+          <div class="w-full bg-space-850 h-2 rounded-full overflow-hidden border border-slate-800">
+            <div id="examProgressBar" class="h-full bg-gradient-to-r from-amber-500 to-brand-500 w-0 transition-all duration-300"></div>
+          </div>
+
+          <!-- Jump Matrix Grid -->
+          <div id="questionMatrix" class="grid grid-cols-5 sm:grid-cols-8 lg:grid-cols-5 gap-1.5 max-h-[50vh] overflow-y-auto pr-1">
+            <!-- Dynamically populated buttons -->
+          </div>
+
+          <!-- Action Buttons in Sidebar -->
+          <div class="pt-3 border-t border-slate-800/80 space-y-2">
+            <button id="btnFinishExam" onclick="confirmSubmitExam()" class="w-full py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-brand-500 hover:from-amber-400 hover:to-brand-400 text-space-950 font-black text-xs sm:text-sm shadow-lg shadow-amber-500/20 transition flex items-center justify-center space-x-2">
+              <span>🏁</span>
+              <span id="lblBtnFinishExam">Емтиханды аяқтау</span>
+            </button>
+            <button id="btnQuickReview" onclick="setMode('review')" class="w-full py-2.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-bold transition flex items-center justify-center space-x-1.5">
+              <span>💡</span>
+              <span id="lblBtnQuickReview">Талдауды ашу</span>
+            </button>
+          </div>
+
+        </div>
+      </aside>
+
+      <!-- RIGHT COLUMN: QUESTIONS LIST -->
+      <section class="lg:col-span-8 xl:col-span-9 space-y-5">
+        
+        <div id="questionsContainer" class="space-y-5">
+          <!-- Dynamically populated question cards -->
+        </div>
+
+        <!-- BOTTOM FINISH BAR -->
+        <div class="p-6 rounded-3xl bg-space-900 border border-slate-800 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>
+            <h4 class="text-sm font-bold text-white" id="lblBottomBarTitle">Барлық сұрақтарға жауап бердіңіз бе?</h4>
+            <p class="text-xs text-slate-400 mt-0.5" id="lblBottomBarDesc">Нәтижені растап, балл мен XP алу үшін емтиханды аяқтаңыз.</p>
+          </div>
+          <button onclick="confirmSubmitExam()" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-brand-500 hover:from-amber-400 hover:to-brand-400 text-space-950 font-black text-xs sm:text-sm shadow-md transition flex items-center justify-center space-x-2">
+            <span>🏁</span>
+            <span id="lblBottomBarBtn">Тестті аяқтау және тексеру</span>
+          </button>
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- RESULT & CELEBRATION MODAL -->
+  <div id="resultModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden">
+    <div class="bg-space-900 border border-slate-700 w-full max-w-lg rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden space-y-6">
+      
+      <canvas id="confettiCanvas" class="absolute inset-0 pointer-events-none z-10 w-full h-full"></canvas>
+
+      <div class="relative z-20 text-center space-y-3">
+        <div id="modalIcon" class="w-16 h-16 mx-auto rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-3xl">
+          🏆
+        </div>
+        <h3 id="modalTitle" class="text-2xl font-black text-white">
+          Сынақ аяқталды!
+        </h3>
+        <p id="modalSubtitle" class="text-xs text-slate-300">
+          Сіздің осы нұсқа бойынша ресми ҰБТ нәтижеңіз:
+        </p>
+      </div>
+
+      <!-- Score Box -->
+      <div class="relative z-20 p-5 rounded-2xl bg-space-850 border border-slate-800 text-center space-y-2">
+        <div class="text-4xl sm:text-5xl font-black text-amber-400 font-mono" id="modalScoreDisplay">
+          0 / 43
+        </div>
+        <div class="text-xs font-bold text-slate-400" id="modalPercentageDisplay">
+          0% • Нәтиже
+        </div>
+        <div id="modalStatusBadge" class="inline-block px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wide bg-brand-500/20 text-brand-400 border border-brand-500/30">
+          Өтті
+        </div>
+      </div>
+
+      <!-- Breakdown Grid -->
+      <div class="relative z-20 grid grid-cols-3 gap-2 text-center text-xs">
+        <div class="p-3 rounded-xl bg-space-950 border border-slate-800">
+          <div class="text-emerald-400 font-black text-base" id="modalCorrectCount">0</div>
+          <div class="text-slate-400 text-[10px] mt-0.5" id="lblModalCorrect">Дұрыс</div>
+        </div>
+        <div class="p-3 rounded-xl bg-space-950 border border-slate-800">
+          <div class="text-amber-400 font-black text-base" id="modalPartialCount">0</div>
+          <div class="text-slate-400 text-[10px] mt-0.5" id="lblModalPartial">Жартылай</div>
+        </div>
+        <div class="p-3 rounded-xl bg-space-950 border border-slate-800">
+          <div class="text-rose-400 font-black text-base" id="modalWrongCount">0</div>
+          <div class="text-slate-400 text-[10px] mt-0.5" id="lblModalWrong">Қате</div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="relative z-20 space-y-2">
+        <button onclick="closeModalAndShowReview()" class="w-full py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-space-950 font-black text-xs sm:text-sm shadow-md transition flex items-center justify-center space-x-2">
+          <span>🔍</span>
+          <span id="lblModalBtnReview">Қателерді және толық талдауды көру</span>
+        </button>
+        <button onclick="retakeExam()" class="w-full py-2.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-bold transition flex items-center justify-center space-x-2">
+          <span>🔄</span>
+          <span id="lblModalBtnRetake">Қайта тапсыру</span>
+        </button>
+        <a id="modalBackLink" href="../geotanu.html?lang=kz#section-testter_writing" class="w-full py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-slate-400 hover:text-white text-xs font-bold transition flex items-center justify-center space-x-2">
+          <span>📋</span>
+          <span id="lblModalBtnCatalog">Нұсқалар каталогына оралу</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SCRIPT ENGINE -->
+  <script>
+    const variantData = {"id": 12, "title": "12-нұсқа: ҰБТ кешенді сынағы (35 сұрақ)", "desc": "1–25 біртаңдаулы және 26–35 көптаңдаулы ҰБТ сұрақтары. Жалпы балл есебі және толық авторлық разбор.", "timeMinutes": 40, "passingScore": 24, "questions": [{"id": 1, "q": "«Сандық революциядан» кейінгі әдістер", "isMulti": false, "options": ["Статистикалық, Е) Математикалық", "Торғай", "Талдықорған", "Іле"], "answer": 0, "explanation": "Дұрыс жауабы: A) Статистикалық, Е) Математикалық. XX ғасырдың ортасында географияға нақты сандар, есептеулер және модельдер еніп, статистика мен математика кеңінен қолданылды.", "q_ru": "«Сандық революциядан» кейінгі әдістер", "options_ru": ["Статистикалық, Е) Математикалық", "Тургай", "Талдықорған", "Или"], "explanation_ru": "Дұрыс жауабы: A) Статистикалық, Е) Математикалық. XX ғасырдың ортасында географияға нақты сандар, есептеулер және модельдер еніп, статистика мен математика кеңінен қолданылды."}, {"id": 2, "q": "Табиғи жүйелерді аудандастырудың негізгі әдістері", "isMulti": false, "options": ["Жетекші фактор әдісі, F) Беттестіру әдісі", "Бразилия", "Индонезия", "Германия"], "answer": 0, "explanation": "Дұрыс жауабы: A) Жетекші фактор әдісі, F) Беттестіру әдісі. Аудандастыру кезінде бір басты белгіні (жетекші фактор) негізге алады немесе бірнеше карталарды бір-біріне қабаттап қою (беттестіру) арқылы шекараларды анықтайды.", "q_ru": "Табиғи жүйелерді аудандастырудың негізгі әдістері", "options_ru": ["Жетекші фактор әдісі, F) Беттестіру әдісі", "Бразилия", "Индонезия", "Германия"], "explanation_ru": "Дұрыс жауабы: A) Жетекші фактор әдісі, F) Беттестіру әдісі. Аудандастыру кезінде бір басты белгіні (жетекші фактор) негізге алады немесе бірнеше карталарды бір-біріне қабаттап қою (беттестіру) арқылы шекараларды анықтайды."}, {"id": 3, "q": "Далалық зерттеу әдістері", "isMulti": false, "options": ["Охот теңізі", "табиғи газ", "Қазығұрт", "Стационарлық, F) Экспедиция"], "answer": 3, "explanation": "Дұрыс жауабы: D) Стационарлық, F) Экспедиция. Екеуі де табиғатқа тікелей шығып жасалады. Стационарлық — бір орында ұзақ тұрып бақылау, экспедиция — маршрутпен жүріп зерттеу.", "q_ru": "Далалық зерттеу әдістері", "options_ru": ["Охотское море", "табиғи газ", "Қазығұрт", "Стационарлық, F) Экспедиция"], "explanation_ru": "Дұрыс жауабы: D) Стационарлық, F) Экспедиция. Екеуі де табиғатқа тікелей шығып жасалады. Стационарлық — бір орында ұзақ тұрып бақылау, экспедиция — маршрутпен жүріп зерттеу."}, {"id": 4, "q": "Елімізді алғаш климаттық аудандарға бөлген ғалым", "isMulti": false, "options": ["Қоңыржай", "М.Д. Пономарев", "Субэкваторлық", "Субантарктикалық"], "answer": 1, "explanation": "Дұрыс жауабы: B) М.Д. Пономарев. Д. Пономарев. М.Д. Пономарев Қазақстанның климаттық карталарын жасап, аймақтарға бөлген алғашқы зерттеушілердің бірі.", "q_ru": "Елімізді алғаш климаттық аудандарға бөлген ғалым", "options_ru": ["Қоңыржай", "М.Д. Пономарев", "Субэкваторлық", "Субантарктикалық"], "explanation_ru": "Дұрыс жауабы: B) М.Д. Пономарев. Д. Пономарев. М.Д. Пономарев Қазақстанның климаттық карталарын жасап, аймақтарға бөлген алғашқы зерттеушілердің бірі."}, {"id": 5, "q": "Географиялық сараптама түрлері", "isMulti": false, "options": ["Топтық, С) Жеке", "Теміртау", "Ембі", "Алакөл"], "answer": 0, "explanation": "Дұрыс жауабы: A) Топтық, С) Жеке. Сараптаманы (экспертизаны) бір ғана маман (жеке) немесе бірнеше маманнан құралған комиссия (топтық) жүргізуі мүмкін.", "q_ru": "Географиялық сараптама түрлері", "options_ru": ["Топтық, С) Жеке", "Темиртау", "Эмба", "Алаколь"], "explanation_ru": "Дұрыс жауабы: A) Топтық, С) Жеке. Сараптаманы (экспертизаны) бір ғана маман (жеке) немесе бірнеше маманнан құралған комиссия (топтық) жүргізуі мүмкін."}, {"id": 6, "q": "Сәйкестендіріңіз (Шекара ұзындықтары).", "isMulti": false, "options": ["қоңыр көмір", "1-a; 2-d; 3-c; 4-b; 5-e", "Норвегия", "Түркия"], "answer": 1, "explanation": "Дұрыс жауабы: B) 1-a; 2-d; 3-c; 4-b; 5-e. Қазақстанның көршілес елдермен шекарасы: Ресеймен — 7591 км (ең ұзыны), Өзбекстанмен — 2354 км, Қытаймен — 1782 км, Қырғызстанмен — 1241 км, Түрікменстанмен — 426 км.", "q_ru": "Сәйкестендіріңіз (Шекара ұзындықтары).", "options_ru": ["қоңыр көмір", "1-a; 2-d; 3-c; 4-b; 5-e", "Норвегия", "Турция"], "explanation_ru": "Дұрыс жауабы: B) 1-a; 2-d; 3-c; 4-b; 5-e. Қазақстанның көршілес елдермен шекарасы: Ресеймен — 7591 км (ең ұзыны), Өзбекстанмен — 2354 км, Қытаймен — 1782 км, Қырғызстанмен — 1241 км, Түрікменстанмен — 426 км."}, {"id": 7, "q": "Дүниежүзіндегі ең ұзын құрлықтық шекара өтетін елдерді анықтаңыз.", "isMulti": false, "options": ["Қазақстан - Ресей", "Өзбекстан", "Аргентина", "Италия"], "answer": 0, "explanation": "Дұрыс жауабы: A) Қазақстан - Ресей. Қазақстан мен Ресей Федерациясы арасындағы құрлықтық шекара әлемдегі ең ұзын үзіліссіз құрлық шекарасы болып табылады (ұзындығы 7591 км немесе 7598 км).", "q_ru": "Дүниежүзіндегі ең ұзын құрлықтық шекара өтетін елдерді определите.", "options_ru": ["Казахстан - Россия", "Узбекистан", "Аргентина", "Италия"], "explanation_ru": "Дұрыс жауабы: A) Казахстан - Россия. Казахстан мен Россия Федерациясы арасындағы құрлықтық шекара әлемдегі ең ұзын үзіліссіз құрлық шекарасы болып табылады (ұзындығы 7591 км немесе 7598 км)."}, {"id": 8, "q": "Қазақстан Тәуелсіздігін алғаннан кейін ең бірінші мүше болған ұйымды", "isMulti": false, "options": ["ТМД", "ШОС", "Дүниежүзілік банк", "ЮНЕСКО"], "answer": 0, "explanation": "Дұрыс жауабы: A) ТМД. 1991 жылы 21 желтоқсанда Алматы қаласында Тәуелсіз Мемлекеттер Достастығын (ТМД) құру туралы декларацияға қол қойылды.", "q_ru": "Казахстан Тәуелсіздігін алғаннан кейін ең бірінші мүше болған ұйымды", "options_ru": ["ТМД", "ШОС", "Дүниежүзілік банк", "ЮНЕСКО"], "explanation_ru": "Дұрыс жауабы: A) ТМД. 1991 жылы 21 желтоқсанда Алматы қаласында Тәуелсіз Мемлекеттер Достастығын (ТМД) құру туралы декларацияға қол қойылды."}, {"id": 9, "q": "Мақсаты - ұлттық экономикаларды жан-жақты модернизациялау, бәсекеге", "isMulti": false, "options": ["Охот теңізі", "Азов теңізі", "ЕЭО", "темір кені"], "answer": 2, "explanation": "Дұрыс жауабы: C) ЕЭО. Бұл сипаттама Еуразиялық экономикалық одаққа (ЕЭО немесе ЕАЭО) қатысты. Одақ ортақ нарық қалыптастырып, елдердің экономикалық дамуын мақсат етеді.", "q_ru": "Мақсаты - ұлттық экономикаларды жан-жақты модернизациялау, бәсекеге", "options_ru": ["Охотское море", "Азовское море", "ЕЭО", "темір кені"], "explanation_ru": "Дұрыс жауабы: C) ЕЭО. Бұл сипаттама Еуразиялық экономикалық одаққа (ЕЭО немесе ЕАЭО) қатысты. Одақ ортақ нарық қалыптастырып, елдердің экономикалық дамуын мақсат етеді."}, {"id": 10, "q": "Қазақстанның шығыстағы шекарасы өтетін табиғи нысанды көрсетіңіз.", "isMulti": false, "options": ["Сауыр-Тарбағатай", "Алтай", "Памир", "Аппалач"], "answer": 1, "explanation": "Дұрыс жауабы: B) Алтай. Еліміздің шығысындағы шекарасы Қытаймен және Ресеймен Алтай таулар жүйесінің биік жоталары мен өзендері бойымен өтеді. 1-40 сұрақтардың толық шешімі мен түсіндірмесі", "q_ru": "Қазақстанның шығыстағы шекарасы өтетін табиғи нысанды көрсетіңіз.", "options_ru": ["Саур-Тарбагатай", "Алтай", "Памир", "Аппалачи"], "explanation_ru": "Дұрыс жауабы: B) Алтай. Еліміздің шығысындағы шекарасы Қытаймен және Ресеймен Алтай таулар жүйесінің биік жоталары мен өзендері бойымен өтеді. 1-40 сұрақтардың толық шешімі мен түсіндірмесі"}, {"id": 11, "q": "Еліміздің теңіз арқылы өтетін шекарасының ұзындығын көрсетіңіз.", "isMulti": false, "options": ["Балтық теңізі", "Жерорта теңізі", "2000 км", "Беринг теңізі"], "answer": 2, "explanation": "Дұрыс жауабы: C) 2000 км. Қазақстанның Каспий теңізіндегі жағалау сызығының және су арқылы өтетін шекарасының жалпы ұзындығы шамамен 2000 км (2340 км-ге дейін).", "q_ru": "Еліміздің теңіз арқылы өтетін шекарасының ұзындығын көрсетіңіз.", "options_ru": ["Балтийское море", "Средиземное море", "2000 км", "Беринг теңізі"], "explanation_ru": "Дұрыс жауабы: C) 2000 км. Қазақстанның Каспийское море теңізіндегі жағалау сызығының және су арқылы өтетін шекарасының жалпы ұзындығы шамамен 2000 км (2340 км-ге дейін)."}, {"id": 12, "q": "Еліміздегі маңызды геостратегиялық аймақты көрсетіңіз.", "isMulti": false, "options": ["ОАР", "Өзбекстан", "Германия", "Каспий теңізі"], "answer": 3, "explanation": "Дұрыс жауабы: D) Каспий теңізі. Каспий теңізі аймағы мұнай-газ ресурстарына бай, сонымен қатар бірнеше мемлекеттің мүддесі тоғысқан өте маңызды геостратегиялық түйін болып табылады.", "q_ru": "Еліміздегі маңызды геостратегиялық аймақты көрсетіңіз.", "options_ru": ["ЮАР", "Узбекистан", "Германия", "Каспийское море теңізі"], "explanation_ru": "Дұрыс жауабы: D) Каспийское море теңізі. Каспийское море теңізі аймағы мұнай-газ ресурстарына бай, сонымен қатар бірнеше мемлекеттің мүддесі тоғысқан өте маңызды геостратегиялық түйін болып табылады."}, {"id": 13, "q": "Төмендегі тулар қандай халықаралық ұйымға сәйкес келетінін анықтаңыз.", "isMulti": false, "options": ["Суматра", "Ұлыбритания", "Еуразиялық экономикалық одақ", "Гренландия"], "answer": 2, "explanation": "Дұрыс жауабы: C) Еуразиялық экономикалық одақ. Бұл бес мемлекет Еуразиялық экономикалық одақтың (ЕАЭО) толыққанды мүшелері болып табылады.", "q_ru": "Төмендегі тулар қандай халықаралық ұйымға сәйкес келетінін определите.", "options_ru": ["Суматра", "Великобритания", "Еуразиялық экономикалық одақ", "Гренландия"], "explanation_ru": "Дұрыс жауабы: C) Еуразиялық экономикалық одақ. Бұл бес мемлекет Еуразиялық экономикалық одақтың (ЕАЭО) толыққанды мүшелері болып табылады."}, {"id": 14, "q": "Қазақстан мүшелік етпейтін ұйым.", "isMulti": false, "options": ["Дүниежүзілік банк", "ШОС", "БҰҰ", "ОПЕК"], "answer": 3, "explanation": "Дұрыс жауабы: D) ОПЕК. Қазақстан АЭХА, ИҚҰ, ЭҚҰ (ЭКО) ұйымдарының мүшесі. Алайда, мұнай өндіруші ел болса да, ОПЕК (Мұнай экспорттаушы елдер ұйымы) құрамына кірмейді (бірақ ОПЕК+ келісіміне қатысады).", "q_ru": "Казахстан мүшелік етпейтін ұйым.", "options_ru": ["Дүниежүзілік банк", "ШОС", "БҰҰ", "ОПЕК"], "explanation_ru": "Дұрыс жауабы: D) ОПЕК. Казахстан АЭХА, ИҚҰ, ЭҚҰ (ЭКО) ұйымдарының мүшесі. Алайда, мұнай өндіруші ел болса да, ОПЕК (Нефть экспорттаушы елдер ұйымы) құрамына кірмейді (бірақ ОПЕК+ келісіміне қатысады)."}, {"id": 15, "q": "ТМД-ға мүше елдер санын көрсетіңіз.", "isMulti": false, "options": ["АҚШ", "ОАР", "Қазақстан", "11"], "answer": 3, "explanation": "Дұрыс жауабы: D) 11. Тәуелсіз Мемлекеттер Достастығының құрамында қазіргі уақытта (тарихи және тест оқулықтарына сәйкес) 11 мемлекет бар. (Г рузия мен Украина шығып кеткен). 2-бөлім: 11-20 сұрақтар", "q_ru": "ТМД-ға мүше елдер санын көрсетіңіз.", "options_ru": ["США", "ЮАР", "Казахстан", "11"], "explanation_ru": "Дұрыс жауабы: D) 11. Тәуелсіз Мемлекеттер Достастығының құрамында қазіргі уақытта (тарихи және тест оқулықтарына сәйкес) 11 мемлекет бар. (Г рузия мен Украина шығып кеткен). 2-бөлім: 11-20 сұрақтар"}, {"id": 16, "q": "Қазақстан көлік құралдарын, химия, трикотаж өнімдерін импорттайтын елді", "isMulti": false, "options": ["Виктория", "Беларусь Республикасы", "Жоғарғы көл", "Ладога"], "answer": 1, "explanation": "Дұрыс жауабы: B) Беларусь Республикасы. Беларусь өзінің машина жасау (тракторлар, көліктер) және жеңіл өнеркәсіп (трикотаж) тауарларын Қазақстанға тұрақты түрде экспорттайтын дәстүрлі серіктесіміз.", "q_ru": "Казахстан көлік құралдарын, химия, трикотаж өнімдерін импорттайтын елді", "options_ru": ["Виктория", "Беларусь Республикасы", "Жоғарғы көл", "Ладога"], "explanation_ru": "Дұрыс жауабы: B) Беларусь Республикасы. Беларусь өзінің машина жасау (тракторлар, көліктер) және жеңіл өнеркәсіп (трикотаж) тауарларын Қазақстанға тұрақты түрде экспорттайтын дәстүрлі серіктесіміз."}, {"id": 17, "q": "БҰҰ-ның «Балалар қоры» деп аталатын бөлімін көрсетіңіз.", "isMulti": false, "options": ["Тобыл", "ЮНИСЕФ", "Ембі", "табиғи газ"], "answer": 1, "explanation": "Дұрыс жауабы: B) ЮНИСЕФ. ЮНИСЕФ (UNICEF) — Біріккен Ұлттар Ұйымының бүкіл әлемдегі балалардың құқықтарын қорғап, денсаулығын жақсартуға бағытталған халықаралық төтенше қоры.", "q_ru": "БҰҰ-ның «Балалар қоры» деп аталатын бөлімін көрсетіңіз.", "options_ru": ["Тобол", "ЮНИСЕФ", "Эмба", "табиғи газ"], "explanation_ru": "Дұрыс жауабы: B) ЮНИСЕФ. ЮНИСЕФ (UNICEF) — Біріккен Ұлттар Ұйымының бүкіл әлемдегі балалардың құқықтарын қорғап, денсаулығын жақсартуға бағытталған халықаралық төтенше қоры."}, {"id": 18, "q": "Қазақстан Ядролық қаруды таратпау туралы шартқа қол қойған ұйымды", "isMulti": false, "options": ["ОПЕК", "ТМД", "НАТО", "БҰҰ"], "answer": 3, "explanation": "Дұрыс жауабы: D) БҰҰ. Ядролық қаруды таратпау туралы халықаралық шарт БҰҰ (Біріккен Ұлттар Ұйымы) аясында жасалған. Қазақстан оған 1993 жылы қол қойып, ядролық қарусыз мемлекетке айналды.", "q_ru": "Казахстан Ядролық қаруды таратпау туралы шартқа қол қойған ұйымды", "options_ru": ["ОПЕК", "ТМД", "НАТО", "БҰҰ"], "explanation_ru": "Дұрыс жауабы: D) БҰҰ. Ядролық қаруды таратпау туралы халықаралық шарт БҰҰ (Біріккен Ұлттар Ұйымы) аясында жасалған. Казахстан оған 1993 жылы қол қойып, ядролық қарусыз мемлекетке айналды."}, {"id": 19, "q": "Қазақстандық уран кендері қайта өңдеуден өтетін елді көрсетіңіз.", "isMulti": false, "options": ["Уран", "Ресей", "Тас көмір", "Темір кені"], "answer": 1, "explanation": "Дұрыс жауабы: B) Ресей. Қазақстанда өндірілген уран шикізатының айтарлықтай бөлігі байыту және атом отынын дайындау үшін Ресей кәсіпорындарына, сондай-ақ Қырғызстанның Қара-Балта комбинатына жіберіледі.", "q_ru": "Қазақстандық уран кендері қайта өңдеуден өтетін елді көрсетіңіз.", "options_ru": ["Уран", "Россия", "Каменный уголь", "Железная руда"], "explanation_ru": "Дұрыс жауабы: B) Россия. Қазақстанда өндірілген уран шикізатының айтарлықтай бөлігі байыту және атом отынын дайындау үшін Россия кәсіпорындарына, сондай-ақ Қырғызстанның Қара-Балта комбинатына жіберіледі."}, {"id": 20, "q": "Қазақстанның геосаяси орнының артықшылығының бірін табыңыз.", "isMulti": false, "options": ["Ақсу", "Канада", "Народная", "Хартленд аумағында орналасуы"], "answer": 3, "explanation": "Дұрыс жауабы: D) Хартленд аумағында орналасуы. Г еосаясатта Еуразияның кіндігі \"Хартленд\" деп аталады. Бұл аймақта орналасу қауіпсіздік және стратегиялық ресурстарды бақылау тұрғысынан үлкен артықшылық береді.", "q_ru": "Қазақстанның геосаяси орнының артықшылығының бірін найдите.", "options_ru": ["Аксу", "Канада", "Народная", "Хартленд аумағында орналасуы"], "explanation_ru": "Дұрыс жауабы: D) Хартленд аумағында орналасуы. Г еосаясатта Еуразияның кіндігі \"Хартленд\" деп аталады. Бұл аймақта орналасу қауіпсіздік және стратегиялық ресурстарды бақылау тұрғысынан үлкен артықшылық береді."}, {"id": 21, "q": "Қазақстанның құрлықтағы шегарасының ұзындығы көрсетіңіз.", "isMulti": false, "options": ["Народная", "табиғи газ", "Алакөл", "13394 км"], "answer": 3, "explanation": "Дұрыс жауабы: D) 13394 км. Қазақстанның барлық 5 көршілес мемлекетпен құрлықтағы шекарасының жалпы ұзындығы 13 394 шақырымды құрайды.", "q_ru": "Қазақстанның құрлықтағы шегарасының ұзындығы көрсетіңіз.", "options_ru": ["Народная", "табиғи газ", "Алаколь", "13394 км"], "explanation_ru": "Дұрыс жауабы: D) 13394 км. Қазақстанның барлық 5 көршілес мемлекетпен құрлықтағы шекарасының жалпы ұзындығы 13 394 шақырымды құрайды."}, {"id": 22, "q": "Батыс Еуропа – Батыс Қытай халықаралық көлік дәлізінің қанша км-і", "isMulti": false, "options": ["Гурон", "Жоғарғы көл", "2787 км", "Ладога"], "answer": 2, "explanation": "Дұрыс жауабы: C) 2787 км. «Батыс Еуропа – Батыс Қытай» трансконтиненттік автокөлік магистралінің Қазақстан аумағындағы ұзындығы 2787 шақырым.", "q_ru": "Батыс Еуропа – Батыс Китай халықаралық көлік дәлізінің қанша км-і", "options_ru": ["Гурон", "Жоғарғы көл", "2787 км", "Ладога"], "explanation_ru": "Дұрыс жауабы: C) 2787 км. «Батыс Еуропа – Батыс Китай» трансконтиненттік автокөлік магистралінің Казахстан аумағындағы ұзындығы 2787 шақырым."}, {"id": 23, "q": "Еліміз 1995 жылы мүше болған қандай ұйымның эмблемасы берілгенін", "isMulti": false, "options": ["ИҚҰ", "ТМД", "Дүниежүзілік банк", "ЮНЕСКО"], "answer": 0, "explanation": "Дұрыс жауабы: A) ИҚҰ. Қазақстан 1995 жылы Ислам Ынтымақтастық Ұйымына (ИҚҰ) толыққанды мүше болып қабылданды (эмблемада жарты ай мен глобус бейнеленеді).", "q_ru": "Еліміз 1995 жылы мүше болған қандай ұйымның эмблемасы берілгенін", "options_ru": ["ИҚҰ", "ТМД", "Дүниежүзілік банк", "ЮНЕСКО"], "explanation_ru": "Дұрыс жауабы: A) ИҚҰ. Казахстан 1995 жылы Ислам Ынтымақтастық Ұйымына (ИҚҰ) толыққанды мүше болып қабылданды (эмблемада жарты ай мен глобус бейнеленеді)."}, {"id": 24, "q": "Қазақстан Каспий теңізі арқылы шегараласатын елді анықтаңыз.", "isMulti": false, "options": ["Сары теңіз", "Жапон теңізі", "Иран", "Баренц теңізі"], "answer": 2, "explanation": "Дұрыс жауабы: C) Иран. Каспий теңізі арқылы Қазақстан Ресей, Әзірбайжан, Түрікменстан және Иранмен шектеседі. Оңтүстіктегі су арқылы көршіміз — Иран.", "q_ru": "Казахстан Каспийское море теңізі арқылы шегараласатын елді определите.", "options_ru": ["Сары теңіз", "Жапон теңізі", "Иран", "Баренцево море"], "explanation_ru": "Дұрыс жауабы: C) Иран. Каспийское море теңізі арқылы Казахстан Россия, Әзірбайжан, Түрікменстан және Иранмен шектеседі. Оңтүстіктегі су арқылы көршіміз — Иран."}, {"id": 25, "q": "Қазақстан 1992 жылы 2 наурызда қандай ұйымға мүше болып қабылданды?", "isMulti": false, "options": ["Дүниежүзілік банк", "БҰҰ", "ЕО (Еуропалық Одақ)", "АСЕАН"], "answer": 1, "explanation": "Дұрыс жауабы: B) БҰҰ. 1992 жылы 2 наурызда тәуелсіз Қазақстан Біріккен Ұлттар Ұйымының (БҰҰ) толыққанды мүшесі болды. 3-бөлім: 21-30 сұрақтар", "q_ru": "Казахстан 1992 жылы 2 наурызда қандай ұйымға мүше болып қабылданды?", "options_ru": ["Дүниежүзілік банк", "БҰҰ", "ЕО (Еуропалық Одақ)", "АСЕАН"], "explanation_ru": "Дұрыс жауабы: B) БҰҰ. 1992 жылы 2 наурызда тәуелсіз Казахстан Біріккен Ұлттар Ұйымының (БҰҰ) толыққанды мүшесі болды. 3-бөлім: 21-30 сұрақтар"}, {"id": 26, "q": "Дәрілік препараттар, шай, дәмдеуіштер, тұрмыстық тауарларды Қазақстанға", "isMulti": false, "options": ["Жетісу Алатауы", "Аппалач", "Оңтүстік Азия елдері", "Памир"], "answer": 2, "explanation": "Дұрыс жауабы: C) Оңтүстік Азия елдері. Бұл тауарлар негізінен Оңтүстік Азиядан, атап айтқанда Үндістан, Шри-Ланка және Пәкістан сияқты елдерден импортталады.", "q_ru": "Дәрілік препараттар, шай, дәмдеуіштер, тұрмыстық тауарларды Қазақстанға", "options_ru": ["Джунгарский (Жетысуский) Алатау", "Аппалачи", "Оңтүстік Азия елдері", "Памир"], "explanation_ru": "Дұрыс жауабы: C) Оңтүстік Азия елдері. Бұл тауарлар негізінен Оңтүстік Азиядан, атап айтқанда Индия, Шри-Ланка және Пәкістан сияқты елдерден импортталады."}, {"id": 27, "q": "Еліміздегі геосаяси тұрғыдан маңызды аймақты көрсетіңіз.", "isMulti": true, "options": ["Теңіз", "Байкал", "Танганьика", "Алакөл", "Каспий теңізі", "Каспий"], "answer": [4, 5], "explanation": "Дұрыс жауаптар: E, F. Каспий өңірі мұнай мен газдың орасан зор қорына ие болғандықтан және Еуропа мен Азия арасындағы транзиттік көпір болғандықтан, геосаяси маңызы өте зор аймақ..", "q_ru": "Еліміздегі геосаяси тұрғыдан маңызды аймақты көрсетіңіз.", "options_ru": ["Тенгиз", "Байкал", "Танганьика", "Алаколь", "Каспийское море теңізі", "Каспийское море"], "explanation_ru": "Дұрыс жауаптар: E, F. Каспийское море өңірі мұнай мен газдың орасан зор қорына ие болғандықтан және Еуропа мен Азия арасындағы транзиттік көпір болғандықтан, геосаяси маңызы өте зор аймақ.."}, {"id": 28, "q": "Қазақстанның саяси-географиялық орнының ерекшеліктеріне жатпайтын", "isMulti": false, "options": ["Канада", "Швеция", "Климатының шұғыл континентті болуы", "Германия"], "answer": 2, "explanation": "Дұрыс жауабы: C) Климатының шұғыл континентті болуы. Климат — физикалық-географиялық сипаттама. Ал саяси-географиялық орынға шекаралардың ұзындығы, көршілес мемлекеттер және геостратегиялық жағдайлар кіреді.", "q_ru": "Қазақстанның саяси-географиялық орнының ерекшеліктеріне жатпайтын", "options_ru": ["Канада", "Швеция", "Климатының шұғыл континентті болуы", "Германия"], "explanation_ru": "Дұрыс жауабы: C) Климатының шұғыл континентті болуы. Климат — физикалық-географиялық сипаттама. Ал саяси-географиялық орынға шекаралардың ұзындығы, көршілес мемлекеттер және геостратегиялық жағдайлар кіреді."}, {"id": 29, "q": "2010 жылы ЕҚЫҰ ұйымына төрағалық еткен елді көрсетіңіз.", "isMulti": true, "options": ["Қырғызстан", "Қазақстан", "Малайзия", "Швеция", "АҚШ", "Түркия"], "answer": [1, 4, 5], "explanation": "Дұрыс жауаптар: B, E, F. 2010 жылы Қазақстан ТМД елдерінің ішінде бірінші болып Еуропадағы Қауіпсіздік және Ынтымақтастық Ұйымына (ЕҚЫҰ/ОБСЕ) төрағалық етті және Астана саммитін өткізді..", "q_ru": "2010 жылы ЕҚЫҰ ұйымына төрағалық еткен елді көрсетіңіз.", "options_ru": ["Кыргызстан", "Казахстан", "Малайзия", "Швеция", "США", "Турция"], "explanation_ru": "Дұрыс жауаптар: B, E, F. 2010 жылы Казахстан ТМД елдерінің ішінде бірінші болып Еуропадағы Қауіпсіздік және Ынтымақтастық Ұйымына (ЕҚЫҰ/ОБСЕ) төрағалық етті және Астана саммитін өткізді.."}, {"id": 30, "q": "Қазақстан су жолы арқылы Атлант мұхитына шығуға болатын теңізді", "isMulti": true, "options": ["Қара", "Ойыл", "Ырғыз", "Есіл", "Лепсі", "Ертіс"], "answer": [0, 1, 2], "explanation": "Дұрыс жауаптар: A, B, C. Каспий теңізінен Еділ-Дон каналы арқылы Азов теңізіне, одан әрі Қара теңіз бен Жерорта теңізі арқылы Атлант мұхитына шығуға болады..", "q_ru": "Казахстан су жолы арқылы Атлант мұхитына шығуға болатын теңізді", "options_ru": ["Қара", "Уил", "Иргиз", "Ишим", "Лепсы", "Иртыш"], "explanation_ru": "Дұрыс жауаптар: A, B, C. Каспийское море теңізінен Волга-Дон каналы арқылы Азов теңізіне, одан әрі Черное море бен Средиземное море арқылы Атлант мұхитына шығуға болады.."}, {"id": 31, "q": "Ағылшынша «хартленд» сөзінің мағынасын табыңыз.", "isMulti": true, "options": ["Іле", "Тобыл", "Әлемнің жүрегі", "Нұра", "Сағыз", "Шу"], "answer": [2, 3], "explanation": "Дұрыс жауаптар: C, D. Хэлфорд Маккиндердің теориясындағы «Heartland» сөзі ағылшын тілінен аударғанда «жүрек» (heart) және «жер» (land) — яғни Еуразияның кіндігі, әлемнің жүрегі деген мағынаны білдіреді..", "q_ru": "Ағылшынша «хартленд» сөзінің мағынасын найдите.", "options_ru": ["Или", "Тобол", "Әлемнің жүрегі", "Нура", "Сагыз", "Чу"], "explanation_ru": "Дұрыс жауаптар: C, D. Хэлфорд Маккиндердің теориясындағы «Heartland» сөзі ағылшын тілінен аударғанда «жүрек» (heart) және «жер» (land) — яғни Еуразияның кіндігі, әлемнің жүрегі деген мағынаны білдіреді.."}, {"id": 32, "q": "Батыс Еуропа – Батыс Қытай халықаралық көлік дәлізінің Қазақстан арқылы", "isMulti": true, "options": ["Лепсі", "Ырғыз", "Еуропа мен Азияны жалғастыратын көпір екенін", "Талас", "Ембі", "Нұра"], "answer": [2, 3, 4], "explanation": "Дұрыс жауаптар: C, D, E. Бұл дәліз Қазақстанның Шығыс Азия елдері мен Батыс Еуропа нарықтарын байланыстыратын маңызды транзиттік-көлік көпірі екенін айқын көрсетеді..", "q_ru": "Батыс Еуропа – Батыс Китай халықаралық көлік дәлізінің Казахстан арқылы", "options_ru": ["Лепсы", "Иргиз", "Еуропа мен Азияны жалғастыратын көпір екенін", "Талас", "Эмба", "Нура"], "explanation_ru": "Дұрыс жауаптар: C, D, E. Бұл дәліз Қазақстанның Шығыс Азия елдері мен Батыс Еуропа нарықтарын байланыстыратын маңызды транзиттік-көлік көпірі екенін айқын көрсетеді.."}, {"id": 33, "q": "Дүниежүзіндегі ең ұзын үздіксіз құрлықтық шекара (7598,6 км) Қазақстан мен", "isMulti": true, "options": ["Қырғызстан", "Ресей", "Франция", "Иран", "Германия", "Қытай"], "answer": [1, 5], "explanation": "Дұрыс жауаптар: B, F. Қазақстан мен Ресей Федерациясының арасындағы құрлықтық шекара әлемдегі ең ұзын (7598 шақырым) шекара болып табылады..", "q_ru": "Дүниежүзіндегі ең ұзын үздіксіз құрлықтық шекара (7598,6 км) Казахстан мен", "options_ru": ["Кыргызстан", "Россия", "Франция", "Иран", "Германия", "Китай"], "explanation_ru": "Дұрыс жауаптар: B, F. Казахстан мен Россия Федерациясының арасындағы құрлықтық шекара әлемдегі ең ұзын (7598 шақырым) шекара болып табылады.."}, {"id": 34, "q": "Қазақстанның ислам әлемімен жапсарлас жатқан көршілері орналасқан", "isMulti": true, "options": ["Аягөз", "Оңтүстік", "Сағыз", "Шарын", "Тобыл", "Ойыл"], "answer": [1, 5], "explanation": "Дұрыс жауаптар: B, F. Қазақстанның оңтүстігінде орналасқан Орта Азия республикалары (Өзбекстан, Түрікменстан, Қырғызстан) және одан әрі Таяу Шығыс елдері ислам әлеміне жатады..", "q_ru": "Қазақстанның ислам әлемімен жапсарлас жатқан көршілері орналасқан", "options_ru": ["Аягоз", "Оңтүстік", "Сагыз", "Чарын", "Тобол", "Уил"], "explanation_ru": "Дұрыс жауаптар: B, F. Қазақстанның оңтүстігінде орналасқан Орта Азия республикалары (Узбекистан, Түрікменстан, Кыргызстан) және одан әрі Таяу Шығыс елдері ислам әлеміне жатады.."}, {"id": 35, "q": "Қазақстанның геосаяси орнының артықшылықтарына жатпайтын мәліметті", "isMulti": true, "options": ["Талас", "Экспортқа шикізат өнімдерін көп шығаруы", "Лепсі", "Шілік", "Ойыл", "Шарын"], "answer": [1, 2, 4], "explanation": "Дұрыс жауаптар: B, C, E. Шикізат ресурстарын экспорттау экономиканың ерекшелігі, бірақ ол геосаяси артықшылық емес, керісінше экономиканың шикізатқа тәуелділігін (әлсіздігін) білдіреді. 4-бөлім: 31-40 сұрақтар.", "q_ru": "Қазақстанның геосаяси орнының артықшылықтарына жатпайтын мәліметті", "options_ru": ["Талас", "Экспортқа шикізат өнімдерін көп шығаруы", "Лепсы", "Чилик", "Уил", "Чарын"], "explanation_ru": "Дұрыс жауаптар: B, C, E. Шикізат ресурстарын экспорттау экономиканың ерекшелігі, бірақ ол геосаяси артықшылық емес, керісінше экономиканың шикізатқа тәуелділігін (әлсіздігін) білдіреді. 4-бөлім: 31-40 сұрақтар."}]};
+    const maxPoints = 43;
+    const passingPoints = Math.round(maxPoints * 0.7);
+    const initialTimeSeconds = 40 * 60;
+
+    let currentLang = 'kz';
+    let currentMode = 'exam'; // 'exam' or 'review'
+    let userAnswers = {}; // qId -> single value (int) or array of ints
+    let isSubmitted = false;
+    let timerRemaining = initialTimeSeconds;
+    let timerInterval = null;
+
+    // Initialize from URL params or localStorage
+    (function initSettings() {
+      const params = new URLSearchParams(window.location.search);
+      const urlLang = params.get('lang');
+      if (urlLang === 'ru' || urlLang === 'kz') {
+        currentLang = urlLang;
+      } else {
+        const storedProfile = localStorage.getItem('geotany_user_profile');
+        if (storedProfile) {
+          try {
+            const p = JSON.parse(storedProfile);
+            if (p.language === 'ru') currentLang = 'ru';
+          } catch(e) {}
+        }
+      }
+      
+      const urlMode = params.get('mode');
+      if (urlMode === 'review') {
+        currentMode = 'review';
+      }
+    })();
+
+    // Check previous scores in localStorage
+    function checkPreviousScore() {
+      try {
+        const raw = localStorage.getItem('geotany_writing_scores');
+        if (raw) {
+          const scores = JSON.parse(raw);
+          const prev = scores[variantData.id];
+          if (prev) {
+            const banner = document.getElementById('prevScoreBanner');
+            const txt = document.getElementById('prevScoreText');
+            if (banner && txt) {
+              banner.classList.remove('hidden');
+              txt.textContent = currentLang === 'ru'
+                ? `Предыдущий результат: ${prev.score} / ${prev.maxScore} (${prev.percentage}%) • ${prev.isPassed ? 'Сдано' : 'Не сдано'}`
+                : `Алдыңғы нәтиже: ${prev.score} / ${prev.maxScore} (${prev.percentage}%) • ${prev.isPassed ? 'Өтті' : 'Өтпеді'}`;
+            }
+            if (prev.answers && Object.keys(userAnswers).length === 0) {
+              userAnswers = prev.answers;
+            }
+          }
+        }
+      } catch(e) {}
+    }
+
+    // Switch Language
+    function setLang(lang) {
+      currentLang = lang;
+      
+      // Update toggle buttons UI
+      const kzBtn = document.getElementById('langKzBtn');
+      const ruBtn = document.getElementById('langRuBtn');
+      if (lang === 'kz') {
+        kzBtn.className = 'px-2 py-1 rounded-lg bg-brand-500 text-space-950 font-black transition';
+        ruBtn.className = 'px-2 py-1 rounded-lg text-slate-400 hover:text-white transition';
+      } else {
+        ruBtn.className = 'px-2 py-1 rounded-lg bg-brand-500 text-space-950 font-black transition';
+        kzBtn.className = 'px-2 py-1 rounded-lg text-slate-400 hover:text-white transition';
+      }
+
+      // Update Back Link
+      const backLink = document.getElementById('btnBackToPlatform');
+      if (backLink) backLink.href = `../geotanu.html?lang=${currentLang}#section-testter_writing`;
+      const modalBack = document.getElementById('modalBackLink');
+      if (modalBack) modalBack.href = `../geotanu.html?lang=${currentLang}#section-testter_writing`;
+
+      // Update Static Texts
+      updateLocalizedLabels();
+      renderQuestions();
+      renderMatrix();
+      checkPreviousScore();
+    }
+
+    // Switch Mode
+    function setMode(mode) {
+      currentMode = mode;
+      const examBtn = document.getElementById('modeExamBtn');
+      const reviewBtn = document.getElementById('modeReviewBtn');
+      const timerWrapper = document.getElementById('examTimerWrapper');
+
+      if (mode === 'exam') {
+        examBtn.className = 'px-2.5 py-1 rounded-lg bg-amber-500 text-space-950 font-black transition shadow-sm';
+        reviewBtn.className = 'px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition';
+        if (timerWrapper) timerWrapper.classList.remove('hidden');
+        if (!timerInterval && !isSubmitted) startTimer();
+      } else {
+        reviewBtn.className = 'px-2.5 py-1 rounded-lg bg-cyan-500 text-space-950 font-black transition shadow-sm';
+        examBtn.className = 'px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition';
+        if (timerWrapper) timerWrapper.classList.add('hidden');
+      }
+
+      renderQuestions();
+      renderMatrix();
+    }
+
+    // Localized Text Updates
+    function updateLocalizedLabels() {
+      const isRu = (currentLang === 'ru');
+      
+      document.getElementById('navBackText').textContent = isRu ? 'Назад' : 'Артқа';
+      document.getElementById('navVariantTitle').textContent = isRu 
+        ? `${variantData.id}-вариант: ЕНТ Комплексный тест`
+        : variantData.title;
+      
+      document.getElementById('lblTimerText').textContent = isRu ? 'Время:' : 'Уақыт:';
+      document.getElementById('lblModeExam').textContent = isRu ? 'Экзамен' : 'Емтихан';
+      document.getElementById('lblModeReview').textContent = isRu ? 'Разбор' : 'Талдау';
+
+      document.getElementById('heroDepartmentBadge').textContent = isRu ? 'Русское отделение' : 'Қазақ бөлімі';
+      document.getElementById('heroTitle').textContent = isRu 
+        ? `${variantData.id}-вариант: Тест ЕНТ (${variantData.questions.length} вопросов)`
+        : variantData.title;
+      document.getElementById('heroDesc').textContent = isRu 
+        ? 'Комплексный вариант ЕНТ по географии с подробными авторскими пояснениями к каждому вопросу.'
+        : variantData.desc;
+
+      document.getElementById('lblMetaQuestions').textContent = isRu 
+        ? `${variantData.questions.length} вопросов (${maxPoints} баллов)`
+        : `${variantData.questions.length} сұрақ (${maxPoints} балл)`;
+      document.getElementById('lblMetaTime').textContent = isRu 
+        ? `40 минут`
+        : `40 минут`;
+      document.getElementById('lblMetaPassing').textContent = isRu 
+        ? `Проходной: 70% (${passingPoints} б.)`
+        : `Шекті балл: 70% (${passingPoints} балл)`;
+      document.getElementById('lblMetaXp').textContent = isRu ? 'Награда: +80 XP' : 'Сыйлық: +80 XP';
+      document.getElementById('lblMetaOnline').textContent = isRu ? '100% Онлайн тест' : '100% Онлайн тест';
+
+      document.getElementById('lblNavigatorTitle').textContent = isRu ? 'Навигатор вопросов' : 'Сұрақтар навигаторы';
+      document.getElementById('lblBtnFinishExam').textContent = isRu ? 'Завершить экзамен' : 'Емтиханды аяқтау';
+      document.getElementById('lblBtnQuickReview').textContent = isRu ? 'Открыть разбор' : 'Талдауды ашу';
+
+      document.getElementById('lblBottomBarTitle').textContent = isRu 
+        ? 'Ответили на все вопросы?' 
+        : 'Барлық сұрақтарға жауап бердіңіз бе?';
+      document.getElementById('lblBottomBarDesc').textContent = isRu 
+        ? 'Завершите экзамен для проверки ответов и начисления баллов.' 
+        : 'Нәтижені растап, балл мен XP алу үшін емтиханды аяқтаңыз.';
+      document.getElementById('lblBottomBarBtn').textContent = isRu 
+        ? 'Завершить тест и проверить' 
+        : 'Тестті аяқтау және тексеру';
+
+      document.getElementById('lblModalCorrect').textContent = isRu ? 'Верно' : 'Дұрыс';
+      document.getElementById('lblModalPartial').textContent = isRu ? 'Частично' : 'Жартылай';
+      document.getElementById('lblModalWrong').textContent = isRu ? 'Неверно' : 'Қате';
+      document.getElementById('lblModalBtnReview').textContent = isRu ? 'Посмотреть подробный разбор' : 'Қателерді және толық талдауды көру';
+      document.getElementById('lblModalBtnRetake').textContent = isRu ? 'Пересдать тест' : 'Қайта тапсыру';
+      document.getElementById('lblModalBtnCatalog').textContent = isRu ? 'В каталог вариантов' : 'Нұсқалар каталогына оралу';
+    }
+
+    // Start Countdown Timer
+    function startTimer() {
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        if (timerRemaining > 0) {
+          timerRemaining--;
+          updateTimerDisplay();
+        } else {
+          clearInterval(timerInterval);
+          alert(currentLang === 'ru' ? 'Время вышло! Тест завершается автоматически.' : 'Уақыт аяқталды! Тест автоматты түрде аяқталады.');
+          submitExam();
+        }
+      }, 1000);
+    }
+
+    function updateTimerDisplay() {
+      const timerEl = document.getElementById('examTimer');
+      if (!timerEl) return;
+      const m = Math.floor(timerRemaining / 60);
+      const s = timerRemaining % 60;
+      timerEl.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      if (timerRemaining < 300) {
+        timerEl.classList.remove('text-amber-400');
+        timerEl.classList.add('text-rose-400', 'animate-pulse');
+      } else {
+        timerEl.classList.remove('text-rose-400', 'animate-pulse');
+        timerEl.classList.add('text-amber-400');
+      }
+    }
+
+    // Render Matrix Navigator
+    function renderMatrix() {
+      const container = document.getElementById('questionMatrix');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const total = variantData.questions.length;
+      let answeredCount = 0;
+
+      variantData.questions.forEach((q, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = (idx + 1);
+        btn.className = 'w-full py-2 rounded-xl text-xs font-bold transition flex items-center justify-center border ';
+
+        const ans = userAnswers[q.id];
+        const hasAnswered = ans !== undefined && (Array.isArray(ans) ? ans.length > 0 : true);
+        if (hasAnswered) answeredCount++;
+
+        if (currentMode === 'review' || isSubmitted) {
+          // Review mode evaluation
+          let isCorrect = false;
+          let isPartial = false;
+          if (q.isMulti) {
+            const userChoices = Array.isArray(ans) ? ans : [];
+            const correctChoices = Array.isArray(q.answer) ? q.answer : [q.answer];
+            const missed = correctChoices.filter(x => !userChoices.includes(x)).length;
+            const extra = userChoices.filter(x => !correctChoices.includes(x)).length;
+            if (missed === 0 && extra === 0 && userChoices.length > 0) isCorrect = true;
+            else if (missed + extra === 1 && userChoices.length > 0) isPartial = true;
+          } else {
+            if (ans === q.answer) isCorrect = true;
+          }
+
+          if (isCorrect) {
+            btn.className += 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40 hover:bg-emerald-500/30';
+          } else if (isPartial) {
+            btn.className += 'bg-amber-500/20 text-amber-400 border-amber-500/40 hover:bg-amber-500/30';
+          } else if (hasAnswered) {
+            btn.className += 'bg-rose-500/20 text-rose-400 border-rose-500/40 hover:bg-rose-500/30';
+          } else {
+            btn.className += 'bg-space-850 text-slate-500 border-slate-800 hover:bg-space-800';
+          }
+        } else {
+          // Exam mode
+          if (hasAnswered) {
+            btn.className += 'bg-amber-500 text-space-950 border-amber-400 shadow-sm font-black';
+          } else {
+            btn.className += 'bg-space-850 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-white';
+          }
+        }
+
+        btn.onclick = () => {
+          const target = document.getElementById(`q-card-${q.id}`);
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            target.classList.add('ring-2', 'ring-amber-400');
+            setTimeout(() => target.classList.remove('ring-2', 'ring-amber-400'), 1200);
+          }
+        };
+
+        container.appendChild(btn);
+      });
+
+      // Update progress badges
+      const badge = document.getElementById('navProgressBadge');
+      if (badge) badge.textContent = `${answeredCount} / ${total}`;
+      const bar = document.getElementById('examProgressBar');
+      if (bar) bar.style.width = `${(answeredCount / total) * 100}%`;
+    }
+
+    // Render Question Cards
+    function renderQuestions() {
+      const container = document.getElementById('questionsContainer');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const isRu = (currentLang === 'ru');
+      const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+
+      variantData.questions.forEach((q, idx) => {
+        const card = document.createElement('div');
+        card.id = `q-card-${q.id}`;
+        card.className = 'p-5 sm:p-6 rounded-3xl bg-space-900 border border-slate-800 transition duration-300 space-y-4';
+
+        const qText = (isRu && q.q_ru) ? q.q_ru : q.q;
+        const options = (isRu && q.options_ru) ? q.options_ru : q.options;
+        const explanationText = (isRu && q.explanation_ru) ? q.explanation_ru : q.explanation;
+        const isMulti = !!q.isMulti;
+
+        // Card Header
+        const header = document.createElement('div');
+        header.className = 'flex items-center justify-between gap-2 border-b border-slate-800/80 pb-3';
+        header.innerHTML = `
+          <div class="flex items-center space-x-2">
+            <span class="w-7 h-7 rounded-xl bg-space-850 border border-slate-700 text-amber-400 font-black text-xs flex items-center justify-center">
+              ${idx + 1}
+            </span>
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">
+              ${isRu ? 'Вопрос ' + (idx + 1) : 'Сұрақ ' + (idx + 1)}
+            </span>
+          </div>
+          <span class="text-[11px] px-2.5 py-0.5 rounded-lg ${isMulti ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30' : 'bg-slate-800 text-slate-300 border border-slate-700'} font-bold">
+            ${isMulti ? (isRu ? '2 балла • Несколько ответов' : '2 балл • Көптаңдау') : (isRu ? '1 балл • Один ответ' : '1 балл • Біртаңдау')}
+          </span>
+        `;
+        card.appendChild(header);
+
+        // Prompt
+        const promptEl = document.createElement('div');
+        promptEl.className = 'text-sm sm:text-base font-semibold text-slate-100 leading-relaxed';
+        promptEl.textContent = qText;
+        card.appendChild(promptEl);
+
+        // Options Container
+        const optList = document.createElement('div');
+        optList.className = 'space-y-2 pt-1';
+
+        const currentAnswer = userAnswers[q.id];
+        const correctAnswers = Array.isArray(q.answer) ? q.answer : [q.answer];
+
+        options.forEach((optText, optIdx) => {
+          const isSelected = isMulti 
+            ? (Array.isArray(currentAnswer) && currentAnswer.includes(optIdx))
+            : (currentAnswer === optIdx);
+
+          const optBtn = document.createElement('div');
+          optBtn.className = 'group relative p-3.5 sm:p-4 rounded-2xl border text-xs sm:text-sm font-medium transition cursor-pointer flex items-center space-x-3 ';
+
+          if (currentMode === 'review' || isSubmitted) {
+            // Review mode styling
+            const isCorrect = correctAnswers.includes(optIdx);
+            if (isCorrect) {
+              optBtn.className += 'bg-emerald-500/15 border-emerald-500 text-emerald-200 font-bold';
+            } else if (isSelected) {
+              optBtn.className += 'bg-rose-500/15 border-rose-500 text-rose-200';
+            } else {
+              optBtn.className += 'bg-space-850/50 border-slate-800/80 text-slate-400 opacity-70';
+            }
+          } else {
+            // Exam mode styling
+            if (isSelected) {
+              optBtn.className += 'bg-amber-500/15 border-amber-500 text-amber-200 font-bold shadow-sm';
+            } else {
+              optBtn.className += 'bg-space-850 hover:bg-space-800 border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white';
+            }
+          }
+
+          // Choice Letter Circle
+          const letterBadge = document.createElement('span');
+          letterBadge.className = 'w-6 h-6 rounded-lg text-xs font-black flex items-center justify-center shrink-0 ';
+          if (currentMode === 'review' || isSubmitted) {
+            if (correctAnswers.includes(optIdx)) {
+              letterBadge.className += 'bg-emerald-500 text-space-950';
+            } else if (isSelected) {
+              letterBadge.className += 'bg-rose-500 text-white';
+            } else {
+              letterBadge.className += 'bg-space-900 border border-slate-700 text-slate-400';
+            }
+          } else {
+            if (isSelected) {
+              letterBadge.className += 'bg-amber-500 text-space-950';
+            } else {
+              letterBadge.className += 'bg-space-900 border border-slate-700 text-slate-400 group-hover:border-slate-500 group-hover:text-slate-200';
+            }
+          }
+          letterBadge.textContent = letters[optIdx] || String(optIdx + 1);
+          optBtn.appendChild(letterBadge);
+
+          // Option text
+          const textSpan = document.createElement('span');
+          textSpan.className = 'flex-1 leading-snug';
+          textSpan.textContent = optText;
+          optBtn.appendChild(textSpan);
+
+          // Status icon in review mode
+          if (currentMode === 'review' || isSubmitted) {
+            if (correctAnswers.includes(optIdx)) {
+              const check = document.createElement('span');
+              check.className = 'text-emerald-400 font-black text-sm';
+              check.textContent = '✓';
+              optBtn.appendChild(check);
+            } else if (isSelected) {
+              const cross = document.createElement('span');
+              cross.className = 'text-rose-400 font-black text-sm';
+              cross.textContent = '✕';
+              optBtn.appendChild(cross);
+            }
+          }
+
+          // Click handler (only in Exam mode or allow review interaction)
+          optBtn.onclick = () => {
+            if (isSubmitted && currentMode === 'exam') return;
+            handleOptionSelect(q.id, optIdx, isMulti);
+          };
+
+          optList.appendChild(optBtn);
+        });
+
+        card.appendChild(optList);
+
+        // Explanation Box (In Review Mode or after Submission)
+        if (currentMode === 'review' || isSubmitted) {
+          const expBox = document.createElement('div');
+          expBox.className = 'mt-4 p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-xs text-cyan-200 space-y-1.5';
+          expBox.innerHTML = `
+            <div class="flex items-center space-x-1.5 font-bold text-cyan-300">
+              <span>💡</span>
+              <span>${isRu ? 'Авторское пояснение:' : 'Авторлық түсіндірме:'}</span>
+            </div>
+            <p class="leading-relaxed text-slate-300">${explanationText || (isRu ? 'Пояснение к данному вопросу.' : 'Сұраққа арналған түсіндірме.')}</p>
+          `;
+          card.appendChild(expBox);
+        }
+
+        container.appendChild(card);
+      });
+    }
+
+    // Handle Option Selection
+    function handleOptionSelect(qId, optIdx, isMulti) {
+      if (isMulti) {
+        let selected = Array.isArray(userAnswers[qId]) ? [...userAnswers[qId]] : [];
+        if (selected.includes(optIdx)) {
+          selected = selected.filter(x => x !== optIdx);
+        } else {
+          if (selected.length < 3) {
+            selected.push(optIdx);
+          } else {
+            alert(currentLang === 'ru' ? 'Можно выбрать максимум 3 варианта ответа.' : 'Ең көп дегенде 3 нұсқа таңдауға болады.');
+            return;
+          }
+        }
+        if (selected.length > 0) {
+          userAnswers[qId] = selected;
+        } else {
+          delete userAnswers[qId];
+        }
+      } else {
+        userAnswers[qId] = optIdx;
+      }
+
+      renderQuestions();
+      renderMatrix();
+    }
+
+    // Confirm Submission
+    function confirmSubmitExam() {
+      const answered = Object.keys(userAnswers).length;
+      const total = variantData.questions.length;
+      const isRu = (currentLang === 'ru');
+
+      if (answered < total) {
+        const msg = isRu 
+          ? `Вы ответили на ${answered} из ${total} вопросов. Завершить экзамен сейчас?`
+          : `Сіз ${total} сұрақтың ${answered}-не жауап бердіңіз. Емтиханды қазір аяқтағыңыз келе ме?`;
+        if (!confirm(msg)) return;
+      }
+
+      submitExam();
+    }
+
+    // Submit Exam & Score Calculation
+    function submitExam() {
+      clearInterval(timerInterval);
+      isSubmitted = true;
+
+      let totalEarned = 0;
+      let totalMax = 0;
+      let correctCount = 0;
+      let partialCount = 0;
+      let wrongCount = 0;
+
+      variantData.questions.forEach(q => {
+        if (q.isMulti) {
+          totalMax += 2;
+          const userChoices = Array.isArray(userAnswers[q.id]) ? userAnswers[q.id] : [];
+          const correctChoices = Array.isArray(q.answer) ? q.answer : [q.answer];
+
+          const missed = correctChoices.filter(x => !userChoices.includes(x)).length;
+          const extra = userChoices.filter(x => !correctChoices.includes(x)).length;
+          const errors = missed + extra;
+
+          if (errors === 0 && userChoices.length > 0) {
+            totalEarned += 2;
+            correctCount++;
+          } else if (errors === 1 && userChoices.length > 0) {
+            totalEarned += 1;
+            partialCount++;
+          } else {
+            wrongCount++;
+          }
+        } else {
+          totalMax += 1;
+          if (userAnswers[q.id] === q.answer) {
+            totalEarned += 1;
+            correctCount++;
+          } else {
+            wrongCount++;
+          }
+        }
+      });
+
+      const percentage = Math.round((totalEarned / totalMax) * 100);
+      const isPassed = percentage >= 70;
+      const earnedXp = isPassed ? 80 : Math.round(totalEarned * 2);
+
+      // Save to localStorage
+      try {
+        let scores = JSON.parse(localStorage.getItem('geotany_writing_scores') || '{}');
+        scores[variantData.id] = {
+          score: totalEarned,
+          maxScore: totalMax,
+          total: variantData.questions.length,
+          fullCorrect: correctCount,
+          partiallyCorrect: partialCount,
+          wrong: wrongCount,
+          percentage: percentage,
+          isPassed: isPassed,
+          date: new Date().toISOString(),
+          answers: userAnswers
+        };
+        localStorage.setItem('geotany_writing_scores', JSON.stringify(scores));
+
+        let curXp = parseInt(localStorage.getItem('geotany_user_xp') || '0', 10);
+        curXp += earnedXp;
+        localStorage.setItem('geotany_user_xp', curXp.toString());
+      } catch(e) {}
+
+      // Display Modal
+      showResultModal({
+        score: totalEarned,
+        maxScore: totalMax,
+        percentage,
+        isPassed,
+        correctCount,
+        partialCount,
+        wrongCount,
+        earnedXp
+      });
+
+      renderQuestions();
+      renderMatrix();
+    }
+
+    // Show Result Modal with Confetti
+    function showResultModal(res) {
+      const isRu = (currentLang === 'ru');
+      const modal = document.getElementById('resultModal');
+      if (!modal) return;
+
+      document.getElementById('modalScoreDisplay').textContent = `${res.score} / ${res.maxScore}`;
+      document.getElementById('modalPercentageDisplay').textContent = `${res.percentage}% • ${isRu ? 'Результат' : 'Нәтиже'} (+${res.earnedXp} XP)`;
+      
+      const statusBadge = document.getElementById('modalStatusBadge');
+      if (statusBadge) {
+        if (res.isPassed) {
+          statusBadge.textContent = isRu ? 'Сдано • Успешно' : 'Өтті • Құттықтаймыз';
+          statusBadge.className = 'inline-block px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wide bg-brand-500/20 text-brand-400 border border-brand-500/30';
+          triggerConfetti();
+        } else {
+          statusBadge.textContent = isRu ? 'Не сдано • Требуется 70%' : 'Өтпеді • 70% қажет';
+          statusBadge.className = 'inline-block px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wide bg-rose-500/20 text-rose-400 border border-rose-500/30';
+        }
+      }
+
+      document.getElementById('modalCorrectCount').textContent = res.correctCount;
+      document.getElementById('modalPartialCount').textContent = res.partialCount;
+      document.getElementById('modalWrongCount').textContent = res.wrongCount;
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeModalAndShowReview() {
+      const modal = document.getElementById('resultModal');
+      if (modal) modal.classList.add('hidden');
+      setMode('review');
+    }
+
+    function retakeExam() {
+      const modal = document.getElementById('resultModal');
+      if (modal) modal.classList.add('hidden');
+      userAnswers = {};
+      isSubmitted = false;
+      timerRemaining = initialTimeSeconds;
+      setMode('exam');
+      startTimer();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Lightweight Canvas Confetti
+    function triggerConfetti() {
+      const canvas = document.getElementById('confettiCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      canvas.width = canvas.parentElement.clientWidth;
+      canvas.height = canvas.parentElement.clientHeight;
+
+      const particles = [];
+      const colors = ['#10B981', '#F59E0B', '#06B6D4', '#EC4899', '#8B5CF6'];
+
+      for (let i = 0; i < 75; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          vx: (Math.random() - 0.5) * 10,
+          vy: (Math.random() - 0.5) * 10 - 3,
+          size: Math.random() * 6 + 3,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          alpha: 1,
+          decay: Math.random() * 0.02 + 0.015
+        });
+      }
+
+      function render() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let active = 0;
+        particles.forEach(p => {
+          if (p.alpha > 0) {
+            active++;
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += 0.2;
+            p.alpha -= p.decay;
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = Math.max(0, p.alpha);
+            ctx.fillRect(p.x, p.y, p.size, p.size);
+          }
+        });
+        if (active > 0) requestAnimationFrame(render);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      requestAnimationFrame(render);
+    }
+
+    // Page Load Boot
+    window.addEventListener('DOMContentLoaded', () => {
+      updateLocalizedLabels();
+      renderQuestions();
+      renderMatrix();
+      checkPreviousScore();
+      if (currentMode === 'exam') {
+        startTimer();
+      }
+    });
+  </script>
+
+</body>
+</html>

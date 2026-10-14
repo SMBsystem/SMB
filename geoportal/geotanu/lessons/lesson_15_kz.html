@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="kz" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>15-сабақ. Қазақстан халқы | GEOTANY</title>
+
+  <!-- AUTH GUARD: RESTRICT DIRECT ACCESS WITHOUT VALID SESSION -->
+  <style id="authCloak">body { display: none !important; }</style>
+  <script>
+    (function() {
+      try {
+        var isAdmin = localStorage.getItem('geotany_admin_auth') === 'true';
+        var sessionStr = localStorage.getItem('geotany_user_session');
+        var isAuthorized = isAdmin;
+        if (!isAuthorized && sessionStr) {
+          var s = JSON.parse(sessionStr);
+          if (s && s.email && (s.courseCode || s.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        var profileStr = localStorage.getItem('geotany_user_profile');
+        if (!isAuthorized && profileStr) {
+          var p = JSON.parse(profileStr);
+          if (p && p.email && (p.courseCode || p.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        if (!isAuthorized) {
+          window.location.replace('../geotanu.html?error=unauthorized_course');
+          return;
+        }
+        var cloak = document.getElementById('authCloak');
+        if (cloak) cloak.remove();
+      } catch (e) {
+        window.location.replace('../geotanu.html?error=unauthorized_course');
+      }
+    })();
+  </script>
+
+  <!-- TAILWIND CSS & FONTS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            space: {
+              800: '#1E293B',
+              850: '#151E2E',
+              900: '#0F172A',
+              950: '#0B0F19',
+            },
+            brand: {
+              400: '#34D399',
+              500: '#10B981',
+              600: '#059669',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0B0F19;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1E293B;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+    .prose-theory h1, .prose-theory h2, .prose-theory h3, .prose-theory h4 {
+      color: #F8FAFC;
+      font-weight: 800;
+    }
+    .prose-theory p {
+      color: #CBD5E1;
+      line-height: 1.75;
+      font-size: 0.875rem;
+    }
+    .prose-theory ul {
+      list-style-type: disc;
+      margin-left: 1.25rem;
+      color: #CBD5E1;
+      font-size: 0.875rem;
+    }
+    .prose-theory table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.75rem;
+    }
+    .prose-theory th, .prose-theory td {
+      border: 1px solid #334155;
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+    }
+    .prose-theory th {
+      background: #1E293B;
+      color: #F8FAFC;
+      font-weight: 700;
+    }
+    .prose-theory tr:nth-child(even) {
+      background: rgba(15, 23, 42, 0.6);
+    }
+  </style>
+</head>
+<body class="bg-space-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-brand-500/30 selection:text-brand-400">
+
+  <!-- TOP APP BAR -->
+  <header class="sticky top-0 z-40 bg-space-950/90 backdrop-blur-xl border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+      
+      <!-- Left: Back Button & Title -->
+      <div class="flex items-center space-x-3">
+        <a href="../geotanu.html?lang=kz#section-sabaktar_reading" class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 text-slate-300 hover:text-white border border-slate-700/80 text-xs sm:text-sm font-bold transition shadow-sm">
+          <span>←</span>
+          <span>Артқа</span>
+        </a>
+        <div class="h-6 w-px bg-slate-800 hidden sm:block"></div>
+        <div class="flex items-center space-x-2">
+          <span class="text-xs px-2.5 py-1 rounded-lg bg-cyan-500/10 text-cyan-400 font-extrabold border border-cyan-500/20">
+            15 / 20 сабақ
+          </span>
+          <span class="text-sm font-bold text-slate-200 hidden md:inline truncate max-w-xs">
+            15-сабақ. Қазақстан халқы
+          </span>
+        </div>
+      </div>
+
+      <!-- Center: Reading Time Badge -->
+      <div class="hidden sm:flex items-center space-x-1.5 bg-space-900 border border-slate-800 px-3 py-1.5 rounded-xl text-xs text-slate-400 font-medium">
+        <span>⏱️</span>
+        <span>7 мин</span>
+      </div>
+
+      <!-- Right: Direct Language Page Switcher & Complete Button -->
+      <div class="flex items-center space-x-2 sm:space-x-3">
+        
+        <!-- Language Switcher linking directly to counterpart page -->
+        <div class="flex items-center bg-space-900 p-0.5 rounded-xl border border-slate-800 text-xs font-bold">
+          <a href="lesson_15_kz.html" class="px-2.5 py-1 rounded-lg bg-brand-500 text-space-950 font-black transition">
+            🇰🇿 KZ
+          </a>
+          <a href="lesson_15_ru.html" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition">
+            🇷🇺 RU
+          </a>
+        </div>
+
+        <!-- Mark as Completed Toggle Button -->
+        <button id="btnHeaderComplete" onclick="toggleLessonComplete()" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-emerald-400 text-xs font-bold transition flex items-center space-x-1.5 shadow-sm">
+          <span id="headerCheckIcon">○</span>
+          <span id="headerCompleteText" class="hidden sm:inline">Оқылды</span>
+        </button>
+
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-8">
+
+    <!-- HERO LESSON BANNER -->
+    <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-space-900 via-space-850 to-space-900 border border-slate-800 shadow-xl relative overflow-hidden">
+      <!-- Glow decoration -->
+      <div class="absolute -right-20 -top-20 w-60 h-60 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-20 -bottom-20 w-60 h-60 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10 space-y-4">
+        
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <span class="px-3 py-1 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 font-extrabold text-xs tracking-wider uppercase">
+              📖 ҰБТ ГЕОГРАФИЯ • САБАҚ №15
+            </span>
+            <span class="px-3 py-1 rounded-xl bg-brand-500/10 border border-brand-500/30 text-brand-400 font-bold text-xs">
+              Қазақ бөлімі
+            </span>
+          </div>
+
+          <!-- Prev / Next Navigation -->
+          <div class="flex items-center space-x-2 text-xs font-bold">
+            <a href="lesson_14_kz.html" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition flex items-center space-x-1"><span>←</span><span>Алдыңғы сабақ</span></a>
+            <span class="text-slate-500">|</span>
+            <a href="lesson_16_kz.html" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition flex items-center space-x-1"><span>Келесі сабақ</span><span>→</span></a>
+          </div>
+        </div>
+
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            15-сабақ. Қазақстан халқы
+          </h1>
+          <h2 class="text-sm font-semibold text-cyan-300/80 mt-1">
+            15 урок. Население Казахстана
+          </h2>
+        </div>
+
+        <!-- Tags Row -->
+        <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-800/80">
+          <span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">##халық</span><span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">##демография</span><span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">##этностар</span><span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">##ҚХА</span><span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">##урбанизация</span>
+        </div>
+
+        <!-- Completed Banner -->
+        <div id="lessonCompletedBanner" class="hidden p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-xs sm:text-sm text-emerald-300 flex items-center justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <span>✅</span>
+            <span>Бұл сабақ оқылды деп белгіленген.</span>
+          </div>
+          <span class="text-xs px-2.5 py-1 rounded-xl bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40">
+            +30 XP алынды
+          </span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SECTION 1: KEY TERMS & DEFINITIONS -->
+    <section class="p-6 sm:p-7 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-base sm:text-lg font-black text-white flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center text-sm font-black">1</span>
+          <span>Негізгі терминдер мен ұғымдар</span>
+        </h3>
+        <span class="text-xs text-slate-400 font-semibold">
+          5 термин
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">ҚХА (Ассамблея)</span>
+          <p class="text-xs text-slate-300 leading-relaxed">1995 жылы 1 наурызда құрылған этносаралық татулықты сақтаушы конституциялық орган.</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Диаспора</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Өз тарихи отанынан тысқары басқа елде тұрып жатқан ұлт өкілдерінің шоғыры.</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Миграция сальдосы</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Белгілі бір уақыттағы иммигранттар мен эмигранттар санының айырмасы.</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Еңбек ресурстары</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Еңбекке қабілетті жастағы жұмыс істеуге мүмкіндігі бар халықтың жиынтығы.</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Қала-миллионер</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Тұрғындар саны 1 миллионнан асқан ірі мегаполис (Алматы, Астана, Шымкент).</p>
+        </div>
+        
+      </div>
+    </section>
+
+    <!-- SECTION 2: FULL COMPREHENSIVE THEORY -->
+    <section class="p-6 sm:p-8 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-5">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-base sm:text-lg font-black text-white flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-brand-500/10 border border-brand-500/20 text-brand-400 flex items-center justify-center text-sm font-black">2</span>
+          <span>Толық теориялық конспект және иллюстрациялар</span>
+        </h3>
+        <span class="text-xs text-slate-400 font-medium hidden sm:inline">
+          Интерактивті оқу
+        </span>
+      </div>
+
+      <!-- Theory Body Container -->
+      <div class="prose-theory leading-relaxed space-y-4 overflow-x-auto">
+        <p class="text-xs text-slate-300 leading-relaxed my-2"># 15-сабақ: Қазақстан халқының географиясы</p>
+<p class="text-xs text-slate-300 leading-relaxed my-2">Қазақстан халқы өзінің этностық әралуандығымен, серпінді демографиялық дамуымен және урбанизация қарқынымен ерекшеленеді. 2023 жылы еліміз 20 миллиондық межені бағындырды.</p>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>1. Этностық құрам және Қазақстан халқы Ассамблеясы</span></h4>
+<p class="text-xs text-slate-300 leading-relaxed my-2">Қазақстан — көпэтносты зайырлы мемлекет. Тәуелсіздік жылдарында елдегі қазақтардың үлесі тұрақты өсіп, 70%-дан асты. Елде 130-дан астам этнос тату-тәтті өмір сүруде. Этносаралық келісім мен бейбітшілікті сақтау мақсатында 1995 жылы 1 наурызда <b class="text-cyan-300 font-bold">Қазақстан халқы Ассамблеясы (ҚХА)</b> құрылды.</p>
+<svg height="220" viewbox="0 0 700 220" width="100%" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#0f172a" height="220" rx="12" width="700"></rect>
+<text fill="#38bdf8" font-size="16" font-weight="bold" text-anchor="middle" x="350" y="28">Қазақстан халқының этностық құрамы мен ҚХА (1995 ж.)</text>
+<rect fill="#0284c7" height="32" rx="6" width="370" x="40" y="55"></rect>
+<text fill="#ffffff" font-size="13" font-weight="bold" x="50" y="76">Қазақтар: ~70% (ұлттық өзек, мемлекет құраушы)</text>
+<rect fill="#3b82f6" height="28" rx="6" width="120" x="40" y="95"></rect>
+<text fill="#ffffff" font-size="12" x="50" y="114">Орыстар: ~15%</text>
+<rect fill="#8b5cf6" height="26" rx="6" width="60" x="40" y="130"></rect>
+<text fill="#ffffff" font-size="11" x="50" y="148">Өзбектер: ~3.3%</text>
+<rect fill="#ec4899" height="24" rx="6" width="50" x="40" y="162"></rect>
+<text fill="#ffffff" font-size="11" x="50" y="179">Украин, ұйғыр, т.б.</text>
+<rect fill="#1e293b" height="135" rx="8" stroke="#38bdf8" stroke-width="1.5" width="220" x="450" y="55"></rect>
+<text fill="#38bdf8" font-size="13" font-weight="bold" text-anchor="middle" x="560" y="80">Қазақстан халқы Ассамблеясы</text>
+<text fill="#f8fafc" font-size="12" text-anchor="middle" x="560" y="105">Құрылған күні: 1995 ж. 1 наурыз</text>
+<text fill="#94a3b8" font-size="11" text-anchor="middle" x="560" y="125">1 наурыз — Алғыс айту күні</text>
+<text fill="#cbd5e1" font-size="11" text-anchor="middle" x="560" y="150">130-дан астам этнос татулығы</text>
+<text fill="#34d399" font-size="11" text-anchor="middle" x="560" y="170">Діни құрам: Ислам ~70.2%, Христ. ~26%</text>
+</svg>
+<p class="text-xs text-slate-300 leading-relaxed my-2">Діни сенім бойынша ел тұрғындарының 70,2%-ы ислам дінін (сүнниттік бағыт), 26%-дан астамы христиан дінін (негізінен православие, сондай-ақ поляктар мен немістер арасында католицизм) ұстанады.</p>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>2. Қалалар және урбанизация деңгейі</span></h4>
+<p class="text-xs text-slate-300 leading-relaxed my-2">Елімізде қала мәртебесіне ие 87 елді мекен бар. Урбанизация деңгейі шамамен 61-62%-ды құрайды.</p>
+<svg height="220" viewbox="0 0 700 220" width="100%" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#0f172a" height="220" rx="12" width="700"></rect>
+<text fill="#38bdf8" font-size="16" font-weight="bold" text-anchor="middle" x="350" y="28">Урбанизация және Қазақстанның ірі қалалары</text>
+<rect fill="#1e293b" height="120" rx="8" stroke="#3b82f6" stroke-width="1.5" width="180" x="50" y="60"></rect>
+<text fill="#38bdf8" font-size="14" font-weight="bold" text-anchor="middle" x="140" y="85">Алматы</text>
+<text fill="#f8fafc" font-size="12" text-anchor="middle" x="140" y="110">&gt; 2.2 млн адам</text>
+<text fill="#94a3b8" font-size="11" text-anchor="middle" x="140" y="135">Оңтүстік астана</text>
+<text fill="#cbd5e1" font-size="11" text-anchor="middle" x="140" y="155">Қаржы, ғылым орталығы</text>
+<rect fill="#1e293b" height="120" rx="8" stroke="#10b981" stroke-width="1.5" width="180" x="260" y="60"></rect>
+<text fill="#34d399" font-size="14" font-weight="bold" text-anchor="middle" x="350" y="85">Астана</text>
+<text fill="#f8fafc" font-size="12" text-anchor="middle" x="350" y="110">&gt; 1.4 млн адам</text>
+<text fill="#94a3b8" font-size="11" text-anchor="middle" x="350" y="135">Бас қала, саяси орталық</text>
+<text fill="#cbd5e1" font-size="11" text-anchor="middle" x="350" y="155">Ең жылдам өсу қарқыны</text>
+<rect fill="#1e293b" height="120" rx="8" stroke="#f59e0b" stroke-width="1.5" width="180" x="470" y="60"></rect>
+<text fill="#fbbf24" font-size="14" font-weight="bold" text-anchor="middle" x="560" y="85">Шымкент</text>
+<text fill="#f8fafc" font-size="12" text-anchor="middle" x="560" y="110">&gt; 1.2 млн адам</text>
+<text fill="#94a3b8" font-size="11" text-anchor="middle" x="560" y="135">3-ші миллионер қала (2018)</text>
+<text fill="#cbd5e1" font-size="11" text-anchor="middle" x="560" y="155">Оңтүстік индустрия түйіні</text>
+<text fill="#94a3b8" font-size="12" text-anchor="middle" x="350" y="202">Республикада ресми 87 қала бар | Урбанизация деңгейі: ~61-62%</text>
+</svg>
+<p class="text-xs text-slate-300 leading-relaxed my-2">Қазақстанда 3 республикалық маңызы бар миллионер қала бар:</p>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Алматы</b> — 2,2 миллионнан астам халқы бар мәдени, ғылыми әрі қаржылық орталық;</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Астана</b> — 1,4 миллион халқы бар бас қала, елдің әкімшілік-саяси жүрегі;</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Шымкент</b> — 2018 жылы 1 миллиондық межеге жеткен оңтүстік индустриялық орталық.</li>
+</ul>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>3. Халықтың көші-қоны (Миграция)</span></h4>
+<p class="text-xs text-slate-300 leading-relaxed my-2">Халықтың бір аумақтан екінші аумаққа қоныс аударуы <b class="text-cyan-300 font-bold">көші-қон (миграция)</b> деп аталады. Мемлекетке басқа елден көшіп келушілерді <i class="text-slate-300">иммигранттар</i>, ал елден тысқары көшіп кетушілерді <i class="text-slate-300">эмигранттар</i> дейді.</p>
+<svg height="220" viewbox="0 0 700 220" width="100%" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#0f172a" height="220" rx="12" width="700"></rect>
+<text fill="#38bdf8" font-size="16" font-weight="bold" text-anchor="middle" x="350" y="28">Миграция (Көші-қон) және Миграция сальдосы</text>
+<rect fill="#1e293b" height="70" rx="8" stroke="#3b82f6" stroke-width="1.5" width="260" x="50" y="55"></rect>
+<text fill="#38bdf8" font-size="13" font-weight="bold" text-anchor="middle" x="180" y="80">Иммиграция (Келгендер)</text>
+<text fill="#cbd5e1" font-size="12" text-anchor="middle" x="180" y="105">Қандастар (оралмандар) елге оралуы</text>
+<rect fill="#1e293b" height="70" rx="8" stroke="#ef4444" stroke-width="1.5" width="260" x="390" y="55"></rect>
+<text fill="#f87171" font-size="13" font-weight="bold" text-anchor="middle" x="520" y="80">Эмиграция (Кеткендер)</text>
+<text fill="#cbd5e1" font-size="12" text-anchor="middle" x="520" y="105">Басқа елге тұрақты көшушілер</text>
+<rect fill="#0369a1" height="55" rx="8" width="400" x="150" y="145"></rect>
+<text fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle" x="350" y="168">Миграция сальдосы = Келгендер - Кеткендер</text>
+<text fill="#e0f2fe" font-size="12" text-anchor="middle" x="350" y="188">Мысалы: 16 081 - 37 704 = -21 623 (Теріс сальдо)</text>
+</svg>
+<p class="text-xs text-slate-300 leading-relaxed my-2"><b class="text-cyan-300 font-bold">Миграция сальдосы</b> — белгілі бір уақыт ішінде келгендер мен кеткендердің айырмасы:</p>
+<p class="text-xs text-slate-300 leading-relaxed my-2">`Сальдо = Иммигранттар - Эмигранттар`.</p>
+<p class="text-xs text-slate-300 leading-relaxed my-2">Егер кеткендер саны басым болса, сальдо теріс мәнге ие болады (мысалы, 2017 жылы 16081 келіп, 37704 кетіп, сальдо -21623 болды). Сондай-ақ тарихи отанына оралған қазақтарды <i class="text-slate-300">қандастар (оралмандар)</i> деп атайды.</p>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>4. Жыныстық-жастық құрам мен демографиялық өсім</span></h4>
+<p class="text-xs text-slate-300 leading-relaxed my-2">Қазақстан халқының орташа жасы шамамен 32 жас. Еліміз жас, прогрессивті демографиялық құрылымға ие.</p>
+<svg height="220" viewbox="0 0 700 220" width="100%" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#0f172a" height="220" rx="12" width="700"></rect>
+<text fill="#38bdf8" font-size="16" font-weight="bold" text-anchor="middle" x="350" y="28">Қазақстанның демографиялық құрылымы мен халық пирамидасы</text>
+<rect fill="#1e293b" height="135" rx="8" stroke="#10b981" stroke-width="1.5" width="180" x="60" y="55"></rect>
+<text fill="#34d399" font-size="13" font-weight="bold" text-anchor="middle" x="150" y="80">0 - 15 жас (Балалар)</text>
+<text fill="#f8fafc" font-size="18" font-weight="bold" text-anchor="middle" x="150" y="105">~ 30-31%</text>
+<text fill="#94a3b8" font-size="11" text-anchor="middle" x="150" y="130">Жоғары туу көрсеткіші</text>
+<text fill="#cbd5e1" font-size="11" text-anchor="middle" x="150" y="155">Демографиялық өсім қарқыны</text>
+<rect fill="#1e293b" height="135" rx="8" stroke="#3b82f6" stroke-width="1.5" width="180" x="260" y="55"></rect>
+<text fill="#38bdf8" font-size="13" font-weight="bold" text-anchor="middle" x="350" y="80">16 - 63 жас (Еңбек жасы)</text>
+<text fill="#f8fafc" font-size="18" font-weight="bold" text-anchor="middle" x="350" y="105">~ 58-60%</text>
+<text fill="#94a3b8" font-size="11" text-anchor="middle" x="350" y="130">Еңбек ресурстарының негізі</text>
+<text fill="#cbd5e1" font-size="11" text-anchor="middle" x="350" y="155">Экономикалық белсенді халық</text>
+<rect fill="#1e293b" height="135" rx="8" stroke="#a855f7" stroke-width="1.5" width="180" x="460" y="55"></rect>
+<text fill="#c084fc" font-size="13" font-weight="bold" text-anchor="middle" x="550" y="80">63+ жас (Зейнеткерлер)</text>
+<text fill="#f8fafc" font-size="18" font-weight="bold" text-anchor="middle" x="550" y="105">~ 9-11%</text>
+<text fill="#94a3b8" font-size="11" text-anchor="middle" x="550" y="130">Өмір сүру ұзақтығы өсуде</text>
+<text fill="#cbd5e1" font-size="11" text-anchor="middle" x="550" y="155">Қартаю деңгейі әзірге төмен</text>
+<text fill="#94a3b8" font-size="11" text-anchor="middle" x="350" y="205">Қазақстан — прогрессивті жастық құрылымға ие, «жас мемлекет» санатына жатады.</text>
+</svg>
+<p class="text-xs text-slate-300 leading-relaxed my-2">Халықтың 30%-дан астамын 15 жасқа дейінгі жасөспірімдер мен балалар құрайды. Оңтүстік және батыс облыстарда (Маңғыстау, Түркістан, Жамбыл) табиғи өсім қарқыны өте жоғары.</p>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>5. Еңбек ресурстары және жұмыспен қамту</span></h4>
+<p class="text-xs text-slate-300 leading-relaxed my-2">Еңбекке қабілетті жастағы (16-63 жас) және жұмыс істеуге қабілетті бүкіл халық жиынтығы <b class="text-cyan-300 font-bold">еңбек ресурстары</b> деп аталады.</p>
+<svg height="220" viewbox="0 0 700 220" width="100%" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#0f172a" height="220" rx="12" width="700"></rect>
+<text fill="#38bdf8" font-size="16" font-weight="bold" text-anchor="middle" x="350" y="28">Еңбек ресурстары және Экономикалық белсенді халық</text>
+<rect fill="#0369a1" height="40" rx="6" width="620" x="40" y="55"></rect>
+<text fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle" x="350" y="80">Қазақстанның жалпы еңбек ресурстары (~9.2 - 9.5 млн адам)</text>
+<rect fill="#1e293b" height="50" rx="6" stroke="#10b981" stroke-width="1.5" width="460" x="40" y="110"></rect>
+<text fill="#34d399" font-size="12" font-weight="bold" text-anchor="middle" x="270" y="132">Жұмыспен қамтылғандар (~95%)</text>
+<text fill="#94a3b8" font-size="11" text-anchor="middle" x="270" y="150">Жалдамалы жұмыскерлер (6.9 млн) + Өзін-өзі жұмыспен қамтығандар (2.1 млн)</text>
+<rect fill="#1e293b" height="50" rx="6" stroke="#ef4444" stroke-width="1.5" width="140" x="520" y="110"></rect>
+<text fill="#f87171" font-size="12" font-weight="bold" text-anchor="middle" x="590" y="132">Жұмыссыздар</text>
+<text fill="#cbd5e1" font-size="11" text-anchor="middle" x="590" y="150">Деңгейі: ~4.7 - 4.9%</text>
+<text fill="#38bdf8" font-size="12" text-anchor="middle" x="350" y="195">Қызмет көрсету саласы: ~67% | Өнеркәсіп пен құрылыс: ~21% | Ауыл шаруашылығы: ~12%</text>
+</svg>
+<p class="text-xs text-slate-300 leading-relaxed my-2">Еліміздегі экономикалық белсенді халық саны 9 миллионнан асады. Жұмыспен қамтылғандардың басым бөлігі (67%) қызмет көрсету саласында, 21%-ы өнеркәсіп пен құрылыста, 12%-ы ауыл шаруашылығында еңбек етеді. Жұмыссыздық деңгейі тұрақты түрде 4,7-4,9% деңгейінде сақталып келеді.</p>
+      </div>
+    </section>
+
+    <!-- SECTION 3: COMMON EXAM TRAPS & PITFALLS (if available) -->
+    
+
+    <!-- SECTION 4: END-OF-LESSON TEST -->
+    <section class="p-6 sm:p-8 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-6">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-brand-500/10 border border-brand-500/20 text-brand-400 flex items-center justify-center text-sm font-black">3</span>
+          <div>
+            <h3 class="text-base sm:text-lg font-black text-white">
+              Тақырыптық қорытынды тест
+            </h3>
+            <p class="text-xs text-slate-400 mt-0.5">
+              Өту шегі: 80% • Сыйлық: +30 XP
+            </p>
+          </div>
+        </div>
+
+        <div id="testScoreBadge" class="hidden px-3 py-1 rounded-xl bg-space-850 border border-slate-700 text-xs font-bold text-amber-400 font-mono">
+          0%
+        </div>
+      </div>
+
+      <!-- Test Questions Container -->
+      <div id="testQuestionsList" class="space-y-6">
+        <!-- Dynamically populated test questions via JS -->
+      </div>
+
+      <!-- Test Submit & Score Action Bar -->
+      <div class="pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="text-xs text-slate-400" id="testProgressInfo">
+          Барлық сұрақтарға жауап беріп, өзіңізді тексеріңіз.
+        </div>
+        <div class="flex items-center space-x-2.5 w-full sm:w-auto">
+          <button id="btnSubmitTest" onclick="submitLessonTest()" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-brand-500 hover:from-amber-400 hover:to-brand-400 text-space-950 font-black text-xs sm:text-sm shadow-md transition flex items-center justify-center space-x-2">
+            <span>🏁</span>
+            <span>Тестті тексеру</span>
+          </button>
+          <button id="btnResetTest" onclick="resetLessonTest()" class="hidden px-4 py-2.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-bold transition flex items-center justify-center space-x-1">
+            <span>🔄</span>
+            <span>Қайта тапсыру</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- BOTTOM NAVIGATION & FOOTER -->
+    <div class="p-6 rounded-3xl bg-space-900 border border-slate-800 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleLessonComplete()" class="px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-400 text-space-950 font-black text-xs sm:text-sm shadow-md transition flex items-center space-x-2">
+          <span>✓</span>
+          <span id="lblBottomComplete">Сабақты оқылды деп белгілеу (+30 XP)</span>
+        </button>
+      </div>
+
+      <div class="flex items-center space-x-2 text-xs font-bold">
+        <a href="lesson_14_kz.html" class="px-4 py-2 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition">← Алдыңғы сабақ</a>
+        <a href="../geotanu.html?lang=kz#section-sabaktar_reading" class="px-4 py-2 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition">
+          Сабақтар тізімі
+        </a>
+        <a href="lesson_16_kz.html" class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-space-950 transition font-black">Келесі сабақ →</a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- LESSON SCRIPT ENGINE -->
+  <script>
+    const lessonData = {"id": 15, "title_kz": "15-сабақ. Қазақстан халқы", "title_ru": "15 урок. Население Казахстана", "tags": ["#халық", "#демография", "#этностар", "#ҚХА", "#урбанизация"], "terms": [{"kz": "ҚХА (Ассамблея)", "ru": "АНК (Ассамблея)", "desc_kz": "1995 жылы 1 наурызда құрылған этносаралық татулықты сақтаушы конституциялық орган.", "desc_ru": "Конституционный орган сохранения межнационального согласия, учрежденный 1 марта 1995 года."}, {"kz": "Диаспора", "ru": "Диаспора", "desc_kz": "Өз тарихи отанынан тысқары басқа елде тұрып жатқан ұлт өкілдерінің шоғыры.", "desc_ru": "Часть народа (этноса), проживающая вне страны своего исторического происхождения."}, {"kz": "Миграция сальдосы", "ru": "Сальдо миграции", "desc_kz": "Белгілі бір уақыттағы иммигранттар мен эмигранттар санының айырмасы.", "desc_ru": "Разность между числом прибывших (иммигрантов) и выбывших (эмигрантов) за определенный период."}, {"kz": "Еңбек ресурстары", "ru": "Трудовые ресурсы", "desc_kz": "Еңбекке қабілетті жастағы жұмыс істеуге мүмкіндігі бар халықтың жиынтығы.", "desc_ru": "Трудоспособная часть населения, обладающая физическими и духовными способностями для работы."}, {"kz": "Қала-миллионер", "ru": "Город-миллионер", "desc_kz": "Тұрғындар саны 1 миллионнан асқан ірі мегаполис (Алматы, Астана, Шымкент).", "desc_ru": "Крупный мегаполис с постоянным населением более одного миллиона человек."}], "theory_kz": "<p class=\"text-xs text-slate-300 leading-relaxed my-2\"># 15-сабақ: Қазақстан халқының географиясы</p>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Қазақстан халқы өзінің этностық әралуандығымен, серпінді демографиялық дамуымен және урбанизация қарқынымен ерекшеленеді. 2023 жылы еліміз 20 миллиондық межені бағындырды.</p>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>1. Этностық құрам және Қазақстан халқы Ассамблеясы</span></h4>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Қазақстан — көпэтносты зайырлы мемлекет. Тәуелсіздік жылдарында елдегі қазақтардың үлесі тұрақты өсіп, 70%-дан асты. Елде 130-дан астам этнос тату-тәтті өмір сүруде. Этносаралық келісім мен бейбітшілікті сақтау мақсатында 1995 жылы 1 наурызда <b class=\"text-cyan-300 font-bold\">Қазақстан халқы Ассамблеясы (ҚХА)</b> құрылды.</p>\n<svg height=\"220\" viewbox=\"0 0 700 220\" width=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n<rect fill=\"#0f172a\" height=\"220\" rx=\"12\" width=\"700\"></rect>\n<text fill=\"#38bdf8\" font-size=\"16\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"28\">Қазақстан халқының этностық құрамы мен ҚХА (1995 ж.)</text>\n<rect fill=\"#0284c7\" height=\"32\" rx=\"6\" width=\"370\" x=\"40\" y=\"55\"></rect>\n<text fill=\"#ffffff\" font-size=\"13\" font-weight=\"bold\" x=\"50\" y=\"76\">Қазақтар: ~70% (ұлттық өзек, мемлекет құраушы)</text>\n<rect fill=\"#3b82f6\" height=\"28\" rx=\"6\" width=\"120\" x=\"40\" y=\"95\"></rect>\n<text fill=\"#ffffff\" font-size=\"12\" x=\"50\" y=\"114\">Орыстар: ~15%</text>\n<rect fill=\"#8b5cf6\" height=\"26\" rx=\"6\" width=\"60\" x=\"40\" y=\"130\"></rect>\n<text fill=\"#ffffff\" font-size=\"11\" x=\"50\" y=\"148\">Өзбектер: ~3.3%</text>\n<rect fill=\"#ec4899\" height=\"24\" rx=\"6\" width=\"50\" x=\"40\" y=\"162\"></rect>\n<text fill=\"#ffffff\" font-size=\"11\" x=\"50\" y=\"179\">Украин, ұйғыр, т.б.</text>\n<rect fill=\"#1e293b\" height=\"135\" rx=\"8\" stroke=\"#38bdf8\" stroke-width=\"1.5\" width=\"220\" x=\"450\" y=\"55\"></rect>\n<text fill=\"#38bdf8\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"560\" y=\"80\">Қазақстан халқы Ассамблеясы</text>\n<text fill=\"#f8fafc\" font-size=\"12\" text-anchor=\"middle\" x=\"560\" y=\"105\">Құрылған күні: 1995 ж. 1 наурыз</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"560\" y=\"125\">1 наурыз — Алғыс айту күні</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"560\" y=\"150\">130-дан астам этнос татулығы</text>\n<text fill=\"#34d399\" font-size=\"11\" text-anchor=\"middle\" x=\"560\" y=\"170\">Діни құрам: Ислам ~70.2%, Христ. ~26%</text>\n</svg>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Діни сенім бойынша ел тұрғындарының 70,2%-ы ислам дінін (сүнниттік бағыт), 26%-дан астамы христиан дінін (негізінен православие, сондай-ақ поляктар мен немістер арасында католицизм) ұстанады.</p>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>2. Қалалар және урбанизация деңгейі</span></h4>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Елімізде қала мәртебесіне ие 87 елді мекен бар. Урбанизация деңгейі шамамен 61-62%-ды құрайды.</p>\n<svg height=\"220\" viewbox=\"0 0 700 220\" width=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n<rect fill=\"#0f172a\" height=\"220\" rx=\"12\" width=\"700\"></rect>\n<text fill=\"#38bdf8\" font-size=\"16\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"28\">Урбанизация және Қазақстанның ірі қалалары</text>\n<rect fill=\"#1e293b\" height=\"120\" rx=\"8\" stroke=\"#3b82f6\" stroke-width=\"1.5\" width=\"180\" x=\"50\" y=\"60\"></rect>\n<text fill=\"#38bdf8\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"140\" y=\"85\">Алматы</text>\n<text fill=\"#f8fafc\" font-size=\"12\" text-anchor=\"middle\" x=\"140\" y=\"110\">&gt; 2.2 млн адам</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"140\" y=\"135\">Оңтүстік астана</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"140\" y=\"155\">Қаржы, ғылым орталығы</text>\n<rect fill=\"#1e293b\" height=\"120\" rx=\"8\" stroke=\"#10b981\" stroke-width=\"1.5\" width=\"180\" x=\"260\" y=\"60\"></rect>\n<text fill=\"#34d399\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"85\">Астана</text>\n<text fill=\"#f8fafc\" font-size=\"12\" text-anchor=\"middle\" x=\"350\" y=\"110\">&gt; 1.4 млн адам</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"350\" y=\"135\">Бас қала, саяси орталық</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"350\" y=\"155\">Ең жылдам өсу қарқыны</text>\n<rect fill=\"#1e293b\" height=\"120\" rx=\"8\" stroke=\"#f59e0b\" stroke-width=\"1.5\" width=\"180\" x=\"470\" y=\"60\"></rect>\n<text fill=\"#fbbf24\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"560\" y=\"85\">Шымкент</text>\n<text fill=\"#f8fafc\" font-size=\"12\" text-anchor=\"middle\" x=\"560\" y=\"110\">&gt; 1.2 млн адам</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"560\" y=\"135\">3-ші миллионер қала (2018)</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"560\" y=\"155\">Оңтүстік индустрия түйіні</text>\n<text fill=\"#94a3b8\" font-size=\"12\" text-anchor=\"middle\" x=\"350\" y=\"202\">Республикада ресми 87 қала бар | Урбанизация деңгейі: ~61-62%</text>\n</svg>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Қазақстанда 3 республикалық маңызы бар миллионер қала бар:</p>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Алматы</b> — 2,2 миллионнан астам халқы бар мәдени, ғылыми әрі қаржылық орталық;</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Астана</b> — 1,4 миллион халқы бар бас қала, елдің әкімшілік-саяси жүрегі;</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Шымкент</b> — 2018 жылы 1 миллиондық межеге жеткен оңтүстік индустриялық орталық.</li>\n</ul>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>3. Халықтың көші-қоны (Миграция)</span></h4>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Халықтың бір аумақтан екінші аумаққа қоныс аударуы <b class=\"text-cyan-300 font-bold\">көші-қон (миграция)</b> деп аталады. Мемлекетке басқа елден көшіп келушілерді <i class=\"text-slate-300\">иммигранттар</i>, ал елден тысқары көшіп кетушілерді <i class=\"text-slate-300\">эмигранттар</i> дейді.</p>\n<svg height=\"220\" viewbox=\"0 0 700 220\" width=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n<rect fill=\"#0f172a\" height=\"220\" rx=\"12\" width=\"700\"></rect>\n<text fill=\"#38bdf8\" font-size=\"16\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"28\">Миграция (Көші-қон) және Миграция сальдосы</text>\n<rect fill=\"#1e293b\" height=\"70\" rx=\"8\" stroke=\"#3b82f6\" stroke-width=\"1.5\" width=\"260\" x=\"50\" y=\"55\"></rect>\n<text fill=\"#38bdf8\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"180\" y=\"80\">Иммиграция (Келгендер)</text>\n<text fill=\"#cbd5e1\" font-size=\"12\" text-anchor=\"middle\" x=\"180\" y=\"105\">Қандастар (оралмандар) елге оралуы</text>\n<rect fill=\"#1e293b\" height=\"70\" rx=\"8\" stroke=\"#ef4444\" stroke-width=\"1.5\" width=\"260\" x=\"390\" y=\"55\"></rect>\n<text fill=\"#f87171\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"520\" y=\"80\">Эмиграция (Кеткендер)</text>\n<text fill=\"#cbd5e1\" font-size=\"12\" text-anchor=\"middle\" x=\"520\" y=\"105\">Басқа елге тұрақты көшушілер</text>\n<rect fill=\"#0369a1\" height=\"55\" rx=\"8\" width=\"400\" x=\"150\" y=\"145\"></rect>\n<text fill=\"#ffffff\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"168\">Миграция сальдосы = Келгендер - Кеткендер</text>\n<text fill=\"#e0f2fe\" font-size=\"12\" text-anchor=\"middle\" x=\"350\" y=\"188\">Мысалы: 16 081 - 37 704 = -21 623 (Теріс сальдо)</text>\n</svg>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\"><b class=\"text-cyan-300 font-bold\">Миграция сальдосы</b> — белгілі бір уақыт ішінде келгендер мен кеткендердің айырмасы:</p>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">`Сальдо = Иммигранттар - Эмигранттар`.</p>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Егер кеткендер саны басым болса, сальдо теріс мәнге ие болады (мысалы, 2017 жылы 16081 келіп, 37704 кетіп, сальдо -21623 болды). Сондай-ақ тарихи отанына оралған қазақтарды <i class=\"text-slate-300\">қандастар (оралмандар)</i> деп атайды.</p>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>4. Жыныстық-жастық құрам мен демографиялық өсім</span></h4>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Қазақстан халқының орташа жасы шамамен 32 жас. Еліміз жас, прогрессивті демографиялық құрылымға ие.</p>\n<svg height=\"220\" viewbox=\"0 0 700 220\" width=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n<rect fill=\"#0f172a\" height=\"220\" rx=\"12\" width=\"700\"></rect>\n<text fill=\"#38bdf8\" font-size=\"16\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"28\">Қазақстанның демографиялық құрылымы мен халық пирамидасы</text>\n<rect fill=\"#1e293b\" height=\"135\" rx=\"8\" stroke=\"#10b981\" stroke-width=\"1.5\" width=\"180\" x=\"60\" y=\"55\"></rect>\n<text fill=\"#34d399\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"150\" y=\"80\">0 - 15 жас (Балалар)</text>\n<text fill=\"#f8fafc\" font-size=\"18\" font-weight=\"bold\" text-anchor=\"middle\" x=\"150\" y=\"105\">~ 30-31%</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"150\" y=\"130\">Жоғары туу көрсеткіші</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"150\" y=\"155\">Демографиялық өсім қарқыны</text>\n<rect fill=\"#1e293b\" height=\"135\" rx=\"8\" stroke=\"#3b82f6\" stroke-width=\"1.5\" width=\"180\" x=\"260\" y=\"55\"></rect>\n<text fill=\"#38bdf8\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"80\">16 - 63 жас (Еңбек жасы)</text>\n<text fill=\"#f8fafc\" font-size=\"18\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"105\">~ 58-60%</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"350\" y=\"130\">Еңбек ресурстарының негізі</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"350\" y=\"155\">Экономикалық белсенді халық</text>\n<rect fill=\"#1e293b\" height=\"135\" rx=\"8\" stroke=\"#a855f7\" stroke-width=\"1.5\" width=\"180\" x=\"460\" y=\"55\"></rect>\n<text fill=\"#c084fc\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"550\" y=\"80\">63+ жас (Зейнеткерлер)</text>\n<text fill=\"#f8fafc\" font-size=\"18\" font-weight=\"bold\" text-anchor=\"middle\" x=\"550\" y=\"105\">~ 9-11%</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"550\" y=\"130\">Өмір сүру ұзақтығы өсуде</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"550\" y=\"155\">Қартаю деңгейі әзірге төмен</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"350\" y=\"205\">Қазақстан — прогрессивті жастық құрылымға ие, «жас мемлекет» санатына жатады.</text>\n</svg>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Халықтың 30%-дан астамын 15 жасқа дейінгі жасөспірімдер мен балалар құрайды. Оңтүстік және батыс облыстарда (Маңғыстау, Түркістан, Жамбыл) табиғи өсім қарқыны өте жоғары.</p>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>5. Еңбек ресурстары және жұмыспен қамту</span></h4>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Еңбекке қабілетті жастағы (16-63 жас) және жұмыс істеуге қабілетті бүкіл халық жиынтығы <b class=\"text-cyan-300 font-bold\">еңбек ресурстары</b> деп аталады.</p>\n<svg height=\"220\" viewbox=\"0 0 700 220\" width=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n<rect fill=\"#0f172a\" height=\"220\" rx=\"12\" width=\"700\"></rect>\n<text fill=\"#38bdf8\" font-size=\"16\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"28\">Еңбек ресурстары және Экономикалық белсенді халық</text>\n<rect fill=\"#0369a1\" height=\"40\" rx=\"6\" width=\"620\" x=\"40\" y=\"55\"></rect>\n<text fill=\"#ffffff\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"80\">Қазақстанның жалпы еңбек ресурстары (~9.2 - 9.5 млн адам)</text>\n<rect fill=\"#1e293b\" height=\"50\" rx=\"6\" stroke=\"#10b981\" stroke-width=\"1.5\" width=\"460\" x=\"40\" y=\"110\"></rect>\n<text fill=\"#34d399\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"270\" y=\"132\">Жұмыспен қамтылғандар (~95%)</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"270\" y=\"150\">Жалдамалы жұмыскерлер (6.9 млн) + Өзін-өзі жұмыспен қамтығандар (2.1 млн)</text>\n<rect fill=\"#1e293b\" height=\"50\" rx=\"6\" stroke=\"#ef4444\" stroke-width=\"1.5\" width=\"140\" x=\"520\" y=\"110\"></rect>\n<text fill=\"#f87171\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"590\" y=\"132\">Жұмыссыздар</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"590\" y=\"150\">Деңгейі: ~4.7 - 4.9%</text>\n<text fill=\"#38bdf8\" font-size=\"12\" text-anchor=\"middle\" x=\"350\" y=\"195\">Қызмет көрсету саласы: ~67% | Өнеркәсіп пен құрылыс: ~21% | Ауыл шаруашылығы: ~12%</text>\n</svg>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Еліміздегі экономикалық белсенді халық саны 9 миллионнан асады. Жұмыспен қамтылғандардың басым бөлігі (67%) қызмет көрсету саласында, 21%-ы өнеркәсіп пен құрылыста, 12%-ы ауыл шаруашылығында еңбек етеді. Жұмыссыздық деңгейі тұрақты түрде 4,7-4,9% деңгейінде сақталып келеді.</p>", "theory_ru": "<p class=\"text-xs text-slate-300 leading-relaxed my-2\"># Урок 15: География населения Казахстана</p>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Население Казахстана характеризуется этническим многообразием, динамичным естественным приростом и высокими темпами урбанизации. В конце 2023 года численность населения страны превысила 20 миллионов человек.</p>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>1. Этнический состав и Ассамблея народа Казахстана</span></h4>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Казахстан — многонациональное светское государство. Доля казахов стабильно возрастает и превышает 70%, формируя государственное ядро. В стране проживает более 130 этносов. В целях укрепления межнационального согласия 1 марта 1995 года была образована <b class=\"text-cyan-300 font-bold\">Ассамблея народа Казахстана (АНК)</b>.</p>\n<svg height=\"220\" viewbox=\"0 0 700 220\" width=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n<rect fill=\"#0f172a\" height=\"220\" rx=\"12\" width=\"700\"></rect>\n<text fill=\"#38bdf8\" font-size=\"16\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"28\">Қазақстан халқының этностық құрамы мен ҚХА (1995 ж.)</text>\n<rect fill=\"#0284c7\" height=\"32\" rx=\"6\" width=\"370\" x=\"40\" y=\"55\"></rect>\n<text fill=\"#ffffff\" font-size=\"13\" font-weight=\"bold\" x=\"50\" y=\"76\">Қазақтар: ~70% (ұлттық өзек, мемлекет құраушы)</text>\n<rect fill=\"#3b82f6\" height=\"28\" rx=\"6\" width=\"120\" x=\"40\" y=\"95\"></rect>\n<text fill=\"#ffffff\" font-size=\"12\" x=\"50\" y=\"114\">Орыстар: ~15%</text>\n<rect fill=\"#8b5cf6\" height=\"26\" rx=\"6\" width=\"60\" x=\"40\" y=\"130\"></rect>\n<text fill=\"#ffffff\" font-size=\"11\" x=\"50\" y=\"148\">Өзбектер: ~3.3%</text>\n<rect fill=\"#ec4899\" height=\"24\" rx=\"6\" width=\"50\" x=\"40\" y=\"162\"></rect>\n<text fill=\"#ffffff\" font-size=\"11\" x=\"50\" y=\"179\">Украин, ұйғыр, т.б.</text>\n<rect fill=\"#1e293b\" height=\"135\" rx=\"8\" stroke=\"#38bdf8\" stroke-width=\"1.5\" width=\"220\" x=\"450\" y=\"55\"></rect>\n<text fill=\"#38bdf8\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"560\" y=\"80\">Қазақстан халқы Ассамблеясы</text>\n<text fill=\"#f8fafc\" font-size=\"12\" text-anchor=\"middle\" x=\"560\" y=\"105\">Құрылған күні: 1995 ж. 1 наурыз</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"560\" y=\"125\">1 наурыз — Алғыс айту күні</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"560\" y=\"150\">130-дан астам этнос татулығы</text>\n<text fill=\"#34d399\" font-size=\"11\" text-anchor=\"middle\" x=\"560\" y=\"170\">Діни құрам: Ислам ~70.2%, Христ. ~26%</text>\n</svg>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Среди верующих ислам суннитского толка исповедуют свыше 70,2% жителей, христианство — около 26% (православие, а также католицизм среди поляков и немцев). Часть этноса, проживающая за пределами исторической родины, называется <i class=\"text-slate-300\">диаспорой</i>.</p>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>2. Урбанизация и города Казахстана</span></h4>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">В стране насчитывается 87 городов. Уровень урбанизации составляет около 61-62%.</p>\n<svg height=\"220\" viewbox=\"0 0 700 220\" width=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n<rect fill=\"#0f172a\" height=\"220\" rx=\"12\" width=\"700\"></rect>\n<text fill=\"#38bdf8\" font-size=\"16\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"28\">Урбанизация және Қазақстанның ірі қалалары</text>\n<rect fill=\"#1e293b\" height=\"120\" rx=\"8\" stroke=\"#3b82f6\" stroke-width=\"1.5\" width=\"180\" x=\"50\" y=\"60\"></rect>\n<text fill=\"#38bdf8\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"140\" y=\"85\">Алматы</text>\n<text fill=\"#f8fafc\" font-size=\"12\" text-anchor=\"middle\" x=\"140\" y=\"110\">&gt; 2.2 млн адам</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"140\" y=\"135\">Оңтүстік астана</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"140\" y=\"155\">Қаржы, ғылым орталығы</text>\n<rect fill=\"#1e293b\" height=\"120\" rx=\"8\" stroke=\"#10b981\" stroke-width=\"1.5\" width=\"180\" x=\"260\" y=\"60\"></rect>\n<text fill=\"#34d399\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"85\">Астана</text>\n<text fill=\"#f8fafc\" font-size=\"12\" text-anchor=\"middle\" x=\"350\" y=\"110\">&gt; 1.4 млн адам</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"350\" y=\"135\">Бас қала, саяси орталық</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"350\" y=\"155\">Ең жылдам өсу қарқыны</text>\n<rect fill=\"#1e293b\" height=\"120\" rx=\"8\" stroke=\"#f59e0b\" stroke-width=\"1.5\" width=\"180\" x=\"470\" y=\"60\"></rect>\n<text fill=\"#fbbf24\" font-size=\"14\" font-weight=\"bold\" text-anchor=\"middle\" x=\"560\" y=\"85\">Шымкент</text>\n<text fill=\"#f8fafc\" font-size=\"12\" text-anchor=\"middle\" x=\"560\" y=\"110\">&gt; 1.2 млн адам</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"560\" y=\"135\">3-ші миллионер қала (2018)</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"560\" y=\"155\">Оңтүстік индустрия түйіні</text>\n<text fill=\"#94a3b8\" font-size=\"12\" text-anchor=\"middle\" x=\"350\" y=\"202\">Республикада ресми 87 қала бар | Урбанизация деңгейі: ~61-62%</text>\n</svg>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">В республике сформировались 3 города-миллионера республиканского значения:</p>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Алматы</b> (&gt; 2,2 млн чел.) — крупнейший финансовый, научный и культурный центр;</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Астана</b> (&gt; 1,4 млн чел.) — столица государства, административно-политический центр;</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Шымкент</b> (&gt; 1,2 млн чел.) — третий мегаполис (статус получен в 2018 году), промышленный узел юга.</li>\n</ul>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>3. Миграция населения и миграционное сальдо</span></h4>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Перемещение населения с изменением постоянного места жительства называется <b class=\"text-cyan-300 font-bold\">миграцией</b>. Въезжающие в страну — <i class=\"text-slate-300\">иммигранты</i>, выезжающие — <i class=\"text-slate-300\">эмигранты</i>.</p>\n<svg height=\"220\" viewbox=\"0 0 700 220\" width=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n<rect fill=\"#0f172a\" height=\"220\" rx=\"12\" width=\"700\"></rect>\n<text fill=\"#38bdf8\" font-size=\"16\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"28\">Миграция (Көші-қон) және Миграция сальдосы</text>\n<rect fill=\"#1e293b\" height=\"70\" rx=\"8\" stroke=\"#3b82f6\" stroke-width=\"1.5\" width=\"260\" x=\"50\" y=\"55\"></rect>\n<text fill=\"#38bdf8\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"180\" y=\"80\">Иммиграция (Келгендер)</text>\n<text fill=\"#cbd5e1\" font-size=\"12\" text-anchor=\"middle\" x=\"180\" y=\"105\">Қандастар (оралмандар) елге оралуы</text>\n<rect fill=\"#1e293b\" height=\"70\" rx=\"8\" stroke=\"#ef4444\" stroke-width=\"1.5\" width=\"260\" x=\"390\" y=\"55\"></rect>\n<text fill=\"#f87171\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"520\" y=\"80\">Эмиграция (Кеткендер)</text>\n<text fill=\"#cbd5e1\" font-size=\"12\" text-anchor=\"middle\" x=\"520\" y=\"105\">Басқа елге тұрақты көшушілер</text>\n<rect fill=\"#0369a1\" height=\"55\" rx=\"8\" width=\"400\" x=\"150\" y=\"145\"></rect>\n<text fill=\"#ffffff\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"168\">Миграция сальдосы = Келгендер - Кеткендер</text>\n<text fill=\"#e0f2fe\" font-size=\"12\" text-anchor=\"middle\" x=\"350\" y=\"188\">Мысалы: 16 081 - 37 704 = -21 623 (Теріс сальдо)</text>\n</svg>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\"><b class=\"text-cyan-300 font-bold\">Сальдо миграции</b> вычисляется как разница между числом прибывших и выбывших:</p>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">`Сальдо = Прибывшие - Выбывшие`.</p>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">При преобладании эмиграции сальдо отрицательное. Этнические казахи, возвращающиеся на историческую родину, наделяются статусом <i class=\"text-slate-300\">кандасов (оралманов)</i>.</p>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>4. Половозрастная структура и естественный прирост</span></h4>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Казахстан относится к странам с молодым, растущим населением: средний возраст составляет около 32 лет.</p>\n<svg height=\"220\" viewbox=\"0 0 700 220\" width=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n<rect fill=\"#0f172a\" height=\"220\" rx=\"12\" width=\"700\"></rect>\n<text fill=\"#38bdf8\" font-size=\"16\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"28\">Қазақстанның демографиялық құрылымы мен халық пирамидасы</text>\n<rect fill=\"#1e293b\" height=\"135\" rx=\"8\" stroke=\"#10b981\" stroke-width=\"1.5\" width=\"180\" x=\"60\" y=\"55\"></rect>\n<text fill=\"#34d399\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"150\" y=\"80\">0 - 15 жас (Балалар)</text>\n<text fill=\"#f8fafc\" font-size=\"18\" font-weight=\"bold\" text-anchor=\"middle\" x=\"150\" y=\"105\">~ 30-31%</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"150\" y=\"130\">Жоғары туу көрсеткіші</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"150\" y=\"155\">Демографиялық өсім қарқыны</text>\n<rect fill=\"#1e293b\" height=\"135\" rx=\"8\" stroke=\"#3b82f6\" stroke-width=\"1.5\" width=\"180\" x=\"260\" y=\"55\"></rect>\n<text fill=\"#38bdf8\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"80\">16 - 63 жас (Еңбек жасы)</text>\n<text fill=\"#f8fafc\" font-size=\"18\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"105\">~ 58-60%</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"350\" y=\"130\">Еңбек ресурстарының негізі</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"350\" y=\"155\">Экономикалық белсенді халық</text>\n<rect fill=\"#1e293b\" height=\"135\" rx=\"8\" stroke=\"#a855f7\" stroke-width=\"1.5\" width=\"180\" x=\"460\" y=\"55\"></rect>\n<text fill=\"#c084fc\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"550\" y=\"80\">63+ жас (Зейнеткерлер)</text>\n<text fill=\"#f8fafc\" font-size=\"18\" font-weight=\"bold\" text-anchor=\"middle\" x=\"550\" y=\"105\">~ 9-11%</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"550\" y=\"130\">Өмір сүру ұзақтығы өсуде</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"550\" y=\"155\">Қартаю деңгейі әзірге төмен</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"350\" y=\"205\">Қазақстан — прогрессивті жастық құрылымға ие, «жас мемлекет» санатына жатады.</text>\n</svg>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Доля детей и подростков (до 15 лет) превышает 30-31%, что обеспечивает стабильный демографический потенциал. Наиболее высокие показатели рождаемости и прироста фиксируются в Туркестанской, Мангистауской и Кызылординской областях.</p>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>5. Трудовые ресурсы и структура занятости</span></h4>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Совокупность людей в трудоспособном возрасте, обладающих физическими и интеллектуальными способностями к труду, образует <b class=\"text-cyan-300 font-bold\">трудовые ресурсы</b>.</p>\n<svg height=\"220\" viewbox=\"0 0 700 220\" width=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n<rect fill=\"#0f172a\" height=\"220\" rx=\"12\" width=\"700\"></rect>\n<text fill=\"#38bdf8\" font-size=\"16\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"28\">Еңбек ресурстары және Экономикалық белсенді халық</text>\n<rect fill=\"#0369a1\" height=\"40\" rx=\"6\" width=\"620\" x=\"40\" y=\"55\"></rect>\n<text fill=\"#ffffff\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"80\">Қазақстанның жалпы еңбек ресурстары (~9.2 - 9.5 млн адам)</text>\n<rect fill=\"#1e293b\" height=\"50\" rx=\"6\" stroke=\"#10b981\" stroke-width=\"1.5\" width=\"460\" x=\"40\" y=\"110\"></rect>\n<text fill=\"#34d399\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"270\" y=\"132\">Жұмыспен қамтылғандар (~95%)</text>\n<text fill=\"#94a3b8\" font-size=\"11\" text-anchor=\"middle\" x=\"270\" y=\"150\">Жалдамалы жұмыскерлер (6.9 млн) + Өзін-өзі жұмыспен қамтығандар (2.1 млн)</text>\n<rect fill=\"#1e293b\" height=\"50\" rx=\"6\" stroke=\"#ef4444\" stroke-width=\"1.5\" width=\"140\" x=\"520\" y=\"110\"></rect>\n<text fill=\"#f87171\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"590\" y=\"132\">Жұмыссыздар</text>\n<text fill=\"#cbd5e1\" font-size=\"11\" text-anchor=\"middle\" x=\"590\" y=\"150\">Деңгейі: ~4.7 - 4.9%</text>\n<text fill=\"#38bdf8\" font-size=\"12\" text-anchor=\"middle\" x=\"350\" y=\"195\">Қызмет көрсету саласы: ~67% | Өнеркәсіп пен құрылыс: ~21% | Ауыл шаруашылығы: ~12%</text>\n</svg>\n<p class=\"text-xs text-slate-300 leading-relaxed my-2\">Численность экономически активного населения превышает 9 млн человек. В третичном секторе (сфере услуг) занято около 67% работников, во вторичном (промышленность и строительство) — 21%, в первичном (сельское хозяйство) — 12%. Уровень безработицы удерживается на планке 4,7-4,9%.</p>", "test": {"passingScore": 80, "questions": [{"id": 1, "q_kz": "Қазақстан халқы Ассамблеясы құрылған уақытты анықтаңыз:", "q_ru": "Укажите дату создания Ассамблеи народа Казахстана:", "options_kz": ["1991 ж. 16 желтоқсан", "1993 ж. 28 қаңтар", "1995 ж. 1 наурыз", "1998 ж. 10 маусым"], "options_ru": ["16 декабря 1991 г.", "28 января 1993 г.", "1 марта 1995 г.", "10 июня 1998 г."], "answer": 2, "exp_kz": "Қазақстан халқы Ассамблеясы этносаралық келісім мен толеранттылықты сақтау мақсатында 1995 жылы 1 наурызда құрылды (қазір бұл күн — Алғыс айту күні).", "exp_ru": "Ассамблея народа Казахстана создана 1 марта 1995 года для укрепления мира и межнационального согласия (ныне День благодарности)."}, {"id": 2, "q_kz": "Ел халқындағы қазақтардың үлесін көрсетіңіз (статистика бойынша шамамен):", "q_ru": "Укажите примерную долю казахов в общей численности населения страны:", "options_kz": ["52%", "67% (қазір 70%-дан астам)", "45%", "85%"], "options_ru": ["52%", "67% (в настоящее время более 70%)", "45%", "85%"], "answer": 1, "exp_kz": "Ұлттық статистикалық мәліметтерге сәйкес, соңғы жылдары қазақтардың үлесі 67%-дан асып, бүгінде 70%-дан асты.", "exp_ru": "Согласно статистическим данным, доля казахов в населении республики превысила 67% и сегодня составляет более 70%."}, {"id": 3, "q_kz": "Тарихи отанынан тыс елде өмір сүріп жатқан ұлт бөлігі қалай аталады?", "q_ru": "Как называется часть этноса, проживающая за пределами своей исторической родины?", "options_kz": ["Ирредента", "Диаспора", "Метрополия", "Анклав"], "options_ru": ["Ирридента", "Диаспора", "Метрополия", "Анклав"], "answer": 1, "exp_kz": "Өздерінің тарихи отанынан тысқары басқа мемлекетте өмір сүретін халық бөлігі «диаспора» деп аталады.", "exp_ru": "Часть народа, проживающая за пределами страны своего исторического происхождения, называется диаспорой."}, {"id": 4, "q_kz": "2017 жылы Қазақстанға 16 081 адам келіп, 37 704 адам кетті. Миграция сальдосын есептеңіз:", "q_ru": "В 2017 году в Казахстан прибыл 16 081 человек, а выбыло 37 704. Рассчитайте сальдо миграции:", "options_kz": ["-21 623", "+21 623", "-53 785", "+53 785"], "options_ru": ["-21 623", "+21 623", "-53 785", "+53 785"], "answer": 0, "exp_kz": "Миграция сальдосы = Келгендер - Кеткендер. 16 081 - 37 704 = -21 623. Теріс сальдо көшіп кетушілер басым болғанын білдіреді.", "exp_ru": "Сальдо миграции = Прибывшие - Выбывшие = 16 081 - 37 704 = -21 623. Отрицательный знак отражает миграционную убыль."}, {"id": 5, "q_kz": "Қазақстан Республикасындағы ресми қалалар санын анықтаңыз:", "q_ru": "Определите число официальных городов в Республике Казахстан:", "options_kz": ["75", "102", "87", "65"], "options_ru": ["75", "102", "87", "65"], "answer": 2, "exp_kz": "Әкімшілік-аумақтық бөлініс бойынша Қазақстанда ресми түрде қала мәртебесіне ие 87 елді мекен бар.", "exp_ru": "Согласно административно-территориальному делению в Казахстане насчитывается 87 официальных городов."}, {"id": 6, "q_kz": "Халықтың жұмыс істеуге бүкіл қабілетті бөлігі қалай аталады?", "q_ru": "Как называется вся трудоспособная часть населения страны?", "options_kz": ["Еңбек ресурстары", "Демографиялық салмақ", "Эмигранттар тобы", "Әлеуметтік резерв"], "options_ru": ["Трудовые ресурсы", "Демографическая нагрузка", "Группа эмигрантов", "Социальный резерв"], "answer": 0, "exp_kz": "Еңбек ресурстары — бұл еңбекке жарамды жастағы, физикалық және ақыл-ой қабілеті бар барлық адамдар жиынтығы.", "exp_ru": "Трудовые ресурсы представляют собой трудоспособную часть населения, обладающую способностями к трудовой деятельности."}, {"id": 7, "q_kz": "Миграция (көші-қон) сальдосы дегеніміз не?", "q_ru": "Что представляет собой сальдо миграции?", "options_kz": ["Туғандар мен өлгендер айырмасы", "Иммигранттар мен эмигранттар саны арасындағы айырма", "Қала мен ауыл халқының қатынасы", "Жұмыссыздар мен жұмыспен қамтылғандар айырмасы"], "options_ru": ["Разница между родившимися и умершими", "Разница между числом иммигрантов и эмигрантов", "Соотношение городского и сельского населения", "Разница между безработными и занятыми"], "answer": 1, "exp_kz": "Миграция сальдосы — белгілі бір мерзім ішіндегі елге келгендер (иммигранттар) мен елден кеткендер (эмигранттар) санының айырмасы.", "exp_ru": "Сальдо миграции — это статистическая разница между числом въехавших в страну и выехавших из нее людей за период."}, {"id": 8, "q_kz": "Ел халқының ислам дінін ұстанатын бөлігінің шамамен үлесі:", "q_ru": "Укажите примерную долю населения Казахстана, исповедующего ислам:", "options_kz": ["50,5%", "85,2%", "70,2%", "60,0%"], "options_ru": ["50,5%", "85,2%", "70,2%", "60,0%"], "answer": 2, "exp_kz": "Ұлттық санақ мәліметтеріне сәйкес, Қазақстан халқының басым бөлігі, шамамен 70,2%-ы ислам дінін ұстанады.", "exp_ru": "По данным переписей населения, около 70,2% жителей Казахстана относят себя к последователям ислама (суннизма)."}, {"id": 9, "q_kz": "Мемлекет аумағынан басқа елге тұрақты тұру үшін көшіп кеткен тұрғын қалай аталады?", "q_ru": "Как называется житель, выехавший из своей страны на постоянное жительство в другое государство?", "options_kz": ["Иммигрант", "Репатриант", "Эмигрант", "Саяхатшы"], "options_ru": ["Иммигрант", "Репатриант", "Эмигрант", "Путешественник"], "answer": 2, "exp_kz": "Өз елінен тыс жерге көшіп кеткен адам «эмигрант» (кетуші) деп аталады.", "exp_ru": "Лицо, выезжающее из страны своего гражданства на постоянное место жительства в другое государство — эмигрант."}, {"id": 10, "q_kz": "Қазақстанда христиан дінінің католик бағытын дәстүрлі ұстанатын ұлт өкілдері:", "q_ru": "Представители каких этносов Казахстана традиционно исповедуют католицизм?", "options_kz": ["Поляктар, чехтар (немістердің бір бөлігі)", "Орыстар, белорустар", "Өзбектер, ұйғырлар", "Гректер, грузиндер"], "options_ru": ["Поляки, чехи (часть немцев)", "Русские, белорусы", "Узбеки, уйгуры", "Греки, грузины"], "answer": 0, "exp_kz": "Қазақстандағы православие дінін негізінен славян халықтары, ал католик ағымын поляктар, чехтар мен кейбір немістер ұстанады.", "exp_ru": "Большинство христиан в РК — православные. Католическое вероисповедание традиционно сохраняют поляки, чехи и часть немцев."}]}, "pdf_kz": "https://drive.google.com/file/d/1GYsZakz4p-rWUZbYVrt43uxuRuWG9VDQ/view?usp=sharing", "pdf_ru": "https://drive.google.com/file/d/1Gs_MhZawOZWCoMutWY-isJOHJsk59Ek7/view?usp=drive_link", "blooket": "https://dashboard.blooket.com/set/6a84d95f754a4f54132e2160"};
+    const currentLang = 'kz';
+    let userTestAnswers = {};
+    let isTestSubmitted = false;
+
+    // Render Test Questions
+    function renderTestQuestions() {
+      const container = document.getElementById('testQuestionsList');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const testObj = lessonData.test;
+      if (!testObj || !testObj.questions || testObj.questions.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-400">Тест готовится / Тест дайындалуда.</p>';
+        return;
+      }
+
+      const isRu = (currentLang === 'ru');
+      const letters = ['A', 'B', 'C', 'D', 'E'];
+
+      testObj.questions.forEach((q, idx) => {
+        const qCard = document.createElement('div');
+        qCard.className = 'p-5 rounded-2xl bg-space-850 border border-slate-800 space-y-3';
+
+        const qPrompt = isRu ? (q.q_ru || q.q_kz) : q.q_kz;
+        const options = isRu ? (q.options_ru || q.options_kz) : q.options_kz;
+        const exp = isRu ? (q.exp_ru || q.exp_kz) : q.exp_kz;
+
+        qCard.innerHTML = `
+          <div class="flex items-center justify-between gap-2 border-b border-slate-800/80 pb-2">
+            <span class="text-xs font-bold text-slate-400 uppercase">
+              ${isRu ? 'Вопрос ' + (idx + 1) : 'Сұрақ ' + (idx + 1)}
+            </span>
+            <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-bold">1 балл</span>
+          </div>
+          <p class="text-xs sm:text-sm font-semibold text-slate-100 leading-relaxed">${qPrompt}</p>
+        `;
+
+        const optContainer = document.createElement('div');
+        optContainer.className = 'space-y-2 pt-1';
+
+        const selectedAnswer = userTestAnswers[q.id];
+
+        options.forEach((optText, optIdx) => {
+          const isSelected = selectedAnswer === optIdx;
+          const isCorrect = q.answer === optIdx;
+
+          const optDiv = document.createElement('div');
+          optDiv.className = 'p-3 rounded-xl border text-xs font-medium cursor-pointer transition flex items-center space-x-2.5 ';
+
+          if (isTestSubmitted) {
+            if (isCorrect) {
+              optDiv.className += 'bg-emerald-500/15 border-emerald-500 text-emerald-200 font-bold';
+            } else if (isSelected) {
+              optDiv.className += 'bg-rose-500/15 border-rose-500 text-rose-200';
+            } else {
+              optDiv.className += 'bg-space-900/50 border-slate-800 text-slate-500';
+            }
+          } else {
+            if (isSelected) {
+              optDiv.className += 'bg-cyan-500/15 border-cyan-500 text-cyan-200 font-bold';
+            } else {
+              optDiv.className += 'bg-space-900 hover:bg-space-800 border-slate-800 hover:border-slate-700 text-slate-300';
+            }
+          }
+
+          const badge = document.createElement('span');
+          badge.className = 'w-5 h-5 rounded-md text-[10px] font-black flex items-center justify-center shrink-0 ' +
+            (isSelected ? 'bg-cyan-500 text-space-950' : 'bg-space-850 text-slate-400 border border-slate-700');
+          badge.textContent = letters[optIdx] || String(optIdx + 1);
+          optDiv.appendChild(badge);
+
+          const txt = document.createElement('span');
+          txt.className = 'flex-1';
+          txt.textContent = optText;
+          optDiv.appendChild(txt);
+
+          optDiv.onclick = () => {
+            if (isTestSubmitted) return;
+            userTestAnswers[q.id] = optIdx;
+            renderTestQuestions();
+          };
+
+          optContainer.appendChild(optDiv);
+        });
+
+        qCard.appendChild(optContainer);
+
+        // Explanation Box after submission
+        if (isTestSubmitted) {
+          const expBox = document.createElement('div');
+          expBox.className = 'p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-xs text-cyan-200 space-y-1';
+          expBox.innerHTML = `
+            <span class="font-bold text-cyan-300 block">💡 ${isRu ? 'Пояснение:' : 'Түсіндірме:'}</span>
+            <p class="text-slate-300 leading-relaxed">${exp || (isRu ? 'Авторское пояснение к вопросу.' : 'Сұраққа арналған түсіндірме.')}</p>
+          `;
+          qCard.appendChild(expBox);
+        }
+
+        container.appendChild(qCard);
+      });
+    }
+
+    function submitLessonTest() {
+      const testObj = lessonData.test;
+      if (!testObj || !testObj.questions) return;
+
+      const answeredCount = Object.keys(userTestAnswers).length;
+      const total = testObj.questions.length;
+      const isRu = (currentLang === 'ru');
+
+      if (answeredCount < total) {
+        const msg = isRu 
+          ? `Вы ответили только на ${answeredCount} из ${total} вопросов. Завершить тест?` 
+          : `Сіз ${total} сұрақтың ${answeredCount}-не жауап бердіңіз. Тестті аяқтайсыз ба?`;
+        if (!confirm(msg)) return;
+      }
+
+      isTestSubmitted = true;
+      let correct = 0;
+
+      testObj.questions.forEach(q => {
+        if (userTestAnswers[q.id] === q.answer) {
+          correct++;
+        }
+      });
+
+      const percentage = Math.round((correct / total) * 100);
+      const isPassed = percentage >= 80;
+
+      // Update badges & UI
+      const scoreBadge = document.getElementById('testScoreBadge');
+      if (scoreBadge) {
+        scoreBadge.classList.remove('hidden');
+        scoreBadge.textContent = `${correct} / ${total} (${percentage}%)`;
+        scoreBadge.className = 'px-3 py-1 rounded-xl text-xs font-bold font-mono border ' +
+          (isPassed ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-rose-500/20 text-rose-300 border-rose-500/40');
+      }
+
+      const info = document.getElementById('testProgressInfo');
+      if (info) {
+        info.textContent = isPassed 
+          ? (isRu ? `🎉 Поздравляем! Вы сдали тест на ${percentage}% (+30 XP)` : `🎉 Құттықтаймыз! Сіз тестті ${percentage}%-ға тапсырдыңыз (+30 XP)`)
+          : (isRu ? `Результат: ${percentage}%. Для зачета требуется 80%. Попробуйте еще раз.` : `Нәтиже: ${percentage}%. Өту үшін 80% қажет. Қайта тапсырып көріңіз.`);
+      }
+
+      document.getElementById('btnSubmitTest').classList.add('hidden');
+      document.getElementById('btnResetTest').classList.remove('hidden');
+
+      // Save to localStorage
+      try {
+        let scores = JSON.parse(localStorage.getItem('geotany_lesson_scores') || '{}');
+        scores[lessonData.id] = percentage;
+        localStorage.setItem('geotany_lesson_scores', JSON.stringify(scores));
+
+        if (isPassed) {
+          let completed = JSON.parse(localStorage.getItem('geotany_completed_lessons') || '[]');
+          if (!completed.includes(lessonData.id)) {
+            completed.push(lessonData.id);
+            localStorage.setItem('geotany_completed_lessons', JSON.stringify(completed));
+          }
+          let curXp = parseInt(localStorage.getItem('geotany_user_xp') || '0', 10);
+          curXp += 30;
+          localStorage.setItem('geotany_user_xp', curXp.toString());
+        }
+      } catch(e) {}
+
+      renderTestQuestions();
+      updateCompleteButtons();
+    }
+
+    function resetLessonTest() {
+      userTestAnswers = {};
+      isTestSubmitted = false;
+      document.getElementById('testScoreBadge').classList.add('hidden');
+      document.getElementById('btnSubmitTest').classList.remove('hidden');
+      document.getElementById('btnResetTest').classList.add('hidden');
+      document.getElementById('testProgressInfo').textContent = (currentLang === 'ru') 
+        ? 'Ответьте на все вопросы и проверьте свои знания.' 
+        : 'Барлық сұрақтарға жауап беріп, өзіңізді тексеріңіз.';
+      renderTestQuestions();
+    }
+
+    // Toggle Lesson Complete Status
+    function toggleLessonComplete() {
+      let completed = [];
+      try {
+        completed = JSON.parse(localStorage.getItem('geotany_completed_lessons') || '[]');
+      } catch(e) {}
+
+      const isDone = completed.includes(lessonData.id);
+      let curXp = parseInt(localStorage.getItem('geotany_user_xp') || '0', 10);
+
+      if (isDone) {
+        completed = completed.filter(id => id !== lessonData.id);
+        curXp = Math.max(0, curXp - 30);
+      } else {
+        completed.push(lessonData.id);
+        curXp += 30;
+      }
+
+      try {
+        localStorage.setItem('geotany_completed_lessons', JSON.stringify(completed));
+        localStorage.setItem('geotany_user_xp', curXp.toString());
+      } catch(e) {}
+
+      updateCompleteButtons();
+    }
+
+    function updateCompleteButtons() {
+      let completed = [];
+      try {
+        completed = JSON.parse(localStorage.getItem('geotany_completed_lessons') || '[]');
+      } catch(e) {}
+
+      const isDone = completed.includes(lessonData.id);
+      const isRu = (currentLang === 'ru');
+
+      const banner = document.getElementById('lessonCompletedBanner');
+      if (banner) banner.classList.toggle('hidden', !isDone);
+
+      const headerBtn = document.getElementById('btnHeaderComplete');
+      const headerIcon = document.getElementById('headerCheckIcon');
+      const headerText = document.getElementById('headerCompleteText');
+
+      if (headerBtn) {
+        if (isDone) {
+          headerBtn.className = 'px-3 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold transition flex items-center space-x-1.5';
+          if (headerIcon) headerIcon.textContent = '✓';
+          if (headerText) headerText.textContent = isRu ? 'Прочитано' : 'Оқылды';
+        } else {
+          headerBtn.className = 'px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-emerald-400 text-xs font-bold transition flex items-center space-x-1.5';
+          if (headerIcon) headerIcon.textContent = '○';
+          if (headerText) headerText.textContent = isRu ? 'Отметить' : 'Белгілеу';
+        }
+      }
+
+      const bottomLbl = document.getElementById('lblBottomComplete');
+      if (bottomLbl) {
+        bottomLbl.textContent = isDone 
+          ? (isRu ? '✓ Прочитано (Нажмите, чтобы отменить)' : '✓ Оқылды (Өшіру үшін басыңыз)')
+          : (isRu ? 'Отметить как прочитанное (+30 XP)' : 'Сабақты оқылды деп белгілеу (+30 XP)');
+      }
+    }
+
+    // Boot
+    window.addEventListener('DOMContentLoaded', () => {
+      renderTestQuestions();
+      updateCompleteButtons();
+    });
+  </script>
+
+</body>
+</html>

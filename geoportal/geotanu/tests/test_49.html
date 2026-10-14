@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="kk" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ҰБТ География — 49-нұсқа | GEOTANY</title>
+
+  <!-- AUTH GUARD: RESTRICT DIRECT ACCESS WITHOUT VALID SESSION -->
+  <style id="authCloak">body { display: none !important; }</style>
+  <script>
+    (function() {
+      try {
+        var isAdmin = localStorage.getItem('geotany_admin_auth') === 'true';
+        var sessionStr = localStorage.getItem('geotany_user_session');
+        var isAuthorized = isAdmin;
+        if (!isAuthorized && sessionStr) {
+          var s = JSON.parse(sessionStr);
+          if (s && s.email && (s.courseCode || s.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        var profileStr = localStorage.getItem('geotany_user_profile');
+        if (!isAuthorized && profileStr) {
+          var p = JSON.parse(profileStr);
+          if (p && p.email && (p.courseCode || p.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        if (!isAuthorized) {
+          window.location.replace('../geotanu.html?error=unauthorized_course');
+          return;
+        }
+        var cloak = document.getElementById('authCloak');
+        if (cloak) cloak.remove();
+      } catch (e) {
+        window.location.replace('../geotanu.html?error=unauthorized_course');
+      }
+    })();
+  </script>
+
+  <!-- TAILWIND CSS & FONTS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            space: {
+              800: '#1E293B',
+              850: '#151E2E',
+              900: '#0F172A',
+              950: '#0B0F19',
+            },
+            brand: {
+              400: '#34D399',
+              500: '#10B981',
+              600: '#059669',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0B0F19;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1E293B;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+    .glow-gold {
+      box-shadow: 0 0 25px -5px rgba(245, 158, 11, 0.25);
+    }
+    .glow-emerald {
+      box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.25);
+    }
+  </style>
+</head>
+<body class="bg-space-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-brand-500/30 selection:text-brand-400">
+
+  <!-- TOP APP BAR -->
+  <header class="sticky top-0 z-40 bg-space-950/90 backdrop-blur-xl border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+      
+      <!-- Left: Back Button & Title -->
+      <div class="flex items-center space-x-3">
+        <a id="btnBackToPlatform" href="../geotanu.html?lang=kz#section-testter_writing" class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 text-slate-300 hover:text-white border border-slate-700/80 text-xs sm:text-sm font-bold transition shadow-sm">
+          <span>←</span>
+          <span id="navBackText" class="hidden sm:inline">Артқа</span>
+        </a>
+        <div class="h-6 w-px bg-slate-800 hidden sm:block"></div>
+        <div class="flex items-center space-x-2">
+          <span class="text-xs px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-400 font-extrabold border border-amber-500/20">
+            ҰБТ #49
+          </span>
+          <span id="navVariantTitle" class="text-sm font-bold text-slate-200 hidden md:inline truncate max-w-xs">
+            49-нұсқа: ҰБТ жаңа формат (30 сұрақ)
+          </span>
+        </div>
+      </div>
+
+      <!-- Center: Exam Timer (Visible in Exam mode) -->
+      <div id="examTimerWrapper" class="flex items-center space-x-2 bg-space-900 border border-slate-800 px-3 py-1.5 rounded-xl shadow-inner">
+        <span class="text-xs text-slate-400 font-medium hidden sm:inline" id="lblTimerText">Уақыт:</span>
+        <span class="text-amber-400 text-sm font-black tracking-wider font-mono" id="examTimer">45:00</span>
+      </div>
+
+      <!-- Right: Mode Switcher & Language Switcher -->
+      <div class="flex items-center space-x-2 sm:space-x-3">
+        
+        <!-- Mode Switcher -->
+        <div class="flex items-center bg-space-900 p-0.5 rounded-xl border border-slate-800 text-xs font-bold">
+          <button id="modeExamBtn" onclick="setMode('exam')" class="px-2.5 py-1 rounded-lg bg-amber-500 text-space-950 font-black transition shadow-sm">
+            <span>🎯</span>
+            <span class="hidden sm:inline ml-1" id="lblModeExam">Емтихан</span>
+          </button>
+          <button id="modeReviewBtn" onclick="setMode('review')" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition">
+            <span>💡</span>
+            <span class="hidden sm:inline ml-1" id="lblModeReview">Талдау</span>
+          </button>
+        </div>
+
+        <!-- Language Switcher -->
+        <div class="flex items-center bg-space-900 p-0.5 rounded-xl border border-slate-800 text-xs font-bold">
+          <button id="langKzBtn" onclick="setLang('kz')" class="px-2 py-1 rounded-lg bg-brand-500 text-space-950 font-black transition">
+            KZ
+          </button>
+          <button id="langRuBtn" onclick="setLang('ru')" class="px-2 py-1 rounded-lg text-slate-400 hover:text-white transition">
+            RU
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN WRAPPER -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
+
+    <!-- HERO META CARD -->
+    <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-space-900 via-space-850 to-space-900 border border-slate-800 shadow-xl relative overflow-hidden">
+      <!-- Glow decoration -->
+      <div class="absolute -right-20 -top-20 w-60 h-60 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-20 -bottom-20 w-60 h-60 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10 space-y-4">
+        
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <span class="px-3 py-1 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 font-extrabold text-xs tracking-wider uppercase">
+              ⚡ ҰБТ ТЕСТ СЫНАҒЫ • НҰСҚА №49
+            </span>
+            <span id="heroDepartmentBadge" class="px-3 py-1 rounded-xl bg-brand-500/10 border border-brand-500/30 text-brand-400 font-bold text-xs">
+              Қазақ бөлімі
+            </span>
+          </div>
+
+          <!-- Prev / Next Variant Nav -->
+          <div class="flex items-center space-x-2 text-xs font-bold">
+            <a href="test_48.html" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition flex items-center space-x-1"><span>←</span><span>Алдыңғы</span></a>
+            <span class="text-slate-500">|</span>
+            <a href="test_50.html" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition flex items-center space-x-1"><span>Келесі</span><span>→</span></a>
+          </div>
+        </div>
+
+        <div>
+          <h1 id="heroTitle" class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            49-нұсқа: ҰБТ жаңа формат (30 сұрақ)
+          </h1>
+          <p id="heroDesc" class="text-sm text-slate-300 mt-2 max-w-3xl leading-relaxed">
+            1–20 біртаңдаулы және 21–30 көптаңдаулы сұрақтар. ҰБТ 2025 жаңа форматы бойынша авто-бағалау және шешімдері.
+          </p>
+        </div>
+
+        <!-- Metrics Row -->
+        <div class="flex flex-wrap gap-2.5 pt-2 border-t border-slate-800/80">
+          <div class="px-3 py-1.5 rounded-xl bg-space-850 border border-slate-800 text-xs font-medium text-slate-300 flex items-center space-x-1.5">
+            <span>📝</span>
+            <span id="lblMetaQuestions">30 сұрақ (37 балл)</span>
+          </div>
+          <div class="px-3 py-1.5 rounded-xl bg-space-850 border border-slate-800 text-xs font-medium text-slate-300 flex items-center space-x-1.5">
+            <span>⏱️</span>
+            <span id="lblMetaTime">35 минут</span>
+          </div>
+          <div class="px-3 py-1.5 rounded-xl bg-space-850 border border-slate-800 text-xs font-medium text-slate-300 flex items-center space-x-1.5">
+            <span>🎯</span>
+            <span id="lblMetaPassing">Шекті балл: 70% (26 балл)</span>
+          </div>
+          <div class="px-3 py-1.5 rounded-xl bg-space-850 border border-slate-800 text-xs font-medium text-amber-400 flex items-center space-x-1.5">
+            <span>🏆</span>
+            <span id="lblMetaXp">Сыйлық: +80 XP</span>
+          </div>
+          <div class="px-3 py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-bold flex items-center space-x-1.5">
+            <span>⚡</span>
+            <span id="lblMetaOnline">100% Онлайн тест</span>
+          </div>
+        </div>
+
+        <!-- Previous Score Alert Banner if already attempted -->
+        <div id="prevScoreBanner" class="hidden p-3.5 rounded-2xl bg-brand-500/10 border border-brand-500/30 text-xs sm:text-sm text-brand-300 flex items-center justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <span>✅</span>
+            <span id="prevScoreText">Сіз бұл нұсқаны бұрын тапсырдыңыз.</span>
+          </div>
+          <button onclick="retakeExam()" class="px-3 py-1 rounded-xl bg-brand-500 text-space-950 font-black text-xs hover:bg-brand-400 transition">
+            Қайта тапсыру
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- MAIN TWO COLUMN LAYOUT: SIDEBAR JUMP MATRIX + QUESTIONS LIST -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+      <!-- LEFT / STICKY SIDEBAR: QUESTION JUMP MATRIX -->
+      <aside class="lg:col-span-4 xl:col-span-3 sticky top-20 z-30 space-y-4">
+        <div class="p-5 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-4">
+          
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-black uppercase tracking-wider text-slate-400" id="lblNavigatorTitle">
+              Сұрақтар навигаторы
+            </h3>
+            <span id="navProgressBadge" class="text-xs px-2 py-0.5 rounded-md bg-space-850 text-amber-400 font-bold border border-slate-700">
+              0 / 30
+            </span>
+          </div>
+
+          <!-- Progress Bar -->
+          <div class="w-full bg-space-850 h-2 rounded-full overflow-hidden border border-slate-800">
+            <div id="examProgressBar" class="h-full bg-gradient-to-r from-amber-500 to-brand-500 w-0 transition-all duration-300"></div>
+          </div>
+
+          <!-- Jump Matrix Grid -->
+          <div id="questionMatrix" class="grid grid-cols-5 sm:grid-cols-8 lg:grid-cols-5 gap-1.5 max-h-[50vh] overflow-y-auto pr-1">
+            <!-- Dynamically populated buttons -->
+          </div>
+
+          <!-- Action Buttons in Sidebar -->
+          <div class="pt-3 border-t border-slate-800/80 space-y-2">
+            <button id="btnFinishExam" onclick="confirmSubmitExam()" class="w-full py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-brand-500 hover:from-amber-400 hover:to-brand-400 text-space-950 font-black text-xs sm:text-sm shadow-lg shadow-amber-500/20 transition flex items-center justify-center space-x-2">
+              <span>🏁</span>
+              <span id="lblBtnFinishExam">Емтиханды аяқтау</span>
+            </button>
+            <button id="btnQuickReview" onclick="setMode('review')" class="w-full py-2.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-bold transition flex items-center justify-center space-x-1.5">
+              <span>💡</span>
+              <span id="lblBtnQuickReview">Талдауды ашу</span>
+            </button>
+          </div>
+
+        </div>
+      </aside>
+
+      <!-- RIGHT COLUMN: QUESTIONS LIST -->
+      <section class="lg:col-span-8 xl:col-span-9 space-y-5">
+        
+        <div id="questionsContainer" class="space-y-5">
+          <!-- Dynamically populated question cards -->
+        </div>
+
+        <!-- BOTTOM FINISH BAR -->
+        <div class="p-6 rounded-3xl bg-space-900 border border-slate-800 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>
+            <h4 class="text-sm font-bold text-white" id="lblBottomBarTitle">Барлық сұрақтарға жауап бердіңіз бе?</h4>
+            <p class="text-xs text-slate-400 mt-0.5" id="lblBottomBarDesc">Нәтижені растап, балл мен XP алу үшін емтиханды аяқтаңыз.</p>
+          </div>
+          <button onclick="confirmSubmitExam()" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-brand-500 hover:from-amber-400 hover:to-brand-400 text-space-950 font-black text-xs sm:text-sm shadow-md transition flex items-center justify-center space-x-2">
+            <span>🏁</span>
+            <span id="lblBottomBarBtn">Тестті аяқтау және тексеру</span>
+          </button>
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- RESULT & CELEBRATION MODAL -->
+  <div id="resultModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden">
+    <div class="bg-space-900 border border-slate-700 w-full max-w-lg rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden space-y-6">
+      
+      <canvas id="confettiCanvas" class="absolute inset-0 pointer-events-none z-10 w-full h-full"></canvas>
+
+      <div class="relative z-20 text-center space-y-3">
+        <div id="modalIcon" class="w-16 h-16 mx-auto rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-3xl">
+          🏆
+        </div>
+        <h3 id="modalTitle" class="text-2xl font-black text-white">
+          Сынақ аяқталды!
+        </h3>
+        <p id="modalSubtitle" class="text-xs text-slate-300">
+          Сіздің осы нұсқа бойынша ресми ҰБТ нәтижеңіз:
+        </p>
+      </div>
+
+      <!-- Score Box -->
+      <div class="relative z-20 p-5 rounded-2xl bg-space-850 border border-slate-800 text-center space-y-2">
+        <div class="text-4xl sm:text-5xl font-black text-amber-400 font-mono" id="modalScoreDisplay">
+          0 / 37
+        </div>
+        <div class="text-xs font-bold text-slate-400" id="modalPercentageDisplay">
+          0% • Нәтиже
+        </div>
+        <div id="modalStatusBadge" class="inline-block px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wide bg-brand-500/20 text-brand-400 border border-brand-500/30">
+          Өтті
+        </div>
+      </div>
+
+      <!-- Breakdown Grid -->
+      <div class="relative z-20 grid grid-cols-3 gap-2 text-center text-xs">
+        <div class="p-3 rounded-xl bg-space-950 border border-slate-800">
+          <div class="text-emerald-400 font-black text-base" id="modalCorrectCount">0</div>
+          <div class="text-slate-400 text-[10px] mt-0.5" id="lblModalCorrect">Дұрыс</div>
+        </div>
+        <div class="p-3 rounded-xl bg-space-950 border border-slate-800">
+          <div class="text-amber-400 font-black text-base" id="modalPartialCount">0</div>
+          <div class="text-slate-400 text-[10px] mt-0.5" id="lblModalPartial">Жартылай</div>
+        </div>
+        <div class="p-3 rounded-xl bg-space-950 border border-slate-800">
+          <div class="text-rose-400 font-black text-base" id="modalWrongCount">0</div>
+          <div class="text-slate-400 text-[10px] mt-0.5" id="lblModalWrong">Қате</div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="relative z-20 space-y-2">
+        <button onclick="closeModalAndShowReview()" class="w-full py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-space-950 font-black text-xs sm:text-sm shadow-md transition flex items-center justify-center space-x-2">
+          <span>🔍</span>
+          <span id="lblModalBtnReview">Қателерді және толық талдауды көру</span>
+        </button>
+        <button onclick="retakeExam()" class="w-full py-2.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-bold transition flex items-center justify-center space-x-2">
+          <span>🔄</span>
+          <span id="lblModalBtnRetake">Қайта тапсыру</span>
+        </button>
+        <a id="modalBackLink" href="../geotanu.html?lang=kz#section-testter_writing" class="w-full py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-slate-400 hover:text-white text-xs font-bold transition flex items-center justify-center space-x-2">
+          <span>📋</span>
+          <span id="lblModalBtnCatalog">Нұсқалар каталогына оралу</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SCRIPT ENGINE -->
+  <script>
+    const variantData = {"id": 49, "title": "49-нұсқа: ҰБТ жаңа формат (30 сұрақ)", "desc": "1–20 біртаңдаулы және 21–30 көптаңдаулы сұрақтар. ҰБТ 2025 жаңа форматы бойынша авто-бағалау және шешімдері.", "timeMinutes": 35, "passingScore": 21, "questions": [{"id": 1, "q": "Конституциялық монархиялы ел(-дер)ді анықтаңыз.", "isMulti": false, "options": ["Ұлыбритания, С) Швеция, F) Норвегия", "ОАР", "Сингапур", "Ресей"], "answer": 0, "explanation": "Дұрыс жауабы: A) Ұлыбритания, С) Швеция, F) Норвегия. Бұл елдерде король немесе патшайым бар, бірақ олардың билігі Конституциямен және Парламентпен шектелген. Мемлекетті премьер-министр басқарады.", "q_ru": "Конституциялық монархиялы ел(-дер)ді определите.", "options_ru": ["Великобритания, С) Швеция, F) Норвегия", "ЮАР", "Сингапур", "Россия"], "explanation_ru": "Дұрыс жауабы: A) Великобритания, С) Швеция, F) Норвегия. Бұл елдерде король немесе патшайым бар, бірақ олардың билігі Конституциямен және Парламентпен шектелген. Мемлекетті премьер-министр басқарады."}, {"id": 2, "q": "Суретке қарап, АДИ көрсеткішінің рейтингісінде көшбасшы ел(-дер)ді", "isMulti": false, "options": ["Норвегия, D) Швейцария, Е) Аустралия", "Үндістан", "Ресей", "Норвегия"], "answer": 0, "explanation": "Дұрыс жауабы: A) Норвегия, D) Швейцария, Е) Аустралия. Адам дамуы индексі (АДИ немесе ИЧР) өте жоғары (0,900-ден жоғары) елдер қатарына Солтүстік Еуропа елдері, Швейцария және Аустралия кіреді. Олар үнемі әлемдік рейтингте көш бастап тұрады.", "q_ru": "Суретке қарап, АДИ көрсеткішінің рейтингісінде көшбасшы ел(-дер)ді", "options_ru": ["Норвегия, D) Швейцария, Е) Австралия", "Индия", "Россия", "Норвегия"], "explanation_ru": "Дұрыс жауабы: A) Норвегия, D) Швейцария, Е) Австралия. Адам дамуы индексі (АДИ немесе ИЧР) өте жоғары (0,900-ден жоғары) елдер қатарына Солтүстік Еуропа елдері, Швейцария және Австралия кіреді. Олар үнемі әлемдік рейтингте көш бастап тұрады."}, {"id": 3, "q": "Халық саны 200 млн-нан асатын ел(-дер)ді анықтаңыз.", "isMulti": false, "options": ["Ұлыбритания", "Бразилия, F) Индонезия", "Индонезия", "Бразилия"], "answer": 1, "explanation": "Дұрыс жауабы: B) Бразилия, F) Индонезия. Әлемде халық саны 200 миллионнан асатын 7-8 қана мемлекет бар. Берілген нұсқалардың ішінде Индонезия (270 млн) және Бразилия (215 млн) осы тізімге кіреді. Ресейде ~144 млн адам тұрады.", "q_ru": "Халық саны 200 млн-нан асатын ел(-дер)ді определите.", "options_ru": ["Великобритания", "Бразилия, F) Индонезия", "Индонезия", "Бразилия"], "explanation_ru": "Дұрыс жауабы: B) Бразилия, F) Индонезия. Әлемде халық саны 200 миллионнан асатын 7-8 қана мемлекет бар. Берілген нұсқалардың ішінде Индонезия (270 млн) және Бразилия (215 млн) осы тізімге кіреді. Ресейде ~144 млн адам тұрады."}, {"id": 4, "q": "Ең ірі ислам мемлекетін анықтаңыз.", "isMulti": false, "options": ["Швеция", "Жапония", "Ұлыбритания", "Индонезия"], "answer": 3, "explanation": "Дұрыс жауабы: D) Индонезия. Индонезия — мұсылмандар саны бойынша дүниежүзіндегі ең ірі мемлекет (халқының басым бөлігі ислам дінін ұстанады).", "q_ru": "Ең ірі ислам мемлекетін определите.", "options_ru": ["Швеция", "Япония", "Великобритания", "Индонезия"], "explanation_ru": "Дұрыс жауабы: D) Индонезия. Индонезия — мұсылмандар саны бойынша дүниежүзіндегі ең ірі мемлекет (халқының басым бөлігі ислам дінін ұстанады)."}, {"id": 5, "q": "Неміс тілінде сөйлейтін ұлтты анықтаңыз.", "isMulti": false, "options": ["Қазбек", "Австриялықтар", "Кентау", "Норвегия"], "answer": 1, "explanation": "Дұрыс жауабы: B) Австриялықтар. Австрияның мемлекеттік және негізгі ауызекі тілі неміс тілі болып табылады. Қалғандары ағылшын тілді елдерге жатады.", "q_ru": "Неміс тілінде сөйлейтін ұлтты определите.", "options_ru": ["Казбек", "Австриялықтар", "Кентау", "Норвегия"], "explanation_ru": "Дұрыс жауабы: B) Австриялықтар. Австрияның мемлекеттік және негізгі ауызекі тілі неміс тілі болып табылады. Қалғандары ағылшын тілді елдерге жатады."}, {"id": 6, "q": "Бір жыл ішіндегі иммигранттар және эмигранттар санының айырмасымен", "isMulti": false, "options": ["тас көмір", "Механикалық өсім", "Екібастұз", "Шарын"], "answer": 1, "explanation": "Дұрыс жауабы: B) Механикалық өсім. Келгендер (иммигранттар) мен кеткендердің (эмигранттар) айырмасы көші-қон немесе халықтың механикалық өсімі (немесе кемуі) деп аталады.", "q_ru": "Бір жыл ішіндегі иммигранттар және эмигранттар санының айырмасымен", "options_ru": ["тас көмір", "Механикалық өсім", "Экибастуз", "Чарын"], "explanation_ru": "Дұрыс жауабы: B) Механикалық өсім. Келгендер (иммигранттар) мен кеткендердің (эмигранттар) айырмасы көші-қон немесе халықтың механикалық өсімі (немесе кемуі) деп аталады."}, {"id": 7, "q": "Ұдайы өсудің өтпелі түріне тән белгіні табыңыз.", "isMulti": false, "options": ["АҚШ", "1", "Жапония", "Канада"], "answer": 1, "explanation": "Дұрыс жауабы: B) 1. Ұдайы өсудің өтпелі кезеңінде медицинаның дамуымен өлім азаяды, содан кейін урбанизация әсерінен туу көрсеткіштері де біртіндеп төмендей бастайды.", "q_ru": "Ұдайы өсудің өтпелі түріне тән белгіні найдите.", "options_ru": ["США", "1", "Япония", "Канада"], "explanation_ru": "Дұрыс жауабы: B) 1. Ұдайы өсудің өтпелі кезеңінде медицинаның дамуымен өлім азаяды, содан кейін урбанизация әсерінен туу көрсеткіштері де біртіндеп төмендей бастайды."}, {"id": 8, "q": "Ұдайы өсудің түрлерін көрсетіңіз.", "isMulti": false, "options": ["Сырдария", "Жайсан (Зайсан)", "Қаратал", "1, 2, 3"], "answer": 3, "explanation": "Дұрыс жауабы: D) 1, 2, 3. Демографияда халықтың ұдайы өсуінің үш тарихи типі бар: 1-дәстүрлі (архетип), 2-өтпелі және 3- қазіргі заманғы (рационалды). \"Байырғы\" деген түрі жоқ. 1-40 сұрақтардың толық шешімі мен түсіндірмесі", "q_ru": "Ұдайы өсудің түрлерін көрсетіңіз.", "options_ru": ["Сырдарья", "Жайсан (Зайсан)", "Каратал", "1, 2, 3"], "explanation_ru": "Дұрыс жауабы: D) 1, 2, 3. Демографияда халықтың ұдайы өсуінің үш тарихи типі бар: 1-дәстүрлі (архетип), 2-өтпелі және 3- қазіргі заманғы (рационалды). \"Байырғы\" деген түрі жоқ. 1-40 сұрақтардың толық шешімі мен түсіндірмесі"}, {"id": 9, "q": "Туу мен өлім және табиғи өсу көрсеткіштерінің жиынтығын табыңыз.", "isMulti": false, "options": ["титан", "Қазығұрт", "Халықтың ұдайы өсуі", "Қорғалжын"], "answer": 2, "explanation": "Дұрыс жауабы: C) Халықтың ұдайы өсуі. Бір ұрпақтың орнын екінші ұрпақтың басуын қамтамасыз ететін туу, өлу және табиғи өсім көрсеткіштерінің жиынтығы «халықтың ұдайы өсуі» (воспроизводство) деп аталады.", "q_ru": "Туу мен өлім және табиғи өсу көрсеткіштерінің жиынтығын найдите.", "options_ru": ["титан", "Қазығұрт", "Халықтың ұдайы өсуі", "Коргалжын"], "explanation_ru": "Дұрыс жауабы: C) Халықтың ұдайы өсуі. Бір ұрпақтың орнын екінші ұрпақтың басуын қамтамасыз ететін туу, өлу және табиғи өсім көрсеткіштерінің жиынтығы «халықтың ұдайы өсуі» (воспроизводство) деп аталады."}, {"id": 10, "q": "«Демография» ұғымын енгізген ғалымды көрсетіңіз.", "isMulti": false, "options": ["Махмұд Қашқари", "Н. А. Северцов", "А. Гийяр", "Әл-Фараби"], "answer": 2, "explanation": "Дұрыс жауабы: C) А. Гийяр. Гийяр. «Демография» (халық туралы ғылым) терминін 1855 жылы француз ғалымы Ашиль Г ийяр ғылыми айналымға енгізді.", "q_ru": "«Демография» ұғымын енгізген ғалымды көрсетіңіз.", "options_ru": ["Махмұд Қашқари", "Н. А. Северцов", "А. Гийяр", "Әл-Фараби"], "explanation_ru": "Дұрыс жауабы: C) А. Гийяр. Гийяр. «Демография» (халық туралы ғылым) терминін 1855 жылы француз ғалымы Ашиль Г ийяр ғылыми айналымға енгізді."}, {"id": 11, "q": "Туу коэффициентінің ең жоғары деңгейі қай аймақта байқалады?", "isMulti": false, "options": ["Африка", "Ақтау", "Атырау", "Ақтөбе"], "answer": 0, "explanation": "Дұрыс жауабы: A) Африка. Африка құрлығы (әсіресе Тропикалық Африка) дәстүрлі көпбалалыққа және экономикалық даму деңгейіне байланысты әлемде туу көрсеткіші ең жоғары аймақ.", "q_ru": "Туу коэффициентінің ең жоғары деңгейі қай аймақта байқалады?", "options_ru": ["Африка", "Актау", "Атырау", "Актобе"], "explanation_ru": "Дұрыс жауабы: A) Африка. Африка құрлығы (әсіресе Тропикалық Африка) дәстүрлі көпбалалыққа және экономикалық даму деңгейіне байланысты әлемде туу көрсеткіші ең жоғары аймақ."}, {"id": 12, "q": "Перудегі ежелгі инктерден қалған мұраны көрсетіңіз.", "isMulti": false, "options": ["Самум", "Сайқан", "Бора", "Мачу-Пикчу"], "answer": 3, "explanation": "Дұрыс жауабы: D) Мачу-Пикчу. Оңтүстік Америкадағы Перу мемлекетіндегі Анд тауларында ежелгі Инктер империясының \"жоғалған қаласы\" Мачу-Пикчу орналасқан.", "q_ru": "Перудегі ежелгі инктерден қалған мұраны көрсетіңіз.", "options_ru": ["Самум", "Сайқан", "Бора", "Мачу-Пикчу"], "explanation_ru": "Дұрыс жауабы: D) Мачу-Пикчу. Оңтүстік Америкадағы Перу мемлекетіндегі Анды тауларында ежелгі Инктер империясының \"жоғалған қаласы\" Мачу-Пикчу орналасқан."}, {"id": 13, "q": "Бір елге ақша табу мақсатында келген шетелдік азаматты көрсетіңіз.", "isMulti": false, "options": ["Сингапур", "Қырғызстан", "Гастарбайтер", "Қазақстан"], "answer": 2, "explanation": "Дұрыс жауабы: C) Гастарбайтер. Г астарбайтер (немісше \"қонақ-жұмысшы\") — басқа елге жұмыс істеп, табыс табу мақсатында уақытша келген шетелдік еңбек мигранты. 2-бөлім: 11-20 сұрақтар", "q_ru": "Бір елге ақша табу мақсатында келген шетелдік азаматты көрсетіңіз.", "options_ru": ["Сингапур", "Кыргызстан", "Гастарбайтер", "Казахстан"], "explanation_ru": "Дұрыс жауабы: C) Гастарбайтер. Г астарбайтер (немісше \"қонақ-жұмысшы\") — басқа елге жұмыс істеп, табыс табу мақсатында уақытша келген шетелдік еңбек мигранты. 2-бөлім: 11-20 сұрақтар"}, {"id": 14, "q": "Болгарияда туу 9‰, өлім 16‰, табиғи өсімді есептеңіз.", "isMulti": false, "options": ["Азов теңізі", "Жерорта теңізі", "Қара теңіз", "- 7‰"], "answer": 3, "explanation": "Дұрыс жауабы: D) - 7‰. Табиғи өсім = Туу - Өлім. Есептеу: 9 - 16 = -7‰. Өлім туудан жоғары болғандықтан, табиғи кему (депопуляция) байқалады.", "q_ru": "Болгарияда туу 9‰, өлім 16‰, табиғи өсімді есептеңіз.", "options_ru": ["Азовское море", "Средиземное море", "Черное море", "- 7‰"], "explanation_ru": "Дұрыс жауабы: D) - 7‰. Табиғи өсім = Туу - Өлім. Есептеу: 9 - 16 = -7‰. Өлім туудан жоғары болғандықтан, табиғи кему (депопуляция) байқалады."}, {"id": 15, "q": "Суреттегі халықтың жастық-жыныстық пирамидаларын талдағанда дұрыс", "isMulti": false, "options": ["фосфорит", "Қытай", "Марқакөл", "Балалардың үлесі III елде ең көп"], "answer": 3, "explanation": "Дұрыс жауабы: D) Балалардың үлесі III елде ең көп. Үшінші (III) пирамида (Регрессивті тип) төмен жағы сүйірленген, бұл туудың (балалар санының) аз екенін көрсетеді. Демек, \"балалар үлесі ең көп\" деген тұжырым қате. Балалар үлесі I елде ең көп (төменгі жағы кең).", "q_ru": "Суреттегі халықтың жастық-жыныстық пирамидаларын талдағанда дұрыс", "options_ru": ["фосфорит", "Китай", "Маркаколь", "Балалардың үлесі III елде ең көп"], "explanation_ru": "Дұрыс жауабы: D) Балалардың үлесі III елде ең көп. Үшінші (III) пирамида (Регрессивті тип) төмен жағы сүйірленген, бұл туудың (балалар санының) аз екенін көрсетеді. Демек, \"балалар үлесі ең көп\" деген тұжырым қате. Балалар үлесі I елде ең көп (төменгі жағы кең)."}, {"id": 16, "q": "Халық саны 200 млн-нан асатын елді табыңыз.", "isMulti": false, "options": ["Италия", "Бразилия", "Индонезия", "Ұлыбритания"], "answer": 1, "explanation": "Дұрыс жауабы: B) Бразилия. Бразилияның халық саны 200 миллионнан асады (шамамен 215 млн). Ресейде ~144 млн, ОАР мен Канадада одан да аз.", "q_ru": "Халық саны 200 млн-нан асатын елді найдите.", "options_ru": ["Италия", "Бразилия", "Индонезия", "Великобритания"], "explanation_ru": "Дұрыс жауабы: B) Бразилия. Бразилияның халық саны 200 миллионнан асады (шамамен 215 млн). Ресейде ~144 млн, ЮАР мен Канадада одан да аз."}, {"id": 17, "q": "Сәбилер өлімі көрсеткіші төмен аймақты көрсетіңіз.", "isMulti": false, "options": ["Еуропа", "МЕРКОСУР", "ЕО (Еуропалық Одақ)", "ОПЕК"], "answer": 0, "explanation": "Дұрыс жауабы: A) Еуропа. Медицинасы мен өмір сүру деңгейі жоғары дамыған Еуропа елдерінде сәбилер өлімі (нәресте өлімі) ең төменгі көрсеткіштерге ие.", "q_ru": "Сәбилер өлімі көрсеткіші төмен аймақты көрсетіңіз.", "options_ru": ["Еуропа", "МЕРКОСУР", "ЕО (Еуропалық Одақ)", "ОПЕК"], "explanation_ru": "Дұрыс жауабы: A) Еуропа. Медицинасы мен өмір сүру деңгейі жоғары дамыған Еуропа елдерінде сәбилер өлімі (нәресте өлімі) ең төменгі көрсеткіштерге ие."}, {"id": 18, "q": "Адамның өмір жасы ең қысқа елді анықтаңыз.", "isMulti": false, "options": ["Лесото", "Мысыр", "АҚШ", "Өзбекстан"], "answer": 0, "explanation": "Дұрыс жауабы: A) Лесото. Африка елдерінде (соның ішінде Лесотода) кедейлік, медицинаның төмендігі және АИТВ (ВИЧ) індетінің таралуына байланысты өмір сүру ұзақтығы әлемдегі ең төменгі деңгейде (шамамен 50 жас).", "q_ru": "Адамның өмір жасы ең қысқа елді определите.", "options_ru": ["Лесото", "Египет", "США", "Узбекистан"], "explanation_ru": "Дұрыс жауабы: A) Лесото. Африка елдерінде (соның ішінде Лесотода) кедейлік, медицинаның төмендігі және АИТВ (ВИЧ) індетінің таралуына байланысты өмір сүру ұзақтығы әлемдегі ең төменгі деңгейде (шамамен 50 жас)."}, {"id": 19, "q": "Туу деңгейі өлімнен шамамен бес есе жоғары елді көрсетіңіз.", "isMulti": false, "options": ["Германия", "Үндістан", "Өзбекстан", "Кения"], "answer": 3, "explanation": "Дұрыс жауабы: D) Кения. Кения сияқты Тропикалық Африка елдерінде туу көрсеткіші өте жоғары (40-50‰), ал өлім көрсеткіші орташа (8-10‰) болып, табиғи өсім күрт артады.", "q_ru": "Туу деңгейі өлімнен шамамен бес есе жоғары елді көрсетіңіз.", "options_ru": ["Германия", "Индия", "Узбекистан", "Кения"], "explanation_ru": "Дұрыс жауабы: D) Кения. Кения сияқты Тропикалық Африка елдерінде туу көрсеткіші өте жоғары (40-50‰), ал өлім көрсеткіші орташа (8-10‰) болып, табиғи өсім күрт артады."}, {"id": 20, "q": "Тілдер тобына жатпайтын тілді көрсетіңіз.", "isMulti": false, "options": ["Қаратал", "Баск", "Танганьика", "Канада"], "answer": 1, "explanation": "Дұрыс жауабы: B) Баск. Еуропадағы баск тілі — ешқандай белгілі тілдер отбасына немесе тобына кірмейтін, оқшауланған тіл (язык-изолят).", "q_ru": "Тілдер тобына жатпайтын тілді көрсетіңіз.", "options_ru": ["Каратал", "Баск", "Танганьика", "Канада"], "explanation_ru": "Дұрыс жауабы: B) Баск. Еуропадағы баск тілі — ешқандай белгілі тілдер отбасына немесе тобына кірмейтін, оқшауланған тіл (язык-изолят)."}, {"id": 21, "q": "Үлкен қалалық жерлерге, өндіріс орталықтарына халықтың көптеп", "isMulti": false, "options": ["Урбандалу", "Боксит", "Темір кені", "Мыс"], "answer": 0, "explanation": "Дұрыс жауабы: A) Урбандалу. Урбандалу (урбанизация) — қоғамдағы қала рөлінің артуы, қала халқының өсуі және ауыл халқының қалаларға шоғырлану процесі.", "q_ru": "Үлкен қалалық жерлерге, өндіріс орталықтарына халықтың көптеп", "options_ru": ["Урбандалу", "Бокситы", "Железная руда", "Медь"], "explanation_ru": "Дұрыс жауабы: A) Урбандалу. Урбандалу (урбанизация) — қоғамдағы қала рөлінің артуы, қала халқының өсуі және ауыл халқының қалаларға шоғырлану процесі."}, {"id": 22, "q": "Халық саны жөнінен дүниежүзінде ондыққа кіретін елді көрсетіңіз.", "isMulti": true, "options": ["Өзбекстан", "Түркия", "Ұлыбритания", "АҚШ", "Иран", "Мысыр", "Бразилия", "Қазақстан"], "answer": [6, 7], "explanation": "Дұрыс жауаптар: G, H. Бразилия халық саны бойынша әлемде алғашқы ондыққа кіреді (Қытай, Үндістан, АҚШ, Индонезия, Пәкістаннан кейін)..", "q_ru": "Халық саны жөнінен дүниежүзінде ондыққа кіретін елді көрсетіңіз.", "options_ru": ["Узбекистан", "Турция", "Великобритания", "США", "Иран", "Египет", "Бразилия", "Казахстан"], "explanation_ru": "Дұрыс жауаптар: G, H. Бразилия халық саны бойынша әлемде алғашқы ондыққа кіреді (Китай, Индия, США, Индонезия, Пәкістаннан кейін).."}, {"id": 23, "q": "Өмір жасы орташа ұзақтығының ең төменгі көрсеткіші қай елде байқалған?", "isMulti": true, "options": ["Талас", "Ангола", "Аягөз", "Сағыз", "Қаратал", "Ембі"], "answer": [1, 4], "explanation": "Дұрыс жауаптар: B, E. Африка континентінің көптеген елдерінде, соның ішінде Анголада соғыстар мен медицинаның нашарлығынан өмір сүру жасы ең қысқа болып келеді. 3-бөлім: 21-30 сұрақтар.", "q_ru": "Өмір жасы орташа ұзақтығының ең төменгі көрсеткіші қай елде байқалған?", "options_ru": ["Талас", "Ангола", "Аягоз", "Сагыз", "Каратал", "Эмба"], "explanation_ru": "Дұрыс жауаптар: B, E. Африка континентінің көптеген елдерінде, соның ішінде Анголада соғыстар мен медицинаның нашарлығынан өмір сүру жасы ең қысқа болып келеді. 3-бөлім: 21-30 сұрақтар."}, {"id": 24, "q": "Туу деңгейінің ең жоғары және ең төмен көрсеткіштері байқалған елді", "isMulti": true, "options": ["Шілік", "Нигер", "Шу", "Ертіс", "Торғай", "Обаған", "Есіл", "Талас"], "answer": [1, 4, 6], "explanation": "Дұрыс жауаптар: B, E, G. құрастырылған болуы мүмкін. Мұнда ең жоғарысы — Нигер, ең төмені — Монако. Әлемде туу көрсеткіші бойынша ең алда Африка елі Нигер тұр. Ал туу деңгейі өте төмен елдерге Еуропаның дамыған немесе шағын елдері (Монако) жатады..", "q_ru": "Туу деңгейінің ең жоғары және ең төмен көрсеткіштері байқалған елді", "options_ru": ["Чилик", "Нигер", "Чу", "Иртыш", "Тургай", "Обаган", "Ишим", "Талас"], "explanation_ru": "Дұрыс жауаптар: B, E, G. құрастырылған болуы мүмкін. Мұнда ең жоғарысы — Нигер, ең төмені — Монако. Әлемде туу көрсеткіші бойынша ең алда Африка елі Нигер тұр. Ал туу деңгейі өте төмен елдерге Еуропаның дамыған немесе шағын елдері (Монако) жатады.."}, {"id": 25, "q": "Халық санының қысқаруы маңызды демографиялық проблема болып", "isMulti": true, "options": ["Дамыған елдер", "Сағыз", "Лепсі", "Шарын", "Ақсу", "Торғай", "Талас", "Обаған"], "answer": [0, 2, 7], "explanation": "Дұрыс жауаптар: A, C, H. Батыс Еуропа, Ресей, Жапония сияқты дамыған және өтпелі экономикадағы елдерде туудың азаюынан халық санының қысқаруы (депопуляция) үлкен мәселеге айналған..", "q_ru": "Халық санының қысқаруы маңызды демографиялық проблема болып", "options_ru": ["Дамыған елдер", "Сагыз", "Лепсы", "Чарын", "Аксу", "Тургай", "Талас", "Обаган"], "explanation_ru": "Дұрыс жауаптар: A, C, H. Батыс Еуропа, Россия, Япония сияқты дамыған және өтпелі экономикадағы елдерде туудың азаюынан халық санының қысқаруы (депопуляция) үлкен мәселеге айналған.."}, {"id": 26, "q": "Қытай, Үндістан, Пәкістан, Бангладеш елдерінің халықтарының жастық-", "isMulti": true, "options": ["Ақсу", "Тобыл", "Ер адамдардың саны әйелдерден көп", "Қаратал", "Іле", "Жайық"], "answer": [2, 3], "explanation": "Дұрыс жауаптар: C, D. Азияның көптеген ірі елдерінде (Үндістан, Қытай) тарихи, дәстүрлі және әлеуметтік себептерге байланысты халық құрамында ер адамдардың саны әйелдерден айтарлықтай басым..", "q_ru": "Китай, Индия, Пәкістан, Бангладеш елдерінің халықтарының жастық-", "options_ru": ["Аксу", "Тобол", "Ер адамдардың саны әйелдерден көп", "Каратал", "Или", "Урал (Жайык)"], "explanation_ru": "Дұрыс жауаптар: C, D. Азияның көптеген ірі елдерінде (Индия, Китай) тарихи, дәстүрлі және әлеуметтік себептерге байланысты халық құрамында ер адамдардың саны әйелдерден айтарлықтай басым.."}, {"id": 27, "q": "Әлемдегі ең ірі миграциялық дәлізді көрсетіңіз.", "isMulti": true, "options": ["Франция", "Сауд Арабиясы", "Түркия", "Германия", "Өзбекстан", "Мексика - АҚШ", "Ұлыбритания", "АҚШ"], "answer": [5, 6], "explanation": "Дұрыс жауаптар: F, G. Жыл сайын миллиондаған заңды және заңсыз еңбек мигранттары Мексикадан АҚШ-қа өтеді, бұл әлемдегі ең үлкен көші-қон дәлізі..", "q_ru": "Әлемдегі ең ірі миграциялық дәлізді көрсетіңіз.", "options_ru": ["Франция", "Сауд Арабиясы", "Турция", "Германия", "Узбекистан", "Мексика - США", "Великобритания", "США"], "explanation_ru": "Дұрыс жауаптар: F, G. Жыл сайын миллиондаған заңды және заңсыз еңбек мигранттары Мексикадан США-қа өтеді, бұл әлемдегі ең үлкен көші-қон дәлізі.."}, {"id": 28, "q": "«Миграция» сөзінің мағынасын анықтаңыз.", "isMulti": false, "options": ["Бұқтырма", "Көшу", "Ембі", "Ақсу"], "answer": 1, "explanation": "Дұрыс жауабы: B) Көшу. Миграция (латынша migratio) — халықтың тұрғылықты жерін ауыстырып, бір аймақтан екінші аймаққа көшу процесі.", "q_ru": "«Миграция» сөзінің мағынасын определите.", "options_ru": ["Бухтарма", "Көшу", "Эмба", "Аксу"], "explanation_ru": "Дұрыс жауабы: B) Көшу. Миграция (латынша migratio) — халықтың тұрғылықты жерін ауыстырып, бір аймақтан екінші аймаққа көшу процесі."}, {"id": 29, "q": "Халықтың жастық құрамының кері кетуші типіне жататын аймақты көрсетіңіз.", "isMulti": false, "options": ["НАТО", "МЕРКОСУР", "ХВФ", "Еуропа"], "answer": 3, "explanation": "Дұрыс жауабы: D) Еуропа. Кері кетуші (регрессивті) типте балалар саны азайып, егде жастағы адамдардың үлесі артады («ұлттың қартаюы»). Бұл әсіресе Еуропа елдеріне тән.", "q_ru": "Халықтың жастық құрамының кері кетуші типіне жататын аймақты көрсетіңіз.", "options_ru": ["НАТО", "МЕРКОСУР", "ХВФ", "Еуропа"], "explanation_ru": "Дұрыс жауабы: D) Еуропа. Кері кетуші (регрессивті) типте балалар саны азайып, егде жастағы адамдардың үлесі артады («ұлттың қартаюы»). Бұл әсіресе Еуропа елдеріне тән."}, {"id": 30, "q": "Мали халқының жастық құрамы қай типке жататынын көрсетіңіз.", "isMulti": true, "options": ["Қаратал", "Алға басушы", "Нұра", "Ертіс", "Талас", "Обаған"], "answer": [1, 3], "explanation": "Дұрыс жауаптар: B, D. Мали — Африка елі. Онда туу көрсеткіші өте жоғары болғандықтан, халық құрамында балалар мен жастардың үлесі өте басым (алға басушы немесе прогрессивті тип)..", "q_ru": "Мали халқының жастық құрамы қай типке жататынын көрсетіңіз.", "options_ru": ["Каратал", "Алға басушы", "Нура", "Иртыш", "Талас", "Обаган"], "explanation_ru": "Дұрыс жауаптар: B, D. Мали — Африка елі. Онда туу көрсеткіші өте жоғары болғандықтан, халық құрамында балалар мен жастардың үлесі өте басым (алға басушы немесе прогрессивті тип).."}]};
+    const maxPoints = 37;
+    const passingPoints = Math.round(maxPoints * 0.7);
+    const initialTimeSeconds = 35 * 60;
+
+    let currentLang = 'kz';
+    let currentMode = 'exam'; // 'exam' or 'review'
+    let userAnswers = {}; // qId -> single value (int) or array of ints
+    let isSubmitted = false;
+    let timerRemaining = initialTimeSeconds;
+    let timerInterval = null;
+
+    // Initialize from URL params or localStorage
+    (function initSettings() {
+      const params = new URLSearchParams(window.location.search);
+      const urlLang = params.get('lang');
+      if (urlLang === 'ru' || urlLang === 'kz') {
+        currentLang = urlLang;
+      } else {
+        const storedProfile = localStorage.getItem('geotany_user_profile');
+        if (storedProfile) {
+          try {
+            const p = JSON.parse(storedProfile);
+            if (p.language === 'ru') currentLang = 'ru';
+          } catch(e) {}
+        }
+      }
+      
+      const urlMode = params.get('mode');
+      if (urlMode === 'review') {
+        currentMode = 'review';
+      }
+    })();
+
+    // Check previous scores in localStorage
+    function checkPreviousScore() {
+      try {
+        const raw = localStorage.getItem('geotany_writing_scores');
+        if (raw) {
+          const scores = JSON.parse(raw);
+          const prev = scores[variantData.id];
+          if (prev) {
+            const banner = document.getElementById('prevScoreBanner');
+            const txt = document.getElementById('prevScoreText');
+            if (banner && txt) {
+              banner.classList.remove('hidden');
+              txt.textContent = currentLang === 'ru'
+                ? `Предыдущий результат: ${prev.score} / ${prev.maxScore} (${prev.percentage}%) • ${prev.isPassed ? 'Сдано' : 'Не сдано'}`
+                : `Алдыңғы нәтиже: ${prev.score} / ${prev.maxScore} (${prev.percentage}%) • ${prev.isPassed ? 'Өтті' : 'Өтпеді'}`;
+            }
+            if (prev.answers && Object.keys(userAnswers).length === 0) {
+              userAnswers = prev.answers;
+            }
+          }
+        }
+      } catch(e) {}
+    }
+
+    // Switch Language
+    function setLang(lang) {
+      currentLang = lang;
+      
+      // Update toggle buttons UI
+      const kzBtn = document.getElementById('langKzBtn');
+      const ruBtn = document.getElementById('langRuBtn');
+      if (lang === 'kz') {
+        kzBtn.className = 'px-2 py-1 rounded-lg bg-brand-500 text-space-950 font-black transition';
+        ruBtn.className = 'px-2 py-1 rounded-lg text-slate-400 hover:text-white transition';
+      } else {
+        ruBtn.className = 'px-2 py-1 rounded-lg bg-brand-500 text-space-950 font-black transition';
+        kzBtn.className = 'px-2 py-1 rounded-lg text-slate-400 hover:text-white transition';
+      }
+
+      // Update Back Link
+      const backLink = document.getElementById('btnBackToPlatform');
+      if (backLink) backLink.href = `../geotanu.html?lang=${currentLang}#section-testter_writing`;
+      const modalBack = document.getElementById('modalBackLink');
+      if (modalBack) modalBack.href = `../geotanu.html?lang=${currentLang}#section-testter_writing`;
+
+      // Update Static Texts
+      updateLocalizedLabels();
+      renderQuestions();
+      renderMatrix();
+      checkPreviousScore();
+    }
+
+    // Switch Mode
+    function setMode(mode) {
+      currentMode = mode;
+      const examBtn = document.getElementById('modeExamBtn');
+      const reviewBtn = document.getElementById('modeReviewBtn');
+      const timerWrapper = document.getElementById('examTimerWrapper');
+
+      if (mode === 'exam') {
+        examBtn.className = 'px-2.5 py-1 rounded-lg bg-amber-500 text-space-950 font-black transition shadow-sm';
+        reviewBtn.className = 'px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition';
+        if (timerWrapper) timerWrapper.classList.remove('hidden');
+        if (!timerInterval && !isSubmitted) startTimer();
+      } else {
+        reviewBtn.className = 'px-2.5 py-1 rounded-lg bg-cyan-500 text-space-950 font-black transition shadow-sm';
+        examBtn.className = 'px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition';
+        if (timerWrapper) timerWrapper.classList.add('hidden');
+      }
+
+      renderQuestions();
+      renderMatrix();
+    }
+
+    // Localized Text Updates
+    function updateLocalizedLabels() {
+      const isRu = (currentLang === 'ru');
+      
+      document.getElementById('navBackText').textContent = isRu ? 'Назад' : 'Артқа';
+      document.getElementById('navVariantTitle').textContent = isRu 
+        ? `${variantData.id}-вариант: ЕНТ Комплексный тест`
+        : variantData.title;
+      
+      document.getElementById('lblTimerText').textContent = isRu ? 'Время:' : 'Уақыт:';
+      document.getElementById('lblModeExam').textContent = isRu ? 'Экзамен' : 'Емтихан';
+      document.getElementById('lblModeReview').textContent = isRu ? 'Разбор' : 'Талдау';
+
+      document.getElementById('heroDepartmentBadge').textContent = isRu ? 'Русское отделение' : 'Қазақ бөлімі';
+      document.getElementById('heroTitle').textContent = isRu 
+        ? `${variantData.id}-вариант: Тест ЕНТ (${variantData.questions.length} вопросов)`
+        : variantData.title;
+      document.getElementById('heroDesc').textContent = isRu 
+        ? 'Комплексный вариант ЕНТ по географии с подробными авторскими пояснениями к каждому вопросу.'
+        : variantData.desc;
+
+      document.getElementById('lblMetaQuestions').textContent = isRu 
+        ? `${variantData.questions.length} вопросов (${maxPoints} баллов)`
+        : `${variantData.questions.length} сұрақ (${maxPoints} балл)`;
+      document.getElementById('lblMetaTime').textContent = isRu 
+        ? `35 минут`
+        : `35 минут`;
+      document.getElementById('lblMetaPassing').textContent = isRu 
+        ? `Проходной: 70% (${passingPoints} б.)`
+        : `Шекті балл: 70% (${passingPoints} балл)`;
+      document.getElementById('lblMetaXp').textContent = isRu ? 'Награда: +80 XP' : 'Сыйлық: +80 XP';
+      document.getElementById('lblMetaOnline').textContent = isRu ? '100% Онлайн тест' : '100% Онлайн тест';
+
+      document.getElementById('lblNavigatorTitle').textContent = isRu ? 'Навигатор вопросов' : 'Сұрақтар навигаторы';
+      document.getElementById('lblBtnFinishExam').textContent = isRu ? 'Завершить экзамен' : 'Емтиханды аяқтау';
+      document.getElementById('lblBtnQuickReview').textContent = isRu ? 'Открыть разбор' : 'Талдауды ашу';
+
+      document.getElementById('lblBottomBarTitle').textContent = isRu 
+        ? 'Ответили на все вопросы?' 
+        : 'Барлық сұрақтарға жауап бердіңіз бе?';
+      document.getElementById('lblBottomBarDesc').textContent = isRu 
+        ? 'Завершите экзамен для проверки ответов и начисления баллов.' 
+        : 'Нәтижені растап, балл мен XP алу үшін емтиханды аяқтаңыз.';
+      document.getElementById('lblBottomBarBtn').textContent = isRu 
+        ? 'Завершить тест и проверить' 
+        : 'Тестті аяқтау және тексеру';
+
+      document.getElementById('lblModalCorrect').textContent = isRu ? 'Верно' : 'Дұрыс';
+      document.getElementById('lblModalPartial').textContent = isRu ? 'Частично' : 'Жартылай';
+      document.getElementById('lblModalWrong').textContent = isRu ? 'Неверно' : 'Қате';
+      document.getElementById('lblModalBtnReview').textContent = isRu ? 'Посмотреть подробный разбор' : 'Қателерді және толық талдауды көру';
+      document.getElementById('lblModalBtnRetake').textContent = isRu ? 'Пересдать тест' : 'Қайта тапсыру';
+      document.getElementById('lblModalBtnCatalog').textContent = isRu ? 'В каталог вариантов' : 'Нұсқалар каталогына оралу';
+    }
+
+    // Start Countdown Timer
+    function startTimer() {
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        if (timerRemaining > 0) {
+          timerRemaining--;
+          updateTimerDisplay();
+        } else {
+          clearInterval(timerInterval);
+          alert(currentLang === 'ru' ? 'Время вышло! Тест завершается автоматически.' : 'Уақыт аяқталды! Тест автоматты түрде аяқталады.');
+          submitExam();
+        }
+      }, 1000);
+    }
+
+    function updateTimerDisplay() {
+      const timerEl = document.getElementById('examTimer');
+      if (!timerEl) return;
+      const m = Math.floor(timerRemaining / 60);
+      const s = timerRemaining % 60;
+      timerEl.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      if (timerRemaining < 300) {
+        timerEl.classList.remove('text-amber-400');
+        timerEl.classList.add('text-rose-400', 'animate-pulse');
+      } else {
+        timerEl.classList.remove('text-rose-400', 'animate-pulse');
+        timerEl.classList.add('text-amber-400');
+      }
+    }
+
+    // Render Matrix Navigator
+    function renderMatrix() {
+      const container = document.getElementById('questionMatrix');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const total = variantData.questions.length;
+      let answeredCount = 0;
+
+      variantData.questions.forEach((q, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = (idx + 1);
+        btn.className = 'w-full py-2 rounded-xl text-xs font-bold transition flex items-center justify-center border ';
+
+        const ans = userAnswers[q.id];
+        const hasAnswered = ans !== undefined && (Array.isArray(ans) ? ans.length > 0 : true);
+        if (hasAnswered) answeredCount++;
+
+        if (currentMode === 'review' || isSubmitted) {
+          // Review mode evaluation
+          let isCorrect = false;
+          let isPartial = false;
+          if (q.isMulti) {
+            const userChoices = Array.isArray(ans) ? ans : [];
+            const correctChoices = Array.isArray(q.answer) ? q.answer : [q.answer];
+            const missed = correctChoices.filter(x => !userChoices.includes(x)).length;
+            const extra = userChoices.filter(x => !correctChoices.includes(x)).length;
+            if (missed === 0 && extra === 0 && userChoices.length > 0) isCorrect = true;
+            else if (missed + extra === 1 && userChoices.length > 0) isPartial = true;
+          } else {
+            if (ans === q.answer) isCorrect = true;
+          }
+
+          if (isCorrect) {
+            btn.className += 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40 hover:bg-emerald-500/30';
+          } else if (isPartial) {
+            btn.className += 'bg-amber-500/20 text-amber-400 border-amber-500/40 hover:bg-amber-500/30';
+          } else if (hasAnswered) {
+            btn.className += 'bg-rose-500/20 text-rose-400 border-rose-500/40 hover:bg-rose-500/30';
+          } else {
+            btn.className += 'bg-space-850 text-slate-500 border-slate-800 hover:bg-space-800';
+          }
+        } else {
+          // Exam mode
+          if (hasAnswered) {
+            btn.className += 'bg-amber-500 text-space-950 border-amber-400 shadow-sm font-black';
+          } else {
+            btn.className += 'bg-space-850 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-white';
+          }
+        }
+
+        btn.onclick = () => {
+          const target = document.getElementById(`q-card-${q.id}`);
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            target.classList.add('ring-2', 'ring-amber-400');
+            setTimeout(() => target.classList.remove('ring-2', 'ring-amber-400'), 1200);
+          }
+        };
+
+        container.appendChild(btn);
+      });
+
+      // Update progress badges
+      const badge = document.getElementById('navProgressBadge');
+      if (badge) badge.textContent = `${answeredCount} / ${total}`;
+      const bar = document.getElementById('examProgressBar');
+      if (bar) bar.style.width = `${(answeredCount / total) * 100}%`;
+    }
+
+    // Render Question Cards
+    function renderQuestions() {
+      const container = document.getElementById('questionsContainer');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const isRu = (currentLang === 'ru');
+      const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+
+      variantData.questions.forEach((q, idx) => {
+        const card = document.createElement('div');
+        card.id = `q-card-${q.id}`;
+        card.className = 'p-5 sm:p-6 rounded-3xl bg-space-900 border border-slate-800 transition duration-300 space-y-4';
+
+        const qText = (isRu && q.q_ru) ? q.q_ru : q.q;
+        const options = (isRu && q.options_ru) ? q.options_ru : q.options;
+        const explanationText = (isRu && q.explanation_ru) ? q.explanation_ru : q.explanation;
+        const isMulti = !!q.isMulti;
+
+        // Card Header
+        const header = document.createElement('div');
+        header.className = 'flex items-center justify-between gap-2 border-b border-slate-800/80 pb-3';
+        header.innerHTML = `
+          <div class="flex items-center space-x-2">
+            <span class="w-7 h-7 rounded-xl bg-space-850 border border-slate-700 text-amber-400 font-black text-xs flex items-center justify-center">
+              ${idx + 1}
+            </span>
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">
+              ${isRu ? 'Вопрос ' + (idx + 1) : 'Сұрақ ' + (idx + 1)}
+            </span>
+          </div>
+          <span class="text-[11px] px-2.5 py-0.5 rounded-lg ${isMulti ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30' : 'bg-slate-800 text-slate-300 border border-slate-700'} font-bold">
+            ${isMulti ? (isRu ? '2 балла • Несколько ответов' : '2 балл • Көптаңдау') : (isRu ? '1 балл • Один ответ' : '1 балл • Біртаңдау')}
+          </span>
+        `;
+        card.appendChild(header);
+
+        // Prompt
+        const promptEl = document.createElement('div');
+        promptEl.className = 'text-sm sm:text-base font-semibold text-slate-100 leading-relaxed';
+        promptEl.textContent = qText;
+        card.appendChild(promptEl);
+
+        // Options Container
+        const optList = document.createElement('div');
+        optList.className = 'space-y-2 pt-1';
+
+        const currentAnswer = userAnswers[q.id];
+        const correctAnswers = Array.isArray(q.answer) ? q.answer : [q.answer];
+
+        options.forEach((optText, optIdx) => {
+          const isSelected = isMulti 
+            ? (Array.isArray(currentAnswer) && currentAnswer.includes(optIdx))
+            : (currentAnswer === optIdx);
+
+          const optBtn = document.createElement('div');
+          optBtn.className = 'group relative p-3.5 sm:p-4 rounded-2xl border text-xs sm:text-sm font-medium transition cursor-pointer flex items-center space-x-3 ';
+
+          if (currentMode === 'review' || isSubmitted) {
+            // Review mode styling
+            const isCorrect = correctAnswers.includes(optIdx);
+            if (isCorrect) {
+              optBtn.className += 'bg-emerald-500/15 border-emerald-500 text-emerald-200 font-bold';
+            } else if (isSelected) {
+              optBtn.className += 'bg-rose-500/15 border-rose-500 text-rose-200';
+            } else {
+              optBtn.className += 'bg-space-850/50 border-slate-800/80 text-slate-400 opacity-70';
+            }
+          } else {
+            // Exam mode styling
+            if (isSelected) {
+              optBtn.className += 'bg-amber-500/15 border-amber-500 text-amber-200 font-bold shadow-sm';
+            } else {
+              optBtn.className += 'bg-space-850 hover:bg-space-800 border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white';
+            }
+          }
+
+          // Choice Letter Circle
+          const letterBadge = document.createElement('span');
+          letterBadge.className = 'w-6 h-6 rounded-lg text-xs font-black flex items-center justify-center shrink-0 ';
+          if (currentMode === 'review' || isSubmitted) {
+            if (correctAnswers.includes(optIdx)) {
+              letterBadge.className += 'bg-emerald-500 text-space-950';
+            } else if (isSelected) {
+              letterBadge.className += 'bg-rose-500 text-white';
+            } else {
+              letterBadge.className += 'bg-space-900 border border-slate-700 text-slate-400';
+            }
+          } else {
+            if (isSelected) {
+              letterBadge.className += 'bg-amber-500 text-space-950';
+            } else {
+              letterBadge.className += 'bg-space-900 border border-slate-700 text-slate-400 group-hover:border-slate-500 group-hover:text-slate-200';
+            }
+          }
+          letterBadge.textContent = letters[optIdx] || String(optIdx + 1);
+          optBtn.appendChild(letterBadge);
+
+          // Option text
+          const textSpan = document.createElement('span');
+          textSpan.className = 'flex-1 leading-snug';
+          textSpan.textContent = optText;
+          optBtn.appendChild(textSpan);
+
+          // Status icon in review mode
+          if (currentMode === 'review' || isSubmitted) {
+            if (correctAnswers.includes(optIdx)) {
+              const check = document.createElement('span');
+              check.className = 'text-emerald-400 font-black text-sm';
+              check.textContent = '✓';
+              optBtn.appendChild(check);
+            } else if (isSelected) {
+              const cross = document.createElement('span');
+              cross.className = 'text-rose-400 font-black text-sm';
+              cross.textContent = '✕';
+              optBtn.appendChild(cross);
+            }
+          }
+
+          // Click handler (only in Exam mode or allow review interaction)
+          optBtn.onclick = () => {
+            if (isSubmitted && currentMode === 'exam') return;
+            handleOptionSelect(q.id, optIdx, isMulti);
+          };
+
+          optList.appendChild(optBtn);
+        });
+
+        card.appendChild(optList);
+
+        // Explanation Box (In Review Mode or after Submission)
+        if (currentMode === 'review' || isSubmitted) {
+          const expBox = document.createElement('div');
+          expBox.className = 'mt-4 p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-xs text-cyan-200 space-y-1.5';
+          expBox.innerHTML = `
+            <div class="flex items-center space-x-1.5 font-bold text-cyan-300">
+              <span>💡</span>
+              <span>${isRu ? 'Авторское пояснение:' : 'Авторлық түсіндірме:'}</span>
+            </div>
+            <p class="leading-relaxed text-slate-300">${explanationText || (isRu ? 'Пояснение к данному вопросу.' : 'Сұраққа арналған түсіндірме.')}</p>
+          `;
+          card.appendChild(expBox);
+        }
+
+        container.appendChild(card);
+      });
+    }
+
+    // Handle Option Selection
+    function handleOptionSelect(qId, optIdx, isMulti) {
+      if (isMulti) {
+        let selected = Array.isArray(userAnswers[qId]) ? [...userAnswers[qId]] : [];
+        if (selected.includes(optIdx)) {
+          selected = selected.filter(x => x !== optIdx);
+        } else {
+          if (selected.length < 3) {
+            selected.push(optIdx);
+          } else {
+            alert(currentLang === 'ru' ? 'Можно выбрать максимум 3 варианта ответа.' : 'Ең көп дегенде 3 нұсқа таңдауға болады.');
+            return;
+          }
+        }
+        if (selected.length > 0) {
+          userAnswers[qId] = selected;
+        } else {
+          delete userAnswers[qId];
+        }
+      } else {
+        userAnswers[qId] = optIdx;
+      }
+
+      renderQuestions();
+      renderMatrix();
+    }
+
+    // Confirm Submission
+    function confirmSubmitExam() {
+      const answered = Object.keys(userAnswers).length;
+      const total = variantData.questions.length;
+      const isRu = (currentLang === 'ru');
+
+      if (answered < total) {
+        const msg = isRu 
+          ? `Вы ответили на ${answered} из ${total} вопросов. Завершить экзамен сейчас?`
+          : `Сіз ${total} сұрақтың ${answered}-не жауап бердіңіз. Емтиханды қазір аяқтағыңыз келе ме?`;
+        if (!confirm(msg)) return;
+      }
+
+      submitExam();
+    }
+
+    // Submit Exam & Score Calculation
+    function submitExam() {
+      clearInterval(timerInterval);
+      isSubmitted = true;
+
+      let totalEarned = 0;
+      let totalMax = 0;
+      let correctCount = 0;
+      let partialCount = 0;
+      let wrongCount = 0;
+
+      variantData.questions.forEach(q => {
+        if (q.isMulti) {
+          totalMax += 2;
+          const userChoices = Array.isArray(userAnswers[q.id]) ? userAnswers[q.id] : [];
+          const correctChoices = Array.isArray(q.answer) ? q.answer : [q.answer];
+
+          const missed = correctChoices.filter(x => !userChoices.includes(x)).length;
+          const extra = userChoices.filter(x => !correctChoices.includes(x)).length;
+          const errors = missed + extra;
+
+          if (errors === 0 && userChoices.length > 0) {
+            totalEarned += 2;
+            correctCount++;
+          } else if (errors === 1 && userChoices.length > 0) {
+            totalEarned += 1;
+            partialCount++;
+          } else {
+            wrongCount++;
+          }
+        } else {
+          totalMax += 1;
+          if (userAnswers[q.id] === q.answer) {
+            totalEarned += 1;
+            correctCount++;
+          } else {
+            wrongCount++;
+          }
+        }
+      });
+
+      const percentage = Math.round((totalEarned / totalMax) * 100);
+      const isPassed = percentage >= 70;
+      const earnedXp = isPassed ? 80 : Math.round(totalEarned * 2);
+
+      // Save to localStorage
+      try {
+        let scores = JSON.parse(localStorage.getItem('geotany_writing_scores') || '{}');
+        scores[variantData.id] = {
+          score: totalEarned,
+          maxScore: totalMax,
+          total: variantData.questions.length,
+          fullCorrect: correctCount,
+          partiallyCorrect: partialCount,
+          wrong: wrongCount,
+          percentage: percentage,
+          isPassed: isPassed,
+          date: new Date().toISOString(),
+          answers: userAnswers
+        };
+        localStorage.setItem('geotany_writing_scores', JSON.stringify(scores));
+
+        let curXp = parseInt(localStorage.getItem('geotany_user_xp') || '0', 10);
+        curXp += earnedXp;
+        localStorage.setItem('geotany_user_xp', curXp.toString());
+      } catch(e) {}
+
+      // Display Modal
+      showResultModal({
+        score: totalEarned,
+        maxScore: totalMax,
+        percentage,
+        isPassed,
+        correctCount,
+        partialCount,
+        wrongCount,
+        earnedXp
+      });
+
+      renderQuestions();
+      renderMatrix();
+    }
+
+    // Show Result Modal with Confetti
+    function showResultModal(res) {
+      const isRu = (currentLang === 'ru');
+      const modal = document.getElementById('resultModal');
+      if (!modal) return;
+
+      document.getElementById('modalScoreDisplay').textContent = `${res.score} / ${res.maxScore}`;
+      document.getElementById('modalPercentageDisplay').textContent = `${res.percentage}% • ${isRu ? 'Результат' : 'Нәтиже'} (+${res.earnedXp} XP)`;
+      
+      const statusBadge = document.getElementById('modalStatusBadge');
+      if (statusBadge) {
+        if (res.isPassed) {
+          statusBadge.textContent = isRu ? 'Сдано • Успешно' : 'Өтті • Құттықтаймыз';
+          statusBadge.className = 'inline-block px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wide bg-brand-500/20 text-brand-400 border border-brand-500/30';
+          triggerConfetti();
+        } else {
+          statusBadge.textContent = isRu ? 'Не сдано • Требуется 70%' : 'Өтпеді • 70% қажет';
+          statusBadge.className = 'inline-block px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wide bg-rose-500/20 text-rose-400 border border-rose-500/30';
+        }
+      }
+
+      document.getElementById('modalCorrectCount').textContent = res.correctCount;
+      document.getElementById('modalPartialCount').textContent = res.partialCount;
+      document.getElementById('modalWrongCount').textContent = res.wrongCount;
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeModalAndShowReview() {
+      const modal = document.getElementById('resultModal');
+      if (modal) modal.classList.add('hidden');
+      setMode('review');
+    }
+
+    function retakeExam() {
+      const modal = document.getElementById('resultModal');
+      if (modal) modal.classList.add('hidden');
+      userAnswers = {};
+      isSubmitted = false;
+      timerRemaining = initialTimeSeconds;
+      setMode('exam');
+      startTimer();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Lightweight Canvas Confetti
+    function triggerConfetti() {
+      const canvas = document.getElementById('confettiCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      canvas.width = canvas.parentElement.clientWidth;
+      canvas.height = canvas.parentElement.clientHeight;
+
+      const particles = [];
+      const colors = ['#10B981', '#F59E0B', '#06B6D4', '#EC4899', '#8B5CF6'];
+
+      for (let i = 0; i < 75; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          vx: (Math.random() - 0.5) * 10,
+          vy: (Math.random() - 0.5) * 10 - 3,
+          size: Math.random() * 6 + 3,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          alpha: 1,
+          decay: Math.random() * 0.02 + 0.015
+        });
+      }
+
+      function render() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let active = 0;
+        particles.forEach(p => {
+          if (p.alpha > 0) {
+            active++;
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += 0.2;
+            p.alpha -= p.decay;
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = Math.max(0, p.alpha);
+            ctx.fillRect(p.x, p.y, p.size, p.size);
+          }
+        });
+        if (active > 0) requestAnimationFrame(render);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      requestAnimationFrame(render);
+    }
+
+    // Page Load Boot
+    window.addEventListener('DOMContentLoaded', () => {
+      updateLocalizedLabels();
+      renderQuestions();
+      renderMatrix();
+      checkPreviousScore();
+      if (currentMode === 'exam') {
+        startTimer();
+      }
+    });
+  </script>
+
+</body>
+</html>

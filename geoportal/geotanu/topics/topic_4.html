@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="kk" class="dark">
+<head>
+  <!-- COURSE ACCESS GUARD: RESTRICT DIRECT ACCESS WITHOUT VALID CODE -->
+  <style id="authCloak">body { display: none !important; }</style>
+  <script>
+    (function() {
+      try {
+        var isAdmin = localStorage.getItem('geotany_admin_auth') === 'true';
+        var sessionStr = localStorage.getItem('geotany_user_session');
+        var isAuthorized = isAdmin;
+        if (!isAuthorized && sessionStr) {
+          var s = JSON.parse(sessionStr);
+          if (s && s.email && (s.courseCode || s.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        var profileStr = localStorage.getItem('geotany_user_profile');
+        if (!isAuthorized && profileStr) {
+          var p = JSON.parse(profileStr);
+          if (p && p.isRegistered && p.email && p.courseCode) {
+            isAuthorized = true;
+          }
+        }
+        if (!isAuthorized) {
+          var target = window.location.pathname.split('/').pop() || 'topics.html';
+          window.location.replace('../geotanu.html?need_course=GEOTANY&redirect=' + encodeURIComponent(target));
+          return;
+        }
+        var cloak = document.getElementById('authCloak');
+        if (cloak) cloak.remove();
+      } catch (err) {
+        window.location.replace('../geotanu.html');
+      }
+    })();
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>#4 Географиялық номенклатура | GeoTany</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50: '#eef2ff', 100: '#e0e7ff', 200: '#c7d2fe', 300: '#a5b4fc', 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 800: '#3730a3', 900: '#312e81' },
+            space: { 800: '#1e293b', 850: '#172033', 900: '#0f172a', 950: '#0b1120' }
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Outfit', 'Inter', sans-serif; }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #0b1120; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+  </style>
+</head>
+<body class="bg-[#070b14] text-slate-100 min-h-screen flex flex-col selection:bg-cyan-500 selection:text-space-950">
+
+  <!-- STICKY TOP NAVBAR -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-space-950/85 border-b border-slate-800/80 px-4 sm:px-8 py-3">
+    <div class="max-w-6xl mx-auto flex items-center justify-between gap-3">
+      <!-- Left: Back Button & Badges -->
+      <div class="flex items-center space-x-2.5 sm:space-x-3 shrink-0">
+        <a href="../geotanu.html#section-zhattau_grammar" id="btnBackToCourse" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white transition"><span>←</span><span id="btnBackToCourseText">Артқа</span></a>
+        <span class="px-2.5 py-1 rounded-full text-xs font-black bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
+          #4
+        </span>
+        <span id="navCatBadge" class="text-xs text-slate-400 font-bold hidden md:inline truncate max-w-[200px]">
+          Картография
+        </span>
+      </div>
+
+      <!-- Right: Controls (Lang Switcher & Mark Complete) -->
+      <div class="flex items-center space-x-2 sm:space-x-3 shrink-0">
+        <!-- Language Switcher -->
+        <div class="inline-flex p-1 bg-space-900 border border-slate-800 rounded-xl space-x-1">
+          <button id="btnLangKz" onclick="setLang('kz')" class="px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow">
+            KZ
+          </button>
+          <button id="btnLangRu" onclick="setLang('ru')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">
+            RU
+          </button>
+        </div>
+
+        <!-- Mark as Completed Button -->
+        <button id="btnComplete" onclick="toggleComplete()" class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition border border-slate-700 bg-space-900 text-slate-300 hover:text-white hover:border-slate-600">
+          <span id="completeIcon" class="text-sm">○</span>
+          <span id="completeText" class="hidden sm:inline">Меңгерілді</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN TOPIC CONTAINER -->
+  <main class="max-w-5xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-8 space-y-6 flex-1">
+
+    <!-- HERO HEADER CARD -->
+    <div class="p-6 sm:p-7 rounded-2xl bg-space-950/90 border border-slate-800 space-y-3.5 shadow-xl relative overflow-hidden">
+      <div class="absolute -right-12 -top-12 w-48 h-48 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="flex items-center space-x-2">
+        <span id="heroCatBadge" class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-space-850 text-cyan-400 border border-cyan-500/20">
+          Картография
+        </span>
+        <span class="text-xs text-slate-400">⏱️ ~8-12 мин оқу</span>
+      </div>
+      <h1 id="heroTitle" class="text-xl sm:text-2xl md:text-3xl font-black text-white tracking-tight leading-snug">
+        Географиялық номенклатура
+      </h1>
+      <!-- External Links Bar -->
+      <div class="flex flex-wrap items-center gap-2 pt-1">
+        <a id="btnBlooket" href="https://dashboard.blooket.com/set/6a95f208089e743aeedae722" target="_blank" class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 border border-purple-500/40 text-xs font-bold transition shadow-sm">
+          <span>🎮</span>
+          <span id="btnBlooketText">Blooket ойыны</span>
+        </a>
+        <button onclick="window.print()" class="inline-flex items-center space-x-1 px-3 py-1.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-400 hover:text-white transition">
+          <span>🖨️</span>
+          <span class="hidden sm:inline">Басып шығару</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 1. BRIEF SUMMARY CARD -->
+    <section class="p-5 rounded-2xl bg-space-950 border border-brand-500/40 text-xs sm:text-sm text-slate-200 leading-relaxed shadow-lg">
+      <div class="flex items-center space-x-2 text-brand-400 font-extrabold text-xs mb-2">
+        <span>📖</span>
+        <span id="summaryHeader">ТАҚЫРЫПҚА ҚЫСҚАША ШОЛУ</span>
+      </div>
+      <p id="summaryText" class="leading-relaxed">
+        Географиялық нысандардың жиынтық атауы — номенклатура. Картамен жұмыстың 3 міндеті: түсіну, оқу, білу. 6 материк (Еуразия 54 млн км² — Аустралия 7,7 млн км²), 4 мұхит (Тынық 178,6 млн км², Мариан 11022 м; Атлант 91,7 млн км²; Үнді 76,2 млн км²; С. Мұзды 14,8 млн км²). Орта Атлант жотасы (18 000 км). 21 биік тау шыңы (Эверест 8848 м), 5 гейзер өрісі, 24 ірі өзен (Амазонка, Ніл), 14 ағыс және әлем көлдері (Байкал 1642 м).
+      </p>
+    </section>
+
+    <!-- 2. FULL THEORY SECTION -->
+    <section class="p-5 sm:p-7 rounded-2xl bg-space-950 border border-slate-800 space-y-4 shadow-xl">
+      <div class="flex items-center space-x-2 border-b border-slate-800 pb-3">
+        <span class="text-base text-cyan-400 font-black">📚</span>
+        <h2 id="theoryHeader" class="text-xs sm:text-sm font-black text-white uppercase tracking-wider">
+          ТОЛЫҚ ТЕОРИЯЛЫҚ МАТЕРИАЛ МЕН КОНСПЕКТ
+        </h2>
+      </div>
+      <div id="theoryContent">
+        <div class="space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed">
+
+  <!-- 1. НОМЕНКЛАТУРА ҰҒЫМЫ ЖӘНЕ КАРТАМЕН ЖҰМЫС -->
+  <div class="p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3">
+    <h4 class="text-sm sm:text-base font-black text-cyan-400 flex items-center space-x-2 border-b border-slate-800 pb-2">
+      <span>🗺️</span>
+      <span>1. Географиялық номенклатура және Картамен жұмыстың 3 міндеті</span>
+    </h4>
+    <div class="space-y-2">
+      <p>• <b>Географиялық номенклатура:</b> Географиялық нысандардың (материктер, мұхиттар, таулар, өзендер, теңіздер, т.б.) жиынтық атауы.</p>
+      <p>• <b>Картамен жұмыс істеу үдерісінің 3 басты міндеті:</b></p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 my-2">
+        <div class="p-3 bg-space-950 rounded-xl border border-sky-500/40 space-y-1">
+          <span class="text-xs font-black text-sky-400 block">1. КАРТАНЫ ТҮСІНУ:</span>
+          <p class="text-[11px] text-slate-300">Картаның түрлері, шартты белгілері және қалай қолдану керектігі туралы негізгі тәсілдерді меңгеру түрі.</p>
+        </div>
+        <div class="p-3 bg-space-950 rounded-xl border border-emerald-500/40 space-y-1">
+          <span class="text-xs font-black text-emerald-400 block">2. КАРТАНЫ ОҚУ:</span>
+          <p class="text-[11px] text-slate-300">Шартты белгілерді меңгере отырып, табиғаттағы құбылыстарды, олардың арасындағы қарым-қатынасты және адамның іс-әрекетін анықтау.</p>
+        </div>
+        <div class="p-3 bg-space-950 rounded-xl border border-amber-500/40 space-y-1">
+          <span class="text-xs font-black text-amber-400 block">3. КАРТАНЫ БІЛУ:</span>
+          <p class="text-[11px] text-slate-300">Оқып жатқан география курсындағы нысандардың жеке пішінін, аттарын, салыстырмалы өлшемін және орналасқан жерін жатқа білу.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. МАТЕРИКТЕР МЕН ДҮНИЕЖҮЗІЛІК МҰХИТ КӨРСЕТКІШТЕРІ -->
+  <div class="p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3">
+    <h4 class="text-sm sm:text-base font-black text-emerald-400 flex items-center space-x-2 border-b border-slate-800 pb-2">
+      <span>🌊</span>
+      <span>2. Материктер мен Дүниежүзілік мұхит көрсеткіштері</span>
+    </h4>
+    <div class="space-y-2">
+      <p>• <b>Дүниежүзілік мұхит</b> ұғымын алғаш ғылымға енгізген ғалым — <b>Ю.М. Шокальский</b>.</p>
+      <p>• <b>Мұхит рельефі мен бөліктері:</b></p>
+      <ul class="list-disc pl-5 space-y-1">
+        <li><b>Орта Атлант жотасы:</b> Атлант мұхитын батыс және шығысқа бөлетін, дүниежүзіндегі ең ұзын су асты жотасы (ұзындығы — <b>18 000 км</b>).</li>
+        <li><b>Солтүстік Мұзды мұхит жоталары:</b> Ломоносов, Менделеев су асты жоталары.</li>
+        <li><b>Солтүстік Мұзды мұхит қазаншұңқырлары:</b> Нансен, Макаров, Бофорт.</li>
+        <li><b>Шығанақ:</b> Мұхиттың немесе теңіздің құрлыққа сұғына еніп жатқан шағын бөлігі.</li>
+        <li><b>Бұғаз:</b> Екі жағынан материктердің немесе аралдардың жағалары қаптап тұратын тар су кеңістігі.</li>
+        <li><b>Түбек:</b> Құрлықтың су кеңістігіне терең сұғынып, кіріп тұрған бөлігі.</li>
+        <li><b>Теңіз:</b> Мұхит суының қасиеті мен жануарлар дүниесі жағынан оқшауланып тұратын бөлігі. Олар <b>шеткі</b> және <b>ішкі</b> болып бөлінеді.</li>
+      </ul>
+    </div>
+
+    <!-- ВЕКТОРЛЫҚ СХЕМА 1 -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 240" class="w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2">
+  <text x="350" y="22" fill="#38bdf8" font-size="11.5" font-weight="900" text-anchor="middle">МАТЕРИКТЕР МЕН МҰХИТТАРДЫҢ АУДАНДАРЫ МЕН КӨРСЕТКІШТЕРІ</text>
+
+  <!-- Left: 6 Continents -->
+  <g transform="translate(20, 38)">
+    <rect x="0" y="0" width="320" height="190" rx="8" fill="#0f172a" stroke="#10b981" stroke-width="1.2" />
+    <rect x="10" y="8" width="300" height="22" rx="4" fill="#10b981" fill-opacity="0.15" />
+    <text x="160" y="23" fill="#34d399" font-size="10" font-weight="bold" text-anchor="middle">МА ТЕРИКТЕР (АУДАНЫ БОЙЫНША РЕЙТИНГ)</text>
+
+    <text x="15" y="48" fill="#ffffff" font-size="9.5">1. Еуразия: <tspan font-weight="bold" fill="#34d399">54 млн км²</tspan> (ең үлкен материк)</text>
+    <rect x="15" y="52" width="290" height="7" rx="2" fill="#1e293b" />
+    <rect x="15" y="52" width="290" height="7" rx="2" fill="#10b981" />
+
+    <text x="15" y="73" fill="#ffffff" font-size="9.5">2. Африка: <tspan font-weight="bold" fill="#34d399">30,3 млн км²</tspan></text>
+    <rect x="15" y="77" width="290" height="7" rx="2" fill="#1e293b" />
+    <rect x="15" y="77" width="162" height="7" rx="2" fill="#10b981" />
+
+    <text x="15" y="98" fill="#ffffff" font-size="9.5">3. Солтүстік Америка: <tspan font-weight="bold" fill="#34d399">24,2 млн км²</tspan></text>
+    <rect x="15" y="102" width="290" height="7" rx="2" fill="#1e293b" />
+    <rect x="15" y="102" width="130" height="7" rx="2" fill="#10b981" />
+
+    <text x="15" y="123" fill="#ffffff" font-size="9.5">4. Оңтүстік Америка: <tspan font-weight="bold" fill="#34d399">18,3 млн км²</tspan></text>
+    <rect x="15" y="127" width="290" height="7" rx="2" fill="#1e293b" />
+    <rect x="15" y="127" width="98" height="7" rx="2" fill="#10b981" />
+
+    <text x="15" y="148" fill="#ffffff" font-size="9.5">5. Антарктида: <tspan font-weight="bold" fill="#34d399">12,4 – 14 млн км²</tspan> (ең суық, биік)</text>
+    <rect x="15" y="152" width="290" height="7" rx="2" fill="#1e293b" />
+    <rect x="15" y="152" width="75" height="7" rx="2" fill="#10b981" />
+
+    <text x="15" y="173" fill="#ffffff" font-size="9.5">6. Аустралия: <tspan font-weight="bold" fill="#34d399">7,7 млн км²</tspan> (ең кіші, құрғақ)</text>
+    <rect x="15" y="177" width="290" height="7" rx="2" fill="#1e293b" />
+    <rect x="15" y="177" width="41" height="7" rx="2" fill="#10b981" />
+  </g>
+
+  <!-- Right: 4 Oceans -->
+  <g transform="translate(360, 38)">
+    <rect x="0" y="0" width="320" height="190" rx="8" fill="#0f172a" stroke="#0ea5e9" stroke-width="1.2" />
+    <rect x="10" y="8" width="300" height="22" rx="4" fill="#0284c7" fill-opacity="0.15" />
+    <text x="160" y="23" fill="#38bdf8" font-size="10" font-weight="bold" text-anchor="middle">4 МҰХИТ ЖӘНЕ ЕҢ ТЕРЕҢ ШҰҢҒЫМАЛАРЫ</text>
+
+    <text x="15" y="48" fill="#ffffff" font-size="9.5">1. Тынық: <tspan font-weight="bold" fill="#38bdf8">178,6 млн км²</tspan> (орт. 3976 м)</text>
+    <text x="15" y="60" fill="#94a3b8" font-size="8.5">Шұңғымасы: <tspan font-weight="bold" fill="#f87171">Мариан 11 022 м</tspan> | Охот толысуы: 13,2 м</text>
+
+    <text x="15" y="85" fill="#ffffff" font-size="9.5">2. Атлант: <tspan font-weight="bold" fill="#38bdf8">91,7 млн км²</tspan> (орт. 3597 м)</text>
+    <text x="15" y="97" fill="#94a3b8" font-size="8.5">Шұңғымасы: <tspan font-weight="bold" fill="#f87171">Пуэрто-Рико 8742 м</tspan> | Фанди толысуы: 18,0 м</text>
+
+    <text x="15" y="122" fill="#ffffff" font-size="9.5">3. Үнді: <tspan font-weight="bold" fill="#38bdf8">76,2 млн км²</tspan> (орт. 3711 м)</text>
+    <text x="15" y="134" fill="#94a3b8" font-size="8.5">Шұңғымасы: <tspan font-weight="bold" fill="#f87171">Ява (Зонд) 7729 м</tspan> | Камбей толысуы: 11,9 м</text>
+
+    <text x="15" y="159" fill="#ffffff" font-size="9.5">4. Солтүстік Мұзды: <tspan font-weight="bold" fill="#38bdf8">14,8 млн км²</tspan> (орт. 1225 м)</text>
+    <text x="15" y="171" fill="#94a3b8" font-size="8.5">Шұңғымасы: <tspan font-weight="bold" fill="#f87171">Гренландия теңізі 5527 м</tspan> | Ақ теңіз: 10 м</text>
+  </g>
+</svg>
+  </div>
+
+  <!-- 3. МАТЕРИКТЕРДІҢ ЖАҒАЛАУЛЫҚ НОМЕНКЛАТУРАСЫ -->
+  <div class="p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-4">
+    <h4 class="text-sm sm:text-base font-black text-amber-400 flex items-center space-x-2 border-b border-slate-800 pb-2">
+      <span>🧭</span>
+      <span>3. Материктердің жағалаулық номенклатурасы</span>
+    </h4>
+    
+    <div class="space-y-3">
+      <!-- Еуразия -->
+      <div class="p-3 bg-space-950 rounded-xl border border-slate-800 space-y-2">
+        <span class="text-xs font-black text-cyan-400 uppercase">🌍 ЕУРАЗИЯ МАТЕРИГІ:</span>
+        <p>• <b>Түбектер (15):</b> Скандинавия, Ютландия, Пиреней, Апеннин, Балкан, Кіші Азия, <b>Арабия (ең үлкен түбек, 3 млн км²)</b>, Үндістан, Үндіқытай, Корей, Камчатка, Чукот, Таймыр, Кола, Малакка.</p>
+        <p>• <b>Шығанақтар (5):</b> Бискай, Бенгал, Аден, Парсы, Сиам.</p>
+        <p>• <b>Бұғаздар (7):</b> Гибралтар (тәулігіне 141 кеме), Ла-Манш (тәулігіне 500 кеме, жалғасы Па-де-Кале), Баб-эль-Мандеб, Лаперуз, Полк, Малакка, Зонд (тәулігіне 182 кеме).</p>
+        <p>• <b>Шеткі теңіздер (16):</b> Солтүстік, Норвег, Баренц, Карск, Лаптевтер, Шығыс Сібір, Чукот, Беринг, Охот, Жапон, Сары, Шығыс Қытай, Оңтүстік Қытай, Филиппин, Андаман, Арабия.</p>
+        <p>• <b>Ішкі теңіздер (7):</b> Балтық, Ақ, Жерорта, Қара, Қызыл, Азов, Мәрмәр.</p>
+      </div>
+
+      <!-- Солтүстік Америка -->
+      <div class="p-3 bg-space-950 rounded-xl border border-slate-800 space-y-2">
+        <span class="text-xs font-black text-emerald-400 uppercase">🌎 СОЛТҮСТІК АМЕРИКА:</span>
+        <p>• <b>Түбектер (5):</b> Лабрадор, Флорида, Юкатан, Калифорния, Аляска.</p>
+        <p>• <b>Шығанақтар (4):</b> Гудзон, Мексика, Калифорния, Фанди (ең биік толысу — 18 м).</p>
+        <p>• <b>Бұғаздар (3):</b> Беринг, Девисов, Дат (Исландия мен Гренландияны бөледі).</p>
+        <p>• <b>Шеткі теңіздер (5):</b> Бофорт, Баффин, Лабрадор, Саргасс (балдырға бай, жағалаусыз), Кариб (ішкі теңіздері жоқ).</p>
+      </div>
+
+      <!-- Оңтүстік Америка & Африка -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div class="p-3 bg-space-950 rounded-xl border border-slate-800 space-y-1.5">
+          <span class="text-xs font-black text-rose-400 uppercase">🌎 ОҢТҮСТІК АМЕРИКА:</span>
+          <p>• <b>Түбек:</b> Валдес.</p>
+          <p>• <b>Шығанақтар:</b> Ла-Плата, Байя-Гранде.</p>
+          <p>• <b>Бұғаздар:</b> Магеллан, <b>Дрейк</b> (дүниежүзінде ең терең — 5248 м, ені ең кең — 950 км).</p>
+        </div>
+        <div class="p-3 bg-space-950 rounded-xl border border-slate-800 space-y-1.5">
+          <span class="text-xs font-black text-amber-400 uppercase">🌍 АФРИКА МАТЕРИГІ:</span>
+          <p>• <b>Түбектер:</b> Сомали («Африка мүйізі»), Синай.</p>
+          <p>• <b>Шығанақтар:</b> Сидра, Гвинея.</p>
+          <p>• <b>Бұғаз:</b> <b>Мозамбик</b> (дүниежүзіндегі ең ұзын бұғаз — 1670 км).</p>
+        </div>
+      </div>
+
+      <!-- Аустралия & Антарктида -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div class="p-3 bg-space-950 rounded-xl border border-slate-800 space-y-1.5">
+          <span class="text-xs font-black text-teal-400 uppercase">🦘 АУСТРАЛИЯ:</span>
+          <p>• <b>Түбектер:</b> Арнемленд, Кейп-Йорк.</p>
+          <p>• <b>Шығанақтар:</b> Карпентария, Үлкен Аустралия.</p>
+          <p>• <b>Бұғаздар:</b> Торрес, Бассов.</p>
+          <p>• <b>Теңіздер:</b> Тимор, Арафур, Маржанды, Тасман, Фиджи.</p>
+        </div>
+        <div class="p-3 bg-space-950 rounded-xl border border-slate-800 space-y-1.5">
+          <span class="text-xs font-black text-sky-300 uppercase">❄️ АНТАРКТИДА:</span>
+          <p>• <b>Түбек:</b> Антарктида түбегі.</p>
+          <p>• <b>Теңіздер:</b> Уэдделл, Беллинсгаузен, Амундсен, Росс.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. КАНАЛДАР ЖӘНЕ АРАЛДАР МЕН АРХИПЕЛАГТАР -->
+  <div class="p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3">
+    <h4 class="text-sm sm:text-base font-black text-violet-400 flex items-center space-x-2 border-b border-slate-800 pb-2">
+      <span>🏝️</span>
+      <span>4. Маңызды каналдар, Аралдар және Архипелагтар</span>
+    </h4>
+    <div class="space-y-2">
+      <p>• <b>Маңызды ірі каналдар:</b></p>
+      <ul class="list-disc pl-5 space-y-1">
+        <li><b>Суэц каналы:</b> Египетте, Жерорта теңізі мен Қызыл теңізді қосады (Африка мен Азия шекарасы).</li>
+        <li><b>Панама каналы:</b> Атлант мұхиты мен Тынық мұхитын жалғастырады (Солтүстік және Оңтүстік Америка шекарасы).</li>
+        <li><b>Киль каналы:</b> Солтүстік теңіз бен Балтық теңізін байланыстырады.</li>
+      </ul>
+      <p>• <b>Арал:</b> Жан-жағын су қоршаған, материктермен салыстырғанда құрлықтың шағын учаскесі.</p>
+      <p>• <b>Архипелаг:</b> Бір-біріне жақын орналасқан аралдар тобы. Жердегі ең үлкені — <b>Малайя архипелагы</b> (Үлкен Зонд және Кіші Зонд аралдары, Еуразия мен Аустралия аралығында). Ірі архипелагтар: Канада Арктикалық архипелагы, Шпицберген.</p>
+      <p>• <b>Аралдардың пайда болу жолдары:</b></p>
+      <ul class="list-disc pl-5 space-y-1">
+        <li><b>Материктік аралдар:</b> Гренландия (әлемдегі ең үлкен арал — 2,17 млн км²), Мадагаскар, Британ аралдары.</li>
+        <li><b>Жанартаулық аралдар:</b> Исландия, Гавай, Азор аралдары.</li>
+        <li><b>Маржандық аралдар:</b> <b>Үлкен Тосқауыл рифі</b> (дүниежүзіндегі ең ұзын маржан құрылымы — 2000 км), Маржан теңіз аралдары.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 5. ӘЛЕМ БОЙЫНША БИІК ТАУЛАР МЕН ШЫҢДАР -->
+  <div class="p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3">
+    <h4 class="text-sm sm:text-base font-black text-rose-400 flex items-center space-x-2 border-b border-slate-800 pb-2">
+      <span>⛰️</span>
+      <span>5. Әлем бойынша биік таулар мен шыңдар (21 тау жүйесі)</span>
+    </h4>
+    <div class="overflow-x-auto my-2">
+      <table class="w-full text-left text-xs border border-slate-800 rounded-xl overflow-hidden">
+        <thead class="bg-space-950 text-slate-400 border-b border-slate-800">
+          <tr>
+            <th class="p-2">#</th>
+            <th class="p-2">Тау жүйесі</th>
+            <th class="p-2">Биік шыңы</th>
+            <th class="p-2">Биіктігі</th>
+            <th class="p-2">Орналасуы</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-800 text-[11px] text-slate-300">
+          <tr><td class="p-2">1</td><td class="p-2 font-bold text-white">Гималай</td><td class="p-2 text-cyan-300 font-mono">Эверест (Джомолунгма)</td><td class="p-2 font-bold text-emerald-400">8848 м</td><td class="p-2">Еуразия (Әлемдегі ең биік)</td></tr>
+          <tr><td class="p-2">2</td><td class="p-2 font-bold text-white">Қарақорым</td><td class="p-2 text-cyan-300 font-mono">Чогори (К2)</td><td class="p-2 font-bold text-emerald-400">8611 м</td><td class="p-2">Еуразия (2-орын)</td></tr>
+          <tr><td class="p-2">3</td><td class="p-2 font-bold text-white">Кунь-Лунь</td><td class="p-2 text-cyan-300 font-mono">Улугмузтаг</td><td class="p-2 font-bold text-emerald-400">7723 м</td><td class="p-2">Еуразия</td></tr>
+          <tr><td class="p-2">4</td><td class="p-2 font-bold text-white">Памир</td><td class="p-2 text-cyan-300 font-mono">Конгур</td><td class="p-2 font-bold text-emerald-400">7719 м</td><td class="p-2">Еуразия</td></tr>
+          <tr><td class="p-2">5</td><td class="p-2 font-bold text-white">Гиндукуш</td><td class="p-2 text-cyan-300 font-mono">Тиричмир</td><td class="p-2 font-bold text-emerald-400">7690 м</td><td class="p-2">Еуразия</td></tr>
+          <tr><td class="p-2">6</td><td class="p-2 font-bold text-white">Тянь-Шань</td><td class="p-2 text-cyan-300 font-mono">Жеңіс шыңы</td><td class="p-2 font-bold text-emerald-400">7439 м</td><td class="p-2">Еуразия (ҚР шекарасы)</td></tr>
+          <tr><td class="p-2">7</td><td class="p-2 font-bold text-white">Тибет</td><td class="p-2 text-cyan-300 font-mono">Алинг-Гангри</td><td class="p-2 font-bold text-emerald-400">7315 м</td><td class="p-2">Еуразия (Таулы қырат)</td></tr>
+          <tr><td class="p-2">8</td><td class="p-2 font-bold text-white">Анд</td><td class="p-2 text-cyan-300 font-mono">Аконкагуа</td><td class="p-2 font-bold text-sky-400">6960 м</td><td class="p-2">Оңтүстік Америка</td></tr>
+          <tr><td class="p-2">9</td><td class="p-2 font-bold text-white">Кордильер</td><td class="p-2 text-cyan-300 font-mono">Денали (Мак-Кинли)</td><td class="p-2 font-bold text-sky-400">6193 м</td><td class="p-2">Солтүстік Америка</td></tr>
+          <tr><td class="p-2">10</td><td class="p-2 font-bold text-white">Килиманджаро</td><td class="p-2 text-cyan-300 font-mono">Килиманджаро</td><td class="p-2 font-bold text-amber-400">5895 м</td><td class="p-2">Африка</td></tr>
+          <tr><td class="p-2">11</td><td class="p-2 font-bold text-white">Кавказ</td><td class="p-2 text-cyan-300 font-mono">Эльбрус</td><td class="p-2 font-bold text-amber-400">5642 м</td><td class="p-2">Еуразия</td></tr>
+          <tr><td class="p-2">12</td><td class="p-2 font-bold text-white">Элсуорт</td><td class="p-2 text-cyan-300 font-mono">Винсон массиві</td><td class="p-2 font-bold text-indigo-400">5140 м</td><td class="p-2">Антарктида</td></tr>
+          <tr><td class="p-2">13</td><td class="p-2 font-bold text-white">Альпі</td><td class="p-2 text-cyan-300 font-mono">Монблан</td><td class="p-2 font-bold text-slate-300">4807 м</td><td class="p-2">Еуропа</td></tr>
+          <tr><td class="p-2">14</td><td class="p-2 font-bold text-white">Алтай</td><td class="p-2 text-cyan-300 font-mono">Белуха (Мұзтау)</td><td class="p-2 font-bold text-slate-300">4506 м</td><td class="p-2">Қазақстан / Сібір</td></tr>
+          <tr><td class="p-2">15</td><td class="p-2 font-bold text-white">Сеңгір таулар</td><td class="p-2 text-cyan-300 font-mono">Эльберт</td><td class="p-2 font-bold text-slate-300">4399 м</td><td class="p-2">Солтүстік Америка</td></tr>
+          <tr><td class="p-2">16</td><td class="p-2 font-bold text-white">Атлас</td><td class="p-2 text-cyan-300 font-mono">Тубкаль</td><td class="p-2 font-bold text-slate-300">4165 м</td><td class="p-2">Африка</td></tr>
+          <tr><td class="p-2">17</td><td class="p-2 font-bold text-white">Армян қыраты</td><td class="p-2 text-cyan-300 font-mono">Арагац</td><td class="p-2 font-bold text-slate-300">4090 м</td><td class="p-2">Алдыңғы Азия</td></tr>
+          <tr><td class="p-2">18</td><td class="p-2 font-bold text-white">Фудзияма</td><td class="p-2 text-cyan-300 font-mono">Фудзияма</td><td class="p-2 font-bold text-slate-300">3776 м</td><td class="p-2">Жапония</td></tr>
+          <tr><td class="p-2">19</td><td class="p-2 font-bold text-white">Үлкен Суайрық</td><td class="p-2 text-cyan-300 font-mono">Косцюшко</td><td class="p-2 font-bold text-slate-300">2228 м</td><td class="p-2">Аустралия</td></tr>
+          <tr><td class="p-2">20</td><td class="p-2 font-bold text-white">Аппалач</td><td class="p-2 text-cyan-300 font-mono">Митчелл</td><td class="p-2 font-bold text-slate-300">2037 м</td><td class="p-2">Солтүстік Америка</td></tr>
+          <tr><td class="p-2">21</td><td class="p-2 font-bold text-white">Орал</td><td class="p-2 text-cyan-300 font-mono">Народная</td><td class="p-2 font-bold text-slate-300">1895 м</td><td class="p-2">Еуразия (шекаралық)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ВЕКТОРЛЫҚ СХЕМА 2 -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 240" class="w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2">
+  <text x="350" y="22" fill="#38bdf8" font-size="11.5" font-weight="900" text-anchor="middle">ӘЛЕМНІҢ ЕҢ БИІК ТАУ ШЫҢДАРЫ (БИІКТІГІ МЕТРМЕН)</text>
+
+  <!-- Left: Top 5 Peaks -->
+  <g transform="translate(20, 38)">
+    <rect x="0" y="0" width="320" height="190" rx="8" fill="#0f172a" stroke="#f59e0b" stroke-width="1.2" />
+    <rect x="10" y="8" width="300" height="22" rx="4" fill="#f59e0b" fill-opacity="0.15" />
+    <text x="160" y="23" fill="#fbbf24" font-size="10" font-weight="bold" text-anchor="middle">АЗИЯНЫҢ АЛЫП ТАУЛАРЫ</text>
+
+    <text x="15" y="48" fill="#ffffff" font-size="9">Гималай: <tspan font-weight="bold" fill="#f87171">Эверест (Джомолунгма) — 8848 м</tspan></text>
+    <rect x="15" y="52" width="290" height="6" rx="2" fill="#ef4444" />
+
+    <text x="15" y="73" fill="#ffffff" font-size="9">Қарақорым: <tspan font-weight="bold" fill="#f87171">Чогори (К2) — 8611 м</tspan></text>
+    <rect x="15" y="77" width="282" height="6" rx="2" fill="#ef4444" />
+
+    <text x="15" y="98" fill="#ffffff" font-size="9">Кунь-Лунь: <tspan font-weight="bold" fill="#fbbf24">Улугмузтаг — 7723 м</tspan></text>
+    <rect x="15" y="102" width="253" height="6" rx="2" fill="#f59e0b" />
+
+    <text x="15" y="123" fill="#ffffff" font-size="9">Памир: <tspan font-weight="bold" fill="#fbbf24">Конгур — 7719 м</tspan></text>
+    <rect x="15" y="127" width="252" height="6" rx="2" fill="#f59e0b" />
+
+    <text x="15" y="148" fill="#ffffff" font-size="9">Гиндукуш: <tspan font-weight="bold" fill="#fbbf24">Тиричмир — 7690 м</tspan></text>
+    <rect x="15" y="152" width="251" height="6" rx="2" fill="#f59e0b" />
+
+    <text x="15" y="173" fill="#ffffff" font-size="9">Тянь-Шань: <tspan font-weight="bold" fill="#34d399">Жеңіс шыңы — 7439 м</tspan></text>
+    <rect x="15" y="177" width="243" height="6" rx="2" fill="#10b981" />
+  </g>
+
+  <!-- Right: Other Continents Highest Peaks -->
+  <g transform="translate(360, 38)">
+    <rect x="0" y="0" width="320" height="190" rx="8" fill="#0f172a" stroke="#8b5cf6" stroke-width="1.2" />
+    <rect x="10" y="8" width="300" height="22" rx="4" fill="#8b5cf6" fill-opacity="0.15" />
+    <text x="160" y="23" fill="#c084fc" font-size="10" font-weight="bold" text-anchor="middle">БАСҚА МАТЕРИКТЕРДІҢ БИІК ШЫҢДАРЫ</text>
+
+    <text x="15" y="48" fill="#ffffff" font-size="9">О. Америка (Анд): <tspan font-weight="bold" fill="#38bdf8">Аконкагуа — 6960 м</tspan></text>
+    <rect x="15" y="52" width="228" height="6" rx="2" fill="#0ea5e9" />
+
+    <text x="15" y="73" fill="#ffffff" font-size="9">С. Америка (Кордильер): <tspan font-weight="bold" fill="#38bdf8">Денали — 6193 м</tspan></text>
+    <rect x="15" y="77" width="202" height="6" rx="2" fill="#0ea5e9" />
+
+    <text x="15" y="98" fill="#ffffff" font-size="9">Африка: <tspan font-weight="bold" fill="#34d399">Килиманджаро — 5895 м</tspan></text>
+    <rect x="15" y="102" width="193" height="6" rx="2" fill="#10b981" />
+
+    <text x="15" y="123" fill="#ffffff" font-size="9">Кавказ: <tspan font-weight="bold" fill="#34d399">Эльбрус — 5642 м</tspan></text>
+    <rect x="15" y="127" width="185" height="6" rx="2" fill="#10b981" />
+
+    <text x="15" y="148" fill="#ffffff" font-size="9">Антарктида: <tspan font-weight="bold" fill="#cbd5e1">Винсон массиві — 5140 м</tspan></text>
+    <rect x="15" y="152" width="168" height="6" rx="2" fill="#64748b" />
+
+    <text x="15" y="173" fill="#ffffff" font-size="9">Еуропа (Альпі): <tspan font-weight="bold" fill="#cbd5e1">Монблан — 4807 м</tspan> | Алтай: 4506 м</text>
+    <rect x="15" y="177" width="157" height="6" rx="2" fill="#64748b" />
+  </g>
+</svg>
+  </div>
+
+  <!-- 6. ӘЛЕМДЕГІ НЕГІЗГІ 5 ГЕЙЗЕРЛІ АУДАН -->
+  <div class="p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3">
+    <h4 class="text-sm sm:text-base font-black text-teal-400 flex items-center space-x-2 border-b border-slate-800 pb-2">
+      <span>♨️</span>
+      <span>6. Әлемдегі негізгі 5 гейзерлі аудан</span>
+    </h4>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+      <div class="p-3 bg-space-950 rounded-xl border border-teal-500/40 space-y-1">
+        <span class="font-bold text-teal-400 block">1. Исландия (Атлант мұхиты):</span>
+        <p class="text-slate-300">Литосфералық плиталардың ажырау аймағында орналасқан. Әйгілі <b>Үлкен Гейзер (Гейсир)</b> осында, бұл атаудан термин шыққан. Геотермалдық энергия үйлер мен жылыжайларды жылытуға кеңінен қолданылады.</p>
+      </div>
+      <div class="p-3 bg-space-950 rounded-xl border border-teal-500/40 space-y-1">
+        <span class="font-bold text-teal-400 block">2. Камчатка түбегі (Ресей, Еуразия):</span>
+        <p class="text-slate-300">Тынық мұхиттық «Отты шеңбер» бөлігі. 1941 жылы ашылған, әлемдегі ең ірі геотермалдық шоғыр — әйгілі <b>Гейзерлер алқабы</b> орналасқан.</p>
+      </div>
+      <div class="p-3 bg-space-950 rounded-xl border border-teal-500/40 space-y-1">
+        <span class="font-bold text-teal-400 block">3. Йеллоустоун ұлттық паркі (АҚШ):</span>
+        <p class="text-slate-300">Супержанартаудың үстіндегі ең үлкен гейзер өрісі. Әлемдегі барлық гейзерлердің шамамен <b>жартысы</b> шоғырланған. Танымалы — дәлдікпен атқылайтын <b>«Кәрі қызметші» (Old Faithful)</b>.</p>
+      </div>
+      <div class="p-3 bg-space-950 rounded-xl border border-teal-500/40 space-y-1">
+        <span class="font-bold text-teal-400 block">4. Жапония (Шығыс Азия):</span>
+        <p class="text-slate-300">Төрт плитаның түйіскен жерінде орналасқан. Гейзерлер мен ыстық термалды бұлақтар — <b>онсэндер</b> кең таралған.</p>
+      </div>
+      <div class="p-3 bg-space-950 rounded-xl border border-teal-500/40 space-y-1 md:col-span-2">
+        <span class="font-bold text-teal-400 block">5. Жаңа Зеландия (Тынық мұхиты):</span>
+        <p class="text-slate-300">Солтүстік аралда, <b>Таупо жанартаулық аймағында (Роторуа қаласы)</b> шоғырланған. Қуатты гейзерлер, қайнап жатқан балшық қазандары мен фумаролалар бар.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. МАТЕРИКТЕР БОЙЫНША 24 ІРІ ӨЗЕН -->
+  <div class="p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3">
+    <h4 class="text-sm sm:text-base font-black text-sky-400 flex items-center space-x-2 border-b border-slate-800 pb-2">
+      <span>🏞️</span>
+      <span>7. Материктер бойынша 24 ірі өзен</span>
+    </h4>
+    <div class="space-y-2 text-xs">
+      <p>• <b>Солтүстік Америка:</b> 1. <b>Юкон</b> (Аляска, алтын өндіру); 2. <b>Маккензи</b> (Канаданың ең ұзын өзені); 3. <b>Колумбия</b> (ең үлкен гидроэнергетикалық қор); 4. <b>Миссисипи</b> (материктің ең ұзын, суы мол өзені, алып дельтасы бар).</p>
+      <p>• <b>Оңтүстік Америка:</b> 5. <b>Амазонка</b> (әлемдегі суы ең мол, алабы ең үлкен өзен); 6. <b>Парана</b> (саласы Игуасуда әйгілі Игуасу сарқырамасы орналасқан).</p>
+      <p>• <b>Еуропа:</b> 7. <b>Дунай</b> (10 мемлекет арқылы ағатын Еуропа рекордсмені); 8. <b>Рейн</b> (Батыс Еуропаның басты көлік күретамыры); 9. <b>Еділ (Волга)</b> (Еуропадағы ең ұзын өзен, Каспий тұйық алабына құяды).</p>
+      <p>• <b>Азия (Ресей):</b> 10. <b>Обь</b> (Еуразиядағы алабының ауданы ең үлкен өзен); 11. <b>Енисей</b> (Ресейдің ең суы мол өзені, Батыс пен Шығыс Сібір шекарасы); 12. <b>Лена</b> (алабы мәңгі тоң аймағында жатқан ең ірі өзен).</p>
+      <p>• <b>Азия (Шетелдік):</b> 13. <b>Амур</b> (Ресей-Қытай шекарасы, жазғы муссондық тасқындар); 14. <b>Хуанхэ</b> («Сары өзен», лёсс жыныстары, арнасын жиі өзгертеді); 15. <b>Янцзы</b> (Еуразиядағы ең ұзын және ең суы мол өзен); 16. <b>Ганг</b> (Үндістанның қасиетті өзені, Брахмапутрамен бірге әлемдегі ең үлкен дельта); 17. <b>Инд</b> (Пәкістанның басты өзені, суландыру); 18. <b>Меконг</b> («Азия Дунайы»); 19. <b>Тигр және Евфрат</b> (Месопотамия өркениеті, Шатт-әл-Араб арқылы Парсы шығанағына құяды).</p>
+      <p>• <b>Африка:</b> 20. <b>Ніл</b> (Африканың ең ұзын өзені, Сахараны құрғамай кесіп өтеді); 21. <b>Конго (Заир)</b> (экваторды екі рет кесіп өтетін әлемдегі жалғыз ірі өзен); 22. <b>Нигер</b> (Батыс Африканың басты өзені); 23. <b>Замбези</b> (Үнді мұхитына құяды, Виктория сарқырамасы бар).</p>
+      <p>• <b>Аустралия:</b> 24. <b>Муррей және Дарлинг</b> (құрғақ материктің ең ірі өзен жүйесі, құрғақ маусымда қатты тайызданады).</p>
+    </div>
+  </div>
+
+  <!-- 8. МҰЗДЫҚТАР, АҒЫСТАР ЖӘНЕ КӨЛДЕР -->
+  <div class="p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3">
+    <h4 class="text-sm sm:text-base font-black text-indigo-400 flex items-center space-x-2 border-b border-slate-800 pb-2">
+      <span>🧊</span>
+      <span>8. Мұздықтар, Мұхит ағыстары және Әлем көлдері</span>
+    </h4>
+    <div class="space-y-2 text-xs">
+      <p>• <b>Жер шарындағы ірі мұздықтар:</b></p>
+      <ul class="list-disc pl-5 space-y-1">
+        <li><b>1) Хабборт (145 км):</b> Солтүстік Америкада (Аляска).</li>
+        <li><b>2) Федченко (77 км):</b> Памир тауларында (Еуразиядағы ең ұзын тау-аңғар мұздығы).</li>
+        <li><b>3) Корженевский (12 км):</b> Іле Алатауында орналасқан ірі мұздық.</li>
+        <li><b>4) Тұйықсу (3,5 км):</b> Іле Алатауындағы ең көп зерттелген мұздық (ғалым Н.Н. Пальгов зерттеген).</li>
+      </ul>
+
+      <p>• <b>Дүниежүзілік мұхиттың 14 басты ағысы:</b></p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2 my-1">
+        <div class="p-2.5 bg-space-950 rounded-lg border border-red-500/30">
+          <span class="text-rose-400 font-bold block mb-1">ЖЫЛЫ АҒЫСТАР:</span>
+          <p>• <b>Гольфстрим:</b> ең қуатты жылы ағыс, С. Еуропа порттары қыста қатпайды.</p>
+          <p>• <b>Куросио:</b> «Тынық мұхиттағы Гольфстрим», Жапония климатын жұмсартады.</p>
+          <p>• <b>Бразилия:</b> Оңтүстік Америкаға ылғал әкеледі.</p>
+          <p>• <b>Солтүстік және Оңтүстік Пассат ағыстары</b> (Атлант және Тынық мұхитында).</p>
+        </div>
+        <div class="p-2.5 bg-space-950 rounded-lg border border-blue-500/30">
+          <span class="text-sky-400 font-bold block mb-1">СУЫҚ АҒЫСТАР:</span>
+          <p>• <b>Батыс желдер ағысы:</b> ең ұзын, қуатты, «су сақинасы».</p>
+          <p>• <b>Бенгел:</b> Намиб шөлін қалыптастырған ағыс.</p>
+          <p>• <b>Канар:</b> Сахара шөлінің қалыптасуына әсер еткен.</p>
+          <p>• <b>Перу (Гумбольдт):</b> әлемдегі ең құрғақ Атакама шөлін жасаған.</p>
+          <p>• <b>Калифорния:</b> Мохаве және Сонора шөлдеріне әсер етеді.</p>
+          <p>• <b>Муссон (Сомали):</b> бағытын маусым бойынша өзгертетін ағыс.</p>
+        </div>
+      </div>
+
+      <p>• <b>Әлемнің атақты көлдері:</b></p>
+      <ul class="list-disc pl-5 space-y-1">
+        <li><b>Байкал:</b> ең терең көл (1642 м), тұщы судың ең үлкен қоры (тектоникалық).</li>
+        <li><b>Танганьика:</b> ең ұзын көл, тереңдігі бойынша 2-орын (Танзания, Африка).</li>
+        <li><b>Виктория:</b> Африкадағы ауданы бойынша ең ірі көл.</li>
+        <li><b>Ыстықкөл:</b> Қырғызстандағы биіктаулы тұйық көл, қыста қатпайды.</li>
+        <li><b>Зайсан:</b> ҚР шығысында, Қара Ертіс құйып, Ертіс өзені болып шығады.</li>
+        <li><b>Балқаш:</b> батысы тұщы, шығысы ащы бірегей көл (Қазақстан).</li>
+        <li><b>Ұлы көлдер:</b> дүниежүзілік тұщы судың 20%-ы. <b>Жоғарғы көл</b> — ең үлкен тұщы көл.</li>
+        <li><b>Каспий:</b> дүниежүзіндегі ең үлкен көл (қалдық теңіз-көл).</li>
+        <li><b>Арал:</b> Тұран ойпатындағы экологиялық апатқа ұшыраған қалдық көл.</li>
+        <li><b>Өлі теңіз:</b> Еуразияның ең төмен нүктесі (-430 м), өте жоғары тұздылық.</li>
+        <li><b>Титикака:</b> ең ірі биіктаулы көл (Анд). <b>Чад</b> — саваннадағы таяз көл. <b>Лобнор</b> — кезбе көл. <b>Эйр</b> — Аустралияның ең төмен нүктесі (-16 м).</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+      </div>
+    </section>
+
+    <!-- 3. VISUAL SVG DIAGRAM / ILLUSTRATION -->
+    <section id="svgSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl">
+      <div class="flex items-center space-x-2 text-amber-400 font-extrabold text-xs">
+        <span>🎨</span>
+        <span id="svgHeader">КӨРНЕКІ СХЕМА МЕН ИНФОГРАФИКА</span>
+      </div>
+      <div id="svgContainer" class="w-full flex justify-center overflow-x-auto">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 250" class="w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner">
+  <text x="350" y="24" fill="#38bdf8" font-size="12" font-weight="900" text-anchor="middle">ГЕОГРАФИЯЛЫҚ НОМЕНКЛАТУРА: НЕГІЗГІ НЫСАНДАР МЕН КӨРСЕТКІШТЕР</text>
+
+  <!-- Left Card: Continents & Oceans -->
+  <rect x="15" y="40" width="210" height="195" rx="10" fill="#0f172a" stroke="#0ea5e9" stroke-width="1.5" />
+  <rect x="25" y="50" width="190" height="24" rx="6" fill="#0284c7" fill-opacity="0.15" />
+  <text x="120" y="66" fill="#38bdf8" font-size="10.5" font-weight="900" text-anchor="middle">МАТЕРИКТЕР &amp; МҰХИТТАР</text>
+  <text x="26" y="92" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#ffffff">6 Материк:</tspan> Еуразия (54 млн)</text>
+  <text x="34" y="106" fill="#94a3b8" font-size="9">Африка (30,3), С.Ам (24,2), О.Ам (18,3)</text>
+  <text x="34" y="120" fill="#94a3b8" font-size="9">Антарктида (14), Аустралия (7,7)</text>
+  <text x="26" y="140" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#34d399">4 Мұхит:</tspan> Тынық (178,6 млн)</text>
+  <text x="34" y="154" fill="#94a3b8" font-size="9">Атлант (91,7), Үнді (76,2), Мұзды (14,8)</text>
+  <text x="26" y="174" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#f87171">Мариан шұңғымасы:</tspan> 11 022 м</text>
+  <text x="26" y="194" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#fbbf24">Орта Атлант жотасы:</tspan> 18 000 км</text>
+  <text x="26" y="214" fill="#34d399" font-size="9.5" font-weight="bold">• Шокальский: Дүниежүзілік мұхит</text>
+
+  <!-- Middle Card: Mountains, Rivers & Glaciers -->
+  <rect x="245" y="40" width="210" height="195" rx="10" fill="#0f172a" stroke="#10b981" stroke-width="1.5" />
+  <rect x="255" y="50" width="190" height="24" rx="6" fill="#10b981" fill-opacity="0.15" />
+  <text x="350" y="66" fill="#34d399" font-size="10.5" font-weight="900" text-anchor="middle">ТАУЛАР &amp; ӨЗЕНДЕР</text>
+  <text x="256" y="92" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#ffffff">Ең биік шың:</tspan> Эверест (8848 м)</text>
+  <text x="264" y="106" fill="#94a3b8" font-size="9">Чогори 8611 м, Аконкагуа 6960 м</text>
+  <text x="256" y="126" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#ffffff">Өзен рекордтары:</tspan></text>
+  <text x="264" y="140" fill="#94a3b8" font-size="9">Амазонка (ең сулы), Ніл (ең ұзын)</text>
+  <text x="264" y="154" fill="#94a3b8" font-size="9">Конго (экваторды 2 рет кеседі)</text>
+  <text x="256" y="174" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#fbbf24">Мұздықтар:</tspan> Хабборт (145 км)</text>
+  <text x="264" y="188" fill="#94a3b8" font-size="9">Федченко (77 км), Тұйықсу (3,5 км)</text>
+  <text x="256" y="210" fill="#38bdf8" font-size="9.5" font-weight="bold">• Пальгов: Тұйықсу зерттеушісі</text>
+
+  <!-- Right Card: Currents, Lakes, Geysers -->
+  <rect x="475" y="40" width="210" height="195" rx="10" fill="#0f172a" stroke="#f59e0b" stroke-width="1.5" />
+  <rect x="485" y="50" width="190" height="24" rx="6" fill="#f59e0b" fill-opacity="0.15" />
+  <text x="580" y="66" fill="#fbbf24" font-size="10.5" font-weight="900" text-anchor="middle">АҒЫСТАР &amp; КӨЛДЕР</text>
+  <text x="486" y="92" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#ffffff">Жылы ағыс:</tspan> Гольфстрим, Куросио</text>
+  <text x="486" y="110" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#ffffff">Суық ағыс:</tspan> Батыс желдер (сақина),</text>
+  <text x="494" y="124" fill="#94a3b8" font-size="9">Бенгел (Намиб), Перу (Атакама)</text>
+  <text x="486" y="144" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#38bdf8">Байкал көлі:</tspan> ең терең (1642 м)</text>
+  <text x="494" y="158" fill="#94a3b8" font-size="9">Каспий — ең үлкен көл, Чад — таяз</text>
+  <text x="486" y="178" fill="#cbd5e1" font-size="9.5">• <tspan font-weight="bold" fill="#34d399">5 Гейзер өрісі:</tspan> Исландия,</text>
+  <text x="494" y="192" fill="#94a3b8" font-size="9">Камчатка, Йеллоустоун, Жапония, Зел.</text>
+  <text x="486" y="212" fill="#f87171" font-size="9.5" font-weight="bold">• Дрейк: ені ең кең бұғаз (950 км)</text>
+</svg>
+      </div>
+    </section>
+
+    <!-- 4. STRUCTURED DATA TABLE -->
+    <section id="tableSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl overflow-x-auto">
+      <h3 class="text-xs font-black text-cyan-400 flex items-center space-x-2">
+        <span>📊</span>
+        <span id="tableHeader">НАҚТЫ КӨРСЕТКІШТЕР МЕН КЛАССИФИКАЦИЯ КЕСТЕСІ</span>
+      </h3>
+      <div id="tableContainer">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- 5. KEY FACTS FOR UNT / ЕНТ -->
+    <section id="factsSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl">
+      <h3 class="text-xs font-black text-amber-400 flex items-center space-x-2">
+        <span>⚡</span>
+        <span id="factsHeader">ҰБТ-ҒА ҚАЖЕТТІ НЕГІЗГІ ЕРЕЖЕЛЕР МЕН ФАКТІЛЕР</span>
+      </h3>
+      <ul id="factsList" class="space-y-2 text-xs text-slate-300">
+        <!-- Rendered via JS -->
+      </ul>
+    </section>
+
+    <!-- 6. TRAPS AND HACKS -->
+    <section id="trapsSection" class="p-5 rounded-2xl bg-gradient-to-r from-amber-950/40 via-space-950 to-space-950 border border-amber-500/40 space-y-3 shadow-xl">
+      <h3 class="text-xs font-black text-amber-400 flex items-center space-x-2">
+        <span>💡</span>
+        <span id="trapsHeader">ҰБТ ҚАҚПАНДАРЫ МЕН ЛАЙФХАКТАР</span>
+      </h3>
+      <div id="trapsList" class="space-y-2 text-xs text-slate-200">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- FOOTER NAVIGATION -->
+    <nav class="pt-4 pb-8 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3 text-xs">
+      <a href="topic_03.html" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white transition shadow-sm">
+      <span>←</span>
+      <span>#3 Алдыңғы тақырып</span>
+    </a>
+      <a href="../geotanu.html#section-zhattau_grammar" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-400 hover:text-white transition">
+        <span>🏠</span>
+        <span>Барлық тақырыптар</span>
+      </a>
+      <a href="topic_05.html" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-xs font-bold text-cyan-300 hover:text-white transition shadow-sm">
+      <span>Келесі тақырып #5</span>
+      <span>→</span>
+    </a>
+    </nav>
+
+  </main>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="xpToast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300 flex items-center space-x-2 px-4 py-3 rounded-2xl bg-space-900 border border-cyan-500/40 shadow-2xl text-xs font-bold text-white">
+    <span class="text-cyan-400 text-base">✨</span>
+    <span id="toastMsg">+20 XP! Тақырып меңгерілді</span>
+  </div>
+
+  <script>
+    const topicData = {"num": 4, "title_kz": "Географиялық номенклатура", "title_ru": "Географическая номенклатура", "category_kz": "Картография", "category_ru": "Картография", "summary_kz": "Географиялық нысандардың жиынтық атауы — номенклатура. Картамен жұмыстың 3 міндеті: түсіну, оқу, білу. 6 материк (Еуразия 54 млн км² — Аустралия 7,7 млн км²), 4 мұхит (Тынық 178,6 млн км², Мариан 11022 м; Атлант 91,7 млн км²; Үнді 76,2 млн км²; С. Мұзды 14,8 млн км²). Орта Атлант жотасы (18 000 км). 21 биік тау шыңы (Эверест 8848 м), 5 гейзер өрісі, 24 ірі өзен (Амазонка, Ніл), 14 ағыс және әлем көлдері (Байкал 1642 м).", "summary_ru": "Географическая номенклатура — совокупность названий объектов. 3 задачи работы с картой: понимать, читать, знать. 6 материков (Евразия 54 млн — Австралия 7,7 млн км²), 4 океана (Тихий 178,6 млн км², Марианский 11022 м; Атлантический; Индийский; Сев. Ледовитый). Срединно-Атлантический хребет (18 000 км). 21 горная вершина (Эверест 8848 м), 5 районов гейзеров, 24 реки (Амазонка, Нил), 14 течений и озера мира (Байкал 1642 м).", "full_theory_kz": "<div class=\"space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed\">\n\n  <!-- 1. НОМЕНКЛАТУРА ҰҒЫМЫ ЖӘНЕ КАРТАМЕН ЖҰМЫС -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-cyan-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🗺️</span>\n      <span>1. Географиялық номенклатура және Картамен жұмыстың 3 міндеті</span>\n    </h4>\n    <div class=\"space-y-2\">\n      <p>• <b>Географиялық номенклатура:</b> Географиялық нысандардың (материктер, мұхиттар, таулар, өзендер, теңіздер, т.б.) жиынтық атауы.</p>\n      <p>• <b>Картамен жұмыс істеу үдерісінің 3 басты міндеті:</b></p>\n      <div class=\"grid grid-cols-1 md:grid-cols-3 gap-3 my-2\">\n        <div class=\"p-3 bg-space-950 rounded-xl border border-sky-500/40 space-y-1\">\n          <span class=\"text-xs font-black text-sky-400 block\">1. КАРТАНЫ ТҮСІНУ:</span>\n          <p class=\"text-[11px] text-slate-300\">Картаның түрлері, шартты белгілері және қалай қолдану керектігі туралы негізгі тәсілдерді меңгеру түрі.</p>\n        </div>\n        <div class=\"p-3 bg-space-950 rounded-xl border border-emerald-500/40 space-y-1\">\n          <span class=\"text-xs font-black text-emerald-400 block\">2. КАРТАНЫ ОҚУ:</span>\n          <p class=\"text-[11px] text-slate-300\">Шартты белгілерді меңгере отырып, табиғаттағы құбылыстарды, олардың арасындағы қарым-қатынасты және адамның іс-әрекетін анықтау.</p>\n        </div>\n        <div class=\"p-3 bg-space-950 rounded-xl border border-amber-500/40 space-y-1\">\n          <span class=\"text-xs font-black text-amber-400 block\">3. КАРТАНЫ БІЛУ:</span>\n          <p class=\"text-[11px] text-slate-300\">Оқып жатқан география курсындағы нысандардың жеке пішінін, аттарын, салыстырмалы өлшемін және орналасқан жерін жатқа білу.</p>\n        </div>\n      </div>\n    </div>\n  </div>\n\n  <!-- 2. МАТЕРИКТЕР МЕН ДҮНИЕЖҮЗІЛІК МҰХИТ КӨРСЕТКІШТЕРІ -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-emerald-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🌊</span>\n      <span>2. Материктер мен Дүниежүзілік мұхит көрсеткіштері</span>\n    </h4>\n    <div class=\"space-y-2\">\n      <p>• <b>Дүниежүзілік мұхит</b> ұғымын алғаш ғылымға енгізген ғалым — <b>Ю.М. Шокальский</b>.</p>\n      <p>• <b>Мұхит рельефі мен бөліктері:</b></p>\n      <ul class=\"list-disc pl-5 space-y-1\">\n        <li><b>Орта Атлант жотасы:</b> Атлант мұхитын батыс және шығысқа бөлетін, дүниежүзіндегі ең ұзын су асты жотасы (ұзындығы — <b>18 000 км</b>).</li>\n        <li><b>Солтүстік Мұзды мұхит жоталары:</b> Ломоносов, Менделеев су асты жоталары.</li>\n        <li><b>Солтүстік Мұзды мұхит қазаншұңқырлары:</b> Нансен, Макаров, Бофорт.</li>\n        <li><b>Шығанақ:</b> Мұхиттың немесе теңіздің құрлыққа сұғына еніп жатқан шағын бөлігі.</li>\n        <li><b>Бұғаз:</b> Екі жағынан материктердің немесе аралдардың жағалары қаптап тұратын тар су кеңістігі.</li>\n        <li><b>Түбек:</b> Құрлықтың су кеңістігіне терең сұғынып, кіріп тұрған бөлігі.</li>\n        <li><b>Теңіз:</b> Мұхит суының қасиеті мен жануарлар дүниесі жағынан оқшауланып тұратын бөлігі. Олар <b>шеткі</b> және <b>ішкі</b> болып бөлінеді.</li>\n      </ul>\n    </div>\n\n    <!-- ВЕКТОРЛЫҚ СХЕМА 1 -->\n    <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 700 240\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2\">\n  <text x=\"350\" y=\"22\" fill=\"#38bdf8\" font-size=\"11.5\" font-weight=\"900\" text-anchor=\"middle\">МАТЕРИКТЕР МЕН МҰХИТТАРДЫҢ АУДАНДАРЫ МЕН КӨРСЕТКІШТЕРІ</text>\n\n  <!-- Left: 6 Continents -->\n  <g transform=\"translate(20, 38)\">\n    <rect x=\"0\" y=\"0\" width=\"320\" height=\"190\" rx=\"8\" fill=\"#0f172a\" stroke=\"#10b981\" stroke-width=\"1.2\" />\n    <rect x=\"10\" y=\"8\" width=\"300\" height=\"22\" rx=\"4\" fill=\"#10b981\" fill-opacity=\"0.15\" />\n    <text x=\"160\" y=\"23\" fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">МА ТЕРИКТЕР (АУДАНЫ БОЙЫНША РЕЙТИНГ)</text>\n\n    <text x=\"15\" y=\"48\" fill=\"#ffffff\" font-size=\"9.5\">1. Еуразия: <tspan font-weight=\"bold\" fill=\"#34d399\">54 млн км²</tspan> (ең үлкен материк)</text>\n    <rect x=\"15\" y=\"52\" width=\"290\" height=\"7\" rx=\"2\" fill=\"#1e293b\" />\n    <rect x=\"15\" y=\"52\" width=\"290\" height=\"7\" rx=\"2\" fill=\"#10b981\" />\n\n    <text x=\"15\" y=\"73\" fill=\"#ffffff\" font-size=\"9.5\">2. Африка: <tspan font-weight=\"bold\" fill=\"#34d399\">30,3 млн км²</tspan></text>\n    <rect x=\"15\" y=\"77\" width=\"290\" height=\"7\" rx=\"2\" fill=\"#1e293b\" />\n    <rect x=\"15\" y=\"77\" width=\"162\" height=\"7\" rx=\"2\" fill=\"#10b981\" />\n\n    <text x=\"15\" y=\"98\" fill=\"#ffffff\" font-size=\"9.5\">3. Солтүстік Америка: <tspan font-weight=\"bold\" fill=\"#34d399\">24,2 млн км²</tspan></text>\n    <rect x=\"15\" y=\"102\" width=\"290\" height=\"7\" rx=\"2\" fill=\"#1e293b\" />\n    <rect x=\"15\" y=\"102\" width=\"130\" height=\"7\" rx=\"2\" fill=\"#10b981\" />\n\n    <text x=\"15\" y=\"123\" fill=\"#ffffff\" font-size=\"9.5\">4. Оңтүстік Америка: <tspan font-weight=\"bold\" fill=\"#34d399\">18,3 млн км²</tspan></text>\n    <rect x=\"15\" y=\"127\" width=\"290\" height=\"7\" rx=\"2\" fill=\"#1e293b\" />\n    <rect x=\"15\" y=\"127\" width=\"98\" height=\"7\" rx=\"2\" fill=\"#10b981\" />\n\n    <text x=\"15\" y=\"148\" fill=\"#ffffff\" font-size=\"9.5\">5. Антарктида: <tspan font-weight=\"bold\" fill=\"#34d399\">12,4 – 14 млн км²</tspan> (ең суық, биік)</text>\n    <rect x=\"15\" y=\"152\" width=\"290\" height=\"7\" rx=\"2\" fill=\"#1e293b\" />\n    <rect x=\"15\" y=\"152\" width=\"75\" height=\"7\" rx=\"2\" fill=\"#10b981\" />\n\n    <text x=\"15\" y=\"173\" fill=\"#ffffff\" font-size=\"9.5\">6. Аустралия: <tspan font-weight=\"bold\" fill=\"#34d399\">7,7 млн км²</tspan> (ең кіші, құрғақ)</text>\n    <rect x=\"15\" y=\"177\" width=\"290\" height=\"7\" rx=\"2\" fill=\"#1e293b\" />\n    <rect x=\"15\" y=\"177\" width=\"41\" height=\"7\" rx=\"2\" fill=\"#10b981\" />\n  </g>\n\n  <!-- Right: 4 Oceans -->\n  <g transform=\"translate(360, 38)\">\n    <rect x=\"0\" y=\"0\" width=\"320\" height=\"190\" rx=\"8\" fill=\"#0f172a\" stroke=\"#0ea5e9\" stroke-width=\"1.2\" />\n    <rect x=\"10\" y=\"8\" width=\"300\" height=\"22\" rx=\"4\" fill=\"#0284c7\" fill-opacity=\"0.15\" />\n    <text x=\"160\" y=\"23\" fill=\"#38bdf8\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">4 МҰХИТ ЖӘНЕ ЕҢ ТЕРЕҢ ШҰҢҒЫМАЛАРЫ</text>\n\n    <text x=\"15\" y=\"48\" fill=\"#ffffff\" font-size=\"9.5\">1. Тынық: <tspan font-weight=\"bold\" fill=\"#38bdf8\">178,6 млн км²</tspan> (орт. 3976 м)</text>\n    <text x=\"15\" y=\"60\" fill=\"#94a3b8\" font-size=\"8.5\">Шұңғымасы: <tspan font-weight=\"bold\" fill=\"#f87171\">Мариан 11 022 м</tspan> | Охот толысуы: 13,2 м</text>\n\n    <text x=\"15\" y=\"85\" fill=\"#ffffff\" font-size=\"9.5\">2. Атлант: <tspan font-weight=\"bold\" fill=\"#38bdf8\">91,7 млн км²</tspan> (орт. 3597 м)</text>\n    <text x=\"15\" y=\"97\" fill=\"#94a3b8\" font-size=\"8.5\">Шұңғымасы: <tspan font-weight=\"bold\" fill=\"#f87171\">Пуэрто-Рико 8742 м</tspan> | Фанди толысуы: 18,0 м</text>\n\n    <text x=\"15\" y=\"122\" fill=\"#ffffff\" font-size=\"9.5\">3. Үнді: <tspan font-weight=\"bold\" fill=\"#38bdf8\">76,2 млн км²</tspan> (орт. 3711 м)</text>\n    <text x=\"15\" y=\"134\" fill=\"#94a3b8\" font-size=\"8.5\">Шұңғымасы: <tspan font-weight=\"bold\" fill=\"#f87171\">Ява (Зонд) 7729 м</tspan> | Камбей толысуы: 11,9 м</text>\n\n    <text x=\"15\" y=\"159\" fill=\"#ffffff\" font-size=\"9.5\">4. Солтүстік Мұзды: <tspan font-weight=\"bold\" fill=\"#38bdf8\">14,8 млн км²</tspan> (орт. 1225 м)</text>\n    <text x=\"15\" y=\"171\" fill=\"#94a3b8\" font-size=\"8.5\">Шұңғымасы: <tspan font-weight=\"bold\" fill=\"#f87171\">Гренландия теңізі 5527 м</tspan> | Ақ теңіз: 10 м</text>\n  </g>\n</svg>\n  </div>\n\n  <!-- 3. МАТЕРИКТЕРДІҢ ЖАҒАЛАУЛЫҚ НОМЕНКЛАТУРАСЫ -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-4\">\n    <h4 class=\"text-sm sm:text-base font-black text-amber-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🧭</span>\n      <span>3. Материктердің жағалаулық номенклатурасы</span>\n    </h4>\n    \n    <div class=\"space-y-3\">\n      <!-- Еуразия -->\n      <div class=\"p-3 bg-space-950 rounded-xl border border-slate-800 space-y-2\">\n        <span class=\"text-xs font-black text-cyan-400 uppercase\">🌍 ЕУРАЗИЯ МАТЕРИГІ:</span>\n        <p>• <b>Түбектер (15):</b> Скандинавия, Ютландия, Пиреней, Апеннин, Балкан, Кіші Азия, <b>Арабия (ең үлкен түбек, 3 млн км²)</b>, Үндістан, Үндіқытай, Корей, Камчатка, Чукот, Таймыр, Кола, Малакка.</p>\n        <p>• <b>Шығанақтар (5):</b> Бискай, Бенгал, Аден, Парсы, Сиам.</p>\n        <p>• <b>Бұғаздар (7):</b> Гибралтар (тәулігіне 141 кеме), Ла-Манш (тәулігіне 500 кеме, жалғасы Па-де-Кале), Баб-эль-Мандеб, Лаперуз, Полк, Малакка, Зонд (тәулігіне 182 кеме).</p>\n        <p>• <b>Шеткі теңіздер (16):</b> Солтүстік, Норвег, Баренц, Карск, Лаптевтер, Шығыс Сібір, Чукот, Беринг, Охот, Жапон, Сары, Шығыс Қытай, Оңтүстік Қытай, Филиппин, Андаман, Арабия.</p>\n        <p>• <b>Ішкі теңіздер (7):</b> Балтық, Ақ, Жерорта, Қара, Қызыл, Азов, Мәрмәр.</p>\n      </div>\n\n      <!-- Солтүстік Америка -->\n      <div class=\"p-3 bg-space-950 rounded-xl border border-slate-800 space-y-2\">\n        <span class=\"text-xs font-black text-emerald-400 uppercase\">🌎 СОЛТҮСТІК АМЕРИКА:</span>\n        <p>• <b>Түбектер (5):</b> Лабрадор, Флорида, Юкатан, Калифорния, Аляска.</p>\n        <p>• <b>Шығанақтар (4):</b> Гудзон, Мексика, Калифорния, Фанди (ең биік толысу — 18 м).</p>\n        <p>• <b>Бұғаздар (3):</b> Беринг, Девисов, Дат (Исландия мен Гренландияны бөледі).</p>\n        <p>• <b>Шеткі теңіздер (5):</b> Бофорт, Баффин, Лабрадор, Саргасс (балдырға бай, жағалаусыз), Кариб (ішкі теңіздері жоқ).</p>\n      </div>\n\n      <!-- Оңтүстік Америка & Африка -->\n      <div class=\"grid grid-cols-1 md:grid-cols-2 gap-3\">\n        <div class=\"p-3 bg-space-950 rounded-xl border border-slate-800 space-y-1.5\">\n          <span class=\"text-xs font-black text-rose-400 uppercase\">🌎 ОҢТҮСТІК АМЕРИКА:</span>\n          <p>• <b>Түбек:</b> Валдес.</p>\n          <p>• <b>Шығанақтар:</b> Ла-Плата, Байя-Гранде.</p>\n          <p>• <b>Бұғаздар:</b> Магеллан, <b>Дрейк</b> (дүниежүзінде ең терең — 5248 м, ені ең кең — 950 км).</p>\n        </div>\n        <div class=\"p-3 bg-space-950 rounded-xl border border-slate-800 space-y-1.5\">\n          <span class=\"text-xs font-black text-amber-400 uppercase\">🌍 АФРИКА МАТЕРИГІ:</span>\n          <p>• <b>Түбектер:</b> Сомали («Африка мүйізі»), Синай.</p>\n          <p>• <b>Шығанақтар:</b> Сидра, Гвинея.</p>\n          <p>• <b>Бұғаз:</b> <b>Мозамбик</b> (дүниежүзіндегі ең ұзын бұғаз — 1670 км).</p>\n        </div>\n      </div>\n\n      <!-- Аустралия & Антарктида -->\n      <div class=\"grid grid-cols-1 md:grid-cols-2 gap-3\">\n        <div class=\"p-3 bg-space-950 rounded-xl border border-slate-800 space-y-1.5\">\n          <span class=\"text-xs font-black text-teal-400 uppercase\">🦘 АУСТРАЛИЯ:</span>\n          <p>• <b>Түбектер:</b> Арнемленд, Кейп-Йорк.</p>\n          <p>• <b>Шығанақтар:</b> Карпентария, Үлкен Аустралия.</p>\n          <p>• <b>Бұғаздар:</b> Торрес, Бассов.</p>\n          <p>• <b>Теңіздер:</b> Тимор, Арафур, Маржанды, Тасман, Фиджи.</p>\n        </div>\n        <div class=\"p-3 bg-space-950 rounded-xl border border-slate-800 space-y-1.5\">\n          <span class=\"text-xs font-black text-sky-300 uppercase\">❄️ АНТАРКТИДА:</span>\n          <p>• <b>Түбек:</b> Антарктида түбегі.</p>\n          <p>• <b>Теңіздер:</b> Уэдделл, Беллинсгаузен, Амундсен, Росс.</p>\n        </div>\n      </div>\n    </div>\n  </div>\n\n  <!-- 4. КАНАЛДАР ЖӘНЕ АРАЛДАР МЕН АРХИПЕЛАГТАР -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-violet-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🏝️</span>\n      <span>4. Маңызды каналдар, Аралдар және Архипелагтар</span>\n    </h4>\n    <div class=\"space-y-2\">\n      <p>• <b>Маңызды ірі каналдар:</b></p>\n      <ul class=\"list-disc pl-5 space-y-1\">\n        <li><b>Суэц каналы:</b> Египетте, Жерорта теңізі мен Қызыл теңізді қосады (Африка мен Азия шекарасы).</li>\n        <li><b>Панама каналы:</b> Атлант мұхиты мен Тынық мұхитын жалғастырады (Солтүстік және Оңтүстік Америка шекарасы).</li>\n        <li><b>Киль каналы:</b> Солтүстік теңіз бен Балтық теңізін байланыстырады.</li>\n      </ul>\n      <p>• <b>Арал:</b> Жан-жағын су қоршаған, материктермен салыстырғанда құрлықтың шағын учаскесі.</p>\n      <p>• <b>Архипелаг:</b> Бір-біріне жақын орналасқан аралдар тобы. Жердегі ең үлкені — <b>Малайя архипелагы</b> (Үлкен Зонд және Кіші Зонд аралдары, Еуразия мен Аустралия аралығында). Ірі архипелагтар: Канада Арктикалық архипелагы, Шпицберген.</p>\n      <p>• <b>Аралдардың пайда болу жолдары:</b></p>\n      <ul class=\"list-disc pl-5 space-y-1\">\n        <li><b>Материктік аралдар:</b> Гренландия (әлемдегі ең үлкен арал — 2,17 млн км²), Мадагаскар, Британ аралдары.</li>\n        <li><b>Жанартаулық аралдар:</b> Исландия, Гавай, Азор аралдары.</li>\n        <li><b>Маржандық аралдар:</b> <b>Үлкен Тосқауыл рифі</b> (дүниежүзіндегі ең ұзын маржан құрылымы — 2000 км), Маржан теңіз аралдары.</li>\n      </ul>\n    </div>\n  </div>\n\n  <!-- 5. ӘЛЕМ БОЙЫНША БИІК ТАУЛАР МЕН ШЫҢДАР -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-rose-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>⛰️</span>\n      <span>5. Әлем бойынша биік таулар мен шыңдар (21 тау жүйесі)</span>\n    </h4>\n    <div class=\"overflow-x-auto my-2\">\n      <table class=\"w-full text-left text-xs border border-slate-800 rounded-xl overflow-hidden\">\n        <thead class=\"bg-space-950 text-slate-400 border-b border-slate-800\">\n          <tr>\n            <th class=\"p-2\">#</th>\n            <th class=\"p-2\">Тау жүйесі</th>\n            <th class=\"p-2\">Биік шыңы</th>\n            <th class=\"p-2\">Биіктігі</th>\n            <th class=\"p-2\">Орналасуы</th>\n          </tr>\n        </thead>\n        <tbody class=\"divide-y divide-slate-800 text-[11px] text-slate-300\">\n          <tr><td class=\"p-2\">1</td><td class=\"p-2 font-bold text-white\">Гималай</td><td class=\"p-2 text-cyan-300 font-mono\">Эверест (Джомолунгма)</td><td class=\"p-2 font-bold text-emerald-400\">8848 м</td><td class=\"p-2\">Еуразия (Әлемдегі ең биік)</td></tr>\n          <tr><td class=\"p-2\">2</td><td class=\"p-2 font-bold text-white\">Қарақорым</td><td class=\"p-2 text-cyan-300 font-mono\">Чогори (К2)</td><td class=\"p-2 font-bold text-emerald-400\">8611 м</td><td class=\"p-2\">Еуразия (2-орын)</td></tr>\n          <tr><td class=\"p-2\">3</td><td class=\"p-2 font-bold text-white\">Кунь-Лунь</td><td class=\"p-2 text-cyan-300 font-mono\">Улугмузтаг</td><td class=\"p-2 font-bold text-emerald-400\">7723 м</td><td class=\"p-2\">Еуразия</td></tr>\n          <tr><td class=\"p-2\">4</td><td class=\"p-2 font-bold text-white\">Памир</td><td class=\"p-2 text-cyan-300 font-mono\">Конгур</td><td class=\"p-2 font-bold text-emerald-400\">7719 м</td><td class=\"p-2\">Еуразия</td></tr>\n          <tr><td class=\"p-2\">5</td><td class=\"p-2 font-bold text-white\">Гиндукуш</td><td class=\"p-2 text-cyan-300 font-mono\">Тиричмир</td><td class=\"p-2 font-bold text-emerald-400\">7690 м</td><td class=\"p-2\">Еуразия</td></tr>\n          <tr><td class=\"p-2\">6</td><td class=\"p-2 font-bold text-white\">Тянь-Шань</td><td class=\"p-2 text-cyan-300 font-mono\">Жеңіс шыңы</td><td class=\"p-2 font-bold text-emerald-400\">7439 м</td><td class=\"p-2\">Еуразия (ҚР шекарасы)</td></tr>\n          <tr><td class=\"p-2\">7</td><td class=\"p-2 font-bold text-white\">Тибет</td><td class=\"p-2 text-cyan-300 font-mono\">Алинг-Гангри</td><td class=\"p-2 font-bold text-emerald-400\">7315 м</td><td class=\"p-2\">Еуразия (Таулы қырат)</td></tr>\n          <tr><td class=\"p-2\">8</td><td class=\"p-2 font-bold text-white\">Анд</td><td class=\"p-2 text-cyan-300 font-mono\">Аконкагуа</td><td class=\"p-2 font-bold text-sky-400\">6960 м</td><td class=\"p-2\">Оңтүстік Америка</td></tr>\n          <tr><td class=\"p-2\">9</td><td class=\"p-2 font-bold text-white\">Кордильер</td><td class=\"p-2 text-cyan-300 font-mono\">Денали (Мак-Кинли)</td><td class=\"p-2 font-bold text-sky-400\">6193 м</td><td class=\"p-2\">Солтүстік Америка</td></tr>\n          <tr><td class=\"p-2\">10</td><td class=\"p-2 font-bold text-white\">Килиманджаро</td><td class=\"p-2 text-cyan-300 font-mono\">Килиманджаро</td><td class=\"p-2 font-bold text-amber-400\">5895 м</td><td class=\"p-2\">Африка</td></tr>\n          <tr><td class=\"p-2\">11</td><td class=\"p-2 font-bold text-white\">Кавказ</td><td class=\"p-2 text-cyan-300 font-mono\">Эльбрус</td><td class=\"p-2 font-bold text-amber-400\">5642 м</td><td class=\"p-2\">Еуразия</td></tr>\n          <tr><td class=\"p-2\">12</td><td class=\"p-2 font-bold text-white\">Элсуорт</td><td class=\"p-2 text-cyan-300 font-mono\">Винсон массиві</td><td class=\"p-2 font-bold text-indigo-400\">5140 м</td><td class=\"p-2\">Антарктида</td></tr>\n          <tr><td class=\"p-2\">13</td><td class=\"p-2 font-bold text-white\">Альпі</td><td class=\"p-2 text-cyan-300 font-mono\">Монблан</td><td class=\"p-2 font-bold text-slate-300\">4807 м</td><td class=\"p-2\">Еуропа</td></tr>\n          <tr><td class=\"p-2\">14</td><td class=\"p-2 font-bold text-white\">Алтай</td><td class=\"p-2 text-cyan-300 font-mono\">Белуха (Мұзтау)</td><td class=\"p-2 font-bold text-slate-300\">4506 м</td><td class=\"p-2\">Қазақстан / Сібір</td></tr>\n          <tr><td class=\"p-2\">15</td><td class=\"p-2 font-bold text-white\">Сеңгір таулар</td><td class=\"p-2 text-cyan-300 font-mono\">Эльберт</td><td class=\"p-2 font-bold text-slate-300\">4399 м</td><td class=\"p-2\">Солтүстік Америка</td></tr>\n          <tr><td class=\"p-2\">16</td><td class=\"p-2 font-bold text-white\">Атлас</td><td class=\"p-2 text-cyan-300 font-mono\">Тубкаль</td><td class=\"p-2 font-bold text-slate-300\">4165 м</td><td class=\"p-2\">Африка</td></tr>\n          <tr><td class=\"p-2\">17</td><td class=\"p-2 font-bold text-white\">Армян қыраты</td><td class=\"p-2 text-cyan-300 font-mono\">Арагац</td><td class=\"p-2 font-bold text-slate-300\">4090 м</td><td class=\"p-2\">Алдыңғы Азия</td></tr>\n          <tr><td class=\"p-2\">18</td><td class=\"p-2 font-bold text-white\">Фудзияма</td><td class=\"p-2 text-cyan-300 font-mono\">Фудзияма</td><td class=\"p-2 font-bold text-slate-300\">3776 м</td><td class=\"p-2\">Жапония</td></tr>\n          <tr><td class=\"p-2\">19</td><td class=\"p-2 font-bold text-white\">Үлкен Суайрық</td><td class=\"p-2 text-cyan-300 font-mono\">Косцюшко</td><td class=\"p-2 font-bold text-slate-300\">2228 м</td><td class=\"p-2\">Аустралия</td></tr>\n          <tr><td class=\"p-2\">20</td><td class=\"p-2 font-bold text-white\">Аппалач</td><td class=\"p-2 text-cyan-300 font-mono\">Митчелл</td><td class=\"p-2 font-bold text-slate-300\">2037 м</td><td class=\"p-2\">Солтүстік Америка</td></tr>\n          <tr><td class=\"p-2\">21</td><td class=\"p-2 font-bold text-white\">Орал</td><td class=\"p-2 text-cyan-300 font-mono\">Народная</td><td class=\"p-2 font-bold text-slate-300\">1895 м</td><td class=\"p-2\">Еуразия (шекаралық)</td></tr>\n        </tbody>\n      </table>\n    </div>\n\n    <!-- ВЕКТОРЛЫҚ СХЕМА 2 -->\n    <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 700 240\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2\">\n  <text x=\"350\" y=\"22\" fill=\"#38bdf8\" font-size=\"11.5\" font-weight=\"900\" text-anchor=\"middle\">ӘЛЕМНІҢ ЕҢ БИІК ТАУ ШЫҢДАРЫ (БИІКТІГІ МЕТРМЕН)</text>\n\n  <!-- Left: Top 5 Peaks -->\n  <g transform=\"translate(20, 38)\">\n    <rect x=\"0\" y=\"0\" width=\"320\" height=\"190\" rx=\"8\" fill=\"#0f172a\" stroke=\"#f59e0b\" stroke-width=\"1.2\" />\n    <rect x=\"10\" y=\"8\" width=\"300\" height=\"22\" rx=\"4\" fill=\"#f59e0b\" fill-opacity=\"0.15\" />\n    <text x=\"160\" y=\"23\" fill=\"#fbbf24\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">АЗИЯНЫҢ АЛЫП ТАУЛАРЫ</text>\n\n    <text x=\"15\" y=\"48\" fill=\"#ffffff\" font-size=\"9\">Гималай: <tspan font-weight=\"bold\" fill=\"#f87171\">Эверест (Джомолунгма) — 8848 м</tspan></text>\n    <rect x=\"15\" y=\"52\" width=\"290\" height=\"6\" rx=\"2\" fill=\"#ef4444\" />\n\n    <text x=\"15\" y=\"73\" fill=\"#ffffff\" font-size=\"9\">Қарақорым: <tspan font-weight=\"bold\" fill=\"#f87171\">Чогори (К2) — 8611 м</tspan></text>\n    <rect x=\"15\" y=\"77\" width=\"282\" height=\"6\" rx=\"2\" fill=\"#ef4444\" />\n\n    <text x=\"15\" y=\"98\" fill=\"#ffffff\" font-size=\"9\">Кунь-Лунь: <tspan font-weight=\"bold\" fill=\"#fbbf24\">Улугмузтаг — 7723 м</tspan></text>\n    <rect x=\"15\" y=\"102\" width=\"253\" height=\"6\" rx=\"2\" fill=\"#f59e0b\" />\n\n    <text x=\"15\" y=\"123\" fill=\"#ffffff\" font-size=\"9\">Памир: <tspan font-weight=\"bold\" fill=\"#fbbf24\">Конгур — 7719 м</tspan></text>\n    <rect x=\"15\" y=\"127\" width=\"252\" height=\"6\" rx=\"2\" fill=\"#f59e0b\" />\n\n    <text x=\"15\" y=\"148\" fill=\"#ffffff\" font-size=\"9\">Гиндукуш: <tspan font-weight=\"bold\" fill=\"#fbbf24\">Тиричмир — 7690 м</tspan></text>\n    <rect x=\"15\" y=\"152\" width=\"251\" height=\"6\" rx=\"2\" fill=\"#f59e0b\" />\n\n    <text x=\"15\" y=\"173\" fill=\"#ffffff\" font-size=\"9\">Тянь-Шань: <tspan font-weight=\"bold\" fill=\"#34d399\">Жеңіс шыңы — 7439 м</tspan></text>\n    <rect x=\"15\" y=\"177\" width=\"243\" height=\"6\" rx=\"2\" fill=\"#10b981\" />\n  </g>\n\n  <!-- Right: Other Continents Highest Peaks -->\n  <g transform=\"translate(360, 38)\">\n    <rect x=\"0\" y=\"0\" width=\"320\" height=\"190\" rx=\"8\" fill=\"#0f172a\" stroke=\"#8b5cf6\" stroke-width=\"1.2\" />\n    <rect x=\"10\" y=\"8\" width=\"300\" height=\"22\" rx=\"4\" fill=\"#8b5cf6\" fill-opacity=\"0.15\" />\n    <text x=\"160\" y=\"23\" fill=\"#c084fc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">БАСҚА МАТЕРИКТЕРДІҢ БИІК ШЫҢДАРЫ</text>\n\n    <text x=\"15\" y=\"48\" fill=\"#ffffff\" font-size=\"9\">О. Америка (Анд): <tspan font-weight=\"bold\" fill=\"#38bdf8\">Аконкагуа — 6960 м</tspan></text>\n    <rect x=\"15\" y=\"52\" width=\"228\" height=\"6\" rx=\"2\" fill=\"#0ea5e9\" />\n\n    <text x=\"15\" y=\"73\" fill=\"#ffffff\" font-size=\"9\">С. Америка (Кордильер): <tspan font-weight=\"bold\" fill=\"#38bdf8\">Денали — 6193 м</tspan></text>\n    <rect x=\"15\" y=\"77\" width=\"202\" height=\"6\" rx=\"2\" fill=\"#0ea5e9\" />\n\n    <text x=\"15\" y=\"98\" fill=\"#ffffff\" font-size=\"9\">Африка: <tspan font-weight=\"bold\" fill=\"#34d399\">Килиманджаро — 5895 м</tspan></text>\n    <rect x=\"15\" y=\"102\" width=\"193\" height=\"6\" rx=\"2\" fill=\"#10b981\" />\n\n    <text x=\"15\" y=\"123\" fill=\"#ffffff\" font-size=\"9\">Кавказ: <tspan font-weight=\"bold\" fill=\"#34d399\">Эльбрус — 5642 м</tspan></text>\n    <rect x=\"15\" y=\"127\" width=\"185\" height=\"6\" rx=\"2\" fill=\"#10b981\" />\n\n    <text x=\"15\" y=\"148\" fill=\"#ffffff\" font-size=\"9\">Антарктида: <tspan font-weight=\"bold\" fill=\"#cbd5e1\">Винсон массиві — 5140 м</tspan></text>\n    <rect x=\"15\" y=\"152\" width=\"168\" height=\"6\" rx=\"2\" fill=\"#64748b\" />\n\n    <text x=\"15\" y=\"173\" fill=\"#ffffff\" font-size=\"9\">Еуропа (Альпі): <tspan font-weight=\"bold\" fill=\"#cbd5e1\">Монблан — 4807 м</tspan> | Алтай: 4506 м</text>\n    <rect x=\"15\" y=\"177\" width=\"157\" height=\"6\" rx=\"2\" fill=\"#64748b\" />\n  </g>\n</svg>\n  </div>\n\n  <!-- 6. ӘЛЕМДЕГІ НЕГІЗГІ 5 ГЕЙЗЕРЛІ АУДАН -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-teal-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>♨️</span>\n      <span>6. Әлемдегі негізгі 5 гейзерлі аудан</span>\n    </h4>\n    <div class=\"grid grid-cols-1 md:grid-cols-2 gap-3 text-xs\">\n      <div class=\"p-3 bg-space-950 rounded-xl border border-teal-500/40 space-y-1\">\n        <span class=\"font-bold text-teal-400 block\">1. Исландия (Атлант мұхиты):</span>\n        <p class=\"text-slate-300\">Литосфералық плиталардың ажырау аймағында орналасқан. Әйгілі <b>Үлкен Гейзер (Гейсир)</b> осында, бұл атаудан термин шыққан. Геотермалдық энергия үйлер мен жылыжайларды жылытуға кеңінен қолданылады.</p>\n      </div>\n      <div class=\"p-3 bg-space-950 rounded-xl border border-teal-500/40 space-y-1\">\n        <span class=\"font-bold text-teal-400 block\">2. Камчатка түбегі (Ресей, Еуразия):</span>\n        <p class=\"text-slate-300\">Тынық мұхиттық «Отты шеңбер» бөлігі. 1941 жылы ашылған, әлемдегі ең ірі геотермалдық шоғыр — әйгілі <b>Гейзерлер алқабы</b> орналасқан.</p>\n      </div>\n      <div class=\"p-3 bg-space-950 rounded-xl border border-teal-500/40 space-y-1\">\n        <span class=\"font-bold text-teal-400 block\">3. Йеллоустоун ұлттық паркі (АҚШ):</span>\n        <p class=\"text-slate-300\">Супержанартаудың үстіндегі ең үлкен гейзер өрісі. Әлемдегі барлық гейзерлердің шамамен <b>жартысы</b> шоғырланған. Танымалы — дәлдікпен атқылайтын <b>«Кәрі қызметші» (Old Faithful)</b>.</p>\n      </div>\n      <div class=\"p-3 bg-space-950 rounded-xl border border-teal-500/40 space-y-1\">\n        <span class=\"font-bold text-teal-400 block\">4. Жапония (Шығыс Азия):</span>\n        <p class=\"text-slate-300\">Төрт плитаның түйіскен жерінде орналасқан. Гейзерлер мен ыстық термалды бұлақтар — <b>онсэндер</b> кең таралған.</p>\n      </div>\n      <div class=\"p-3 bg-space-950 rounded-xl border border-teal-500/40 space-y-1 md:col-span-2\">\n        <span class=\"font-bold text-teal-400 block\">5. Жаңа Зеландия (Тынық мұхиты):</span>\n        <p class=\"text-slate-300\">Солтүстік аралда, <b>Таупо жанартаулық аймағында (Роторуа қаласы)</b> шоғырланған. Қуатты гейзерлер, қайнап жатқан балшық қазандары мен фумаролалар бар.</p>\n      </div>\n    </div>\n  </div>\n\n  <!-- 7. МАТЕРИКТЕР БОЙЫНША 24 ІРІ ӨЗЕН -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-sky-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🏞️</span>\n      <span>7. Материктер бойынша 24 ірі өзен</span>\n    </h4>\n    <div class=\"space-y-2 text-xs\">\n      <p>• <b>Солтүстік Америка:</b> 1. <b>Юкон</b> (Аляска, алтын өндіру); 2. <b>Маккензи</b> (Канаданың ең ұзын өзені); 3. <b>Колумбия</b> (ең үлкен гидроэнергетикалық қор); 4. <b>Миссисипи</b> (материктің ең ұзын, суы мол өзені, алып дельтасы бар).</p>\n      <p>• <b>Оңтүстік Америка:</b> 5. <b>Амазонка</b> (әлемдегі суы ең мол, алабы ең үлкен өзен); 6. <b>Парана</b> (саласы Игуасуда әйгілі Игуасу сарқырамасы орналасқан).</p>\n      <p>• <b>Еуропа:</b> 7. <b>Дунай</b> (10 мемлекет арқылы ағатын Еуропа рекордсмені); 8. <b>Рейн</b> (Батыс Еуропаның басты көлік күретамыры); 9. <b>Еділ (Волга)</b> (Еуропадағы ең ұзын өзен, Каспий тұйық алабына құяды).</p>\n      <p>• <b>Азия (Ресей):</b> 10. <b>Обь</b> (Еуразиядағы алабының ауданы ең үлкен өзен); 11. <b>Енисей</b> (Ресейдің ең суы мол өзені, Батыс пен Шығыс Сібір шекарасы); 12. <b>Лена</b> (алабы мәңгі тоң аймағында жатқан ең ірі өзен).</p>\n      <p>• <b>Азия (Шетелдік):</b> 13. <b>Амур</b> (Ресей-Қытай шекарасы, жазғы муссондық тасқындар); 14. <b>Хуанхэ</b> («Сары өзен», лёсс жыныстары, арнасын жиі өзгертеді); 15. <b>Янцзы</b> (Еуразиядағы ең ұзын және ең суы мол өзен); 16. <b>Ганг</b> (Үндістанның қасиетті өзені, Брахмапутрамен бірге әлемдегі ең үлкен дельта); 17. <b>Инд</b> (Пәкістанның басты өзені, суландыру); 18. <b>Меконг</b> («Азия Дунайы»); 19. <b>Тигр және Евфрат</b> (Месопотамия өркениеті, Шатт-әл-Араб арқылы Парсы шығанағына құяды).</p>\n      <p>• <b>Африка:</b> 20. <b>Ніл</b> (Африканың ең ұзын өзені, Сахараны құрғамай кесіп өтеді); 21. <b>Конго (Заир)</b> (экваторды екі рет кесіп өтетін әлемдегі жалғыз ірі өзен); 22. <b>Нигер</b> (Батыс Африканың басты өзені); 23. <b>Замбези</b> (Үнді мұхитына құяды, Виктория сарқырамасы бар).</p>\n      <p>• <b>Аустралия:</b> 24. <b>Муррей және Дарлинг</b> (құрғақ материктің ең ірі өзен жүйесі, құрғақ маусымда қатты тайызданады).</p>\n    </div>\n  </div>\n\n  <!-- 8. МҰЗДЫҚТАР, АҒЫСТАР ЖӘНЕ КӨЛДЕР -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-indigo-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🧊</span>\n      <span>8. Мұздықтар, Мұхит ағыстары және Әлем көлдері</span>\n    </h4>\n    <div class=\"space-y-2 text-xs\">\n      <p>• <b>Жер шарындағы ірі мұздықтар:</b></p>\n      <ul class=\"list-disc pl-5 space-y-1\">\n        <li><b>1) Хабборт (145 км):</b> Солтүстік Америкада (Аляска).</li>\n        <li><b>2) Федченко (77 км):</b> Памир тауларында (Еуразиядағы ең ұзын тау-аңғар мұздығы).</li>\n        <li><b>3) Корженевский (12 км):</b> Іле Алатауында орналасқан ірі мұздық.</li>\n        <li><b>4) Тұйықсу (3,5 км):</b> Іле Алатауындағы ең көп зерттелген мұздық (ғалым Н.Н. Пальгов зерттеген).</li>\n      </ul>\n\n      <p>• <b>Дүниежүзілік мұхиттың 14 басты ағысы:</b></p>\n      <div class=\"grid grid-cols-1 md:grid-cols-2 gap-2 my-1\">\n        <div class=\"p-2.5 bg-space-950 rounded-lg border border-red-500/30\">\n          <span class=\"text-rose-400 font-bold block mb-1\">ЖЫЛЫ АҒЫСТАР:</span>\n          <p>• <b>Гольфстрим:</b> ең қуатты жылы ағыс, С. Еуропа порттары қыста қатпайды.</p>\n          <p>• <b>Куросио:</b> «Тынық мұхиттағы Гольфстрим», Жапония климатын жұмсартады.</p>\n          <p>• <b>Бразилия:</b> Оңтүстік Америкаға ылғал әкеледі.</p>\n          <p>• <b>Солтүстік және Оңтүстік Пассат ағыстары</b> (Атлант және Тынық мұхитында).</p>\n        </div>\n        <div class=\"p-2.5 bg-space-950 rounded-lg border border-blue-500/30\">\n          <span class=\"text-sky-400 font-bold block mb-1\">СУЫҚ АҒЫСТАР:</span>\n          <p>• <b>Батыс желдер ағысы:</b> ең ұзын, қуатты, «су сақинасы».</p>\n          <p>• <b>Бенгел:</b> Намиб шөлін қалыптастырған ағыс.</p>\n          <p>• <b>Канар:</b> Сахара шөлінің қалыптасуына әсер еткен.</p>\n          <p>• <b>Перу (Гумбольдт):</b> әлемдегі ең құрғақ Атакама шөлін жасаған.</p>\n          <p>• <b>Калифорния:</b> Мохаве және Сонора шөлдеріне әсер етеді.</p>\n          <p>• <b>Муссон (Сомали):</b> бағытын маусым бойынша өзгертетін ағыс.</p>\n        </div>\n      </div>\n\n      <p>• <b>Әлемнің атақты көлдері:</b></p>\n      <ul class=\"list-disc pl-5 space-y-1\">\n        <li><b>Байкал:</b> ең терең көл (1642 м), тұщы судың ең үлкен қоры (тектоникалық).</li>\n        <li><b>Танганьика:</b> ең ұзын көл, тереңдігі бойынша 2-орын (Танзания, Африка).</li>\n        <li><b>Виктория:</b> Африкадағы ауданы бойынша ең ірі көл.</li>\n        <li><b>Ыстықкөл:</b> Қырғызстандағы биіктаулы тұйық көл, қыста қатпайды.</li>\n        <li><b>Зайсан:</b> ҚР шығысында, Қара Ертіс құйып, Ертіс өзені болып шығады.</li>\n        <li><b>Балқаш:</b> батысы тұщы, шығысы ащы бірегей көл (Қазақстан).</li>\n        <li><b>Ұлы көлдер:</b> дүниежүзілік тұщы судың 20%-ы. <b>Жоғарғы көл</b> — ең үлкен тұщы көл.</li>\n        <li><b>Каспий:</b> дүниежүзіндегі ең үлкен көл (қалдық теңіз-көл).</li>\n        <li><b>Арал:</b> Тұран ойпатындағы экологиялық апатқа ұшыраған қалдық көл.</li>\n        <li><b>Өлі теңіз:</b> Еуразияның ең төмен нүктесі (-430 м), өте жоғары тұздылық.</li>\n        <li><b>Титикака:</b> ең ірі биіктаулы көл (Анд). <b>Чад</b> — саваннадағы таяз көл. <b>Лобнор</b> — кезбе көл. <b>Эйр</b> — Аустралияның ең төмен нүктесі (-16 м).</li>\n      </ul>\n    </div>\n  </div>\n\n</div>", "full_theory_ru": "<div class=\"space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed\">\n\n  <!-- 1. ПОНЯТИЕ НОМЕНКЛАТУРЫ И РАБОТА С КАРТОЙ -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-cyan-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🗺️</span>\n      <span>1. Географическая номенклатура и 3 задачи работы с картой</span>\n    </h4>\n    <div class=\"space-y-2\">\n      <p>• <b>Географическая номенклатура:</b> Совокупность названий географических объектов (материков, океанов, гор, рек, морей и др.).</p>\n      <p>• <b>3 главные задачи в процессе работы с картой:</b></p>\n      <div class=\"grid grid-cols-1 md:grid-cols-3 gap-3 my-2\">\n        <div class=\"p-3 bg-space-950 rounded-xl border border-sky-500/40 space-y-1\">\n          <span class=\"text-xs font-black text-sky-400 block\">1. ПОНИМАТЬ КАРТУ:</span>\n          <p class=\"text-[11px] text-slate-300\">Освоение основных методов работы с видами карт, условными знаками и способами их применения.</p>\n        </div>\n        <div class=\"p-3 bg-space-950 rounded-xl border border-emerald-500/40 space-y-1\">\n          <span class=\"text-xs font-black text-emerald-400 block\">2. ЧИТАТЬ КАРТУ:</span>\n          <p class=\"text-[11px] text-slate-300\">Владея условными знаками, определять природные явления, взаимосвязи между ними и деятельность человека.</p>\n        </div>\n        <div class=\"p-3 bg-space-950 rounded-xl border border-amber-500/40 space-y-1\">\n          <span class=\"text-xs font-black text-amber-400 block\">3. ЗНАТЬ КАРТУ:</span>\n          <p class=\"text-[11px] text-slate-300\">Знать наизусть форму объектов, названия, сравнительные размеры и их точное местоположение.</p>\n        </div>\n      </div>\n    </div>\n  </div>\n\n  <!-- 2. МАТЕРИКИ И МИРОВОЙ ОКЕАН -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-emerald-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🌊</span>\n      <span>2. Показатели материков и Мирового океана</span>\n    </h4>\n    <div class=\"space-y-2\">\n      <p>• Термин <b>«Мировой океан»</b> ввел в науку выдающийся ученый <b>Ю.М. Шокальский</b>.</p>\n      <p>• <b>Рельеф и составные части океана:</b></p>\n      <ul class=\"list-disc pl-5 space-y-1\">\n        <li><b>Срединно-Атлантический хребет:</b> разделяет океан на западную и восточную части; длиннейший хребет планеты (длина — <b>18 000 км</b>).</li>\n        <li><b>Хребты Северного Ледовитого океана:</b> хребты Ломоносова, Менделеева.</li>\n        <li><b>Котловины:</b> Нансена, Макарова, Бофорта.</li>\n        <li><b>Залив:</b> часть океана или моря, глубоко вдающаяся в сушу.</li>\n        <li><b>Пролив:</b> узкое водное пространство, разделяющее участки суши и соединяющее смежные водоемы.</li>\n        <li><b>Полуостров:</b> часть суши, глубоко вдающаяся в водное пространство.</li>\n        <li><b>Море:</b> часть океана, обособленная сушей или возвышенностями дна, отличающаяся гидрологическим режимом (делятся на <b>окраинные</b> и <b>внутренние</b>).</li>\n      </ul>\n    </div>\n\n    <!-- ВЕКТОРНАЯ СХЕМА 1 -->\n    <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 700 240\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2\">\n  <text x=\"350\" y=\"22\" fill=\"#38bdf8\" font-size=\"11.5\" font-weight=\"900\" text-anchor=\"middle\">ПЛОЩАДИ МАТЕРИКОВ И ОКЕАНОВ, ГЛУБИНЫ И РЕКОРДЫ</text>\n\n  <g transform=\"translate(20, 38)\">\n    <rect x=\"0\" y=\"0\" width=\"320\" height=\"190\" rx=\"8\" fill=\"#0f172a\" stroke=\"#10b981\" stroke-width=\"1.2\" />\n    <rect x=\"10\" y=\"8\" width=\"300\" height=\"22\" rx=\"4\" fill=\"#10b981\" fill-opacity=\"0.15\" />\n    <text x=\"160\" y=\"23\" fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">МАТЕРИКИ (РЕЙТИНГ ПО ПЛОЩАДИ)</text>\n\n    <text x=\"15\" y=\"48\" fill=\"#ffffff\" font-size=\"9.5\">1. Евразия: <tspan font-weight=\"bold\" fill=\"#34d399\">54 млн км²</tspan> (крупнейший)</text>\n    <rect x=\"15\" y=\"52\" width=\"290\" height=\"7\" rx=\"2\" fill=\"#1e293b\" />\n    <rect x=\"15\" y=\"52\" width=\"290\" height=\"7\" rx=\"2\" fill=\"#10b981\" />\n\n    <text x=\"15\" y=\"73\" fill=\"#ffffff\" font-size=\"9.5\">2. Африка: <tspan font-weight=\"bold\" fill=\"#34d399\">30,3 млн км²</tspan></text>\n    <rect x=\"15\" y=\"77\" width=\"290\" height=\"7\" rx=\"2\" fill=\"#1e293b\" />\n    <rect x=\"15\" y=\"77\" width=\"162\" height=\"7\" rx=\"2\" fill=\"#10b981\" />\n\n    <text x=\"15\" y=\"98\" fill=\"#ffffff\" font-size=\"9.5\">3. Северная Америка: <tspan font-weight=\"bold\" fill=\"#34d399\">24,2 млн км²</tspan></text>\n    <rect x=\"15\" y=\"102\" width=\"290\" height=\"7\" rx=\"2\" fill=\"#1e293b\" />\n    <rect x=\"15\" y=\"102\" width=\"130\" height=\"7\" rx=\"2\" fill=\"#10b981\" />\n\n    <text x=\"15\" y=\"123\" fill=\"#ffffff\" font-size=\"9.5\">4. Южная Америка: <tspan font-weight=\"bold\" fill=\"#34d399\">18,3 млн км²</tspan></text>\n    <rect x=\"15\" y=\"127\" width=\"290\" height=\"7\" rx=\"2\" fill=\"#1e293b\" />\n    <rect x=\"15\" y=\"127\" width=\"98\" height=\"7\" rx=\"2\" fill=\"#10b981\" />\n\n    <text x=\"15\" y=\"148\" fill=\"#ffffff\" font-size=\"9.5\">5. Антарктида: <tspan font-weight=\"bold\" fill=\"#34d399\">12,4 – 14 млн км²</tspan></text>\n    <rect x=\"15\" y=\"152\" width=\"290\" height=\"7\" rx=\"2\" fill=\"#1e293b\" />\n    <rect x=\"15\" y=\"152\" width=\"75\" height=\"7\" rx=\"2\" fill=\"#10b981\" />\n\n    <text x=\"15\" y=\"173\" fill=\"#ffffff\" font-size=\"9.5\">6. Австралия: <tspan font-weight=\"bold\" fill=\"#34d399\">7,7 млн км²</tspan> (наименьший)</text>\n    <rect x=\"15\" y=\"177\" width=\"290\" height=\"7\" rx=\"2\" fill=\"#1e293b\" />\n    <rect x=\"15\" y=\"177\" width=\"41\" height=\"7\" rx=\"2\" fill=\"#10b981\" />\n  </g>\n\n  <g transform=\"translate(360, 38)\">\n    <rect x=\"0\" y=\"0\" width=\"320\" height=\"190\" rx=\"8\" fill=\"#0f172a\" stroke=\"#0ea5e9\" stroke-width=\"1.2\" />\n    <rect x=\"10\" y=\"8\" width=\"300\" height=\"22\" rx=\"4\" fill=\"#0284c7\" fill-opacity=\"0.15\" />\n    <text x=\"160\" y=\"23\" fill=\"#38bdf8\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">4 ОКЕАНА И ИХ ГЛУБОЧАЙШИЕ ЖЕЛОБА</text>\n\n    <text x=\"15\" y=\"48\" fill=\"#ffffff\" font-size=\"9.5\">1. Тихий: <tspan font-weight=\"bold\" fill=\"#38bdf8\">178,6 млн км²</tspan> (ср. 3976 м)</text>\n    <text x=\"15\" y=\"60\" fill=\"#94a3b8\" font-size=\"8.5\">Желоб: <tspan font-weight=\"bold\" fill=\"#f87171\">Марианский 11 022 м</tspan> | Охотский прилив: 13,2 м</text>\n\n    <text x=\"15\" y=\"85\" fill=\"#ffffff\" font-size=\"9.5\">2. Атлантический: <tspan font-weight=\"bold\" fill=\"#38bdf8\">91,7 млн км²</tspan> (ср. 3597 м)</text>\n    <text x=\"15\" y=\"97\" fill=\"#94a3b8\" font-size=\"8.5\">Желоб: <tspan font-weight=\"bold\" fill=\"#f87171\">Пуэрто-Рико 8742 м</tspan> | Фанди: 18,0 м</text>\n\n    <text x=\"15\" y=\"122\" fill=\"#ffffff\" font-size=\"9.5\">3. Индийский: <tspan font-weight=\"bold\" fill=\"#38bdf8\">76,2 млн км²</tspan> (ср. 3711 м)</text>\n    <text x=\"15\" y=\"134\" fill=\"#94a3b8\" font-size=\"8.5\">Желоб: <tspan font-weight=\"bold\" fill=\"#f87171\">Яванский (Зондский) 7729 м</tspan> | Камбей: 11,9 м</text>\n\n    <text x=\"15\" y=\"159\" fill=\"#ffffff\" font-size=\"9.5\">4. Северный Ледовитый: <tspan font-weight=\"bold\" fill=\"#38bdf8\">14,8 млн км²</tspan></text>\n    <text x=\"15\" y=\"171\" fill=\"#94a3b8\" font-size=\"8.5\">Глубина: <tspan font-weight=\"bold\" fill=\"#f87171\">Гренландское море 5527 м</tspan> | Белое море: 10 м</text>\n  </g>\n</svg>\n  </div>\n\n  <!-- 3. БЕРЕГОВАЯ НОМЕНКЛАТУРА МАТЕРИКОВ -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-4\">\n    <h4 class=\"text-sm sm:text-base font-black text-amber-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🧭</span>\n      <span>3. Береговая номенклатура материков</span>\n    </h4>\n    \n    <div class=\"space-y-3\">\n      <div class=\"p-3 bg-space-950 rounded-xl border border-slate-800 space-y-2\">\n        <span class=\"text-xs font-black text-cyan-400 uppercase\">🌍 ЕВРАЗИЯ:</span>\n        <p>• <b>Полуострова (15):</b> Скандинавский, Ютландия, Пиренейский, Апеннинский, Балканский, Малая Азия, <b>Аравийский (крупнейший, 3 млн км²)</b>, Индостан, Индокитай, Корейский, Камчатка, Чукотский, Таймыр, Кольский, Малакка.</p>\n        <p>• <b>Заливы (5):</b> Бискайский, Бенгальский, Аденский, Персидский, Сиамский.</p>\n        <p>• <b>Проливы (7):</b> Гибралтарский (141 судно/сутки), Ла-Манш (500 судов/сутки, продолжение Па-де-Кале), Баб-эль-Мандебский, Лаперуза, Полкский, Малаккский, Зондский (182 судна/сутки).</p>\n        <p>• <b>Окраинные моря (16):</b> Северное, Норвежское, Баренцево, Карское, Лаптевых, Восточно-Сибирское, Чукотское, Берингово, Охотское, Японское, Желтое, Восточно-Китайское, Южно-Китайское, Филиппинское, Андаманское, Аравийское.</p>\n        <p>• <b>Внутренние моря (7):</b> Балтийское, Белое, Средиземное, Черное, Красное, Азовское, Мраморное.</p>\n      </div>\n\n      <div class=\"p-3 bg-space-950 rounded-xl border border-slate-800 space-y-2\">\n        <span class=\"text-xs font-black text-emerald-400 uppercase\">🌎 СЕВЕРНАЯ АМЕРИКА:</span>\n        <p>• <b>Полуострова (5):</b> Лабрадор, Флорида, Юкатан, Калифорния, Аляска.</p>\n        <p>• <b>Заливы (4):</b> Гудзонов, Мексиканский, Калифорнийский, Фанди (приливы 18 м).</p>\n        <p>• <b>Проливы (3):</b> Берингов, Девисов, Датский (разделяет Исландию и Гренландию).</p>\n        <p>• <b>Окраинные моря (5):</b> Бофорта, Баффина, Лабрадор, Саргассово (без берегов), Карибское.</p>\n      </div>\n\n      <div class=\"grid grid-cols-1 md:grid-cols-2 gap-3\">\n        <div class=\"p-3 bg-space-950 rounded-xl border border-slate-800 space-y-1.5\">\n          <span class=\"text-xs font-black text-rose-400 uppercase\">🌎 ЮЖНАЯ АМЕРИКА:</span>\n          <p>• <b>Полуостров:</b> Вальдес.</p>\n          <p>• <b>Заливы:</b> Ла-Плата, Байя-Гранде.</p>\n          <p>• <b>Проливы:</b> Магелланов, <b>Дрейка</b> (глубочайший — 5248 м, широчайший — 950 км).</p>\n        </div>\n        <div class=\"p-3 bg-space-950 rounded-xl border border-slate-800 space-y-1.5\">\n          <span class=\"text-xs font-black text-amber-400 uppercase\">🌍 АФРИКА:</span>\n          <p>• <b>Полуострова:</b> Сомали («Африканский рог»), Синайский.</p>\n          <p>• <b>Заливы:</b> Сидра, Гвинейский.</p>\n          <p>• <b>Пролив:</b> <b>Мозамбикский</b> (длиннейший в мире — 1670 км).</p>\n        </div>\n      </div>\n\n      <div class=\"grid grid-cols-1 md:grid-cols-2 gap-3\">\n        <div class=\"p-3 bg-space-950 rounded-xl border border-slate-800 space-y-1.5\">\n          <span class=\"text-xs font-black text-teal-400 uppercase\">🦘 АВСТРАЛИЯ:</span>\n          <p>• <b>Полуострова:</b> Арнем-Ленд, Кейп-Йорк.</p>\n          <p>• <b>Заливы:</b> Карпентария, Большой Австралийский.</p>\n          <p>• <b>Проливы:</b> Торресов, Бассов.</p>\n          <p>• <b>Моря:</b> Тиморское, Арафурское, Коралловое, Тасманово, Фиджи.</p>\n        </div>\n        <div class=\"p-3 bg-space-950 rounded-xl border border-slate-800 space-y-1.5\">\n          <span class=\"text-xs font-black text-sky-300 uppercase\">❄️ АНТАРКТИДА:</span>\n          <p>• <b>Полуостров:</b> Антарктический.</p>\n          <p>• <b>Моря:</b> Уэдделла, Беллинсгаузена, Амундсена, Росса.</p>\n        </div>\n      </div>\n    </div>\n  </div>\n\n  <!-- 4. КАНАЛЫ, ОСТРОВА И АРХИПЕЛАГИ -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-violet-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🏝️</span>\n      <span>4. Важнейшие каналы, Острова и Архипелаги</span>\n    </h4>\n    <div class=\"space-y-2\">\n      <p>• <b>Крупнейшие каналы:</b> <b>Суэцкий</b> (Средиземное и Красное море), <b>Панамский</b> (Атлантический и Тихий океан), <b>Кильский</b> (Северное и Балтийское море).</p>\n      <p>• <b>Архипелаг:</b> Группа близко расположенных островов. Крупнейший на Земле — <b>Малайский архипелаг</b> (Большие и Малые Зондские о-ва).</p>\n      <p>• <b>Типы островов по происхождению:</b></p>\n      <ul class=\"list-disc pl-5 space-y-1\">\n        <li><b>Материковые:</b> Гренландия (крупнейший остров мира — 2,17 млн км²), Мадагаскар, Британские острова.</li>\n        <li><b>Вулканические:</b> Исландия, Гавайские, Азорские острова.</li>\n        <li><b>Коралловые:</b> <b>Большой Барьерный риф</b> (длина 2000 км), острова Кораллового моря (атоллы).</li>\n      </ul>\n    </div>\n  </div>\n\n  <!-- 5. ВЫСОЧАЙШИЕ ГОРЫ И ВЕРШИНЫ МИРА -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-rose-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>⛰️</span>\n      <span>5. Высочайшие горы и вершины мира (21 система)</span>\n    </h4>\n    <div class=\"overflow-x-auto my-2\">\n      <table class=\"w-full text-left text-xs border border-slate-800 rounded-xl overflow-hidden\">\n        <thead class=\"bg-space-950 text-slate-400 border-b border-slate-800\">\n          <tr>\n            <th class=\"p-2\">#</th>\n            <th class=\"p-2\">Горная система</th>\n            <th class=\"p-2\">Высшая точка</th>\n            <th class=\"p-2\">Высота</th>\n            <th class=\"p-2\">Континент</th>\n          </tr>\n        </thead>\n        <tbody class=\"divide-y divide-slate-800 text-[11px] text-slate-300\">\n          <tr><td class=\"p-2\">1</td><td class=\"p-2 font-bold text-white\">Гималаи</td><td class=\"p-2 text-cyan-300 font-mono\">Эверест (Джомолунгма)</td><td class=\"p-2 font-bold text-emerald-400\">8848 м</td><td class=\"p-2\">Евразия (Высшая точка Земли)</td></tr>\n          <tr><td class=\"p-2\">2</td><td class=\"p-2 font-bold text-white\">Каракорум</td><td class=\"p-2 text-cyan-300 font-mono\">Чогори (К2)</td><td class=\"p-2 font-bold text-emerald-400\">8611 м</td><td class=\"p-2\">Евразия</td></tr>\n          <tr><td class=\"p-2\">3</td><td class=\"p-2 font-bold text-white\">Куньлунь</td><td class=\"p-2 text-cyan-300 font-mono\">Улугмузтаг</td><td class=\"p-2 font-bold text-emerald-400\">7723 м</td><td class=\"p-2\">Евразия</td></tr>\n          <tr><td class=\"p-2\">4</td><td class=\"p-2 font-bold text-white\">Памир</td><td class=\"p-2 text-cyan-300 font-mono\">Конгур</td><td class=\"p-2 font-bold text-emerald-400\">7719 м</td><td class=\"p-2\">Евразия</td></tr>\n          <tr><td class=\"p-2\">5</td><td class=\"p-2 font-bold text-white\">Гиндукуш</td><td class=\"p-2 text-cyan-300 font-mono\">Тиричмир</td><td class=\"p-2 font-bold text-emerald-400\">7690 м</td><td class=\"p-2\">Евразия</td></tr>\n          <tr><td class=\"p-2\">6</td><td class=\"p-2 font-bold text-white\">Тянь-Шань</td><td class=\"p-2 text-cyan-300 font-mono\">Пик Победы</td><td class=\"p-2 font-bold text-emerald-400\">7439 м</td><td class=\"p-2\">Евразия (граница РК)</td></tr>\n          <tr><td class=\"p-2\">7</td><td class=\"p-2 font-bold text-white\">Тибет</td><td class=\"p-2 text-cyan-300 font-mono\">Алинг-Гангри</td><td class=\"p-2 font-bold text-emerald-400\">7315 м</td><td class=\"p-2\">Евразия (нагорье)</td></tr>\n          <tr><td class=\"p-2\">8</td><td class=\"p-2 font-bold text-white\">Анды</td><td class=\"p-2 text-cyan-300 font-mono\">Аконкагуа</td><td class=\"p-2 font-bold text-sky-400\">6960 м</td><td class=\"p-2\">Южная Америка</td></tr>\n          <tr><td class=\"p-2\">9</td><td class=\"p-2 font-bold text-white\">Кордильеры</td><td class=\"p-2 text-cyan-300 font-mono\">Денали (Мак-Кинли)</td><td class=\"p-2 font-bold text-sky-400\">6193 м</td><td class=\"p-2\">Северная Америка</td></tr>\n          <tr><td class=\"p-2\">10</td><td class=\"p-2 font-bold text-white\">Килиманджаро</td><td class=\"p-2 text-cyan-300 font-mono\">Килиманджаро</td><td class=\"p-2 font-bold text-amber-400\">5895 м</td><td class=\"p-2\">Африка</td></tr>\n          <tr><td class=\"p-2\">11</td><td class=\"p-2 font-bold text-white\">Кавказ</td><td class=\"p-2 text-cyan-300 font-mono\">Эльбрус</td><td class=\"p-2 font-bold text-amber-400\">5642 м</td><td class=\"p-2\">Евразия</td></tr>\n          <tr><td class=\"p-2\">12</td><td class=\"p-2 font-bold text-white\">Элсуорт</td><td class=\"p-2 text-cyan-300 font-mono\">Массив Винсон</td><td class=\"p-2 font-bold text-indigo-400\">5140 м</td><td class=\"p-2\">Антарктида</td></tr>\n          <tr><td class=\"p-2\">13</td><td class=\"p-2 font-bold text-white\">Альпы</td><td class=\"p-2 text-cyan-300 font-mono\">Монблан</td><td class=\"p-2 font-bold text-slate-300\">4807 м</td><td class=\"p-2\">Европа</td></tr>\n          <tr><td class=\"p-2\">14</td><td class=\"p-2 font-bold text-white\">Алтай</td><td class=\"p-2 text-cyan-300 font-mono\">Белуха (Музтау)</td><td class=\"p-2 font-bold text-slate-300\">4506 м</td><td class=\"p-2\">Казахстан / Сибирь</td></tr>\n          <tr><td class=\"p-2\">15</td><td class=\"p-2 font-bold text-white\">Скалистые горы</td><td class=\"p-2 text-cyan-300 font-mono\">Эльберт</td><td class=\"p-2 font-bold text-slate-300\">4399 м</td><td class=\"p-2\">Северная Америка</td></tr>\n          <tr><td class=\"p-2\">16</td><td class=\"p-2 font-bold text-white\">Атлас</td><td class=\"p-2 text-cyan-300 font-mono\">Тубкаль</td><td class=\"p-2 font-bold text-slate-300\">4165 м</td><td class=\"p-2\">Африка</td></tr>\n          <tr><td class=\"p-2\">17</td><td class=\"p-2 font-bold text-white\">Армянское нагорье</td><td class=\"p-2 text-cyan-300 font-mono\">Арагац</td><td class=\"p-2 font-bold text-slate-300\">4090 м</td><td class=\"p-2\">Передняя Азия</td></tr>\n          <tr><td class=\"p-2\">18</td><td class=\"p-2 font-bold text-white\">Фудзияма</td><td class=\"p-2 text-cyan-300 font-mono\">Фудзияма</td><td class=\"p-2 font-bold text-slate-300\">3776 м</td><td class=\"p-2\">Япония</td></tr>\n          <tr><td class=\"p-2\">19</td><td class=\"p-2 font-bold text-white\">Бол. Водораздельный</td><td class=\"p-2 text-cyan-300 font-mono\">Косцюшко</td><td class=\"p-2 font-bold text-slate-300\">2228 м</td><td class=\"p-2\">Австралия</td></tr>\n          <tr><td class=\"p-2\">20</td><td class=\"p-2 font-bold text-white\">Аппалачи</td><td class=\"p-2 text-cyan-300 font-mono\">Митчелл</td><td class=\"p-2 font-bold text-slate-300\">2037 м</td><td class=\"p-2\">Северная Америка</td></tr>\n          <tr><td class=\"p-2\">21</td><td class=\"p-2 font-bold text-white\">Урал</td><td class=\"p-2 text-cyan-300 font-mono\">Народная</td><td class=\"p-2 font-bold text-slate-300\">1895 м</td><td class=\"p-2\">Евразия (граница)</td></tr>\n        </tbody>\n      </table>\n    </div>\n\n    <!-- ВЕКТОРНАЯ СХЕМА 2 -->\n    <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 700 240\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner my-2\">\n  <text x=\"350\" y=\"22\" fill=\"#38bdf8\" font-size=\"11.5\" font-weight=\"900\" text-anchor=\"middle\">ВЫСОЧАЙШИЕ ГОРНЫЕ ВЕРШИНЫ МИРА (ВЫСОТА В МЕТРАХ)</text>\n\n  <g transform=\"translate(20, 38)\">\n    <rect x=\"0\" y=\"0\" width=\"320\" height=\"190\" rx=\"8\" fill=\"#0f172a\" stroke=\"#f59e0b\" stroke-width=\"1.2\" />\n    <rect x=\"10\" y=\"8\" width=\"300\" height=\"22\" rx=\"4\" fill=\"#f59e0b\" fill-opacity=\"0.15\" />\n    <text x=\"160\" y=\"23\" fill=\"#fbbf24\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">ВЫСОЧАЙШИЕ ВЕРШИНЫ АЗИИ</text>\n\n    <text x=\"15\" y=\"48\" fill=\"#ffffff\" font-size=\"9\">Гималаи: <tspan font-weight=\"bold\" fill=\"#f87171\">Эверест (Джомолунгма) — 8848 м</tspan></text>\n    <rect x=\"15\" y=\"52\" width=\"290\" height=\"6\" rx=\"2\" fill=\"#ef4444\" />\n\n    <text x=\"15\" y=\"73\" fill=\"#ffffff\" font-size=\"9\">Каракорум: <tspan font-weight=\"bold\" fill=\"#f87171\">Чогори (К2) — 8611 м</tspan></text>\n    <rect x=\"15\" y=\"77\" width=\"282\" height=\"6\" rx=\"2\" fill=\"#ef4444\" />\n\n    <text x=\"15\" y=\"98\" fill=\"#ffffff\" font-size=\"9\">Куньлунь: <tspan font-weight=\"bold\" fill=\"#fbbf24\">Улугмузтаг — 7723 м</tspan></text>\n    <rect x=\"15\" y=\"102\" width=\"253\" height=\"6\" rx=\"2\" fill=\"#f59e0b\" />\n\n    <text x=\"15\" y=\"123\" fill=\"#ffffff\" font-size=\"9\">Памир: <tspan font-weight=\"bold\" fill=\"#fbbf24\">Конгур — 7719 м</tspan></text>\n    <rect x=\"15\" y=\"127\" width=\"252\" height=\"6\" rx=\"2\" fill=\"#f59e0b\" />\n\n    <text x=\"15\" y=\"148\" fill=\"#ffffff\" font-size=\"9\">Гиндукуш: <tspan font-weight=\"bold\" fill=\"#fbbf24\">Тиричмир — 7690 м</tspan></text>\n    <rect x=\"15\" y=\"152\" width=\"251\" height=\"6\" rx=\"2\" fill=\"#f59e0b\" />\n\n    <text x=\"15\" y=\"173\" fill=\"#ffffff\" font-size=\"9\">Тянь-Шань: <tspan font-weight=\"bold\" fill=\"#34d399\">Пик Победы — 7439 м</tspan></text>\n    <rect x=\"15\" y=\"177\" width=\"243\" height=\"6\" rx=\"2\" fill=\"#10b981\" />\n  </g>\n\n  <g transform=\"translate(360, 38)\">\n    <rect x=\"0\" y=\"0\" width=\"320\" height=\"190\" rx=\"8\" fill=\"#0f172a\" stroke=\"#8b5cf6\" stroke-width=\"1.2\" />\n    <rect x=\"10\" y=\"8\" width=\"300\" height=\"22\" rx=\"4\" fill=\"#8b5cf6\" fill-opacity=\"0.15\" />\n    <text x=\"160\" y=\"23\" fill=\"#c084fc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">ВЕРШИНЫ ДРУГИХ КОНТИНЕНТОВ</text>\n\n    <text x=\"15\" y=\"48\" fill=\"#ffffff\" font-size=\"9\">Южная Америка (Анды): <tspan font-weight=\"bold\" fill=\"#0ea5e9\">Аконкагуа — 6960 м</tspan></text>\n    <rect x=\"15\" y=\"52\" width=\"228\" height=\"6\" rx=\"2\" fill=\"#0ea5e9\" />\n\n    <text x=\"15\" y=\"73\" fill=\"#ffffff\" font-size=\"9\">Сев. Америка (Кордильеры): <tspan font-weight=\"bold\" fill=\"#0ea5e9\">Денали — 6193 м</tspan></text>\n    <rect x=\"15\" y=\"77\" width=\"202\" height=\"6\" rx=\"2\" fill=\"#0ea5e9\" />\n\n    <text x=\"15\" y=\"98\" fill=\"#ffffff\" font-size=\"9\">Африка: <tspan font-weight=\"bold\" fill=\"#34d399\">Килиманджаро — 5895 м</tspan></text>\n    <rect x=\"15\" y=\"102\" width=\"193\" height=\"6\" rx=\"2\" fill=\"#10b981\" />\n\n    <text x=\"15\" y=\"123\" fill=\"#ffffff\" font-size=\"9\">Кавказ: <tspan font-weight=\"bold\" fill=\"#34d399\">Эльбрус — 5642 м</tspan></text>\n    <rect x=\"15\" y=\"127\" width=\"185\" height=\"6\" rx=\"2\" fill=\"#10b981\" />\n\n    <text x=\"15\" y=\"148\" fill=\"#ffffff\" font-size=\"9\">Антарктида: <tspan font-weight=\"bold\" fill=\"#cbd5e1\">Массив Винсон — 5140 м</tspan></text>\n    <rect x=\"15\" y=\"152\" width=\"168\" height=\"6\" rx=\"2\" fill=\"#64748b\" />\n\n    <text x=\"15\" y=\"173\" fill=\"#ffffff\" font-size=\"9\">Европа (Альпы): <tspan font-weight=\"bold\" fill=\"#cbd5e1\">Монблан — 4807 м</tspan> | Алтай: 4506 м</text>\n    <rect x=\"15\" y=\"177\" width=\"157\" height=\"6\" rx=\"2\" fill=\"#64748b\" />\n  </g>\n</svg>\n  </div>\n\n  <!-- 6. 5 РАЙОНОВ ГЕЙЗЕРОВ -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-teal-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>♨️</span>\n      <span>6. 5 основных районов гейзеров мира</span>\n    </h4>\n    <div class=\"grid grid-cols-1 md:grid-cols-2 gap-3 text-xs\">\n      <div class=\"p-3 bg-space-950 rounded-xl border border-teal-500/40 space-y-1\">\n        <span class=\"font-bold text-teal-400 block\">1. Исландия (Атлантический океан):</span>\n        <p class=\"text-slate-300\">Зона расхождения литосферных плит. Знаменитый <b>Великий Гейзер (Гейсир)</b>, давший название термину. Энергия используется для обогрева домов и теплиц.</p>\n      </div>\n      <div class=\"p-3 bg-space-950 rounded-xl border border-teal-500/40 space-y-1\">\n        <span class=\"font-bold text-teal-400 block\">2. Полуостров Камчатка (Россия, Евразия):</span>\n        <p class=\"text-slate-300\">Часть Тихоокеанского «Огненного кольца». В 1941 году открыта уникальная <b>Долина гейзеров</b>.</p>\n      </div>\n      <div class=\"p-3 bg-space-950 rounded-xl border border-teal-500/40 space-y-1\">\n        <span class=\"font-bold text-teal-400 block\">3. Йеллоустоунский нацпарк (США):</span>\n        <p class=\"text-slate-300\">Расположен на супервулкане. Содержит около <b>половины всех гейзеров мира</b>, включая знаменитый гейзер <b>«Старый служака» (Old Faithful)</b>.</p>\n      </div>\n      <div class=\"p-3 bg-space-950 rounded-xl border border-teal-500/40 space-y-1\">\n        <span class=\"font-bold text-teal-400 block\">4. Япония (Восточная Азия):</span>\n        <p class=\"text-slate-300\">Стык четырех литосферных плит. Знаменита термальными источниками — <b>онсэнами</b>.</p>\n      </div>\n      <div class=\"p-3 bg-space-950 rounded-xl border border-teal-500/40 space-y-1 md:col-span-2\">\n        <span class=\"font-bold text-teal-400 block\">5. Новая Зеландия (Тихий океан):</span>\n        <p class=\"text-slate-300\">Северный остров, вулкан Таупо (город Роторуа). Мощные гейзеры, грязевые котлы и фумаролы.</p>\n      </div>\n    </div>\n  </div>\n\n  <!-- 7. 24 КРУПНЕЙШИЕ РЕКИ МИРА -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-sky-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🏞️</span>\n      <span>7. 24 крупнейшие реки мира по материкам</span>\n    </h4>\n    <div class=\"space-y-2 text-xs\">\n      <p>• <b>Северная Америка:</b> 1. <b>Юкон</b> (Аляска, золотодобыча); 2. <b>Маккензи</b> (длиннейшая в Канаде); 3. <b>Колумбия</b> (гидроэнергия, ГЭС); 4. <b>Миссисипи</b> (длиннейшая и полноводная, огромная дельта).</p>\n      <p>• <b>Южная Америка:</b> 5. <b>Амазонка</b> (полноводнейшая река мира, крупнейший бассейн); 6. <b>Парана</b> (водопад Игуасу на притоке).</p>\n      <p>• <b>Европа:</b> 7. <b>Дунай</b> (протекает через 10 стран Европы); 8. <b>Рейн</b> (главная транспортная артерия Зап. Европы); 9. <b>Волга (Еділ)</b> (длиннейшая река Европы, бассейн Каспия).</p>\n      <p>• <b>Азия (Россия):</b> 10. <b>Обь</b> (крупнейший бассейн в Евразии); 11. <b>Енисей</b> (полноводнейшая в России, граница Западной и Восточной Сибири); 12. <b>Лена</b> (бассейн в зоне вечной мерзлоты).</p>\n      <p>• <b>Азия (Зарубежная):</b> 13. <b>Амур</b> (граница РФ и Китая, летние муссонные паводки); 14. <b>Хуанхэ</b> («Желтая река», лёссовые наносы, частая смена русла); 15. <b>Янцзы</b> (длиннейшая и полноводная в Евразии); 16. <b>Ганг</b> (священная река Индии, дельта с Брахмапутрой); 17. <b>Инд</b> (орошение Пакистана); 18. <b>Меконг</b> («Дунай Азии»); 19. <b>Тигр и Евфрат</b> (Междуречье, Шатт-эль-Араб, Персидский залив).</p>\n      <p>• <b>Африка:</b> 20. <b>Нил</b> (длиннейшая река Африки, транзитом через Сахару); 21. <b>Конго (Заир)</b> (дважды пересекает экватор, полноводнейшая в Африке); 22. <b>Нигер</b> (главная в Зап. Африке); 23. <b>Замбези</b> (водопад Виктория, Индийский океан).</p>\n      <p>• <b>Австралия:</b> 24. <b>Муррей с Дарлингом</b> (главная речная система сухого материка, сильно мелеет в засуху).</p>\n    </div>\n  </div>\n\n  <!-- 8. ЛЕДНИКИ, ТЕЧЕНИЯ И ОЗЕРА -->\n  <div class=\"p-4 sm:p-5 rounded-2xl bg-space-900 border border-slate-800 space-y-3\">\n    <h4 class=\"text-sm sm:text-base font-black text-indigo-400 flex items-center space-x-2 border-b border-slate-800 pb-2\">\n      <span>🧊</span>\n      <span>8. Ледники, Океанические течения и Озера мира</span>\n    </h4>\n    <div class=\"space-y-2 text-xs\">\n      <p>• <b>Крупнейшие ледники:</b> Хаббард (145 км, Аляска), Федченко (77 км, Памир), Корженевского (12 км, Заилийский Алатау), Туюксу (3,5 км, Заилийский Алатау, исследователь Н.Н. Пальгов).</p>\n      <p>• <b>14 главных течений:</b> Теплые (Гольфстрим, Куросио, Бразильское, Пассатные); Холодные (Западных Ветров — кольцо вокруг Антарктиды, Бенгельское — пустыня Намиб, Перуанское — пустыня Атакама, Канарское — Сахара, Калифорнийское); Сезонное (Муссонное/Сомалийское).</p>\n      <p>• <b>Рекорды озер:</b> Байкал (глубочайшее — 1642 м), Танганьика (длиннейшее), Виктория (крупнейшее в Африке), Иссык-Куль (не замерзает), Зайсан (Черный Иртыш впадает, Иртыш вытекает), Балхаш (запад пресный, восток соленый), Великие озера (Верхнее — крупнейшее пресное), Каспий (крупнейшее реликтовое), Арал (экокатастрофа), Мертвое море (-430 м, сверхсоленое), Титикака (высокогорное), Эйр (-16 м, Австралия).</p>\n    </div>\n  </div>\n\n</div>", "svg_diagram": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 700 250\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner\">\n  <text x=\"350\" y=\"24\" fill=\"#38bdf8\" font-size=\"12\" font-weight=\"900\" text-anchor=\"middle\">ГЕОГРАФИЯЛЫҚ НОМЕНКЛАТУРА: НЕГІЗГІ НЫСАНДАР МЕН КӨРСЕТКІШТЕР</text>\n\n  <!-- Left Card: Continents & Oceans -->\n  <rect x=\"15\" y=\"40\" width=\"210\" height=\"195\" rx=\"10\" fill=\"#0f172a\" stroke=\"#0ea5e9\" stroke-width=\"1.5\" />\n  <rect x=\"25\" y=\"50\" width=\"190\" height=\"24\" rx=\"6\" fill=\"#0284c7\" fill-opacity=\"0.15\" />\n  <text x=\"120\" y=\"66\" fill=\"#38bdf8\" font-size=\"10.5\" font-weight=\"900\" text-anchor=\"middle\">МАТЕРИКТЕР &amp; МҰХИТТАР</text>\n  <text x=\"26\" y=\"92\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">6 Материк:</tspan> Еуразия (54 млн)</text>\n  <text x=\"34\" y=\"106\" fill=\"#94a3b8\" font-size=\"9\">Африка (30,3), С.Ам (24,2), О.Ам (18,3)</text>\n  <text x=\"34\" y=\"120\" fill=\"#94a3b8\" font-size=\"9\">Антарктида (14), Аустралия (7,7)</text>\n  <text x=\"26\" y=\"140\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#34d399\">4 Мұхит:</tspan> Тынық (178,6 млн)</text>\n  <text x=\"34\" y=\"154\" fill=\"#94a3b8\" font-size=\"9\">Атлант (91,7), Үнді (76,2), Мұзды (14,8)</text>\n  <text x=\"26\" y=\"174\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#f87171\">Мариан шұңғымасы:</tspan> 11 022 м</text>\n  <text x=\"26\" y=\"194\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#fbbf24\">Орта Атлант жотасы:</tspan> 18 000 км</text>\n  <text x=\"26\" y=\"214\" fill=\"#34d399\" font-size=\"9.5\" font-weight=\"bold\">• Шокальский: Дүниежүзілік мұхит</text>\n\n  <!-- Middle Card: Mountains, Rivers & Glaciers -->\n  <rect x=\"245\" y=\"40\" width=\"210\" height=\"195\" rx=\"10\" fill=\"#0f172a\" stroke=\"#10b981\" stroke-width=\"1.5\" />\n  <rect x=\"255\" y=\"50\" width=\"190\" height=\"24\" rx=\"6\" fill=\"#10b981\" fill-opacity=\"0.15\" />\n  <text x=\"350\" y=\"66\" fill=\"#34d399\" font-size=\"10.5\" font-weight=\"900\" text-anchor=\"middle\">ТАУЛАР &amp; ӨЗЕНДЕР</text>\n  <text x=\"256\" y=\"92\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Ең биік шың:</tspan> Эверест (8848 м)</text>\n  <text x=\"264\" y=\"106\" fill=\"#94a3b8\" font-size=\"9\">Чогори 8611 м, Аконкагуа 6960 м</text>\n  <text x=\"256\" y=\"126\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Өзен рекордтары:</tspan></text>\n  <text x=\"264\" y=\"140\" fill=\"#94a3b8\" font-size=\"9\">Амазонка (ең сулы), Ніл (ең ұзын)</text>\n  <text x=\"264\" y=\"154\" fill=\"#94a3b8\" font-size=\"9\">Конго (экваторды 2 рет кеседі)</text>\n  <text x=\"256\" y=\"174\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#fbbf24\">Мұздықтар:</tspan> Хабборт (145 км)</text>\n  <text x=\"264\" y=\"188\" fill=\"#94a3b8\" font-size=\"9\">Федченко (77 км), Тұйықсу (3,5 км)</text>\n  <text x=\"256\" y=\"210\" fill=\"#38bdf8\" font-size=\"9.5\" font-weight=\"bold\">• Пальгов: Тұйықсу зерттеушісі</text>\n\n  <!-- Right Card: Currents, Lakes, Geysers -->\n  <rect x=\"475\" y=\"40\" width=\"210\" height=\"195\" rx=\"10\" fill=\"#0f172a\" stroke=\"#f59e0b\" stroke-width=\"1.5\" />\n  <rect x=\"485\" y=\"50\" width=\"190\" height=\"24\" rx=\"6\" fill=\"#f59e0b\" fill-opacity=\"0.15\" />\n  <text x=\"580\" y=\"66\" fill=\"#fbbf24\" font-size=\"10.5\" font-weight=\"900\" text-anchor=\"middle\">АҒЫСТАР &amp; КӨЛДЕР</text>\n  <text x=\"486\" y=\"92\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Жылы ағыс:</tspan> Гольфстрим, Куросио</text>\n  <text x=\"486\" y=\"110\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Суық ағыс:</tspan> Батыс желдер (сақина),</text>\n  <text x=\"494\" y=\"124\" fill=\"#94a3b8\" font-size=\"9\">Бенгел (Намиб), Перу (Атакама)</text>\n  <text x=\"486\" y=\"144\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#38bdf8\">Байкал көлі:</tspan> ең терең (1642 м)</text>\n  <text x=\"494\" y=\"158\" fill=\"#94a3b8\" font-size=\"9\">Каспий — ең үлкен көл, Чад — таяз</text>\n  <text x=\"486\" y=\"178\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#34d399\">5 Гейзер өрісі:</tspan> Исландия,</text>\n  <text x=\"494\" y=\"192\" fill=\"#94a3b8\" font-size=\"9\">Камчатка, Йеллоустоун, Жапония, Зел.</text>\n  <text x=\"486\" y=\"212\" fill=\"#f87171\" font-size=\"9.5\" font-weight=\"bold\">• Дрейк: ені ең кең бұғаз (950 км)</text>\n</svg>", "svg_diagram_ru": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 700 250\" class=\"w-full h-auto rounded-xl bg-space-950 border border-slate-800 p-3 shadow-inner\">\n  <text x=\"350\" y=\"24\" fill=\"#38bdf8\" font-size=\"12\" font-weight=\"900\" text-anchor=\"middle\">ГЕОГРАФИЧЕСКАЯ НОМЕНКЛАТУРА: ГЛАВНЫЕ ОБЪЕКТЫ И РЕКОРДЫ</text>\n\n  <rect x=\"15\" y=\"40\" width=\"210\" height=\"195\" rx=\"10\" fill=\"#0f172a\" stroke=\"#0ea5e9\" stroke-width=\"1.5\" />\n  <rect x=\"25\" y=\"50\" width=\"190\" height=\"24\" rx=\"6\" fill=\"#0284c7\" fill-opacity=\"0.15\" />\n  <text x=\"120\" y=\"66\" fill=\"#38bdf8\" font-size=\"10.5\" font-weight=\"900\" text-anchor=\"middle\">МАТЕРИКИ &amp; ОКЕАНЫ</text>\n  <text x=\"26\" y=\"92\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">6 Материков:</tspan> Евразия (54 млн)</text>\n  <text x=\"34\" y=\"106\" fill=\"#94a3b8\" font-size=\"9\">Африка (30,3), С.Ам (24,2), Ю.Ам (18,3)</text>\n  <text x=\"34\" y=\"120\" fill=\"#94a3b8\" font-size=\"9\">Антарктида (14), Австралия (7,7)</text>\n  <text x=\"26\" y=\"140\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#34d399\">4 Океана:</tspan> Тихий (178,6 млн)</text>\n  <text x=\"34\" y=\"154\" fill=\"#94a3b8\" font-size=\"9\">Атлантический (91,7), Индийский (76,2)</text>\n  <text x=\"26\" y=\"174\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#f87171\">Марианский желоб:</tspan> 11 022 м</text>\n  <text x=\"26\" y=\"194\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#fbbf24\">Срединно-Атлантический:</tspan> 18 000 км</text>\n  <text x=\"26\" y=\"214\" fill=\"#34d399\" font-size=\"9.5\" font-weight=\"bold\">• Шокальский: Мировой океан</text>\n\n  <rect x=\"245\" y=\"40\" width=\"210\" height=\"195\" rx=\"10\" fill=\"#0f172a\" stroke=\"#10b981\" stroke-width=\"1.5\" />\n  <rect x=\"255\" y=\"50\" width=\"190\" height=\"24\" rx=\"6\" fill=\"#10b981\" fill-opacity=\"0.15\" />\n  <text x=\"350\" y=\"66\" fill=\"#34d399\" font-size=\"10.5\" font-weight=\"900\" text-anchor=\"middle\">ГОРЫ &amp; РЕКИ</text>\n  <text x=\"256\" y=\"92\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Высшая точка:</tspan> Эверест (8848 м)</text>\n  <text x=\"264\" y=\"106\" fill=\"#94a3b8\" font-size=\"9\">Чогори 8611 м, Аконкагуа 6960 м</text>\n  <text x=\"256\" y=\"126\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Рекорды рек:</tspan></text>\n  <text x=\"264\" y=\"140\" fill=\"#94a3b8\" font-size=\"9\">Амазонка (полноводная), Нил (длинная)</text>\n  <text x=\"264\" y=\"154\" fill=\"#94a3b8\" font-size=\"9\">Конго (дважды пересекает экватор)</text>\n  <text x=\"256\" y=\"174\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#fbbf24\">Ледники:</tspan> Хаббард (145 км)</text>\n  <text x=\"264\" y=\"188\" fill=\"#94a3b8\" font-size=\"9\">Федченко (77 км), Туюксу (3,5 км)</text>\n  <text x=\"256\" y=\"210\" fill=\"#38bdf8\" font-size=\"9.5\" font-weight=\"bold\">• Пальгов: исследователь Туюксу</text>\n\n  <rect x=\"475\" y=\"40\" width=\"210\" height=\"195\" rx=\"10\" fill=\"#0f172a\" stroke=\"#f59e0b\" stroke-width=\"1.5\" />\n  <rect x=\"485\" y=\"50\" width=\"190\" height=\"24\" rx=\"6\" fill=\"#f59e0b\" fill-opacity=\"0.15\" />\n  <text x=\"580\" y=\"66\" fill=\"#fbbf24\" font-size=\"10.5\" font-weight=\"900\" text-anchor=\"middle\">ТЕЧЕНИЯ &amp; ОЗЕРА</text>\n  <text x=\"486\" y=\"92\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Теплые течения:</tspan> Гольфстрим, Куросио</text>\n  <text x=\"486\" y=\"110\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#ffffff\">Холодные:</tspan> Западных Ветров (кольцо),</text>\n  <text x=\"494\" y=\"124\" fill=\"#94a3b8\" font-size=\"9\">Бенгельское (Намиб), Перуанское</text>\n  <text x=\"486\" y=\"144\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#38bdf8\">Озеро Байкал:</tspan> глубочайшее (1642 м)</text>\n  <text x=\"494\" y=\"158\" fill=\"#94a3b8\" font-size=\"9\">Каспий — крупнейшее, Чад — реликтовое</text>\n  <text x=\"486\" y=\"178\" fill=\"#cbd5e1\" font-size=\"9.5\">• <tspan font-weight=\"bold\" fill=\"#34d399\">5 районов гейзеров:</tspan> Исландия,</text>\n  <text x=\"494\" y=\"192\" fill=\"#94a3b8\" font-size=\"9\">Камчатка, Йеллоустоун, Япония, Зел.</text>\n  <text x=\"486\" y=\"212\" fill=\"#f87171\" font-size=\"9.5\" font-weight=\"bold\">• Дрейка: широчайший пролив (950 км)</text>\n</svg>", "table_kz": {"cols": ["Географиялық нысан / Көрсеткіш", "Сандық мәні / Орналасуы", "Негізгі анықтамасы және ҰБТ маңызы"], "rows": [["Еуразия материгі", "54 млн км²", "Әлемдегі ең үлкен материк (1-орын)"], ["Африка материгі", "30,3 млн км²", "Екінші ірі материк, ең ыстық құрлық"], ["Солтүстік Америка", "24,2 млн км²", "Үшінші ірі материк (Кордильер, Миссисипи)"], ["Оңтүстік Америка", "18,3 млн км²", "Ең ылғалды материк (Анд, Амазонка)"], ["Антарктида", "12,4 – 14 млн км²", "Ең суық және орташа биіктігі ең үлкен материк"], ["Аустралия", "7,7 млн км²", "Ең кіші және ең құрғақ материк"], ["Тынық мұхиты", "178,6 млн км²", "Ең үлкен және ең терең (Мариан 11 022 м)"], ["Атлант мұхиты", "91,7 млн км²", "Пуэрто-Рико 8742 м, Фанди толысуы 18 м"], ["Үнді мұхиты", "76,2 млн км²", "Ява шұңғымасы 7729 м, Камбей толысуы 11,9 м"], ["Солтүстік Мұзды мұхиты", "14,8 млн км²", "Гренландия теңізі 5527 м, Ақ теңіз 10 м"], ["Орта Атлант жотасы", "18 000 км", "Әлемдегі ең ұзын мұхит асты жотасы"], ["Дрейк бұғазы", "Ені 950 км, тереңдігі 5248 м", "Дүниежүзі бойынша ең терең және ең кең бұғаз"], ["Мозамбик бұғазы", "1670 км", "Дүниежүзі бойынша ең ұзын бұғаз"], ["Арабия түбегі", "3 млн км²", "Әлемдегі ең үлкен түбек"], ["Малайя архипелагы", "Еуразия мен Аустралия арасында", "Жердегі ең үлкен архипелаг (Үлкен/Кіші Зонд)"], ["Гренландия аралы", "2,17 млн км²", "Әлемдегі ең үлкен арал (материктік)"], ["Үлкен Тосқауыл рифі", "2000 км", "Дүниежүзіндегі ең ұзын маржандық құрылым"], ["Эверест (Джомолунгма)", "8848 м (Гималай)", "Жер шарының ең биік шыңы"], ["Чогори (К2)", "8611 м (Қарақорым)", "Әлемдегі екінші ең биік шың"], ["Аконкагуа", "6960 м (Анд)", "Оңтүстік және Батыс жартышардың ең биік шыңы"], ["Денали (Мак-Кинли)", "6193 м (Кордильер)", "Солтүстік Американың ең биік шыңы"], ["Килиманджаро", "5895 м (Африка)", "Африканың ең биік жанартаулық шыңы"], ["Винсон массиві", "5140 м (Элсуорт)", "Антарктиданың ең биік нүктесі"], ["Байкал көлі", "1642 м тереңдік", "Әлемдегі ең терең тұщы көл (тектоникалық)"], ["Каспий теңізі", "371 мың км²", "Ауданы бойынша әлемдегі ең үлкен көл"], ["Өлі теңіз", "-430 м", "Еуразияның ең төменгі құрлықтық нүктесі"], ["Амазонка өзені", "Экватор (О. Америка)", "Суы ең мол және алабы ең үлкен өзен"], ["Ніл өзені", "6671 км (Африка)", "Әлемдегі ең ұзын өзендердің бірі"], ["Конго өзені", "Орталық Африка", "Экваторды екі рет кесіп өтетін жалғыз ірі өзен"], ["Хабборт мұздығы", "145 км (Аляска)", "Солтүстік Америкадағы ең ұзын мұздық"], ["Федченко мұздығы", "77 км (Памир)", "Еуразиядағы ең ұзын тау-аңғар мұздығы"], ["Гольфстрим ағысы", "Атлант мұхиты", "Әлемдегі ең қуатты жылы ағыс"]]}, "table_ru": {"cols": ["Географический объект / Показатель", "Значение / Расположение", "Определение и значение для ЕНТ"], "rows": [["Материк Евразия", "54 млн км²", "Крупнейший материк планеты (1 место)"], ["Материк Африка", "30,3 млн км²", "Второй по площади, самый жаркий материк"], ["Северная Америка", "24,2 млн км²", "Третий материк (Кордильеры, Миссисипи)"], ["Южная Америка", "18,3 млн км²", "Самый влажный материк (Анды, Амазонка)"], ["Антарктида", "12,4 – 14 млн км²", "Самый холодный и самый высокий материк"], ["Австралия", "7,7 млн км²", "Самый маленький и самый сухой материк"], ["Тихий океан", "178,6 млн км²", "Крупнейший и глубочайший (Марианский 11 022 м)"], ["Атлантический океан", "91,7 млн км²", "Пуэрто-Рико 8742 м, приливы Фанди 18 м"], ["Индийский океан", "76,2 млн км²", "Яванский желоб 7729 м, приливы Камбей 11,9 м"], ["Северный Ледовитый", "14,8 млн км²", "Гренландское море 5527 м, Белое море 10 м"], ["Срединно-Атлантический", "18 000 км", "Длиннейший подводный хребет планеты"], ["Пролив Дрейка", "Ширина 950 км, гл. 5248 м", "Широчайший и глубочайший пролив планеты"], ["Мозамбикский пролив", "1670 км", "Длиннейший пролив планеты"], ["Аравийский полуостров", "3 млн км²", "Крупнейший полуостров Земли"], ["Малайский архипелаг", "Между Евразией и Австралией", "Крупнейший архипелаг Земли (Зондские о-ва)"], ["Остров Гренландия", "2,17 млн км²", "Крупнейший остров планеты (материковый)"], ["Большой Барьерный риф", "2000 км", "Длиннейшая коралловая структура Земли"], ["Эверест (Джомолунгма)", "8848 м (Гималаи)", "Высочайшая вершина земного шара"], ["Чогори (К2)", "8611 м (Каракорум)", "Вторая по высоте вершина планеты"], ["Аконкагуа", "6960 м (Анды)", "Высшая точка Западного и Южного полушарий"], ["Денали (Мак-Кинли)", "6193 м (Кордильеры)", "Высшая точка Северной Америки"], ["Килиманджаро", "5895 м (Африка)", "Высочайшая вулканическая вершина Африки"], ["Массив Винсон", "5140 м (Элсуорт)", "Высшая точка Антарктиды"], ["Озеро Байкал", "Глубина 1642 м", "Глубочайшее озеро мира с пресной водой"], ["Каспийское море", "371 тыс. км²", "Крупнейшее по площади озеро Земли"], ["Мертвое море", "-430 м", "Низшая точка суши Евразии, сверхсоленое"], ["Река Амазонка", "Экватор (Юж. Америка)", "Полноводнейшая река, крупнейший бассейн"], ["Река Нил", "6671 км (Африка)", "Одна из длиннейших рек планеты"], ["Река Конго", "Центральная Африка", "Единственная крупная река, дважды пересекающая экватор"], ["Ледник Хаббард", "145 км (Аляска)", "Крупнейший ледник Северной Америки"], ["Ледник Федченко", "77 км (Памир)", "Длиннейший долинный ледник Евразии"], ["Течение Гольфстрим", "Атлантический океан", "Мощнейшее теплое течение Мирового океана"]]}, "key_facts_kz": ["Картамен жұмыстың 3 міндеті: картаны түсіну (белгілері мен түрлері), картаны оқу (байланыстар мен құбылыстарды анықтау), картаны білу (нысандарды жатқа білу).", "Материктер ауданы рейтингі: Еуразия (54 млн км²), Африка (30,3), С. Америка (24,2), О. Америка (18,3), Антарктида (14), Аустралия (7,7 млн км²).", "Мұхиттар ауданы мен тереңдігі: Тынық (178,6 млн, Мариан 11022 м), Атлант (91,7 млн, Пуэрто-Рико 8742 м), Үнді (76,2 млн, Ява 7729 м), С. Мұзды (14,8 млн км², 5527 м).", "Дүниежүзілік мұхит терминін Ю.М. Шокальский енгізді; Орта Атлант жотасы (18 000 км) — әлемдегі ең ұзын жота.", "Ең биік шыңдар: Эверест (8848 м), Чогори (8611 м), Аконкагуа (6960 м), Денали (6193 м), Килиманджаро (5895 м), Эльбрус (5642 м), Монблан (4807 м), Белуха (4506 м).", "Өзен рекордтары: Амазонка — ең суы мол, Ніл — ең ұзын, Дунай — 10 елді кеседі, Конго — экваторды екі рет кесіп өтеді.", "Көл рекордтары: Байкал — ең терең (1642 м), Каспий — ең үлкен, Балқаш — батысы тұщы, шығысы ащы, Өлі теңіз — ең төмен (-430 м).", "Дрейк бұғазы — дүниежүзіндегі ең терең (5248 м) және ең кең (950 км); Мозамбик — ең ұзын (1670 км); Арабия — ең үлкен түбек (3 млн км²)."], "key_facts_ru": ["3 задачи работы с картой: понимать карту (виды и знаки), читать карту (связи и явления), знать карту (объекты наизусть).", "Рейтинг материков: Евразия (54 млн км²), Африка (30,3), С. Америка (24,2), Ю. Америка (18,3), Антарктида (14), Австралия (7,7 млн км²).", "Океаны и глубины: Тихий (178,6 млн, Марианский 11022 м), Атлантический (91,7 млн, Пуэрто-Рико 8742 м), Индийский (76,2 млн, Ява 7729 м), Сев. Ледовитый (14,8 млн км²).", "Термин «Мировой океан» ввел Ю.М. Шокальский; Срединно-Атлантический хребет (18 000 км) — длиннейший в мире.", "Высочайшие вершины: Эверест (8848 м), Чогори (8611 м), Аконкагуа (6960 м), Денали (6193 м), Килиманджаро (5895 м), Эльбрус (5642 м), Монблан (4807 м), Белуха (4506 м).", "Рекорды рек: Амазонка — полноводнейшая, Нил — длиннейшая, Дунай — через 10 стран, Конго — дважды пересекает экватор.", "Рекорды озер: Байкал — глубочайшее (1642 м), Каспий — крупнейшее, Балхаш — запад пресный, восток соленый, Мертвое море (-430 м).", "Пролив Дрейка — глубочайший (5248 м) и широчайший (950 км); Мозамбикский — длиннейший (1670 км); Аравийский — крупнейший п-ов (3 млн км²)."], "traps_kz": ["⚠️ ҰБТ қақпаны: Картамен жұмыстың 3 міндетін шатастырмаңыз: Түсіну (шартты белгілерді білу), Оқу (себеп-салдар мен байланысты табу), Білу (нысандарды жатқа, көз алдына елестету).", "⚠️ Бұғаздар: Ең тереңі әрі ең кеңі — Дрейк бұғазы (5248 м, 950 км), ал ең ұзыны — Мозамбик бұғазы (1670 км)!", "⚠️ Өзендер мен көлдер: Конго экваторды 2 рет кеседі; Балқаштың батысы тұщы, шығысы ащы; Зайсанға Қара Ертіс құйып, Ертіс болып шығады."], "traps_ru": ["⚠️ Ловушка ЕНТ: Не путайте 3 задачи работы с картой: Понимать (знать знаки и легенду), Читать (видеть связи и процессы), Знать (помнить объекты наизусть).", "⚠️ Проливы: Самый глубокий и широкий — пролив Дрейка (5248 м, 950 км), самый длинный — Мозамбикский (1670 км)!", "⚠️ Реки и озера: Конго дважды пересекает экватор; Балхаш — запад пресный, восток соленый; в Зайсан впадает Черный Иртыш, вытекает Иртыш."]};
+    const blooketData = {"kz": "https://dashboard.blooket.com/set/6a95f208089e743aeedae722", "ru": "https://dashboard.blooket.com/set/6a94d1cf8bb8084c251f280f", "doc_kz": "https://docs.google.com/document/d/1a7RKC5qGfqm-OlQ5lkvF_OHJuMoBBk0h6TCYS4ajkO4/edit?usp=sharing", "doc_ru": "https://drive.google.com/file/d/1HjbeTnLb54LlJVH3PKy-FFBaketPUYnL/view?usp=sharing"};
+    let currentLang = 'kz';
+
+    // Safe localStorage helper
+    const safeStorage = {
+      getItem(k) {
+        try { return localStorage.getItem(k); } catch (e) { return null; }
+      },
+      setItem(k, v) {
+        try { localStorage.setItem(k, v); } catch (e) {}
+      }
+    };
+
+    function getCompletedSet() {
+      try {
+        return new Set(JSON.parse(safeStorage.getItem('geotany_grammar_completed') || '[]'));
+      } catch (e) {
+        return new Set();
+      }
+    }
+
+    function saveCompletedSet(setObj) {
+      safeStorage.setItem('geotany_grammar_completed', JSON.stringify(Array.from(setObj)));
+    }
+
+    function updateCompleteButton() {
+      const setObj = getCompletedSet();
+      const isDone = setObj.has(topicData.num);
+      const btn = document.getElementById('btnComplete');
+      const icon = document.getElementById('completeIcon');
+      const text = document.getElementById('completeText');
+
+      if (isDone) {
+        btn.className = "inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black transition border border-emerald-500/50 bg-emerald-500/20 text-emerald-300 shadow-md shadow-emerald-500/10";
+        icon.textContent = "✓";
+        text.textContent = (currentLang === 'ru') ? "Изучено" : "Меңгерілді";
+      } else {
+        btn.className = "inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition border border-slate-700 bg-space-900 text-slate-300 hover:text-white hover:border-slate-600";
+        icon.textContent = "○";
+        text.textContent = (currentLang === 'ru') ? "Отметить изученным" : "Меңгерілді деп белгілеу";
+      }
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('xpToast');
+      const m = document.getElementById('toastMsg');
+      m.textContent = msg;
+      t.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        t.classList.add('translate-y-20', 'opacity-0');
+      }, 2500);
+    }
+
+    function toggleComplete() {
+      const setObj = getCompletedSet();
+      const isDone = setObj.has(topicData.num);
+      let xp = parseInt(safeStorage.getItem('geotany_user_xp') || '0', 10);
+
+      if (isDone) {
+        setObj.delete(topicData.num);
+        xp = Math.max(0, xp - 20);
+        showToast((currentLang === 'ru') ? "-20 XP. Отметка снята" : "-20 XP. Белгі алынды");
+      } else {
+        setObj.add(topicData.num);
+        xp += 20;
+        showToast((currentLang === 'ru') ? "+20 XP! Тема изучена" : "+20 XP! Тақырып меңгерілді");
+      }
+
+      saveCompletedSet(setObj);
+      safeStorage.setItem('geotany_user_xp', xp.toString());
+      updateCompleteButton();
+    }
+
+    function renderTable(isRu) {
+      const tbl = isRu ? (topicData.table_ru || topicData.table_kz) : topicData.table_kz;
+      const container = document.getElementById('tableContainer');
+      if (!tbl || !tbl.cols || !tbl.rows || tbl.rows.length === 0) {
+        document.getElementById('tableSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('tableSection').classList.remove('hidden');
+
+      let html = '<table class="w-full text-left text-xs border-collapse">';
+      html += '<thead><tr class="border-b border-slate-800 text-slate-400 font-bold">';
+      tbl.cols.forEach(col => {
+        html += `<th class="p-2.5 sm:p-3 bg-space-900/60 rounded-lg whitespace-nowrap text-cyan-300 font-bold">${col}</th>`;
+      });
+      html += '</tr></thead><tbody class="divide-y divide-slate-800/60">';
+      tbl.rows.forEach(row => {
+        html += '<tr class="hover:bg-space-900/40 transition">';
+        row.forEach((cell, idx) => {
+          const cls = idx === 0 ? "font-bold text-white whitespace-nowrap" : (idx === 1 ? "text-cyan-300 font-medium" : "text-slate-300");
+          html += `<td class="p-2.5 sm:p-3 ${cls}">${cell}</td>`;
+        });
+        html += '</tr>';
+      });
+      html += '</tbody></table>';
+      container.innerHTML = html;
+    }
+
+    function renderFacts(isRu) {
+      const facts = isRu ? (topicData.key_facts_ru || topicData.key_facts_kz) : topicData.key_facts_kz;
+      const list = document.getElementById('factsList');
+      if (!facts || facts.length === 0) {
+        document.getElementById('factsSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('factsSection').classList.remove('hidden');
+      list.innerHTML = facts.map(f => `<li class="flex items-start space-x-2"><span class="text-amber-400 font-bold shrink-0 mt-0.5">•</span><span>${f}</span></li>`).join('');
+    }
+
+    function renderTraps(isRu) {
+      const traps = isRu ? (topicData.traps_ru || topicData.traps_kz) : topicData.traps_kz;
+      const list = document.getElementById('trapsList');
+      if (!traps || traps.length === 0) {
+        document.getElementById('trapsSection').classList.add('hidden');
+        return;
+      }
+      document.getElementById('trapsSection').classList.remove('hidden');
+      list.innerHTML = traps.map(tr => {
+        const str = String(tr);
+        const icon = str.startsWith('⚠️') ? '' : '<span class="text-amber-400 shrink-0 mt-0.5">⚠️</span> ';
+        return `<p class="leading-relaxed flex items-start space-x-2">${icon}<span>${str}</span></p>`;
+      }).join('');
+    }
+
+    function setLang(lang) {
+      currentLang = lang;
+      safeStorage.setItem('geotany_lang', lang);
+      const isRu = (lang === 'ru');
+
+      // Update lang buttons
+      const btnKz = document.getElementById('btnLangKz');
+      const btnRu = document.getElementById('btnLangRu');
+      if (isRu) {
+        btnRu.className = "px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow";
+        btnKz.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+      } else {
+        btnKz.className = "px-2.5 py-1 rounded-lg text-xs font-black transition bg-cyan-500 text-space-950 shadow";
+        btnRu.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+      }
+
+      // Update text fields
+      document.getElementById('navCatBadge').textContent = isRu ? (topicData.category_ru || 'География') : (topicData.category_kz || 'География');
+      document.getElementById('heroCatBadge').textContent = isRu ? (topicData.category_ru || 'География') : (topicData.category_kz || 'География');
+      document.getElementById('heroTitle').textContent = isRu ? topicData.title_ru : topicData.title_kz;
+
+      // Summary
+      document.getElementById('summaryHeader').textContent = isRu ? "КРАТКИЙ ОБЗОР ТЕМЫ" : "ТАҚЫРЫПҚА ҚЫСҚАША ШОЛУ";
+      document.getElementById('summaryText').textContent = isRu ? topicData.summary_ru : topicData.summary_kz;
+
+      // Theory
+      document.getElementById('theoryHeader').textContent = isRu ? "ПОЛНЫЙ ТЕОРЕТИЧЕСКИЙ МАТЕРИАЛ И КОНСПЕКТ" : "ТОЛЫҚ ТЕОРИЯЛЫҚ МАТЕРИАЛ МЕН КОНСПЕКТ";
+      document.getElementById('theoryContent').innerHTML = isRu ? topicData.full_theory_ru : topicData.full_theory_kz;
+
+      // SVG
+      document.getElementById('svgHeader').textContent = isRu ? "НАГЛЯДНАЯ СХЕМА И ИНФОГРАФИКА" : "КӨРНЕКІ СХЕМА МЕН ИНФОГРАФИКА";
+      const svgCode = isRu ? (topicData.svg_diagram_ru || topicData.svg_diagram) : topicData.svg_diagram;
+      document.getElementById('svgContainer').innerHTML = svgCode || '';
+
+      // Table, Facts, Traps
+      document.getElementById('tableHeader').textContent = isRu ? "СТРУКТУРИРОВАННАЯ ТАБЛИЦА ПОКАЗАТЕЛЕЙ И КЛАССИФИКАЦИИ" : "НАҚТЫ КӨРСЕТКІШТЕР МЕН КЛАССИФИКАЦИЯ КЕСТЕСІ";
+      renderTable(isRu);
+
+      document.getElementById('factsHeader').textContent = isRu ? "ГЛАВНЫЕ ФАКТЫ ДЛЯ ЕНТ И ЗАПОМИНАНИЯ" : "ҰБТ-ҒА ҚАЖЕТТІ НЕГІЗГІ ЕРЕЖЕЛЕР МЕН ФАКТІЛЕР";
+      renderFacts(isRu);
+
+      document.getElementById('trapsHeader').textContent = isRu ? "ЛОВУШКИ И ЛАЙФХАКИ ЕНТ" : "ҰБТ ҚАҚПАНДАРЫ МЕН ЛАЙФХАКТАР";
+      renderTraps(isRu);
+
+      // Blooket & Doc links
+      const btnB = document.getElementById('btnBlooket');
+      const bUrl = isRu ? (blooketData.ru || blooketData.kz) : (blooketData.kz || blooketData.ru);
+      if (bUrl) {
+        btnB.href = bUrl;
+        btnB.classList.remove('hidden');
+      } else {
+        btnB.classList.add('hidden');
+      }
+
+      const btnD = document.getElementById('btnDoc');
+      const dUrl = isRu ? (blooketData.doc_ru || blooketData.doc_kz) : (blooketData.doc_kz || blooketData.doc_ru);
+      if (dUrl) {
+        btnD.href = dUrl;
+        btnD.classList.remove('hidden');
+      } else {
+        btnD.classList.add('hidden');
+      }
+
+      updateCompleteButton();
+    }
+
+    // Initialization on page load with URL param and localStorage sync
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const queryLang = urlParams.get('lang');
+      let langToSet = 'kz';
+      if (queryLang === 'ru' || queryLang === 'kz') {
+        langToSet = queryLang;
+        safeStorage.setItem('geotany_lang', queryLang);
+      } else {
+        const savedLang = safeStorage.getItem('geotany_lang');
+        if (savedLang === 'ru') langToSet = 'ru';
+        else langToSet = 'kz';
+      }
+      setLang(langToSet);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1 урок. Земля — планета Солнечной системы | GEOTANY</title>
+
+  <!-- AUTH GUARD: RESTRICT DIRECT ACCESS WITHOUT VALID SESSION -->
+  <style id="authCloak">body { display: none !important; }</style>
+  <script>
+    (function() {
+      try {
+        var isAdmin = localStorage.getItem('geotany_admin_auth') === 'true';
+        var sessionStr = localStorage.getItem('geotany_user_session');
+        var isAuthorized = isAdmin;
+        if (!isAuthorized && sessionStr) {
+          var s = JSON.parse(sessionStr);
+          if (s && s.email && (s.courseCode || s.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        var profileStr = localStorage.getItem('geotany_user_profile');
+        if (!isAuthorized && profileStr) {
+          var p = JSON.parse(profileStr);
+          if (p && p.email && (p.courseCode || p.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        if (!isAuthorized) {
+          window.location.replace('../geotanu.html?error=unauthorized_course');
+          return;
+        }
+        var cloak = document.getElementById('authCloak');
+        if (cloak) cloak.remove();
+      } catch (e) {
+        window.location.replace('../geotanu.html?error=unauthorized_course');
+      }
+    })();
+  </script>
+
+  <!-- TAILWIND CSS & FONTS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            space: {
+              800: '#1E293B',
+              850: '#151E2E',
+              900: '#0F172A',
+              950: '#0B0F19',
+            },
+            brand: {
+              400: '#34D399',
+              500: '#10B981',
+              600: '#059669',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0B0F19;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1E293B;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+    .prose-theory h1, .prose-theory h2, .prose-theory h3, .prose-theory h4 {
+      color: #F8FAFC;
+      font-weight: 800;
+    }
+    .prose-theory p {
+      color: #CBD5E1;
+      line-height: 1.75;
+      font-size: 0.875rem;
+    }
+    .prose-theory ul {
+      list-style-type: disc;
+      margin-left: 1.25rem;
+      color: #CBD5E1;
+      font-size: 0.875rem;
+    }
+    .prose-theory table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.75rem;
+    }
+    .prose-theory th, .prose-theory td {
+      border: 1px solid #334155;
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+    }
+    .prose-theory th {
+      background: #1E293B;
+      color: #F8FAFC;
+      font-weight: 700;
+    }
+    .prose-theory tr:nth-child(even) {
+      background: rgba(15, 23, 42, 0.6);
+    }
+  </style>
+</head>
+<body class="bg-space-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-brand-500/30 selection:text-brand-400">
+
+  <!-- TOP APP BAR -->
+  <header class="sticky top-0 z-40 bg-space-950/90 backdrop-blur-xl border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+      
+      <!-- Left: Back Button & Title -->
+      <div class="flex items-center space-x-3">
+        <a href="../geotanu.html?lang=ru#section-sabaktar_reading" class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 text-slate-300 hover:text-white border border-slate-700/80 text-xs sm:text-sm font-bold transition shadow-sm">
+          <span>←</span>
+          <span>Назад</span>
+        </a>
+        <div class="h-6 w-px bg-slate-800 hidden sm:block"></div>
+        <div class="flex items-center space-x-2">
+          <span class="text-xs px-2.5 py-1 rounded-lg bg-cyan-500/10 text-cyan-400 font-extrabold border border-cyan-500/20">
+            1 / 20 урок
+          </span>
+          <span class="text-sm font-bold text-slate-200 hidden md:inline truncate max-w-xs">
+            1 урок. Земля — планета Солнечной системы
+          </span>
+        </div>
+      </div>
+
+      <!-- Center: Reading Time Badge -->
+      <div class="hidden sm:flex items-center space-x-1.5 bg-space-900 border border-slate-800 px-3 py-1.5 rounded-xl text-xs text-slate-400 font-medium">
+        <span>⏱️</span>
+        <span>7 мин</span>
+      </div>
+
+      <!-- Right: Direct Language Page Switcher & Complete Button -->
+      <div class="flex items-center space-x-2 sm:space-x-3">
+        
+        <!-- Language Switcher linking directly to counterpart page -->
+        <div class="flex items-center bg-space-900 p-0.5 rounded-xl border border-slate-800 text-xs font-bold">
+          <a href="lesson_01_kz.html" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition">
+            🇰🇿 KZ
+          </a>
+          <a href="lesson_01_ru.html" class="px-2.5 py-1 rounded-lg bg-brand-500 text-space-950 font-black transition">
+            🇷🇺 RU
+          </a>
+        </div>
+
+        <!-- Mark as Completed Toggle Button -->
+        <button id="btnHeaderComplete" onclick="toggleLessonComplete()" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-emerald-400 text-xs font-bold transition flex items-center space-x-1.5 shadow-sm">
+          <span id="headerCheckIcon">○</span>
+          <span id="headerCompleteText" class="hidden sm:inline">Прочитано</span>
+        </button>
+
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-8">
+
+    <!-- HERO LESSON BANNER -->
+    <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-space-900 via-space-850 to-space-900 border border-slate-800 shadow-xl relative overflow-hidden">
+      <!-- Glow decoration -->
+      <div class="absolute -right-20 -top-20 w-60 h-60 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-20 -bottom-20 w-60 h-60 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10 space-y-4">
+        
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <span class="px-3 py-1 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 font-extrabold text-xs tracking-wider uppercase">
+              📖 ЕНТ ГЕОГРАФИЯ • УРОК №1
+            </span>
+            <span class="px-3 py-1 rounded-xl bg-brand-500/10 border border-brand-500/30 text-brand-400 font-bold text-xs">
+              Русское отделение
+            </span>
+          </div>
+
+          <!-- Prev / Next Navigation -->
+          <div class="flex items-center space-x-2 text-xs font-bold">
+            <span class="px-3 py-1.5 rounded-xl bg-space-900/50 border border-slate-800 text-slate-600 cursor-not-allowed">← Предыдущий</span>
+            <span class="text-slate-500">|</span>
+            <a href="lesson_02_ru.html" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition flex items-center space-x-1"><span>Следующий</span><span>→</span></a>
+          </div>
+        </div>
+
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            1 урок. Земля — планета Солнечной системы
+          </h1>
+          <h2 class="text-sm font-semibold text-cyan-300/80 mt-1">
+            1-сабақ. Жердің ғарышта алатын орны
+          </h2>
+        </div>
+
+        <!-- Tags Row -->
+        <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-800/80">
+          <span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">#Солнечная система</span><span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">#Эллипсоид</span><span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">#Геоид</span><span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">#Орбита</span>
+        </div>
+
+        <!-- Completed Banner -->
+        <div id="lessonCompletedBanner" class="hidden p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-xs sm:text-sm text-emerald-300 flex items-center justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <span>✅</span>
+            <span>Этот урок отмечен как прочитанный.</span>
+          </div>
+          <span class="text-xs px-2.5 py-1 rounded-xl bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40">
+            +30 XP получено
+          </span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SECTION 1: KEY TERMS & DEFINITIONS -->
+    <section class="p-6 sm:p-7 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-base sm:text-lg font-black text-white flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center text-sm font-black">1</span>
+          <span>Ключевые термины и понятия</span>
+        </h3>
+        <span class="text-xs text-slate-400 font-semibold">
+          5 терминов
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Геоид</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Истинная форма Земли (сплюснутый у полюсов шар).</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Экваториальный радиус</span>
+          <p class="text-xs text-slate-300 leading-relaxed">6378,1 км (на 21,4 км длиннее полярного радиуса).</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Полярный радиус</span>
+          <p class="text-xs text-slate-300 leading-relaxed">6356,8 км — расстояние от центра Земли до географического полюса.</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Средний радиус Земли</span>
+          <p class="text-xs text-slate-300 leading-relaxed">6371 км — общепринятая стандартная величина радиуса земного шара.</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Длина экватора</span>
+          <p class="text-xs text-slate-300 leading-relaxed">40 075 км — окружность Земли по экваториальной параллели.</p>
+        </div>
+        
+      </div>
+    </section>
+
+    <!-- SECTION 2: FULL COMPREHENSIVE THEORY -->
+    <section class="p-6 sm:p-8 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-5">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-base sm:text-lg font-black text-white flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-brand-500/10 border border-brand-500/20 text-brand-400 flex items-center justify-center text-sm font-black">2</span>
+          <span>Полный теоретический конспект и иллюстрации</span>
+        </h3>
+        <span class="text-xs text-slate-400 font-medium hidden sm:inline">
+          Интерактивное чтение
+        </span>
+      </div>
+
+      <!-- Theory Body Container -->
+      <div class="prose-theory leading-relaxed space-y-4 overflow-x-auto">
+        <h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>1. Земля — планета Солнечной системы</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Земля</b> — уникальная планета, одна из 8 планет, обращающихся вокруг Солнца.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Центр Солнечной системы — Солнце.</b> Это ближайшая к нам звезда (желтый карлик спектрального класса G), масса которой составляет 99,8% массы всей Солнечной системы.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Галактика:</b> Наша планетарная система входит в состав гигантской спиральной галактики <b class="text-cyan-300 font-bold">Млечный Путь</b>.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Галактический год:</b> Солнечная система совершает один полный оборот вокруг центра Галактики примерно за <b class="text-cyan-300 font-bold">250 млн лет</b>.</li>
+</ul>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>🌌</span>
+<span>СХЕМА 1: СОЛНЕЧНАЯ СИСТЕМА И 8 ПЛАНЕТ</span>
+</span>
+<span class="text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono">Земля — 3-я от Солнца</span>
+</div>
+<p class="text-xs text-slate-300 mb-4">Строение Солнечной системы: планеты земной группы, пояс астероидов и планеты-гиганты.</p>
+<div class="w-full overflow-x-auto py-2">
+<svg class="w-full max-w-[880px] h-auto font-sans" viewbox="0 0 880 200">
+<defs>
+<radialgradient cx="50%" cy="50%" id="sunGlow" r="50%">
+<stop offset="0%" stop-color="#fef08a"></stop>
+<stop offset="60%" stop-color="#f59e0b"></stop>
+<stop offset="100%" stop-color="#b45309" stop-opacity="0.1"></stop>
+</radialgradient>
+<radialgradient cx="35%" cy="35%" id="earthGrad" r="65%">
+<stop offset="0%" stop-color="#67e8f9"></stop>
+<stop offset="50%" stop-color="#0284c7"></stop>
+<stop offset="100%" stop-color="#082f49"></stop>
+</radialgradient>
+</defs>
+<circle cx="-10" cy="100" fill="url(#sunGlow)" r="80" stroke="#fbbf24" stroke-width="2"></circle>
+<text fill="#fef3c7" font-size="11" font-weight="900" x="32" y="105">СОЛНЦЕ</text>
+<line stroke="#64748b" stroke-dasharray="3,4" stroke-width="1.5" x1="390" x2="390" y1="15" y2="185"></line>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="390" y="195">Пояс астероидов</text>
+<line stroke="#475569" stroke-width="1" x1="110" x2="110" y1="100" y2="140"></line>
+<circle cx="110" cy="100" fill="#94a3b8" r="8" stroke="#cbd5e1" stroke-width="1"></circle>
+<text fill="#cbd5e1" font-size="10" font-weight="bold" text-anchor="middle" x="110" y="155">Меркурий</text>
+<text fill="#64748b" font-size="8" text-anchor="middle" x="110" y="168">1 (0,39 а.е.)</text>
+<line stroke="#475569" stroke-width="1" x1="180" x2="180" y1="100" y2="60"></line>
+<circle cx="180" cy="100" fill="#f59e0b" r="13" stroke="#fef3c7" stroke-width="1"></circle>
+<text fill="#fcd34d" font-size="10" font-weight="bold" text-anchor="middle" x="180" y="45">Венера</text>
+<text fill="#64748b" font-size="8" text-anchor="middle" x="180" y="32">2 (+465°C)</text>
+<circle cx="265" cy="100" fill="url(#earthGrad)" r="14" stroke="#38bdf8" stroke-width="1.5"></circle>
+<circle cx="286" cy="88" fill="#e2e8f0" r="3.5"></circle>
+<line stroke="#06b6d4" stroke-dasharray="2,2" stroke-width="1.5" x1="265" x2="265" y1="100" y2="145"></line>
+<text fill="#38bdf8" font-size="11" font-weight="900" text-anchor="middle" x="265" y="160">ЗЕМЛЯ (3-я)</text>
+<text fill="#a5f3fc" font-size="8" text-anchor="middle" x="265" y="173">149,6 млн км (1 а.б.)</text>
+<text fill="#38bdf8" font-size="8" text-anchor="middle" x="265" y="184">Луна: 384 400 км</text>
+<line stroke="#475569" stroke-width="1" x1="340" x2="340" y1="100" y2="60"></line>
+<circle cx="340" cy="100" fill="#ef4444" r="10" stroke="#fca5a5" stroke-width="1"></circle>
+<text fill="#f87171" font-size="10" font-weight="bold" text-anchor="middle" x="340" y="45">Марс</text>
+<text fill="#64748b" font-size="8" text-anchor="middle" x="340" y="32">4 (228 млн км)</text>
+<circle cx="470" cy="100" fill="#d97706" r="32" stroke="#fed7aa" stroke-width="2"></circle>
+<text fill="#fde68a" font-size="10" font-weight="bold" text-anchor="middle" x="470" y="148">Юпитер</text>
+<text fill="#94a3b8" font-size="8" text-anchor="middle" x="470" y="160">5</text>
+<ellipse cx="585" cy="100" fill="none" rx="42" ry="12" stroke="#e2e8f0" stroke-width="2" transform="rotate(-15 585 100)"></ellipse>
+<circle cx="585" cy="100" fill="#ca8a04" r="26" stroke="#fef08a" stroke-width="1.5"></circle>
+<text fill="#fef08a" font-size="10" font-weight="bold" text-anchor="middle" x="585" y="145">Сатурн</text>
+<text fill="#94a3b8" font-size="8" text-anchor="middle" x="585" y="157">6</text>
+<circle cx="695" cy="100" fill="#22d3ee" r="18" stroke="#cffafe" stroke-width="1"></circle>
+<text fill="#67e8f9" font-size="10" font-weight="bold" text-anchor="middle" x="695" y="135">Уран</text>
+<text fill="#94a3b8" font-size="8" text-anchor="middle" x="695" y="147">7</text>
+<circle cx="795" cy="100" fill="#3b82f6" r="17" stroke="#bfdbfe" stroke-width="1"></circle>
+<text fill="#60a5fa" font-size="10" font-weight="bold" text-anchor="middle" x="795" y="135">Нептун</text>
+<text fill="#94a3b8" font-size="8" text-anchor="middle" x="795" y="147">8</text>
+</svg>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-4 pt-3 border-t border-slate-800 text-[11px]">
+<div class="p-2.5 rounded-xl bg-space-900 border border-slate-800">
+<b class="text-cyan-400 block">Земная группа (твердые):</b>
+<span class="text-slate-300">Меркурий, Венера, Земля, Марс</span>
+</div>
+<div class="p-2.5 rounded-xl bg-space-900 border border-slate-800">
+<b class="text-amber-400 block">Планеты-гиганты:</b>
+<span class="text-slate-300">Юпитер, Сатурн, Уран, Нептун</span>
+</div>
+<div class="p-2.5 rounded-xl bg-space-900 border border-slate-800">
+<b class="text-emerald-400 block">Длина орбиты Земли:</b>
+<span class="text-slate-300 font-mono">940 млн км (30 км/сек)</span>
+</div>
+<div class="p-2.5 rounded-xl bg-space-900 border border-slate-800">
+<b class="text-purple-400 block">Галактический год:</b>
+<span class="text-slate-300 font-mono">250 млн лет (1 оборот)</span>
+</div>
+</div>
+</div>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>2. Планеты и малые тела Солнечной системы</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Термин <b class="text-cyan-300 font-bold">«планета»</b> в переводе с древнегреческого означает «блуждающая звезда».</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">8 планет делятся на две принципиальные группы:</li>
+</ul>
+<ol class="space-y-2 my-2.5 ml-6 list-none">
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">1.</span><b class="text-emerald-300 font-bold">Планеты земной группы (внутренние, каменистые):</b> Меркурий, Венера, Земля, Марс. Имеют твердую кору, высокую плотность и компактные размеры.</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">2.</span><b class="text-emerald-300 font-bold">Планеты-гиганты (внешние, газовые и ледяные):</b> Юпитер, Сатурн, Уран, Нептун. Состоят из газов (водород, гелий) и льда, имеют колоссальные размеры, кольца и множество спутников.</li>
+</ol>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Орбита:</b> Траектория движения планеты вокруг Солнца. Длина орбиты Земли — <b class="text-cyan-300 font-bold">940 млн км</b>, а скорость движения по ней составляет <b class="text-cyan-300 font-bold">30 км/с</b>.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Пояс астероидов:</b> Зона каменных и металлических глыб между орбитами Марса и Юпитера.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Кометы:</b> Тела из замерзшего льда, газов и космической пыли. При приближении к Солнцу ядро испаряется, образуя гигантский светящийся хвост.</li>
+</ul>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>3. Главные параметры планеты Земля</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Земля — <b class="text-cyan-300 font-bold">3-я от Солнца</b> и <b class="text-cyan-300 font-bold">5-я по величине</b> планета в Солнечной системе.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Среди 4 планет земной группы Земля — самая крупная по диаметру, массе и плотности.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Средняя температура поверхности: <b class="text-cyan-300 font-bold">+15,5°C</b> (оптимальна для воды в жидкой фазе и зарождения жизни).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Возраст планеты: около <b class="text-cyan-300 font-bold">4,5 – 4,6 млрд лет</b>.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Расстояния:</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Среднее расстояние до Солнца: <b class="text-cyan-300 font-bold">149,6 млн км</b> (1 астрономическая единица / 1 а.е.).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Расстояние до Луны: <b class="text-cyan-300 font-bold">384 400 км</b>.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Перигелий (3 января):</b> Земля ближе всего к Солнцу — <b class="text-cyan-300 font-bold">147 млн км</b>.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Афелий (5 июля):</b> Земля дальше всего от Солнца — <b class="text-cyan-300 font-bold">152 млн км</b>.</li>
+</ul>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>4. Форма и размеры Земли (Геоид)</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Истинная геометрическая форма Земли называется <b class="text-cyan-300 font-bold">ГЕОИД</b> (сплюснутый шар). Вследствие осевого вращения центробежная сила сжала планету у полюсов и расширила у экватора. Поверхность геоида совпадает со средним спокойным уровнем Мирового океана.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Радиусы:</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Экваториальный радиус: <b class="text-cyan-300 font-bold">6 378,1 км</b> (округлённо 6 378 км).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Полярный радиус: <b class="text-cyan-300 font-bold">6 356,7 км</b> (округлённо 6 357 км).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Полярное сжатие (разница):</b> <b class="text-cyan-300 font-bold">21,4 км</b> (экваториальный радиус длиннее полярного на 21,4 км!).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Средний радиус Земли: <b class="text-cyan-300 font-bold">6 371 км</b>.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Площадь поверхности Земли:</b> <b class="text-cyan-300 font-bold">510,2 млн км²</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Площадь суши: <b class="text-cyan-300 font-bold">149,1 млн км² (29%)</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Площадь Мирового океана: <b class="text-cyan-300 font-bold">361,1 млн км² (71%)</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><i class="text-slate-300">По полушариям:</i> В Северном полушарии суша 39%, вода 61%. В Южном полушарии суша 19%, вода 81% (океаническое полушарие).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Длина экватора:</b> <b class="text-cyan-300 font-bold">40 075 км</b> (меридиан — около 40 008 км).</li>
+</ul>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>🌐</span>
+<span>СХЕМА 2: ФОРМА ЗЕМЛИ — ГЕОИД И РАДИУСЫ</span>
+</span>
+<span class="text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono">Полярное сжатие: 21,4 км</span>
+</div>
+<p class="text-xs text-slate-300 mb-4">Из-за центробежной силы вращения Земля сплюснута у полюсов и расширена на экваторе (геоид).</p>
+<div class="w-full overflow-x-auto py-2 flex justify-center">
+<svg class="w-full max-w-[650px] h-auto font-sans" viewbox="0 0 650 260">
+<ellipse cx="325" cy="130" fill="#0f172a" rx="200" ry="115" stroke="#0ea5e9" stroke-width="2.5"></ellipse>
+<line stroke="#f59e0b" stroke-dasharray="4,3" stroke-width="2" x1="125" x2="525" y1="130" y2="130"></line>
+<line stroke="#ef4444" stroke-dasharray="4,3" stroke-width="2" x1="325" x2="325" y1="15" y2="245"></line>
+<circle cx="325" cy="15" fill="#ef4444" r="4"></circle>
+<text fill="#fca5a5" font-size="10" font-weight="bold" text-anchor="middle" x="325" y="10">Северный полюс</text>
+<circle cx="325" cy="245" fill="#ef4444" r="4"></circle>
+<text fill="#fca5a5" font-size="10" font-weight="bold" text-anchor="middle" x="325" y="258">Южный полюс</text>
+<circle cx="325" cy="130" fill="#38bdf8" r="5"></circle>
+<line stroke="#10b981" stroke-width="2.5" x1="325" x2="525" y1="130" y2="130"></line>
+<polygon fill="#10b981" points="525,130 515,126 515,134"></polygon>
+<text fill="#34d399" font-size="11" font-weight="900" text-anchor="middle" x="425" y="122">Rэкв = 6 378,1 км</text>
+<line stroke="#f43f5e" stroke-width="2.5" x1="325" x2="325" y1="130" y2="15"></line>
+<polygon fill="#f43f5e" points="325,15 321,25 329,25"></polygon>
+<text fill="#fb7185" font-size="11" font-weight="900" x="335" y="75">Rпол = 6 356,7 км</text>
+<rect fill="#1e293b" height="52" rx="8" stroke="#f59e0b" stroke-width="1" width="180" x="440" y="30"></rect>
+<text fill="#fef08a" font-size="10" font-weight="bold" text-anchor="middle" x="530" y="50">РАЗНИЦА СЖАТИЯ:</text>
+<text fill="#34d399" font-size="13" font-weight="900" text-anchor="middle" x="530" y="68">21,4 км (≈ 21 км)</text>
+<rect fill="#1e293b" height="52" rx="8" stroke="#38bdf8" stroke-width="1" width="180" x="30" y="30"></rect>
+<text fill="#bae6fd" font-size="10" font-weight="bold" text-anchor="middle" x="120" y="50">ДЛИНА ЭКВАТОРА:</text>
+<text fill="#38bdf8" font-size="13" font-weight="900" text-anchor="middle" x="120" y="68">40 075 км</text>
+</svg>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-4 pt-3 border-t border-slate-800 text-[11px]">
+<div class="p-2.5 rounded-xl bg-space-900 border border-slate-800 text-center">
+<b class="text-cyan-400 block">Площадь Земли:</b>
+<span class="text-slate-100 font-bold text-xs">510,2 млн км²</span>
+</div>
+<div class="p-2.5 rounded-xl bg-space-900 border border-slate-800 text-center">
+<b class="text-emerald-400 block">Суша (29%):</b>
+<span class="text-slate-100 font-bold text-xs">149,1 млн км² (29%)</span>
+</div>
+<div class="p-2.5 rounded-xl bg-space-900 border border-slate-800 text-center col-span-2 sm:col-span-1">
+<b class="text-blue-400 block">Океан (71%):</b>
+<span class="text-slate-100 font-bold text-xs">361,1 млн км² (71%)</span>
+</div>
+</div>
+</div>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>5. Четыре движения Земли и их следствия</span></h4>
+<ol class="space-y-3 my-2.5 ml-6 list-none"><li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">1.</span><b class="text-emerald-300 font-bold">Обращение вместе с Солнечной системой вокруг центра Галактики:</b> 1 оборот за 250 млн лет (1 галактический год).</li><li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">2.</span><b class="text-emerald-300 font-bold">Годовое орбитальное движение вокруг Солнца:</b><ul class="space-y-1.5 my-2 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Скорость: <b class="text-cyan-300 font-bold">30 км/с</b>.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Период: <b class="text-cyan-300 font-bold">365 дней 6 часов 9 минут</b> (за 4 года образуется високосный день 29 февраля).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Постоянный наклон земной оси к плоскости орбиты: <b class="text-cyan-300 font-bold">66,5°</b>.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Следствия:</b> Смена времен года; изменение продолжительности дня и ночи; пояса освещенности.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><i class="text-slate-300">4 ключевые астрономические даты:</i></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">21 марта:</b> День весеннего равноденствия (Солнце в зените над экватором, день = ночь).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">22 июня:</b> День летнего солнцестояния (Солнце в зените над Северным тропиком 23,5° с.ш., самый длинный день в Северном полушарии).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">23 сентября:</b> День осеннего равноденствия (Солнце снова в зените над экватором).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">22 декабря:</b> День зимнего солнцестояния (Солнце в зените над Южным тропиком 23,5° ю.ш., самый короткий день в Северном полушарии).</li>
+</ul></li><li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">3.</span><b class="text-emerald-300 font-bold">Суточное осевое вращение Земли:</b><ul class="space-y-1.5 my-2 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Направление: с запада на восток (против часовой стрелки).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Период: <b class="text-cyan-300 font-bold">24 часа (1 сутки)</b>.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Следствия:</b> Смена дня и ночи; возникновение силы Кориолиса (отклонение ветров и течений вправо в Северном полушарии и влево в Южном полушарии).</li>
+</ul></li><li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">4.</span><b class="text-emerald-300 font-bold">Вращение системы Земля — Луна вокруг общего центра масс:</b><ul class="space-y-1.5 my-2 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Лунно-солнечное гравитационное воздействие порождает в Мировом океане <b class="text-cyan-300 font-bold">2 прилива и 2 отлива</b> каждые сутки.</li>
+</ul></li></ol>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>☀️</span>
+<span>СХЕМА 3: ОБРАЩЕНИЕ ЗЕМЛИ ВОКРУГ СОЛНЦА И 4 КЛЮЧЕВЫЕ ДАТЫ</span>
+</span>
+<span class="text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono">Наклон оси: 66,5°</span>
+</div>
+<p class="text-xs text-slate-300 mb-4">Наклон земной оси 66,5° и годовое обращение вокруг Солнца обеспечивают смену времен года.</p>
+<div class="w-full overflow-x-auto py-2 flex justify-center">
+<svg class="w-full max-w-[760px] h-auto font-sans" viewbox="0 0 760 360">
+<ellipse cx="380" cy="180" fill="none" rx="300" ry="130" stroke="#334155" stroke-dasharray="6,4" stroke-width="1.5"></ellipse>
+<circle cx="360" cy="180" fill="#f59e0b" r="28" stroke="#fbbf24" stroke-width="2"></circle>
+<text fill="#1e293b" font-size="10" font-weight="900" text-anchor="middle" x="360" y="184">СОЛНЦЕ</text>
+<circle cx="380" cy="50" fill="#0284c7" r="16" stroke="#38bdf8" stroke-width="1.5"></circle>
+<line stroke="#f43f5e" stroke-width="2" x1="368" x2="392" y1="36" y2="64"></line>
+<rect fill="#1e293b" height="34" rx="6" stroke="#10b981" stroke-width="1" width="180" x="290" y="0"></rect>
+<text fill="#34d399" font-size="10" font-weight="bold" text-anchor="middle" x="380" y="15">21 МАРТА — ВЕСЕННЕЕ РАВНОДЕНСТВИЕ</text>
+<text fill="#94a3b8" font-size="8" text-anchor="middle" x="380" y="27">Зенит над экватором (день = ночь)</text>
+<circle cx="380" cy="310" fill="#0284c7" r="16" stroke="#38bdf8" stroke-width="1.5"></circle>
+<line stroke="#f43f5e" stroke-width="2" x1="368" x2="392" y1="296" y2="324"></line>
+<rect fill="#1e293b" height="30" rx="6" stroke="#ca8a04" stroke-width="1" width="180" x="290" y="328"></rect>
+<text fill="#fde047" font-size="10" font-weight="bold" text-anchor="middle" x="380" y="342">23 СЕНТЯБРЯ — ОСЕННЕЕ РАВНОДЕНСТВИЕ</text>
+<text fill="#94a3b8" font-size="8" text-anchor="middle" x="380" y="353">Зенит над экватором (день = ночь)</text>
+<circle cx="80" cy="180" fill="#0284c7" r="18" stroke="#38bdf8" stroke-width="1.5"></circle>
+<line stroke="#f43f5e" stroke-width="2" x1="68" x2="92" y1="164" y2="196"></line>
+<rect fill="#1e293b" height="42" rx="6" stroke="#f59e0b" stroke-width="1" width="150" x="5" y="125"></rect>
+<text fill="#fde047" font-size="10" font-weight="bold" text-anchor="middle" x="80" y="140">22 ИЮНЯ — ЛЕТНЕЕ СОЛНЦЕСТОЯНИЕ</text>
+<text fill="#38bdf8" font-size="8" text-anchor="middle" x="80" y="152">Зенит над Сев. тропиком 23,5°</text>
+<text fill="#94a3b8" font-size="8" text-anchor="middle" x="80" y="162">Самый долгий день в Сев. полуш.</text>
+<circle cx="680" cy="180" fill="#0284c7" r="18" stroke="#38bdf8" stroke-width="1.5"></circle>
+<line stroke="#f43f5e" stroke-width="2" x1="668" x2="692" y1="164" y2="196"></line>
+<rect fill="#1e293b" height="42" rx="6" stroke="#38bdf8" stroke-width="1" width="150" x="605" y="125"></rect>
+<text fill="#7dd3fc" font-size="10" font-weight="bold" text-anchor="middle" x="680" y="140">22 ДЕКАБРЯ — ЗИМНЕЕ СОЛНЦЕСТОЯНИЕ</text>
+<text fill="#38bdf8" font-size="8" text-anchor="middle" x="680" y="152">Зенит над Юж. тропиком 23,5°</text>
+<text fill="#94a3b8" font-size="8" text-anchor="middle" x="680" y="162">Самый короткий день в Сев. полуш.</text>
+<text fill="#f43f5e" font-size="9" font-weight="bold" x="260" y="200">Перигелий (3 янв: 147 млн км)</text>
+<text fill="#38bdf8" font-size="9" font-weight="bold" x="440" y="200">Афелий (5 июля: 152 млн км)</text>
+</svg>
+</div>
+</div>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>6. Внутреннее строение и географические оболочки Земли</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">4 географические оболочки (геосферы):</b></li>
+</ul>
+<ol class="space-y-2 my-2.5 ml-6 list-none">
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">1.</span><b class="text-emerald-300 font-bold">Литосфера</b> — твердая каменная оболочка Земли.</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">2.</span><b class="text-emerald-300 font-bold">Гидросфера</b> — водная оболочка (океаны, моря, реки, озера, ледники, подземные воды).</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">3.</span><b class="text-emerald-300 font-bold">Атмосфера</b> — воздушная газовая оболочка планеты.</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">4.</span><b class="text-emerald-300 font-bold">Биосфера</b> — оболочка жизни, область распространения живых организмов.</li>
+</ol>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Внутреннее строение Земли:</b></li>
+</ul>
+<ol class="space-y-2 my-2.5 ml-6 list-none">
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">1.</span><b class="text-emerald-300 font-bold">Земная кора</b> — верхний твердый слой толщиной 30–40 км на равнинах, 70–80 км под горами и 5–10 км под океанами.</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">2.</span><b class="text-emerald-300 font-bold">Мантия</b> — залегает до глубины 2900 км. Верхний слой содержит пластичную <b class="text-emerald-300 font-bold">астеносферу</b>, по которой скользят литосферные плиты.</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">3.</span><b class="text-emerald-300 font-bold">Ядро</b> — расположено глубже 2900 км. Включает внешнее жидкое ядро (генерирует магнитное поле) и внутреннее твердое железо-никелевое ядро (температура в центре достигает <b class="text-emerald-300 font-bold">+6000°C</b>).</li>
+</ol>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>🌋</span>
+<span>СХЕМА 4: ВНУТРЕННЕЕ СТРОЕНИЕ И СФЕРЫ ЗЕМЛИ</span>
+</span>
+<span class="text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono">Центр ядра: 6000°C</span>
+</div>
+<p class="text-xs text-slate-300 mb-4">Географические оболочки и внутренние слои Земли (кора, мантия, внешнее и внутреннее ядро).</p>
+<div class="w-full overflow-x-auto py-2 flex justify-center">
+<svg class="w-full max-w-[680px] h-auto font-sans" viewbox="0 0 680 240">
+<g transform="translate(10, 20)">
+<rect fill="#0284c7" fill-opacity="0.2" height="40" rx="8" stroke="#38bdf8" stroke-width="1" width="160" x="0" y="0"></rect>
+<text fill="#bae6fd" font-size="11" font-weight="bold" x="15" y="24">☁️ Атмосфера (воздух)</text>
+<rect fill="#0369a1" fill-opacity="0.2" height="40" rx="8" stroke="#0ea5e9" stroke-width="1" width="160" x="0" y="50"></rect>
+<text fill="#7dd3fc" font-size="11" font-weight="bold" x="15" y="74">🌊 Гидросфера (вода)</text>
+<rect fill="#92400e" fill-opacity="0.2" height="40" rx="8" stroke="#f59e0b" stroke-width="1" width="160" x="0" y="100"></rect>
+<text fill="#fde68a" font-size="11" font-weight="bold" x="15" y="124">⛰️ Литосфера (камень)</text>
+<rect fill="#065f46" fill-opacity="0.2" height="40" rx="8" stroke="#10b981" stroke-width="1" width="160" x="0" y="150"></rect>
+<text fill="#a7f3d0" font-size="11" font-weight="bold" x="15" y="174">🌿 Биосфера (жизнь)</text>
+</g>
+<g transform="translate(200, 20)">
+<path d="M 0,0 L 280,0 A 280,280 0 0,1 198,198 Z" fill="#78350f" stroke="#d97706" stroke-width="2"></path>
+<path d="M 0,0 L 220,0 A 220,220 0 0,1 155,155 Z" fill="#b45309" stroke="#f59e0b" stroke-width="1.5"></path>
+<path d="M 0,0 L 130,0 A 130,130 0 0,1 92,92 Z" fill="#dc2626" stroke="#fca5a5" stroke-width="1.5"></path>
+<path d="M 0,0 L 60,0 A 60,60 0 0,1 42,42 Z" fill="#fef08a" stroke="#ffffff" stroke-width="1.5"></path>
+<text fill="#fde68a" font-size="9" font-weight="bold" x="210" y="25">Земная кора (5-80 км)</text>
+<text fill="#fef3c7" font-size="9" font-weight="bold" x="135" y="60">Мантия (2900 км)</text>
+<text fill="#fee2e2" font-size="9" font-weight="bold" x="75" y="95">Внешнее ядро</text>
+<text fill="#1e293b" font-size="8" font-weight="900" x="10" y="35">Ядро</text>
+</g>
+</svg>
+</div>
+</div>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>7. Казахстан на карте мира и границы</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Положение:</b> Центр гигантского материка Евразия, южная часть умеренного пояса. Удаленность от океанов обуславливает резкую континентальность климата.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Географический центр материка Евразия:</b> Находится в <b class="text-cyan-300 font-bold">Абайской области, в урочище Жидебай</b> (родина Абая и Шакарима, установлен памятный обелиск).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Площадь территории:</b> <b class="text-cyan-300 font-bold">2 724,9 тыс. км²</b> (9-е место в мире, 2-е место в СНГ).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Крайние точки:</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Северная:</b> 55°26' с.ш. (юг Западно-Сибирской равнины, близ Петропавловска).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Южная:</b> 40°56' с.ш. (пустыня Кызылкум, Голодная степь).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Западная:</b> 46°30' в.д. (Прикаспийская низменность, озёра Эльтон и Баскунчак).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Восточная:</b> 87°20' в.д. (исток реки Бухтарма, Алтай).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Сухопутные границы (13 394 км):</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">С Россией: <b class="text-cyan-300 font-bold">7 591 км</b> (самая длинная непрерывная сухопутная граница в мире).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">С Китаем: <b class="text-cyan-300 font-bold">1 782 км</b>.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">С Узбекистаном: <b class="text-cyan-300 font-bold">2 354 км</b>.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">С Кыргызстаном: <b class="text-cyan-300 font-bold">1 241 км</b>.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">С Туркменистаном: <b class="text-cyan-300 font-bold">426 км</b>.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Через Каспийское море имеет морские выходы к Азербайджану и Ирану.</li>
+</ul>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>🇰🇿</span>
+<span>СХЕМА 5: КРАЙНИЕ ТОЧКИ КАЗАХСТАНА И ЦЕНТР ЕВРАЗИИ</span>
+</span>
+<span class="text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono">Площадь: 2 724,9 тыс. км² (9-е место)</span>
+</div>
+<p class="text-xs text-slate-300 mb-4">4 крайние точки Казахстана, центр Евразии в Жидебае и протяженность границ.</p>
+<div class="w-full overflow-x-auto py-2 flex justify-center">
+<svg class="w-full max-w-[740px] h-auto font-sans" viewbox="0 0 740 280">
+<polygon fill="#0f172a" points="120,120 180,60 290,40 450,45 550,70 650,90 680,140 640,210 520,230 400,245 280,240 180,210 100,160" stroke="#0ea5e9" stroke-width="2.5"></polygon>
+<circle cx="360" cy="40" fill="#ef4444" r="5"></circle>
+<text fill="#fca5a5" font-size="10" font-weight="bold" text-anchor="middle" x="360" y="25">СЕВЕР: 55°26' с.ш. (близ Петропавловска)</text>
+<circle cx="340" cy="245" fill="#ef4444" r="5"></circle>
+<text fill="#fca5a5" font-size="10" font-weight="bold" text-anchor="middle" x="340" y="265">ЮГ: 40°56' с.ш. (пустыня Кызылкум)</text>
+<circle cx="100" cy="150" fill="#ef4444" r="5"></circle>
+<text fill="#fca5a5" font-size="9" font-weight="bold" x="20" y="153">ЗАПАД: 46°30' в.д.</text>
+<circle cx="680" cy="130" fill="#ef4444" r="5"></circle>
+<text fill="#fca5a5" font-size="9" font-weight="bold" x="615" y="115">ВОСТОК: 87°20' в.д.</text>
+<circle cx="490" cy="140" fill="#f59e0b" r="8" stroke="#ffffff" stroke-width="2"></circle>
+<polygon fill="#fef08a" points="490,126 494,136 486,136"></polygon>
+<rect fill="#1e293b" height="34" rx="6" stroke="#f59e0b" stroke-width="1.5" width="180" x="420" y="150"></rect>
+<text fill="#fef08a" font-size="10" font-weight="900" text-anchor="middle" x="510" y="164">★ ЦЕНТР ЕВРАЗИИ</text>
+<text fill="#38bdf8" font-size="9" font-weight="bold" text-anchor="middle" x="510" y="176">Абайская обл., Жидебай</text>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="360" y="70">Граница с РФ — 7 591 км (самая длинная в мире)</text>
+<text fill="#94a3b8" font-size="8" x="580" y="180">Китай: 1 782 км</text>
+<text fill="#94a3b8" font-size="8" x="270" y="210">Узбекистан: 2 354 км</text>
+<text fill="#94a3b8" font-size="8" x="410" y="215">Кыргызстан: 1 241 км</text>
+<text fill="#94a3b8" font-size="8" x="160" y="225">Туркменистан: 426 км</text>
+</svg>
+</div>
+</div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: COMMON EXAM TRAPS & PITFALLS (if available) -->
+    <section class="p-6 sm:p-7 rounded-3xl bg-amber-500/5 border border-amber-500/20 shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-amber-500/20 pb-3">
+        <h3 class="text-base sm:text-lg font-black text-amber-300 flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center text-sm font-black">⚠️</span>
+          <span>Экзаменационные ловушки и нюансы ЕНТ</span>
+        </h3>
+        <span class="text-xs text-amber-400/80 font-bold">
+          Обратите внимание
+        </span>
+      </div>
+
+      <div class="space-y-2.5 text-xs sm:text-sm text-slate-200">
+        <p class="leading-relaxed flex items-start space-x-2"><span class="text-amber-400 shrink-0 mt-0.5">⚠️</span><span>⚠️ ҰБТ Қақпаны: «Жер күнді айналғанда күн мен түн ауысады» деген қате тұжырым. Күн мен түн Жердің ӨЗ БІЛІГІНЕН айналуынан ауысады!</span></p><p class="leading-relaxed flex items-start space-x-2"><span class="text-amber-400 shrink-0 mt-0.5">⚠️</span><span>⚠️ ЕНТ Ловушка: Полярный радиус короче экваториального на 21,4 км из-за центробежной силы вращения.</span></p>
+      </div>
+    </section>
+
+    <!-- SECTION 4: END-OF-LESSON TEST -->
+    <section class="p-6 sm:p-8 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-6">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-brand-500/10 border border-brand-500/20 text-brand-400 flex items-center justify-center text-sm font-black">3</span>
+          <div>
+            <h3 class="text-base sm:text-lg font-black text-white">
+              Итоговый тест по теме
+            </h3>
+            <p class="text-xs text-slate-400 mt-0.5">
+              Проходной балл: 80% • Награда: +30 XP
+            </p>
+          </div>
+        </div>
+
+        <div id="testScoreBadge" class="hidden px-3 py-1 rounded-xl bg-space-850 border border-slate-700 text-xs font-bold text-amber-400 font-mono">
+          0%
+        </div>
+      </div>
+
+      <!-- Test Questions Container -->
+      <div id="testQuestionsList" class="space-y-6">
+        <!-- Dynamically populated test questions via JS -->
+      </div>
+
+      <!-- Test Submit & Score Action Bar -->
+      <div class="pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="text-xs text-slate-400" id="testProgressInfo">
+          Ответьте на все вопросы и проверьте свои знания.
+        </div>
+        <div class="flex items-center space-x-2.5 w-full sm:w-auto">
+          <button id="btnSubmitTest" onclick="submitLessonTest()" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-brand-500 hover:from-amber-400 hover:to-brand-400 text-space-950 font-black text-xs sm:text-sm shadow-md transition flex items-center justify-center space-x-2">
+            <span>🏁</span>
+            <span>Проверить ответы</span>
+          </button>
+          <button id="btnResetTest" onclick="resetLessonTest()" class="hidden px-4 py-2.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-bold transition flex items-center justify-center space-x-1">
+            <span>🔄</span>
+            <span>Пересдать</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- BOTTOM NAVIGATION & FOOTER -->
+    <div class="p-6 rounded-3xl bg-space-900 border border-slate-800 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleLessonComplete()" class="px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-400 text-space-950 font-black text-xs sm:text-sm shadow-md transition flex items-center space-x-2">
+          <span>✓</span>
+          <span id="lblBottomComplete">Отметить как прочитанное (+30 XP)</span>
+        </button>
+      </div>
+
+      <div class="flex items-center space-x-2 text-xs font-bold">
+        
+        <a href="../geotanu.html?lang=ru#section-sabaktar_reading" class="px-4 py-2 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition">
+          Каталог уроков
+        </a>
+        <a href="lesson_02_ru.html" class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-space-950 transition font-black">Следующий →</a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- LESSON SCRIPT ENGINE -->
+  <script>
+    const lessonData = {"id": 1, "title_kz": "1-сабақ. Жердің ғарышта алатын орны", "title_ru": "1 урок. Земля — планета Солнечной системы", "time": "7 мин", "tags": ["Күн жүйесі", "Эллипсоид", "Геоид", "Орбита"], "terms": [{"kz": "Геоид", "ru": "Геоид", "desc_kz": "Жердің шынайы, ерекше пішіні (полюстерінен сығылыңқы шар тәрізді).", "desc_ru": "Истинная форма Земли (сплюснутый у полюсов шар)."}, {"kz": "Экватор радиусы", "ru": "Экваториальный радиус", "desc_kz": "6378,1 км (полярлық радиустан 21,4 км-ге ұзын).", "desc_ru": "6378,1 км (на 21,4 км длиннее полярного радиуса)."}, {"kz": "Полярлық радиус", "ru": "Полярный радиус", "desc_kz": "6356,8 км — Жер орталығынан полюстерге дейінгі қашықтық.", "desc_ru": "6356,8 км — расстояние от центра Земли до географического полюса."}, {"kz": "Жердің орташа радиусы", "ru": "Средний радиус Земли", "desc_kz": "Шамамен 6371 км деп есептелетін стандартты шама.", "desc_ru": "6371 км — общепринятая стандартная величина радиуса земного шара."}, {"kz": "Экватор ұзындығы", "ru": "Длина экватора", "desc_kz": "40 075 км — Жер шарын қақ бөлетін басты нөлдік параллель.", "desc_ru": "40 075 км — окружность Земли по экваториальной параллели."}], "theory_kz": "<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>1. Жердің ғарышта алатын орны және Күн жүйесі</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Жер</b> — жаратылыстың шағын ғана бөлігі. Біздің планетамыз — Күнді айнала қозғалатын 8 ғаламшардың бірі.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Күн жүйесінің орталығы — Күн.</b> Күн — Жерге ең жақын орналасқан жұлдыз (G класындағы сары ергежейлі). Оның массасы Күн жүйесіндегі барлық аспан денелері массасының 99,8%-ын құрайды.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Галактика:</b> Аспандағы сансыз жұлдыздардың алып жүйесі — галактика деп аталады. Біздің галактикамыз — <b class=\"text-cyan-300 font-bold\">Құс жолы (Млечный Путь)</b> деп аталады (спираль тәрізді).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Галактикалық жыл:</b> Күн жүйесі біздің галактиканың орталығын <b class=\"text-cyan-300 font-bold\">250 млн жылда</b> бір рет толық айналып шығады.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🌌</span>\n<span>1-СЫЗБА: КҮН ЖҮЙЕСІ ЖӘНЕ 8 ҒАЛАМШАРДЫҢ ОРНАЛАСУЫ</span>\n</span>\n<span class=\"text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono\">Жер Күннен 3-ші орында</span>\n</div>\n<p class=\"text-xs text-slate-300 mb-4\">Күн жүйесінің құрылымы: ішкі тасты планеталар (Жер тобы), астероидтар белдеуі және алып газ-мұз планеталары.</p>\n<div class=\"w-full overflow-x-auto py-2\">\n<svg class=\"w-full max-w-[880px] h-auto font-sans\" viewbox=\"0 0 880 200\">\n<defs>\n<radialgradient cx=\"50%\" cy=\"50%\" id=\"sunGlow\" r=\"50%\">\n<stop offset=\"0%\" stop-color=\"#fef08a\"></stop>\n<stop offset=\"60%\" stop-color=\"#f59e0b\"></stop>\n<stop offset=\"100%\" stop-color=\"#b45309\" stop-opacity=\"0.1\"></stop>\n</radialgradient>\n<radialgradient cx=\"35%\" cy=\"35%\" id=\"earthGrad\" r=\"65%\">\n<stop offset=\"0%\" stop-color=\"#67e8f9\"></stop>\n<stop offset=\"50%\" stop-color=\"#0284c7\"></stop>\n<stop offset=\"100%\" stop-color=\"#082f49\"></stop>\n</radialgradient>\n</defs>\n<circle cx=\"-10\" cy=\"100\" fill=\"url(#sunGlow)\" r=\"80\" stroke=\"#fbbf24\" stroke-width=\"2\"></circle>\n<text fill=\"#fef3c7\" font-size=\"11\" font-weight=\"900\" x=\"32\" y=\"105\">КҮН</text>\n<line stroke=\"#64748b\" stroke-dasharray=\"3,4\" stroke-width=\"1.5\" x1=\"390\" x2=\"390\" y1=\"15\" y2=\"185\"></line>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"390\" y=\"195\">Астероидтар белдеуі</text>\n<line stroke=\"#475569\" stroke-width=\"1\" x1=\"110\" x2=\"110\" y1=\"100\" y2=\"140\"></line>\n<circle cx=\"110\" cy=\"100\" fill=\"#94a3b8\" r=\"8\" stroke=\"#cbd5e1\" stroke-width=\"1\"></circle>\n<text fill=\"#cbd5e1\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"110\" y=\"155\">Меркурий</text>\n<text fill=\"#64748b\" font-size=\"8\" text-anchor=\"middle\" x=\"110\" y=\"168\">1 (0,39 а.е.)</text>\n<line stroke=\"#475569\" stroke-width=\"1\" x1=\"180\" x2=\"180\" y1=\"100\" y2=\"60\"></line>\n<circle cx=\"180\" cy=\"100\" fill=\"#f59e0b\" r=\"13\" stroke=\"#fef3c7\" stroke-width=\"1\"></circle>\n<text fill=\"#fcd34d\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"180\" y=\"45\">Шолпан</text>\n<text fill=\"#64748b\" font-size=\"8\" text-anchor=\"middle\" x=\"180\" y=\"32\">2 (+465°C)</text>\n<circle cx=\"265\" cy=\"100\" fill=\"url(#earthGrad)\" r=\"14\" stroke=\"#38bdf8\" stroke-width=\"1.5\"></circle>\n<circle cx=\"286\" cy=\"88\" fill=\"#e2e8f0\" r=\"3.5\"></circle>\n<line stroke=\"#06b6d4\" stroke-dasharray=\"2,2\" stroke-width=\"1.5\" x1=\"265\" x2=\"265\" y1=\"100\" y2=\"145\"></line>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"900\" text-anchor=\"middle\" x=\"265\" y=\"160\">ЖЕР (3-ші)</text>\n<text fill=\"#a5f3fc\" font-size=\"8\" text-anchor=\"middle\" x=\"265\" y=\"173\">149,6 млн км (1 а.б.)</text>\n<text fill=\"#38bdf8\" font-size=\"8\" text-anchor=\"middle\" x=\"265\" y=\"184\">Ай: 384 400 км</text>\n<line stroke=\"#475569\" stroke-width=\"1\" x1=\"340\" x2=\"340\" y1=\"100\" y2=\"60\"></line>\n<circle cx=\"340\" cy=\"100\" fill=\"#ef4444\" r=\"10\" stroke=\"#fca5a5\" stroke-width=\"1\"></circle>\n<text fill=\"#f87171\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"340\" y=\"45\">Марс</text>\n<text fill=\"#64748b\" font-size=\"8\" text-anchor=\"middle\" x=\"340\" y=\"32\">4 (228 млн км)</text>\n<circle cx=\"470\" cy=\"100\" fill=\"#d97706\" r=\"32\" stroke=\"#fed7aa\" stroke-width=\"2\"></circle>\n<text fill=\"#fde68a\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"470\" y=\"148\">Юпитер</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"470\" y=\"160\">5</text>\n<ellipse cx=\"585\" cy=\"100\" fill=\"none\" rx=\"42\" ry=\"12\" stroke=\"#e2e8f0\" stroke-width=\"2\" transform=\"rotate(-15 585 100)\"></ellipse>\n<circle cx=\"585\" cy=\"100\" fill=\"#ca8a04\" r=\"26\" stroke=\"#fef08a\" stroke-width=\"1.5\"></circle>\n<text fill=\"#fef08a\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"585\" y=\"145\">Сатурн</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"585\" y=\"157\">6</text>\n<circle cx=\"695\" cy=\"100\" fill=\"#22d3ee\" r=\"18\" stroke=\"#cffafe\" stroke-width=\"1\"></circle>\n<text fill=\"#67e8f9\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"695\" y=\"135\">Уран</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"695\" y=\"147\">7</text>\n<circle cx=\"795\" cy=\"100\" fill=\"#3b82f6\" r=\"17\" stroke=\"#bfdbfe\" stroke-width=\"1\"></circle>\n<text fill=\"#60a5fa\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"795\" y=\"135\">Нептун</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"795\" y=\"147\">8</text>\n</svg>\n</div>\n<div class=\"grid grid-cols-2 sm:grid-cols-4 gap-2 mt-4 pt-3 border-t border-slate-800 text-[11px]\">\n<div class=\"p-2.5 rounded-xl bg-space-900 border border-slate-800\">\n<b class=\"text-cyan-400 block\">Жер тобы (қатты):</b>\n<span class=\"text-slate-300\">Меркурий, Шолпан, Жер, Марс</span>\n</div>\n<div class=\"p-2.5 rounded-xl bg-space-900 border border-slate-800\">\n<b class=\"text-amber-400 block\">Алып планеталар:</b>\n<span class=\"text-slate-300\">Юпитер, Сатурн, Уран, Нептун</span>\n</div>\n<div class=\"p-2.5 rounded-xl bg-space-900 border border-slate-800\">\n<b class=\"text-emerald-400 block\">Орбита ұзындығы:</b>\n<span class=\"text-slate-300 font-mono\">940 млн км (30 км/сек)</span>\n</div>\n<div class=\"p-2.5 rounded-xl bg-space-900 border border-slate-800\">\n<b class=\"text-purple-400 block\">Галактикалық жыл:</b>\n<span class=\"text-slate-300 font-mono\">250 млн жылда 1 айналым</span>\n</div>\n</div>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>2. Ғаламшарлар мен аспан денелері</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">«Ғаламшар»</b> термині грекше <i class=\"text-slate-300\">«планета»</i> — «адасқан жұлдыз», «кезбе» деген мағынаны білдіреді.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Күн жүйесіндегі 8 ғаламшар 2 үлкен топқа бөлінеді:</li>\n</ul>\n<ol class=\"space-y-2 my-2.5 ml-6 list-none\">\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Жер тобындағы ғаламшарлар (ішкі, қатты тасты):</b> Меркурий, Шолпан (Венера), Жер, Марс. Олар қатты тасты қабықтан тұрады, тығыздығы жоғары, өлшемдері салыстырмалы түрде шағын, серіктері аз немесе жоқ.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Алып ғаламшарлар (сыртқы, газ бен мұз алыптары):</b> Юпитер, Сатурн, Уран, Нептун. Олар негізінен жеңіл газдардан (сутек, гелий) тұрады, көлемі орасан зор, сақиналары мен ондаған серіктері бар.</li>\n</ol>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Орбита:</b> Аспан денелерінің ғарыш кеңістігінде Күнді айнала қозғалатын тұйық жолы. Жер орбитасының жалпы ұзындығы — <b class=\"text-cyan-300 font-bold\">940 млн км</b>, ал Жер осы орбита бойымен секундына <b class=\"text-cyan-300 font-bold\">30 км/сек</b> жылдамдықпен зулайды.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Кіші планеталар (Астероидтар):</b> Негізінен Марс пен Юпитер арасындағы астероидтар белдеуінде шоғырланған алып тас немесе темір-никель қорытпалары.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Кометалар («Құйрықты жұлдыздар»):</b> Тас, шаң-тозаң және қатып қалған газдар мен мұздан тұрады. Орбиталары өте сопақша келеді. Күнге жақындаған сайын ядросы қызып, буға айналып, артында миллиондаған шақырымға созылған жарқыраған құйрық («газ-шаң шлейфі») пайда болады.</li>\n</ul>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>3. Жер планетасының негізгі параметрлері</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Жер — Күннен қашықтығы бойынша <b class=\"text-cyan-300 font-bold\">3-ші</b>, ал өлшемі жағынан <b class=\"text-cyan-300 font-bold\">5-ші орындағы</b> ғаламшар.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Жер өз тобындағы (ішкі 4 ғаламшар) арасында диаметрі, массасы және тығыздығы жағынан ең ірісі болып табылады.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Жер бетінің орташа температурасы: <b class=\"text-cyan-300 font-bold\">+15,5°C</b> (Меркурий не Шолпан сияқты тым ыстық емес, Марс не Юпитер сияқты тым суық емес — бұл сұйық су мен тіршіліктің өмір сүруінің басты кепілі).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Жер шамамен <b class=\"text-cyan-300 font-bold\">4,5 – 4,6 млрд жыл бұрын</b> қалыптасқан.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Негізгі арақашықтықтар:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Жер мен Күннің орташа арақашықтығы: <b class=\"text-cyan-300 font-bold\">149,6 млн км</b> (бұл қашықтық халықаралық 1 астрономиялық бірлік / 1 а.б. ретінде қабылданған).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Жер мен Айдың орташа қашықтығы: <b class=\"text-cyan-300 font-bold\">384 400 км</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Перигелий (3 қаңтар):</b> Жердің Күнге ең жақын келетін орбиталық нүктесі — <b class=\"text-cyan-300 font-bold\">147 млн км</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Афелий (5 шілде):</b> Жердің Күннен ең алыстайтын нүктесі — <b class=\"text-cyan-300 font-bold\">152 млн км</b>.</li>\n</ul>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>4. Жердің пішіні мен өлшемдері (Геоид)</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Жер шарының нағыз геометриялық пішіні — <b class=\"text-cyan-300 font-bold\">ГЕОИД</b> деп аталады (грекше «жерге ұқсас» деген сөз). Жер өз осінен тәулігіне айналғандықтан, центрден тепкіш күштің әсерінен полюстерінен ішке қарай сығылыңқы, ал экваторында сыртқа қарай керілген. Оның деңгейлік беті Дүниежүзілік мұхиттың тынық күйдегі орташа деңгейімен сәйкес келеді.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Радиустары:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Экваторлық радиус: <b class=\"text-cyan-300 font-bold\">6 378,1 км</b> (дөңгелектегенде 6 378 км).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Полярлық радиус: <b class=\"text-cyan-300 font-bold\">6 356,7 км</b> (дөңгелектегенде 6 357 км).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Полярлық сығылу айырмашылығы:</b> <b class=\"text-cyan-300 font-bold\">21,4 км</b> (яғни экватор центрінен полюске қарағанда 21,4 км-ге алысырақ!).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Орташа радиус: <b class=\"text-cyan-300 font-bold\">6 371 км</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Жер бетінің жалпы ауданы:</b> <b class=\"text-cyan-300 font-bold\">510,2 млн км²</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Құрлық көлемі: <b class=\"text-cyan-300 font-bold\">149,1 млн км² (29%)</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Дүниежүзілік мұхит сулары: <b class=\"text-cyan-300 font-bold\">361,1 млн км² (71%)</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><i class=\"text-slate-300\">Жартышарлар бойынша бөлінуі:</i> Солтүстік жартышарда құрлық 39%, су 61%. Оңтүстік жартышарда құрлық 19%, су 81% (мұхиттық жартышар).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Экватор ұзындығы:</b> <b class=\"text-cyan-300 font-bold\">40 075 км</b> (меридиан ұзындығы шамамен 40 008 км).</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🌐</span>\n<span>2-СЫЗБА: ЖЕРДІҢ ПІШІНІ — ГЕОИД ЖӘНЕ РАДИУСТАРЫ</span>\n</span>\n<span class=\"text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono\">Полярлық сығылу: 21,4 км</span>\n</div>\n<p class=\"text-xs text-slate-300 mb-4\">Центрден тепкіш күштің әсерінен Жер полюстерінен сығылыңқы, экваторы кеңейген геоид пішінге ие.</p>\n<div class=\"w-full overflow-x-auto py-2 flex justify-center\">\n<svg class=\"w-full max-w-[650px] h-auto font-sans\" viewbox=\"0 0 650 260\">\n<ellipse cx=\"325\" cy=\"130\" fill=\"#0f172a\" rx=\"200\" ry=\"115\" stroke=\"#0ea5e9\" stroke-width=\"2.5\"></ellipse>\n<line stroke=\"#f59e0b\" stroke-dasharray=\"4,3\" stroke-width=\"2\" x1=\"125\" x2=\"525\" y1=\"130\" y2=\"130\"></line>\n<line stroke=\"#ef4444\" stroke-dasharray=\"4,3\" stroke-width=\"2\" x1=\"325\" x2=\"325\" y1=\"15\" y2=\"245\"></line>\n<circle cx=\"325\" cy=\"15\" fill=\"#ef4444\" r=\"4\"></circle>\n<text fill=\"#fca5a5\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"325\" y=\"10\">Солтүстік полюс</text>\n<circle cx=\"325\" cy=\"245\" fill=\"#ef4444\" r=\"4\"></circle>\n<text fill=\"#fca5a5\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"325\" y=\"258\">Оңтүстік полюс</text>\n<circle cx=\"325\" cy=\"130\" fill=\"#38bdf8\" r=\"5\"></circle>\n<line stroke=\"#10b981\" stroke-width=\"2.5\" x1=\"325\" x2=\"525\" y1=\"130\" y2=\"130\"></line>\n<polygon fill=\"#10b981\" points=\"525,130 515,126 515,134\"></polygon>\n<text fill=\"#34d399\" font-size=\"11\" font-weight=\"900\" text-anchor=\"middle\" x=\"425\" y=\"122\">Rэкв = 6 378,1 км</text>\n<line stroke=\"#f43f5e\" stroke-width=\"2.5\" x1=\"325\" x2=\"325\" y1=\"130\" y2=\"15\"></line>\n<polygon fill=\"#f43f5e\" points=\"325,15 321,25 329,25\"></polygon>\n<text fill=\"#fb7185\" font-size=\"11\" font-weight=\"900\" x=\"335\" y=\"75\">Rпол = 6 356,7 км</text>\n<rect fill=\"#1e293b\" height=\"52\" rx=\"8\" stroke=\"#f59e0b\" stroke-width=\"1\" width=\"180\" x=\"440\" y=\"30\"></rect>\n<text fill=\"#fef08a\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"530\" y=\"50\">СЫҒЫЛУ АЙЫРМАСЫ:</text>\n<text fill=\"#34d399\" font-size=\"13\" font-weight=\"900\" text-anchor=\"middle\" x=\"530\" y=\"68\">21,4 км (≈ 21 км)</text>\n<rect fill=\"#1e293b\" height=\"52\" rx=\"8\" stroke=\"#38bdf8\" stroke-width=\"1\" width=\"180\" x=\"30\" y=\"30\"></rect>\n<text fill=\"#bae6fd\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"120\" y=\"50\">ЭКВАТОР ҰЗЫНДЫҒЫ:</text>\n<text fill=\"#38bdf8\" font-size=\"13\" font-weight=\"900\" text-anchor=\"middle\" x=\"120\" y=\"68\">40 075 км</text>\n</svg>\n</div>\n<div class=\"grid grid-cols-2 sm:grid-cols-3 gap-2 mt-4 pt-3 border-t border-slate-800 text-[11px]\">\n<div class=\"p-2.5 rounded-xl bg-space-900 border border-slate-800 text-center\">\n<b class=\"text-cyan-400 block\">Жалпы ауданы:</b>\n<span class=\"text-slate-100 font-bold text-xs\">510,2 млн км²</span>\n</div>\n<div class=\"p-2.5 rounded-xl bg-space-900 border border-slate-800 text-center\">\n<b class=\"text-emerald-400 block\">Құрлық (Суша):</b>\n<span class=\"text-slate-100 font-bold text-xs\">149,1 млн км² (29%)</span>\n</div>\n<div class=\"p-2.5 rounded-xl bg-space-900 border border-slate-800 text-center col-span-2 sm:col-span-1\">\n<b class=\"text-blue-400 block\">Мұхит (Вода):</b>\n<span class=\"text-slate-100 font-bold text-xs\">361,1 млн км² (71%)</span>\n</div>\n</div>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>5. Жердің 4 түрлі қозғалысы және олардың салдары</span></h4>\n<ol class=\"space-y-3 my-2.5 ml-6 list-none\"><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Күн жүйесімен бірге Галактиканы айналуы:</b> Күн жүйесі Құс жолы галактикасының центрін 250 млн жылда (1 галактикалық жыл) бір рет толық айналып шығады.</li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Өз орбитасы арқылы Күнді айналуы (Орбиталық / Годовое движение):</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Қозғалу жылдамдығы: <b class=\"text-cyan-300 font-bold\">30 км/сек</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Бір толық айналу уақыты: <b class=\"text-cyan-300 font-bold\">365 күн 6 сағат 9 минут</b> (1 астрономиялық жыл; осы артық 6 сағат 4 жылда жиналып, 1 қосымша күнге — 29 ақпанға айналады).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Жер осінің орбита жазықтығына тұрақты көлбеулігі: <b class=\"text-cyan-300 font-bold\">66,5°</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Басты географиялық салдары:</b> Жыл мезгілдерінің (көктем, жаз, күз, қыс) кезектесіп ауысуы; жарықтану белдеулері мен күн ұзақтығының жыл бойы өзгеруі.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><i class=\"text-slate-300\">Маңызды 4 астрономиялық күн:</i></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">21 наурыз:</b> Көктемгі күн мен түннің теңелуі (Күн экваторға 90° тік түседі).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">22 маусым:</b> Жазғы күн тоқырауы (Күн Солтүстік тропикке — 23,5° с.е. тік түседі; Солтүстік жартышарда ең ұзақ күн).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">23 қыркүйек:</b> Күзгі күн мен түннің теңелуі (Күн экваторға қайтадан 90° тік түседі).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">22 желтоқсан:</b> Қысқы күн тоқырауы (Күн Оңтүстік тропикке — 23,5° о.е. тік түседі; Солтүстік жартышарда ең қысқа күн).</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Жердің өз білігінен (осінен) айналуы (Тәуліктік қозғалыс):</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Бағыты: Батыстан шығысқа қарай (сағат тіліне қарсы бағытта).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Бір толық айналу уақыты: <b class=\"text-cyan-300 font-bold\">24 сағат (1 тәулік)</b>, нақтырақ 23 сағ 56 мин 4 сек.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Басты географиялық салдары:</b> Күн мен түннің тәуліктік ауысуы; кез келген қозғалыстағы дененің ауытқуы (<b class=\"text-cyan-300 font-bold\">Кориолис күші:</b> ауа мен су ағыстары Солтүстік жартышарда оңға, Оңтүстік жартышарда солға қарай бұрылады).</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">4.</span><b class=\"text-emerald-300 font-bold\">Жер мен Айдың ортақ ауырлық орталығы арқылы қозғалысы:</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Айдың және Күннің тартылыс күші әсерінен Дүниежүзілік мұхитта тәулігіне <b class=\"text-cyan-300 font-bold\">2 рет толысу (су көтерілуі)</b> және <b class=\"text-cyan-300 font-bold\">2 рет қайту (су төмендеуі)</b> құбылысы жүреді.</li>\n</ul></li></ol>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>☀️</span>\n<span>3-СЫЗБА: ЖЕРДІҢ КҮНДІ АЙНАЛУЫ ЖӘНЕ 4 МАҢЫЗДЫ КҮН</span>\n</span>\n<span class=\"text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono\">Ось көлбеулігі: 66,5°</span>\n</div>\n<p class=\"text-xs text-slate-300 mb-4\">Жер осінің 66,5° көлбеулігі мен Күнді айналу қозғалысы жыл мезгілдерін ауыстырады.</p>\n<div class=\"w-full overflow-x-auto py-2 flex justify-center\">\n<svg class=\"w-full max-w-[760px] h-auto font-sans\" viewbox=\"0 0 760 360\">\n<ellipse cx=\"380\" cy=\"180\" fill=\"none\" rx=\"300\" ry=\"130\" stroke=\"#334155\" stroke-dasharray=\"6,4\" stroke-width=\"1.5\"></ellipse>\n<circle cx=\"360\" cy=\"180\" fill=\"#f59e0b\" r=\"28\" stroke=\"#fbbf24\" stroke-width=\"2\"></circle>\n<text fill=\"#1e293b\" font-size=\"10\" font-weight=\"900\" text-anchor=\"middle\" x=\"360\" y=\"184\">КҮН</text>\n<circle cx=\"380\" cy=\"50\" fill=\"#0284c7\" r=\"16\" stroke=\"#38bdf8\" stroke-width=\"1.5\"></circle>\n<line stroke=\"#f43f5e\" stroke-width=\"2\" x1=\"368\" x2=\"392\" y1=\"36\" y2=\"64\"></line>\n<rect fill=\"#1e293b\" height=\"34\" rx=\"6\" stroke=\"#10b981\" stroke-width=\"1\" width=\"180\" x=\"290\" y=\"0\"></rect>\n<text fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"380\" y=\"15\">21 НАУРЫЗ — КӨКТЕМГІ ТЕҢЕЛУ</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"380\" y=\"27\">Күн сәулесі экваторға 90° түседі</text>\n<circle cx=\"380\" cy=\"310\" fill=\"#0284c7\" r=\"16\" stroke=\"#38bdf8\" stroke-width=\"1.5\"></circle>\n<line stroke=\"#f43f5e\" stroke-width=\"2\" x1=\"368\" x2=\"392\" y1=\"296\" y2=\"324\"></line>\n<rect fill=\"#1e293b\" height=\"30\" rx=\"6\" stroke=\"#ca8a04\" stroke-width=\"1\" width=\"180\" x=\"290\" y=\"328\"></rect>\n<text fill=\"#fde047\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"380\" y=\"342\">23 ҚЫРКҮЙЕК — КҮЗГІ ТЕҢЕЛУ</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"380\" y=\"353\">Күн сәулесі экваторға 90° түседі</text>\n<circle cx=\"80\" cy=\"180\" fill=\"#0284c7\" r=\"18\" stroke=\"#38bdf8\" stroke-width=\"1.5\"></circle>\n<line stroke=\"#f43f5e\" stroke-width=\"2\" x1=\"68\" x2=\"92\" y1=\"164\" y2=\"196\"></line>\n<rect fill=\"#1e293b\" height=\"42\" rx=\"6\" stroke=\"#f59e0b\" stroke-width=\"1\" width=\"150\" x=\"5\" y=\"125\"></rect>\n<text fill=\"#fde047\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"80\" y=\"140\">22 МАУСЫМ — ЖАЗҒЫ ТОҚЫРАУ</text>\n<text fill=\"#38bdf8\" font-size=\"8\" text-anchor=\"middle\" x=\"80\" y=\"152\">Солтүстік тропикке (23,5°) 90°</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"80\" y=\"162\">Ең ұзақ күн (Солтүстікте)</text>\n<circle cx=\"680\" cy=\"180\" fill=\"#0284c7\" r=\"18\" stroke=\"#38bdf8\" stroke-width=\"1.5\"></circle>\n<line stroke=\"#f43f5e\" stroke-width=\"2\" x1=\"668\" x2=\"692\" y1=\"164\" y2=\"196\"></line>\n<rect fill=\"#1e293b\" height=\"42\" rx=\"6\" stroke=\"#38bdf8\" stroke-width=\"1\" width=\"150\" x=\"605\" y=\"125\"></rect>\n<text fill=\"#7dd3fc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"680\" y=\"140\">22 ЖЕЛТОҚСАН — ҚЫСҚЫ ТОҚЫРАУ</text>\n<text fill=\"#38bdf8\" font-size=\"8\" text-anchor=\"middle\" x=\"680\" y=\"152\">Оңтүстік тропикке (23,5°) 90°</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"680\" y=\"162\">Ең қысқа күн (Солтүстікте)</text>\n<text fill=\"#f43f5e\" font-size=\"9\" font-weight=\"bold\" x=\"260\" y=\"200\">Перигелий (3 қаңтар: 147 млн км)</text>\n<text fill=\"#38bdf8\" font-size=\"9\" font-weight=\"bold\" x=\"440\" y=\"200\">Афелий (5 шілде: 152 млн км)</text>\n</svg>\n</div>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>6. Жердің қабықтары мен ішкі құрылысы</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Жердің 4 басты қабығы (геосфералары):</b></li>\n</ul>\n<ol class=\"space-y-2 my-2.5 ml-6 list-none\">\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Литосфера</b> — Жердің сыртқы қатты тас қабығы.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Гидросфера</b> — мұхиттар, теңіздер, өзен-көлдер мен жерасты сулары және мұздықтарды қамтитын су қабығы.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Атмосфера</b> — Жер шарын қоршап тұрған ауа қабығы.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">4.</span><b class=\"text-emerald-300 font-bold\">Биосфера</b> — тірі ағзалар (өсімдіктер, жануарлар, микроорганизмдер, адамдар) мекендейтін тіршілік қабығы.</li>\n</ol>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Жердің ішкі құрылысы 3 негізгі қабаттан тұрады:</b></li>\n</ul>\n<ol class=\"space-y-2 my-2.5 ml-6 list-none\">\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Жер қыртысы</b> — ең сыртқы жұқа қабат. Қалыңдығы жазықтарда 30–40 км, биік таулар астында 70–80 км, ал мұхит түбінде небары 5–10 км.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Мантия</b> — жер қыртысының астында 2900 км тереңдікке дейін созылып жатыр. Жоғарғы мантияда тау жыныстары жартылай балқыған пластикалық <b class=\"text-emerald-300 font-bold\">астеносфера</b> қабаты орналасқан (литосфералық плиталар осы астеносфера үстімен жылжиды).</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Ядро</b> — Жердің ең орталық бөлігі. 2900 км-ден 6371 км-ге дейінгі аралықты қамтиды. Ол сыртқы сұйық ядродан (магнит өрісін тудырады) және ішкі қатты темір-никельді ядродан тұрады. Орталығындағы температура <b class=\"text-emerald-300 font-bold\">+6000°C</b>-қа дейін жетеді.</li>\n</ol>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🌋</span>\n<span>4-СЫЗБА: ЖЕРДІҢ ІШКІ ҚҰРЫЛЫСЫ МЕН ГЕОГРАФИЯЛЫҚ ҚАБЫҚТАРЫ</span>\n</span>\n<span class=\"text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono\">Орталық ядро: 6000°C</span>\n</div>\n<p class=\"text-xs text-slate-300 mb-4\">Жердің қабықтары (Атмосфера, Гидросфера, Литосфера, Биосфера) және ішкі қабаттары (Қыртыс, Мантия, Ядро).</p>\n<div class=\"w-full overflow-x-auto py-2 flex justify-center\">\n<svg class=\"w-full max-w-[680px] h-auto font-sans\" viewbox=\"0 0 680 240\">\n<g transform=\"translate(10, 20)\">\n<rect fill=\"#0284c7\" fill-opacity=\"0.2\" height=\"40\" rx=\"8\" stroke=\"#38bdf8\" stroke-width=\"1\" width=\"160\" x=\"0\" y=\"0\"></rect>\n<text fill=\"#bae6fd\" font-size=\"11\" font-weight=\"bold\" x=\"15\" y=\"24\">☁️ Атмосфера (ауа)</text>\n<rect fill=\"#0369a1\" fill-opacity=\"0.2\" height=\"40\" rx=\"8\" stroke=\"#0ea5e9\" stroke-width=\"1\" width=\"160\" x=\"0\" y=\"50\"></rect>\n<text fill=\"#7dd3fc\" font-size=\"11\" font-weight=\"bold\" x=\"15\" y=\"74\">🌊 Гидросфера (су)</text>\n<rect fill=\"#92400e\" fill-opacity=\"0.2\" height=\"40\" rx=\"8\" stroke=\"#f59e0b\" stroke-width=\"1\" width=\"160\" x=\"0\" y=\"100\"></rect>\n<text fill=\"#fde68a\" font-size=\"11\" font-weight=\"bold\" x=\"15\" y=\"124\">⛰️ Литосфера (тас)</text>\n<rect fill=\"#065f46\" fill-opacity=\"0.2\" height=\"40\" rx=\"8\" stroke=\"#10b981\" stroke-width=\"1\" width=\"160\" x=\"0\" y=\"150\"></rect>\n<text fill=\"#a7f3d0\" font-size=\"11\" font-weight=\"bold\" x=\"15\" y=\"174\">🌿 Биосфера (тіршілік)</text>\n</g>\n<g transform=\"translate(200, 20)\">\n<path d=\"M 0,0 L 280,0 A 280,280 0 0,1 198,198 Z\" fill=\"#78350f\" stroke=\"#d97706\" stroke-width=\"2\"></path>\n<path d=\"M 0,0 L 220,0 A 220,220 0 0,1 155,155 Z\" fill=\"#b45309\" stroke=\"#f59e0b\" stroke-width=\"1.5\"></path>\n<path d=\"M 0,0 L 130,0 A 130,130 0 0,1 92,92 Z\" fill=\"#dc2626\" stroke=\"#fca5a5\" stroke-width=\"1.5\"></path>\n<path d=\"M 0,0 L 60,0 A 60,60 0 0,1 42,42 Z\" fill=\"#fef08a\" stroke=\"#ffffff\" stroke-width=\"1.5\"></path>\n<text fill=\"#fde68a\" font-size=\"9\" font-weight=\"bold\" x=\"210\" y=\"25\">Жер қыртысы (5-80 км)</text>\n<text fill=\"#fef3c7\" font-size=\"9\" font-weight=\"bold\" x=\"135\" y=\"60\">Мантия (2900 км)</text>\n<text fill=\"#fee2e2\" font-size=\"9\" font-weight=\"bold\" x=\"75\" y=\"95\">Сыртқы ядро</text>\n<text fill=\"#1e293b\" font-size=\"8\" font-weight=\"900\" x=\"10\" y=\"35\">Ішкі ядро</text>\n</g>\n</svg>\n</div>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>7. Қазақстанның Жер шарындағы орны және шекарасы</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Орналасуы:</b> Еуразия алып материгінің қақ ортасында, қоңыржай климаттық белдеудің оңтүстік ендіктерінде жатыр. Мұхиттардан өте алыс орналасқандықтан, климаты шұғыл континентті.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Еуразия құрлығының географиялық орталығы:</b> <b class=\"text-cyan-300 font-bold\">Абай облысы, Жидебай урочищесінде</b> (Ұлы Абай мен Шәкәрімнің туған жерінде стела орнатылған).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Жер көлемі:</b> <b class=\"text-cyan-300 font-bold\">2 724,9 мың км²</b> (Дүниежүзінде аумағы бойынша 9-орын, ТМД елдері ішінде 2-орын).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Шеткі нүктелері:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Солтүстікте:</b> 55°26' с.е. (Батыс Сібір жазығы, Петропавл қаласы маңы).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Оңтүстікте:</b> 40°56' с.е. (Қызылқұм шөлі мен Мырзашөл).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Батыста:</b> 46°30' ш.б. (Прикаспий ойпаты, Эльтон және Басқұншақ көлдері маңы).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Шығыста:</b> 87°20' ш.б. (Бұқтырма өзенінің бастауы, Оңтүстік Алтай тауы).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Шекарасының жалпы ұзындығы:</b> <b class=\"text-cyan-300 font-bold\">13 394 км</b> (құрлықтық шекара).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Ресеймен: <b class=\"text-cyan-300 font-bold\">7 591 км</b> (бұл бүкіл әлемдегі екі ел арасындағы ең ұзын үздіксіз құрлықтық шекара!).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Қытаймен: <b class=\"text-cyan-300 font-bold\">1 782 км</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Өзбекстанмен: <b class=\"text-cyan-300 font-bold\">2 354 км</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Қырғызстанмен: <b class=\"text-cyan-300 font-bold\">1 241 км</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Түрікменстанмен: <b class=\"text-cyan-300 font-bold\">426 км</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Каспий теңізі арқылы: Әзірбайжан және Иран мемлекеттеріне тікелей шыға алады.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🇰🇿</span>\n<span>5-СЫЗБА: ҚАЗАҚСТАННЫҢ ШЕТКІ НҮКТЕЛЕРІ ЖӘНЕ ЕУРАЗИЯ КІНДІГІ (ЖИДЕБАЙ)</span>\n</span>\n<span class=\"text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono\">Ауданы: 2 724,9 мың км² (9-орын)</span>\n</div>\n<p class=\"text-xs text-slate-300 mb-4\">Қазақстанның 4 шеткі нүктесі, Жидебайдағы Еуразия орталығы және көрші елдермен шекара ұзындығы.</p>\n<div class=\"w-full overflow-x-auto py-2 flex justify-center\">\n<svg class=\"w-full max-w-[740px] h-auto font-sans\" viewbox=\"0 0 740 280\">\n<polygon fill=\"#0f172a\" points=\"120,120 180,60 290,40 450,45 550,70 650,90 680,140 640,210 520,230 400,245 280,240 180,210 100,160\" stroke=\"#0ea5e9\" stroke-width=\"2.5\"></polygon>\n<circle cx=\"360\" cy=\"40\" fill=\"#ef4444\" r=\"5\"></circle>\n<text fill=\"#fca5a5\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"360\" y=\"25\">СОЛТҮСТІК: 55°26' с.е. (Петропавл маңы)</text>\n<circle cx=\"340\" cy=\"245\" fill=\"#ef4444\" r=\"5\"></circle>\n<text fill=\"#fca5a5\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"340\" y=\"265\">ОҢТҮСТІК: 40°56' с.е. (Қызылқұм, Мырзашөл)</text>\n<circle cx=\"100\" cy=\"150\" fill=\"#ef4444\" r=\"5\"></circle>\n<text fill=\"#fca5a5\" font-size=\"9\" font-weight=\"bold\" x=\"20\" y=\"153\">БАТЫС: 46°30' ш.б.</text>\n<circle cx=\"680\" cy=\"130\" fill=\"#ef4444\" r=\"5\"></circle>\n<text fill=\"#fca5a5\" font-size=\"9\" font-weight=\"bold\" x=\"615\" y=\"115\">ШЫҒЫС: 87°20' ш.б.</text>\n<circle cx=\"490\" cy=\"140\" fill=\"#f59e0b\" r=\"8\" stroke=\"#ffffff\" stroke-width=\"2\"></circle>\n<polygon fill=\"#fef08a\" points=\"490,126 494,136 486,136\"></polygon>\n<rect fill=\"#1e293b\" height=\"34\" rx=\"6\" stroke=\"#f59e0b\" stroke-width=\"1.5\" width=\"180\" x=\"420\" y=\"150\"></rect>\n<text fill=\"#fef08a\" font-size=\"10\" font-weight=\"900\" text-anchor=\"middle\" x=\"510\" y=\"164\">★ ЕУРАЗИЯ ОРТАЛЫҒЫ</text>\n<text fill=\"#38bdf8\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"510\" y=\"176\">Абай облысы, Жидебай</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"360\" y=\"70\">Ресеймен шекара — 7 591 км (әлемде 1-орын)</text>\n<text fill=\"#94a3b8\" font-size=\"8\" x=\"580\" y=\"180\">Қытаймен: 1 782 км</text>\n<text fill=\"#94a3b8\" font-size=\"8\" x=\"270\" y=\"210\">Өзбекстан: 2 354 км</text>\n<text fill=\"#94a3b8\" font-size=\"8\" x=\"410\" y=\"215\">Қырғызстан: 1 241 км</text>\n<text fill=\"#94a3b8\" font-size=\"8\" x=\"160\" y=\"225\">Түрікменстан: 426 км</text>\n</svg>\n</div>\n</div>", "theory_ru": "<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>1. Земля — планета Солнечной системы</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Земля</b> — уникальная планета, одна из 8 планет, обращающихся вокруг Солнца.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Центр Солнечной системы — Солнце.</b> Это ближайшая к нам звезда (желтый карлик спектрального класса G), масса которой составляет 99,8% массы всей Солнечной системы.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Галактика:</b> Наша планетарная система входит в состав гигантской спиральной галактики <b class=\"text-cyan-300 font-bold\">Млечный Путь</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Галактический год:</b> Солнечная система совершает один полный оборот вокруг центра Галактики примерно за <b class=\"text-cyan-300 font-bold\">250 млн лет</b>.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🌌</span>\n<span>СХЕМА 1: СОЛНЕЧНАЯ СИСТЕМА И 8 ПЛАНЕТ</span>\n</span>\n<span class=\"text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono\">Земля — 3-я от Солнца</span>\n</div>\n<p class=\"text-xs text-slate-300 mb-4\">Строение Солнечной системы: планеты земной группы, пояс астероидов и планеты-гиганты.</p>\n<div class=\"w-full overflow-x-auto py-2\">\n<svg class=\"w-full max-w-[880px] h-auto font-sans\" viewbox=\"0 0 880 200\">\n<defs>\n<radialgradient cx=\"50%\" cy=\"50%\" id=\"sunGlow\" r=\"50%\">\n<stop offset=\"0%\" stop-color=\"#fef08a\"></stop>\n<stop offset=\"60%\" stop-color=\"#f59e0b\"></stop>\n<stop offset=\"100%\" stop-color=\"#b45309\" stop-opacity=\"0.1\"></stop>\n</radialgradient>\n<radialgradient cx=\"35%\" cy=\"35%\" id=\"earthGrad\" r=\"65%\">\n<stop offset=\"0%\" stop-color=\"#67e8f9\"></stop>\n<stop offset=\"50%\" stop-color=\"#0284c7\"></stop>\n<stop offset=\"100%\" stop-color=\"#082f49\"></stop>\n</radialgradient>\n</defs>\n<circle cx=\"-10\" cy=\"100\" fill=\"url(#sunGlow)\" r=\"80\" stroke=\"#fbbf24\" stroke-width=\"2\"></circle>\n<text fill=\"#fef3c7\" font-size=\"11\" font-weight=\"900\" x=\"32\" y=\"105\">СОЛНЦЕ</text>\n<line stroke=\"#64748b\" stroke-dasharray=\"3,4\" stroke-width=\"1.5\" x1=\"390\" x2=\"390\" y1=\"15\" y2=\"185\"></line>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"390\" y=\"195\">Пояс астероидов</text>\n<line stroke=\"#475569\" stroke-width=\"1\" x1=\"110\" x2=\"110\" y1=\"100\" y2=\"140\"></line>\n<circle cx=\"110\" cy=\"100\" fill=\"#94a3b8\" r=\"8\" stroke=\"#cbd5e1\" stroke-width=\"1\"></circle>\n<text fill=\"#cbd5e1\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"110\" y=\"155\">Меркурий</text>\n<text fill=\"#64748b\" font-size=\"8\" text-anchor=\"middle\" x=\"110\" y=\"168\">1 (0,39 а.е.)</text>\n<line stroke=\"#475569\" stroke-width=\"1\" x1=\"180\" x2=\"180\" y1=\"100\" y2=\"60\"></line>\n<circle cx=\"180\" cy=\"100\" fill=\"#f59e0b\" r=\"13\" stroke=\"#fef3c7\" stroke-width=\"1\"></circle>\n<text fill=\"#fcd34d\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"180\" y=\"45\">Венера</text>\n<text fill=\"#64748b\" font-size=\"8\" text-anchor=\"middle\" x=\"180\" y=\"32\">2 (+465°C)</text>\n<circle cx=\"265\" cy=\"100\" fill=\"url(#earthGrad)\" r=\"14\" stroke=\"#38bdf8\" stroke-width=\"1.5\"></circle>\n<circle cx=\"286\" cy=\"88\" fill=\"#e2e8f0\" r=\"3.5\"></circle>\n<line stroke=\"#06b6d4\" stroke-dasharray=\"2,2\" stroke-width=\"1.5\" x1=\"265\" x2=\"265\" y1=\"100\" y2=\"145\"></line>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"900\" text-anchor=\"middle\" x=\"265\" y=\"160\">ЗЕМЛЯ (3-я)</text>\n<text fill=\"#a5f3fc\" font-size=\"8\" text-anchor=\"middle\" x=\"265\" y=\"173\">149,6 млн км (1 а.б.)</text>\n<text fill=\"#38bdf8\" font-size=\"8\" text-anchor=\"middle\" x=\"265\" y=\"184\">Луна: 384 400 км</text>\n<line stroke=\"#475569\" stroke-width=\"1\" x1=\"340\" x2=\"340\" y1=\"100\" y2=\"60\"></line>\n<circle cx=\"340\" cy=\"100\" fill=\"#ef4444\" r=\"10\" stroke=\"#fca5a5\" stroke-width=\"1\"></circle>\n<text fill=\"#f87171\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"340\" y=\"45\">Марс</text>\n<text fill=\"#64748b\" font-size=\"8\" text-anchor=\"middle\" x=\"340\" y=\"32\">4 (228 млн км)</text>\n<circle cx=\"470\" cy=\"100\" fill=\"#d97706\" r=\"32\" stroke=\"#fed7aa\" stroke-width=\"2\"></circle>\n<text fill=\"#fde68a\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"470\" y=\"148\">Юпитер</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"470\" y=\"160\">5</text>\n<ellipse cx=\"585\" cy=\"100\" fill=\"none\" rx=\"42\" ry=\"12\" stroke=\"#e2e8f0\" stroke-width=\"2\" transform=\"rotate(-15 585 100)\"></ellipse>\n<circle cx=\"585\" cy=\"100\" fill=\"#ca8a04\" r=\"26\" stroke=\"#fef08a\" stroke-width=\"1.5\"></circle>\n<text fill=\"#fef08a\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"585\" y=\"145\">Сатурн</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"585\" y=\"157\">6</text>\n<circle cx=\"695\" cy=\"100\" fill=\"#22d3ee\" r=\"18\" stroke=\"#cffafe\" stroke-width=\"1\"></circle>\n<text fill=\"#67e8f9\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"695\" y=\"135\">Уран</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"695\" y=\"147\">7</text>\n<circle cx=\"795\" cy=\"100\" fill=\"#3b82f6\" r=\"17\" stroke=\"#bfdbfe\" stroke-width=\"1\"></circle>\n<text fill=\"#60a5fa\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"795\" y=\"135\">Нептун</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"795\" y=\"147\">8</text>\n</svg>\n</div>\n<div class=\"grid grid-cols-2 sm:grid-cols-4 gap-2 mt-4 pt-3 border-t border-slate-800 text-[11px]\">\n<div class=\"p-2.5 rounded-xl bg-space-900 border border-slate-800\">\n<b class=\"text-cyan-400 block\">Земная группа (твердые):</b>\n<span class=\"text-slate-300\">Меркурий, Венера, Земля, Марс</span>\n</div>\n<div class=\"p-2.5 rounded-xl bg-space-900 border border-slate-800\">\n<b class=\"text-amber-400 block\">Планеты-гиганты:</b>\n<span class=\"text-slate-300\">Юпитер, Сатурн, Уран, Нептун</span>\n</div>\n<div class=\"p-2.5 rounded-xl bg-space-900 border border-slate-800\">\n<b class=\"text-emerald-400 block\">Длина орбиты Земли:</b>\n<span class=\"text-slate-300 font-mono\">940 млн км (30 км/сек)</span>\n</div>\n<div class=\"p-2.5 rounded-xl bg-space-900 border border-slate-800\">\n<b class=\"text-purple-400 block\">Галактический год:</b>\n<span class=\"text-slate-300 font-mono\">250 млн лет (1 оборот)</span>\n</div>\n</div>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>2. Планеты и малые тела Солнечной системы</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Термин <b class=\"text-cyan-300 font-bold\">«планета»</b> в переводе с древнегреческого означает «блуждающая звезда».</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">8 планет делятся на две принципиальные группы:</li>\n</ul>\n<ol class=\"space-y-2 my-2.5 ml-6 list-none\">\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Планеты земной группы (внутренние, каменистые):</b> Меркурий, Венера, Земля, Марс. Имеют твердую кору, высокую плотность и компактные размеры.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Планеты-гиганты (внешние, газовые и ледяные):</b> Юпитер, Сатурн, Уран, Нептун. Состоят из газов (водород, гелий) и льда, имеют колоссальные размеры, кольца и множество спутников.</li>\n</ol>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Орбита:</b> Траектория движения планеты вокруг Солнца. Длина орбиты Земли — <b class=\"text-cyan-300 font-bold\">940 млн км</b>, а скорость движения по ней составляет <b class=\"text-cyan-300 font-bold\">30 км/с</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Пояс астероидов:</b> Зона каменных и металлических глыб между орбитами Марса и Юпитера.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Кометы:</b> Тела из замерзшего льда, газов и космической пыли. При приближении к Солнцу ядро испаряется, образуя гигантский светящийся хвост.</li>\n</ul>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>3. Главные параметры планеты Земля</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Земля — <b class=\"text-cyan-300 font-bold\">3-я от Солнца</b> и <b class=\"text-cyan-300 font-bold\">5-я по величине</b> планета в Солнечной системе.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Среди 4 планет земной группы Земля — самая крупная по диаметру, массе и плотности.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Средняя температура поверхности: <b class=\"text-cyan-300 font-bold\">+15,5°C</b> (оптимальна для воды в жидкой фазе и зарождения жизни).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Возраст планеты: около <b class=\"text-cyan-300 font-bold\">4,5 – 4,6 млрд лет</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Расстояния:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Среднее расстояние до Солнца: <b class=\"text-cyan-300 font-bold\">149,6 млн км</b> (1 астрономическая единица / 1 а.е.).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Расстояние до Луны: <b class=\"text-cyan-300 font-bold\">384 400 км</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Перигелий (3 января):</b> Земля ближе всего к Солнцу — <b class=\"text-cyan-300 font-bold\">147 млн км</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Афелий (5 июля):</b> Земля дальше всего от Солнца — <b class=\"text-cyan-300 font-bold\">152 млн км</b>.</li>\n</ul>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>4. Форма и размеры Земли (Геоид)</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Истинная геометрическая форма Земли называется <b class=\"text-cyan-300 font-bold\">ГЕОИД</b> (сплюснутый шар). Вследствие осевого вращения центробежная сила сжала планету у полюсов и расширила у экватора. Поверхность геоида совпадает со средним спокойным уровнем Мирового океана.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Радиусы:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Экваториальный радиус: <b class=\"text-cyan-300 font-bold\">6 378,1 км</b> (округлённо 6 378 км).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Полярный радиус: <b class=\"text-cyan-300 font-bold\">6 356,7 км</b> (округлённо 6 357 км).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Полярное сжатие (разница):</b> <b class=\"text-cyan-300 font-bold\">21,4 км</b> (экваториальный радиус длиннее полярного на 21,4 км!).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Средний радиус Земли: <b class=\"text-cyan-300 font-bold\">6 371 км</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Площадь поверхности Земли:</b> <b class=\"text-cyan-300 font-bold\">510,2 млн км²</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Площадь суши: <b class=\"text-cyan-300 font-bold\">149,1 млн км² (29%)</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Площадь Мирового океана: <b class=\"text-cyan-300 font-bold\">361,1 млн км² (71%)</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><i class=\"text-slate-300\">По полушариям:</i> В Северном полушарии суша 39%, вода 61%. В Южном полушарии суша 19%, вода 81% (океаническое полушарие).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Длина экватора:</b> <b class=\"text-cyan-300 font-bold\">40 075 км</b> (меридиан — около 40 008 км).</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🌐</span>\n<span>СХЕМА 2: ФОРМА ЗЕМЛИ — ГЕОИД И РАДИУСЫ</span>\n</span>\n<span class=\"text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono\">Полярное сжатие: 21,4 км</span>\n</div>\n<p class=\"text-xs text-slate-300 mb-4\">Из-за центробежной силы вращения Земля сплюснута у полюсов и расширена на экваторе (геоид).</p>\n<div class=\"w-full overflow-x-auto py-2 flex justify-center\">\n<svg class=\"w-full max-w-[650px] h-auto font-sans\" viewbox=\"0 0 650 260\">\n<ellipse cx=\"325\" cy=\"130\" fill=\"#0f172a\" rx=\"200\" ry=\"115\" stroke=\"#0ea5e9\" stroke-width=\"2.5\"></ellipse>\n<line stroke=\"#f59e0b\" stroke-dasharray=\"4,3\" stroke-width=\"2\" x1=\"125\" x2=\"525\" y1=\"130\" y2=\"130\"></line>\n<line stroke=\"#ef4444\" stroke-dasharray=\"4,3\" stroke-width=\"2\" x1=\"325\" x2=\"325\" y1=\"15\" y2=\"245\"></line>\n<circle cx=\"325\" cy=\"15\" fill=\"#ef4444\" r=\"4\"></circle>\n<text fill=\"#fca5a5\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"325\" y=\"10\">Северный полюс</text>\n<circle cx=\"325\" cy=\"245\" fill=\"#ef4444\" r=\"4\"></circle>\n<text fill=\"#fca5a5\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"325\" y=\"258\">Южный полюс</text>\n<circle cx=\"325\" cy=\"130\" fill=\"#38bdf8\" r=\"5\"></circle>\n<line stroke=\"#10b981\" stroke-width=\"2.5\" x1=\"325\" x2=\"525\" y1=\"130\" y2=\"130\"></line>\n<polygon fill=\"#10b981\" points=\"525,130 515,126 515,134\"></polygon>\n<text fill=\"#34d399\" font-size=\"11\" font-weight=\"900\" text-anchor=\"middle\" x=\"425\" y=\"122\">Rэкв = 6 378,1 км</text>\n<line stroke=\"#f43f5e\" stroke-width=\"2.5\" x1=\"325\" x2=\"325\" y1=\"130\" y2=\"15\"></line>\n<polygon fill=\"#f43f5e\" points=\"325,15 321,25 329,25\"></polygon>\n<text fill=\"#fb7185\" font-size=\"11\" font-weight=\"900\" x=\"335\" y=\"75\">Rпол = 6 356,7 км</text>\n<rect fill=\"#1e293b\" height=\"52\" rx=\"8\" stroke=\"#f59e0b\" stroke-width=\"1\" width=\"180\" x=\"440\" y=\"30\"></rect>\n<text fill=\"#fef08a\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"530\" y=\"50\">РАЗНИЦА СЖАТИЯ:</text>\n<text fill=\"#34d399\" font-size=\"13\" font-weight=\"900\" text-anchor=\"middle\" x=\"530\" y=\"68\">21,4 км (≈ 21 км)</text>\n<rect fill=\"#1e293b\" height=\"52\" rx=\"8\" stroke=\"#38bdf8\" stroke-width=\"1\" width=\"180\" x=\"30\" y=\"30\"></rect>\n<text fill=\"#bae6fd\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"120\" y=\"50\">ДЛИНА ЭКВАТОРА:</text>\n<text fill=\"#38bdf8\" font-size=\"13\" font-weight=\"900\" text-anchor=\"middle\" x=\"120\" y=\"68\">40 075 км</text>\n</svg>\n</div>\n<div class=\"grid grid-cols-2 sm:grid-cols-3 gap-2 mt-4 pt-3 border-t border-slate-800 text-[11px]\">\n<div class=\"p-2.5 rounded-xl bg-space-900 border border-slate-800 text-center\">\n<b class=\"text-cyan-400 block\">Площадь Земли:</b>\n<span class=\"text-slate-100 font-bold text-xs\">510,2 млн км²</span>\n</div>\n<div class=\"p-2.5 rounded-xl bg-space-900 border border-slate-800 text-center\">\n<b class=\"text-emerald-400 block\">Суша (29%):</b>\n<span class=\"text-slate-100 font-bold text-xs\">149,1 млн км² (29%)</span>\n</div>\n<div class=\"p-2.5 rounded-xl bg-space-900 border border-slate-800 text-center col-span-2 sm:col-span-1\">\n<b class=\"text-blue-400 block\">Океан (71%):</b>\n<span class=\"text-slate-100 font-bold text-xs\">361,1 млн км² (71%)</span>\n</div>\n</div>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>5. Четыре движения Земли и их следствия</span></h4>\n<ol class=\"space-y-3 my-2.5 ml-6 list-none\"><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Обращение вместе с Солнечной системой вокруг центра Галактики:</b> 1 оборот за 250 млн лет (1 галактический год).</li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Годовое орбитальное движение вокруг Солнца:</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Скорость: <b class=\"text-cyan-300 font-bold\">30 км/с</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Период: <b class=\"text-cyan-300 font-bold\">365 дней 6 часов 9 минут</b> (за 4 года образуется високосный день 29 февраля).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Постоянный наклон земной оси к плоскости орбиты: <b class=\"text-cyan-300 font-bold\">66,5°</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Следствия:</b> Смена времен года; изменение продолжительности дня и ночи; пояса освещенности.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><i class=\"text-slate-300\">4 ключевые астрономические даты:</i></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">21 марта:</b> День весеннего равноденствия (Солнце в зените над экватором, день = ночь).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">22 июня:</b> День летнего солнцестояния (Солнце в зените над Северным тропиком 23,5° с.ш., самый длинный день в Северном полушарии).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">23 сентября:</b> День осеннего равноденствия (Солнце снова в зените над экватором).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">22 декабря:</b> День зимнего солнцестояния (Солнце в зените над Южным тропиком 23,5° ю.ш., самый короткий день в Северном полушарии).</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Суточное осевое вращение Земли:</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Направление: с запада на восток (против часовой стрелки).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Период: <b class=\"text-cyan-300 font-bold\">24 часа (1 сутки)</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Следствия:</b> Смена дня и ночи; возникновение силы Кориолиса (отклонение ветров и течений вправо в Северном полушарии и влево в Южном полушарии).</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">4.</span><b class=\"text-emerald-300 font-bold\">Вращение системы Земля — Луна вокруг общего центра масс:</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Лунно-солнечное гравитационное воздействие порождает в Мировом океане <b class=\"text-cyan-300 font-bold\">2 прилива и 2 отлива</b> каждые сутки.</li>\n</ul></li></ol>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>☀️</span>\n<span>СХЕМА 3: ОБРАЩЕНИЕ ЗЕМЛИ ВОКРУГ СОЛНЦА И 4 КЛЮЧЕВЫЕ ДАТЫ</span>\n</span>\n<span class=\"text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono\">Наклон оси: 66,5°</span>\n</div>\n<p class=\"text-xs text-slate-300 mb-4\">Наклон земной оси 66,5° и годовое обращение вокруг Солнца обеспечивают смену времен года.</p>\n<div class=\"w-full overflow-x-auto py-2 flex justify-center\">\n<svg class=\"w-full max-w-[760px] h-auto font-sans\" viewbox=\"0 0 760 360\">\n<ellipse cx=\"380\" cy=\"180\" fill=\"none\" rx=\"300\" ry=\"130\" stroke=\"#334155\" stroke-dasharray=\"6,4\" stroke-width=\"1.5\"></ellipse>\n<circle cx=\"360\" cy=\"180\" fill=\"#f59e0b\" r=\"28\" stroke=\"#fbbf24\" stroke-width=\"2\"></circle>\n<text fill=\"#1e293b\" font-size=\"10\" font-weight=\"900\" text-anchor=\"middle\" x=\"360\" y=\"184\">СОЛНЦЕ</text>\n<circle cx=\"380\" cy=\"50\" fill=\"#0284c7\" r=\"16\" stroke=\"#38bdf8\" stroke-width=\"1.5\"></circle>\n<line stroke=\"#f43f5e\" stroke-width=\"2\" x1=\"368\" x2=\"392\" y1=\"36\" y2=\"64\"></line>\n<rect fill=\"#1e293b\" height=\"34\" rx=\"6\" stroke=\"#10b981\" stroke-width=\"1\" width=\"180\" x=\"290\" y=\"0\"></rect>\n<text fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"380\" y=\"15\">21 МАРТА — ВЕСЕННЕЕ РАВНОДЕНСТВИЕ</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"380\" y=\"27\">Зенит над экватором (день = ночь)</text>\n<circle cx=\"380\" cy=\"310\" fill=\"#0284c7\" r=\"16\" stroke=\"#38bdf8\" stroke-width=\"1.5\"></circle>\n<line stroke=\"#f43f5e\" stroke-width=\"2\" x1=\"368\" x2=\"392\" y1=\"296\" y2=\"324\"></line>\n<rect fill=\"#1e293b\" height=\"30\" rx=\"6\" stroke=\"#ca8a04\" stroke-width=\"1\" width=\"180\" x=\"290\" y=\"328\"></rect>\n<text fill=\"#fde047\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"380\" y=\"342\">23 СЕНТЯБРЯ — ОСЕННЕЕ РАВНОДЕНСТВИЕ</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"380\" y=\"353\">Зенит над экватором (день = ночь)</text>\n<circle cx=\"80\" cy=\"180\" fill=\"#0284c7\" r=\"18\" stroke=\"#38bdf8\" stroke-width=\"1.5\"></circle>\n<line stroke=\"#f43f5e\" stroke-width=\"2\" x1=\"68\" x2=\"92\" y1=\"164\" y2=\"196\"></line>\n<rect fill=\"#1e293b\" height=\"42\" rx=\"6\" stroke=\"#f59e0b\" stroke-width=\"1\" width=\"150\" x=\"5\" y=\"125\"></rect>\n<text fill=\"#fde047\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"80\" y=\"140\">22 ИЮНЯ — ЛЕТНЕЕ СОЛНЦЕСТОЯНИЕ</text>\n<text fill=\"#38bdf8\" font-size=\"8\" text-anchor=\"middle\" x=\"80\" y=\"152\">Зенит над Сев. тропиком 23,5°</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"80\" y=\"162\">Самый долгий день в Сев. полуш.</text>\n<circle cx=\"680\" cy=\"180\" fill=\"#0284c7\" r=\"18\" stroke=\"#38bdf8\" stroke-width=\"1.5\"></circle>\n<line stroke=\"#f43f5e\" stroke-width=\"2\" x1=\"668\" x2=\"692\" y1=\"164\" y2=\"196\"></line>\n<rect fill=\"#1e293b\" height=\"42\" rx=\"6\" stroke=\"#38bdf8\" stroke-width=\"1\" width=\"150\" x=\"605\" y=\"125\"></rect>\n<text fill=\"#7dd3fc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"680\" y=\"140\">22 ДЕКАБРЯ — ЗИМНЕЕ СОЛНЦЕСТОЯНИЕ</text>\n<text fill=\"#38bdf8\" font-size=\"8\" text-anchor=\"middle\" x=\"680\" y=\"152\">Зенит над Юж. тропиком 23,5°</text>\n<text fill=\"#94a3b8\" font-size=\"8\" text-anchor=\"middle\" x=\"680\" y=\"162\">Самый короткий день в Сев. полуш.</text>\n<text fill=\"#f43f5e\" font-size=\"9\" font-weight=\"bold\" x=\"260\" y=\"200\">Перигелий (3 янв: 147 млн км)</text>\n<text fill=\"#38bdf8\" font-size=\"9\" font-weight=\"bold\" x=\"440\" y=\"200\">Афелий (5 июля: 152 млн км)</text>\n</svg>\n</div>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>6. Внутреннее строение и географические оболочки Земли</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">4 географические оболочки (геосферы):</b></li>\n</ul>\n<ol class=\"space-y-2 my-2.5 ml-6 list-none\">\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Литосфера</b> — твердая каменная оболочка Земли.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Гидросфера</b> — водная оболочка (океаны, моря, реки, озера, ледники, подземные воды).</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Атмосфера</b> — воздушная газовая оболочка планеты.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">4.</span><b class=\"text-emerald-300 font-bold\">Биосфера</b> — оболочка жизни, область распространения живых организмов.</li>\n</ol>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Внутреннее строение Земли:</b></li>\n</ul>\n<ol class=\"space-y-2 my-2.5 ml-6 list-none\">\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Земная кора</b> — верхний твердый слой толщиной 30–40 км на равнинах, 70–80 км под горами и 5–10 км под океанами.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Мантия</b> — залегает до глубины 2900 км. Верхний слой содержит пластичную <b class=\"text-emerald-300 font-bold\">астеносферу</b>, по которой скользят литосферные плиты.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Ядро</b> — расположено глубже 2900 км. Включает внешнее жидкое ядро (генерирует магнитное поле) и внутреннее твердое железо-никелевое ядро (температура в центре достигает <b class=\"text-emerald-300 font-bold\">+6000°C</b>).</li>\n</ol>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🌋</span>\n<span>СХЕМА 4: ВНУТРЕННЕЕ СТРОЕНИЕ И СФЕРЫ ЗЕМЛИ</span>\n</span>\n<span class=\"text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono\">Центр ядра: 6000°C</span>\n</div>\n<p class=\"text-xs text-slate-300 mb-4\">Географические оболочки и внутренние слои Земли (кора, мантия, внешнее и внутреннее ядро).</p>\n<div class=\"w-full overflow-x-auto py-2 flex justify-center\">\n<svg class=\"w-full max-w-[680px] h-auto font-sans\" viewbox=\"0 0 680 240\">\n<g transform=\"translate(10, 20)\">\n<rect fill=\"#0284c7\" fill-opacity=\"0.2\" height=\"40\" rx=\"8\" stroke=\"#38bdf8\" stroke-width=\"1\" width=\"160\" x=\"0\" y=\"0\"></rect>\n<text fill=\"#bae6fd\" font-size=\"11\" font-weight=\"bold\" x=\"15\" y=\"24\">☁️ Атмосфера (воздух)</text>\n<rect fill=\"#0369a1\" fill-opacity=\"0.2\" height=\"40\" rx=\"8\" stroke=\"#0ea5e9\" stroke-width=\"1\" width=\"160\" x=\"0\" y=\"50\"></rect>\n<text fill=\"#7dd3fc\" font-size=\"11\" font-weight=\"bold\" x=\"15\" y=\"74\">🌊 Гидросфера (вода)</text>\n<rect fill=\"#92400e\" fill-opacity=\"0.2\" height=\"40\" rx=\"8\" stroke=\"#f59e0b\" stroke-width=\"1\" width=\"160\" x=\"0\" y=\"100\"></rect>\n<text fill=\"#fde68a\" font-size=\"11\" font-weight=\"bold\" x=\"15\" y=\"124\">⛰️ Литосфера (камень)</text>\n<rect fill=\"#065f46\" fill-opacity=\"0.2\" height=\"40\" rx=\"8\" stroke=\"#10b981\" stroke-width=\"1\" width=\"160\" x=\"0\" y=\"150\"></rect>\n<text fill=\"#a7f3d0\" font-size=\"11\" font-weight=\"bold\" x=\"15\" y=\"174\">🌿 Биосфера (жизнь)</text>\n</g>\n<g transform=\"translate(200, 20)\">\n<path d=\"M 0,0 L 280,0 A 280,280 0 0,1 198,198 Z\" fill=\"#78350f\" stroke=\"#d97706\" stroke-width=\"2\"></path>\n<path d=\"M 0,0 L 220,0 A 220,220 0 0,1 155,155 Z\" fill=\"#b45309\" stroke=\"#f59e0b\" stroke-width=\"1.5\"></path>\n<path d=\"M 0,0 L 130,0 A 130,130 0 0,1 92,92 Z\" fill=\"#dc2626\" stroke=\"#fca5a5\" stroke-width=\"1.5\"></path>\n<path d=\"M 0,0 L 60,0 A 60,60 0 0,1 42,42 Z\" fill=\"#fef08a\" stroke=\"#ffffff\" stroke-width=\"1.5\"></path>\n<text fill=\"#fde68a\" font-size=\"9\" font-weight=\"bold\" x=\"210\" y=\"25\">Земная кора (5-80 км)</text>\n<text fill=\"#fef3c7\" font-size=\"9\" font-weight=\"bold\" x=\"135\" y=\"60\">Мантия (2900 км)</text>\n<text fill=\"#fee2e2\" font-size=\"9\" font-weight=\"bold\" x=\"75\" y=\"95\">Внешнее ядро</text>\n<text fill=\"#1e293b\" font-size=\"8\" font-weight=\"900\" x=\"10\" y=\"35\">Ядро</text>\n</g>\n</svg>\n</div>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>7. Казахстан на карте мира и границы</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Положение:</b> Центр гигантского материка Евразия, южная часть умеренного пояса. Удаленность от океанов обуславливает резкую континентальность климата.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Географический центр материка Евразия:</b> Находится в <b class=\"text-cyan-300 font-bold\">Абайской области, в урочище Жидебай</b> (родина Абая и Шакарима, установлен памятный обелиск).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Площадь территории:</b> <b class=\"text-cyan-300 font-bold\">2 724,9 тыс. км²</b> (9-е место в мире, 2-е место в СНГ).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Крайние точки:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Северная:</b> 55°26' с.ш. (юг Западно-Сибирской равнины, близ Петропавловска).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Южная:</b> 40°56' с.ш. (пустыня Кызылкум, Голодная степь).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Западная:</b> 46°30' в.д. (Прикаспийская низменность, озёра Эльтон и Баскунчак).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Восточная:</b> 87°20' в.д. (исток реки Бухтарма, Алтай).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Сухопутные границы (13 394 км):</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">С Россией: <b class=\"text-cyan-300 font-bold\">7 591 км</b> (самая длинная непрерывная сухопутная граница в мире).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">С Китаем: <b class=\"text-cyan-300 font-bold\">1 782 км</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">С Узбекистаном: <b class=\"text-cyan-300 font-bold\">2 354 км</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">С Кыргызстаном: <b class=\"text-cyan-300 font-bold\">1 241 км</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">С Туркменистаном: <b class=\"text-cyan-300 font-bold\">426 км</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Через Каспийское море имеет морские выходы к Азербайджану и Ирану.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🇰🇿</span>\n<span>СХЕМА 5: КРАЙНИЕ ТОЧКИ КАЗАХСТАНА И ЦЕНТР ЕВРАЗИИ</span>\n</span>\n<span class=\"text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono\">Площадь: 2 724,9 тыс. км² (9-е место)</span>\n</div>\n<p class=\"text-xs text-slate-300 mb-4\">4 крайние точки Казахстана, центр Евразии в Жидебае и протяженность границ.</p>\n<div class=\"w-full overflow-x-auto py-2 flex justify-center\">\n<svg class=\"w-full max-w-[740px] h-auto font-sans\" viewbox=\"0 0 740 280\">\n<polygon fill=\"#0f172a\" points=\"120,120 180,60 290,40 450,45 550,70 650,90 680,140 640,210 520,230 400,245 280,240 180,210 100,160\" stroke=\"#0ea5e9\" stroke-width=\"2.5\"></polygon>\n<circle cx=\"360\" cy=\"40\" fill=\"#ef4444\" r=\"5\"></circle>\n<text fill=\"#fca5a5\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"360\" y=\"25\">СЕВЕР: 55°26' с.ш. (близ Петропавловска)</text>\n<circle cx=\"340\" cy=\"245\" fill=\"#ef4444\" r=\"5\"></circle>\n<text fill=\"#fca5a5\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"340\" y=\"265\">ЮГ: 40°56' с.ш. (пустыня Кызылкум)</text>\n<circle cx=\"100\" cy=\"150\" fill=\"#ef4444\" r=\"5\"></circle>\n<text fill=\"#fca5a5\" font-size=\"9\" font-weight=\"bold\" x=\"20\" y=\"153\">ЗАПАД: 46°30' в.д.</text>\n<circle cx=\"680\" cy=\"130\" fill=\"#ef4444\" r=\"5\"></circle>\n<text fill=\"#fca5a5\" font-size=\"9\" font-weight=\"bold\" x=\"615\" y=\"115\">ВОСТОК: 87°20' в.д.</text>\n<circle cx=\"490\" cy=\"140\" fill=\"#f59e0b\" r=\"8\" stroke=\"#ffffff\" stroke-width=\"2\"></circle>\n<polygon fill=\"#fef08a\" points=\"490,126 494,136 486,136\"></polygon>\n<rect fill=\"#1e293b\" height=\"34\" rx=\"6\" stroke=\"#f59e0b\" stroke-width=\"1.5\" width=\"180\" x=\"420\" y=\"150\"></rect>\n<text fill=\"#fef08a\" font-size=\"10\" font-weight=\"900\" text-anchor=\"middle\" x=\"510\" y=\"164\">★ ЦЕНТР ЕВРАЗИИ</text>\n<text fill=\"#38bdf8\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"510\" y=\"176\">Абайская обл., Жидебай</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"360\" y=\"70\">Граница с РФ — 7 591 км (самая длинная в мире)</text>\n<text fill=\"#94a3b8\" font-size=\"8\" x=\"580\" y=\"180\">Китай: 1 782 км</text>\n<text fill=\"#94a3b8\" font-size=\"8\" x=\"270\" y=\"210\">Узбекистан: 2 354 км</text>\n<text fill=\"#94a3b8\" font-size=\"8\" x=\"410\" y=\"215\">Кыргызстан: 1 241 км</text>\n<text fill=\"#94a3b8\" font-size=\"8\" x=\"160\" y=\"225\">Туркменистан: 426 км</text>\n</svg>\n</div>\n</div>", "traps": ["⚠️ ҰБТ Қақпаны: «Жер күнді айналғанда күн мен түн ауысады» деген қате тұжырым. Күн мен түн Жердің ӨЗ БІЛІГІНЕН айналуынан ауысады!", "⚠️ ЕНТ Ловушка: Полярный радиус короче экваториального на 21,4 км из-за центробежной силы вращения."], "quiz": [{"q": "Жер бетінің жалпы ауданы қанша?", "options": ["149 млн км²", "361 млн км²", "510 млн км²", "40 075 км²"], "answer": 2, "exp": "Жердің жалпы ауданы 510 млн км² (оның 149 млн км² — құрлық, 361 млн км² — су)."}, {"q": "22 маусымда Күн сәулесі қай параллельге тік (90°) түседі?", "options": ["Экваторға", "Солтүстік тропикке (23,5° с.е.)", "Оңтүстік тропикке (23,5° о.е.)", "Солтүстік полюске"], "answer": 1, "exp": "22 маусым — жазғы күн тоқырауы, күн сәулесі Солтүстік тропикке (Шаян тропигіне) тік түседі."}], "blooket": "https://dashboard.blooket.com/set/6a752972735272143c542854", "test": {"passingScore": 80, "questions": [{"id": 1, "q_kz": "Жер бетінің жалпы ауданы қанша?", "q_ru": "Какова общая площадь поверхности Земли?", "options_kz": ["149,1 млн км²", "361,1 млн км²", "510,2 млн км²", "40 075 км²"], "options_ru": ["149,1 млн км²", "361,1 млн км²", "510,2 млн км²", "40 075 км²"], "answer": 2, "exp_kz": "Жердің жалпы ауданы 510,2 млн км² (құрлық 29% немесе 149,1 млн км², мұхит сулары 71% немесе 361,1 млн км²).", "exp_ru": "Общая площадь Земли составляет 510,2 млн км² (суша занимает 29% / 149,1 млн км², Мировой океан — 71% / 361,1 млн км²)."}, {"id": 2, "q_kz": "Жердің шынайы геометриялық пішіні қалай аталады?", "q_ru": "Как называется истинная геометрическая форма Земли?", "options_kz": ["Идеалды шар", "Геоид (полюстерінен сығылыңқы)", "Цилиндр", "Конус"], "options_ru": ["Идеальный шар", "Геоид (сплюснутый у полюсов)", "Цилиндр", "Конус"], "answer": 1, "exp_kz": "Өз осінен айналудан туындайтын центрден тепкіш күштің әсерінен Жер полюстерінен сығылыңқы, экваторы кеңейген. Бұл ерекше пішін «ГЕОИД» деп аталады.", "exp_ru": "Под воздействием центробежной силы вращения Земля сплюснута у полюсов и расширена на экваторе. Такая уникальная форма называется ГЕОИД."}, {"id": 3, "q_kz": "Экваторлық және полярлық радиустардың айырмашылығы (сығылуы) қанша шақырым?", "q_ru": "Какова разница между экваториальным и полярным радиусами Земли (полярное сжатие)?", "options_kz": ["10,5 км", "21,4 км", "42,8 км", "63,7 км"], "options_ru": ["10,5 км", "21,4 км", "42,8 км", "63,7 км"], "answer": 1, "exp_kz": "Экваторлық радиус (6378,1 км) полярлық радиустан (6356,7 км) шамамен 21,4 км-ге ұзын.", "exp_ru": "Экваториальный радиус (6378,1 км) длиннее полярного (6356,7 км) на 21,4 км (округлённо 21 км)."}, {"id": 4, "q_kz": "Жер осінің орбита жазықтығына тұрақты көлбеулік бұрышы қаншаға тең?", "q_ru": "Чему равен постоянный угол наклона земной оси к плоскости орбиты?", "options_kz": ["23,5°", "45°", "66,5°", "90°"], "options_ru": ["23,5°", "45°", "66,5°", "90°"], "answer": 2, "exp_kz": "Жер осі орбита жазықтығына тұрақты 66,5° бұрыш жасап көлбеу орналасқан. Бұл Күнді айналу қозғалысымен бірге жыл мезгілдерінің алмасуын тудырады.", "exp_ru": "Земная ось наклонена к плоскости орбиты под постоянным углом 66,5°. Это обеспечивает смену времен года."}, {"id": 5, "q_kz": "22 маусым — жазғы күн тоқырауы күні Күн сәулесі қай параллельге тік (90°) түседі?", "q_ru": "22 июня (в день летнего солнцестояния) Солнце находится в зените над какой параллелью?", "options_kz": ["Экваторға (0°)", "Солтүстік тропикке (23,5° с.е.)", "Оңтүстік тропикке (23,5° о.е.)", "Солтүстік полюске"], "options_ru": ["Над экватором (0°)", "Над Северным тропиком (23,5° с.ш.)", "Над Южным тропиком (23,5° ю.ш.)", "Над Северным полюсом"], "answer": 1, "exp_kz": "22 маусымда Күн сәулесі Солтүстік тропикке (23,5° с.е.) тік 90° түседі. Солтүстік жартышарда ең ұзақ күн болады.", "exp_ru": "22 июня в зените находится Северный тропик (23,5° с.ш.). В Северном полушарии наблюдается самый продолжительный день в году."}, {"id": 6, "q_kz": "Жердің Күнге ең жақын келетін орбиталық нүктесі (Перигелий) қай күні байқалады?", "q_ru": "В какой день Земля ближе всего подходит к Солнцу (точка перигелия — 147 млн км)?", "options_kz": ["3 қаңтар (147 млн км)", "21 наурыз (149,6 млн км)", "5 шілде (152 млн км)", "22 желтоқсан"], "options_ru": ["3 января (147 млн км)", "21 марта (149,6 млн км)", "5 июля (152 млн км)", "22 декабря"], "answer": 0, "exp_kz": "Жер Күнге ең жақын келетін нүкте — Перигелий (147 млн км) 3 қаңтарда болады. Ең алыстайтын нүкте — Афелий (152 млн км) 5 шілдеде болады.", "exp_ru": "Ближе всего к Солнцу (перигелий, 147 млн км) Земля находится 3 января. Дальше всего (афелий, 152 млн км) — 5 июля."}, {"id": 7, "q_kz": "Күн жүйесіндегі Жер тобындағы (ішкі қатты тасты) ғаламшарлар тобын белгілеңіз:", "q_ru": "Укажите планеты земной группы (внутренние, каменистые):", "options_kz": ["Юпитер, Сатурн, Уран, Нептун", "Меркурий, Шолпан, Жер, Марс", "Шолпан, Марс, Юпитер, Сатурн", "Меркурий, Жер, Юпитер, Плутон"], "options_ru": ["Юпитер, Сатурн, Уран, Нептун", "Меркурий, Венера, Земля, Марс", "Венера, Марс, Юпитер, Сатурн", "Меркурий, Земля, Юпитер, Плутон"], "answer": 1, "exp_kz": "Жер тобындағы 4 ғаламшар: Меркурий, Шолпан (Венера), Жер, Марс. Олар қатты тасты қабықтан тұрады, тығыздығы жоғары.", "exp_ru": "Планеты земной группы: Меркурий, Венера, Земля, Марс. Они обладают твердой поверхностью и высокой плотностью."}, {"id": 8, "q_kz": "Еуразия алып материгінің географиялық кіндігі (орталығы) қай жерде орналасқан?", "q_ru": "Где расположен географический центр материка Евразия?", "options_kz": ["Астана қаласында", "Абай облысы, Жидебай ауылында", "Алтай тауында", "Балқаш көлі маңында"], "options_ru": ["В городе Астана", "Абайская область, урочище Жидебай", "На Алтае", "Около озера Балхаш"], "answer": 1, "exp_kz": "Еуразия құрлығының географиялық орталығы Қазақстанның Абай облысындағы Жидебай ауылында орналасқан (Ұлы Абай музейі маңында стела орнатылған).", "exp_ru": "Географический центр материка Евразия находится в Абайской области Казахстана, в урочище Жидебай."}, {"id": 9, "q_kz": "Қазақстанның қай мемлекетпен құрлықтық шекарасы ең ұзын және әлемдегі ең ұзын үзіліссіз құрлықтық шекара саналады?", "q_ru": "С каким государством Казахстан имеет самую протяженную непрерывную сухопутную границу в мире?", "options_kz": ["Қытаймен (1 782 км)", "Өзбекстанмен (2 354 км)", "Ресеймен (7 591 км)", "Қырғызстанмен (1 241 км)"], "options_ru": ["С Китаем (1 782 км)", "С Узбекистаном (2 354 км)", "С Россией (7 591 км)", "С Кыргызстаном (1 241 км)"], "answer": 2, "exp_kz": "Қазақстан мен Ресей шекарасының ұзындығы 7 591 км — бұл әлемдегі ең ұзын үздіксіз құрлықтық шекара.", "exp_ru": "Граница Казахстана с Россией составляет 7 591 км — длиннейшая непрерывная сухопутная граница в мире."}, {"id": 10, "q_kz": "Күн мен түннің алмасуы Жердің қай қозғалысына тікелей байланысты?", "q_ru": "Смена дня и ночи является прямым следствием какого движения Земли?", "options_kz": ["Күнді айналуынан", "Өз білігінен (осінен) тәуліктік айналуынан", "Галактиканы айналуынан", "Айдың Жерді айналуынан"], "options_ru": ["Обращения вокруг Солнца", "Суточного вращения вокруг своей оси", "Вращения вокруг центра Галактики", "Обращения Луны вокруг Земли"], "answer": 1, "exp_kz": "⚠️ ҰБТ қақпаны: Күн мен түн Жердің өз осінен (24 сағатта) айналуынан ауысады! Ал жыл мезгілдері Күнді айналудан пайда болады.", "exp_ru": "⚠️ Ловушка ЕНТ: Смена дня и ночи вызвана суточным осевым вращением Земли (за 24 часа), а смена времен года — обращением вокруг Солнца."}]}, "pdf_kz": "https://drive.google.com/file/d/1xw7FnmKi5QjeCSgr4p5fVSRmxKGi_l6c/view?usp=sharing", "pdf_ru": "https://drive.google.com/file/d/1oznOa_K-wS2lMUh2scLFsfxJjgEgVfYp/view?usp=drive_link"};
+    const currentLang = 'ru';
+    let userTestAnswers = {};
+    let isTestSubmitted = false;
+
+    // Render Test Questions
+    function renderTestQuestions() {
+      const container = document.getElementById('testQuestionsList');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const testObj = lessonData.test;
+      if (!testObj || !testObj.questions || testObj.questions.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-400">Тест готовится / Тест дайындалуда.</p>';
+        return;
+      }
+
+      const isRu = (currentLang === 'ru');
+      const letters = ['A', 'B', 'C', 'D', 'E'];
+
+      testObj.questions.forEach((q, idx) => {
+        const qCard = document.createElement('div');
+        qCard.className = 'p-5 rounded-2xl bg-space-850 border border-slate-800 space-y-3';
+
+        const qPrompt = isRu ? (q.q_ru || q.q_kz) : q.q_kz;
+        const options = isRu ? (q.options_ru || q.options_kz) : q.options_kz;
+        const exp = isRu ? (q.exp_ru || q.exp_kz) : q.exp_kz;
+
+        qCard.innerHTML = `
+          <div class="flex items-center justify-between gap-2 border-b border-slate-800/80 pb-2">
+            <span class="text-xs font-bold text-slate-400 uppercase">
+              ${isRu ? 'Вопрос ' + (idx + 1) : 'Сұрақ ' + (idx + 1)}
+            </span>
+            <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-bold">1 балл</span>
+          </div>
+          <p class="text-xs sm:text-sm font-semibold text-slate-100 leading-relaxed">${qPrompt}</p>
+        `;
+
+        const optContainer = document.createElement('div');
+        optContainer.className = 'space-y-2 pt-1';
+
+        const selectedAnswer = userTestAnswers[q.id];
+
+        options.forEach((optText, optIdx) => {
+          const isSelected = selectedAnswer === optIdx;
+          const isCorrect = q.answer === optIdx;
+
+          const optDiv = document.createElement('div');
+          optDiv.className = 'p-3 rounded-xl border text-xs font-medium cursor-pointer transition flex items-center space-x-2.5 ';
+
+          if (isTestSubmitted) {
+            if (isCorrect) {
+              optDiv.className += 'bg-emerald-500/15 border-emerald-500 text-emerald-200 font-bold';
+            } else if (isSelected) {
+              optDiv.className += 'bg-rose-500/15 border-rose-500 text-rose-200';
+            } else {
+              optDiv.className += 'bg-space-900/50 border-slate-800 text-slate-500';
+            }
+          } else {
+            if (isSelected) {
+              optDiv.className += 'bg-cyan-500/15 border-cyan-500 text-cyan-200 font-bold';
+            } else {
+              optDiv.className += 'bg-space-900 hover:bg-space-800 border-slate-800 hover:border-slate-700 text-slate-300';
+            }
+          }
+
+          const badge = document.createElement('span');
+          badge.className = 'w-5 h-5 rounded-md text-[10px] font-black flex items-center justify-center shrink-0 ' +
+            (isSelected ? 'bg-cyan-500 text-space-950' : 'bg-space-850 text-slate-400 border border-slate-700');
+          badge.textContent = letters[optIdx] || String(optIdx + 1);
+          optDiv.appendChild(badge);
+
+          const txt = document.createElement('span');
+          txt.className = 'flex-1';
+          txt.textContent = optText;
+          optDiv.appendChild(txt);
+
+          optDiv.onclick = () => {
+            if (isTestSubmitted) return;
+            userTestAnswers[q.id] = optIdx;
+            renderTestQuestions();
+          };
+
+          optContainer.appendChild(optDiv);
+        });
+
+        qCard.appendChild(optContainer);
+
+        // Explanation Box after submission
+        if (isTestSubmitted) {
+          const expBox = document.createElement('div');
+          expBox.className = 'p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-xs text-cyan-200 space-y-1';
+          expBox.innerHTML = `
+            <span class="font-bold text-cyan-300 block">💡 ${isRu ? 'Пояснение:' : 'Түсіндірме:'}</span>
+            <p class="text-slate-300 leading-relaxed">${exp || (isRu ? 'Авторское пояснение к вопросу.' : 'Сұраққа арналған түсіндірме.')}</p>
+          `;
+          qCard.appendChild(expBox);
+        }
+
+        container.appendChild(qCard);
+      });
+    }
+
+    function submitLessonTest() {
+      const testObj = lessonData.test;
+      if (!testObj || !testObj.questions) return;
+
+      const answeredCount = Object.keys(userTestAnswers).length;
+      const total = testObj.questions.length;
+      const isRu = (currentLang === 'ru');
+
+      if (answeredCount < total) {
+        const msg = isRu 
+          ? `Вы ответили только на ${answeredCount} из ${total} вопросов. Завершить тест?` 
+          : `Сіз ${total} сұрақтың ${answeredCount}-не жауап бердіңіз. Тестті аяқтайсыз ба?`;
+        if (!confirm(msg)) return;
+      }
+
+      isTestSubmitted = true;
+      let correct = 0;
+
+      testObj.questions.forEach(q => {
+        if (userTestAnswers[q.id] === q.answer) {
+          correct++;
+        }
+      });
+
+      const percentage = Math.round((correct / total) * 100);
+      const isPassed = percentage >= 80;
+
+      // Update badges & UI
+      const scoreBadge = document.getElementById('testScoreBadge');
+      if (scoreBadge) {
+        scoreBadge.classList.remove('hidden');
+        scoreBadge.textContent = `${correct} / ${total} (${percentage}%)`;
+        scoreBadge.className = 'px-3 py-1 rounded-xl text-xs font-bold font-mono border ' +
+          (isPassed ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-rose-500/20 text-rose-300 border-rose-500/40');
+      }
+
+      const info = document.getElementById('testProgressInfo');
+      if (info) {
+        info.textContent = isPassed 
+          ? (isRu ? `🎉 Поздравляем! Вы сдали тест на ${percentage}% (+30 XP)` : `🎉 Құттықтаймыз! Сіз тестті ${percentage}%-ға тапсырдыңыз (+30 XP)`)
+          : (isRu ? `Результат: ${percentage}%. Для зачета требуется 80%. Попробуйте еще раз.` : `Нәтиже: ${percentage}%. Өту үшін 80% қажет. Қайта тапсырып көріңіз.`);
+      }
+
+      document.getElementById('btnSubmitTest').classList.add('hidden');
+      document.getElementById('btnResetTest').classList.remove('hidden');
+
+      // Save to localStorage
+      try {
+        let scores = JSON.parse(localStorage.getItem('geotany_lesson_scores') || '{}');
+        scores[lessonData.id] = percentage;
+        localStorage.setItem('geotany_lesson_scores', JSON.stringify(scores));
+
+        if (isPassed) {
+          let completed = JSON.parse(localStorage.getItem('geotany_completed_lessons') || '[]');
+          if (!completed.includes(lessonData.id)) {
+            completed.push(lessonData.id);
+            localStorage.setItem('geotany_completed_lessons', JSON.stringify(completed));
+          }
+          let curXp = parseInt(localStorage.getItem('geotany_user_xp') || '0', 10);
+          curXp += 30;
+          localStorage.setItem('geotany_user_xp', curXp.toString());
+        }
+      } catch(e) {}
+
+      renderTestQuestions();
+      updateCompleteButtons();
+    }
+
+    function resetLessonTest() {
+      userTestAnswers = {};
+      isTestSubmitted = false;
+      document.getElementById('testScoreBadge').classList.add('hidden');
+      document.getElementById('btnSubmitTest').classList.remove('hidden');
+      document.getElementById('btnResetTest').classList.add('hidden');
+      document.getElementById('testProgressInfo').textContent = (currentLang === 'ru') 
+        ? 'Ответьте на все вопросы и проверьте свои знания.' 
+        : 'Барлық сұрақтарға жауап беріп, өзіңізді тексеріңіз.';
+      renderTestQuestions();
+    }
+
+    // Toggle Lesson Complete Status
+    function toggleLessonComplete() {
+      let completed = [];
+      try {
+        completed = JSON.parse(localStorage.getItem('geotany_completed_lessons') || '[]');
+      } catch(e) {}
+
+      const isDone = completed.includes(lessonData.id);
+      let curXp = parseInt(localStorage.getItem('geotany_user_xp') || '0', 10);
+
+      if (isDone) {
+        completed = completed.filter(id => id !== lessonData.id);
+        curXp = Math.max(0, curXp - 30);
+      } else {
+        completed.push(lessonData.id);
+        curXp += 30;
+      }
+
+      try {
+        localStorage.setItem('geotany_completed_lessons', JSON.stringify(completed));
+        localStorage.setItem('geotany_user_xp', curXp.toString());
+      } catch(e) {}
+
+      updateCompleteButtons();
+    }
+
+    function updateCompleteButtons() {
+      let completed = [];
+      try {
+        completed = JSON.parse(localStorage.getItem('geotany_completed_lessons') || '[]');
+      } catch(e) {}
+
+      const isDone = completed.includes(lessonData.id);
+      const isRu = (currentLang === 'ru');
+
+      const banner = document.getElementById('lessonCompletedBanner');
+      if (banner) banner.classList.toggle('hidden', !isDone);
+
+      const headerBtn = document.getElementById('btnHeaderComplete');
+      const headerIcon = document.getElementById('headerCheckIcon');
+      const headerText = document.getElementById('headerCompleteText');
+
+      if (headerBtn) {
+        if (isDone) {
+          headerBtn.className = 'px-3 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold transition flex items-center space-x-1.5';
+          if (headerIcon) headerIcon.textContent = '✓';
+          if (headerText) headerText.textContent = isRu ? 'Прочитано' : 'Оқылды';
+        } else {
+          headerBtn.className = 'px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-emerald-400 text-xs font-bold transition flex items-center space-x-1.5';
+          if (headerIcon) headerIcon.textContent = '○';
+          if (headerText) headerText.textContent = isRu ? 'Отметить' : 'Белгілеу';
+        }
+      }
+
+      const bottomLbl = document.getElementById('lblBottomComplete');
+      if (bottomLbl) {
+        bottomLbl.textContent = isDone 
+          ? (isRu ? '✓ Прочитано (Нажмите, чтобы отменить)' : '✓ Оқылды (Өшіру үшін басыңыз)')
+          : (isRu ? 'Отметить как прочитанное (+30 XP)' : 'Сабақты оқылды деп белгілеу (+30 XP)');
+      }
+    }
+
+    // Boot
+    window.addEventListener('DOMContentLoaded', () => {
+      renderTestQuestions();
+      updateCompleteButtons();
+    });
+  </script>
+
+</body>
+</html>

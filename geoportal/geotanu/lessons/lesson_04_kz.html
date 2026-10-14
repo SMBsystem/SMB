@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="kz" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>4-сабақ. Геоинформатика және ГАЖ | GEOTANY</title>
+
+  <!-- AUTH GUARD: RESTRICT DIRECT ACCESS WITHOUT VALID SESSION -->
+  <style id="authCloak">body { display: none !important; }</style>
+  <script>
+    (function() {
+      try {
+        var isAdmin = localStorage.getItem('geotany_admin_auth') === 'true';
+        var sessionStr = localStorage.getItem('geotany_user_session');
+        var isAuthorized = isAdmin;
+        if (!isAuthorized && sessionStr) {
+          var s = JSON.parse(sessionStr);
+          if (s && s.email && (s.courseCode || s.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        var profileStr = localStorage.getItem('geotany_user_profile');
+        if (!isAuthorized && profileStr) {
+          var p = JSON.parse(profileStr);
+          if (p && p.email && (p.courseCode || p.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        if (!isAuthorized) {
+          window.location.replace('../geotanu.html?error=unauthorized_course');
+          return;
+        }
+        var cloak = document.getElementById('authCloak');
+        if (cloak) cloak.remove();
+      } catch (e) {
+        window.location.replace('../geotanu.html?error=unauthorized_course');
+      }
+    })();
+  </script>
+
+  <!-- TAILWIND CSS & FONTS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            space: {
+              800: '#1E293B',
+              850: '#151E2E',
+              900: '#0F172A',
+              950: '#0B0F19',
+            },
+            brand: {
+              400: '#34D399',
+              500: '#10B981',
+              600: '#059669',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0B0F19;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1E293B;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+    .prose-theory h1, .prose-theory h2, .prose-theory h3, .prose-theory h4 {
+      color: #F8FAFC;
+      font-weight: 800;
+    }
+    .prose-theory p {
+      color: #CBD5E1;
+      line-height: 1.75;
+      font-size: 0.875rem;
+    }
+    .prose-theory ul {
+      list-style-type: disc;
+      margin-left: 1.25rem;
+      color: #CBD5E1;
+      font-size: 0.875rem;
+    }
+    .prose-theory table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.75rem;
+    }
+    .prose-theory th, .prose-theory td {
+      border: 1px solid #334155;
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+    }
+    .prose-theory th {
+      background: #1E293B;
+      color: #F8FAFC;
+      font-weight: 700;
+    }
+    .prose-theory tr:nth-child(even) {
+      background: rgba(15, 23, 42, 0.6);
+    }
+  </style>
+</head>
+<body class="bg-space-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-brand-500/30 selection:text-brand-400">
+
+  <!-- TOP APP BAR -->
+  <header class="sticky top-0 z-40 bg-space-950/90 backdrop-blur-xl border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+      
+      <!-- Left: Back Button & Title -->
+      <div class="flex items-center space-x-3">
+        <a href="../geotanu.html?lang=kz#section-sabaktar_reading" class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 text-slate-300 hover:text-white border border-slate-700/80 text-xs sm:text-sm font-bold transition shadow-sm">
+          <span>←</span>
+          <span>Артқа</span>
+        </a>
+        <div class="h-6 w-px bg-slate-800 hidden sm:block"></div>
+        <div class="flex items-center space-x-2">
+          <span class="text-xs px-2.5 py-1 rounded-lg bg-cyan-500/10 text-cyan-400 font-extrabold border border-cyan-500/20">
+            4 / 20 сабақ
+          </span>
+          <span class="text-sm font-bold text-slate-200 hidden md:inline truncate max-w-xs">
+            4-сабақ. Геоинформатика және ГАЖ
+          </span>
+        </div>
+      </div>
+
+      <!-- Center: Reading Time Badge -->
+      <div class="hidden sm:flex items-center space-x-1.5 bg-space-900 border border-slate-800 px-3 py-1.5 rounded-xl text-xs text-slate-400 font-medium">
+        <span>⏱️</span>
+        <span>8 мин</span>
+      </div>
+
+      <!-- Right: Direct Language Page Switcher & Complete Button -->
+      <div class="flex items-center space-x-2 sm:space-x-3">
+        
+        <!-- Language Switcher linking directly to counterpart page -->
+        <div class="flex items-center bg-space-900 p-0.5 rounded-xl border border-slate-800 text-xs font-bold">
+          <a href="lesson_04_kz.html" class="px-2.5 py-1 rounded-lg bg-brand-500 text-space-950 font-black transition">
+            🇰🇿 KZ
+          </a>
+          <a href="lesson_04_ru.html" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition">
+            🇷🇺 RU
+          </a>
+        </div>
+
+        <!-- Mark as Completed Toggle Button -->
+        <button id="btnHeaderComplete" onclick="toggleLessonComplete()" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-emerald-400 text-xs font-bold transition flex items-center space-x-1.5 shadow-sm">
+          <span id="headerCheckIcon">○</span>
+          <span id="headerCompleteText" class="hidden sm:inline">Оқылды</span>
+        </button>
+
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-8">
+
+    <!-- HERO LESSON BANNER -->
+    <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-space-900 via-space-850 to-space-900 border border-slate-800 shadow-xl relative overflow-hidden">
+      <!-- Glow decoration -->
+      <div class="absolute -right-20 -top-20 w-60 h-60 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-20 -bottom-20 w-60 h-60 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10 space-y-4">
+        
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <span class="px-3 py-1 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 font-extrabold text-xs tracking-wider uppercase">
+              📖 ҰБТ ГЕОГРАФИЯ • САБАҚ №4
+            </span>
+            <span class="px-3 py-1 rounded-xl bg-brand-500/10 border border-brand-500/30 text-brand-400 font-bold text-xs">
+              Қазақ бөлімі
+            </span>
+          </div>
+
+          <!-- Prev / Next Navigation -->
+          <div class="flex items-center space-x-2 text-xs font-bold">
+            <a href="lesson_03_kz.html" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition flex items-center space-x-1"><span>←</span><span>Алдыңғы сабақ</span></a>
+            <span class="text-slate-500">|</span>
+            <a href="lesson_05_kz.html" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition flex items-center space-x-1"><span>Келесі сабақ</span><span>→</span></a>
+          </div>
+        </div>
+
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            4-сабақ. Геоинформатика және ГАЖ
+          </h1>
+          <h2 class="text-sm font-semibold text-cyan-300/80 mt-1">
+            4 урок. Геоинформатика и ГИС
+          </h2>
+        </div>
+
+        <!-- Tags Row -->
+        <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-800/80">
+          <span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">#Геоинформатика</span><span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">#ГАЖ</span><span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">#ГИС</span><span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">#Векторлық модель</span><span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">#Растр</span><span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">#GPS</span><span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">#Визуализация</span><span class="text-xs bg-space-850 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 font-medium">#Картограмма</span>
+        </div>
+
+        <!-- Completed Banner -->
+        <div id="lessonCompletedBanner" class="hidden p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-xs sm:text-sm text-emerald-300 flex items-center justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <span>✅</span>
+            <span>Бұл сабақ оқылды деп белгіленген.</span>
+          </div>
+          <span class="text-xs px-2.5 py-1 rounded-xl bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40">
+            +30 XP алынды
+          </span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SECTION 1: KEY TERMS & DEFINITIONS -->
+    <section class="p-6 sm:p-7 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-base sm:text-lg font-black text-white flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center text-sm font-black">1</span>
+          <span>Негізгі терминдер мен ұғымдар</span>
+        </h3>
+        <span class="text-xs text-slate-400 font-semibold">
+          5 термин
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Геоақпараттық жүйе (ГАЖ / ГИС)</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Кеңістіктік географиялық мәліметтерді жинау, сақтау, өңдеу, талдау және визуализациялауға арналған аппараттық-бағдарламалық кешен.</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Векторлық модель</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Географиялық нысандарды нақты нүктелер, сызықтар мен полигондар (контурлар) түрінде сақтайтын геометриялық модель.</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Растрлік модель</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Кеңістікті ұяшықтар (пиксельдер) матрицалық торы ретінде беретін аэроғарыштық суреттер мен сканерленген карталар моделі.</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Атрибуттық деректер</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Кеңістіктік нысандардың сапалық және сандық сипаттамаларын көрсететін кестелік мәліметтер (атауы, халық саны, топырақ типі т.б.).</p>
+        </div>
+        
+        <div class="p-3.5 bg-space-850 rounded-2xl border border-slate-800 space-y-1 hover:border-slate-700 transition">
+          <span class="text-xs font-black text-cyan-400 block">Картограмма</span>
+          <p class="text-xs text-slate-300 leading-relaxed">Аумақтық бірліктерді белгілі бір көрсеткіштің қарқындылығына қарай (мысалы, халық тығыздығы) түс қанықтығымен бояу әдісі.</p>
+        </div>
+        
+      </div>
+    </section>
+
+    <!-- SECTION 2: FULL COMPREHENSIVE THEORY -->
+    <section class="p-6 sm:p-8 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-5">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-base sm:text-lg font-black text-white flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-brand-500/10 border border-brand-500/20 text-brand-400 flex items-center justify-center text-sm font-black">2</span>
+          <span>Толық теориялық конспект және иллюстрациялар</span>
+        </h3>
+        <span class="text-xs text-slate-400 font-medium hidden sm:inline">
+          Интерактивті оқу
+        </span>
+      </div>
+
+      <!-- Theory Body Container -->
+      <div class="prose-theory leading-relaxed space-y-4 overflow-x-auto">
+        <h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>1. Геоинформатика және ГАЖ негіздері</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Геоинформатика</b> — географиялық (кеңістіктік) ақпаратты жинау, өңдеу, талдау, сақтау және моделдеу әдістерін зерттейтін ғылым мен заманауи технологиялар саласы. Ол география, картография және информатика ғылымдарының түйіскен жерінде пайда болды.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">ГАЖ (Геоақпараттық жүйелер / GIS):</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Кеңістіктік географиялық деректерді өңдеуге арналған аппараттық-бағдарламалық кешен.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">ГАЖ-дың 5 негізгі компоненті:</b></li>
+</ul>
+<ol class="space-y-2 my-2.5 ml-6 list-none">
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">1.</span><b class="text-emerald-300 font-bold">Аппараттық құралдар (Hardware):</b> Компьютерлер, ғарыштық серверлер, GPS/ГНСС қабылдағыштар, сканерлер мен плоттерлер.</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">2.</span><b class="text-emerald-300 font-bold">Бағдарламалық қамтамасыз ету (Software):</b> Кеңістіктік талдау мен карта жасау бағдарламалары (ArcGIS, QGIS, Google Earth).</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">3.</span><b class="text-emerald-300 font-bold">Деректер (Data):</b> Кеңістіктік және кестелік географиялық дерекқорлар.</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">4.</span><b class="text-emerald-300 font-bold">Мамандар (People):</b> Деректерді енгізетін картографтар, сарапшылар мен ГАЖ мамандары.</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">5.</span><b class="text-emerald-300 font-bold">Әдістер мен алгоритмдер (Methods):</b> Кеңістіктік талдау, маршруттау және моделдеу ережелері.</li>
+</ol>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">ГАЖ функционалдық қабаттары (Layers):</b> ГАЖ-да нақты әлем қабаттар бойынша реттеледі: Жер бедері қабаты, Гидрография қабаты, Жол торабы, Топырақ-өсімдік жамылғысы, Елді мекендер мен нысандар.</li>
+</ul>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>🥞</span>
+<span>1-СЫЗБА: ГАЖ КӨПҚАБАТТЫ КЕҢІСТІКТІК МОДЕЛІ</span>
+</span>
+<span class="text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono">5 Layers Stack</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 230">
+<!-- Perspective isometric 5 layers -->
+<!-- Layer 5 (Top): Buildings & Facilities -->
+<polygon fill="#a855f7" fill-opacity="0.3" points="120,40 320,40 260,70 60,70" stroke="#c084fc" stroke-width="2"></polygon>
+<text fill="#c084fc" font-size="11" font-weight="bold" x="340" y="58">5. Ғимараттар мен нысандар қабаты (Buildings)</text>
+<!-- Layer 4: Roads & Transport -->
+<polygon fill="#f59e0b" fill-opacity="0.3" points="120,75 320,75 260,105 60,105" stroke="#fbbf24" stroke-width="2"></polygon>
+<text fill="#fbbf24" font-size="11" font-weight="bold" x="340" y="93">4. Көлік және жол торабы қабаты (Roads)</text>
+<!-- Layer 3: Land Parcels / Soils -->
+<polygon fill="#10b981" fill-opacity="0.3" points="120,110 320,110 260,140 60,140" stroke="#34d399" stroke-width="2"></polygon>
+<text fill="#34d399" font-size="11" font-weight="bold" x="340" y="128">3. Топырақ-жер учаскелері қабаты (Parcels)</text>
+<!-- Layer 2: Hydrography (Water) -->
+<polygon fill="#06b6d4" fill-opacity="0.3" points="120,145 320,145 260,175 60,175" stroke="#38bdf8" stroke-width="2"></polygon>
+<text fill="#38bdf8" font-size="11" font-weight="bold" x="340" y="163">2. Гидрография қабаты: өзендер мен көлдер (Water)</text>
+<!-- Layer 1: Digital Elevation Model / Surface -->
+<polygon fill="#64748b" fill-opacity="0.3" points="120,180 320,180 260,210 60,210" stroke="#94a3b8" stroke-width="2"></polygon>
+<text fill="#94a3b8" font-size="11" font-weight="bold" x="340" y="198">1. Жер бедері мен биіктік моделі (Elevation / DEM)</text>
+<!-- Vertical connecting arrow -->
+<line stroke="#38bdf8" stroke-dasharray="3 3" stroke-width="2" x1="80" x2="80" y1="55" y2="195"></line>
+<circle cx="80" cy="55" fill="#c084fc" r="3"></circle>
+<circle cx="80" cy="195" fill="#94a3b8" r="3"></circle>
+</svg>
+</div>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>2. Кеңістіктік деректер модельдері: Растрлік және Векторлық</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Компьютер жадында географиялық ақпарат 2 негізгі модель түрінде сақталады:</li>
+</ul>
+<ol class="space-y-3 my-2.5 ml-6 list-none"><li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">1.</span><b class="text-emerald-300 font-bold">Векторлық модель (Vector):</b><ul class="space-y-1.5 my-2 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Нысандар дәл геометриялық координаталар (X, Y) жиынтығымен беріледі.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">3 негізгі примитиві:</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Нүкте (Point):</b> Ағаш, құдық, мектеп, қала (ұсақ масштабта);</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Сызық (Polyline):</b> Өзен, жол, шекара, құбыр;</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Полигон / Контур (Polygon):</b> Көл, орман алқабы, мемлекет аумағы.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><i class="text-slate-300">Артықшылығы:</i> Шекарасы өте нақты, масштабты өзгерткенде сапасын мүлде жоғалтпайды, жадты аз алады.</li>
+</ul></li><li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">2.</span><b class="text-emerald-300 font-bold">Растрлік модель (Raster):</b><ul class="space-y-1.5 my-2 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Кеңістік кішкентай ұяшықтардың (пиксельдердің) матрицалық торы түрінде беріледі. Әр ұяшықта сан мәні (түс, биіктік, температура) сақталады.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Аэроғарыштық суреттер, сканерленген қағаз карталар мен цифрлық биіктік модельдері (DEM) растрлік сипатта болады.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><i class="text-slate-300">Артықшылығы:</i> Үздіксіз таралатын құбылыстарды (температура, рельеф, ластану) бейнелеуге өте қолайлы.</li>
+</ul></li></ol>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>📊</span>
+<span>2-СЫЗБА: КЕҢІСТІКТІК ДЕРЕКТЕР: РАСТРЛІК ЖӘНЕ ВЕКТОРЛЫҚ МОДЕЛЬ</span>
+</span>
+<span class="text-[10px] bg-emerald-500/10 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-500/20 font-mono">Pixels vs Points/Lines/Polygons</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 220">
+<!-- Left: Raster model (Matrix of cells/pixels) -->
+<rect fill="#0b1329" height="190" rx="8" stroke="#1e293b" width="315" x="20" y="15"></rect>
+<text fill="#38bdf8" font-size="12" font-weight="bold" text-anchor="middle" x="177" y="38">РАСТРЛІК МОДЕЛЬ (Пиксельдер торы)</text>
+<!-- Pixel grid 6x6 -->
+<g transform="translate(117, 50)">
+<rect fill="none" height="90" stroke="#334155" width="120" x="0" y="0"></rect>
+<!-- Grid lines -->
+<line stroke="#1e293b" x1="20" x2="20" y1="0" y2="90"></line>
+<line stroke="#1e293b" x1="40" x2="40" y1="0" y2="90"></line>
+<line stroke="#1e293b" x1="60" x2="60" y1="0" y2="90"></line>
+<line stroke="#1e293b" x1="80" x2="80" y1="0" y2="90"></line>
+<line stroke="#1e293b" x1="100" x2="100" y1="0" y2="90"></line>
+<line stroke="#1e293b" x1="0" x2="120" y1="30" y2="30"></line>
+<line stroke="#1e293b" x1="0" x2="120" y1="60" y2="60"></line>
+<!-- Pixels -->
+<rect fill="#06b6d4" height="30" width="20" x="40" y="30"></rect>
+<rect fill="#06b6d4" height="30" width="20" x="60" y="30"></rect>
+<rect fill="#0284c7" height="30" width="20" x="60" y="0"></rect>
+<rect fill="#0891b2" height="30" width="20" x="20" y="60"></rect>
+</g>
+<text fill="#f8fafc" font-size="10" font-weight="bold" text-anchor="middle" x="177" y="165">Ғарыштық түсірілімдер, аэрофото</text>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="177" y="185">Үздіксіз құбылыстар (температура, рельеф)</text>
+<!-- Right: Vector model (Point, Line, Polygon) -->
+<rect fill="#0b1329" height="190" rx="8" stroke="#1e293b" width="315" x="365" y="15"></rect>
+<text fill="#34d399" font-size="12" font-weight="bold" text-anchor="middle" x="522" y="38">ВЕКТОРЛЫҚ МОДЕЛЬ (3 геометриялық тип)</text>
+<g transform="translate(400, 55)">
+<!-- Point -->
+<circle cx="30" cy="35" fill="#ef4444" r="6" stroke="#ffffff" stroke-width="1.5"></circle>
+<text fill="#f87171" font-size="9" font-weight="bold" text-anchor="middle" x="30" y="55">НҮКТЕ (Point)</text>
+<!-- Line -->
+<path d="M90 60 Q110 20 130 50 T160 25" fill="none" stroke="#38bdf8" stroke-width="3"></path>
+<text fill="#38bdf8" font-size="9" font-weight="bold" text-anchor="middle" x="125" y="70">СЫЗЫҚ (Line)</text>
+<!-- Polygon -->
+<polygon fill="#10b981" fill-opacity="0.3" points="190,45 225,20 245,55 210,70" stroke="#34d399" stroke-width="2"></polygon>
+<text fill="#34d399" font-size="9" font-weight="bold" text-anchor="middle" x="217" y="85">ПОЛИГОН (Polygon)</text>
+</g>
+<text fill="#f8fafc" font-size="10" font-weight="bold" text-anchor="middle" x="522" y="165">Масштабта сапасын жоғалтпайды</text>
+<text fill="#94a3b8" font-size="9" text-anchor="middle" x="522" y="185">Шекаралары өте дәл координаттармен беріледі</text>
+</svg>
+</div>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>3. Кеңістіктік және Атрибуттық деректердің байланысы</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed">ГАЖ-дың қарапайым графикалық бағдарламалардан басты айырмашылығы — <b class="text-cyan-300 font-bold">кеңістіктік геометрия мен атрибуттық дерекқордың бір-бірімен тығыз байланысында</b>.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Кеңістіктік деректер (Spatial):</b> Нысанның Жер бетінде қайда орналасқанын, оның пішіні мен координаттарын көрсетеді (мысалы, Қазақстанның шекара контуры).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Атрибуттық деректер (Attribute):</b> Нысанның сапалық және сандық сипаттамаларын көрсететін кестелік мәліметтер.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Мысалы, қала үшін: <i class="text-slate-300">Атауы</i> (Астана), <i class="text-slate-300">Халық саны</i> (1,4 млн), <i class="text-slate-300">Мақамы</i> (Елорда), <i class="text-slate-300">Климаты</i> (Шұғыл континентті).</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">ГАЖ-да атрибуттық мәліметтерді өңдеу үшін көбінесе мамандандырылмаған <b class="text-cyan-300 font-bold">Microsoft Excel</b> кестелік редакторы немесе ірі дерекқорлар (PostgreSQL, Oracle) қолданылады.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Атрибуттық мәліметтерге нысанның кеңістіктік координаттары ЖАТПАЙДЫ</b> (өйткені координаталар кеңістіктік базаның құрамдас бөлігі).</li>
+</ul>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>🗄️</span>
+<span>3-СЫЗБА: КЕҢІСТІКТІК ЖӘНЕ АТРИБУТТЫҚ ДЕРЕКТЕРДІҢ БАЙЛАНЫСЫ</span>
+</span>
+<span class="text-[10px] bg-amber-500/10 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/20 font-mono">Map Shape ↔ Attribute Table</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 220">
+<!-- Map geometry box -->
+<rect fill="#0b1329" height="180" rx="8" stroke="#1e293b" width="270" x="20" y="20"></rect>
+<text fill="#38bdf8" font-size="12" font-weight="bold" text-anchor="middle" x="155" y="45">КЕҢІСТІКТІК ДЕРЕКТЕР (Карта)</text>
+<!-- Map outlines -->
+<polygon fill="#06b6d4" fill-opacity="0.3" points="60,80 140,65 170,110 110,140 50,115" stroke="#38bdf8" stroke-width="2"></polygon>
+<circle cx="110" cy="100" fill="#ef4444" r="5"></circle>
+<text fill="#f87171" font-size="10" font-weight="bold" text-anchor="middle" x="110" y="120">ID: 01 (Астана)</text>
+<!-- Connecting arrow -->
+<path d="M 290 100 L 340 100" marker-end="url(#arrow)" stroke="#f59e0b" stroke-dasharray="4 4" stroke-width="3"></path>
+<text fill="#f59e0b" font-size="10" font-weight="bold" text-anchor="middle" x="315" y="90">Сілтеме</text>
+<!-- Attribute Table box -->
+<rect fill="#0b1329" height="180" rx="8" stroke="#1e293b" width="340" x="340" y="20"></rect>
+<text fill="#34d399" font-size="12" font-weight="bold" text-anchor="middle" x="510" y="45">АТРИБУТТЫҚ ДЕРЕКҚОР (MS Excel / СУБД)</text>
+<!-- Table header -->
+<rect fill="#1e293b" height="24" width="310" x="355" y="60"></rect>
+<text fill="#38bdf8" font-size="10" font-weight="bold" x="375" y="76">ID</text>
+<text fill="#38bdf8" font-size="10" font-weight="bold" x="420" y="76">Қала (Название)</text>
+<text fill="#38bdf8" font-size="10" font-weight="bold" x="520" y="76">Халық (Население)</text>
+<text fill="#38bdf8" font-size="10" font-weight="bold" x="620" y="76">Статус</text>
+<!-- Table row 1 (Highlighted) -->
+<rect fill="#06b6d4" fill-opacity="0.2" height="24" stroke="#06b6d4" width="310" x="355" y="86"></rect>
+<text fill="#f8fafc" font-family="monospace" font-size="10" x="375" y="102">01</text>
+<text fill="#f8fafc" font-size="10" x="420" y="102">Астана</text>
+<text fill="#f8fafc" font-size="10" x="520" y="102">1 430 000</text>
+<text fill="#34d399" font-size="10" x="620" y="102">Елорда</text>
+<!-- Table row 2 -->
+<rect fill="#0f172a" height="24" width="310" x="355" y="112"></rect>
+<text fill="#94a3b8" font-family="monospace" font-size="10" x="375" y="128">02</text>
+<text fill="#94a3b8" font-size="10" x="420" y="128">Алматы</text>
+<text fill="#94a3b8" font-size="10" x="520" y="128">2 250 000</text>
+<text fill="#94a3b8" font-size="10" x="620" y="128">Мегаполис</text>
+<text fill="#f59e0b" font-size="9" text-anchor="middle" x="510" y="170">Назар аударыңыз: Координаттар (X,Y) атрибутқа ЖАТПАЙДЫ!</text>
+</svg>
+</div>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>4. Жаһандық навигациялық жерсеріктік жүйелер (ГНСС)</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">GPS (Global Positioning System):</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">АҚШ-тың Қорғаныс министрлігі жасақтаған, 20 200 км биіктіктегі 24–31 жерсеріктен тұратын жаһандық навигациялық жүйе.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Әлемдегі негізгі жүйелер:</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">GPS (NAVSTAR)</b> — АҚШ;</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">ГЛОНАСС</b> — Ресей Федерациясы;</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Galileo</b> — Еуропалық Одақ;</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">BeiDou</b> — Қытай.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Трилатерация принципі:</b></li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Жердегі қабылдағыштың нақты орнын анықтау үшін жерсеріктен сигналдың келу уақыты мен қашықтығы есептеледі.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed">Нүктенің кеңістіктегі дәл координатасын (X бойлық, Y ендік, Z биіктік) және уақытын анықтау үшін <b class="text-cyan-300 font-bold">кемінде 4 жерсерік сигналы қажет</b>.</li>
+</ul>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>🛰️</span>
+<span>4-СЫЗБА: GPS / ГЛОНАСС: 4 ЖЕРСЕРІКПЕН ТРИЛАТЕРАЦИЯ</span>
+</span>
+<span class="text-[10px] bg-purple-500/10 text-purple-300 px-2.5 py-0.5 rounded-full border border-purple-500/20 font-mono">Min 4 Satellites -&gt; 3D + Time</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 220">
+<!-- Earth surface curve -->
+<path d="M 50 200 Q 350 170 650 200" fill="none" stroke="#10b981" stroke-width="3"></path>
+<text fill="#34d399" font-size="10" font-weight="bold" text-anchor="middle" x="350" y="212">Жер беті (Поверхность Земли)</text>
+<!-- Ground GPS receiver / smartphone -->
+<rect fill="#0f172a" height="40" rx="4" stroke="#38bdf8" stroke-width="2" width="24" x="338" y="145"></rect>
+<circle cx="350" cy="155" fill="#ef4444" r="3"></circle>
+<text fill="#f87171" font-size="10" font-weight="bold" text-anchor="middle" x="350" y="140">GPS қабылдағыш (X, Y, Z, t)</text>
+<!-- 4 Satellites in orbit -->
+<!-- Sat 1 -->
+<circle cx="100" cy="40" fill="#1e293b" r="14" stroke="#38bdf8" stroke-width="2"></circle>
+<text fill="#38bdf8" font-size="9" font-weight="bold" text-anchor="middle" x="100" y="44">SAT 1</text>
+<line stroke="#38bdf8" stroke-dasharray="3 3" stroke-width="1.5" x1="100" x2="338" y1="54" y2="155"></line>
+<!-- Sat 2 -->
+<circle cx="260" cy="30" fill="#1e293b" r="14" stroke="#34d399" stroke-width="2"></circle>
+<text fill="#34d399" font-size="9" font-weight="bold" text-anchor="middle" x="260" y="34">SAT 2</text>
+<line stroke="#34d399" stroke-dasharray="3 3" stroke-width="1.5" x1="260" x2="345" y1="44" y2="150"></line>
+<!-- Sat 3 -->
+<circle cx="440" cy="30" fill="#1e293b" r="14" stroke="#fbbf24" stroke-width="2"></circle>
+<text fill="#fbbf24" font-size="9" font-weight="bold" text-anchor="middle" x="440" y="34">SAT 3</text>
+<line stroke="#fbbf24" stroke-dasharray="3 3" stroke-width="1.5" x1="440" x2="355" y1="44" y2="150"></line>
+<!-- Sat 4 -->
+<circle cx="600" cy="40" fill="#1e293b" r="14" stroke="#c084fc" stroke-width="2"></circle>
+<text fill="#c084fc" font-size="9" font-weight="bold" text-anchor="middle" x="600" y="44">SAT 4</text>
+<line stroke="#c084fc" stroke-dasharray="3 3" stroke-width="1.5" x1="600" x2="362" y1="54" y2="155"></line>
+<!-- Info text below -->
+<text fill="#f8fafc" font-size="11" font-weight="bold" text-anchor="middle" x="350" y="95">Дәл координата (ендік, бойлық, биіктік) және уақыт үшін КЕМІНДЕ 4 СЕРІК қажет</text>
+</svg>
+</div>
+<hr class="border-slate-800 my-6"/>
+<h4 class="text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2"><span class="text-cyan-400">❖</span><span>5. Визуализация және тақырыптық карталар құрастыру</span></h4>
+<ul class="space-y-2 my-2.5 ml-4">
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Визуализация (Көзбен шолу):</b> Компьютерлік технологиялар арқылы күрделі цифрлық мәліметтерді адам қабылдауына қолайлы көрнекі пішінде (графика, 3D, анимация, карта) ұсыну.</li>
+<li class="list-disc text-slate-300 text-xs leading-relaxed"><b class="text-cyan-300 font-bold">Картографиялық бейнелеу әдістері:</b></li>
+</ul>
+<ol class="space-y-2 my-2.5 ml-6 list-none">
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">1.</span><b class="text-emerald-300 font-bold">Картограмма (Фон құраушы картограмма):</b> Әкімшілік-аумақтық бірліктер белгілі бір көрсеткіштің қарқындылығына қарай (мысалы, халық тығыздығы) түстің қанықтығымен немесе штрихтаумен боялады.</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">2.</span><b class="text-emerald-300 font-bold">Картодиаграмма:</b> Әкімшілік бөліктердің ішіне сол аумақтың абсолюттік көрсеткіштерін білдіретін диаграммалар (дөңгелек, бағандық) орналастырылады (мысалы, облыстардағы өнеркәсіп құрылымы).</li>
+<li class="text-slate-300 text-xs leading-relaxed list-none"><span class="text-emerald-400 font-extrabold mr-1.5 inline-block">3.</span><b class="text-emerald-300 font-bold">Анаморфоз карталар:</b> Аумақтың геометриялық көлемі оның нақты жер көлеміне емес, көрсеткіштің шамасына (мысалы, халық санына немесе ЖІӨ көлеміне) сәйкес әдейі деформацияланып көрсетіледі (мұндай карталардың көбі АҚШ ғылыми орталықтарында шығарылады).</li>
+</ol>
+<div class="my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl">
+<div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+<span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
+<span>🗺️</span>
+<span>5-СЫЗБА: КАРТОГРАММА ЖӘНЕ КАРТОДИАГРАММА ӘДІСТЕРІ</span>
+</span>
+<span class="text-[10px] bg-amber-500/10 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/20 font-mono">Choropleth vs Cartodiagram</span>
+</div>
+<svg class="w-full h-auto rounded-xl bg-space-900 border border-slate-800" viewbox="0 0 700 220">
+<!-- Left: Cartogram -->
+<rect fill="#0b1329" height="190" rx="8" stroke="#1e293b" width="315" x="20" y="15"></rect>
+<text fill="#38bdf8" font-size="12" font-weight="bold" text-anchor="middle" x="177" y="38">КАРТОГРАММА (Фондық бояу)</text>
+<!-- Map regions with gradient colors -->
+<polygon fill="#0891b2" points="50,70 120,60 140,110 80,120 50,90" stroke="#38bdf8" stroke-width="1.5"></polygon>
+<polygon fill="#0284c7" points="120,60 190,55 210,95 140,110" stroke="#38bdf8" stroke-width="1.5"></polygon>
+<polygon fill="#0369a1" points="190,55 270,65 290,115 210,95" stroke="#38bdf8" stroke-width="1.5"></polygon>
+<polygon fill="#06b6d4" points="80,120 140,110 180,150 110,165" stroke="#38bdf8" stroke-width="1.5"></polygon>
+<polygon fill="#0e7490" points="140,110 210,95 240,140 180,150" stroke="#38bdf8" stroke-width="1.5"></polygon>
+<text fill="#e2e8f0" font-size="10" text-anchor="middle" x="177" y="180">Халық тығыздығы қарқындылығына қарай бояу</text>
+<!-- Right: Cartodiagram -->
+<rect fill="#0b1329" height="190" rx="8" stroke="#1e293b" width="315" x="365" y="15"></rect>
+<text fill="#34d399" font-size="12" font-weight="bold" text-anchor="middle" x="522" y="38">КАРТОДИАГРАММА (Диаграммалар орналастыру)</text>
+<!-- Map regions with embedded pie charts -->
+<polygon fill="#1e293b" points="395,70 465,60 485,110 425,120 395,90" stroke="#334155" stroke-width="1.5"></polygon>
+<polygon fill="#1e293b" points="465,60 535,55 555,95 485,110" stroke="#334155" stroke-width="1.5"></polygon>
+<polygon fill="#1e293b" points="535,55 615,65 635,115 555,95" stroke="#334155" stroke-width="1.5"></polygon>
+<!-- Embedded Pie chart 1 -->
+<circle cx="440" cy="90" fill="#10b981" r="16"></circle>
+<path d="M 440 90 L 440 74 A 16 16 0 0 1 456 90 Z" fill="#f59e0b"></path>
+<!-- Embedded Pie chart 2 -->
+<circle cx="510" cy="85" fill="#10b981" r="22"></circle>
+<path d="M 510 85 L 510 63 A 22 22 0 0 1 532 85 Z" fill="#f59e0b"></path>
+<text fill="#e2e8f0" font-size="10" text-anchor="middle" x="522" y="180">Аумақ ішінде өнеркәсіп / ауылшаруашылық үлесі</text>
+</svg>
+</div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: COMMON EXAM TRAPS & PITFALLS (if available) -->
+    <section class="p-6 sm:p-7 rounded-3xl bg-amber-500/5 border border-amber-500/20 shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-amber-500/20 pb-3">
+        <h3 class="text-base sm:text-lg font-black text-amber-300 flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center text-sm font-black">⚠️</span>
+          <span>ҰБТ қақпандары мен ерекше ескертулер</span>
+        </h3>
+        <span class="text-xs text-amber-400/80 font-bold">
+          Мұқият есте сақтаңыз
+        </span>
+      </div>
+
+      <div class="space-y-2.5 text-xs sm:text-sm text-slate-200">
+        <p class="leading-relaxed flex items-start space-x-2"><span class="text-amber-400 shrink-0 mt-0.5">⚠️</span><span>⚠️ Назар аударыңыз: Геоинформатика бойынша сұрақтар ҰБТ-ның контексттік тесттерінде жиі кездеседі.</span></p>
+      </div>
+    </section>
+
+    <!-- SECTION 4: END-OF-LESSON TEST -->
+    <section class="p-6 sm:p-8 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-6">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center space-x-2.5">
+          <span class="w-8 h-8 rounded-xl bg-brand-500/10 border border-brand-500/20 text-brand-400 flex items-center justify-center text-sm font-black">3</span>
+          <div>
+            <h3 class="text-base sm:text-lg font-black text-white">
+              Тақырыптық қорытынды тест
+            </h3>
+            <p class="text-xs text-slate-400 mt-0.5">
+              Өту шегі: 80% • Сыйлық: +30 XP
+            </p>
+          </div>
+        </div>
+
+        <div id="testScoreBadge" class="hidden px-3 py-1 rounded-xl bg-space-850 border border-slate-700 text-xs font-bold text-amber-400 font-mono">
+          0%
+        </div>
+      </div>
+
+      <!-- Test Questions Container -->
+      <div id="testQuestionsList" class="space-y-6">
+        <!-- Dynamically populated test questions via JS -->
+      </div>
+
+      <!-- Test Submit & Score Action Bar -->
+      <div class="pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="text-xs text-slate-400" id="testProgressInfo">
+          Барлық сұрақтарға жауап беріп, өзіңізді тексеріңіз.
+        </div>
+        <div class="flex items-center space-x-2.5 w-full sm:w-auto">
+          <button id="btnSubmitTest" onclick="submitLessonTest()" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-brand-500 hover:from-amber-400 hover:to-brand-400 text-space-950 font-black text-xs sm:text-sm shadow-md transition flex items-center justify-center space-x-2">
+            <span>🏁</span>
+            <span>Тестті тексеру</span>
+          </button>
+          <button id="btnResetTest" onclick="resetLessonTest()" class="hidden px-4 py-2.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-bold transition flex items-center justify-center space-x-1">
+            <span>🔄</span>
+            <span>Қайта тапсыру</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- BOTTOM NAVIGATION & FOOTER -->
+    <div class="p-6 rounded-3xl bg-space-900 border border-slate-800 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleLessonComplete()" class="px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-400 text-space-950 font-black text-xs sm:text-sm shadow-md transition flex items-center space-x-2">
+          <span>✓</span>
+          <span id="lblBottomComplete">Сабақты оқылды деп белгілеу (+30 XP)</span>
+        </button>
+      </div>
+
+      <div class="flex items-center space-x-2 text-xs font-bold">
+        <a href="lesson_03_kz.html" class="px-4 py-2 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition">← Алдыңғы сабақ</a>
+        <a href="../geotanu.html?lang=kz#section-sabaktar_reading" class="px-4 py-2 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition">
+          Сабақтар тізімі
+        </a>
+        <a href="lesson_05_kz.html" class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-space-950 transition font-black">Келесі сабақ →</a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- LESSON SCRIPT ENGINE -->
+  <script>
+    const lessonData = {"id": 4, "title_kz": "4-сабақ. Геоинформатика және ГАЖ", "title_ru": "4 урок. Геоинформатика и ГИС", "time": "8 мин", "tags": ["Геоинформатика", "ГАЖ", "ГИС", "Векторлық модель", "Растр", "GPS", "Визуализация", "Картограмма"], "terms": [{"kz": "Геоақпараттық жүйе (ГАЖ / ГИС)", "ru": "Геоинформационная система (ГИС)", "desc_kz": "Кеңістіктік географиялық мәліметтерді жинау, сақтау, өңдеу, талдау және визуализациялауға арналған аппараттық-бағдарламалық кешен.", "desc_ru": "Аппаратно-программный комплекс для сбора, хранения, анализа и визуализации пространственных данных."}, {"kz": "Векторлық модель", "ru": "Векторная модель", "desc_kz": "Географиялық нысандарды нақты нүктелер, сызықтар мен полигондар (контурлар) түрінде сақтайтын геометриялық модель.", "desc_ru": "Модель данных, представляющая объекты в виде точек, линий и полигонов с точными координатами."}, {"kz": "Растрлік модель", "ru": "Растровая модель", "desc_kz": "Кеңістікті ұяшықтар (пиксельдер) матрицалық торы ретінде беретін аэроғарыштық суреттер мен сканерленген карталар моделі.", "desc_ru": "Модель данных в виде регулярной сетки пикселей, типичная для космических снимков и цифровых моделей рельефа."}, {"kz": "Атрибуттық деректер", "ru": "Атрибутивные данные", "desc_kz": "Кеңістіктік нысандардың сапалық және сандық сипаттамаларын көрсететін кестелік мәліметтер (атауы, халық саны, топырақ типі т.б.).", "desc_ru": "Качественные и количественные описательные характеристики географических объектов в виде таблиц."}, {"kz": "Картограмма", "ru": "Картограмма", "desc_kz": "Аумақтық бірліктерді белгілі бір көрсеткіштің қарқындылығына қарай (мысалы, халық тығыздығы) түс қанықтығымен бояу әдісі.", "desc_ru": "Способ отображения интенсивности явления по территориальным единицам градацией цвета или штриховки."}], "theory_kz": "<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>1. Геоинформатика және ГАЖ негіздері</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Геоинформатика</b> — географиялық (кеңістіктік) ақпаратты жинау, өңдеу, талдау, сақтау және моделдеу әдістерін зерттейтін ғылым мен заманауи технологиялар саласы. Ол география, картография және информатика ғылымдарының түйіскен жерінде пайда болды.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">ГАЖ (Геоақпараттық жүйелер / GIS):</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Кеңістіктік географиялық деректерді өңдеуге арналған аппараттық-бағдарламалық кешен.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">ГАЖ-дың 5 негізгі компоненті:</b></li>\n</ul>\n<ol class=\"space-y-2 my-2.5 ml-6 list-none\">\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Аппараттық құралдар (Hardware):</b> Компьютерлер, ғарыштық серверлер, GPS/ГНСС қабылдағыштар, сканерлер мен плоттерлер.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Бағдарламалық қамтамасыз ету (Software):</b> Кеңістіктік талдау мен карта жасау бағдарламалары (ArcGIS, QGIS, Google Earth).</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Деректер (Data):</b> Кеңістіктік және кестелік географиялық дерекқорлар.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">4.</span><b class=\"text-emerald-300 font-bold\">Мамандар (People):</b> Деректерді енгізетін картографтар, сарапшылар мен ГАЖ мамандары.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">5.</span><b class=\"text-emerald-300 font-bold\">Әдістер мен алгоритмдер (Methods):</b> Кеңістіктік талдау, маршруттау және моделдеу ережелері.</li>\n</ol>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">ГАЖ функционалдық қабаттары (Layers):</b> ГАЖ-да нақты әлем қабаттар бойынша реттеледі: Жер бедері қабаты, Гидрография қабаты, Жол торабы, Топырақ-өсімдік жамылғысы, Елді мекендер мен нысандар.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🥞</span>\n<span>1-СЫЗБА: ГАЖ КӨПҚАБАТТЫ КЕҢІСТІКТІК МОДЕЛІ</span>\n</span>\n<span class=\"text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono\">5 Layers Stack</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 230\">\n<!-- Perspective isometric 5 layers -->\n<!-- Layer 5 (Top): Buildings & Facilities -->\n<polygon fill=\"#a855f7\" fill-opacity=\"0.3\" points=\"120,40 320,40 260,70 60,70\" stroke=\"#c084fc\" stroke-width=\"2\"></polygon>\n<text fill=\"#c084fc\" font-size=\"11\" font-weight=\"bold\" x=\"340\" y=\"58\">5. Ғимараттар мен нысандар қабаты (Buildings)</text>\n<!-- Layer 4: Roads & Transport -->\n<polygon fill=\"#f59e0b\" fill-opacity=\"0.3\" points=\"120,75 320,75 260,105 60,105\" stroke=\"#fbbf24\" stroke-width=\"2\"></polygon>\n<text fill=\"#fbbf24\" font-size=\"11\" font-weight=\"bold\" x=\"340\" y=\"93\">4. Көлік және жол торабы қабаты (Roads)</text>\n<!-- Layer 3: Land Parcels / Soils -->\n<polygon fill=\"#10b981\" fill-opacity=\"0.3\" points=\"120,110 320,110 260,140 60,140\" stroke=\"#34d399\" stroke-width=\"2\"></polygon>\n<text fill=\"#34d399\" font-size=\"11\" font-weight=\"bold\" x=\"340\" y=\"128\">3. Топырақ-жер учаскелері қабаты (Parcels)</text>\n<!-- Layer 2: Hydrography (Water) -->\n<polygon fill=\"#06b6d4\" fill-opacity=\"0.3\" points=\"120,145 320,145 260,175 60,175\" stroke=\"#38bdf8\" stroke-width=\"2\"></polygon>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" x=\"340\" y=\"163\">2. Гидрография қабаты: өзендер мен көлдер (Water)</text>\n<!-- Layer 1: Digital Elevation Model / Surface -->\n<polygon fill=\"#64748b\" fill-opacity=\"0.3\" points=\"120,180 320,180 260,210 60,210\" stroke=\"#94a3b8\" stroke-width=\"2\"></polygon>\n<text fill=\"#94a3b8\" font-size=\"11\" font-weight=\"bold\" x=\"340\" y=\"198\">1. Жер бедері мен биіктік моделі (Elevation / DEM)</text>\n<!-- Vertical connecting arrow -->\n<line stroke=\"#38bdf8\" stroke-dasharray=\"3 3\" stroke-width=\"2\" x1=\"80\" x2=\"80\" y1=\"55\" y2=\"195\"></line>\n<circle cx=\"80\" cy=\"55\" fill=\"#c084fc\" r=\"3\"></circle>\n<circle cx=\"80\" cy=\"195\" fill=\"#94a3b8\" r=\"3\"></circle>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>2. Кеңістіктік деректер модельдері: Растрлік және Векторлық</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Компьютер жадында географиялық ақпарат 2 негізгі модель түрінде сақталады:</li>\n</ul>\n<ol class=\"space-y-3 my-2.5 ml-6 list-none\"><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Векторлық модель (Vector):</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Нысандар дәл геометриялық координаталар (X, Y) жиынтығымен беріледі.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">3 негізгі примитиві:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Нүкте (Point):</b> Ағаш, құдық, мектеп, қала (ұсақ масштабта);</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Сызық (Polyline):</b> Өзен, жол, шекара, құбыр;</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Полигон / Контур (Polygon):</b> Көл, орман алқабы, мемлекет аумағы.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><i class=\"text-slate-300\">Артықшылығы:</i> Шекарасы өте нақты, масштабты өзгерткенде сапасын мүлде жоғалтпайды, жадты аз алады.</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Растрлік модель (Raster):</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Кеңістік кішкентай ұяшықтардың (пиксельдердің) матрицалық торы түрінде беріледі. Әр ұяшықта сан мәні (түс, биіктік, температура) сақталады.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Аэроғарыштық суреттер, сканерленген қағаз карталар мен цифрлық биіктік модельдері (DEM) растрлік сипатта болады.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><i class=\"text-slate-300\">Артықшылығы:</i> Үздіксіз таралатын құбылыстарды (температура, рельеф, ластану) бейнелеуге өте қолайлы.</li>\n</ul></li></ol>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>📊</span>\n<span>2-СЫЗБА: КЕҢІСТІКТІК ДЕРЕКТЕР: РАСТРЛІК ЖӘНЕ ВЕКТОРЛЫҚ МОДЕЛЬ</span>\n</span>\n<span class=\"text-[10px] bg-emerald-500/10 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-500/20 font-mono\">Pixels vs Points/Lines/Polygons</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<!-- Left: Raster model (Matrix of cells/pixels) -->\n<rect fill=\"#0b1329\" height=\"190\" rx=\"8\" stroke=\"#1e293b\" width=\"315\" x=\"20\" y=\"15\"></rect>\n<text fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"38\">РАСТРЛІК МОДЕЛЬ (Пиксельдер торы)</text>\n<!-- Pixel grid 6x6 -->\n<g transform=\"translate(117, 50)\">\n<rect fill=\"none\" height=\"90\" stroke=\"#334155\" width=\"120\" x=\"0\" y=\"0\"></rect>\n<!-- Grid lines -->\n<line stroke=\"#1e293b\" x1=\"20\" x2=\"20\" y1=\"0\" y2=\"90\"></line>\n<line stroke=\"#1e293b\" x1=\"40\" x2=\"40\" y1=\"0\" y2=\"90\"></line>\n<line stroke=\"#1e293b\" x1=\"60\" x2=\"60\" y1=\"0\" y2=\"90\"></line>\n<line stroke=\"#1e293b\" x1=\"80\" x2=\"80\" y1=\"0\" y2=\"90\"></line>\n<line stroke=\"#1e293b\" x1=\"100\" x2=\"100\" y1=\"0\" y2=\"90\"></line>\n<line stroke=\"#1e293b\" x1=\"0\" x2=\"120\" y1=\"30\" y2=\"30\"></line>\n<line stroke=\"#1e293b\" x1=\"0\" x2=\"120\" y1=\"60\" y2=\"60\"></line>\n<!-- Pixels -->\n<rect fill=\"#06b6d4\" height=\"30\" width=\"20\" x=\"40\" y=\"30\"></rect>\n<rect fill=\"#06b6d4\" height=\"30\" width=\"20\" x=\"60\" y=\"30\"></rect>\n<rect fill=\"#0284c7\" height=\"30\" width=\"20\" x=\"60\" y=\"0\"></rect>\n<rect fill=\"#0891b2\" height=\"30\" width=\"20\" x=\"20\" y=\"60\"></rect>\n</g>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"165\">Ғарыштық түсірілімдер, аэрофото</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"177\" y=\"185\">Үздіксіз құбылыстар (температура, рельеф)</text>\n<!-- Right: Vector model (Point, Line, Polygon) -->\n<rect fill=\"#0b1329\" height=\"190\" rx=\"8\" stroke=\"#1e293b\" width=\"315\" x=\"365\" y=\"15\"></rect>\n<text fill=\"#34d399\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"522\" y=\"38\">ВЕКТОРЛЫҚ МОДЕЛЬ (3 геометриялық тип)</text>\n<g transform=\"translate(400, 55)\">\n<!-- Point -->\n<circle cx=\"30\" cy=\"35\" fill=\"#ef4444\" r=\"6\" stroke=\"#ffffff\" stroke-width=\"1.5\"></circle>\n<text fill=\"#f87171\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"30\" y=\"55\">НҮКТЕ (Point)</text>\n<!-- Line -->\n<path d=\"M90 60 Q110 20 130 50 T160 25\" fill=\"none\" stroke=\"#38bdf8\" stroke-width=\"3\"></path>\n<text fill=\"#38bdf8\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"125\" y=\"70\">СЫЗЫҚ (Line)</text>\n<!-- Polygon -->\n<polygon fill=\"#10b981\" fill-opacity=\"0.3\" points=\"190,45 225,20 245,55 210,70\" stroke=\"#34d399\" stroke-width=\"2\"></polygon>\n<text fill=\"#34d399\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"217\" y=\"85\">ПОЛИГОН (Polygon)</text>\n</g>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"522\" y=\"165\">Масштабта сапасын жоғалтпайды</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"522\" y=\"185\">Шекаралары өте дәл координаттармен беріледі</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>3. Кеңістіктік және Атрибуттық деректердің байланысы</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">ГАЖ-дың қарапайым графикалық бағдарламалардан басты айырмашылығы — <b class=\"text-cyan-300 font-bold\">кеңістіктік геометрия мен атрибуттық дерекқордың бір-бірімен тығыз байланысында</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Кеңістіктік деректер (Spatial):</b> Нысанның Жер бетінде қайда орналасқанын, оның пішіні мен координаттарын көрсетеді (мысалы, Қазақстанның шекара контуры).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Атрибуттық деректер (Attribute):</b> Нысанның сапалық және сандық сипаттамаларын көрсететін кестелік мәліметтер.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Мысалы, қала үшін: <i class=\"text-slate-300\">Атауы</i> (Астана), <i class=\"text-slate-300\">Халық саны</i> (1,4 млн), <i class=\"text-slate-300\">Мақамы</i> (Елорда), <i class=\"text-slate-300\">Климаты</i> (Шұғыл континентті).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">ГАЖ-да атрибуттық мәліметтерді өңдеу үшін көбінесе мамандандырылмаған <b class=\"text-cyan-300 font-bold\">Microsoft Excel</b> кестелік редакторы немесе ірі дерекқорлар (PostgreSQL, Oracle) қолданылады.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Атрибуттық мәліметтерге нысанның кеңістіктік координаттары ЖАТПАЙДЫ</b> (өйткені координаталар кеңістіктік базаның құрамдас бөлігі).</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🗄️</span>\n<span>3-СЫЗБА: КЕҢІСТІКТІК ЖӘНЕ АТРИБУТТЫҚ ДЕРЕКТЕРДІҢ БАЙЛАНЫСЫ</span>\n</span>\n<span class=\"text-[10px] bg-amber-500/10 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/20 font-mono\">Map Shape ↔ Attribute Table</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<!-- Map geometry box -->\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"270\" x=\"20\" y=\"20\"></rect>\n<text fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"155\" y=\"45\">КЕҢІСТІКТІК ДЕРЕКТЕР (Карта)</text>\n<!-- Map outlines -->\n<polygon fill=\"#06b6d4\" fill-opacity=\"0.3\" points=\"60,80 140,65 170,110 110,140 50,115\" stroke=\"#38bdf8\" stroke-width=\"2\"></polygon>\n<circle cx=\"110\" cy=\"100\" fill=\"#ef4444\" r=\"5\"></circle>\n<text fill=\"#f87171\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"110\" y=\"120\">ID: 01 (Астана)</text>\n<!-- Connecting arrow -->\n<path d=\"M 290 100 L 340 100\" marker-end=\"url(#arrow)\" stroke=\"#f59e0b\" stroke-dasharray=\"4 4\" stroke-width=\"3\"></path>\n<text fill=\"#f59e0b\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"315\" y=\"90\">Сілтеме</text>\n<!-- Attribute Table box -->\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"340\" x=\"340\" y=\"20\"></rect>\n<text fill=\"#34d399\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"510\" y=\"45\">АТРИБУТТЫҚ ДЕРЕКҚОР (MS Excel / СУБД)</text>\n<!-- Table header -->\n<rect fill=\"#1e293b\" height=\"24\" width=\"310\" x=\"355\" y=\"60\"></rect>\n<text fill=\"#38bdf8\" font-size=\"10\" font-weight=\"bold\" x=\"375\" y=\"76\">ID</text>\n<text fill=\"#38bdf8\" font-size=\"10\" font-weight=\"bold\" x=\"420\" y=\"76\">Қала (Название)</text>\n<text fill=\"#38bdf8\" font-size=\"10\" font-weight=\"bold\" x=\"520\" y=\"76\">Халық (Население)</text>\n<text fill=\"#38bdf8\" font-size=\"10\" font-weight=\"bold\" x=\"620\" y=\"76\">Статус</text>\n<!-- Table row 1 (Highlighted) -->\n<rect fill=\"#06b6d4\" fill-opacity=\"0.2\" height=\"24\" stroke=\"#06b6d4\" width=\"310\" x=\"355\" y=\"86\"></rect>\n<text fill=\"#f8fafc\" font-family=\"monospace\" font-size=\"10\" x=\"375\" y=\"102\">01</text>\n<text fill=\"#f8fafc\" font-size=\"10\" x=\"420\" y=\"102\">Астана</text>\n<text fill=\"#f8fafc\" font-size=\"10\" x=\"520\" y=\"102\">1 430 000</text>\n<text fill=\"#34d399\" font-size=\"10\" x=\"620\" y=\"102\">Елорда</text>\n<!-- Table row 2 -->\n<rect fill=\"#0f172a\" height=\"24\" width=\"310\" x=\"355\" y=\"112\"></rect>\n<text fill=\"#94a3b8\" font-family=\"monospace\" font-size=\"10\" x=\"375\" y=\"128\">02</text>\n<text fill=\"#94a3b8\" font-size=\"10\" x=\"420\" y=\"128\">Алматы</text>\n<text fill=\"#94a3b8\" font-size=\"10\" x=\"520\" y=\"128\">2 250 000</text>\n<text fill=\"#94a3b8\" font-size=\"10\" x=\"620\" y=\"128\">Мегаполис</text>\n<text fill=\"#f59e0b\" font-size=\"9\" text-anchor=\"middle\" x=\"510\" y=\"170\">Назар аударыңыз: Координаттар (X,Y) атрибутқа ЖАТПАЙДЫ!</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>4. Жаһандық навигациялық жерсеріктік жүйелер (ГНСС)</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">GPS (Global Positioning System):</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">АҚШ-тың Қорғаныс министрлігі жасақтаған, 20 200 км биіктіктегі 24–31 жерсеріктен тұратын жаһандық навигациялық жүйе.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Әлемдегі негізгі жүйелер:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">GPS (NAVSTAR)</b> — АҚШ;</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">ГЛОНАСС</b> — Ресей Федерациясы;</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Galileo</b> — Еуропалық Одақ;</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">BeiDou</b> — Қытай.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Трилатерация принципі:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Жердегі қабылдағыштың нақты орнын анықтау үшін жерсеріктен сигналдың келу уақыты мен қашықтығы есептеледі.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Нүктенің кеңістіктегі дәл координатасын (X бойлық, Y ендік, Z биіктік) және уақытын анықтау үшін <b class=\"text-cyan-300 font-bold\">кемінде 4 жерсерік сигналы қажет</b>.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🛰️</span>\n<span>4-СЫЗБА: GPS / ГЛОНАСС: 4 ЖЕРСЕРІКПЕН ТРИЛАТЕРАЦИЯ</span>\n</span>\n<span class=\"text-[10px] bg-purple-500/10 text-purple-300 px-2.5 py-0.5 rounded-full border border-purple-500/20 font-mono\">Min 4 Satellites -&gt; 3D + Time</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<!-- Earth surface curve -->\n<path d=\"M 50 200 Q 350 170 650 200\" fill=\"none\" stroke=\"#10b981\" stroke-width=\"3\"></path>\n<text fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"212\">Жер беті (Поверхность Земли)</text>\n<!-- Ground GPS receiver / smartphone -->\n<rect fill=\"#0f172a\" height=\"40\" rx=\"4\" stroke=\"#38bdf8\" stroke-width=\"2\" width=\"24\" x=\"338\" y=\"145\"></rect>\n<circle cx=\"350\" cy=\"155\" fill=\"#ef4444\" r=\"3\"></circle>\n<text fill=\"#f87171\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"140\">GPS қабылдағыш (X, Y, Z, t)</text>\n<!-- 4 Satellites in orbit -->\n<!-- Sat 1 -->\n<circle cx=\"100\" cy=\"40\" fill=\"#1e293b\" r=\"14\" stroke=\"#38bdf8\" stroke-width=\"2\"></circle>\n<text fill=\"#38bdf8\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"100\" y=\"44\">SAT 1</text>\n<line stroke=\"#38bdf8\" stroke-dasharray=\"3 3\" stroke-width=\"1.5\" x1=\"100\" x2=\"338\" y1=\"54\" y2=\"155\"></line>\n<!-- Sat 2 -->\n<circle cx=\"260\" cy=\"30\" fill=\"#1e293b\" r=\"14\" stroke=\"#34d399\" stroke-width=\"2\"></circle>\n<text fill=\"#34d399\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"260\" y=\"34\">SAT 2</text>\n<line stroke=\"#34d399\" stroke-dasharray=\"3 3\" stroke-width=\"1.5\" x1=\"260\" x2=\"345\" y1=\"44\" y2=\"150\"></line>\n<!-- Sat 3 -->\n<circle cx=\"440\" cy=\"30\" fill=\"#1e293b\" r=\"14\" stroke=\"#fbbf24\" stroke-width=\"2\"></circle>\n<text fill=\"#fbbf24\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"440\" y=\"34\">SAT 3</text>\n<line stroke=\"#fbbf24\" stroke-dasharray=\"3 3\" stroke-width=\"1.5\" x1=\"440\" x2=\"355\" y1=\"44\" y2=\"150\"></line>\n<!-- Sat 4 -->\n<circle cx=\"600\" cy=\"40\" fill=\"#1e293b\" r=\"14\" stroke=\"#c084fc\" stroke-width=\"2\"></circle>\n<text fill=\"#c084fc\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"600\" y=\"44\">SAT 4</text>\n<line stroke=\"#c084fc\" stroke-dasharray=\"3 3\" stroke-width=\"1.5\" x1=\"600\" x2=\"362\" y1=\"54\" y2=\"155\"></line>\n<!-- Info text below -->\n<text fill=\"#f8fafc\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"95\">Дәл координата (ендік, бойлық, биіктік) және уақыт үшін КЕМІНДЕ 4 СЕРІК қажет</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>5. Визуализация және тақырыптық карталар құрастыру</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Визуализация (Көзбен шолу):</b> Компьютерлік технологиялар арқылы күрделі цифрлық мәліметтерді адам қабылдауына қолайлы көрнекі пішінде (графика, 3D, анимация, карта) ұсыну.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Картографиялық бейнелеу әдістері:</b></li>\n</ul>\n<ol class=\"space-y-2 my-2.5 ml-6 list-none\">\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Картограмма (Фон құраушы картограмма):</b> Әкімшілік-аумақтық бірліктер белгілі бір көрсеткіштің қарқындылығына қарай (мысалы, халық тығыздығы) түстің қанықтығымен немесе штрихтаумен боялады.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Картодиаграмма:</b> Әкімшілік бөліктердің ішіне сол аумақтың абсолюттік көрсеткіштерін білдіретін диаграммалар (дөңгелек, бағандық) орналастырылады (мысалы, облыстардағы өнеркәсіп құрылымы).</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Анаморфоз карталар:</b> Аумақтың геометриялық көлемі оның нақты жер көлеміне емес, көрсеткіштің шамасына (мысалы, халық санына немесе ЖІӨ көлеміне) сәйкес әдейі деформацияланып көрсетіледі (мұндай карталардың көбі АҚШ ғылыми орталықтарында шығарылады).</li>\n</ol>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🗺️</span>\n<span>5-СЫЗБА: КАРТОГРАММА ЖӘНЕ КАРТОДИАГРАММА ӘДІСТЕРІ</span>\n</span>\n<span class=\"text-[10px] bg-amber-500/10 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/20 font-mono\">Choropleth vs Cartodiagram</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<!-- Left: Cartogram -->\n<rect fill=\"#0b1329\" height=\"190\" rx=\"8\" stroke=\"#1e293b\" width=\"315\" x=\"20\" y=\"15\"></rect>\n<text fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"38\">КАРТОГРАММА (Фондық бояу)</text>\n<!-- Map regions with gradient colors -->\n<polygon fill=\"#0891b2\" points=\"50,70 120,60 140,110 80,120 50,90\" stroke=\"#38bdf8\" stroke-width=\"1.5\"></polygon>\n<polygon fill=\"#0284c7\" points=\"120,60 190,55 210,95 140,110\" stroke=\"#38bdf8\" stroke-width=\"1.5\"></polygon>\n<polygon fill=\"#0369a1\" points=\"190,55 270,65 290,115 210,95\" stroke=\"#38bdf8\" stroke-width=\"1.5\"></polygon>\n<polygon fill=\"#06b6d4\" points=\"80,120 140,110 180,150 110,165\" stroke=\"#38bdf8\" stroke-width=\"1.5\"></polygon>\n<polygon fill=\"#0e7490\" points=\"140,110 210,95 240,140 180,150\" stroke=\"#38bdf8\" stroke-width=\"1.5\"></polygon>\n<text fill=\"#e2e8f0\" font-size=\"10\" text-anchor=\"middle\" x=\"177\" y=\"180\">Халық тығыздығы қарқындылығына қарай бояу</text>\n<!-- Right: Cartodiagram -->\n<rect fill=\"#0b1329\" height=\"190\" rx=\"8\" stroke=\"#1e293b\" width=\"315\" x=\"365\" y=\"15\"></rect>\n<text fill=\"#34d399\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"522\" y=\"38\">КАРТОДИАГРАММА (Диаграммалар орналастыру)</text>\n<!-- Map regions with embedded pie charts -->\n<polygon fill=\"#1e293b\" points=\"395,70 465,60 485,110 425,120 395,90\" stroke=\"#334155\" stroke-width=\"1.5\"></polygon>\n<polygon fill=\"#1e293b\" points=\"465,60 535,55 555,95 485,110\" stroke=\"#334155\" stroke-width=\"1.5\"></polygon>\n<polygon fill=\"#1e293b\" points=\"535,55 615,65 635,115 555,95\" stroke=\"#334155\" stroke-width=\"1.5\"></polygon>\n<!-- Embedded Pie chart 1 -->\n<circle cx=\"440\" cy=\"90\" fill=\"#10b981\" r=\"16\"></circle>\n<path d=\"M 440 90 L 440 74 A 16 16 0 0 1 456 90 Z\" fill=\"#f59e0b\"></path>\n<!-- Embedded Pie chart 2 -->\n<circle cx=\"510\" cy=\"85\" fill=\"#10b981\" r=\"22\"></circle>\n<path d=\"M 510 85 L 510 63 A 22 22 0 0 1 532 85 Z\" fill=\"#f59e0b\"></path>\n<text fill=\"#e2e8f0\" font-size=\"10\" text-anchor=\"middle\" x=\"522\" y=\"180\">Аумақ ішінде өнеркәсіп / ауылшаруашылық үлесі</text>\n</svg>\n</div>", "theory_ru": "<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>1. Основы геоинформатики и ГИС</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Геоинформатика</b> — наука, технология и производственная деятельность по сбору, хранению, обработке, анализу и моделированию пространственных (географических) данных. Возникла на стыке географии, картографии и информатики.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">ГИС (Геоинформационные системы / GIS):</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Аппаратно-программный комплекс, обеспечивающий сбор, хранение, обработку, отображение и распространение пространственно-координированных данных.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">5 базовых компонентов ГИС:</b></li>\n</ul>\n<ol class=\"space-y-2 my-2.5 ml-6 list-none\">\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Аппаратные средства (Hardware):</b> Компьютеры, серверы, GNSS/GPS-приемники, сканеры и плоттеры.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Программное обеспечение (Software):</b> Программы пространственного анализа и картографирования (ArcGIS, QGIS, Google Earth).</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Данные (Data):</b> Географические и тематические базы данных.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">4.</span><b class=\"text-emerald-300 font-bold\">Специалисты и пользователи (People):</b> Картографы, аналитики, операторы ГИС.</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">5.</span><b class=\"text-emerald-300 font-bold\">Методы и процедуры (Methods):</b> Правила анализа, алгоритмы маршрутизации и моделирования.</li>\n</ol>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Послойная организация данных (Layers):</b> В ГИС реальный мир разделен на слои: Рельеф, Гидрография, Дорожная сеть, Земельные участки, Здания и объекты.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🥞</span>\n<span>1-СЫЗБА: МНОГОСЛОЙНАЯ ПРОСТРАНСТВЕННАЯ МОДЕЛЬ ГИС</span>\n</span>\n<span class=\"text-[10px] bg-cyan-500/10 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/20 font-mono\">5 Layers Stack</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 230\">\n<!-- Perspective isometric 5 layers -->\n<!-- Layer 5 (Top): Buildings & Facilities -->\n<polygon fill=\"#a855f7\" fill-opacity=\"0.3\" points=\"120,40 320,40 260,70 60,70\" stroke=\"#c084fc\" stroke-width=\"2\"></polygon>\n<text fill=\"#c084fc\" font-size=\"11\" font-weight=\"bold\" x=\"340\" y=\"58\">5. Слой зданий и объектов (Buildings)</text>\n<!-- Layer 4: Roads & Transport -->\n<polygon fill=\"#f59e0b\" fill-opacity=\"0.3\" points=\"120,75 320,75 260,105 60,105\" stroke=\"#fbbf24\" stroke-width=\"2\"></polygon>\n<text fill=\"#fbbf24\" font-size=\"11\" font-weight=\"bold\" x=\"340\" y=\"93\">4. Слой дорожной сети и транспорта (Roads)</text>\n<!-- Layer 3: Land Parcels / Soils -->\n<polygon fill=\"#10b981\" fill-opacity=\"0.3\" points=\"120,110 320,110 260,140 60,140\" stroke=\"#34d399\" stroke-width=\"2\"></polygon>\n<text fill=\"#34d399\" font-size=\"11\" font-weight=\"bold\" x=\"340\" y=\"128\">3. Слой земельных участков и почв (Parcels)</text>\n<!-- Layer 2: Hydrography (Water) -->\n<polygon fill=\"#06b6d4\" fill-opacity=\"0.3\" points=\"120,145 320,145 260,175 60,175\" stroke=\"#38bdf8\" stroke-width=\"2\"></polygon>\n<text fill=\"#38bdf8\" font-size=\"11\" font-weight=\"bold\" x=\"340\" y=\"163\">2. Слой гидрографии: реки и озера (Water)</text>\n<!-- Layer 1: Digital Elevation Model / Surface -->\n<polygon fill=\"#64748b\" fill-opacity=\"0.3\" points=\"120,180 320,180 260,210 60,210\" stroke=\"#94a3b8\" stroke-width=\"2\"></polygon>\n<text fill=\"#94a3b8\" font-size=\"11\" font-weight=\"bold\" x=\"340\" y=\"198\">1. Слой рельефа и цифровая модель (DEM)</text>\n<!-- Vertical connecting arrow -->\n<line stroke=\"#38bdf8\" stroke-dasharray=\"3 3\" stroke-width=\"2\" x1=\"80\" x2=\"80\" y1=\"55\" y2=\"195\"></line>\n<circle cx=\"80\" cy=\"55\" fill=\"#c084fc\" r=\"3\"></circle>\n<circle cx=\"80\" cy=\"195\" fill=\"#94a3b8\" r=\"3\"></circle>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>2. Модели пространственных данных: Растровая и Векторная</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">В памяти компьютера географические объекты представляются в двух основных моделях:</li>\n</ul>\n<ol class=\"space-y-3 my-2.5 ml-6 list-none\"><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Векторная модель (Vector):</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Объекты кодируются набором точных пространственных координат (X, Y).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">3 основных геометрических примитива:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Точка (Point):</b> Отдельное дерево, колодец, школа, город (в мелком масштабе);</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Линия (Polyline):</b> Река, дорога, трубопровод, граница;</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Полигон / Контур (Polygon):</b> Озеро, лесной массив, территория государства.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><i class=\"text-slate-300\">Преимущества:</i> Четкие границы, масштабирование без потери качества, компактность хранения.</li>\n</ul></li><li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Растровая модель (Raster):</b><ul class=\"space-y-1.5 my-2 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Пространство разбито на регулярную матричную сетку пикселей (ячеек). Каждый пиксель содержит числовое значение (цвет, высота, температура).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">В растровом виде хранятся космические снимки, аэрофотосъемка, сканы бумажных карт и цифровые модели рельефа (DEM).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><i class=\"text-slate-300\">Преимущества:</i> Идеальна для непрерывных полей (температура, рельеф, загрязнение).</li>\n</ul></li></ol>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>📊</span>\n<span>2-СЫЗБА: ПРОСТРАНСТВЕННЫЕ ДАННЫЕ: РАСТРОВАЯ И ВЕКТОРНАЯ МОДЕЛИ</span>\n</span>\n<span class=\"text-[10px] bg-emerald-500/10 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-500/20 font-mono\">Pixels vs Points/Lines/Polygons</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<!-- Left: Raster model (Matrix of cells/pixels) -->\n<rect fill=\"#0b1329\" height=\"190\" rx=\"8\" stroke=\"#1e293b\" width=\"315\" x=\"20\" y=\"15\"></rect>\n<text fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"38\">РАСТРОВАЯ МОДЕЛЬ (Сетка пикселей)</text>\n<!-- Pixel grid 6x6 -->\n<g transform=\"translate(117, 50)\">\n<rect fill=\"none\" height=\"90\" stroke=\"#334155\" width=\"120\" x=\"0\" y=\"0\"></rect>\n<!-- Grid lines -->\n<line stroke=\"#1e293b\" x1=\"20\" x2=\"20\" y1=\"0\" y2=\"90\"></line>\n<line stroke=\"#1e293b\" x1=\"40\" x2=\"40\" y1=\"0\" y2=\"90\"></line>\n<line stroke=\"#1e293b\" x1=\"60\" x2=\"60\" y1=\"0\" y2=\"90\"></line>\n<line stroke=\"#1e293b\" x1=\"80\" x2=\"80\" y1=\"0\" y2=\"90\"></line>\n<line stroke=\"#1e293b\" x1=\"100\" x2=\"100\" y1=\"0\" y2=\"90\"></line>\n<line stroke=\"#1e293b\" x1=\"0\" x2=\"120\" y1=\"30\" y2=\"30\"></line>\n<line stroke=\"#1e293b\" x1=\"0\" x2=\"120\" y1=\"60\" y2=\"60\"></line>\n<!-- Pixels -->\n<rect fill=\"#06b6d4\" height=\"30\" width=\"20\" x=\"40\" y=\"30\"></rect>\n<rect fill=\"#06b6d4\" height=\"30\" width=\"20\" x=\"60\" y=\"30\"></rect>\n<rect fill=\"#0284c7\" height=\"30\" width=\"20\" x=\"60\" y=\"0\"></rect>\n<rect fill=\"#0891b2\" height=\"30\" width=\"20\" x=\"20\" y=\"60\"></rect>\n</g>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"165\">Космоснимки, аэрофото, DEM</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"177\" y=\"185\">Непрерывные поля (температура, рельеф)</text>\n<!-- Right: Vector model (Point, Line, Polygon) -->\n<rect fill=\"#0b1329\" height=\"190\" rx=\"8\" stroke=\"#1e293b\" width=\"315\" x=\"365\" y=\"15\"></rect>\n<text fill=\"#34d399\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"522\" y=\"38\">ВЕКТОРНАЯ МОДЕЛЬ (3 типа геометрии)</text>\n<g transform=\"translate(400, 55)\">\n<!-- Point -->\n<circle cx=\"30\" cy=\"35\" fill=\"#ef4444\" r=\"6\" stroke=\"#ffffff\" stroke-width=\"1.5\"></circle>\n<text fill=\"#f87171\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"30\" y=\"55\">ТОЧКА</text>\n<!-- Line -->\n<path d=\"M90 60 Q110 20 130 50 T160 25\" fill=\"none\" stroke=\"#38bdf8\" stroke-width=\"3\"></path>\n<text fill=\"#38bdf8\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"125\" y=\"70\">ЛИНИЯ</text>\n<!-- Polygon -->\n<polygon fill=\"#10b981\" fill-opacity=\"0.3\" points=\"190,45 225,20 245,55 210,70\" stroke=\"#34d399\" stroke-width=\"2\"></polygon>\n<text fill=\"#34d399\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"217\" y=\"85\">ПОЛИГОН</text>\n</g>\n<text fill=\"#f8fafc\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"522\" y=\"165\">Масштабирование без потери качества</text>\n<text fill=\"#94a3b8\" font-size=\"9\" text-anchor=\"middle\" x=\"522\" y=\"185\">Четкие границы, математические координаты</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>3. Пространственные и атрибутивные данные</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Главное отличие ГИС от обычных графических редакторов — <b class=\"text-cyan-300 font-bold\">неразрывная связь пространственной геометрии с атрибутивной базой данных</b>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Пространственные данные (Spatial):</b> Описывают положение объекта в пространстве, его геометрию и координаты на поверхности Земли.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Атрибутивные данные (Attribute):</b> Качественные и количественные характеристики объекта, организованные в виде таблиц.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Например, для города: <i class=\"text-slate-300\">Название</i> (Астана), <i class=\"text-slate-300\">Население</i> (1,4 млн чел.), <i class=\"text-slate-300\">Статус</i> (Столица), <i class=\"text-slate-300\">Тип климата</i>.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Для хранения и первичной обработки атрибутов часто используют неспециализированные табличные редакторы, такие как <b class=\"text-cyan-300 font-bold\">Microsoft Excel</b>, или СУБД (PostgreSQL, Oracle).</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Координаты объекта НЕ являются атрибутивными данными</b> — они относятся к пространственной базе.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🗄️</span>\n<span>3-СЫЗБА: СВЯЗЬ ПРОСТРАНСТВЕННЫХ И АТРИБУТИВНЫХ ДАННЫХ</span>\n</span>\n<span class=\"text-[10px] bg-amber-500/10 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/20 font-mono\">Map Shape ↔ Attribute Table</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<!-- Map geometry box -->\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"270\" x=\"20\" y=\"20\"></rect>\n<text fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"155\" y=\"45\">ПРОСТРАНСТВЕННЫЕ ДАННЫЕ</text>\n<!-- Map outlines -->\n<polygon fill=\"#06b6d4\" fill-opacity=\"0.3\" points=\"60,80 140,65 170,110 110,140 50,115\" stroke=\"#38bdf8\" stroke-width=\"2\"></polygon>\n<circle cx=\"110\" cy=\"100\" fill=\"#ef4444\" r=\"5\"></circle>\n<text fill=\"#f87171\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"110\" y=\"120\">ID: 01 (Астана)</text>\n<!-- Connecting arrow -->\n<path d=\"M 290 100 L 340 100\" marker-end=\"url(#arrow)\" stroke=\"#f59e0b\" stroke-dasharray=\"4 4\" stroke-width=\"3\"></path>\n<text fill=\"#f59e0b\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"315\" y=\"90\">Сілтеме</text>\n<!-- Attribute Table box -->\n<rect fill=\"#0b1329\" height=\"180\" rx=\"8\" stroke=\"#1e293b\" width=\"340\" x=\"340\" y=\"20\"></rect>\n<text fill=\"#34d399\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"510\" y=\"45\">АТРИБУТИВНАЯ ТАБЛИЦА (Excel / СУБД)</text>\n<!-- Table header -->\n<rect fill=\"#1e293b\" height=\"24\" width=\"310\" x=\"355\" y=\"60\"></rect>\n<text fill=\"#38bdf8\" font-size=\"10\" font-weight=\"bold\" x=\"375\" y=\"76\">ID</text>\n<text fill=\"#38bdf8\" font-size=\"10\" font-weight=\"bold\" x=\"420\" y=\"76\">Название</text>\n<text fill=\"#38bdf8\" font-size=\"10\" font-weight=\"bold\" x=\"520\" y=\"76\">Население</text>\n<text fill=\"#38bdf8\" font-size=\"10\" font-weight=\"bold\" x=\"620\" y=\"76\">Статус</text>\n<!-- Table row 1 (Highlighted) -->\n<rect fill=\"#06b6d4\" fill-opacity=\"0.2\" height=\"24\" stroke=\"#06b6d4\" width=\"310\" x=\"355\" y=\"86\"></rect>\n<text fill=\"#f8fafc\" font-family=\"monospace\" font-size=\"10\" x=\"375\" y=\"102\">01</text>\n<text fill=\"#f8fafc\" font-size=\"10\" x=\"420\" y=\"102\">Астана</text>\n<text fill=\"#f8fafc\" font-size=\"10\" x=\"520\" y=\"102\">1 430 000</text>\n<text fill=\"#34d399\" font-size=\"10\" x=\"620\" y=\"102\">Столица</text>\n<!-- Table row 2 -->\n<rect fill=\"#0f172a\" height=\"24\" width=\"310\" x=\"355\" y=\"112\"></rect>\n<text fill=\"#94a3b8\" font-family=\"monospace\" font-size=\"10\" x=\"375\" y=\"128\">02</text>\n<text fill=\"#94a3b8\" font-size=\"10\" x=\"420\" y=\"128\">Алматы</text>\n<text fill=\"#94a3b8\" font-size=\"10\" x=\"520\" y=\"128\">2 250 000</text>\n<text fill=\"#94a3b8\" font-size=\"10\" x=\"620\" y=\"128\">Мегаполис</text>\n<text fill=\"#f59e0b\" font-size=\"9\" text-anchor=\"middle\" x=\"510\" y=\"170\">Внимание: Координаты (X,Y) НЕ относятся к атрибутам!</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>4. Спутниковые навигационные системы (ГНСС / GPS)</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">GPS (Global Positioning System):</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Разработанная Министерством обороны США спутниковая система, включающая группировку из 24–31 спутников на орбите высотой 20 200 км.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Мировые навигационные системы:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">GPS (NAVSTAR)</b> — США;</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">ГЛОНАСС</b> — Российская Федерация;</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Galileo</b> — Европейский Союз;</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">BeiDou</b> — Китай.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Принцип трилатерации:</b></li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Положение наземного приемника вычисляется по времени прохождения радиосигнала от спутников до антенны.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\">Для точного определения 3D-координат объекта (широта, долгота, высота) и синхронизации времени требуется сигнал <b class=\"text-cyan-300 font-bold\">минимум от 4 спутников</b>.</li>\n</ul>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🛰️</span>\n<span>4-СЫЗБА: GPS / ГЛОНАСС: ТРИЛАТЕРАЦИЯ ПО 4 СПУТНИКАМ</span>\n</span>\n<span class=\"text-[10px] bg-purple-500/10 text-purple-300 px-2.5 py-0.5 rounded-full border border-purple-500/20 font-mono\">Min 4 Satellites -&gt; 3D + Time</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<!-- Earth surface curve -->\n<path d=\"M 50 200 Q 350 170 650 200\" fill=\"none\" stroke=\"#10b981\" stroke-width=\"3\"></path>\n<text fill=\"#34d399\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"212\">Поверхность Земли</text>\n<!-- Ground GPS receiver / smartphone -->\n<rect fill=\"#0f172a\" height=\"40\" rx=\"4\" stroke=\"#38bdf8\" stroke-width=\"2\" width=\"24\" x=\"338\" y=\"145\"></rect>\n<circle cx=\"350\" cy=\"155\" fill=\"#ef4444\" r=\"3\"></circle>\n<text fill=\"#f87171\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"140\">GPS қабылдағыш (X, Y, Z, t)</text>\n<!-- 4 Satellites in orbit -->\n<!-- Sat 1 -->\n<circle cx=\"100\" cy=\"40\" fill=\"#1e293b\" r=\"14\" stroke=\"#38bdf8\" stroke-width=\"2\"></circle>\n<text fill=\"#38bdf8\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"100\" y=\"44\">SAT 1</text>\n<line stroke=\"#38bdf8\" stroke-dasharray=\"3 3\" stroke-width=\"1.5\" x1=\"100\" x2=\"338\" y1=\"54\" y2=\"155\"></line>\n<!-- Sat 2 -->\n<circle cx=\"260\" cy=\"30\" fill=\"#1e293b\" r=\"14\" stroke=\"#34d399\" stroke-width=\"2\"></circle>\n<text fill=\"#34d399\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"260\" y=\"34\">SAT 2</text>\n<line stroke=\"#34d399\" stroke-dasharray=\"3 3\" stroke-width=\"1.5\" x1=\"260\" x2=\"345\" y1=\"44\" y2=\"150\"></line>\n<!-- Sat 3 -->\n<circle cx=\"440\" cy=\"30\" fill=\"#1e293b\" r=\"14\" stroke=\"#fbbf24\" stroke-width=\"2\"></circle>\n<text fill=\"#fbbf24\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"440\" y=\"34\">SAT 3</text>\n<line stroke=\"#fbbf24\" stroke-dasharray=\"3 3\" stroke-width=\"1.5\" x1=\"440\" x2=\"355\" y1=\"44\" y2=\"150\"></line>\n<!-- Sat 4 -->\n<circle cx=\"600\" cy=\"40\" fill=\"#1e293b\" r=\"14\" stroke=\"#c084fc\" stroke-width=\"2\"></circle>\n<text fill=\"#c084fc\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\" x=\"600\" y=\"44\">SAT 4</text>\n<line stroke=\"#c084fc\" stroke-dasharray=\"3 3\" stroke-width=\"1.5\" x1=\"600\" x2=\"362\" y1=\"54\" y2=\"155\"></line>\n<!-- Info text below -->\n<text fill=\"#f8fafc\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" x=\"350\" y=\"95\">Для 3D координат (широта, долгота, высота) и времени нужно МИНИМУМ 4 СПУТНИКА</text>\n</svg>\n</div>\n<hr class=\"border-slate-800 my-6\"/>\n<h4 class=\"text-base font-extrabold text-white mt-8 mb-3 flex items-center space-x-2 border-b border-slate-800 pb-2\"><span class=\"text-cyan-400\">❖</span><span>5. Визуализация и методы тематического картографирования</span></h4>\n<ul class=\"space-y-2 my-2.5 ml-4\">\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Визуализация:</b> Представление сложной цифровой информации в наглядной графической форме (карты, 3D-сцены, диаграммы, графики) для удобного восприятия человеком.</li>\n<li class=\"list-disc text-slate-300 text-xs leading-relaxed\"><b class=\"text-cyan-300 font-bold\">Способы картографического изображения:</b></li>\n</ul>\n<ol class=\"space-y-2 my-2.5 ml-6 list-none\">\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">1.</span><b class=\"text-emerald-300 font-bold\">Картограмма (фоновая картограмма):</b> Территориальные единицы окрашиваются цветом разной насыщенности или штриховкой в зависимости от интенсивности явления (например, плотность населения).</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">2.</span><b class=\"text-emerald-300 font-bold\">Картодиаграмма:</b> Внутри административных единиц помещаются геометрические диаграммы (круговые, столбиковые), отражающие суммарные или структурные показатели (например, структура промышленности по областям).</li>\n<li class=\"text-slate-300 text-xs leading-relaxed list-none\"><span class=\"text-emerald-400 font-extrabold mr-1.5 inline-block\">3.</span><b class=\"text-emerald-300 font-bold\">Анаморфозы:</b> Карты, где площадь территорий умышленно деформируется пропорционально величине изучаемого показателя (например, ВВП или численности населения), а не реальной географической площади.</li>\n</ol>\n<div class=\"my-6 p-4 sm:p-6 bg-space-950 rounded-2xl border border-cyan-500/30 shadow-xl\">\n<div class=\"flex flex-wrap justify-between items-center gap-2 mb-3\">\n<span class=\"text-xs font-black text-cyan-400 flex items-center space-x-1.5\">\n<span>🗺️</span>\n<span>5-СЫЗБА: МЕТОДЫ КАРТОГРАММЫ И КАРТОДИАГРАММЫ</span>\n</span>\n<span class=\"text-[10px] bg-amber-500/10 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/20 font-mono\">Choropleth vs Cartodiagram</span>\n</div>\n<svg class=\"w-full h-auto rounded-xl bg-space-900 border border-slate-800\" viewbox=\"0 0 700 220\">\n<!-- Left: Cartogram -->\n<rect fill=\"#0b1329\" height=\"190\" rx=\"8\" stroke=\"#1e293b\" width=\"315\" x=\"20\" y=\"15\"></rect>\n<text fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"177\" y=\"38\">КАРТОГРАММА (Фоновая окраска)</text>\n<!-- Map regions with gradient colors -->\n<polygon fill=\"#0891b2\" points=\"50,70 120,60 140,110 80,120 50,90\" stroke=\"#38bdf8\" stroke-width=\"1.5\"></polygon>\n<polygon fill=\"#0284c7\" points=\"120,60 190,55 210,95 140,110\" stroke=\"#38bdf8\" stroke-width=\"1.5\"></polygon>\n<polygon fill=\"#0369a1\" points=\"190,55 270,65 290,115 210,95\" stroke=\"#38bdf8\" stroke-width=\"1.5\"></polygon>\n<polygon fill=\"#06b6d4\" points=\"80,120 140,110 180,150 110,165\" stroke=\"#38bdf8\" stroke-width=\"1.5\"></polygon>\n<polygon fill=\"#0e7490\" points=\"140,110 210,95 240,140 180,150\" stroke=\"#38bdf8\" stroke-width=\"1.5\"></polygon>\n<text fill=\"#e2e8f0\" font-size=\"10\" text-anchor=\"middle\" x=\"177\" y=\"180\">Окраска территорий по плотности населения</text>\n<!-- Right: Cartodiagram -->\n<rect fill=\"#0b1329\" height=\"190\" rx=\"8\" stroke=\"#1e293b\" width=\"315\" x=\"365\" y=\"15\"></rect>\n<text fill=\"#34d399\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\" x=\"522\" y=\"38\">КАРТОДИАГРАММА (Размещение диаграмм)</text>\n<!-- Map regions with embedded pie charts -->\n<polygon fill=\"#1e293b\" points=\"395,70 465,60 485,110 425,120 395,90\" stroke=\"#334155\" stroke-width=\"1.5\"></polygon>\n<polygon fill=\"#1e293b\" points=\"465,60 535,55 555,95 485,110\" stroke=\"#334155\" stroke-width=\"1.5\"></polygon>\n<polygon fill=\"#1e293b\" points=\"535,55 615,65 635,115 555,95\" stroke=\"#334155\" stroke-width=\"1.5\"></polygon>\n<!-- Embedded Pie chart 1 -->\n<circle cx=\"440\" cy=\"90\" fill=\"#10b981\" r=\"16\"></circle>\n<path d=\"M 440 90 L 440 74 A 16 16 0 0 1 456 90 Z\" fill=\"#f59e0b\"></path>\n<!-- Embedded Pie chart 2 -->\n<circle cx=\"510\" cy=\"85\" fill=\"#10b981\" r=\"22\"></circle>\n<path d=\"M 510 85 L 510 63 A 22 22 0 0 1 532 85 Z\" fill=\"#f59e0b\"></path>\n<text fill=\"#e2e8f0\" font-size=\"10\" text-anchor=\"middle\" x=\"522\" y=\"180\">Внутри регионов диаграммы структуры хозяйства</text>\n</svg>\n</div>", "traps": ["⚠️ Назар аударыңыз: Геоинформатика бойынша сұрақтар ҰБТ-ның контексттік тесттерінде жиі кездеседі."], "quiz": [{"q": "Геоинформатика бойынша негізгі ұғымды атаңыз?", "options": ["Геоинформатика", "Жалпы ұғым", "Қосымша фактор", "Байланыссыз"], "answer": 0, "exp": "Бұл сабақтың өзегі — Геоинформатика заңдылықтарын түсіну."}], "blooket": "https://dashboard.blooket.com/set/6a752cc1735272143c5428be", "test": {"passingScore": 80, "questions": [{"id": 1, "q_kz": "Геоинформатика пәнінің басты зерттеу нысаны не болып табылады?", "q_ru": "Что является главным объектом исследования науки геоинформатики?", "options_kz": ["Географиялық ақпарат (кеңістіктік деректер)", "Тек қағаз карталар", "Ғарыштық зымырандар", "Тек жер асты қазбалары"], "options_ru": ["Географическая информация (пространственные данные)", "Исключительно бумажные карты", "Космические ракеты", "Только подземные ископаемые"], "answer": 0, "exp_kz": "Геоинформатика — географиялық (кеңістіктік) ақпаратты жинау, сақтау, өңдеу және талдау заңдылықтарын зерттейтін ғылым.", "exp_ru": "Геоинформатика изучает сбор, хранение, преобразование, анализ и моделирование географической (пространственной) информации."}, {"id": 2, "q_kz": "Географиялық мәліметтерді жинауға, сақтауға, өңдеуге және визуализация жасауға арналған аппараттық-бағдарламалық кешен:", "q_ru": "Аппаратно-программный комплекс для сбора, хранения, анализа и визуализации географических данных:", "options_kz": ["Геоақпараттық жүйе (ГАЖ / ГИС)", "Мәтіндік редактор", "Операциялық жүйе", "Антивирус"], "options_ru": ["Геоинформационная система (ГИС / ГАЖ)", "Текстовый редактор", "Операционная система", "Антивирус"], "answer": 0, "exp_kz": "ГАЖ (ГИС) — географиялық деректермен жұмыс істеуге арналған біртұтас аппараттық-бағдарламалық кешен.", "exp_ru": "ГИС (геоинформационная система) — специализированный аппаратно-программный комплекс для работы с пространственными данными."}, {"id": 3, "q_kz": "Күрделі сандық географиялық мәліметтерді адам қабылдауына қолайлы көрнекі пішінде (графика, 3D, анимация) беру әдісі:", "q_ru": "Способ представления сложных цифровых данных в удобной для восприятия наглядной форме (графика, 3D, карты):", "options_kz": ["Компьютерлік вирустау", "Визуализация", "Архивтеу", "Тек транскрипция"], "options_ru": ["Компьютерное заражение", "Визуализация", "Архивация", "Транскрипция"], "answer": 1, "exp_kz": "Сандық мәліметтерді көрнекі графикалық, картографиялық не 3D модель түрінде көрсету визуализация деп аталады.", "exp_ru": "Визуализация — процесс перевода абстрактных цифровых данных в наглядные графические и картографические образы."}, {"id": 4, "q_kz": "Жер бетіндегі нысанның нақты координаттарын, биіктігі мен уақытын ғарыштық серіктер арқылы анықтайтын жаһандық жүйе:", "q_ru": "Глобальная система определения точных координат, высоты и времени объекта при помощи спутников:", "options_kz": ["Блютуз", "GPS (NAVSTAR)", "Wi-Fi", "HTML"], "options_ru": ["Bluetooth", "GPS (NAVSTAR)", "Wi-Fi", "HTML"], "answer": 1, "exp_kz": "GPS (Global Positioning System) — ғарыштық жерсеріктер арқылы кез келген нүктенің координатасын анықтайтын жүйе.", "exp_ru": "GPS — глобальная спутниковая система позиционирования, обеспечивающая точное определение координат и времени."}, {"id": 5, "q_kz": "ГАЖ жүйелерінде атрибуттық (кестелік) мәліметтерді сақтау және өңдеу үшін ең көп қолданылатын мамандандырылмаған бағдарлама:", "q_ru": "Наиболее часто используемая неспециализированная программа для обработки табличных атрибутов в ГИС:", "options_kz": ["Microsoft Excel", "Adobe Photoshop", "AutoCAD", "CorelDraw"], "options_ru": ["Microsoft Excel", "Adobe Photoshop", "AutoCAD", "CorelDraw"], "answer": 0, "exp_kz": "Кестелік атрибуттық сипаттамаларды жинақтау және өңдеу үшін көбінесе қарапайым Microsoft Excel кестелік редакторы қолданылады.", "exp_ru": "Для ведения и обработки табличных атрибутивных данных объектов широко используется табличный процессор Microsoft Excel."}, {"id": 6, "q_kz": "Векторлық модельде географиялық нысандарды бейнелейтін 3 негізгі геометриялық примитив:", "q_ru": "Три основных геометрических примитива векторной модели пространственных данных:", "options_kz": ["Нүкте, сызық, полигон (контур)", "Пиксель, растр, сурет", "Тек шеңбер мен квадрат", "Тек биіктік белгісі"], "options_ru": ["Точка, линия, полигон (контур)", "Пиксель, растр, снимок", "Только окружность и квадрат", "Только отметка высоты"], "answer": 0, "exp_kz": "Векторлық модельде барлық нысандар нүкте (нүктелік нысандар), сызық (сызықтық нысандар) және полигон (аумақтық нысандар) арқылы беріледі.", "exp_ru": "Векторное представление опирается на три базовых типа геометрии: точки (point), линии (polyline) и полигоны (polygon)."}, {"id": 7, "q_kz": "Төмендегілердің қайсысы ГАЖ-дың атрибуттық (кестелік) сипаттамаларына ЖАТПАЙДЫ?", "q_ru": "Что из перечисленного НЕ относится к атрибутивным (табличным) характеристикам объекта в ГИС?", "options_kz": ["Нысанның атауы", "Халық саны көрсеткіші", "Топырақ түрі", "Нысанның кеңістіктік координаталары (X, Y)"], "options_ru": ["Название объекта", "Показатель численности населения", "Тип почвы", "Пространственные координаты объекта (X, Y)"], "answer": 3, "exp_kz": "Нысанның нақты орналасуы мен координаталары (X, Y) графикалық/кеңістіктік деректер базасына жатады, атрибутқа жатпайды.", "exp_ru": "Координаты положения объекта (X, Y) формируют пространственную геометрию, а не его описательные атрибуты."}, {"id": 8, "q_kz": "Әкімшілік аумақтардың халық тығыздығы сияқты сандық көрсеткішіне қарай әртүрлі түс қанықтығымен боялу әдісі:", "q_ru": "Способ картографического изображения, при котором территории окрашиваются разной насыщенностью цвета по показателю:", "options_kz": ["Фон құраушы картограмма", "Нүктелік әдіс", "Изосызықтар әдісі", "Қозғалыс белгілері"], "options_ru": ["Фоновая картограмма", "Точечный метод", "Метод изолиний", "Знаки движения"], "answer": 0, "exp_kz": "Аумақтық бірліктерді белгілі бір орташа көрсеткіштің (мысалы, тығыздық) қарқындылығына қарай фондық түспен бояу картограмма деп аталады.", "exp_ru": "Картограмма — метод отображения средней интенсивности явления по территориальным единицам с помощью штриховки или цвета разной плотности."}, {"id": 9, "q_kz": "Жерсеріктік навигацияда жердегі нүктенің кеңістіктегі 3D координатасын және уақытын анықтау үшін кемінде неше серік қажет?", "q_ru": "Минимум сколько спутников необходимо для точного расчета 3D-координат и времени наземного приемника?", "options_kz": ["1 серік", "2 серік", "4 серік", "10 серік"], "options_ru": ["1 спутник", "2 спутника", "4 спутника", "10 спутников"], "answer": 2, "exp_kz": "Кеңістіктік 3 өлшемді координатаны (ендік, бойлық, биіктік) және уақыт ауытқуын есептеу үшін кемінде 4 жерсерік сигналы қажет.", "exp_ru": "Для нахождения трех пространственных координат (X, Y, Z) и поправки времени часов приемника требуется минимум 4 спутника."}, {"id": 10, "q_kz": "Жер бетінің нақты аэроғарыштық суреттері мен пиксельдер матрицасына негізделген ГАЖ деректер моделі:", "q_ru": "Модель пространственных данных в ГИС, основанная на матричной сетке пикселей и космических снимках:", "options_kz": ["Векторлық модель", "Растрлік модель", "Мәтіндік модель", "Акустикалық модель"], "options_ru": ["Векторная модель", "Растровая модель", "Текстовая модель", "Акустическая модель"], "answer": 1, "exp_kz": "Ұяшықтар торынан (пиксельдерден) тұратын және аэроғарыштық суреттерді бейнелейтін модель растрлік модель болып табылады.", "exp_ru": "Растровая модель представляет собой регулярную сетку ячеек (пикселей), где каждая ячейка хранит значение свойства (напр. космоснимок)."}]}, "pdf_kz": "https://drive.google.com/file/d/1f4PUNARXUx3Dqf7eYOSAWiik46qX17Vz/view?usp=sharing", "pdf_ru": "https://drive.google.com/file/d/1fytHnPA0CCsRZ2ki8YgbL3lzPUb-nBu3/view?usp=drive_link"};
+    const currentLang = 'kz';
+    let userTestAnswers = {};
+    let isTestSubmitted = false;
+
+    // Render Test Questions
+    function renderTestQuestions() {
+      const container = document.getElementById('testQuestionsList');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const testObj = lessonData.test;
+      if (!testObj || !testObj.questions || testObj.questions.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-400">Тест готовится / Тест дайындалуда.</p>';
+        return;
+      }
+
+      const isRu = (currentLang === 'ru');
+      const letters = ['A', 'B', 'C', 'D', 'E'];
+
+      testObj.questions.forEach((q, idx) => {
+        const qCard = document.createElement('div');
+        qCard.className = 'p-5 rounded-2xl bg-space-850 border border-slate-800 space-y-3';
+
+        const qPrompt = isRu ? (q.q_ru || q.q_kz) : q.q_kz;
+        const options = isRu ? (q.options_ru || q.options_kz) : q.options_kz;
+        const exp = isRu ? (q.exp_ru || q.exp_kz) : q.exp_kz;
+
+        qCard.innerHTML = `
+          <div class="flex items-center justify-between gap-2 border-b border-slate-800/80 pb-2">
+            <span class="text-xs font-bold text-slate-400 uppercase">
+              ${isRu ? 'Вопрос ' + (idx + 1) : 'Сұрақ ' + (idx + 1)}
+            </span>
+            <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-bold">1 балл</span>
+          </div>
+          <p class="text-xs sm:text-sm font-semibold text-slate-100 leading-relaxed">${qPrompt}</p>
+        `;
+
+        const optContainer = document.createElement('div');
+        optContainer.className = 'space-y-2 pt-1';
+
+        const selectedAnswer = userTestAnswers[q.id];
+
+        options.forEach((optText, optIdx) => {
+          const isSelected = selectedAnswer === optIdx;
+          const isCorrect = q.answer === optIdx;
+
+          const optDiv = document.createElement('div');
+          optDiv.className = 'p-3 rounded-xl border text-xs font-medium cursor-pointer transition flex items-center space-x-2.5 ';
+
+          if (isTestSubmitted) {
+            if (isCorrect) {
+              optDiv.className += 'bg-emerald-500/15 border-emerald-500 text-emerald-200 font-bold';
+            } else if (isSelected) {
+              optDiv.className += 'bg-rose-500/15 border-rose-500 text-rose-200';
+            } else {
+              optDiv.className += 'bg-space-900/50 border-slate-800 text-slate-500';
+            }
+          } else {
+            if (isSelected) {
+              optDiv.className += 'bg-cyan-500/15 border-cyan-500 text-cyan-200 font-bold';
+            } else {
+              optDiv.className += 'bg-space-900 hover:bg-space-800 border-slate-800 hover:border-slate-700 text-slate-300';
+            }
+          }
+
+          const badge = document.createElement('span');
+          badge.className = 'w-5 h-5 rounded-md text-[10px] font-black flex items-center justify-center shrink-0 ' +
+            (isSelected ? 'bg-cyan-500 text-space-950' : 'bg-space-850 text-slate-400 border border-slate-700');
+          badge.textContent = letters[optIdx] || String(optIdx + 1);
+          optDiv.appendChild(badge);
+
+          const txt = document.createElement('span');
+          txt.className = 'flex-1';
+          txt.textContent = optText;
+          optDiv.appendChild(txt);
+
+          optDiv.onclick = () => {
+            if (isTestSubmitted) return;
+            userTestAnswers[q.id] = optIdx;
+            renderTestQuestions();
+          };
+
+          optContainer.appendChild(optDiv);
+        });
+
+        qCard.appendChild(optContainer);
+
+        // Explanation Box after submission
+        if (isTestSubmitted) {
+          const expBox = document.createElement('div');
+          expBox.className = 'p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-xs text-cyan-200 space-y-1';
+          expBox.innerHTML = `
+            <span class="font-bold text-cyan-300 block">💡 ${isRu ? 'Пояснение:' : 'Түсіндірме:'}</span>
+            <p class="text-slate-300 leading-relaxed">${exp || (isRu ? 'Авторское пояснение к вопросу.' : 'Сұраққа арналған түсіндірме.')}</p>
+          `;
+          qCard.appendChild(expBox);
+        }
+
+        container.appendChild(qCard);
+      });
+    }
+
+    function submitLessonTest() {
+      const testObj = lessonData.test;
+      if (!testObj || !testObj.questions) return;
+
+      const answeredCount = Object.keys(userTestAnswers).length;
+      const total = testObj.questions.length;
+      const isRu = (currentLang === 'ru');
+
+      if (answeredCount < total) {
+        const msg = isRu 
+          ? `Вы ответили только на ${answeredCount} из ${total} вопросов. Завершить тест?` 
+          : `Сіз ${total} сұрақтың ${answeredCount}-не жауап бердіңіз. Тестті аяқтайсыз ба?`;
+        if (!confirm(msg)) return;
+      }
+
+      isTestSubmitted = true;
+      let correct = 0;
+
+      testObj.questions.forEach(q => {
+        if (userTestAnswers[q.id] === q.answer) {
+          correct++;
+        }
+      });
+
+      const percentage = Math.round((correct / total) * 100);
+      const isPassed = percentage >= 80;
+
+      // Update badges & UI
+      const scoreBadge = document.getElementById('testScoreBadge');
+      if (scoreBadge) {
+        scoreBadge.classList.remove('hidden');
+        scoreBadge.textContent = `${correct} / ${total} (${percentage}%)`;
+        scoreBadge.className = 'px-3 py-1 rounded-xl text-xs font-bold font-mono border ' +
+          (isPassed ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-rose-500/20 text-rose-300 border-rose-500/40');
+      }
+
+      const info = document.getElementById('testProgressInfo');
+      if (info) {
+        info.textContent = isPassed 
+          ? (isRu ? `🎉 Поздравляем! Вы сдали тест на ${percentage}% (+30 XP)` : `🎉 Құттықтаймыз! Сіз тестті ${percentage}%-ға тапсырдыңыз (+30 XP)`)
+          : (isRu ? `Результат: ${percentage}%. Для зачета требуется 80%. Попробуйте еще раз.` : `Нәтиже: ${percentage}%. Өту үшін 80% қажет. Қайта тапсырып көріңіз.`);
+      }
+
+      document.getElementById('btnSubmitTest').classList.add('hidden');
+      document.getElementById('btnResetTest').classList.remove('hidden');
+
+      // Save to localStorage
+      try {
+        let scores = JSON.parse(localStorage.getItem('geotany_lesson_scores') || '{}');
+        scores[lessonData.id] = percentage;
+        localStorage.setItem('geotany_lesson_scores', JSON.stringify(scores));
+
+        if (isPassed) {
+          let completed = JSON.parse(localStorage.getItem('geotany_completed_lessons') || '[]');
+          if (!completed.includes(lessonData.id)) {
+            completed.push(lessonData.id);
+            localStorage.setItem('geotany_completed_lessons', JSON.stringify(completed));
+          }
+          let curXp = parseInt(localStorage.getItem('geotany_user_xp') || '0', 10);
+          curXp += 30;
+          localStorage.setItem('geotany_user_xp', curXp.toString());
+        }
+      } catch(e) {}
+
+      renderTestQuestions();
+      updateCompleteButtons();
+    }
+
+    function resetLessonTest() {
+      userTestAnswers = {};
+      isTestSubmitted = false;
+      document.getElementById('testScoreBadge').classList.add('hidden');
+      document.getElementById('btnSubmitTest').classList.remove('hidden');
+      document.getElementById('btnResetTest').classList.add('hidden');
+      document.getElementById('testProgressInfo').textContent = (currentLang === 'ru') 
+        ? 'Ответьте на все вопросы и проверьте свои знания.' 
+        : 'Барлық сұрақтарға жауап беріп, өзіңізді тексеріңіз.';
+      renderTestQuestions();
+    }
+
+    // Toggle Lesson Complete Status
+    function toggleLessonComplete() {
+      let completed = [];
+      try {
+        completed = JSON.parse(localStorage.getItem('geotany_completed_lessons') || '[]');
+      } catch(e) {}
+
+      const isDone = completed.includes(lessonData.id);
+      let curXp = parseInt(localStorage.getItem('geotany_user_xp') || '0', 10);
+
+      if (isDone) {
+        completed = completed.filter(id => id !== lessonData.id);
+        curXp = Math.max(0, curXp - 30);
+      } else {
+        completed.push(lessonData.id);
+        curXp += 30;
+      }
+
+      try {
+        localStorage.setItem('geotany_completed_lessons', JSON.stringify(completed));
+        localStorage.setItem('geotany_user_xp', curXp.toString());
+      } catch(e) {}
+
+      updateCompleteButtons();
+    }
+
+    function updateCompleteButtons() {
+      let completed = [];
+      try {
+        completed = JSON.parse(localStorage.getItem('geotany_completed_lessons') || '[]');
+      } catch(e) {}
+
+      const isDone = completed.includes(lessonData.id);
+      const isRu = (currentLang === 'ru');
+
+      const banner = document.getElementById('lessonCompletedBanner');
+      if (banner) banner.classList.toggle('hidden', !isDone);
+
+      const headerBtn = document.getElementById('btnHeaderComplete');
+      const headerIcon = document.getElementById('headerCheckIcon');
+      const headerText = document.getElementById('headerCompleteText');
+
+      if (headerBtn) {
+        if (isDone) {
+          headerBtn.className = 'px-3 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold transition flex items-center space-x-1.5';
+          if (headerIcon) headerIcon.textContent = '✓';
+          if (headerText) headerText.textContent = isRu ? 'Прочитано' : 'Оқылды';
+        } else {
+          headerBtn.className = 'px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-emerald-400 text-xs font-bold transition flex items-center space-x-1.5';
+          if (headerIcon) headerIcon.textContent = '○';
+          if (headerText) headerText.textContent = isRu ? 'Отметить' : 'Белгілеу';
+        }
+      }
+
+      const bottomLbl = document.getElementById('lblBottomComplete');
+      if (bottomLbl) {
+        bottomLbl.textContent = isDone 
+          ? (isRu ? '✓ Прочитано (Нажмите, чтобы отменить)' : '✓ Оқылды (Өшіру үшін басыңыз)')
+          : (isRu ? 'Отметить как прочитанное (+30 XP)' : 'Сабақты оқылды деп белгілеу (+30 XP)');
+      }
+    }
+
+    // Boot
+    window.addEventListener('DOMContentLoaded', () => {
+      renderTestQuestions();
+      updateCompleteButtons();
+    });
+  </script>
+
+</body>
+</html>

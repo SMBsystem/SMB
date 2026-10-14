@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="kk" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1. И. Валлерстайнның «Әлемдік жүйе» моделі | GEOTANY ГИС-Атлас</title>
+
+  <!-- AUTH GUARD: RESTRICT DIRECT ACCESS WITHOUT VALID SESSION -->
+  <style id="authCloak">body { display: none !important; }</style>
+  <script>
+    (function() {
+      try {
+        var isAdmin = localStorage.getItem('geotany_admin_auth') === 'true';
+        var sessionStr = localStorage.getItem('geotany_user_session');
+        var isAuthorized = isAdmin;
+        if (!isAuthorized && sessionStr) {
+          var s = JSON.parse(sessionStr);
+          if (s && s.email && (s.courseCode || s.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        var profileStr = localStorage.getItem('geotany_user_profile');
+        if (!isAuthorized && profileStr) {
+          var p = JSON.parse(profileStr);
+          if (p && p.email && (p.courseCode || p.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        if (!isAuthorized) {
+          window.location.replace('../geotanu.html?error=unauthorized_course');
+          return;
+        }
+        var cloak = document.getElementById('authCloak');
+        if (cloak) cloak.remove();
+      } catch (e) {
+        window.location.replace('../geotanu.html?error=unauthorized_course');
+      }
+    })();
+  </script>
+
+  <!-- TAILWIND CSS & FONTS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- SHARED WORLD VECTORS -->
+  <script src="world_countries.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            space: {
+              800: '#1E293B',
+              850: '#151E2E',
+              900: '#0F172A',
+              950: '#0B0F19',
+            },
+            brand: {
+              400: '#34D399',
+              500: '#10B981',
+              600: '#059669',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0B0F19;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1E293B;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+    .map-canvas-container {
+      background: radial-gradient(circle at 50% 50%, #111827 0%, #0B0F19 100%);
+      cursor: grab;
+      user-select: none;
+    }
+    .map-canvas-container:active {
+      cursor: grabbing;
+    }
+    .country-polygon {
+      transition: fill 0.2s ease, opacity 0.2s ease, stroke 0.2s ease;
+      stroke: rgba(255, 255, 255, 0.15);
+      stroke-width: 0.5px;
+    }
+    .country-polygon:hover {
+      filter: brightness(1.25);
+      stroke: #38BDF8;
+      stroke-width: 1.2px;
+    }
+  </style>
+</head>
+<body class="bg-space-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-brand-500/30 selection:text-brand-400 flex flex-col">
+
+  <!-- TOP APP BAR -->
+  <header class="sticky top-0 z-40 bg-space-950/90 backdrop-blur-xl border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+      
+      <!-- Left: Back Button & Title -->
+      <div class="flex items-center space-x-3">
+        <a id="btnBackToPlatform" href="../geotanu.html#section-nomenklatura_speaking" class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 text-slate-300 hover:text-white border border-slate-700/80 text-xs sm:text-sm font-bold transition shadow-sm">
+          <span>←</span>
+          <span id="navBackText" class="hidden sm:inline">Номенклатураға қайту</span>
+        </a>
+        <a href="index.html" class="hidden sm:inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-space-900 hover:bg-space-850 text-cyan-400 border border-slate-800 text-xs font-bold transition">
+          <span>🗺️</span>
+          <span>Атлас</span>
+        </a>
+        <div class="h-6 w-px bg-slate-800 hidden sm:block"></div>
+        <div class="flex items-center space-x-2">
+          <span class="text-xs px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-400 font-extrabold border border-amber-500/20">
+            КАРТА #1
+          </span>
+          <span id="navMapTitle" class="text-sm font-bold text-slate-200 hidden md:inline truncate max-w-sm">
+            1. И. Валлерстайнның «Әлемдік жүйе» моделі
+          </span>
+        </div>
+      </div>
+
+      <!-- Right: Controls & Language Switcher -->
+      <div class="flex items-center space-x-2 sm:space-x-3">
+        
+        <!-- Prev / Next map nav -->
+        <div class="flex items-center space-x-1 bg-space-900 p-0.5 rounded-xl border border-slate-800 text-xs font-bold">
+          
+          <a href="map_02.html" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition whitespace-nowrap">#2 →</a>
+        </div>
+
+        <!-- Language Switcher -->
+        <div class="flex items-center bg-space-900 p-0.5 rounded-xl border border-slate-800 text-xs font-bold">
+          <button id="langKzBtn" onclick="setLang('kz')" class="px-2 py-1 rounded-lg bg-brand-500 text-space-950 font-black transition">
+            KZ
+          </button>
+          <button id="langRuBtn" onclick="setLang('ru')" class="px-2 py-1 rounded-lg text-slate-400 hover:text-white transition">
+            RU
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN MAP INTERFACE (SPLIT SCREEN: MAP VIEWPORT + ANALYTICAL SIDEBAR) -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+    <!-- LEFT / MAIN: INTERACTIVE GIS MAP CANVAS -->
+    <div class="lg:col-span-8 xl:col-span-8 space-y-4">
+      
+      <!-- MAP VIEWPORT CONTAINER -->
+      <div class="relative w-full h-[65vh] sm:h-[70vh] rounded-3xl border border-slate-800 shadow-2xl overflow-hidden map-canvas-container" id="mapViewport">
+        
+        <!-- SVG Canvas -->
+        <svg id="gisSvgMap" viewBox="0 0 1000 540" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="graticuleGrid" width="100" height="90" patternUnits="userSpaceOnUse">
+              <path d="M 100 0 L 0 0 0 90" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="0.7" />
+            </pattern>
+          </defs>
+          <rect width="1000" height="540" fill="url(#graticuleGrid)" pointer-events="none" />
+          <g id="mapPanZoomLayer"></g>
+        </svg>
+
+        <!-- Floating Zoom & Pan Controls -->
+        <div class="absolute right-4 top-4 z-20 flex flex-col space-y-1.5 bg-space-900/90 backdrop-blur-md p-1.5 rounded-2xl border border-slate-800 shadow-xl">
+          <button onclick="zoomMap(1.3)" class="w-8 h-8 rounded-xl bg-space-850 hover:bg-space-800 text-white font-bold text-sm flex items-center justify-center transition" title="Жақындату (+)">+</button>
+          <button onclick="zoomMap(0.75)" class="w-8 h-8 rounded-xl bg-space-850 hover:bg-space-800 text-white font-bold text-sm flex items-center justify-center transition" title="Алыстату (-)">-</button>
+          <button onclick="resetMapView()" class="w-8 h-8 rounded-xl bg-space-850 hover:bg-space-800 text-cyan-400 font-bold text-xs flex items-center justify-center transition" title="Бастапқы қалпына келтіру">⟲</button>
+        </div>
+
+        <!-- Floating Category Badge -->
+        <div class="absolute left-4 top-4 z-20 bg-space-900/90 backdrop-blur-md px-3.5 py-1.5 rounded-2xl border border-slate-800 text-xs font-extrabold text-cyan-300 flex items-center space-x-2 shadow-lg">
+          <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+          <span id="mapCategoryBadge">Геосаясат</span>
+        </div>
+
+        <!-- Interactive Inspect Tooltip -->
+        <div id="gisTooltip" class="absolute pointer-events-none z-30 hidden px-3.5 py-2.5 rounded-xl bg-space-950/95 border border-slate-700 text-xs text-white shadow-2xl space-y-0.5">
+          <div class="font-black text-amber-400" id="ttName">Мемлекет</div>
+          <div class="text-[11px] text-slate-300" id="ttGroup">Санат</div>
+        </div>
+
+      </div>
+
+      <!-- MAP STATUS BAR -->
+      <div class="p-4 rounded-2xl bg-space-900 border border-slate-800 flex flex-wrap items-center justify-between text-xs text-slate-400 gap-2">
+        <div class="flex items-center space-x-2">
+          <span>💡</span>
+          <span id="lblMapTip">Тышқанмен картаны жылжытуға және масштабтауға болады. Мемлекетті басып толық ақпарат алыңыз.</span>
+        </div>
+        <div class="font-mono text-[11px] text-slate-500">
+          QGIS GeoJSON Compatible • 1000×540 WGS84
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT / SIDEBAR: LEGEND, THEORY, AND QGIS INTEGRATION -->
+    <div class="lg:col-span-4 xl:col-span-4 space-y-4">
+      
+      <!-- LEGEND CARD -->
+      <div class="p-5 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-3.5">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+          <h3 class="text-xs font-black uppercase tracking-wider text-slate-400" id="lblLegendTitle">
+            Картаның шарты белгілері (Легенда)
+          </h3>
+          <span class="text-[10px] px-2 py-0.5 rounded-md bg-space-850 text-cyan-400 font-bold border border-slate-700">
+            3 санат
+          </span>
+        </div>
+
+        <!-- Legend Items Grid -->
+        <div id="legendContainer" class="space-y-2">
+          <!-- Dynamically populated legend items -->
+        </div>
+
+        <!-- Reset highlight button -->
+        <button onclick="highlightCategory(null)" class="w-full py-1.5 rounded-xl bg-space-850 hover:bg-space-800 text-[11px] text-slate-400 hover:text-white font-bold transition text-center" id="lblResetHighlight">
+          Барлық қабаттарды көрсету
+        </button>
+      </div>
+
+      <!-- THEORETICAL ANALYSIS CARD -->
+      <div class="p-5 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-3">
+        <div class="flex items-center space-x-2 border-b border-slate-800 pb-2.5">
+          <span class="text-base">📚</span>
+          <h3 class="text-xs font-black uppercase tracking-wider text-white" id="lblTheoryTitle">
+            Аналитикалық түсіндірме & ҰБТ мәні
+          </h3>
+        </div>
+        <div id="theoryTextContainer" class="text-xs text-slate-300 leading-relaxed space-y-2">
+          Иммануил Валлерстайн теориясы капиталдың жинақталуы мен еңбек бөлінісін түсіндіреді. Ядро елдері жоғары технологиялар мен қаржыны иеленеді, ал периферия шикізат пен арзан жұмыс күшін береді.
+        </div>
+      </div>
+
+      <!-- QGIS & GOOGLE EARTH ENGINE INTEGRATION -->
+      <div class="p-5 rounded-3xl bg-space-900/60 border border-slate-800 text-xs space-y-2.5">
+        <div class="flex items-center space-x-2 font-bold text-slate-200">
+          <span class="text-emerald-400">❖</span>
+          <span id="lblQgisTitle">QGIS & GEE Экспорт / Импорт</span>
+        </div>
+        <p class="text-slate-400 text-[11px] leading-relaxed" id="lblQgisDesc">
+          Бұл карта QGIS арқылы дайындалған векторлық қабаттармен және GeoJSON стандартымен толық үйлесімді. Өз қабаттарыңызды жүктеуге дайын.
+        </p>
+        <button onclick="downloadGeoJson()" class="w-full py-2 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-cyan-300 hover:text-cyan-200 font-bold text-xs transition flex items-center justify-center space-x-1.5 shadow-sm">
+          <span>📥</span>
+          <span id="lblBtnGeoJson">GeoJSON дерегін жүктеп алу</span>
+        </button>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- MAP CLIENT ENGINE -->
+  <script>
+    const currentMapData = {"id": 1, "category": "geopolitics", "scope": "world", "title_kz": "1. И. Валлерстайнның «Әлемдік жүйе» моделі", "title_ru": "1. Модель «Мир-системы» И. Валлерстайна", "desc_kz": "Ядро (Core), Жартылай периферия (Semi-periphery) және Периферия (Periphery) деңгейлеріне бөлу.", "desc_ru": "Разделение мировой капиталистической системы на Ядро, Полупериферию и Периферию.", "theory_kz": "Иммануил Валлерстайн теориясы капиталдың жинақталуы мен еңбек бөлінісін түсіндіреді. Ядро елдері жоғары технологиялар мен қаржыны иеленеді, ал периферия шикізат пен арзан жұмыс күшін береді.", "theory_ru": "Теория Валлерстайна раскрывает неравный обмен в глобальной экономике. Ядро контролирует технологии и финансовые потоки, эксплуатируя ресурсы периферии.", "legend": [{"id": "core", "label_kz": "Ядро (Core) — Жоғары табысты елдер", "label_ru": "Ядро (Core) — Высокоразвитые страны", "color": "#3B82F6"}, {"id": "semi", "label_kz": "Жартылай периферия — Индустриялы өтпелі елдер", "label_ru": "Полупериферия — Индустриальные страны", "color": "#F59E0B"}, {"id": "peri", "label_kz": "Периферия — Шикізат өндіруші елдер", "label_ru": "Периферия — Сырьевые экспортеры", "color": "#EF4444"}], "assignments": {"core": ["USA", "CAN", "GBR", "FRA", "DEU", "ITA", "JPN", "KOR", "AUS", "NZL", "CHE", "NOR", "SWE", "NLD", "BEL", "DNK", "FIN", "AUT", "IRL", "ISR", "SGP"], "semi": ["KAZ", "RUS", "CHN", "IND", "BRA", "MEX", "TUR", "ZAF", "ARG", "SAU", "IRN", "MYS", "IDN", "THA", "POL", "CHL", "COL", "EGY", "VNM", "PHL"], "peri": ["NGA", "ETH", "AGO", "COD", "KEN", "SDN", "TZA", "MOZ", "MDG", "ZWE", "MLI", "NER", "TCD", "AFG", "PAK", "BGD", "BOL", "PER", "PRY", "GTM", "HND", "NIC", "UZB", "TKM", "KGZ", "TJK", "MNG"]}};
+
+    let currentLang = 'kz';
+    let currentHighlightedCategory = null;
+    let viewBox = { x: 0, y: 0, w: 1000, h: 540 };
+    const baseViewBox = { x: 0, y: 0, w: 1000, h: 540 };
+    let isPanning = false;
+    let startPoint = { x: 0, y: 0 };
+
+    function initLanguage() {
+      const params = new URLSearchParams(window.location.search);
+      const urlLang = params.get('lang');
+      if (urlLang === 'ru' || urlLang === 'kz') {
+        currentLang = urlLang;
+      }
+    }
+    initLanguage();
+
+    function setLang(lang) {
+      currentLang = lang;
+      
+      const kzBtn = document.getElementById('langKzBtn');
+      const ruBtn = document.getElementById('langRuBtn');
+      if (lang === 'kz') {
+        kzBtn.className = 'px-2 py-1 rounded-lg bg-brand-500 text-space-950 font-black transition';
+        ruBtn.className = 'px-2 py-1 rounded-lg text-slate-400 hover:text-white transition';
+      } else {
+        ruBtn.className = 'px-2 py-1 rounded-lg bg-brand-500 text-space-950 font-black transition';
+        kzBtn.className = 'px-2 py-1 rounded-lg text-slate-400 hover:text-white transition';
+      }
+
+      updateLocalizedTexts();
+      renderLegend();
+      renderMapPolygons();
+    }
+
+    function updateLocalizedTexts() {
+      const isRu = (currentLang === 'ru');
+      document.getElementById('navBackText').textContent = isRu ? 'Назад к Номенклатуре' : 'Номенклатураға қайту';
+      document.getElementById('navMapTitle').textContent = isRu ? currentMapData.title_ru : currentMapData.title_kz;
+      document.getElementById('mapCategoryBadge').textContent = isRu ? currentMapData.category_ru : currentMapData.category_kz;
+      document.getElementById('lblMapTip').textContent = isRu 
+        ? 'Карту можно перемещать мышью и масштабировать. Нажмите на страну для просмотра деталей.' 
+        : 'Тышқанмен картаны жылжытуға және масштабтауға болады. Мемлекетті басып толық ақпарат алыңыз.';
+      document.getElementById('lblLegendTitle').textContent = isRu ? 'Легенда тематической карты' : 'Картаның шарты белгілері (Легенда)';
+      document.getElementById('lblResetHighlight').textContent = isRu ? 'Показать все слои' : 'Барлық қабаттарды көрсету';
+      document.getElementById('lblTheoryTitle').textContent = isRu ? 'Аналитическая справка и значение для ЕНТ' : 'Аналитикалық түсіндірме & ҰБТ мәні';
+      document.getElementById('theoryTextContainer').innerHTML = isRu ? currentMapData.theory_ru : currentMapData.theory_kz;
+      document.getElementById('lblQgisTitle').textContent = isRu ? 'Экспорт / Импорт для QGIS и GEE' : 'QGIS & GEE Экспорт / Импорт';
+      document.getElementById('lblQgisDesc').textContent = isRu 
+        ? 'Карта полностью совместима со стандартом векторных слоев QGIS и GeoJSON. Готова для подключения дополнительных данных.' 
+        : 'Бұл карта QGIS арқылы дайындалған векторлық қабаттармен және GeoJSON стандартымен толық үйлесімді. Өз қабаттарыңызды жүктеуге дайын.';
+      document.getElementById('lblBtnGeoJson').textContent = isRu ? 'Скачать данные GeoJSON' : 'GeoJSON дерегін жүктеп алу';
+    }
+
+    // Render Polygons
+    function renderMapPolygons() {
+      const container = document.getElementById('mapPanZoomLayer');
+      if (!container) return;
+      container.innerHTML = '';
+
+      if (typeof WORLD_COUNTRIES === 'undefined') {
+        console.error('WORLD_COUNTRIES not loaded');
+        return;
+      }
+
+      // Build assignment lookup
+      const countryGroupMap = {};
+      const legendMap = {};
+      (currentMapData.legend || []).forEach(l => {
+        legendMap[l.id] = l;
+      });
+
+      Object.entries(currentMapData.assignments || {}).forEach(([groupId, countryIds]) => {
+        countryIds.forEach(cId => {
+          countryGroupMap[cId] = groupId;
+        });
+      });
+
+      WORLD_COUNTRIES.forEach(c => {
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', c.path);
+        path.setAttribute('class', 'country-polygon');
+        path.id = `poly-${c.id}`;
+
+        const groupId = countryGroupMap[c.id];
+        const groupInfo = groupId ? legendMap[groupId] : null;
+
+        if (groupInfo) {
+          if (currentHighlightedCategory && currentHighlightedCategory !== groupId) {
+            path.setAttribute('fill', groupInfo.color);
+            path.setAttribute('opacity', '0.2');
+          } else {
+            path.setAttribute('fill', groupInfo.color);
+            path.setAttribute('opacity', '0.85');
+          }
+        } else {
+          // Default unassigned country fill
+          path.setAttribute('fill', '#1E293B');
+          path.setAttribute('opacity', currentHighlightedCategory ? '0.1' : '0.45');
+        }
+
+        // Tooltip Interaction
+        path.addEventListener('mousemove', (e) => {
+          showTooltip(e, c, groupInfo);
+        });
+        path.addEventListener('mouseleave', hideTooltip);
+        path.addEventListener('click', (e) => {
+          e.stopPropagation();
+          showTooltip(e, c, groupInfo, true);
+        });
+
+        container.appendChild(path);
+      });
+
+      // Kazakhstan Zoom logic if scope is kazakhstan
+      if (currentMapData.scope === 'kazakhstan') {
+        viewBox = { x: 600, y: 120, w: 180, h: 100 };
+        updateSvgViewBox();
+      }
+    }
+
+    // Render Legend
+    function renderLegend() {
+      const container = document.getElementById('legendContainer');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const isRu = (currentLang === 'ru');
+
+      (currentMapData.legend || []).forEach(l => {
+        const countriesCount = (currentMapData.assignments && currentMapData.assignments[l.id]) 
+          ? currentMapData.assignments[l.id].length 
+          : 0;
+
+        const row = document.createElement('div');
+        row.className = 'p-2.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-800 transition cursor-pointer flex items-center justify-between gap-2 ' +
+          (currentHighlightedCategory === l.id ? 'ring-2 ring-cyan-400 bg-space-800' : '');
+
+        row.innerHTML = `
+          <div class="flex items-center space-x-2.5">
+            <span class="w-3.5 h-3.5 rounded-md shrink-0 shadow-sm" style="background-color: ${l.color};"></span>
+            <span class="text-xs font-bold text-slate-200">${isRu ? l.label_ru : l.label_kz}</span>
+          </div>
+          <span class="text-[10px] px-2 py-0.5 rounded-md bg-space-900 text-slate-400 font-mono font-bold">${countriesCount}</span>
+        `;
+
+        row.onclick = () => {
+          highlightCategory(currentHighlightedCategory === l.id ? null : l.id);
+        };
+
+        container.appendChild(row);
+      });
+    }
+
+    function highlightCategory(catId) {
+      currentHighlightedCategory = catId;
+      renderLegend();
+      renderMapPolygons();
+    }
+
+    // Tooltip
+    function showTooltip(e, country, groupInfo, isClick = false) {
+      const tt = document.getElementById('gisTooltip');
+      const ttName = document.getElementById('ttName');
+      const ttGroup = document.getElementById('ttGroup');
+      if (!tt) return;
+
+      const isRu = (currentLang === 'ru');
+      const name = isRu ? (country.name_ru || country.name_en) : (country.name_kz || country.name_ru);
+      ttName.textContent = `${name} (${country.id})`;
+
+      if (groupInfo) {
+        ttGroup.textContent = isRu ? groupInfo.label_ru : groupInfo.label_kz;
+        ttGroup.style.color = groupInfo.color;
+      } else {
+        ttGroup.textContent = isRu ? 'Вне классификации' : 'Санатқа кірмейді';
+        ttGroup.style.color = '#94A3B8';
+      }
+
+      const rect = document.getElementById('mapViewport').getBoundingClientRect();
+      const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+      const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+
+      tt.style.left = `${clientX - rect.left + 15}px`;
+      tt.style.top = `${clientY - rect.top + 15}px`;
+      tt.classList.remove('hidden');
+    }
+
+    function hideTooltip() {
+      const tt = document.getElementById('gisTooltip');
+      if (tt) tt.classList.add('hidden');
+    }
+
+    // Pan & Zoom Mechanics
+    const svgMap = document.getElementById('gisSvgMap');
+    const viewport = document.getElementById('mapViewport');
+
+    viewport.addEventListener('mousedown', (e) => {
+      isPanning = true;
+      startPoint = { x: e.clientX, y: e.clientY };
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isPanning) return;
+      const dx = (e.clientX - startPoint.x) * (viewBox.w / viewport.clientWidth);
+      const dy = (e.clientY - startPoint.y) * (viewBox.h / viewport.clientHeight);
+      viewBox.x -= dx;
+      viewBox.y -= dy;
+      startPoint = { x: e.clientX, y: e.clientY };
+      updateSvgViewBox();
+    });
+
+    window.addEventListener('mouseup', () => { isPanning = false; });
+
+    viewport.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const zoomFactor = e.deltaY > 0 ? 1.15 : 0.85;
+      zoomMap(zoomFactor);
+    });
+
+    function zoomMap(factor) {
+      const newW = viewBox.w * factor;
+      const newH = viewBox.h * factor;
+      if (newW < 80 || newW > 2500) return;
+      viewBox.x += (viewBox.w - newW) / 2;
+      viewBox.y += (viewBox.h - newH) / 2;
+      viewBox.w = newW;
+      viewBox.h = newH;
+      updateSvgViewBox();
+    }
+
+    function resetMapView() {
+      viewBox = (currentMapData.scope === 'kazakhstan') 
+        ? { x: 600, y: 120, w: 180, h: 100 } 
+        : { ...baseViewBox };
+      updateSvgViewBox();
+      highlightCategory(null);
+    }
+
+    function updateSvgViewBox() {
+      svgMap.setAttribute('viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}`);
+    }
+
+    // Download GeoJSON representation
+    function downloadGeoJson() {
+      const features = [];
+      const countryGroupMap = {};
+      Object.entries(currentMapData.assignments || {}).forEach(([groupId, ids]) => {
+        ids.forEach(id => { countryGroupMap[id] = groupId; });
+      });
+
+      if (typeof WORLD_COUNTRIES !== 'undefined') {
+        WORLD_COUNTRIES.forEach(c => {
+          features.push({
+            type: "Feature",
+            id: c.id,
+            properties: {
+              name_kz: c.name_kz,
+              name_ru: c.name_ru,
+              group: countryGroupMap[c.id] || "unassigned",
+              capital: c.capital,
+              center: c.center
+            },
+            geometry: {
+              type: "Polygon",
+              coordinates: [c.center || [0, 0]]
+            }
+          });
+        });
+      }
+
+      const geoJson = {
+        type: "FeatureCollection",
+        map_title: currentMapData.title_ru,
+        qgis_crs: "EPSG:4326",
+        features: features
+      };
+
+      const blob = new Blob([JSON.stringify(geoJson, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `geotany_map_${currentMapData.id}.geojson`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // Boot
+    window.addEventListener('DOMContentLoaded', () => {
+      updateLocalizedTexts();
+      renderLegend();
+      renderMapPolygons();
+    });
+  </script>
+
+</body>
+</html>

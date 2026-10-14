@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="kk" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ҰБТ География — 24-нұсқа | GEOTANY</title>
+
+  <!-- AUTH GUARD: RESTRICT DIRECT ACCESS WITHOUT VALID SESSION -->
+  <style id="authCloak">body { display: none !important; }</style>
+  <script>
+    (function() {
+      try {
+        var isAdmin = localStorage.getItem('geotany_admin_auth') === 'true';
+        var sessionStr = localStorage.getItem('geotany_user_session');
+        var isAuthorized = isAdmin;
+        if (!isAuthorized && sessionStr) {
+          var s = JSON.parse(sessionStr);
+          if (s && s.email && (s.courseCode || s.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        var profileStr = localStorage.getItem('geotany_user_profile');
+        if (!isAuthorized && profileStr) {
+          var p = JSON.parse(profileStr);
+          if (p && p.email && (p.courseCode || p.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        if (!isAuthorized) {
+          window.location.replace('../geotanu.html?error=unauthorized_course');
+          return;
+        }
+        var cloak = document.getElementById('authCloak');
+        if (cloak) cloak.remove();
+      } catch (e) {
+        window.location.replace('../geotanu.html?error=unauthorized_course');
+      }
+    })();
+  </script>
+
+  <!-- TAILWIND CSS & FONTS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            space: {
+              800: '#1E293B',
+              850: '#151E2E',
+              900: '#0F172A',
+              950: '#0B0F19',
+            },
+            brand: {
+              400: '#34D399',
+              500: '#10B981',
+              600: '#059669',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0B0F19;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1E293B;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+    .glow-gold {
+      box-shadow: 0 0 25px -5px rgba(245, 158, 11, 0.25);
+    }
+    .glow-emerald {
+      box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.25);
+    }
+  </style>
+</head>
+<body class="bg-space-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-brand-500/30 selection:text-brand-400">
+
+  <!-- TOP APP BAR -->
+  <header class="sticky top-0 z-40 bg-space-950/90 backdrop-blur-xl border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+      
+      <!-- Left: Back Button & Title -->
+      <div class="flex items-center space-x-3">
+        <a id="btnBackToPlatform" href="../geotanu.html?lang=kz#section-testter_writing" class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 text-slate-300 hover:text-white border border-slate-700/80 text-xs sm:text-sm font-bold transition shadow-sm">
+          <span>←</span>
+          <span id="navBackText" class="hidden sm:inline">Артқа</span>
+        </a>
+        <div class="h-6 w-px bg-slate-800 hidden sm:block"></div>
+        <div class="flex items-center space-x-2">
+          <span class="text-xs px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-400 font-extrabold border border-amber-500/20">
+            ҰБТ #24
+          </span>
+          <span id="navVariantTitle" class="text-sm font-bold text-slate-200 hidden md:inline truncate max-w-xs">
+            24-нұсқа: ҰБТ кешенді сынағы (35 сұрақ)
+          </span>
+        </div>
+      </div>
+
+      <!-- Center: Exam Timer (Visible in Exam mode) -->
+      <div id="examTimerWrapper" class="flex items-center space-x-2 bg-space-900 border border-slate-800 px-3 py-1.5 rounded-xl shadow-inner">
+        <span class="text-xs text-slate-400 font-medium hidden sm:inline" id="lblTimerText">Уақыт:</span>
+        <span class="text-amber-400 text-sm font-black tracking-wider font-mono" id="examTimer">45:00</span>
+      </div>
+
+      <!-- Right: Mode Switcher & Language Switcher -->
+      <div class="flex items-center space-x-2 sm:space-x-3">
+        
+        <!-- Mode Switcher -->
+        <div class="flex items-center bg-space-900 p-0.5 rounded-xl border border-slate-800 text-xs font-bold">
+          <button id="modeExamBtn" onclick="setMode('exam')" class="px-2.5 py-1 rounded-lg bg-amber-500 text-space-950 font-black transition shadow-sm">
+            <span>🎯</span>
+            <span class="hidden sm:inline ml-1" id="lblModeExam">Емтихан</span>
+          </button>
+          <button id="modeReviewBtn" onclick="setMode('review')" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition">
+            <span>💡</span>
+            <span class="hidden sm:inline ml-1" id="lblModeReview">Талдау</span>
+          </button>
+        </div>
+
+        <!-- Language Switcher -->
+        <div class="flex items-center bg-space-900 p-0.5 rounded-xl border border-slate-800 text-xs font-bold">
+          <button id="langKzBtn" onclick="setLang('kz')" class="px-2 py-1 rounded-lg bg-brand-500 text-space-950 font-black transition">
+            KZ
+          </button>
+          <button id="langRuBtn" onclick="setLang('ru')" class="px-2 py-1 rounded-lg text-slate-400 hover:text-white transition">
+            RU
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN WRAPPER -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
+
+    <!-- HERO META CARD -->
+    <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-space-900 via-space-850 to-space-900 border border-slate-800 shadow-xl relative overflow-hidden">
+      <!-- Glow decoration -->
+      <div class="absolute -right-20 -top-20 w-60 h-60 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-20 -bottom-20 w-60 h-60 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10 space-y-4">
+        
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <span class="px-3 py-1 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 font-extrabold text-xs tracking-wider uppercase">
+              ⚡ ҰБТ ТЕСТ СЫНАҒЫ • НҰСҚА №24
+            </span>
+            <span id="heroDepartmentBadge" class="px-3 py-1 rounded-xl bg-brand-500/10 border border-brand-500/30 text-brand-400 font-bold text-xs">
+              Қазақ бөлімі
+            </span>
+          </div>
+
+          <!-- Prev / Next Variant Nav -->
+          <div class="flex items-center space-x-2 text-xs font-bold">
+            <a href="test_23.html" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition flex items-center space-x-1"><span>←</span><span>Алдыңғы</span></a>
+            <span class="text-slate-500">|</span>
+            <a href="test_25.html" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition flex items-center space-x-1"><span>Келесі</span><span>→</span></a>
+          </div>
+        </div>
+
+        <div>
+          <h1 id="heroTitle" class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            24-нұсқа: ҰБТ кешенді сынағы (35 сұрақ)
+          </h1>
+          <p id="heroDesc" class="text-sm text-slate-300 mt-2 max-w-3xl leading-relaxed">
+            1–25 біртаңдаулы және 26–35 көптаңдаулы ҰБТ сұрақтары. Жалпы балл есебі және толық авторлық разбор.
+          </p>
+        </div>
+
+        <!-- Metrics Row -->
+        <div class="flex flex-wrap gap-2.5 pt-2 border-t border-slate-800/80">
+          <div class="px-3 py-1.5 rounded-xl bg-space-850 border border-slate-800 text-xs font-medium text-slate-300 flex items-center space-x-1.5">
+            <span>📝</span>
+            <span id="lblMetaQuestions">35 сұрақ (43 балл)</span>
+          </div>
+          <div class="px-3 py-1.5 rounded-xl bg-space-850 border border-slate-800 text-xs font-medium text-slate-300 flex items-center space-x-1.5">
+            <span>⏱️</span>
+            <span id="lblMetaTime">40 минут</span>
+          </div>
+          <div class="px-3 py-1.5 rounded-xl bg-space-850 border border-slate-800 text-xs font-medium text-slate-300 flex items-center space-x-1.5">
+            <span>🎯</span>
+            <span id="lblMetaPassing">Шекті балл: 70% (30 балл)</span>
+          </div>
+          <div class="px-3 py-1.5 rounded-xl bg-space-850 border border-slate-800 text-xs font-medium text-amber-400 flex items-center space-x-1.5">
+            <span>🏆</span>
+            <span id="lblMetaXp">Сыйлық: +80 XP</span>
+          </div>
+          <div class="px-3 py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-bold flex items-center space-x-1.5">
+            <span>⚡</span>
+            <span id="lblMetaOnline">100% Онлайн тест</span>
+          </div>
+        </div>
+
+        <!-- Previous Score Alert Banner if already attempted -->
+        <div id="prevScoreBanner" class="hidden p-3.5 rounded-2xl bg-brand-500/10 border border-brand-500/30 text-xs sm:text-sm text-brand-300 flex items-center justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <span>✅</span>
+            <span id="prevScoreText">Сіз бұл нұсқаны бұрын тапсырдыңыз.</span>
+          </div>
+          <button onclick="retakeExam()" class="px-3 py-1 rounded-xl bg-brand-500 text-space-950 font-black text-xs hover:bg-brand-400 transition">
+            Қайта тапсыру
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- MAIN TWO COLUMN LAYOUT: SIDEBAR JUMP MATRIX + QUESTIONS LIST -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+      <!-- LEFT / STICKY SIDEBAR: QUESTION JUMP MATRIX -->
+      <aside class="lg:col-span-4 xl:col-span-3 sticky top-20 z-30 space-y-4">
+        <div class="p-5 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-4">
+          
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-black uppercase tracking-wider text-slate-400" id="lblNavigatorTitle">
+              Сұрақтар навигаторы
+            </h3>
+            <span id="navProgressBadge" class="text-xs px-2 py-0.5 rounded-md bg-space-850 text-amber-400 font-bold border border-slate-700">
+              0 / 35
+            </span>
+          </div>
+
+          <!-- Progress Bar -->
+          <div class="w-full bg-space-850 h-2 rounded-full overflow-hidden border border-slate-800">
+            <div id="examProgressBar" class="h-full bg-gradient-to-r from-amber-500 to-brand-500 w-0 transition-all duration-300"></div>
+          </div>
+
+          <!-- Jump Matrix Grid -->
+          <div id="questionMatrix" class="grid grid-cols-5 sm:grid-cols-8 lg:grid-cols-5 gap-1.5 max-h-[50vh] overflow-y-auto pr-1">
+            <!-- Dynamically populated buttons -->
+          </div>
+
+          <!-- Action Buttons in Sidebar -->
+          <div class="pt-3 border-t border-slate-800/80 space-y-2">
+            <button id="btnFinishExam" onclick="confirmSubmitExam()" class="w-full py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-brand-500 hover:from-amber-400 hover:to-brand-400 text-space-950 font-black text-xs sm:text-sm shadow-lg shadow-amber-500/20 transition flex items-center justify-center space-x-2">
+              <span>🏁</span>
+              <span id="lblBtnFinishExam">Емтиханды аяқтау</span>
+            </button>
+            <button id="btnQuickReview" onclick="setMode('review')" class="w-full py-2.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-bold transition flex items-center justify-center space-x-1.5">
+              <span>💡</span>
+              <span id="lblBtnQuickReview">Талдауды ашу</span>
+            </button>
+          </div>
+
+        </div>
+      </aside>
+
+      <!-- RIGHT COLUMN: QUESTIONS LIST -->
+      <section class="lg:col-span-8 xl:col-span-9 space-y-5">
+        
+        <div id="questionsContainer" class="space-y-5">
+          <!-- Dynamically populated question cards -->
+        </div>
+
+        <!-- BOTTOM FINISH BAR -->
+        <div class="p-6 rounded-3xl bg-space-900 border border-slate-800 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>
+            <h4 class="text-sm font-bold text-white" id="lblBottomBarTitle">Барлық сұрақтарға жауап бердіңіз бе?</h4>
+            <p class="text-xs text-slate-400 mt-0.5" id="lblBottomBarDesc">Нәтижені растап, балл мен XP алу үшін емтиханды аяқтаңыз.</p>
+          </div>
+          <button onclick="confirmSubmitExam()" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-brand-500 hover:from-amber-400 hover:to-brand-400 text-space-950 font-black text-xs sm:text-sm shadow-md transition flex items-center justify-center space-x-2">
+            <span>🏁</span>
+            <span id="lblBottomBarBtn">Тестті аяқтау және тексеру</span>
+          </button>
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- RESULT & CELEBRATION MODAL -->
+  <div id="resultModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden">
+    <div class="bg-space-900 border border-slate-700 w-full max-w-lg rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden space-y-6">
+      
+      <canvas id="confettiCanvas" class="absolute inset-0 pointer-events-none z-10 w-full h-full"></canvas>
+
+      <div class="relative z-20 text-center space-y-3">
+        <div id="modalIcon" class="w-16 h-16 mx-auto rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-3xl">
+          🏆
+        </div>
+        <h3 id="modalTitle" class="text-2xl font-black text-white">
+          Сынақ аяқталды!
+        </h3>
+        <p id="modalSubtitle" class="text-xs text-slate-300">
+          Сіздің осы нұсқа бойынша ресми ҰБТ нәтижеңіз:
+        </p>
+      </div>
+
+      <!-- Score Box -->
+      <div class="relative z-20 p-5 rounded-2xl bg-space-850 border border-slate-800 text-center space-y-2">
+        <div class="text-4xl sm:text-5xl font-black text-amber-400 font-mono" id="modalScoreDisplay">
+          0 / 43
+        </div>
+        <div class="text-xs font-bold text-slate-400" id="modalPercentageDisplay">
+          0% • Нәтиже
+        </div>
+        <div id="modalStatusBadge" class="inline-block px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wide bg-brand-500/20 text-brand-400 border border-brand-500/30">
+          Өтті
+        </div>
+      </div>
+
+      <!-- Breakdown Grid -->
+      <div class="relative z-20 grid grid-cols-3 gap-2 text-center text-xs">
+        <div class="p-3 rounded-xl bg-space-950 border border-slate-800">
+          <div class="text-emerald-400 font-black text-base" id="modalCorrectCount">0</div>
+          <div class="text-slate-400 text-[10px] mt-0.5" id="lblModalCorrect">Дұрыс</div>
+        </div>
+        <div class="p-3 rounded-xl bg-space-950 border border-slate-800">
+          <div class="text-amber-400 font-black text-base" id="modalPartialCount">0</div>
+          <div class="text-slate-400 text-[10px] mt-0.5" id="lblModalPartial">Жартылай</div>
+        </div>
+        <div class="p-3 rounded-xl bg-space-950 border border-slate-800">
+          <div class="text-rose-400 font-black text-base" id="modalWrongCount">0</div>
+          <div class="text-slate-400 text-[10px] mt-0.5" id="lblModalWrong">Қате</div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="relative z-20 space-y-2">
+        <button onclick="closeModalAndShowReview()" class="w-full py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-space-950 font-black text-xs sm:text-sm shadow-md transition flex items-center justify-center space-x-2">
+          <span>🔍</span>
+          <span id="lblModalBtnReview">Қателерді және толық талдауды көру</span>
+        </button>
+        <button onclick="retakeExam()" class="w-full py-2.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-bold transition flex items-center justify-center space-x-2">
+          <span>🔄</span>
+          <span id="lblModalBtnRetake">Қайта тапсыру</span>
+        </button>
+        <a id="modalBackLink" href="../geotanu.html?lang=kz#section-testter_writing" class="w-full py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-slate-400 hover:text-white text-xs font-bold transition flex items-center justify-center space-x-2">
+          <span>📋</span>
+          <span id="lblModalBtnCatalog">Нұсқалар каталогына оралу</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SCRIPT ENGINE -->
+  <script>
+    const variantData = {"id": 24, "title": "24-нұсқа: ҰБТ кешенді сынағы (35 сұрақ)", "desc": "1–25 біртаңдаулы және 26–35 көптаңдаулы ҰБТ сұрақтары. Жалпы балл есебі және толық авторлық разбор.", "timeMinutes": 40, "passingScore": 24, "questions": [{"id": 1, "q": "Қазақтың жеті кереметі қатарына кірмейтін табиғи нысанды анықтаңыз.", "isMulti": false, "options": ["Кавказ", "Карпат", "Жетісу", "Ұлытау"], "answer": 2, "explanation": "Дұрыс жауабы: C) Жетісу. Бәйтерек, Домбыра, Алтын Адам мәдени-тарихи нысандар. Жетісу үлкен табиғи-жасанды аймақ.", "q_ru": "Қазақтың жеті кереметі қатарына кірмейтін табиғи нысанды определите.", "options_ru": ["Кавказ", "Карпаты", "Жетісу", "Улытау"], "explanation_ru": "Дұрыс жауабы: C) Жетісу. Бәйтерек, Домбыра, Золото Адам мәдени-тарихи нысандар. Жетісу үлкен табиғи-жасанды аймақ."}, {"id": 2, "q": "Тоғайлы орман шоқтары кездесетін аймақты көрсетіңіз.", "isMulti": false, "options": ["шөлейт", "ферраллитті топырақ", "экваторлық ылғалды ормандар", "Шөл"], "answer": 3, "explanation": "Дұрыс жауабы: D) Шөл. Тоғайлы ормандар — шөл және шөлейт зоналарындағы ірі өзендердің (Сырдария, Іле, Орал) ылғалды жайылмаларын бойлай өсетін ну ормандар мен бұталар.", "q_ru": "Тоғайлы орман шоқтары кездесетін аймақты көрсетіңіз.", "options_ru": ["шөлейт", "ферраллитті топырақ", "экваторлық ылғалды ормандар", "Пустыня"], "explanation_ru": "Дұрыс жауабы: D) Пустыня. Тоғайлы ормандар — шөл және шөлейт зоналарындағы ірі өзендердің (Сырдарья, Или, Урал) ылғалды жайылмаларын бойлай өсетін ну ормандар мен бұталар."}, {"id": 3, "q": "Топырақтың құнарлылығын арттыру шараларын анықтаңыз.", "isMulti": false, "options": ["Калимантан", "Мелиорация", "Баффин Жері", "Суматра"], "answer": 1, "explanation": "Дұрыс жауабы: B) Мелиорация. Топырақты жақсартуға бағытталған (суландыру, құрғату, тұзын шаю, орман отырғызу) шаралар жиынтығы мелиорация (жақсарту) деп аталады.", "q_ru": "Топырақтың құнарлылығын арттыру шараларын определите.", "options_ru": ["Калимантан", "Мелиорация", "Баффин Жері", "Суматра"], "explanation_ru": "Дұрыс жауабы: B) Мелиорация. Топырақты жақсартуға бағытталған (суландыру, құрғату, тұзын шаю, орман отырғызу) шаралар жиынтығы мелиорация (жақсарту) деп аталады."}, {"id": 4, "q": "1998 жылы құстар популяцияларын қорғау мақсатында құрылған қорықты", "isMulti": false, "options": ["Ақсу-Жабағылы", "Батыс Алтай", "Алакөл", "Алматы"], "answer": 2, "explanation": "Дұрыс жауабы: C) Алакөл. Алакөл мемлекеттік табиғи қорығы сулы-батпақты көлдердегі сирек құстарды (реликті шағала, бірқазан) қорғау үшін 1998 жылы ұйымдастырылған. 3-бөлім: 21-30 сұрақтар", "q_ru": "1998 жылы құстар популяцияларын қорғау мақсатында құрылған қорықты", "options_ru": ["Аксу-Жабағылы", "Батыс Алтай", "Алаколь", "Алматы"], "explanation_ru": "Дұрыс жауабы: C) Алаколь. Алаколь мемлекеттік табиғи қорығы сулы-батпақты көлдердегі сирек құстарды (реликті шағала, бірқазан) қорғау үшін 1998 жылы ұйымдастырылған. 3-бөлім: 21-30 сұрақтар"}, {"id": 5, "q": "Л.С. Берг «Күлгін және қара топырақ қатар кездеседі» деп сипаттаған табиғат", "isMulti": false, "options": ["Орманды дала", "Қызыл-сары ферраллитті топырақ", "Шымды-күлгін топырақ", "Күлгін топырақ"], "answer": 0, "explanation": "Дұрыс жауабы: A) Орманды дала. Орманды дала — өтпелі зона. Мұнда ормандардың астында сұр/күлгін топырақтар, ал ашық далалық телімдерде қара топырақтар кезектесіп қатар кездеседі.", "q_ru": "Л.С. Берг «Күлгін және қара топырақ қатар кездеседі» деп сипаттаған табиғат", "options_ru": ["Лесостепь", "Қызыл-сары ферраллитті топырақ", "Шымды-күлгін топырақ", "Подзолистая почва"], "explanation_ru": "Дұрыс жауабы: A) Лесостепь. Лесостепь — өтпелі зона. Мұнда ормандардың астында сұр/күлгін топырақтар, ал ашық далалық телімдерде қара топырақтар кезектесіп қатар кездеседі."}, {"id": 6, "q": "Аумағына 86 мұздық енетін қорықты көрсетіңіз.", "isMulti": false, "options": ["Алматы", "Батыс Алтай", "Қаратау", "Наурызым"], "answer": 0, "explanation": "Дұрыс жауабы: A) Алматы. Алматы табиғи қорығы Іле Алатауының биік таулы бөлігін қамтиды, оның аумағында көптеген ірі тау мұздықтары орналасқан.", "q_ru": "Аумағына 86 мұздық енетін қорықты көрсетіңіз.", "options_ru": ["Алматы", "Батыс Алтай", "Каратау", "Наурызым"], "explanation_ru": "Дұрыс жауабы: A) Алматы. Алматы табиғи қорығы Или Алатауының биік таулы бөлігін қамтиды, оның аумағында көптеген ірі тау мұздықтары орналасқан."}, {"id": 7, "q": "... Марқакөл қорығының белгісі болып саналады.", "isMulti": false, "options": ["Майқап балығы", "Мичиган", "Гурон", "Онега"], "answer": 0, "explanation": "Дұрыс жауабы: A) Майқап балығы. Марқакөл көлінде ғана тіршілік ететін, эндемик балық түрі — майқап (ускуч немесе ленок) осы қорықтың басты символы саналады.", "q_ru": "... Маркаколь қорығының белгісі болып саналады.", "options_ru": ["Майқап балығы", "Мичиган", "Гурон", "Онега"], "explanation_ru": "Дұрыс жауабы: A) Майқап балығы. Маркаколь көлінде ғана тіршілік ететін, эндемик балық түрі — майқап (ускуч немесе ленок) осы қорықтың басты символы саналады."}, {"id": 8, "q": "Оңтүстік шегарасы 51° және 50° солтүстік ендіктер арқылы өтетін табиғат", "isMulti": false, "options": ["Дала", "Экваторлық ылғалды ормандар", "Саванналар мен сирек ормандар", "Орманды тундра"], "answer": 0, "explanation": "Дұрыс жауабы: A) Дала. Қазақстандағы ең ауқымды Дала зонасының оңтүстік шекарасы шамамен 50-51-ші параллельдер бойымен өтіп, одан әрі шөлейтке ұласады.", "q_ru": "Оңтүстік шегарасы 51° және 50° солтүстік ендіктер арқылы өтетін табиғат", "options_ru": ["Степь", "Экваторлық ылғалды ормандар", "Саванналар мен сирек ормандар", "Орманды тундра"], "explanation_ru": "Дұрыс жауабы: A) Степь. Қазақстандағы ең ауқымды Степь зонасының оңтүстік шекарасы шамамен 50-51-ші параллельдер бойымен өтіп, одан әрі шөлейтке ұласады."}, {"id": 9, "q": "Қуаң даланың топырағын көрсетіңіз.", "isMulti": false, "options": ["Ашық қара қоңыр", "қорғасын", "Баренц теңізі", "Жезқазған"], "answer": 0, "explanation": "Дұрыс жауабы: A) Ашық қара қоңыр. Құрғақ (қуаң) дала мен шөлейт аумағында қарашіріндісі аздау, бірақ егіншілікке ішінара жарамды қара қоңыр (ашық қара қоңыр) топырақтар қалыптасқан.", "q_ru": "Қуаң даланың топырағын көрсетіңіз.", "options_ru": ["Ашық қара қоңыр", "қорғасын", "Баренцево море", "Жезказган"], "explanation_ru": "Дұрыс жауабы: A) Ашық қара қоңыр. Құрғақ (қуаң) дала мен шөлейт аумағында қарашіріндісі аздау, бірақ егіншілікке ішінара жарамды қара қоңыр (ашық қара қоңыр) топырақтар қалыптасқан."}, {"id": 10, "q": "Құрылған жылдарына мән беріп, дұрыс реттілікпен жазылған нұсқаны", "isMulti": false, "options": ["Батыс Алтай", "Үстірт", "Наурызым", "Алматы"], "answer": 1, "explanation": "Дұрыс жауабы: B) Үстірт. Қорықтардың құрылған жылдары: Үстірт (1984), Батыс Алтай (1992), Алакөл (1998).", "q_ru": "Құрылған жылдарына мән беріп, дұрыс реттілікпен жазылған нұсқаны", "options_ru": ["Батыс Алтай", "Үстірт", "Наурызым", "Алматы"], "explanation_ru": "Дұрыс жауабы: B) Үстірт. Қорықтардың құрылған жылдары: Үстірт (1984), Батыс Алтай (1992), Алаколь (1998)."}, {"id": 11, "q": "Ақсу-Жабағылы қорығына сәйкес келетін суреттерді белгілеңіз.", "isMulti": false, "options": ["Өзбекстан", "I мен IV", "Швеция", "Қытай"], "answer": 1, "explanation": "Дұрыс жауабы: B) I мен IV. Бұл қорықта биік таулы табиғат кешендері, Тянь-Шань қоңыр аюы, қар барысы және Қазақстанның символы — Г рейг қызғалдағы қорғалады.", "q_ru": "Аксу-Жабағылы қорығына сәйкес келетін суреттерді отметьте.", "options_ru": ["Узбекистан", "I мен IV", "Швеция", "Китай"], "explanation_ru": "Дұрыс жауабы: B) I мен IV. Бұл қорықта биік таулы табиғат кешендері, Тянь-Шань қоңыр аюы, қар барысы және Қазақстанның символы — Г рейг қызғалдағы қорғалады."}, {"id": 12, "q": "Юра дәуірінің өсімдіктері мен жануарларының қалдықтары бар қорықты", "isMulti": false, "options": ["Барсакелмес", "Алматы", "Қаратау", "Ақсу-Жабағылы (Қаратау қорығы маңы немесе палеонтологиялық"], "answer": 3, "explanation": "Дұрыс жауабы: D) Ақсу-Жабағылы (Қаратау қорығы маңы немесе палеонтологиялық. орындар) Ақсу-Жабағылы мен Қаратау тауларының аумағында юра кезеңінде өмір сүрген қазба өсімдіктер мен ұшатын кесірткелердің тасқа айналған қалдықтары сақталған.", "q_ru": "Юра дәуірінің өсімдіктері мен жануарларының қалдықтары бар қорықты", "options_ru": ["Барсакелмес", "Алматы", "Каратау", "Аксу-Жабағылы (Каратау қорығы маңы немесе палеонтологиялық"], "explanation_ru": "Дұрыс жауабы: D) Аксу-Жабағылы (Каратау қорығы маңы немесе палеонтологиялық. орындар) Аксу-Жабағылы мен Каратау тауларының аумағында юра кезеңінде өмір сүрген қазба өсімдіктер мен ұшатын кесірткелердің тасқа айналған қалдықтары сақталған."}, {"id": 13, "q": "III суреттегі құс кездесетін қорықты табыңыз. (Егер суретте Қоқиқаз болса)", "isMulti": false, "options": ["Наурызым", "Қорғалжын", "Қаратау", "Барсакелмес"], "answer": 1, "explanation": "Дұрыс жауабы: B) Қорғалжын. Ақмола облысындағы Қорғалжын қорығы қызғылт қоқиқаздардың (фламинго) Қазақстандағы ең солтүстіктегі ұя салып, жұмыртқалайтын мекені.", "q_ru": "III суреттегі құс кездесетін қорықты найдите. (Егер суретте Қоқиқаз болса)", "options_ru": ["Наурызым", "Коргалжын", "Каратау", "Барсакелмес"], "explanation_ru": "Дұрыс жауабы: B) Коргалжын. Ақмола облысындағы Коргалжын қорығы қызғылт қоқиқаздардың (фламинго) Қазақстандағы ең солтүстіктегі ұя салып, жұмыртқалайтын мекені."}, {"id": 14, "q": "II суреттегі жануарлар мекендейтін қорықтың экологиялық жағдайын", "isMulti": false, "options": ["Титан", "Көл суының тартылуы", "Барит", "Боксит"], "answer": 1, "explanation": "Дұрыс жауабы: B) Көл суының тартылуы. Арал теңізінің тартылуына байланысты Барсакелмес аралы (қорығы) құрлыққа қосылып кетті, бұл экологиялық жағдайды қиындатып, жануарларды көшіруге мәжбүр етті. 4-бөлім: 31-40 сұрақтар", "q_ru": "II суреттегі жануарлар мекендейтін қорықтың экологиялық жағдайын", "options_ru": ["Титан", "Көл суының тартылуы", "Барит", "Бокситы"], "explanation_ru": "Дұрыс жауабы: B) Көл суының тартылуы. Аральское море теңізінің тартылуына байланысты Барсакелмес аралы (қорығы) құрлыққа қосылып кетті, бұл экологиялық жағдайды қиындатып, жануарларды көшіруге мәжбүр етті. 4-бөлім: 31-40 сұрақтар"}, {"id": 15, "q": "Қорықтар мен олардың орналасқан облыстарын сәйкестендіріңіз.", "isMulti": false, "options": ["Марқакөл → С) ШҚО; Қаратау → F) Түркістан облысы", "Үстірт", "Наурызым", "Барсакелмес"], "answer": 0, "explanation": "Дұрыс жауабы: A) Марқакөл → С) ШҚО; Қаратау → F) Түркістан облысы. Марқакөл табиғи қорығы Шығыс Қазақстан облысының Алтай тауларында, ал Қаратау қорығы Түркістан облысындағы Қаратау жотасында орналасқан.", "q_ru": "Қорықтар мен олардың орналасқан облыстарын сәйкестендіріңіз.", "options_ru": ["Маркаколь → С) ШҚО; Каратау → F) Түркістан облысы", "Үстірт", "Наурызым", "Барсакелмес"], "explanation_ru": "Дұрыс жауабы: A) Маркаколь → С) ШҚО; Каратау → F) Түркістан облысы. Маркаколь табиғи қорығы Шығыс Казахстан облысының Алтай тауларында, ал Каратау қорығы Түркістан облысындағы Каратау жотасында орналасқан."}, {"id": 16, "q": "Қазақстандағы табиғат зоналары мен олардың түрлерін сәйкестендіріңіз.", "isMulti": false, "options": ["Қоңыржай белдеудің аралас ормандары", "Негізгі → С) Дала", "Экваторлық ылғалды ормандар", "Тайга"], "answer": 1, "explanation": "Дұрыс жауабы: B) Негізгі → С) Дала. Қазақстанда негізгі зоналар: Дала және Шөл. Ал орман мен даланың, дала мен шөлдің арасындағы Шөлейт — өтпелі зона болып табылады.", "q_ru": "Қазақстандағы табиғат зоналары мен олардың түрлерін сәйкестендіріңіз.", "options_ru": ["Қоңыржай белдеудің аралас ормандары", "Негізгі → С) Степь", "Экваторлық ылғалды ормандар", "Тайга"], "explanation_ru": "Дұрыс жауабы: B) Негізгі → С) Степь. Қазақстанда негізгі зоналар: Степь және Пустыня. Ал орман мен даланың, дала мен шөлдің арасындағы Полупустыня — өтпелі зона болып табылады."}, {"id": 17, "q": "Қазақстан табиғат зоналары мен оларға тән жануарларды сәйкестендіріңіз.", "isMulti": false, "options": ["Саванналар мен сирек ормандар", "Экваторлық ылғалды ормандар", "Шөлейттер", "Дала зонасы → А) Суыр, дала тышқаны, аламан; Шөл зонасы → С)"], "answer": 3, "explanation": "Дұрыс жауабы: D) Дала зонасы → А) Суыр, дала тышқаны, аламан; Шөл зонасы → С). Қарақұйрық, ақбөкен, қосаяқ Далада шөппен қоректенетін кеміргіштер (суыр, аламан) көп. Шөлде ұзақ уақыт сусыз жүре алатын қарақұйрық, ақбөкен (киік) және қосаяқ тіршілік етеді.", "q_ru": "Казахстан табиғат зоналары мен оларға тән жануарларды сәйкестендіріңіз.", "options_ru": ["Саванналар мен сирек ормандар", "Экваторлық ылғалды ормандар", "Шөлейттер", "Степь зонасы → А) Суыр, дала тышқаны, аламан; Пустыня зонасы → С)"], "explanation_ru": "Дұрыс жауабы: D) Степь зонасы → А) Суыр, дала тышқаны, аламан; Пустыня зонасы → С). Қарақұйрық, ақбөкен, қосаяқ Далада шөппен қоректенетін кеміргіштер (суыр, аламан) көп. Шөлде ұзақ уақыт сусыз жүре алатын қарақұйрық, ақбөкен (киік) және қосаяқ тіршілік етеді."}, {"id": 18, "q": "Эндемик жануарлар мен олардың мекендейтін қорықтарын сәйкестендіріңіз.", "isMulti": false, "options": ["Уран", "Аққанат тырна → D) Қорғалжын қорығы", "Қоңыр көмір", "Тас көмір"], "answer": 1, "explanation": "Дұрыс жауабы: B) Аққанат тырна → D) Қорғалжын қорығы. Е) Марқакөл қорығы Майқап (ленок) балығы тек Марқакөлде кездеседі. Аққанат тырна сияқты сирек құстар Қорғалжынның немесе Наурзымның сулы-батпақты алқаптарында қорғалады.", "q_ru": "Эндемик жануарлар мен олардың мекендейтін қорықтарын сәйкестендіріңіз.", "options_ru": ["Уран", "Аққанат тырна → D) Коргалжын қорығы", "Бурый уголь", "Каменный уголь"], "explanation_ru": "Дұрыс жауабы: B) Аққанат тырна → D) Коргалжын қорығы. Е) Маркаколь қорығы Майқап (ленок) балығы тек Марқакөлде кездеседі. Аққанат тырна сияқты сирек құстар Қорғалжынның немесе Наурзымның сулы-батпақты алқаптарында қорғалады."}, {"id": 19, "q": "Ерекше қорғалатын аймақтар мен олардың мысалдарын сәйкестендіріңіз.", "isMulti": false, "options": ["Шарын", "Қатонқарағай", "Ұлттық парк → В) Баянауыл; Табиғат ескерткіші → Е) Қаздың қайтуы", "Бурабай"], "answer": 2, "explanation": "Дұрыс жауабы: C) Ұлттық парк → В) Баянауыл; Табиғат ескерткіші → Е) Қаздың қайтуы. Қазақстандағы тұңғыш құрылған ұлттық табиғи парк — Баянауыл (1985 ж.). «Қаздың қайтуы» — палеонтологиялық табиғат ескерткіші.", "q_ru": "Ерекше қорғалатын аймақтар мен олардың мысалдарын сәйкестендіріңіз.", "options_ru": ["Чарын", "Қатонқарағай", "Ұлттық парк → В) Баянауыл; Табиғат ескерткіші → Е) Қаздың қайтуы", "Бурабай"], "explanation_ru": "Дұрыс жауабы: C) Ұлттық парк → В) Баянауыл; Табиғат ескерткіші → Е) Қаздың қайтуы. Қазақстандағы тұңғыш құрылған ұлттық табиғи парк — Баянауыл (1985 ж.). «Қаздың қайтуы» — палеонтологиялық табиғат ескерткіші."}, {"id": 20, "q": "Қазақстаның жазық бөлігі арқылы өтетін негізгі табиғат зоналарын анықтаңыз.", "isMulti": false, "options": ["Орманды тундра", "Саванналар мен сирек ормандар", "Экваторлық ылғалды ормандар", "Дала, С) Шөлейт, Е) Шөл, F) Орманды дала"], "answer": 3, "explanation": "Дұрыс жауабы: D) Дала, С) Шөлейт, Е) Шөл, F) Орманды дала. Қазақстанның жазық аумағында солтүстіктен оңтүстікке қарай төрт табиғат зонасы кезекпен ауысады: Орманды дала → Дала → Шөлейт → Шөл.", "q_ru": "Қазақстаның жазық бөлігі арқылы өтетін негізгі табиғат зоналарын определите.", "options_ru": ["Орманды тундра", "Саванналар мен сирек ормандар", "Экваторлық ылғалды ормандар", "Степь, С) Полупустыня, Е) Пустыня, F) Лесостепь"], "explanation_ru": "Дұрыс жауабы: D) Степь, С) Полупустыня, Е) Пустыня, F) Лесостепь. Қазақстанның жазық аумағында солтүстіктен оңтүстікке қарай төрт табиғат зонасы кезекпен ауысады: Лесостепь → Степь → Полупустыня → Пустыня."}, {"id": 21, "q": "Табиғат ескерткіштерін көрсетіңіз.", "isMulti": false, "options": ["Боксит", "Күміс борлар", "Қорғасын", "Мыс"], "answer": 1, "explanation": "Дұрыс жауабы: B) Күміс борлар. Табиғат ескерткіштері — ғылыми, тарихи немесе эстетикалық маңызы зор, көлемі шағын жекелеген табиғи нысандар.", "q_ru": "Табиғат ескерткіштерін көрсетіңіз.", "options_ru": ["Бокситы", "Серебро борлар", "Свинец", "Медь"], "explanation_ru": "Дұрыс жауабы: B) Серебро борлар. Табиғат ескерткіштері — ғылыми, тарихи немесе эстетикалық маңызы зор, көлемі шағын жекелеген табиғи нысандар."}, {"id": 22, "q": "Шөлейт зонасының өзенін (-дерін) анықтаңыз.", "isMulti": false, "options": ["Торғай, F) Сарысу", "Қаратал", "Ақсу", "Торғай"], "answer": 0, "explanation": "Дұрыс жауабы: A) Торғай, F) Сарысу. Сарысу мен Торғай өзендері Орталық Қазақстанның дала және шөлейт аймақтарымен ағып, шөлді аумақтардағы көлдерге немесе құмдарға сіңіп жоғалады.", "q_ru": "Полупустыня зонасының өзенін (-дерін) определите.", "options_ru": ["Тургай, F) Сарысу", "Каратал", "Аксу", "Тургай"], "explanation_ru": "Дұрыс жауабы: A) Тургай, F) Сарысу. Сарысу мен Тургай өзендері Орталық Қазақстанның дала және шөлейт аймақтарымен ағып, шөлді аумақтардағы көлдерге немесе құмдарға сіңіп жоғалады."}, {"id": 23, "q": "Сор топырақта қарағай өсетін қорықты көрсетіңіз.", "isMulti": false, "options": ["Сорлар", "Қара-қоңыр топырақ", "Наурызым", "Қоңыр топырақ"], "answer": 2, "explanation": "Дұрыс жауабы: C) Наурызым. Наурызым қорығының басты ерекшелігі — мұнда кәдімгі қарағайлар әлемде өте сирек кездесетін жағдайда, яғни сортаң, тұзды топырақта өседі.", "q_ru": "Сор топырақта қарағай өсетін қорықты көрсетіңіз.", "options_ru": ["Сорлар", "Темно-каштановая почва", "Наурызым", "Каштановая почва"], "explanation_ru": "Дұрыс жауабы: C) Наурызым. Наурызым қорығының басты ерекшелігі — мұнда кәдімгі қарағайлар әлемде өте сирек кездесетін жағдайда, яғни сортаң, тұзды топырақта өседі."}, {"id": 24, "q": "Қазақстандағы топырақтың тік (белдеуленіп) зоналылығы тән аймақтарды", "isMulti": false, "options": ["Сауыр-Тарбағатай, D) Батыс Алтай, F) Солтүстік Тянь-Шань", "Субарктикалық", "Субтропиктік", "Арктикалық"], "answer": 0, "explanation": "Дұрыс жауабы: A) Сауыр-Тарбағатай, D) Батыс Алтай, F) Солтүстік Тянь-Шань. Тік зоналылық (биіктік белдеулік) тек таулы аймақтарға тән. Таудың етегінен шыңына көтерілген сайын топырақ пен өсімдік жамылғысы белдеуленіп өзгереді.", "q_ru": "Қазақстандағы топырақтың тік (белдеуленіп) зоналылығы тән аймақтарды", "options_ru": ["Саур-Тарбагатай, D) Батыс Алтай, F) Солтүстік Тянь-Шань", "Субарктикалық", "Субтропиктік", "Арктикалық"], "explanation_ru": "Дұрыс жауабы: A) Саур-Тарбагатай, D) Батыс Алтай, F) Солтүстік Тянь-Шань. Тік зоналылық (биіктік белдеулік) тек таулы аймақтарға тән. Таудың етегінен шыңына көтерілген сайын топырақ пен өсімдік жамылғысы белдеуленіп өзгереді."}, {"id": 25, "q": "Микромемлекетті көрсетіңіз.", "isMulti": false, "options": ["Германия", "Бразилия", "Өзбекстан", "Монако"], "answer": 3, "explanation": "Дұрыс жауабы: D) Монако. Жер аумағы өте кішкентай (көбінесе 1000 шаршы шақырымнан аз) елдер микромемлекеттер немесе «ергежейлі елдер» деп аталады. Монако — Еуропадағы сондай елдердің бірі.", "q_ru": "Микромемлекетті көрсетіңіз.", "options_ru": ["Германия", "Бразилия", "Узбекистан", "Монако"], "explanation_ru": "Дұрыс жауабы: D) Монако. Жер аумағы өте кішкентай (көбінесе 1000 шаршы шақырымнан аз) елдер микромемлекеттер немесе «ергежейлі елдер» деп аталады. Монако — Еуропадағы сондай елдердің бірі."}, {"id": 26, "q": "Теңізге шыға алатын мемлекетті анықтаңыз.", "isMulti": true, "options": ["Аягөз", "Сағыз", "Лепсі", "Грекия", "Нұра", "Шарын"], "answer": [3, 4, 5], "explanation": "Дұрыс жауаптар: D, E, F. Г рекия Жерорта теңізінің жағалауында орналасқандықтан тікелей теңізге шыға алады. Чехия, Швейцария, Өзбекстан — құрлықішілік (теңізге шыға алмайтын) елдер..", "q_ru": "Теңізге шыға алатын мемлекетті определите.", "options_ru": ["Аягоз", "Сагыз", "Лепсы", "Грекия", "Нура", "Чарын"], "explanation_ru": "Дұрыс жауаптар: D, E, F. Г рекия Жерорта теңізінің жағалауында орналасқандықтан тікелей теңізге шыға алады. Чехия, Швейцария, Узбекистан — құрлықішілік (теңізге шыға алмайтын) елдер.."}, {"id": 27, "q": "А.П. Кузнецов экономикасын адамға теңеген аймақты көрсетіңіз.", "isMulti": true, "options": ["Жайық", "Сағыз", "Талас", "Шілік", "Азия", "Нұра"], "answer": [4, 5], "explanation": "Дұрыс жауаптар: E, F. Г еограф А.П. Кузнецов Азия аймағының экономикалық даму моделін адамның дене мүшелерімен (басы — Жапония, денесі — Қытай, Үндістан т.б.) салыстырып, баламалаған..", "q_ru": "А.П. Кузнецов экономикасын адамға теңеген аймақты көрсетіңіз.", "options_ru": ["Урал (Жайык)", "Сагыз", "Талас", "Чилик", "Азия", "Нура"], "explanation_ru": "Дұрыс жауаптар: E, F. Г еограф А.П. Кузнецов Азия аймағының экономикалық даму моделін адамның дене мүшелерімен (басы — Япония, денесі — Китай, Индия т.б.) салыстырып, баламалаған.."}, {"id": 28, "q": "Дүниежүзінің саяси картасында белгіленген тәуелсіз мемлекеттердің саны", "isMulti": true, "options": ["195", "Ақсу", "Қаратал", "Тобыл", "Сарысу", "Сырдария"], "answer": [0, 3, 4], "explanation": "Дұрыс жауаптар: A, D, E. Қазіргі таңда дүниежүзіндегі толық мойындалған тәуелсіз мемлекеттердің саны 190-нан асады, орташа алғанда 193-195 ел деп есептеледі..", "q_ru": "Дүниежүзінің саяси картасында белгіленген тәуелсіз мемлекеттердің саны", "options_ru": ["195", "Аксу", "Каратал", "Тобол", "Сарысу", "Сырдарья"], "explanation_ru": "Дұрыс жауаптар: A, D, E. Қазіргі таңда дүниежүзіндегі толық мойындалған тәуелсіз мемлекеттердің саны 190-нан асады, орташа алғанда 193-195 ел деп есептеледі.."}, {"id": 29, "q": "Жапония мен Швецияға қатысты ортақ ерекшелікті анықтаңыз.", "isMulti": true, "options": ["Монархиялық басқару формасы", "Ертіс", "Тобыл", "Сырдария", "Ембі", "Ақсу"], "answer": [0, 3, 4], "explanation": "Дұрыс жауаптар: A, D, E. Екі ел де монархиялық (патшалық) басқару нысанына жатады. Жапонияда — император, Швецияда — король бар. Екеуі де конституциялық монархия. 1-40 сұрақтардың толық шешімі мен түсіндірмесі.", "q_ru": "Япония мен Швецияға қатысты ортақ ерекшелікті определите.", "options_ru": ["Монархиялық басқару формасы", "Иртыш", "Тобол", "Сырдарья", "Эмба", "Аксу"], "explanation_ru": "Дұрыс жауаптар: A, D, E. Екі ел де монархиялық (патшалық) басқару нысанына жатады. Жапонияда — император, Швецияда — король бар. Екеуі де конституциялық монархия. 1-40 сұрақтардың толық шешімі мен түсіндірмесі."}, {"id": 30, "q": "«Саяси география» терминін кім енгізді?", "isMulti": true, "options": ["Торғай", "Шілік", "Фридрих Ратцель", "Сарысу", "Жайық", "Есіл"], "answer": [2, 3, 5], "explanation": "Дұрыс жауаптар: C, D, F. Неміс ғалымы Фридрих Ратцель өзінің 1897 жылы жарық көрген «Саяси география» еңбегінде осы терминді ғылымға алғаш рет енгізді..", "q_ru": "«Саяси география» терминін кім енгізді?", "options_ru": ["Тургай", "Чилик", "Фридрих Ратцель", "Сарысу", "Урал (Жайык)", "Ишим"], "explanation_ru": "Дұрыс жауаптар: C, D, F. Неміс ғалымы Фридрих Ратцель өзінің 1897 жылы жарық көрген «Саяси география» еңбегінде осы терминді ғылымға алғаш рет енгізді.."}, {"id": 31, "q": "Германияның ЭГЖ-на (экономикалық-географиялық жағдайына) жатпайтын", "isMulti": false, "options": ["Қорғасын", "Хром", "Мұнай, газ экспорттайды", "Тас көмір"], "answer": 2, "explanation": "Дұрыс жауабы: C) Мұнай, газ экспорттайды. Г ермания Еуропаның орталығында орналасқан, көптеген елдермен шектеседі, теңізге шыға алады. Бірақ ол мұнай мен газды экспорттамайды, керісінше сырттан импорттайды.", "q_ru": "Германияның ЭГЖ-на (экономикалық-географиялық жағдайына) жатпайтын", "options_ru": ["Свинец", "Хром", "Нефть, газ экспорттайды", "Каменный уголь"], "explanation_ru": "Дұрыс жауабы: C) Нефть, газ экспорттайды. Г ермания Еуропаның орталығында орналасқан, көптеген елдермен шектеседі, теңізге шыға алады. Бірақ ол мұнай мен газды экспорттамайды, керісінше сырттан импорттайды."}, {"id": 32, "q": "Жұмыссыздар саны 15%-дан жоғары Еуропа елін көрсетіңіз.", "isMulti": true, "options": ["Іле", "Ембі", "Грекия", "Есіл", "Сарысу", "Тобыл"], "answer": [2, 5], "explanation": "Дұрыс жауаптар: C, F. Соңғы онжылдықтағы экономикалық дағдарыстарға байланысты Оңтүстік Еуропа елдерінде, әсіресе Г рекияда жұмыссыздық деңгейі ең жоғары (15-20%-дан астам) болды..", "q_ru": "Жұмыссыздар саны 15%-дан жоғары Еуропа елін көрсетіңіз.", "options_ru": ["Или", "Эмба", "Грекия", "Ишим", "Сарысу", "Тобол"], "explanation_ru": "Дұрыс жауаптар: C, F. Соңғы онжылдықтағы экономикалық дағдарыстарға байланысты Оңтүстік Еуропа елдерінде, әсіресе Г рекияда жұмыссыздық деңгейі ең жоғары (15-20%-дан астам) болды.."}, {"id": 33, "q": "Халқының 96,8%-ы интернетті қолданатын елді анықтаңыз.", "isMulti": true, "options": ["Норвегия", "Аустралия", "Германия", "Мексика", "Франция", "Бразилия"], "answer": [0, 2, 5], "explanation": "Дұрыс жауаптар: A, C, F. Норвегия сияқты Скандинавия елдері мен кейбір Араб елдері (БАӘ) интернетке қолжетімділік және оны пайдалану бойынша әлемде алдыңғы орында тұр. (Нұсқаларда БАӘ немесе Норвегия дұрыс)..", "q_ru": "Халқының 96,8%-ы интернетті қолданатын елді определите.", "options_ru": ["Норвегия", "Австралия", "Германия", "Мексика", "Франция", "Бразилия"], "explanation_ru": "Дұрыс жауаптар: A, C, F. Норвегия сияқты Скандинавия елдері мен кейбір Араб елдері (БАӘ) интернетке қолжетімділік және оны пайдалану бойынша әлемде алдыңғы орында тұр. (Нұсқаларда БАӘ немесе Норвегия дұрыс).."}, {"id": 34, "q": "Грузияның бір бөлігі ретінде қарастырылатын Республиканы анықтаңыз.", "isMulti": false, "options": ["Түркіменстан", "Канада", "Лепсі", "Германия", "Абхазия", "Өгем"], "answer": 4, "explanation": "Дұрыс жауабы: E) Абхазия. Абхазия — халықаралық қауымдастықтың басым бөлігі Г рузияның ажырамас бөлігі ретінде танитын, мойындалмаған немесе жартылай мойындалған мемлекет. 2-бөлім: 11-20 сұрақтар", "q_ru": "Грузияның бір бөлігі ретінде қарастырылатын Республиканы определите.", "options_ru": ["Түркіменстан", "Канада", "Лепсы", "Германия", "Абхазия", "Өгем"], "explanation_ru": "Дұрыс жауабы: E) Абхазия. Абхазия — халықаралық қауымдастықтың басым бөлігі Г рузияның ажырамас бөлігі ретінде танитын, мойындалмаған немесе жартылай мойындалған мемлекет. 2-бөлім: 11-20 сұрақтар"}, {"id": 35, "q": "Норвегия, Португалия және Италия елдері орналасқан құрлықтың бөлігін", "isMulti": true, "options": ["Есіл", "Ырғыз", "Түбек", "Шілік", "Жайық", "Қаратал"], "answer": [2, 4], "explanation": "Дұрыс жауаптар: C, E. Норвегия — Скандинавия түбегінде, Португалия — Пиреней түбегінде, Италия — Апеннин түбегінде орналасқан. Ортақ белгісі — үшеуі де түбекте орналасқан..", "q_ru": "Норвегия, Португалия және Италия елдері орналасқан құрлықтың бөлігін", "options_ru": ["Ишим", "Иргиз", "Түбек", "Чилик", "Урал (Жайык)", "Каратал"], "explanation_ru": "Дұрыс жауаптар: C, E. Норвегия — Скандинавия түбегінде, Португалия — Пиреней түбегінде, Италия — Апеннин түбегінде орналасқан. Ортақ белгісі — үшеуі де түбекте орналасқан.."}]};
+    const maxPoints = 43;
+    const passingPoints = Math.round(maxPoints * 0.7);
+    const initialTimeSeconds = 40 * 60;
+
+    let currentLang = 'kz';
+    let currentMode = 'exam'; // 'exam' or 'review'
+    let userAnswers = {}; // qId -> single value (int) or array of ints
+    let isSubmitted = false;
+    let timerRemaining = initialTimeSeconds;
+    let timerInterval = null;
+
+    // Initialize from URL params or localStorage
+    (function initSettings() {
+      const params = new URLSearchParams(window.location.search);
+      const urlLang = params.get('lang');
+      if (urlLang === 'ru' || urlLang === 'kz') {
+        currentLang = urlLang;
+      } else {
+        const storedProfile = localStorage.getItem('geotany_user_profile');
+        if (storedProfile) {
+          try {
+            const p = JSON.parse(storedProfile);
+            if (p.language === 'ru') currentLang = 'ru';
+          } catch(e) {}
+        }
+      }
+      
+      const urlMode = params.get('mode');
+      if (urlMode === 'review') {
+        currentMode = 'review';
+      }
+    })();
+
+    // Check previous scores in localStorage
+    function checkPreviousScore() {
+      try {
+        const raw = localStorage.getItem('geotany_writing_scores');
+        if (raw) {
+          const scores = JSON.parse(raw);
+          const prev = scores[variantData.id];
+          if (prev) {
+            const banner = document.getElementById('prevScoreBanner');
+            const txt = document.getElementById('prevScoreText');
+            if (banner && txt) {
+              banner.classList.remove('hidden');
+              txt.textContent = currentLang === 'ru'
+                ? `Предыдущий результат: ${prev.score} / ${prev.maxScore} (${prev.percentage}%) • ${prev.isPassed ? 'Сдано' : 'Не сдано'}`
+                : `Алдыңғы нәтиже: ${prev.score} / ${prev.maxScore} (${prev.percentage}%) • ${prev.isPassed ? 'Өтті' : 'Өтпеді'}`;
+            }
+            if (prev.answers && Object.keys(userAnswers).length === 0) {
+              userAnswers = prev.answers;
+            }
+          }
+        }
+      } catch(e) {}
+    }
+
+    // Switch Language
+    function setLang(lang) {
+      currentLang = lang;
+      
+      // Update toggle buttons UI
+      const kzBtn = document.getElementById('langKzBtn');
+      const ruBtn = document.getElementById('langRuBtn');
+      if (lang === 'kz') {
+        kzBtn.className = 'px-2 py-1 rounded-lg bg-brand-500 text-space-950 font-black transition';
+        ruBtn.className = 'px-2 py-1 rounded-lg text-slate-400 hover:text-white transition';
+      } else {
+        ruBtn.className = 'px-2 py-1 rounded-lg bg-brand-500 text-space-950 font-black transition';
+        kzBtn.className = 'px-2 py-1 rounded-lg text-slate-400 hover:text-white transition';
+      }
+
+      // Update Back Link
+      const backLink = document.getElementById('btnBackToPlatform');
+      if (backLink) backLink.href = `../geotanu.html?lang=${currentLang}#section-testter_writing`;
+      const modalBack = document.getElementById('modalBackLink');
+      if (modalBack) modalBack.href = `../geotanu.html?lang=${currentLang}#section-testter_writing`;
+
+      // Update Static Texts
+      updateLocalizedLabels();
+      renderQuestions();
+      renderMatrix();
+      checkPreviousScore();
+    }
+
+    // Switch Mode
+    function setMode(mode) {
+      currentMode = mode;
+      const examBtn = document.getElementById('modeExamBtn');
+      const reviewBtn = document.getElementById('modeReviewBtn');
+      const timerWrapper = document.getElementById('examTimerWrapper');
+
+      if (mode === 'exam') {
+        examBtn.className = 'px-2.5 py-1 rounded-lg bg-amber-500 text-space-950 font-black transition shadow-sm';
+        reviewBtn.className = 'px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition';
+        if (timerWrapper) timerWrapper.classList.remove('hidden');
+        if (!timerInterval && !isSubmitted) startTimer();
+      } else {
+        reviewBtn.className = 'px-2.5 py-1 rounded-lg bg-cyan-500 text-space-950 font-black transition shadow-sm';
+        examBtn.className = 'px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition';
+        if (timerWrapper) timerWrapper.classList.add('hidden');
+      }
+
+      renderQuestions();
+      renderMatrix();
+    }
+
+    // Localized Text Updates
+    function updateLocalizedLabels() {
+      const isRu = (currentLang === 'ru');
+      
+      document.getElementById('navBackText').textContent = isRu ? 'Назад' : 'Артқа';
+      document.getElementById('navVariantTitle').textContent = isRu 
+        ? `${variantData.id}-вариант: ЕНТ Комплексный тест`
+        : variantData.title;
+      
+      document.getElementById('lblTimerText').textContent = isRu ? 'Время:' : 'Уақыт:';
+      document.getElementById('lblModeExam').textContent = isRu ? 'Экзамен' : 'Емтихан';
+      document.getElementById('lblModeReview').textContent = isRu ? 'Разбор' : 'Талдау';
+
+      document.getElementById('heroDepartmentBadge').textContent = isRu ? 'Русское отделение' : 'Қазақ бөлімі';
+      document.getElementById('heroTitle').textContent = isRu 
+        ? `${variantData.id}-вариант: Тест ЕНТ (${variantData.questions.length} вопросов)`
+        : variantData.title;
+      document.getElementById('heroDesc').textContent = isRu 
+        ? 'Комплексный вариант ЕНТ по географии с подробными авторскими пояснениями к каждому вопросу.'
+        : variantData.desc;
+
+      document.getElementById('lblMetaQuestions').textContent = isRu 
+        ? `${variantData.questions.length} вопросов (${maxPoints} баллов)`
+        : `${variantData.questions.length} сұрақ (${maxPoints} балл)`;
+      document.getElementById('lblMetaTime').textContent = isRu 
+        ? `40 минут`
+        : `40 минут`;
+      document.getElementById('lblMetaPassing').textContent = isRu 
+        ? `Проходной: 70% (${passingPoints} б.)`
+        : `Шекті балл: 70% (${passingPoints} балл)`;
+      document.getElementById('lblMetaXp').textContent = isRu ? 'Награда: +80 XP' : 'Сыйлық: +80 XP';
+      document.getElementById('lblMetaOnline').textContent = isRu ? '100% Онлайн тест' : '100% Онлайн тест';
+
+      document.getElementById('lblNavigatorTitle').textContent = isRu ? 'Навигатор вопросов' : 'Сұрақтар навигаторы';
+      document.getElementById('lblBtnFinishExam').textContent = isRu ? 'Завершить экзамен' : 'Емтиханды аяқтау';
+      document.getElementById('lblBtnQuickReview').textContent = isRu ? 'Открыть разбор' : 'Талдауды ашу';
+
+      document.getElementById('lblBottomBarTitle').textContent = isRu 
+        ? 'Ответили на все вопросы?' 
+        : 'Барлық сұрақтарға жауап бердіңіз бе?';
+      document.getElementById('lblBottomBarDesc').textContent = isRu 
+        ? 'Завершите экзамен для проверки ответов и начисления баллов.' 
+        : 'Нәтижені растап, балл мен XP алу үшін емтиханды аяқтаңыз.';
+      document.getElementById('lblBottomBarBtn').textContent = isRu 
+        ? 'Завершить тест и проверить' 
+        : 'Тестті аяқтау және тексеру';
+
+      document.getElementById('lblModalCorrect').textContent = isRu ? 'Верно' : 'Дұрыс';
+      document.getElementById('lblModalPartial').textContent = isRu ? 'Частично' : 'Жартылай';
+      document.getElementById('lblModalWrong').textContent = isRu ? 'Неверно' : 'Қате';
+      document.getElementById('lblModalBtnReview').textContent = isRu ? 'Посмотреть подробный разбор' : 'Қателерді және толық талдауды көру';
+      document.getElementById('lblModalBtnRetake').textContent = isRu ? 'Пересдать тест' : 'Қайта тапсыру';
+      document.getElementById('lblModalBtnCatalog').textContent = isRu ? 'В каталог вариантов' : 'Нұсқалар каталогына оралу';
+    }
+
+    // Start Countdown Timer
+    function startTimer() {
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        if (timerRemaining > 0) {
+          timerRemaining--;
+          updateTimerDisplay();
+        } else {
+          clearInterval(timerInterval);
+          alert(currentLang === 'ru' ? 'Время вышло! Тест завершается автоматически.' : 'Уақыт аяқталды! Тест автоматты түрде аяқталады.');
+          submitExam();
+        }
+      }, 1000);
+    }
+
+    function updateTimerDisplay() {
+      const timerEl = document.getElementById('examTimer');
+      if (!timerEl) return;
+      const m = Math.floor(timerRemaining / 60);
+      const s = timerRemaining % 60;
+      timerEl.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      if (timerRemaining < 300) {
+        timerEl.classList.remove('text-amber-400');
+        timerEl.classList.add('text-rose-400', 'animate-pulse');
+      } else {
+        timerEl.classList.remove('text-rose-400', 'animate-pulse');
+        timerEl.classList.add('text-amber-400');
+      }
+    }
+
+    // Render Matrix Navigator
+    function renderMatrix() {
+      const container = document.getElementById('questionMatrix');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const total = variantData.questions.length;
+      let answeredCount = 0;
+
+      variantData.questions.forEach((q, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = (idx + 1);
+        btn.className = 'w-full py-2 rounded-xl text-xs font-bold transition flex items-center justify-center border ';
+
+        const ans = userAnswers[q.id];
+        const hasAnswered = ans !== undefined && (Array.isArray(ans) ? ans.length > 0 : true);
+        if (hasAnswered) answeredCount++;
+
+        if (currentMode === 'review' || isSubmitted) {
+          // Review mode evaluation
+          let isCorrect = false;
+          let isPartial = false;
+          if (q.isMulti) {
+            const userChoices = Array.isArray(ans) ? ans : [];
+            const correctChoices = Array.isArray(q.answer) ? q.answer : [q.answer];
+            const missed = correctChoices.filter(x => !userChoices.includes(x)).length;
+            const extra = userChoices.filter(x => !correctChoices.includes(x)).length;
+            if (missed === 0 && extra === 0 && userChoices.length > 0) isCorrect = true;
+            else if (missed + extra === 1 && userChoices.length > 0) isPartial = true;
+          } else {
+            if (ans === q.answer) isCorrect = true;
+          }
+
+          if (isCorrect) {
+            btn.className += 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40 hover:bg-emerald-500/30';
+          } else if (isPartial) {
+            btn.className += 'bg-amber-500/20 text-amber-400 border-amber-500/40 hover:bg-amber-500/30';
+          } else if (hasAnswered) {
+            btn.className += 'bg-rose-500/20 text-rose-400 border-rose-500/40 hover:bg-rose-500/30';
+          } else {
+            btn.className += 'bg-space-850 text-slate-500 border-slate-800 hover:bg-space-800';
+          }
+        } else {
+          // Exam mode
+          if (hasAnswered) {
+            btn.className += 'bg-amber-500 text-space-950 border-amber-400 shadow-sm font-black';
+          } else {
+            btn.className += 'bg-space-850 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-white';
+          }
+        }
+
+        btn.onclick = () => {
+          const target = document.getElementById(`q-card-${q.id}`);
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            target.classList.add('ring-2', 'ring-amber-400');
+            setTimeout(() => target.classList.remove('ring-2', 'ring-amber-400'), 1200);
+          }
+        };
+
+        container.appendChild(btn);
+      });
+
+      // Update progress badges
+      const badge = document.getElementById('navProgressBadge');
+      if (badge) badge.textContent = `${answeredCount} / ${total}`;
+      const bar = document.getElementById('examProgressBar');
+      if (bar) bar.style.width = `${(answeredCount / total) * 100}%`;
+    }
+
+    // Render Question Cards
+    function renderQuestions() {
+      const container = document.getElementById('questionsContainer');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const isRu = (currentLang === 'ru');
+      const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+
+      variantData.questions.forEach((q, idx) => {
+        const card = document.createElement('div');
+        card.id = `q-card-${q.id}`;
+        card.className = 'p-5 sm:p-6 rounded-3xl bg-space-900 border border-slate-800 transition duration-300 space-y-4';
+
+        const qText = (isRu && q.q_ru) ? q.q_ru : q.q;
+        const options = (isRu && q.options_ru) ? q.options_ru : q.options;
+        const explanationText = (isRu && q.explanation_ru) ? q.explanation_ru : q.explanation;
+        const isMulti = !!q.isMulti;
+
+        // Card Header
+        const header = document.createElement('div');
+        header.className = 'flex items-center justify-between gap-2 border-b border-slate-800/80 pb-3';
+        header.innerHTML = `
+          <div class="flex items-center space-x-2">
+            <span class="w-7 h-7 rounded-xl bg-space-850 border border-slate-700 text-amber-400 font-black text-xs flex items-center justify-center">
+              ${idx + 1}
+            </span>
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">
+              ${isRu ? 'Вопрос ' + (idx + 1) : 'Сұрақ ' + (idx + 1)}
+            </span>
+          </div>
+          <span class="text-[11px] px-2.5 py-0.5 rounded-lg ${isMulti ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30' : 'bg-slate-800 text-slate-300 border border-slate-700'} font-bold">
+            ${isMulti ? (isRu ? '2 балла • Несколько ответов' : '2 балл • Көптаңдау') : (isRu ? '1 балл • Один ответ' : '1 балл • Біртаңдау')}
+          </span>
+        `;
+        card.appendChild(header);
+
+        // Prompt
+        const promptEl = document.createElement('div');
+        promptEl.className = 'text-sm sm:text-base font-semibold text-slate-100 leading-relaxed';
+        promptEl.textContent = qText;
+        card.appendChild(promptEl);
+
+        // Options Container
+        const optList = document.createElement('div');
+        optList.className = 'space-y-2 pt-1';
+
+        const currentAnswer = userAnswers[q.id];
+        const correctAnswers = Array.isArray(q.answer) ? q.answer : [q.answer];
+
+        options.forEach((optText, optIdx) => {
+          const isSelected = isMulti 
+            ? (Array.isArray(currentAnswer) && currentAnswer.includes(optIdx))
+            : (currentAnswer === optIdx);
+
+          const optBtn = document.createElement('div');
+          optBtn.className = 'group relative p-3.5 sm:p-4 rounded-2xl border text-xs sm:text-sm font-medium transition cursor-pointer flex items-center space-x-3 ';
+
+          if (currentMode === 'review' || isSubmitted) {
+            // Review mode styling
+            const isCorrect = correctAnswers.includes(optIdx);
+            if (isCorrect) {
+              optBtn.className += 'bg-emerald-500/15 border-emerald-500 text-emerald-200 font-bold';
+            } else if (isSelected) {
+              optBtn.className += 'bg-rose-500/15 border-rose-500 text-rose-200';
+            } else {
+              optBtn.className += 'bg-space-850/50 border-slate-800/80 text-slate-400 opacity-70';
+            }
+          } else {
+            // Exam mode styling
+            if (isSelected) {
+              optBtn.className += 'bg-amber-500/15 border-amber-500 text-amber-200 font-bold shadow-sm';
+            } else {
+              optBtn.className += 'bg-space-850 hover:bg-space-800 border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white';
+            }
+          }
+
+          // Choice Letter Circle
+          const letterBadge = document.createElement('span');
+          letterBadge.className = 'w-6 h-6 rounded-lg text-xs font-black flex items-center justify-center shrink-0 ';
+          if (currentMode === 'review' || isSubmitted) {
+            if (correctAnswers.includes(optIdx)) {
+              letterBadge.className += 'bg-emerald-500 text-space-950';
+            } else if (isSelected) {
+              letterBadge.className += 'bg-rose-500 text-white';
+            } else {
+              letterBadge.className += 'bg-space-900 border border-slate-700 text-slate-400';
+            }
+          } else {
+            if (isSelected) {
+              letterBadge.className += 'bg-amber-500 text-space-950';
+            } else {
+              letterBadge.className += 'bg-space-900 border border-slate-700 text-slate-400 group-hover:border-slate-500 group-hover:text-slate-200';
+            }
+          }
+          letterBadge.textContent = letters[optIdx] || String(optIdx + 1);
+          optBtn.appendChild(letterBadge);
+
+          // Option text
+          const textSpan = document.createElement('span');
+          textSpan.className = 'flex-1 leading-snug';
+          textSpan.textContent = optText;
+          optBtn.appendChild(textSpan);
+
+          // Status icon in review mode
+          if (currentMode === 'review' || isSubmitted) {
+            if (correctAnswers.includes(optIdx)) {
+              const check = document.createElement('span');
+              check.className = 'text-emerald-400 font-black text-sm';
+              check.textContent = '✓';
+              optBtn.appendChild(check);
+            } else if (isSelected) {
+              const cross = document.createElement('span');
+              cross.className = 'text-rose-400 font-black text-sm';
+              cross.textContent = '✕';
+              optBtn.appendChild(cross);
+            }
+          }
+
+          // Click handler (only in Exam mode or allow review interaction)
+          optBtn.onclick = () => {
+            if (isSubmitted && currentMode === 'exam') return;
+            handleOptionSelect(q.id, optIdx, isMulti);
+          };
+
+          optList.appendChild(optBtn);
+        });
+
+        card.appendChild(optList);
+
+        // Explanation Box (In Review Mode or after Submission)
+        if (currentMode === 'review' || isSubmitted) {
+          const expBox = document.createElement('div');
+          expBox.className = 'mt-4 p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-xs text-cyan-200 space-y-1.5';
+          expBox.innerHTML = `
+            <div class="flex items-center space-x-1.5 font-bold text-cyan-300">
+              <span>💡</span>
+              <span>${isRu ? 'Авторское пояснение:' : 'Авторлық түсіндірме:'}</span>
+            </div>
+            <p class="leading-relaxed text-slate-300">${explanationText || (isRu ? 'Пояснение к данному вопросу.' : 'Сұраққа арналған түсіндірме.')}</p>
+          `;
+          card.appendChild(expBox);
+        }
+
+        container.appendChild(card);
+      });
+    }
+
+    // Handle Option Selection
+    function handleOptionSelect(qId, optIdx, isMulti) {
+      if (isMulti) {
+        let selected = Array.isArray(userAnswers[qId]) ? [...userAnswers[qId]] : [];
+        if (selected.includes(optIdx)) {
+          selected = selected.filter(x => x !== optIdx);
+        } else {
+          if (selected.length < 3) {
+            selected.push(optIdx);
+          } else {
+            alert(currentLang === 'ru' ? 'Можно выбрать максимум 3 варианта ответа.' : 'Ең көп дегенде 3 нұсқа таңдауға болады.');
+            return;
+          }
+        }
+        if (selected.length > 0) {
+          userAnswers[qId] = selected;
+        } else {
+          delete userAnswers[qId];
+        }
+      } else {
+        userAnswers[qId] = optIdx;
+      }
+
+      renderQuestions();
+      renderMatrix();
+    }
+
+    // Confirm Submission
+    function confirmSubmitExam() {
+      const answered = Object.keys(userAnswers).length;
+      const total = variantData.questions.length;
+      const isRu = (currentLang === 'ru');
+
+      if (answered < total) {
+        const msg = isRu 
+          ? `Вы ответили на ${answered} из ${total} вопросов. Завершить экзамен сейчас?`
+          : `Сіз ${total} сұрақтың ${answered}-не жауап бердіңіз. Емтиханды қазір аяқтағыңыз келе ме?`;
+        if (!confirm(msg)) return;
+      }
+
+      submitExam();
+    }
+
+    // Submit Exam & Score Calculation
+    function submitExam() {
+      clearInterval(timerInterval);
+      isSubmitted = true;
+
+      let totalEarned = 0;
+      let totalMax = 0;
+      let correctCount = 0;
+      let partialCount = 0;
+      let wrongCount = 0;
+
+      variantData.questions.forEach(q => {
+        if (q.isMulti) {
+          totalMax += 2;
+          const userChoices = Array.isArray(userAnswers[q.id]) ? userAnswers[q.id] : [];
+          const correctChoices = Array.isArray(q.answer) ? q.answer : [q.answer];
+
+          const missed = correctChoices.filter(x => !userChoices.includes(x)).length;
+          const extra = userChoices.filter(x => !correctChoices.includes(x)).length;
+          const errors = missed + extra;
+
+          if (errors === 0 && userChoices.length > 0) {
+            totalEarned += 2;
+            correctCount++;
+          } else if (errors === 1 && userChoices.length > 0) {
+            totalEarned += 1;
+            partialCount++;
+          } else {
+            wrongCount++;
+          }
+        } else {
+          totalMax += 1;
+          if (userAnswers[q.id] === q.answer) {
+            totalEarned += 1;
+            correctCount++;
+          } else {
+            wrongCount++;
+          }
+        }
+      });
+
+      const percentage = Math.round((totalEarned / totalMax) * 100);
+      const isPassed = percentage >= 70;
+      const earnedXp = isPassed ? 80 : Math.round(totalEarned * 2);
+
+      // Save to localStorage
+      try {
+        let scores = JSON.parse(localStorage.getItem('geotany_writing_scores') || '{}');
+        scores[variantData.id] = {
+          score: totalEarned,
+          maxScore: totalMax,
+          total: variantData.questions.length,
+          fullCorrect: correctCount,
+          partiallyCorrect: partialCount,
+          wrong: wrongCount,
+          percentage: percentage,
+          isPassed: isPassed,
+          date: new Date().toISOString(),
+          answers: userAnswers
+        };
+        localStorage.setItem('geotany_writing_scores', JSON.stringify(scores));
+
+        let curXp = parseInt(localStorage.getItem('geotany_user_xp') || '0', 10);
+        curXp += earnedXp;
+        localStorage.setItem('geotany_user_xp', curXp.toString());
+      } catch(e) {}
+
+      // Display Modal
+      showResultModal({
+        score: totalEarned,
+        maxScore: totalMax,
+        percentage,
+        isPassed,
+        correctCount,
+        partialCount,
+        wrongCount,
+        earnedXp
+      });
+
+      renderQuestions();
+      renderMatrix();
+    }
+
+    // Show Result Modal with Confetti
+    function showResultModal(res) {
+      const isRu = (currentLang === 'ru');
+      const modal = document.getElementById('resultModal');
+      if (!modal) return;
+
+      document.getElementById('modalScoreDisplay').textContent = `${res.score} / ${res.maxScore}`;
+      document.getElementById('modalPercentageDisplay').textContent = `${res.percentage}% • ${isRu ? 'Результат' : 'Нәтиже'} (+${res.earnedXp} XP)`;
+      
+      const statusBadge = document.getElementById('modalStatusBadge');
+      if (statusBadge) {
+        if (res.isPassed) {
+          statusBadge.textContent = isRu ? 'Сдано • Успешно' : 'Өтті • Құттықтаймыз';
+          statusBadge.className = 'inline-block px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wide bg-brand-500/20 text-brand-400 border border-brand-500/30';
+          triggerConfetti();
+        } else {
+          statusBadge.textContent = isRu ? 'Не сдано • Требуется 70%' : 'Өтпеді • 70% қажет';
+          statusBadge.className = 'inline-block px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wide bg-rose-500/20 text-rose-400 border border-rose-500/30';
+        }
+      }
+
+      document.getElementById('modalCorrectCount').textContent = res.correctCount;
+      document.getElementById('modalPartialCount').textContent = res.partialCount;
+      document.getElementById('modalWrongCount').textContent = res.wrongCount;
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeModalAndShowReview() {
+      const modal = document.getElementById('resultModal');
+      if (modal) modal.classList.add('hidden');
+      setMode('review');
+    }
+
+    function retakeExam() {
+      const modal = document.getElementById('resultModal');
+      if (modal) modal.classList.add('hidden');
+      userAnswers = {};
+      isSubmitted = false;
+      timerRemaining = initialTimeSeconds;
+      setMode('exam');
+      startTimer();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Lightweight Canvas Confetti
+    function triggerConfetti() {
+      const canvas = document.getElementById('confettiCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      canvas.width = canvas.parentElement.clientWidth;
+      canvas.height = canvas.parentElement.clientHeight;
+
+      const particles = [];
+      const colors = ['#10B981', '#F59E0B', '#06B6D4', '#EC4899', '#8B5CF6'];
+
+      for (let i = 0; i < 75; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          vx: (Math.random() - 0.5) * 10,
+          vy: (Math.random() - 0.5) * 10 - 3,
+          size: Math.random() * 6 + 3,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          alpha: 1,
+          decay: Math.random() * 0.02 + 0.015
+        });
+      }
+
+      function render() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let active = 0;
+        particles.forEach(p => {
+          if (p.alpha > 0) {
+            active++;
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += 0.2;
+            p.alpha -= p.decay;
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = Math.max(0, p.alpha);
+            ctx.fillRect(p.x, p.y, p.size, p.size);
+          }
+        });
+        if (active > 0) requestAnimationFrame(render);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      requestAnimationFrame(render);
+    }
+
+    // Page Load Boot
+    window.addEventListener('DOMContentLoaded', () => {
+      updateLocalizedLabels();
+      renderQuestions();
+      renderMatrix();
+      checkPreviousScore();
+      if (currentMode === 'exam') {
+        startTimer();
+      }
+    });
+  </script>
+
+</body>
+</html>

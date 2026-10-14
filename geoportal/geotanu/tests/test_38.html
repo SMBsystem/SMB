@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="kk" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ҰБТ География — 38-нұсқа | GEOTANY</title>
+
+  <!-- AUTH GUARD: RESTRICT DIRECT ACCESS WITHOUT VALID SESSION -->
+  <style id="authCloak">body { display: none !important; }</style>
+  <script>
+    (function() {
+      try {
+        var isAdmin = localStorage.getItem('geotany_admin_auth') === 'true';
+        var sessionStr = localStorage.getItem('geotany_user_session');
+        var isAuthorized = isAdmin;
+        if (!isAuthorized && sessionStr) {
+          var s = JSON.parse(sessionStr);
+          if (s && s.email && (s.courseCode || s.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        var profileStr = localStorage.getItem('geotany_user_profile');
+        if (!isAuthorized && profileStr) {
+          var p = JSON.parse(profileStr);
+          if (p && p.email && (p.courseCode || p.role === 'admin')) {
+            isAuthorized = true;
+          }
+        }
+        if (!isAuthorized) {
+          window.location.replace('../geotanu.html?error=unauthorized_course');
+          return;
+        }
+        var cloak = document.getElementById('authCloak');
+        if (cloak) cloak.remove();
+      } catch (e) {
+        window.location.replace('../geotanu.html?error=unauthorized_course');
+      }
+    })();
+  </script>
+
+  <!-- TAILWIND CSS & FONTS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            space: {
+              800: '#1E293B',
+              850: '#151E2E',
+              900: '#0F172A',
+              950: '#0B0F19',
+            },
+            brand: {
+              400: '#34D399',
+              500: '#10B981',
+              600: '#059669',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0B0F19;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1E293B;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+    .glow-gold {
+      box-shadow: 0 0 25px -5px rgba(245, 158, 11, 0.25);
+    }
+    .glow-emerald {
+      box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.25);
+    }
+  </style>
+</head>
+<body class="bg-space-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-brand-500/30 selection:text-brand-400">
+
+  <!-- TOP APP BAR -->
+  <header class="sticky top-0 z-40 bg-space-950/90 backdrop-blur-xl border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+      
+      <!-- Left: Back Button & Title -->
+      <div class="flex items-center space-x-3">
+        <a id="btnBackToPlatform" href="../geotanu.html?lang=kz#section-testter_writing" class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 text-slate-300 hover:text-white border border-slate-700/80 text-xs sm:text-sm font-bold transition shadow-sm">
+          <span>←</span>
+          <span id="navBackText" class="hidden sm:inline">Артқа</span>
+        </a>
+        <div class="h-6 w-px bg-slate-800 hidden sm:block"></div>
+        <div class="flex items-center space-x-2">
+          <span class="text-xs px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-400 font-extrabold border border-amber-500/20">
+            ҰБТ #38
+          </span>
+          <span id="navVariantTitle" class="text-sm font-bold text-slate-200 hidden md:inline truncate max-w-xs">
+            38-нұсқа: ҰБТ жаңа формат (30 сұрақ)
+          </span>
+        </div>
+      </div>
+
+      <!-- Center: Exam Timer (Visible in Exam mode) -->
+      <div id="examTimerWrapper" class="flex items-center space-x-2 bg-space-900 border border-slate-800 px-3 py-1.5 rounded-xl shadow-inner">
+        <span class="text-xs text-slate-400 font-medium hidden sm:inline" id="lblTimerText">Уақыт:</span>
+        <span class="text-amber-400 text-sm font-black tracking-wider font-mono" id="examTimer">45:00</span>
+      </div>
+
+      <!-- Right: Mode Switcher & Language Switcher -->
+      <div class="flex items-center space-x-2 sm:space-x-3">
+        
+        <!-- Mode Switcher -->
+        <div class="flex items-center bg-space-900 p-0.5 rounded-xl border border-slate-800 text-xs font-bold">
+          <button id="modeExamBtn" onclick="setMode('exam')" class="px-2.5 py-1 rounded-lg bg-amber-500 text-space-950 font-black transition shadow-sm">
+            <span>🎯</span>
+            <span class="hidden sm:inline ml-1" id="lblModeExam">Емтихан</span>
+          </button>
+          <button id="modeReviewBtn" onclick="setMode('review')" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition">
+            <span>💡</span>
+            <span class="hidden sm:inline ml-1" id="lblModeReview">Талдау</span>
+          </button>
+        </div>
+
+        <!-- Language Switcher -->
+        <div class="flex items-center bg-space-900 p-0.5 rounded-xl border border-slate-800 text-xs font-bold">
+          <button id="langKzBtn" onclick="setLang('kz')" class="px-2 py-1 rounded-lg bg-brand-500 text-space-950 font-black transition">
+            KZ
+          </button>
+          <button id="langRuBtn" onclick="setLang('ru')" class="px-2 py-1 rounded-lg text-slate-400 hover:text-white transition">
+            RU
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN WRAPPER -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
+
+    <!-- HERO META CARD -->
+    <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-space-900 via-space-850 to-space-900 border border-slate-800 shadow-xl relative overflow-hidden">
+      <!-- Glow decoration -->
+      <div class="absolute -right-20 -top-20 w-60 h-60 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-20 -bottom-20 w-60 h-60 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10 space-y-4">
+        
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <span class="px-3 py-1 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 font-extrabold text-xs tracking-wider uppercase">
+              ⚡ ҰБТ ТЕСТ СЫНАҒЫ • НҰСҚА №38
+            </span>
+            <span id="heroDepartmentBadge" class="px-3 py-1 rounded-xl bg-brand-500/10 border border-brand-500/30 text-brand-400 font-bold text-xs">
+              Қазақ бөлімі
+            </span>
+          </div>
+
+          <!-- Prev / Next Variant Nav -->
+          <div class="flex items-center space-x-2 text-xs font-bold">
+            <a href="test_37.html" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition flex items-center space-x-1"><span>←</span><span>Алдыңғы</span></a>
+            <span class="text-slate-500">|</span>
+            <a href="test_39.html" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white transition flex items-center space-x-1"><span>Келесі</span><span>→</span></a>
+          </div>
+        </div>
+
+        <div>
+          <h1 id="heroTitle" class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            38-нұсқа: ҰБТ жаңа формат (30 сұрақ)
+          </h1>
+          <p id="heroDesc" class="text-sm text-slate-300 mt-2 max-w-3xl leading-relaxed">
+            1–20 біртаңдаулы және 21–30 көптаңдаулы сұрақтар. ҰБТ 2025 жаңа форматы бойынша авто-бағалау және шешімдері.
+          </p>
+        </div>
+
+        <!-- Metrics Row -->
+        <div class="flex flex-wrap gap-2.5 pt-2 border-t border-slate-800/80">
+          <div class="px-3 py-1.5 rounded-xl bg-space-850 border border-slate-800 text-xs font-medium text-slate-300 flex items-center space-x-1.5">
+            <span>📝</span>
+            <span id="lblMetaQuestions">30 сұрақ (35 балл)</span>
+          </div>
+          <div class="px-3 py-1.5 rounded-xl bg-space-850 border border-slate-800 text-xs font-medium text-slate-300 flex items-center space-x-1.5">
+            <span>⏱️</span>
+            <span id="lblMetaTime">35 минут</span>
+          </div>
+          <div class="px-3 py-1.5 rounded-xl bg-space-850 border border-slate-800 text-xs font-medium text-slate-300 flex items-center space-x-1.5">
+            <span>🎯</span>
+            <span id="lblMetaPassing">Шекті балл: 70% (24 балл)</span>
+          </div>
+          <div class="px-3 py-1.5 rounded-xl bg-space-850 border border-slate-800 text-xs font-medium text-amber-400 flex items-center space-x-1.5">
+            <span>🏆</span>
+            <span id="lblMetaXp">Сыйлық: +80 XP</span>
+          </div>
+          <div class="px-3 py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-bold flex items-center space-x-1.5">
+            <span>⚡</span>
+            <span id="lblMetaOnline">100% Онлайн тест</span>
+          </div>
+        </div>
+
+        <!-- Previous Score Alert Banner if already attempted -->
+        <div id="prevScoreBanner" class="hidden p-3.5 rounded-2xl bg-brand-500/10 border border-brand-500/30 text-xs sm:text-sm text-brand-300 flex items-center justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <span>✅</span>
+            <span id="prevScoreText">Сіз бұл нұсқаны бұрын тапсырдыңыз.</span>
+          </div>
+          <button onclick="retakeExam()" class="px-3 py-1 rounded-xl bg-brand-500 text-space-950 font-black text-xs hover:bg-brand-400 transition">
+            Қайта тапсыру
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- MAIN TWO COLUMN LAYOUT: SIDEBAR JUMP MATRIX + QUESTIONS LIST -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+      <!-- LEFT / STICKY SIDEBAR: QUESTION JUMP MATRIX -->
+      <aside class="lg:col-span-4 xl:col-span-3 sticky top-20 z-30 space-y-4">
+        <div class="p-5 rounded-3xl bg-space-900 border border-slate-800 shadow-xl space-y-4">
+          
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-black uppercase tracking-wider text-slate-400" id="lblNavigatorTitle">
+              Сұрақтар навигаторы
+            </h3>
+            <span id="navProgressBadge" class="text-xs px-2 py-0.5 rounded-md bg-space-850 text-amber-400 font-bold border border-slate-700">
+              0 / 30
+            </span>
+          </div>
+
+          <!-- Progress Bar -->
+          <div class="w-full bg-space-850 h-2 rounded-full overflow-hidden border border-slate-800">
+            <div id="examProgressBar" class="h-full bg-gradient-to-r from-amber-500 to-brand-500 w-0 transition-all duration-300"></div>
+          </div>
+
+          <!-- Jump Matrix Grid -->
+          <div id="questionMatrix" class="grid grid-cols-5 sm:grid-cols-8 lg:grid-cols-5 gap-1.5 max-h-[50vh] overflow-y-auto pr-1">
+            <!-- Dynamically populated buttons -->
+          </div>
+
+          <!-- Action Buttons in Sidebar -->
+          <div class="pt-3 border-t border-slate-800/80 space-y-2">
+            <button id="btnFinishExam" onclick="confirmSubmitExam()" class="w-full py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-brand-500 hover:from-amber-400 hover:to-brand-400 text-space-950 font-black text-xs sm:text-sm shadow-lg shadow-amber-500/20 transition flex items-center justify-center space-x-2">
+              <span>🏁</span>
+              <span id="lblBtnFinishExam">Емтиханды аяқтау</span>
+            </button>
+            <button id="btnQuickReview" onclick="setMode('review')" class="w-full py-2.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-bold transition flex items-center justify-center space-x-1.5">
+              <span>💡</span>
+              <span id="lblBtnQuickReview">Талдауды ашу</span>
+            </button>
+          </div>
+
+        </div>
+      </aside>
+
+      <!-- RIGHT COLUMN: QUESTIONS LIST -->
+      <section class="lg:col-span-8 xl:col-span-9 space-y-5">
+        
+        <div id="questionsContainer" class="space-y-5">
+          <!-- Dynamically populated question cards -->
+        </div>
+
+        <!-- BOTTOM FINISH BAR -->
+        <div class="p-6 rounded-3xl bg-space-900 border border-slate-800 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>
+            <h4 class="text-sm font-bold text-white" id="lblBottomBarTitle">Барлық сұрақтарға жауап бердіңіз бе?</h4>
+            <p class="text-xs text-slate-400 mt-0.5" id="lblBottomBarDesc">Нәтижені растап, балл мен XP алу үшін емтиханды аяқтаңыз.</p>
+          </div>
+          <button onclick="confirmSubmitExam()" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-brand-500 hover:from-amber-400 hover:to-brand-400 text-space-950 font-black text-xs sm:text-sm shadow-md transition flex items-center justify-center space-x-2">
+            <span>🏁</span>
+            <span id="lblBottomBarBtn">Тестті аяқтау және тексеру</span>
+          </button>
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- RESULT & CELEBRATION MODAL -->
+  <div id="resultModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden">
+    <div class="bg-space-900 border border-slate-700 w-full max-w-lg rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden space-y-6">
+      
+      <canvas id="confettiCanvas" class="absolute inset-0 pointer-events-none z-10 w-full h-full"></canvas>
+
+      <div class="relative z-20 text-center space-y-3">
+        <div id="modalIcon" class="w-16 h-16 mx-auto rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-3xl">
+          🏆
+        </div>
+        <h3 id="modalTitle" class="text-2xl font-black text-white">
+          Сынақ аяқталды!
+        </h3>
+        <p id="modalSubtitle" class="text-xs text-slate-300">
+          Сіздің осы нұсқа бойынша ресми ҰБТ нәтижеңіз:
+        </p>
+      </div>
+
+      <!-- Score Box -->
+      <div class="relative z-20 p-5 rounded-2xl bg-space-850 border border-slate-800 text-center space-y-2">
+        <div class="text-4xl sm:text-5xl font-black text-amber-400 font-mono" id="modalScoreDisplay">
+          0 / 35
+        </div>
+        <div class="text-xs font-bold text-slate-400" id="modalPercentageDisplay">
+          0% • Нәтиже
+        </div>
+        <div id="modalStatusBadge" class="inline-block px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wide bg-brand-500/20 text-brand-400 border border-brand-500/30">
+          Өтті
+        </div>
+      </div>
+
+      <!-- Breakdown Grid -->
+      <div class="relative z-20 grid grid-cols-3 gap-2 text-center text-xs">
+        <div class="p-3 rounded-xl bg-space-950 border border-slate-800">
+          <div class="text-emerald-400 font-black text-base" id="modalCorrectCount">0</div>
+          <div class="text-slate-400 text-[10px] mt-0.5" id="lblModalCorrect">Дұрыс</div>
+        </div>
+        <div class="p-3 rounded-xl bg-space-950 border border-slate-800">
+          <div class="text-amber-400 font-black text-base" id="modalPartialCount">0</div>
+          <div class="text-slate-400 text-[10px] mt-0.5" id="lblModalPartial">Жартылай</div>
+        </div>
+        <div class="p-3 rounded-xl bg-space-950 border border-slate-800">
+          <div class="text-rose-400 font-black text-base" id="modalWrongCount">0</div>
+          <div class="text-slate-400 text-[10px] mt-0.5" id="lblModalWrong">Қате</div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="relative z-20 space-y-2">
+        <button onclick="closeModalAndShowReview()" class="w-full py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-space-950 font-black text-xs sm:text-sm shadow-md transition flex items-center justify-center space-x-2">
+          <span>🔍</span>
+          <span id="lblModalBtnReview">Қателерді және толық талдауды көру</span>
+        </button>
+        <button onclick="retakeExam()" class="w-full py-2.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-bold transition flex items-center justify-center space-x-2">
+          <span>🔄</span>
+          <span id="lblModalBtnRetake">Қайта тапсыру</span>
+        </button>
+        <a id="modalBackLink" href="../geotanu.html?lang=kz#section-testter_writing" class="w-full py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-slate-400 hover:text-white text-xs font-bold transition flex items-center justify-center space-x-2">
+          <span>📋</span>
+          <span id="lblModalBtnCatalog">Нұсқалар каталогына оралу</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SCRIPT ENGINE -->
+  <script>
+    const variantData = {"id": 38, "title": "38-нұсқа: ҰБТ жаңа формат (30 сұрақ)", "desc": "1–20 біртаңдаулы және 21–30 көптаңдаулы сұрақтар. ҰБТ 2025 жаңа форматы бойынша авто-бағалау және шешімдері.", "timeMinutes": 35, "passingScore": 21, "questions": [{"id": 1, "q": "Суреттегі жер бедері кездесетін Қазақстандағы аймақ", "isMulti": false, "options": ["Есіл", "Шарын шатқалы", "Шілік", "Лепсі"], "answer": 1, "explanation": "Дұрыс жауабы: B) Шарын шатқалы. Әдетте экзогендік процестер мен ағын судың әрекетінен пайда болған терең шатқалдардың (каньондардың) классикалық үлгісі ретінде Қазақстандағы Шарын шатқалы көрсетіледі.", "q_ru": "Суреттегі жер бедері кездесетін Қазақстандағы аймақ", "options_ru": ["Ишим", "Чарын шатқалы", "Чилик", "Лепсы"], "explanation_ru": "Дұрыс жауабы: B) Чарын шатқалы. Әдетте экзогендік процестер мен ағын судың әрекетінен пайда болған терең шатқалдардың (каньондардың) классикалық үлгісі ретінде Қазақстандағы Чарын шатқалы көрсетіледі."}, {"id": 2, "q": "Литосфералық тақталарды қозғалысқа түсіретін басты күш", "isMulti": false, "options": ["Бесбақан", "Есіл", "Рудный", "Ішкі күш"], "answer": 3, "explanation": "Дұрыс жауабы: D) Ішкі күш. Мантиядағы балқыған заттардың конвективті қозғалысы (Жердің ішкі жылуы) литосфералық тақталарды бір-бірінен ажыратып немесе соқтығыстырып қозғалысқа келтіреді.", "q_ru": "Литосфералық тақталарды қозғалысқа түсіретін басты күш", "options_ru": ["Бесбақан", "Ишим", "Рудный", "Ішкі күш"], "explanation_ru": "Дұрыс жауабы: D) Ішкі күш. Мантиядағы балқыған заттардың конвективті қозғалысы (Жердің ішкі жылуы) литосфералық тақталарды бір-бірінен ажыратып немесе соқтығыстырып қозғалысқа келтіреді."}, {"id": 3, "q": "Жер бедерлерінің қалыптасуына әсер ететін негізгі фактор", "isMulti": false, "options": ["Семей", "Ағын судың әсері", "Баренц теңізі", "тас көмір"], "answer": 1, "explanation": "Дұрыс жауабы: B) Ағын судың әсері. Өзен аңғарлары, шатқалдар және жыралар ағын судың ұзақ уақыт бойы тау жыныстарын шайып, бұзуынан (эрозиясынан) қалыптасады.", "q_ru": "Жер бедерлерінің қалыптасуына әсер ететін негізгі фактор", "options_ru": ["Семей", "Ағын судың әсері", "Баренцево море", "тас көмір"], "explanation_ru": "Дұрыс жауабы: B) Ағын судың әсері. Өзен аңғарлары, шатқалдар және жыралар ағын судың ұзақ уақыт бойы тау жыныстарын шайып, бұзуынан (эрозиясынан) қалыптасады."}, {"id": 4, "q": "Жерасты суларының әрекетінің нәтижесінде пайда болған жер бедерлері", "isMulti": false, "options": ["Қызыл теңіз", "Индонезия", "Мак-Кинли", "Үңгір"], "answer": 3, "explanation": "Дұрыс жауабы: D) Үңгір. Жерасты сулары ерігіш тау жыныстарын (әк, гипс) ерітіп, карст құбылысы арқылы үлкен жерасты қуыстарын — үңгірлерді түзеді. 4-бөлім: 31-40 сұрақтар", "q_ru": "Жерасты суларының әрекетінің нәтижесінде пайда болған жер бедерлері", "options_ru": ["Красное море", "Индонезия", "Мак-Кинли (Денали)", "Үңгір"], "explanation_ru": "Дұрыс жауабы: D) Үңгір. Жерасты сулары ерігіш тау жыныстарын (әк, гипс) ерітіп, карст құбылысы арқылы үлкен жерасты қуыстарын — үңгірлерді түзеді. 4-бөлім: 31-40 сұрақтар"}, {"id": 5, "q": "Гейзер мен жанартауды сәйкестендіріңіз", "isMulti": false, "options": ["Қаратау", "Ұлытау", "Аппалач", "Гейзер → С) Великан; Жанартау → Е) Казбек"], "answer": 3, "explanation": "Дұрыс жауабы: D) Гейзер → С) Великан; Жанартау → Е) Казбек. Камчаткадағы ең ірі гейзер — Великан. Ал Казбек — Кавказ тауларындағы сөнген жанартау.", "q_ru": "Гейзер мен жанартауды сәйкестендіріңіз", "options_ru": ["Каратау", "Улытау", "Аппалачи", "Гейзер → С) Великан; Жанартау → Е) Казбек"], "explanation_ru": "Дұрыс жауабы: D) Гейзер → С) Великан; Жанартау → Е) Казбек. Камчаткадағы ең ірі гейзер — Великан. Ал Казбек — Кавказ тауларындағы сөнген жанартау."}, {"id": 6, "q": "Жер сілкінісіне қатысты терминдерді сәйкестендіріңіз", "isMulti": false, "options": ["Сарысу", "қорғасын", "Ембі", "Дүмпудің жер бетіне шығатын жері → А) Эпицентр; Терең қойнаудағы"], "answer": 3, "explanation": "Дұрыс жауабы: D) Дүмпудің жер бетіне шығатын жері → А) Эпицентр; Терең қойнаудағы. қозғалатын жері → Н) Жер сілкіну ошағы Жер сілкінісінің басталатын тереңдегі нүктесі ошақ (гипоцентр) деп аталады. Ал оның дәл үстіндегі Жер бетіндегі нүктесі — эпицентр.", "q_ru": "Жер сілкінісіне қатысты терминдерді сәйкестендіріңіз", "options_ru": ["Сарысу", "қорғасын", "Эмба", "Дүмпудің жер бетіне шығатын жері → А) Эпицентр; Терең қойнаудағы"], "explanation_ru": "Дұрыс жауабы: D) Дүмпудің жер бетіне шығатын жері → А) Эпицентр; Терең қойнаудағы. қозғалатын жері → Н) Жер сілкіну ошағы Жер сілкінісінің басталатын тереңдегі нүктесі ошақ (гипоцентр) деп аталады. Ал оның дәл үстіндегі Жер бетіндегі нүктесі — эпицентр."}, {"id": 7, "q": "Сейсмикалық белдеулер мен нысандар", "isMulti": false, "options": ["Тропиктік", "Тынық мұхиттық → В) Сахалин, Камчатка; Жерортатеңіздік → D)", "Субтропиктік", "Қоңыржай"], "answer": 1, "explanation": "Дұрыс жауабы: B) Тынық мұхиттық → В) Сахалин, Камчатка; Жерортатеңіздік → D). Пиреней, Памир (немесе С) Альпі) Тынық мұхиты жағалауына Сахалин, Камчатка, Жапония кіреді. Альпі-Г ималай (Жерортатеңіздік) белдеуіне Пиреней, Альпі, Памир, Кавказ таулары енеді.", "q_ru": "Сейсмикалық белдеулер мен нысандар", "options_ru": ["Тропиктік", "Тынық мұхиттық → В) Сахалин, Камчатка; Жерортатеңіздік → D)", "Субтропиктік", "Қоңыржай"], "explanation_ru": "Дұрыс жауабы: B) Тынық мұхиттық → В) Сахалин, Камчатка; Жерортатеңіздік → D). Пиреней, Памир (немесе С) Альпы) Тынық мұхиты жағалауына Сахалин, Камчатка, Япония кіреді. Альпы-Г ималай (Жерортатеңіздік) белдеуіне Пиреней, Альпы, Памир, Кавказ таулары енеді."}, {"id": 8, "q": "Тау қатпарлықтары мен түзілген таулар", "isMulti": false, "options": ["Кайнозой → В) Кавказ, Гималай; Байкал → С) Шығыс Саян, Таймыр", "Орал", "Памир", "Карпат"], "answer": 0, "explanation": "Дұрыс жауабы: A) Кайнозой → В) Кавказ, Гималай; Байкал → С) Шығыс Саян, Таймыр. Кайнозой (Альпілік) қатпарлығында ең жас және биік таулар — Альпі, Кавказ, Г ималай, Кордильер пайда болды.", "q_ru": "Тау қатпарлықтары мен түзілген таулар", "options_ru": ["Кайнозой → В) Кавказ, Гималаи; Байкал → С) Шығыс Саян, Таймыр", "Урал", "Памир", "Карпаты"], "explanation_ru": "Дұрыс жауабы: A) Кайнозой → В) Кавказ, Гималаи; Байкал → С) Шығыс Саян, Таймыр. Кайнозой (Альпілік) қатпарлығында ең жас және биік таулар — Альпы, Кавказ, Г ималай, Кордильер пайда болды."}, {"id": 9, "q": "Платформалар мен олардың түрлері", "isMulti": false, "options": ["Танганьика", "Қызыл теңіз", "Ежелгі → А) Солтүстік Америка, Шығыс Еуропа; Жас → G) Тұран, Батыс", "Шарын"], "answer": 2, "explanation": "Дұрыс жауабы: C) Ежелгі → А) Солтүстік Америка, Шығыс Еуропа; Жас → G) Тұран, Батыс. Еуропа Ежелгі платформалар кембрийге дейінгі дәуірде қалыптасқан ірі қалқандар (Шығыс Еуропа). Тұран, Батыс Сібір плиталары палеозойдағы қатпарланудан кейін түзілген жас платформалар болып табылады.", "q_ru": "Платформалар мен олардың түрлері", "options_ru": ["Танганьика", "Красное море", "Ежелгі → А) Солтүстік Америка, Шығыс Еуропа; Жас → G) Тұран, Батыс", "Чарын"], "explanation_ru": "Дұрыс жауабы: C) Ежелгі → А) Солтүстік Америка, Шығыс Еуропа; Жас → G) Тұран, Батыс. Еуропа Ежелгі платформалар кембрийге дейінгі дәуірде қалыптасқан ірі қалқандар (Шығыс Еуропа). Тұран, Батыс Сібір плиталары палеозойдағы қатпарланудан кейін түзілген жас платформалар болып табылады."}, {"id": 10, "q": "Магмалық жыныстардың түрлері", "isMulti": false, "options": ["боксит", "Интрузивті, D) Эффузивті", "Аустралия", "Бразилия"], "answer": 1, "explanation": "Дұрыс жауабы: B) Интрузивті, D) Эффузивті. Магманың жер астында қатып қалуынан интрузивті (гранит), ал жер бетіне лава болып төгіліп қатуынан эффузивті (базальт) жыныстар түзіледі.", "q_ru": "Магмалық жыныстардың түрлері", "options_ru": ["боксит", "Интрузивті, D) Эффузивті", "Австралия", "Бразилия"], "explanation_ru": "Дұрыс жауабы: B) Интрузивті, D) Эффузивті. Магманың жер астында қатып қалуынан интрузивті (гранит), ал жер бетіне лава болып төгіліп қатуынан эффузивті (базальт) жыныстар түзіледі."}, {"id": 11, "q": "Жер қыртысының түрлері", "isMulti": false, "options": ["Түркия", "Талас", "Астана", "Италия", "Материктік, D) Мұхиттық", "Қазбек"], "answer": 4, "explanation": "Дұрыс жауабы: E) Материктік, D) Мұхиттық. Жер қыртысы құрылымы мен қалыңдығына қарай екі үлкен түрге бөлінеді: құрлық астындағы қалың материктік және су астындағы жұқа мұхиттық.", "q_ru": "Жер қыртысының түрлері", "options_ru": ["Турция", "Талас", "Астана", "Италия", "Материктік, D) Мұхиттық", "Казбек"], "explanation_ru": "Дұрыс жауабы: E) Материктік, D) Мұхиттық. Жер қыртысы құрылымы мен қалыңдығына қарай екі үлкен түрге бөлінеді: құрлық астындағы қалың материктік және су астындағы жұқа мұхиттық."}, {"id": 12, "q": "Жер қыртысын құрайтын қабаттар", "isMulti": false, "options": ["Шу", "Қара теңіз", "Канада", "Малайзия", "Базальт, С) Гранит, F) Шөгінді", "Жезқазған"], "answer": 4, "explanation": "Дұрыс жауабы: E) Базальт, С) Гранит, F) Шөгінді. Материктік жер қыртысы жоғарыдан төмен қарай 3 қабаттан тұрады: шөгінді, гранитті және базальтты.", "q_ru": "Жер қыртысын құрайтын қабаттар", "options_ru": ["Чу", "Черное море", "Канада", "Малайзия", "Базальт, С) Гранит, F) Шөгінді", "Жезказган"], "explanation_ru": "Дұрыс жауабы: E) Базальт, С) Гранит, F) Шөгінді. Материктік жер қыртысы жоғарыдан төмен қарай 3 қабаттан тұрады: шөгінді, гранитті және базальтты."}, {"id": 13, "q": "Жазықтардың абсолюттік биіктігіне қарай түрлері", "isMulti": false, "options": ["Алакөл", "Барсакелмес", "Батыс Алтай", "Қырат, D) Таулы үстірт, F) Ойпат"], "answer": 3, "explanation": "Дұрыс жауабы: D) Қырат, D) Таулы үстірт, F) Ойпат. Жазықтар теңіз деңгейінен биіктігіне байланысты 3 топқа жіктеледі: ойпат (0-200 м), қырат (200-500 м), таулы үстірт немесе таулы жазық (500 м-ден жоғары).", "q_ru": "Жазықтардың абсолюттік биіктігіне қарай түрлері", "options_ru": ["Алаколь", "Барсакелмес", "Батыс Алтай", "Қырат, D) Таулы үстірт, F) Ойпат"], "explanation_ru": "Дұрыс жауабы: D) Қырат, D) Таулы үстірт, F) Ойпат. Жазықтар теңіз деңгейінен биіктігіне байланысты 3 топқа жіктеледі: ойпат (0-200 м), қырат (200-500 м), таулы үстірт немесе таулы жазық (500 м-ден жоғары)."}, {"id": 14, "q": "Қатпарлы-жақпарлы таулар", "isMulti": false, "options": ["Памир", "Ұлытау", "Аппалач", "Алтай, F) Тянь-Шань"], "answer": 3, "explanation": "Дұрыс жауабы: D) Алтай, F) Тянь-Шань. Бұл таулар ертеде қатпарланып пайда болып, кейін үгіліп тегістелген. Одан соң жаңа тектоникалық қозғалыстардың әсерінен жарықтар (жақпарлар) арқылы қайта көтерілген қайта жаңарған қатпарлы-жақпарлы тауларға жатады.", "q_ru": "Қатпарлы-жақпарлы таулар", "options_ru": ["Памир", "Улытау", "Аппалачи", "Алтай, F) Тянь-Шань"], "explanation_ru": "Дұрыс жауабы: D) Алтай, F) Тянь-Шань. Бұл таулар ертеде қатпарланып пайда болып, кейін үгіліп тегістелген. Одан соң жаңа тектоникалық қозғалыстардың әсерінен жарықтар (жақпарлар) арқылы қайта көтерілген қайта жаңарған қатпарлы-жақпарлы тауларға жатады."}, {"id": 15, "q": "Мезозой эрасының басты ерекшелігінің бірін көрсетіңіз.", "isMulti": false, "options": ["Жапония", "Жанартау атқылауы мүлде болмады", "Үндістан", "Қырғызстан"], "answer": 1, "explanation": "Дұрыс жауабы: B) Жанартау атқылауы мүлде болмады. Қазақстан аумағында мезозой эрасы салыстырмалы түрде тыныштық кезеңі болды. Таулар мүжіліп, тегістеліп (пенепленге айналды), ал жанартаулық әрекеттер тоқтады.", "q_ru": "Мезозой эрасының басты ерекшелігінің бірін көрсетіңіз.", "options_ru": ["Япония", "Жанартау атқылауы мүлде болмады", "Индия", "Кыргызстан"], "explanation_ru": "Дұрыс жауабы: B) Жанартау атқылауы мүлде болмады. Казахстан аумағында мезозой эрасы салыстырмалы түрде тыныштық кезеңі болды. Таулар мүжіліп, тегістеліп (пенепленге айналды), ал жанартаулық әрекеттер тоқтады."}, {"id": 16, "q": "Сырдария аймағында қалың тұнбалы шөгінді қабаттан қалыптасқан жазықтың", "isMulti": false, "options": ["Тұзқараған", "Теңіз", "Жайық", "Аллювийлі"], "answer": 3, "explanation": "Дұрыс жауабы: D) Аллювийлі. Өзен суларының ағып келіп жиналуынан, құм мен саз шөгінділерінің қабаттасуынан түзілген жазықтар аллювийлі (өзендік шөгінді) деп аталады.", "q_ru": "Сырдарья аймағында қалың тұнбалы шөгінді қабаттан қалыптасқан жазықтың", "options_ru": ["Тұзқараған", "Тенгиз", "Урал (Жайык)", "Аллювийлі"], "explanation_ru": "Дұрыс жауабы: D) Аллювийлі. Өзен суларының ағып келіп жиналуынан, құм мен саз шөгінділерінің қабаттасуынан түзілген жазықтар аллювийлі (өзендік шөгінді) деп аталады."}, {"id": 17, "q": "Экзогенді тау жыныстарына қатысты ерекшеліктерді көрсетіңіз.", "isMulti": false, "options": ["Памир", "Ұлытау", "І мен III", "Анд"], "answer": 2, "explanation": "Дұрыс жауабы: C) І мен III. Экзогенді (сыртқы) күштердің әсерінен суқоймалар табанында (І) және тау жыныстарының үгілу қабатында (ІІІ) шөгінді кен орындары түзіледі. Ішкі энергия эндогенді процестерге жатады.", "q_ru": "Экзогенді тау жыныстарына қатысты ерекшеліктерді көрсетіңіз.", "options_ru": ["Памир", "Улытау", "І мен III", "Анды"], "explanation_ru": "Дұрыс жауабы: C) І мен III. Экзогенді (сыртқы) күштердің әсерінен суқоймалар табанында (І) және тау жыныстарының үгілу қабатында (ІІІ) шөгінді кен орындары түзіледі. Ішкі энергия эндогенді процестерге жатады."}, {"id": 18, "q": "Тұран ойпатымен шектесетін, Батыс Тянь-Шаньның ең қиыр солтүстік-батыс", "isMulti": false, "options": ["Қаратау", "Сарыарқа", "Кавказ", "Орал"], "answer": 0, "explanation": "Дұрыс жауабы: A) Қаратау. Тянь-Шань тау жүйесінің солтүстік-батысқа қарай ең ұзап кеткен, Тұран ойпатына тірелетін шеткі жотасы — Қаратау.", "q_ru": "Тұран ойпатымен шектесетін, Батыс Тянь-Шаньның ең қиыр солтүстік-батыс", "options_ru": ["Каратау", "Сарыарка (Казахский мелкосопочник)", "Кавказ", "Урал"], "explanation_ru": "Дұрыс жауабы: A) Каратау. Тянь-Шань тау жүйесінің солтүстік-батысқа қарай ең ұзап кеткен, Тұран ойпатына тірелетін шеткі жотасы — Каратау."}, {"id": 19, "q": "Қоңырат, Бозшакөл кен орындарынан өндірілетін пайдалы қазбаның шартты", "isMulti": false, "options": ["Виктория", "Танганьика", "Эйр", "Мыс"], "answer": 3, "explanation": "Дұрыс жауабы: D) Мыс. Қоңырат және Бозшакөл — Қазақстандағы ең ірі мыс кен орындары. Картада мыс кені іші боялған тіктөртбұрышпен белгіленеді. 1-40 сұрақтардың толық шешімі мен түсіндірмесі", "q_ru": "Қоңырат, Бозшакөл кен орындарынан өндірілетін пайдалы қазбаның шартты", "options_ru": ["Виктория", "Танганьика", "Эйр", "Медь"], "explanation_ru": "Дұрыс жауабы: D) Медь. Қоңырат және Бозшакөл — Қазақстандағы ең ірі мыс кен орындары. Картада мыс кені іші боялған тіктөртбұрышпен белгіленеді. 1-40 сұрақтардың толық шешімі мен түсіндірмесі"}, {"id": 20, "q": "Платоформалар мен тақталардағы жарықтарды бойлай көтерілген қыратты", "isMulti": false, "options": ["Наурызым", "Алматы", "Үстірт", "Барсакелмес"], "answer": 2, "explanation": "Дұрыс жауабы: C) Үстірт. Жер қыртысының жарықтары арқылы тектоникалық көтерілуге ұшыраған, беті тегіс қыратты аймақ — Үстірт платосы (таулы үстірті).", "q_ru": "Платоформалар мен тақталардағы жарықтарды бойлай көтерілген қыратты", "options_ru": ["Наурызым", "Алматы", "Үстірт", "Барсакелмес"], "explanation_ru": "Дұрыс жауабы: C) Үстірт. Жер қыртысының жарықтары арқылы тектоникалық көтерілуге ұшыраған, беті тегіс қыратты аймақ — Үстірт платосы (таулы үстірті)."}, {"id": 21, "q": "Абсолюттік биіктігі 200 м-ден аспайтын табиғи нысанды атаңыз.", "isMulti": false, "options": ["Каспий маңы ойпаты", "Алакөл", "Зайсан", "Құсмұрын"], "answer": 0, "explanation": "Дұрыс жауабы: A) Каспий маңы ойпаты. Абсолюттік биіктігі 0-ден 200 метрге дейінгі аумақтар ойпаттар деп аталады. Каспий маңы ойпаты осыған жатады, тіпті оның кей бөліктері теңіз деңгейінен төмен жатыр.", "q_ru": "Абсолюттік биіктігі 200 м-ден аспайтын табиғи нысанды назовите.", "options_ru": ["Каспийское море маңы ойпаты", "Алаколь", "Зайсан", "Құсмұрын"], "explanation_ru": "Дұрыс жауабы: A) Каспийское море маңы ойпаты. Абсолюттік биіктігі 0-ден 200 метрге дейінгі аумақтар ойпаттар деп аталады. Каспийское море маңы ойпаты осыған жатады, тіпті оның кей бөліктері теңіз деңгейінен төмен жатыр."}, {"id": 22, "q": "Алтайдың ең биік нүктесі қай бөлігінде орналасқан?", "isMulti": false, "options": ["Винсон", "Эверест (Джомолунгма)", "Кенді Алтай", "Эльбрус"], "answer": 2, "explanation": "Дұрыс жауабы: C) Кенді Алтай. Алтай тауының Қазақстандағы ең биік нүктесі — Мұзтау (4506 м). Ол Шығыс Қазақстан аумағында, Қатын жотасында орналасқан.", "q_ru": "Алтайдың ең биік нүктесі қай бөлігінде орналасқан?", "options_ru": ["Массив Винсон", "Эверест (Джомолунгма)", "Кенді Алтай", "Эльбрус"], "explanation_ru": "Дұрыс жауабы: C) Кенді Алтай. Алтай тауының Қазақстандағы ең биік нүктесі — Музтау (Белуха) (4506 м). Ол Шығыс Казахстан аумағында, Қатын жотасында орналасқан."}, {"id": 23, "q": "Берілген табиғи нысандарды координаталарымен сәйкестендіріңіз.", "isMulti": true, "options": ["Талас", "Шу", "Лепсі", "I - c, II - a, III - b", "Ертіс", "Қаратал", "Сағыз", "Тобыл"], "answer": [3, 5, 7], "explanation": "Дұрыс жауаптар: D, F, H. I. Алтай — шығыста (50° с.е., 86° ш.б.). II. Қарақия ойысы — батыста, Маңғыстауда (44° с.е., 51° ш.б.). III. Мұғалжар — Ақтөбе аумағында (49° с.е., 59° ш.б.). 2-бөлім: 11-20 сұрақтар.", "q_ru": "Берілген табиғи нысандарды координаталарымен сәйкестендіріңіз.", "options_ru": ["Талас", "Чу", "Лепсы", "I - c, II - a, III - b", "Иртыш", "Каратал", "Сагыз", "Тобол"], "explanation_ru": "Дұрыс жауаптар: D, F, H. I. Алтай — шығыста (50° с.е., 86° ш.б.). II. Қарақия ойысы — батыста, Маңғыстауда (44° с.е., 51° ш.б.). III. Мугоджары — Актобе аумағында (49° с.е., 59° ш.б.). 2-бөлім: 11-20 сұрақтар."}, {"id": 24, "q": "Сауыр мен Тарбағатай тау жоталарын бөліп жатқан табиғи нысанды көрсетіңіз.", "isMulti": true, "options": ["Ақсу", "Торғай", "Шарын", "Ойыл", "Шілікті ойпаңы", "Сағыз", "Іле", "Ертіс"], "answer": [4, 7], "explanation": "Дұрыс жауаптар: E, H. Екі жотаның ортасындағы тектоникалық төмендеу аймағы Шілікті жазығы (ойпаңы) деп аталады. Ол көне қорғандарымен де танымал..", "q_ru": "Сауыр мен Тарбағатай тау жоталарын бөліп жатқан табиғи нысанды көрсетіңіз.", "options_ru": ["Аксу", "Тургай", "Чарын", "Уил", "Шілікті ойпаңы", "Сагыз", "Или", "Иртыш"], "explanation_ru": "Дұрыс жауаптар: E, H. Екі жотаның ортасындағы тектоникалық төмендеу аймағы Шілікті жазығы (ойпаңы) деп аталады. Ол көне қорғандарымен де танымал.."}, {"id": 25, "q": "Жоғарыдағы сипаттама қандай пайдалы қазбаға қатысты?", "isMulti": true, "options": ["боксит", "Уран", "қорғасын", "алтын", "темір кені", "хром"], "answer": [1, 3], "explanation": "Дұрыс жауаптар: B, D. Қазақстан уран қоры бойынша әлемде алдыңғы қатарда (шамамен 19%). Негізгі шикізат базалары Шу-Сарысу және Сырдария провинцияларында шоғырланған..", "q_ru": "Жоғарыдағы сипаттама қандай пайдалы қазбаға қатысты?", "options_ru": ["боксит", "Уран", "қорғасын", "алтын", "темір кені", "хром"], "explanation_ru": "Дұрыс жауаптар: B, D. Казахстан уран қоры бойынша әлемде алдыңғы қатарда (шамамен 19%). Негізгі шикізат базалары Чу-Сарысу және Сырдарья провинцияларында шоғырланған.."}, {"id": 26, "q": "Оралдың оңтүстік шеті болып табылатын тау жотасын көрсетіңіз.", "isMulti": true, "options": ["Сарыарқа", "Сауыр-Тарбағатай", "Мұғалжар", "Ұлытау", "Алтай", "Аппалач"], "answer": [2, 5], "explanation": "Дұрыс жауаптар: C, F. Ресейден бастау алатын Орал тау жүйесі Қазақстан аумағында аласарып, Мұғалжар тауы ретінде жалғасады және аяқталады..", "q_ru": "Оралдың оңтүстік шеті болып табылатын тау жотасын көрсетіңіз.", "options_ru": ["Сарыарка (Казахский мелкосопочник)", "Саур-Тарбагатай", "Мугоджары", "Улытау", "Алтай", "Аппалачи"], "explanation_ru": "Дұрыс жауаптар: C, F. Ресейден бастау алатын Урал тау жүйесі Казахстан аумағында аласарып, Мугоджары гора ретінде жалғасады және аяқталады.."}, {"id": 27, "q": "Орта Азия мен Сібірдің оңтүстігіндегі таулы аймақтардың аралығында орналасқан", "isMulti": true, "options": ["Гималай", "Мұғалжар", "Памир", "Қаратау", "Сауыр-Тарбағатай", "Анд", "Сарыарқа", "Аппалач"], "answer": [6, 7], "explanation": "Дұрыс жауаптар: G, H. Қазақтың ұсақ шоқысы (Сарыарқа) солтүстігінде Батыс Сібір жазығымен, ал оңтүстігінде Орта Азияның шөлдерімен, тауларымен шектесетін кең-байтақ алқап..", "q_ru": "Орта Азия мен Сібірдің оңтүстігіндегі таулы аймақтардың аралығында орналасқан", "options_ru": ["Гималаи", "Мугоджары", "Памир", "Каратау", "Саур-Тарбагатай", "Анды", "Сарыарка (Казахский мелкосопочник)", "Аппалачи"], "explanation_ru": "Дұрыс жауаптар: G, H. Қазақтың ұсақ шоқысы (Сарыарка (Казахский мелкосопочник)) солтүстігінде Батыс Сібір жазығымен, ал оңтүстігінде Орта Азияның шөлдерімен, тауларымен шектесетін кең-байтақ алқап.."}, {"id": 28, "q": "Көмірдің ең бағалы түрін көрсетіңіз.", "isMulti": false, "options": ["Антрацит", "Шымтезек", "Қоңыр көмір", "Кокс көмірі"], "answer": 0, "explanation": "Дұрыс жауабы: A) Антрацит. Антрацит — құрамында көміртегі үлесі ең жоғары (95%-ға дейін), жылу бөлгіштігі өте жоғары көмірдің ең сапалы, бағалы түрі.", "q_ru": "Укажите наиболее ценный вид угля.", "options_ru": ["Антрацит", "Торф", "Бурый уголь", "Коксующийся уголь"], "explanation_ru": "Дұрыс жауабы: A) Антрацит. Антрацит — құрамында көміртегі үлесі ең жоғары (95%-ға дейін), жылу бөлгіштігі өте жоғары көмірдің ең сапалы, бағалы түрі."}, {"id": 29, "q": "Триастың құмтасынан, метаморфты сазды тақтатас пен әктастан тұратын тау", "isMulti": false, "options": ["Кавказ", "Альпі", "Памир", "Маңғыстау Қаратауы"], "answer": 3, "explanation": "Дұрыс жауабы: D) Маңғыстау Қаратауы. Маңғыстау түбегіндегі Қаратау жотасы палеозой және мезозойдың шөгінді-метаморфты тау жыныстарынан түзілген.", "q_ru": "Триастың құмтасынан, метаморфты сазды тақтатас пен әктастан тұратын тау", "options_ru": ["Кавказ", "Альпы", "Памир", "Маңғыстау Қаратауы"], "explanation_ru": "Дұрыс жауабы: D) Маңғыстау Қаратауы. Маңғыстау түбегіндегі Каратау жотасы палеозой және мезозойдың шөгінді-метаморфты тау жыныстарынан түзілген."}, {"id": 30, "q": "Бұқтырма өзенінің сол жағалауында орналасқан жотаны табыңыз.", "isMulti": false, "options": ["Қалба", "Еділ", "Хуанхэ", "Обь"], "answer": 0, "explanation": "Дұрыс жауабы: A) Қалба. Қалба жотасы Алтай тау жүйесіне кіреді және Ертіс өзенінің сол жағалауында, Бұқтырма суқоймасының маңында орналасқан.", "q_ru": "Бухтарма өзенінің сол жағалауында орналасқан жотаны найдите.", "options_ru": ["Қалба", "Волга", "Хуанхэ", "Обь"], "explanation_ru": "Дұрыс жауабы: A) Қалба. Қалба жотасы Алтай тау жүйесіне кіреді және Иртыш өзенінің сол жағалауында, Бухтарма суқоймасының маңында орналасқан."}]};
+    const maxPoints = 35;
+    const passingPoints = Math.round(maxPoints * 0.7);
+    const initialTimeSeconds = 35 * 60;
+
+    let currentLang = 'kz';
+    let currentMode = 'exam'; // 'exam' or 'review'
+    let userAnswers = {}; // qId -> single value (int) or array of ints
+    let isSubmitted = false;
+    let timerRemaining = initialTimeSeconds;
+    let timerInterval = null;
+
+    // Initialize from URL params or localStorage
+    (function initSettings() {
+      const params = new URLSearchParams(window.location.search);
+      const urlLang = params.get('lang');
+      if (urlLang === 'ru' || urlLang === 'kz') {
+        currentLang = urlLang;
+      } else {
+        const storedProfile = localStorage.getItem('geotany_user_profile');
+        if (storedProfile) {
+          try {
+            const p = JSON.parse(storedProfile);
+            if (p.language === 'ru') currentLang = 'ru';
+          } catch(e) {}
+        }
+      }
+      
+      const urlMode = params.get('mode');
+      if (urlMode === 'review') {
+        currentMode = 'review';
+      }
+    })();
+
+    // Check previous scores in localStorage
+    function checkPreviousScore() {
+      try {
+        const raw = localStorage.getItem('geotany_writing_scores');
+        if (raw) {
+          const scores = JSON.parse(raw);
+          const prev = scores[variantData.id];
+          if (prev) {
+            const banner = document.getElementById('prevScoreBanner');
+            const txt = document.getElementById('prevScoreText');
+            if (banner && txt) {
+              banner.classList.remove('hidden');
+              txt.textContent = currentLang === 'ru'
+                ? `Предыдущий результат: ${prev.score} / ${prev.maxScore} (${prev.percentage}%) • ${prev.isPassed ? 'Сдано' : 'Не сдано'}`
+                : `Алдыңғы нәтиже: ${prev.score} / ${prev.maxScore} (${prev.percentage}%) • ${prev.isPassed ? 'Өтті' : 'Өтпеді'}`;
+            }
+            if (prev.answers && Object.keys(userAnswers).length === 0) {
+              userAnswers = prev.answers;
+            }
+          }
+        }
+      } catch(e) {}
+    }
+
+    // Switch Language
+    function setLang(lang) {
+      currentLang = lang;
+      
+      // Update toggle buttons UI
+      const kzBtn = document.getElementById('langKzBtn');
+      const ruBtn = document.getElementById('langRuBtn');
+      if (lang === 'kz') {
+        kzBtn.className = 'px-2 py-1 rounded-lg bg-brand-500 text-space-950 font-black transition';
+        ruBtn.className = 'px-2 py-1 rounded-lg text-slate-400 hover:text-white transition';
+      } else {
+        ruBtn.className = 'px-2 py-1 rounded-lg bg-brand-500 text-space-950 font-black transition';
+        kzBtn.className = 'px-2 py-1 rounded-lg text-slate-400 hover:text-white transition';
+      }
+
+      // Update Back Link
+      const backLink = document.getElementById('btnBackToPlatform');
+      if (backLink) backLink.href = `../geotanu.html?lang=${currentLang}#section-testter_writing`;
+      const modalBack = document.getElementById('modalBackLink');
+      if (modalBack) modalBack.href = `../geotanu.html?lang=${currentLang}#section-testter_writing`;
+
+      // Update Static Texts
+      updateLocalizedLabels();
+      renderQuestions();
+      renderMatrix();
+      checkPreviousScore();
+    }
+
+    // Switch Mode
+    function setMode(mode) {
+      currentMode = mode;
+      const examBtn = document.getElementById('modeExamBtn');
+      const reviewBtn = document.getElementById('modeReviewBtn');
+      const timerWrapper = document.getElementById('examTimerWrapper');
+
+      if (mode === 'exam') {
+        examBtn.className = 'px-2.5 py-1 rounded-lg bg-amber-500 text-space-950 font-black transition shadow-sm';
+        reviewBtn.className = 'px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition';
+        if (timerWrapper) timerWrapper.classList.remove('hidden');
+        if (!timerInterval && !isSubmitted) startTimer();
+      } else {
+        reviewBtn.className = 'px-2.5 py-1 rounded-lg bg-cyan-500 text-space-950 font-black transition shadow-sm';
+        examBtn.className = 'px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition';
+        if (timerWrapper) timerWrapper.classList.add('hidden');
+      }
+
+      renderQuestions();
+      renderMatrix();
+    }
+
+    // Localized Text Updates
+    function updateLocalizedLabels() {
+      const isRu = (currentLang === 'ru');
+      
+      document.getElementById('navBackText').textContent = isRu ? 'Назад' : 'Артқа';
+      document.getElementById('navVariantTitle').textContent = isRu 
+        ? `${variantData.id}-вариант: ЕНТ Комплексный тест`
+        : variantData.title;
+      
+      document.getElementById('lblTimerText').textContent = isRu ? 'Время:' : 'Уақыт:';
+      document.getElementById('lblModeExam').textContent = isRu ? 'Экзамен' : 'Емтихан';
+      document.getElementById('lblModeReview').textContent = isRu ? 'Разбор' : 'Талдау';
+
+      document.getElementById('heroDepartmentBadge').textContent = isRu ? 'Русское отделение' : 'Қазақ бөлімі';
+      document.getElementById('heroTitle').textContent = isRu 
+        ? `${variantData.id}-вариант: Тест ЕНТ (${variantData.questions.length} вопросов)`
+        : variantData.title;
+      document.getElementById('heroDesc').textContent = isRu 
+        ? 'Комплексный вариант ЕНТ по географии с подробными авторскими пояснениями к каждому вопросу.'
+        : variantData.desc;
+
+      document.getElementById('lblMetaQuestions').textContent = isRu 
+        ? `${variantData.questions.length} вопросов (${maxPoints} баллов)`
+        : `${variantData.questions.length} сұрақ (${maxPoints} балл)`;
+      document.getElementById('lblMetaTime').textContent = isRu 
+        ? `35 минут`
+        : `35 минут`;
+      document.getElementById('lblMetaPassing').textContent = isRu 
+        ? `Проходной: 70% (${passingPoints} б.)`
+        : `Шекті балл: 70% (${passingPoints} балл)`;
+      document.getElementById('lblMetaXp').textContent = isRu ? 'Награда: +80 XP' : 'Сыйлық: +80 XP';
+      document.getElementById('lblMetaOnline').textContent = isRu ? '100% Онлайн тест' : '100% Онлайн тест';
+
+      document.getElementById('lblNavigatorTitle').textContent = isRu ? 'Навигатор вопросов' : 'Сұрақтар навигаторы';
+      document.getElementById('lblBtnFinishExam').textContent = isRu ? 'Завершить экзамен' : 'Емтиханды аяқтау';
+      document.getElementById('lblBtnQuickReview').textContent = isRu ? 'Открыть разбор' : 'Талдауды ашу';
+
+      document.getElementById('lblBottomBarTitle').textContent = isRu 
+        ? 'Ответили на все вопросы?' 
+        : 'Барлық сұрақтарға жауап бердіңіз бе?';
+      document.getElementById('lblBottomBarDesc').textContent = isRu 
+        ? 'Завершите экзамен для проверки ответов и начисления баллов.' 
+        : 'Нәтижені растап, балл мен XP алу үшін емтиханды аяқтаңыз.';
+      document.getElementById('lblBottomBarBtn').textContent = isRu 
+        ? 'Завершить тест и проверить' 
+        : 'Тестті аяқтау және тексеру';
+
+      document.getElementById('lblModalCorrect').textContent = isRu ? 'Верно' : 'Дұрыс';
+      document.getElementById('lblModalPartial').textContent = isRu ? 'Частично' : 'Жартылай';
+      document.getElementById('lblModalWrong').textContent = isRu ? 'Неверно' : 'Қате';
+      document.getElementById('lblModalBtnReview').textContent = isRu ? 'Посмотреть подробный разбор' : 'Қателерді және толық талдауды көру';
+      document.getElementById('lblModalBtnRetake').textContent = isRu ? 'Пересдать тест' : 'Қайта тапсыру';
+      document.getElementById('lblModalBtnCatalog').textContent = isRu ? 'В каталог вариантов' : 'Нұсқалар каталогына оралу';
+    }
+
+    // Start Countdown Timer
+    function startTimer() {
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        if (timerRemaining > 0) {
+          timerRemaining--;
+          updateTimerDisplay();
+        } else {
+          clearInterval(timerInterval);
+          alert(currentLang === 'ru' ? 'Время вышло! Тест завершается автоматически.' : 'Уақыт аяқталды! Тест автоматты түрде аяқталады.');
+          submitExam();
+        }
+      }, 1000);
+    }
+
+    function updateTimerDisplay() {
+      const timerEl = document.getElementById('examTimer');
+      if (!timerEl) return;
+      const m = Math.floor(timerRemaining / 60);
+      const s = timerRemaining % 60;
+      timerEl.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      if (timerRemaining < 300) {
+        timerEl.classList.remove('text-amber-400');
+        timerEl.classList.add('text-rose-400', 'animate-pulse');
+      } else {
+        timerEl.classList.remove('text-rose-400', 'animate-pulse');
+        timerEl.classList.add('text-amber-400');
+      }
+    }
+
+    // Render Matrix Navigator
+    function renderMatrix() {
+      const container = document.getElementById('questionMatrix');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const total = variantData.questions.length;
+      let answeredCount = 0;
+
+      variantData.questions.forEach((q, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = (idx + 1);
+        btn.className = 'w-full py-2 rounded-xl text-xs font-bold transition flex items-center justify-center border ';
+
+        const ans = userAnswers[q.id];
+        const hasAnswered = ans !== undefined && (Array.isArray(ans) ? ans.length > 0 : true);
+        if (hasAnswered) answeredCount++;
+
+        if (currentMode === 'review' || isSubmitted) {
+          // Review mode evaluation
+          let isCorrect = false;
+          let isPartial = false;
+          if (q.isMulti) {
+            const userChoices = Array.isArray(ans) ? ans : [];
+            const correctChoices = Array.isArray(q.answer) ? q.answer : [q.answer];
+            const missed = correctChoices.filter(x => !userChoices.includes(x)).length;
+            const extra = userChoices.filter(x => !correctChoices.includes(x)).length;
+            if (missed === 0 && extra === 0 && userChoices.length > 0) isCorrect = true;
+            else if (missed + extra === 1 && userChoices.length > 0) isPartial = true;
+          } else {
+            if (ans === q.answer) isCorrect = true;
+          }
+
+          if (isCorrect) {
+            btn.className += 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40 hover:bg-emerald-500/30';
+          } else if (isPartial) {
+            btn.className += 'bg-amber-500/20 text-amber-400 border-amber-500/40 hover:bg-amber-500/30';
+          } else if (hasAnswered) {
+            btn.className += 'bg-rose-500/20 text-rose-400 border-rose-500/40 hover:bg-rose-500/30';
+          } else {
+            btn.className += 'bg-space-850 text-slate-500 border-slate-800 hover:bg-space-800';
+          }
+        } else {
+          // Exam mode
+          if (hasAnswered) {
+            btn.className += 'bg-amber-500 text-space-950 border-amber-400 shadow-sm font-black';
+          } else {
+            btn.className += 'bg-space-850 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-white';
+          }
+        }
+
+        btn.onclick = () => {
+          const target = document.getElementById(`q-card-${q.id}`);
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            target.classList.add('ring-2', 'ring-amber-400');
+            setTimeout(() => target.classList.remove('ring-2', 'ring-amber-400'), 1200);
+          }
+        };
+
+        container.appendChild(btn);
+      });
+
+      // Update progress badges
+      const badge = document.getElementById('navProgressBadge');
+      if (badge) badge.textContent = `${answeredCount} / ${total}`;
+      const bar = document.getElementById('examProgressBar');
+      if (bar) bar.style.width = `${(answeredCount / total) * 100}%`;
+    }
+
+    // Render Question Cards
+    function renderQuestions() {
+      const container = document.getElementById('questionsContainer');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const isRu = (currentLang === 'ru');
+      const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+
+      variantData.questions.forEach((q, idx) => {
+        const card = document.createElement('div');
+        card.id = `q-card-${q.id}`;
+        card.className = 'p-5 sm:p-6 rounded-3xl bg-space-900 border border-slate-800 transition duration-300 space-y-4';
+
+        const qText = (isRu && q.q_ru) ? q.q_ru : q.q;
+        const options = (isRu && q.options_ru) ? q.options_ru : q.options;
+        const explanationText = (isRu && q.explanation_ru) ? q.explanation_ru : q.explanation;
+        const isMulti = !!q.isMulti;
+
+        // Card Header
+        const header = document.createElement('div');
+        header.className = 'flex items-center justify-between gap-2 border-b border-slate-800/80 pb-3';
+        header.innerHTML = `
+          <div class="flex items-center space-x-2">
+            <span class="w-7 h-7 rounded-xl bg-space-850 border border-slate-700 text-amber-400 font-black text-xs flex items-center justify-center">
+              ${idx + 1}
+            </span>
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">
+              ${isRu ? 'Вопрос ' + (idx + 1) : 'Сұрақ ' + (idx + 1)}
+            </span>
+          </div>
+          <span class="text-[11px] px-2.5 py-0.5 rounded-lg ${isMulti ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30' : 'bg-slate-800 text-slate-300 border border-slate-700'} font-bold">
+            ${isMulti ? (isRu ? '2 балла • Несколько ответов' : '2 балл • Көптаңдау') : (isRu ? '1 балл • Один ответ' : '1 балл • Біртаңдау')}
+          </span>
+        `;
+        card.appendChild(header);
+
+        // Prompt
+        const promptEl = document.createElement('div');
+        promptEl.className = 'text-sm sm:text-base font-semibold text-slate-100 leading-relaxed';
+        promptEl.textContent = qText;
+        card.appendChild(promptEl);
+
+        // Options Container
+        const optList = document.createElement('div');
+        optList.className = 'space-y-2 pt-1';
+
+        const currentAnswer = userAnswers[q.id];
+        const correctAnswers = Array.isArray(q.answer) ? q.answer : [q.answer];
+
+        options.forEach((optText, optIdx) => {
+          const isSelected = isMulti 
+            ? (Array.isArray(currentAnswer) && currentAnswer.includes(optIdx))
+            : (currentAnswer === optIdx);
+
+          const optBtn = document.createElement('div');
+          optBtn.className = 'group relative p-3.5 sm:p-4 rounded-2xl border text-xs sm:text-sm font-medium transition cursor-pointer flex items-center space-x-3 ';
+
+          if (currentMode === 'review' || isSubmitted) {
+            // Review mode styling
+            const isCorrect = correctAnswers.includes(optIdx);
+            if (isCorrect) {
+              optBtn.className += 'bg-emerald-500/15 border-emerald-500 text-emerald-200 font-bold';
+            } else if (isSelected) {
+              optBtn.className += 'bg-rose-500/15 border-rose-500 text-rose-200';
+            } else {
+              optBtn.className += 'bg-space-850/50 border-slate-800/80 text-slate-400 opacity-70';
+            }
+          } else {
+            // Exam mode styling
+            if (isSelected) {
+              optBtn.className += 'bg-amber-500/15 border-amber-500 text-amber-200 font-bold shadow-sm';
+            } else {
+              optBtn.className += 'bg-space-850 hover:bg-space-800 border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white';
+            }
+          }
+
+          // Choice Letter Circle
+          const letterBadge = document.createElement('span');
+          letterBadge.className = 'w-6 h-6 rounded-lg text-xs font-black flex items-center justify-center shrink-0 ';
+          if (currentMode === 'review' || isSubmitted) {
+            if (correctAnswers.includes(optIdx)) {
+              letterBadge.className += 'bg-emerald-500 text-space-950';
+            } else if (isSelected) {
+              letterBadge.className += 'bg-rose-500 text-white';
+            } else {
+              letterBadge.className += 'bg-space-900 border border-slate-700 text-slate-400';
+            }
+          } else {
+            if (isSelected) {
+              letterBadge.className += 'bg-amber-500 text-space-950';
+            } else {
+              letterBadge.className += 'bg-space-900 border border-slate-700 text-slate-400 group-hover:border-slate-500 group-hover:text-slate-200';
+            }
+          }
+          letterBadge.textContent = letters[optIdx] || String(optIdx + 1);
+          optBtn.appendChild(letterBadge);
+
+          // Option text
+          const textSpan = document.createElement('span');
+          textSpan.className = 'flex-1 leading-snug';
+          textSpan.textContent = optText;
+          optBtn.appendChild(textSpan);
+
+          // Status icon in review mode
+          if (currentMode === 'review' || isSubmitted) {
+            if (correctAnswers.includes(optIdx)) {
+              const check = document.createElement('span');
+              check.className = 'text-emerald-400 font-black text-sm';
+              check.textContent = '✓';
+              optBtn.appendChild(check);
+            } else if (isSelected) {
+              const cross = document.createElement('span');
+              cross.className = 'text-rose-400 font-black text-sm';
+              cross.textContent = '✕';
+              optBtn.appendChild(cross);
+            }
+          }
+
+          // Click handler (only in Exam mode or allow review interaction)
+          optBtn.onclick = () => {
+            if (isSubmitted && currentMode === 'exam') return;
+            handleOptionSelect(q.id, optIdx, isMulti);
+          };
+
+          optList.appendChild(optBtn);
+        });
+
+        card.appendChild(optList);
+
+        // Explanation Box (In Review Mode or after Submission)
+        if (currentMode === 'review' || isSubmitted) {
+          const expBox = document.createElement('div');
+          expBox.className = 'mt-4 p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-xs text-cyan-200 space-y-1.5';
+          expBox.innerHTML = `
+            <div class="flex items-center space-x-1.5 font-bold text-cyan-300">
+              <span>💡</span>
+              <span>${isRu ? 'Авторское пояснение:' : 'Авторлық түсіндірме:'}</span>
+            </div>
+            <p class="leading-relaxed text-slate-300">${explanationText || (isRu ? 'Пояснение к данному вопросу.' : 'Сұраққа арналған түсіндірме.')}</p>
+          `;
+          card.appendChild(expBox);
+        }
+
+        container.appendChild(card);
+      });
+    }
+
+    // Handle Option Selection
+    function handleOptionSelect(qId, optIdx, isMulti) {
+      if (isMulti) {
+        let selected = Array.isArray(userAnswers[qId]) ? [...userAnswers[qId]] : [];
+        if (selected.includes(optIdx)) {
+          selected = selected.filter(x => x !== optIdx);
+        } else {
+          if (selected.length < 3) {
+            selected.push(optIdx);
+          } else {
+            alert(currentLang === 'ru' ? 'Можно выбрать максимум 3 варианта ответа.' : 'Ең көп дегенде 3 нұсқа таңдауға болады.');
+            return;
+          }
+        }
+        if (selected.length > 0) {
+          userAnswers[qId] = selected;
+        } else {
+          delete userAnswers[qId];
+        }
+      } else {
+        userAnswers[qId] = optIdx;
+      }
+
+      renderQuestions();
+      renderMatrix();
+    }
+
+    // Confirm Submission
+    function confirmSubmitExam() {
+      const answered = Object.keys(userAnswers).length;
+      const total = variantData.questions.length;
+      const isRu = (currentLang === 'ru');
+
+      if (answered < total) {
+        const msg = isRu 
+          ? `Вы ответили на ${answered} из ${total} вопросов. Завершить экзамен сейчас?`
+          : `Сіз ${total} сұрақтың ${answered}-не жауап бердіңіз. Емтиханды қазір аяқтағыңыз келе ме?`;
+        if (!confirm(msg)) return;
+      }
+
+      submitExam();
+    }
+
+    // Submit Exam & Score Calculation
+    function submitExam() {
+      clearInterval(timerInterval);
+      isSubmitted = true;
+
+      let totalEarned = 0;
+      let totalMax = 0;
+      let correctCount = 0;
+      let partialCount = 0;
+      let wrongCount = 0;
+
+      variantData.questions.forEach(q => {
+        if (q.isMulti) {
+          totalMax += 2;
+          const userChoices = Array.isArray(userAnswers[q.id]) ? userAnswers[q.id] : [];
+          const correctChoices = Array.isArray(q.answer) ? q.answer : [q.answer];
+
+          const missed = correctChoices.filter(x => !userChoices.includes(x)).length;
+          const extra = userChoices.filter(x => !correctChoices.includes(x)).length;
+          const errors = missed + extra;
+
+          if (errors === 0 && userChoices.length > 0) {
+            totalEarned += 2;
+            correctCount++;
+          } else if (errors === 1 && userChoices.length > 0) {
+            totalEarned += 1;
+            partialCount++;
+          } else {
+            wrongCount++;
+          }
+        } else {
+          totalMax += 1;
+          if (userAnswers[q.id] === q.answer) {
+            totalEarned += 1;
+            correctCount++;
+          } else {
+            wrongCount++;
+          }
+        }
+      });
+
+      const percentage = Math.round((totalEarned / totalMax) * 100);
+      const isPassed = percentage >= 70;
+      const earnedXp = isPassed ? 80 : Math.round(totalEarned * 2);
+
+      // Save to localStorage
+      try {
+        let scores = JSON.parse(localStorage.getItem('geotany_writing_scores') || '{}');
+        scores[variantData.id] = {
+          score: totalEarned,
+          maxScore: totalMax,
+          total: variantData.questions.length,
+          fullCorrect: correctCount,
+          partiallyCorrect: partialCount,
+          wrong: wrongCount,
+          percentage: percentage,
+          isPassed: isPassed,
+          date: new Date().toISOString(),
+          answers: userAnswers
+        };
+        localStorage.setItem('geotany_writing_scores', JSON.stringify(scores));
+
+        let curXp = parseInt(localStorage.getItem('geotany_user_xp') || '0', 10);
+        curXp += earnedXp;
+        localStorage.setItem('geotany_user_xp', curXp.toString());
+      } catch(e) {}
+
+      // Display Modal
+      showResultModal({
+        score: totalEarned,
+        maxScore: totalMax,
+        percentage,
+        isPassed,
+        correctCount,
+        partialCount,
+        wrongCount,
+        earnedXp
+      });
+
+      renderQuestions();
+      renderMatrix();
+    }
+
+    // Show Result Modal with Confetti
+    function showResultModal(res) {
+      const isRu = (currentLang === 'ru');
+      const modal = document.getElementById('resultModal');
+      if (!modal) return;
+
+      document.getElementById('modalScoreDisplay').textContent = `${res.score} / ${res.maxScore}`;
+      document.getElementById('modalPercentageDisplay').textContent = `${res.percentage}% • ${isRu ? 'Результат' : 'Нәтиже'} (+${res.earnedXp} XP)`;
+      
+      const statusBadge = document.getElementById('modalStatusBadge');
+      if (statusBadge) {
+        if (res.isPassed) {
+          statusBadge.textContent = isRu ? 'Сдано • Успешно' : 'Өтті • Құттықтаймыз';
+          statusBadge.className = 'inline-block px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wide bg-brand-500/20 text-brand-400 border border-brand-500/30';
+          triggerConfetti();
+        } else {
+          statusBadge.textContent = isRu ? 'Не сдано • Требуется 70%' : 'Өтпеді • 70% қажет';
+          statusBadge.className = 'inline-block px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wide bg-rose-500/20 text-rose-400 border border-rose-500/30';
+        }
+      }
+
+      document.getElementById('modalCorrectCount').textContent = res.correctCount;
+      document.getElementById('modalPartialCount').textContent = res.partialCount;
+      document.getElementById('modalWrongCount').textContent = res.wrongCount;
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeModalAndShowReview() {
+      const modal = document.getElementById('resultModal');
+      if (modal) modal.classList.add('hidden');
+      setMode('review');
+    }
+
+    function retakeExam() {
+      const modal = document.getElementById('resultModal');
+      if (modal) modal.classList.add('hidden');
+      userAnswers = {};
+      isSubmitted = false;
+      timerRemaining = initialTimeSeconds;
+      setMode('exam');
+      startTimer();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Lightweight Canvas Confetti
+    function triggerConfetti() {
+      const canvas = document.getElementById('confettiCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      canvas.width = canvas.parentElement.clientWidth;
+      canvas.height = canvas.parentElement.clientHeight;
+
+      const particles = [];
+      const colors = ['#10B981', '#F59E0B', '#06B6D4', '#EC4899', '#8B5CF6'];
+
+      for (let i = 0; i < 75; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          vx: (Math.random() - 0.5) * 10,
+          vy: (Math.random() - 0.5) * 10 - 3,
+          size: Math.random() * 6 + 3,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          alpha: 1,
+          decay: Math.random() * 0.02 + 0.015
+        });
+      }
+
+      function render() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let active = 0;
+        particles.forEach(p => {
+          if (p.alpha > 0) {
+            active++;
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += 0.2;
+            p.alpha -= p.decay;
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = Math.max(0, p.alpha);
+            ctx.fillRect(p.x, p.y, p.size, p.size);
+          }
+        });
+        if (active > 0) requestAnimationFrame(render);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      requestAnimationFrame(render);
+    }
+
+    // Page Load Boot
+    window.addEventListener('DOMContentLoaded', () => {
+      updateLocalizedLabels();
+      renderQuestions();
+      renderMatrix();
+      checkPreviousScore();
+      if (currentMode === 'exam') {
+        startTimer();
+      }
+    });
+  </script>
+
+</body>
+</html>
