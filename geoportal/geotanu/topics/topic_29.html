@@ -11,14 +11,14 @@
         var isAuthorized = isAdmin;
         if (!isAuthorized && sessionStr) {
           var s = JSON.parse(sessionStr);
-          if (s && s.email && (s.courseCode || s.role === 'admin')) {
+          if (s && s.email && (s.v === 2 && (s.courseCode || s.role === 'admin'))) {
             isAuthorized = true;
           }
         }
         var profileStr = localStorage.getItem('geotany_user_profile');
         if (!isAuthorized && profileStr) {
           var p = JSON.parse(profileStr);
-          if (p && p.isRegistered && p.email && p.courseCode) {
+          if (p && p.v === 2 && p.isRegistered && p.email && p.courseCode) {
             isAuthorized = true;
           }
         }

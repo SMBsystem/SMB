@@ -67,7 +67,7 @@
       const profile = await SMB.loadProfile(user.id);
       try {
         localStorage.setItem('geotany_user_session', JSON.stringify({
-          role: 'student', email: user.email, name: (profile && profile.full_name) || '',
+          v: 2, role: 'student', email: user.email, name: (profile && profile.full_name) || '',
           courseCode: slug, courseId: slug, courseTitle: courseTitle(course), lang: SMB.getLang()
         }));
       } catch (e) {}

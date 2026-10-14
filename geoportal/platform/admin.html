@@ -20,7 +20,6 @@
     .chip { display: inline-flex; align-items: center; gap: .25rem; padding: .125rem .5rem; border-radius: .5rem; font-size: 10px; font-weight: 800; border: 1px solid; }
     .btn-s { padding: .375rem .625rem; border-radius: .5rem; font-size: 11px; font-weight: 700; background: #1e293b; color: #e2e8f0; }
     .btn-s:hover { background: #334155; }
-    dialog::backdrop { background: rgba(0, 0, 0, .8); }
   </style>
 </head>
 <body class="bg-[#090d16] text-slate-100 min-h-screen">
@@ -33,7 +32,8 @@
       </div>
       <div class="flex items-center gap-2 text-xs font-bold shrink-0">
         <span id="whoami" class="hidden md:inline text-slate-400"></span>
-        <a href="index.html" class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-200">← Курсы</a>
+        <a href="catalog.html" class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-200">📚 Каталог</a>
+        <a href="index.html" class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-200">← Портал</a>
       </div>
     </div>
   </header>
@@ -43,28 +43,10 @@
 
     <div id="adminApp" class="hidden space-y-5">
       <nav class="flex flex-wrap gap-2 text-xs font-black" role="tablist">
-        <button data-tab="catalog" class="px-3.5 py-2 rounded-xl">📚 Каталог курсов</button>
         <button data-tab="requests" class="px-3.5 py-2 rounded-xl">📨 Запросы <span id="reqCount" class="ml-1 px-1.5 rounded bg-rose-500 text-white">0</span></button>
         <button data-tab="codes" class="px-3.5 py-2 rounded-xl">🔑 Коды</button>
         <button data-tab="students" class="px-3.5 py-2 rounded-xl">👥 Ученики</button>
       </nav>
-
-      <!-- ================= Каталог ================= -->
-      <section data-panel="catalog" class="space-y-4">
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3" id="tiles"></div>
-        <div class="flex flex-wrap gap-2 items-center">
-          <input id="catSearch" class="inp max-w-xs" placeholder="Поиск курса…" aria-label="Поиск курса">
-          <select id="catFilter" class="inp max-w-[12rem]" aria-label="Фильтр">
-            <option value="all">Все курсы</option>
-            <option value="published">Опубликованные</option>
-            <option value="hidden">Скрытые (черновики)</option>
-            <option value="nofile">Без загруженного файла</option>
-            <option value="pending">С новыми запросами</option>
-          </select>
-          <button id="newCourseBtn" class="ml-auto px-4 py-2 rounded-xl bg-cyan-500 text-slate-950 text-xs font-black">➕ Новый курс</button>
-        </div>
-        <div id="catalogGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-      </section>
 
       <!-- ================= Запросы ================= -->
       <section data-panel="requests" class="hidden space-y-3">
@@ -141,33 +123,10 @@
     </div>
   </main>
 
-  <!-- ================= Редактор курса ================= -->
-  <dialog id="courseDialog" class="bg-transparent p-0 w-full max-w-2xl">
-    <form id="courseForm" class="m-3 p-5 rounded-3xl bg-slate-900 border border-cyan-500/40 grid sm:grid-cols-6 gap-3 text-slate-100">
-      <h3 id="courseDialogTitle" class="sm:col-span-6 font-black text-white">Новый курс</h3>
-      <input type="hidden" id="coId">
-      <div class="sm:col-span-2"><label class="lbl" for="coSlug">Адрес (латиница)</label><input id="coSlug" class="inp font-mono" required pattern="[a-z0-9\-]{2,40}" placeholder="geotanu"></div>
-      <div><label class="lbl" for="coIcon">Иконка</label><input id="coIcon" class="inp" maxlength="4" value="📚"></div>
-      <div><label class="lbl" for="coOrder">Порядок</label><input id="coOrder" type="number" class="inp" value="0"></div>
-      <div class="sm:col-span-2"><label class="lbl" for="coEntry">Главный файл</label><input id="coEntry" class="inp font-mono" value="index.html" required></div>
-      <div class="sm:col-span-3"><label class="lbl" for="coTitleKz">Название (KZ)</label><input id="coTitleKz" class="inp" required></div>
-      <div class="sm:col-span-3"><label class="lbl" for="coTitleRu">Название (RU)</label><input id="coTitleRu" class="inp"></div>
-      <div class="sm:col-span-3"><label class="lbl" for="coDescKz">Описание (KZ)</label><textarea id="coDescKz" rows="2" class="inp"></textarea></div>
-      <div class="sm:col-span-3"><label class="lbl" for="coDescRu">Описание (RU)</label><textarea id="coDescRu" rows="2" class="inp"></textarea></div>
-      <label class="sm:col-span-3 flex items-center gap-2 text-xs font-bold"><input type="checkbox" id="coPub" checked> Опубликован (виден ученикам в каталоге)</label>
-      <label class="sm:col-span-3 flex items-center gap-2 text-xs font-bold"><input type="checkbox" id="coReq" checked> Можно запросить доступ (иначе только по коду)</label>
-      <div class="sm:col-span-6 flex justify-end gap-2 pt-2">
-        <button type="button" id="coCancel" class="px-4 py-2 rounded-xl bg-slate-800 text-xs font-bold">Отмена</button>
-        <button class="px-4 py-2 rounded-xl bg-cyan-500 text-slate-950 text-xs font-black">💾 Сохранить</button>
-      </div>
-    </form>
-  </dialog>
-
   <script>
     const { sb, esc, toast } = SMB;
-    const BUCKET = SMB.cfg.CONTENT_BUCKET || 'course-content';
     let me = null, myProfile = null;
-    let catalog = [], distinctStudents = 0, codesCache = [], enrollments = [];
+    let catalog = [], codesCache = [], enrollments = [];
     let lastGenerated = [];
 
     const $ = id => document.getElementById(id);
@@ -193,22 +152,15 @@
     function showTab(name) {
       document.querySelectorAll('[data-tab]').forEach(b => b.className = 'px-3.5 py-2 rounded-xl ' + (b.dataset.tab === name ? 'tab-on' : 'tab-off'));
       document.querySelectorAll('[data-panel]').forEach(p => p.classList.toggle('hidden', p.dataset.panel !== name));
-      ({ catalog: renderCatalog, requests: loadRequests, codes: loadCodes, students: loadStudents })[name]();
+      ({ requests: loadRequests, codes: loadCodes, students: loadStudents })[name]();
     }
     document.querySelectorAll('[data-tab]').forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
 
-    // =====================================================================
-    //  Каталог курсов (данные отдаёт только функция admin_course_catalog —
-    //  ученик её вызвать не может, база вернёт пусто или откажет)
-    // =====================================================================
+    // Список курсов для выпадающих списков и счётчик запросов (сами курсы — на странице «Каталог»).
     async function loadCatalog() {
-      const [cat, enr] = await Promise.all([
-        sb.rpc('admin_course_catalog'),
-        sb.from('enrollments').select('user_id')
-      ]);
-      if (cat.error) { toast('Каталог: ' + cat.error.message, true); catalog = []; }
-      else catalog = cat.data || [];
-      distinctStudents = new Set((enr.data || []).map(r => r.user_id)).size;
+      const { data, error } = await sb.rpc('admin_course_catalog');
+      if (error) { toast('Курсы: ' + error.message, true); catalog = []; }
+      else catalog = data || [];
 
       const opts = catalog.map(c => `<option value="${esc(c.id)}">${esc(c.icon)} ${esc(cTitle(c))}${c.is_published ? '' : ' (скрыт)'}</option>`).join('');
       $('gCourse').innerHTML = opts;
@@ -216,145 +168,6 @@
       $('stCourse').innerHTML = '<option value="">Все курсы</option>' + opts;
       $('reqCount').textContent = catalog.reduce((s, c) => s + Number(c.pending_requests), 0);
     }
-
-    function tile(icon, value, label, sub) {
-      return `<div class="p-4 rounded-2xl bg-slate-900 border border-slate-800">
-        <div class="text-2xl font-black text-white">${icon} ${esc(value)}</div>
-        <div class="text-xs font-bold text-slate-400 mt-1">${esc(label)}</div>
-        ${sub ? `<div class="text-[11px] text-slate-500">${esc(sub)}</div>` : ''}
-      </div>`;
-    }
-
-    function renderCatalog() {
-      const pub = catalog.filter(c => c.is_published).length;
-      const sum = k => catalog.reduce((s, c) => s + Number(c[k]), 0);
-      $('tiles').innerHTML =
-        tile('📚', catalog.length, 'Курсов', `${pub} опубликовано · ${catalog.length - pub} скрыто`) +
-        tile('👥', distinctStudents, 'Учеников', `${sum('students')} записей на курсы`) +
-        tile('⏳', sum('pending_requests'), 'Ждут ответа', 'запросы на доступ') +
-        tile('🔑', sum('active_codes'), 'Рабочих кодов', `всего выдано ${sum('total_codes')}`);
-
-      const q = $('catSearch').value.toLowerCase().trim();
-      const f = $('catFilter').value;
-      const list = catalog.filter(c => {
-        if (f === 'published' && !c.is_published) return false;
-        if (f === 'hidden' && c.is_published) return false;
-        if (f === 'nofile' && c.has_content) return false;
-        if (f === 'pending' && !Number(c.pending_requests)) return false;
-        return !q || [c.slug, c.title_kz, c.title_ru].some(v => (v || '').toLowerCase().includes(q));
-      });
-
-      $('catalogGrid').innerHTML = list.length ? list.map(c => {
-        const pending = Number(c.pending_requests);
-        return `<article class="p-4 rounded-2xl bg-slate-900 border ${c.is_published ? 'border-slate-800' : 'border-dashed border-slate-600'} flex flex-col gap-3">
-          <div class="flex items-start gap-3">
-            <span class="text-3xl leading-none">${esc(c.icon)}</span>
-            <div class="min-w-0 flex-1">
-              <h3 class="font-black text-white text-sm leading-snug">${esc(c.title_kz)}</h3>
-              ${c.title_ru ? `<p class="text-xs text-slate-400">${esc(c.title_ru)}</p>` : ''}
-              <p class="text-[11px] font-mono text-slate-500 mt-0.5">${esc(c.slug)}/${esc(c.entry_file)}</p>
-            </div>
-          </div>
-          <div class="flex flex-wrap gap-1.5">
-            ${c.is_published
-              ? '<span class="chip border-emerald-500/40 text-emerald-300 bg-emerald-500/10">● Опубликован</span>'
-              : '<span class="chip border-slate-600 text-slate-400 bg-slate-800">◌ Скрыт</span>'}
-            ${c.allow_requests
-              ? '<span class="chip border-cyan-500/40 text-cyan-300 bg-cyan-500/10">📨 Запросы открыты</span>'
-              : '<span class="chip border-amber-500/40 text-amber-300 bg-amber-500/10">🔑 Только по коду</span>'}
-            ${c.has_content
-              ? '<span class="chip border-emerald-500/40 text-emerald-300 bg-emerald-500/10">✓ Файл загружен</span>'
-              : '<span class="chip border-rose-500/50 text-rose-300 bg-rose-500/10">⚠ Нет файла</span>'}
-          </div>
-          <div class="grid grid-cols-3 gap-2 text-center">
-            <button data-act="students" data-id="${esc(c.id)}" class="p-2 rounded-xl bg-slate-950 hover:bg-slate-800"><div class="font-black text-white">${esc(c.students)}</div><div class="text-[10px] text-slate-400">учеников</div></button>
-            <button data-act="requests" data-id="${esc(c.id)}" class="p-2 rounded-xl ${pending ? 'bg-rose-500/15' : 'bg-slate-950'} hover:bg-slate-800"><div class="font-black ${pending ? 'text-rose-300' : 'text-white'}">${pending}</div><div class="text-[10px] text-slate-400">запросов</div></button>
-            <button data-act="codes" data-id="${esc(c.id)}" class="p-2 rounded-xl bg-slate-950 hover:bg-slate-800"><div class="font-black text-white">${esc(c.active_codes)}<span class="text-slate-500 text-xs">/${esc(c.total_codes)}</span></div><div class="text-[10px] text-slate-400">кодов</div></button>
-          </div>
-          <p class="text-[11px] text-slate-500">Последняя запись: ${fmtDate(c.last_enrolled_at)}${c.owner_email ? ' · автор ' + esc(c.owner_email) : ''}</p>
-          <div class="flex flex-wrap gap-1.5 mt-auto">
-            <a href="course.html?c=${encodeURIComponent(c.slug)}" class="btn-s">Открыть ↗</a>
-            <button data-act="edit" data-id="${esc(c.id)}" class="btn-s">✏️ Изменить</button>
-            <label class="btn-s cursor-pointer">⬆️ Файлы<input type="file" multiple data-upload="${esc(c.id)}" class="hidden"></label>
-            <button data-act="newcodes" data-id="${esc(c.id)}" class="btn-s">🎲 Коды</button>
-            <button data-act="toggle" data-id="${esc(c.id)}" class="btn-s">${c.is_published ? '🙈 Скрыть' : '👁 Опубликовать'}</button>
-          </div>
-        </article>`;
-      }).join('') : '<p class="text-sm text-slate-400">Курсов не найдено.</p>';
-    }
-    $('catSearch').addEventListener('input', renderCatalog);
-    $('catFilter').addEventListener('change', renderCatalog);
-
-    $('catalogGrid').addEventListener('click', async e => {
-      const b = e.target.closest('[data-act]');
-      if (!b) return;
-      const c = courseById(b.dataset.id);
-      if (!c) return;
-      switch (b.dataset.act) {
-        case 'edit': openCourseDialog(c); break;
-        case 'students': showTab('students'); $('stCourse').value = c.id; renderStudents(); break;
-        case 'requests': showTab('requests'); break;
-        case 'codes': $('cdCourse').value = c.id; $('cdStatus').value = 'all'; showTab('codes'); break;
-        case 'newcodes': showTab('codes'); $('gCourse').value = c.id; $('genForm').scrollIntoView({ behavior: 'smooth' }); break;
-        case 'toggle': {
-          const { error } = await sb.from('courses').update({ is_published: !c.is_published }).eq('id', c.id);
-          if (error) return toast('Ошибка: ' + error.message, true);
-          toast(c.is_published ? 'Курс скрыт от учеников' : 'Курс опубликован');
-          await loadCatalog(); renderCatalog();
-        }
-      }
-    });
-
-    $('catalogGrid').addEventListener('change', async e => {
-      const input = e.target.closest('[data-upload]');
-      if (!input || !input.files.length) return;
-      const c = courseById(input.dataset.upload);
-      for (const f of input.files) {
-        const { error } = await sb.storage.from(BUCKET).upload(c.slug + '/' + f.name, f, { upsert: true, contentType: f.type || 'text/html' });
-        if (error) toast(f.name + ': ' + error.message, true); else toast('Загружено: ' + f.name);
-      }
-      input.value = '';
-      await loadCatalog(); renderCatalog();
-    });
-
-    // ---------- Редактор курса ----------
-    function openCourseDialog(c) {
-      const v = (id, val) => { $(id).value = val == null ? '' : val; };
-      $('courseDialogTitle').textContent = c ? 'Курс: ' + cTitle(c) : 'Новый курс';
-      v('coId', c ? c.id : ''); v('coSlug', c ? c.slug : ''); v('coIcon', c ? c.icon : '📚');
-      v('coOrder', c ? c.sort_order : catalog.length + 1); v('coEntry', c ? c.entry_file : 'index.html');
-      v('coTitleKz', c && c.title_kz); v('coTitleRu', c && c.title_ru);
-      v('coDescKz', c && c.description_kz); v('coDescRu', c && c.description_ru);
-      $('coPub').checked = c ? c.is_published : false; // новый курс — сначала черновик
-      $('coReq').checked = c ? c.allow_requests : true;
-      $('coSlug').readOnly = !!c; // адрес = папка с файлами в хранилище, менять нельзя
-      $('courseDialog').showModal();
-    }
-    $('newCourseBtn').addEventListener('click', () => openCourseDialog(null));
-    $('coCancel').addEventListener('click', () => $('courseDialog').close());
-    $('courseForm').addEventListener('submit', async e => {
-      e.preventDefault();
-      const id = $('coId').value;
-      const row = {
-        slug: $('coSlug').value.trim(),
-        icon: $('coIcon').value.trim() || '📚',
-        sort_order: Number($('coOrder').value) || 0,
-        entry_file: $('coEntry').value.trim(),
-        title_kz: $('coTitleKz').value.trim(),
-        title_ru: $('coTitleRu').value.trim() || null,
-        description_kz: $('coDescKz').value.trim() || null,
-        description_ru: $('coDescRu').value.trim() || null,
-        is_published: $('coPub').checked,
-        allow_requests: $('coReq').checked
-      };
-      const { error } = id
-        ? await sb.from('courses').update(row).eq('id', id)
-        : await sb.from('courses').insert(Object.assign(row, { owner_id: me.id }));
-      if (error) return toast(error.code === '23505' ? 'Курс с таким адресом уже есть' : 'Ошибка: ' + error.message, true);
-      $('courseDialog').close();
-      toast(id ? 'Курс сохранён' : 'Курс создан как черновик — загрузите файл и опубликуйте');
-      await loadCatalog(); renderCatalog();
-    });
 
     // =====================================================================
     //  Запросы
@@ -603,7 +416,8 @@
         }));
     });
 
-    // ---------- Старт: пускаем только админа и преподавателей ----------
+    // ---------- Старт: только админ и преподаватель ----------
+    // Ссылки из каталога открывают нужную вкладку и курс: admin.html?tab=codes&course=ID
     (async function () {
       if (!SMB.configured) { $('status').textContent = SMB.I18N.ru.notConfigured; return; }
       me = await SMB.currentUser();
@@ -617,7 +431,12 @@
       $('status').classList.add('hidden');
       $('adminApp').classList.remove('hidden');
       await loadCatalog();
-      showTab('catalog');
+
+      const params = new URLSearchParams(location.search);
+      const tab = ['requests', 'codes', 'students'].includes(params.get('tab')) ? params.get('tab') : 'requests';
+      const course = params.get('course') || '';
+      if (course) { ['gCourse', 'cdCourse', 'stCourse'].forEach(id => { $(id).value = course; }); }
+      showTab(tab);
     })();
   </script>
 </body>

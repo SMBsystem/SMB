@@ -11,14 +11,14 @@
         var isAuthorized = isAdmin;
         if (!isAuthorized && sessionStr) {
           var s = JSON.parse(sessionStr);
-          if (s && s.email && (s.courseCode || s.role === 'admin')) {
+          if (s && s.email && (s.v === 2 && (s.courseCode || s.role === 'admin'))) {
             isAuthorized = true;
           }
         }
         var profileStr = localStorage.getItem('geotany_user_profile');
         if (!isAuthorized && profileStr) {
           var p = JSON.parse(profileStr);
-          if (p && p.isRegistered && p.email && p.courseCode) {
+          if (p && p.v === 2 && p.isRegistered && p.email && p.courseCode) {
             isAuthorized = true;
           }
         }
@@ -3368,12 +3368,12 @@ function isUserAuthenticated() {
   if (sessionStr) {
     try {
       const s = JSON.parse(sessionStr);
-      if (s && (s.role === 'admin' || (s.email && s.courseCode))) {
+      if (s && s.v === 2 && (s.role === 'admin' || (s.email && s.courseCode))) {
         return true;
       }
     } catch(e) {}
   }
-  if (studentProfile && studentProfile.isRegistered && studentProfile.email && studentProfile.courseCode) {
+  if (studentProfile && studentProfile.v === 2 && studentProfile.isRegistered && studentProfile.email && studentProfile.courseCode) {
     return true;
   }
   return false;
@@ -3582,6 +3582,7 @@ function saveStudentRegistration(event) {
   if (isAdminAuth()) { // админ входит только через главную страницу
     safeStorage.setItem('geotany_admin_auth', 'true');
     const adminSession = {
+      v: 2,
       role: 'admin',
       email: emailLower,
       name: nameInput && nameInput.value.trim() ? nameInput.value.trim() : 'Шоуан (Администратор)',
@@ -3590,6 +3591,7 @@ function saveStudentRegistration(event) {
     safeStorage.setItem('geotany_user_session', JSON.stringify(adminSession));
 
     studentProfile = {
+      v: 2,
       name: adminSession.name,
       lang: document.getElementById('regLanguage') ? document.getElementById('regLanguage').value : 'kz',
       grade: 'Мұғалім / Ментор',
@@ -3649,6 +3651,7 @@ function saveStudentRegistration(event) {
   const courseDisplayName = (currentLang === 'ru' ? matchedCourse.name_ru : matchedCourse.name_kz) || matchedCourse.code;
 
   studentProfile = {
+    v: 2,
     name: name,
     email: email,
     courseCode: matchedCourse.code,
@@ -3667,6 +3670,7 @@ function saveStudentRegistration(event) {
   safeStorage.setItem('geotany_user_profile', JSON.stringify(studentProfile));
 
   const studentSession = {
+    v: 2,
     role: 'student',
     email: email,
     name: name,

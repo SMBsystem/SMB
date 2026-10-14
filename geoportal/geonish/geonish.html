@@ -6,22 +6,13 @@
   <script>
     (function() {
       try {
+        // Доступ к НИШ — только после ввода кода курса НЗМ (метка nis_access ставится при проверке кода).
         var isAdmin = localStorage.getItem('geotany_admin_auth') === 'true';
-        var sessionStr = localStorage.getItem('geotany_user_session');
-        var isAuthorized = isAdmin;
-        if (!isAuthorized && sessionStr) {
-          var s = JSON.parse(sessionStr);
-          if (s && s.email && (s.role === 'admin' || s.courseCode)) {
-            isAuthorized = true;
-          }
-        }
-        var profileStr = localStorage.getItem('geotany_user_profile');
-        if (!isAuthorized && profileStr) {
-          var p = JSON.parse(profileStr);
-          if (p && p.isRegistered && p.email) {
-            isAuthorized = true;
-          }
-        }
+        var isAuthorized = isAdmin || localStorage.getItem('nis_access') === 'v2';
+        // Вход с главной страницы по коду НЗМ тоже даёт сессию с courseId = geonish.
+        var sNis = null;
+        try { sNis = JSON.parse(localStorage.getItem('geotany_user_session') || 'null'); } catch (e) {}
+        if (sNis && sNis.v === 2 && sNis.email && sNis.courseId === 'geonish') isAuthorized = true;
         if (!isAuthorized) {
           window.location.replace('../index.html?need_course=geonish&redirect=geonish/index.html');
           return;
@@ -333,6 +324,14 @@
       </div>
 
       <form id="studentRegForm" onsubmit="handleStudentRegistration(event)" class="space-y-3 text-xs">
+        <div>
+          <label for="regCourseCode" class="block text-amber-300 font-bold mb-1">
+            🔑 Курс коды / Код курса <span class="text-emerald-400">*</span>:
+          </label>
+          <input type="text" id="regCourseCode" required autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="NISH-XXXX-XXXX"
+                 class="w-full bg-space-950 border-2 border-amber-500/50 focus:border-amber-400 rounded-xl px-3.5 py-2.5 text-amber-300 font-mono font-black uppercase placeholder-slate-600 focus:outline-none transition">
+          <p class="text-[10px] text-slate-500 mt-1">Код выдаёт преподаватель. Без кода курс не открывается.</p>
+        </div>
         <div>
           <label class="block text-slate-300 font-bold mb-1">
             Аты-жөніңіз (ФИО) <span class="text-emerald-400">*</span>:
@@ -1469,33 +1468,14 @@
       return localStorage.getItem('nis_admin_auth') === 'true' || localStorage.getItem('geotany_admin_auth') === 'true';
     }
 
+    // Доступ открывает только код курса НЗМ. Старые записи (регистрация без кода) не пускают.
     function isUserAllowed() {
       if (isAdminAuth()) return true;
-      if (localStorage.getItem('nis_registered') === 'true') return true;
-
-      // Check inherited SMB / GeoTany user session
-      const sessionStr = localStorage.getItem('geotany_user_session');
-      if (sessionStr) {
-        try {
-          const s = JSON.parse(sessionStr);
-          if (s && (s.role === 'admin' || (s.email && s.courseCode))) {
-            return true;
-          }
-        } catch(e) {}
-      }
-
-      // Check inherited student profile
-      const profileStr = localStorage.getItem('geotany_user_profile');
-      if (profileStr) {
-        try {
-          const p = JSON.parse(profileStr);
-          if (p && p.isRegistered && p.email) {
-            return true;
-          }
-        } catch(e) {}
-      }
-
-      return false;
+      if (localStorage.getItem('nis_access') === 'v2') return true;
+      try {
+        const s = JSON.parse(localStorage.getItem('geotany_user_session') || 'null');
+        return !!(s && s.v === 2 && s.email && s.courseId === 'geonish');
+      } catch (e) { return false; }
     }
 
     function initAdminState() {
@@ -1554,8 +1534,25 @@
       if (modal) modal.classList.add('hidden');
     }
 
-    function handleStudentRegistration(e) {
+    // Код курса НЗМ проверяется по SHA-256: открытого кода в файле нет.
+    const NIS_CODE_HASHES = ['bbff0c84746a3d1d6d11df83c97f5cb285db053c3bfd3a71438e84e681c06782'];
+    async function verifyNisCode(raw) {
+      const norm = String(raw || '').trim().toUpperCase().replace(/[\s\-_]/g, '');
+      if (norm.length < 4) return false;
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('smb-portal:' + norm));
+      const hex = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+      return NIS_CODE_HASHES.includes(hex);
+    }
+
+    async function handleStudentRegistration(e) {
       if (e) e.preventDefault();
+
+      const codeInput = document.getElementById('regCourseCode');
+      if (!(await verifyNisCode(codeInput.value))) {
+        alert("Курс коды қате немесе табылмады / Неверный код курса. Уточните код у преподавателя.");
+        codeInput.focus();
+        return;
+      }
 
       const name = document.getElementById('regFullName').value.trim();
       const email = document.getElementById('regEmail').value.trim();
@@ -1602,6 +1599,7 @@
       localStorage.setItem('nis_student_leads', JSON.stringify(leads));
 
       localStorage.setItem('nis_registered', 'true');
+      localStorage.setItem('nis_access', 'v2');
       localStorage.setItem('nis_student_name', name);
       localStorage.setItem('nis_student_email', email);
       localStorage.setItem('nis_student_phone', phone);
