@@ -4,7 +4,7 @@
 //   Пока он пустой, вход в курсы не работает (сайт покажет предупреждение).
 // Добавить курс: скопируйте блок из COURSES, поменяйте id/slug, и папка курса должна существовать.
 window.SMB_CONFIG = {
-  API_URL: '',
+  API_URL: 'https://script.google.com/macros/s/AKfycby5cLDzx2Nu3ahPPJgg3_6mLxLYJbhGDTgr5iOAQjnVvbSuioOI-XD2wkBIOJDMbyU/exec',
   SESSION_HOURS: 4,          // сколько часов ученик остаётся в курсе без повторной проверки
   COURSES: [
     {
