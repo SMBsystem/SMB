@@ -52,6 +52,7 @@
         <h1 class="text-2xl font-black text-white" data-i18n="loginTitle"></h1>
         <p class="text-sm text-slate-400" data-i18n="loginDesc"></p>
       </div>
+      <p id="pendingCodeNote" class="hidden p-3 rounded-2xl bg-amber-500/15 border border-amber-500/40 text-amber-200 text-xs font-bold text-center"></p>
       <form id="emailForm" class="space-y-3">
         <input type="email" id="emailInput" required autocomplete="email" inputmode="email" data-i18n-ph="emailPh"
                class="w-full px-4 py-3 bg-slate-950 border border-slate-700 focus:border-cyan-400 rounded-2xl text-sm text-white placeholder-slate-500 focus:outline-none">
@@ -157,8 +158,44 @@
       return `<button data-request="${esc(c.id)}" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-cyan-500/40 text-cyan-300 font-bold text-sm">${esc(t('request'))}</button>`;
     }
 
+    // ---------- Код из ссылки-приглашения (index.html?code=...) ----------
+    // Сохраняем до входа: ссылка из письма возвращает на страницу уже без ?code.
+    const PENDING_KEY = 'smb_pending_code';
+    function getPendingCode() { try { return localStorage.getItem(PENDING_KEY) || ''; } catch (e) { return ''; } }
+    function setPendingCode(c) { try { c ? localStorage.setItem(PENDING_KEY, c) : localStorage.removeItem(PENDING_KEY); } catch (e) {} }
+    (function captureCodeFromUrl() {
+      const params = new URLSearchParams(location.search);
+      const code = (params.get('code') || '').trim().slice(0, 40);
+      if (!code) return;
+      setPendingCode(code);
+      params.delete('code');
+      const rest = params.toString();
+      history.replaceState(null, '', location.pathname + (rest ? '?' + rest : '') + location.hash);
+    })();
+
+    let redeemBusy = false;
+    async function redeem(code, fromLink) {
+      if (redeemBusy) return;
+      redeemBusy = true;
+      try {
+        const { data, error } = await sb.rpc('redeem_code', { p_code: code });
+        if (error || !data || !data.ok) { toast(SMB.errText(data && data.error), true); return false; }
+        toast(data.already ? t('codeAlready') : t('codeOk'));
+        // По ссылке-приглашению сразу открываем курс; ручной ввод — показываем в «Моих курсах».
+        if (fromLink && data.slug) { location.href = 'course.html?c=' + encodeURIComponent(data.slug); return true; }
+        await refresh();
+        return true;
+      } finally {
+        redeemBusy = false;
+      }
+    }
+
     function render() {
       const loggedIn = !!state.user;
+      const pending = getPendingCode();
+      const note = document.getElementById('pendingCodeNote');
+      note.classList.toggle('hidden', loggedIn || !pending);
+      if (pending) note.textContent = '🔑 ' + t('codeSaved').replace('{code}', pending.toUpperCase());
       document.getElementById('loginView').classList.toggle('hidden', loggedIn || !SMB.configured);
       document.getElementById('appView').classList.toggle('hidden', !loggedIn);
       document.getElementById('logoutBtn').classList.toggle('hidden', !loggedIn);
@@ -202,6 +239,13 @@
         (reqs.data || []).forEach(r => state.pending.add(r.course_id));
       }
       render();
+
+      // Вошёл, а код из ссылки ещё ждёт — активируем его один раз.
+      const pending = getPendingCode();
+      if (state.user && pending && !redeemBusy) {
+        setPendingCode('');
+        await redeem(pending, true);
+      }
     }
 
     // ---------- Действия ----------
@@ -236,12 +280,9 @@
       const input = document.getElementById('codeInput');
       const btn = document.getElementById('codeBtn');
       btn.disabled = true;
-      const { data, error } = await sb.rpc('redeem_code', { p_code: input.value });
+      const ok = await redeem(input.value, false);
       btn.disabled = false;
-      if (error || !data || !data.ok) return toast(SMB.errText(data && data.error), true);
-      input.value = '';
-      toast(t('codeOk'));
-      await refresh();
+      if (ok) input.value = '';
     });
 
     document.getElementById('catalog').addEventListener('click', e => {

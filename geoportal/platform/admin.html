@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SMB Portal — управление</title>
+  <meta name="robots" content="noindex">
   <meta name="theme-color" content="#090d16">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
@@ -16,17 +17,22 @@
     .lbl { display: block; font-size: 11px; font-weight: 700; color: #94a3b8; margin-bottom: .25rem; }
     .tab-on { background: #06b6d4; color: #020617; }
     .tab-off { background: #1e293b; color: #cbd5e1; }
+    .chip { display: inline-flex; align-items: center; gap: .25rem; padding: .125rem .5rem; border-radius: .5rem; font-size: 10px; font-weight: 800; border: 1px solid; }
+    .btn-s { padding: .375rem .625rem; border-radius: .5rem; font-size: 11px; font-weight: 700; background: #1e293b; color: #e2e8f0; }
+    .btn-s:hover { background: #334155; }
+    dialog::backdrop { background: rgba(0, 0, 0, .8); }
   </style>
 </head>
 <body class="bg-[#090d16] text-slate-100 min-h-screen">
   <header class="sticky top-0 z-40 bg-slate-900/95 border-b border-slate-800">
     <div class="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between gap-3">
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 min-w-0">
         <span class="text-xl">👑</span>
-        <span class="font-black text-white">SMB Portal — управление</span>
+        <span class="font-black text-white truncate">SMB Portal — управление</span>
+        <span class="hidden sm:inline chip border-amber-500/40 text-amber-300 bg-amber-500/10">только для администратора</span>
       </div>
-      <div class="flex items-center gap-2 text-xs font-bold">
-        <span id="whoami" class="hidden sm:inline text-slate-400"></span>
+      <div class="flex items-center gap-2 text-xs font-bold shrink-0">
+        <span id="whoami" class="hidden md:inline text-slate-400"></span>
         <a href="index.html" class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-200">← Курсы</a>
       </div>
     </div>
@@ -37,40 +43,86 @@
 
     <div id="adminApp" class="hidden space-y-5">
       <nav class="flex flex-wrap gap-2 text-xs font-black" role="tablist">
+        <button data-tab="catalog" class="px-3.5 py-2 rounded-xl">📚 Каталог курсов</button>
         <button data-tab="requests" class="px-3.5 py-2 rounded-xl">📨 Запросы <span id="reqCount" class="ml-1 px-1.5 rounded bg-rose-500 text-white">0</span></button>
         <button data-tab="codes" class="px-3.5 py-2 rounded-xl">🔑 Коды</button>
         <button data-tab="students" class="px-3.5 py-2 rounded-xl">👥 Ученики</button>
-        <button data-tab="courses" class="px-3.5 py-2 rounded-xl">📚 Курсы</button>
       </nav>
 
-      <!-- Запросы -->
-      <section data-panel="requests" class="space-y-3">
+      <!-- ================= Каталог ================= -->
+      <section data-panel="catalog" class="space-y-4">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3" id="tiles"></div>
+        <div class="flex flex-wrap gap-2 items-center">
+          <input id="catSearch" class="inp max-w-xs" placeholder="Поиск курса…" aria-label="Поиск курса">
+          <select id="catFilter" class="inp max-w-[12rem]" aria-label="Фильтр">
+            <option value="all">Все курсы</option>
+            <option value="published">Опубликованные</option>
+            <option value="hidden">Скрытые (черновики)</option>
+            <option value="nofile">Без загруженного файла</option>
+            <option value="pending">С новыми запросами</option>
+          </select>
+          <button id="newCourseBtn" class="ml-auto px-4 py-2 rounded-xl bg-cyan-500 text-slate-950 text-xs font-black">➕ Новый курс</button>
+        </div>
+        <div id="catalogGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+      </section>
+
+      <!-- ================= Запросы ================= -->
+      <section data-panel="requests" class="hidden space-y-3">
         <div id="requestsList" class="space-y-2"></div>
       </section>
 
-      <!-- Коды -->
+      <!-- ================= Коды ================= -->
       <section data-panel="codes" class="hidden space-y-4">
-        <form id="codeForm" class="p-4 rounded-2xl bg-slate-900 border border-amber-500/30 grid sm:grid-cols-6 gap-3 items-end">
-          <div class="sm:col-span-2"><label class="lbl" for="cfCourse">Курс</label><select id="cfCourse" class="inp" required></select></div>
-          <div class="sm:col-span-2"><label class="lbl" for="cfCode">Код</label>
-            <div class="flex gap-1.5"><input id="cfCode" class="inp font-mono uppercase" required minlength="4" maxlength="40"><button type="button" id="cfGen" class="px-2.5 rounded-xl bg-slate-800 text-xs" title="Сгенерировать">🎲</button></div>
+        <form id="genForm" class="p-4 rounded-2xl bg-slate-900 border border-amber-500/30 space-y-3">
+          <h2 class="text-sm font-black text-amber-300">Создать коды</h2>
+          <div class="grid sm:grid-cols-6 gap-3 items-end">
+            <div class="sm:col-span-2"><label class="lbl" for="gCourse">Курс</label><select id="gCourse" class="inp" required></select></div>
+            <fieldset class="sm:col-span-4">
+              <legend class="lbl">Тип кода</legend>
+              <div class="flex flex-wrap gap-2 text-xs font-bold">
+                <label class="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 cursor-pointer"><input type="radio" name="gType" value="personal" checked> 👤 Личные — каждый код на 1 ученика</label>
+                <label class="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 cursor-pointer"><input type="radio" name="gType" value="group"> 👥 Один код на группу</label>
+              </div>
+            </fieldset>
+            <div id="gCountWrap"><label class="lbl" for="gCount">Сколько кодов</label><input id="gCount" type="number" min="1" max="200" value="25" class="inp"></div>
+            <div id="gMaxWrap" class="hidden"><label class="lbl" for="gMax">Мест (пусто = ∞)</label><input id="gMax" type="number" min="1" class="inp"></div>
+            <div class="sm:col-span-2"><label class="lbl" for="gLabel">Подпись: класс / группа</label><input id="gLabel" class="inp" maxlength="80" placeholder="11А, вечерняя группа…"></div>
+            <div><label class="lbl" for="gExp">Действует до</label><input id="gExp" type="date" class="inp"></div>
+            <div class="sm:col-span-2"><button id="genBtn" class="w-full py-2.5 rounded-xl bg-amber-400 text-slate-950 font-black text-sm disabled:opacity-60">🎲 Сгенерировать</button></div>
           </div>
-          <div class="sm:col-span-2"><label class="lbl" for="cfLabel">Подпись (для кого)</label><input id="cfLabel" class="inp" maxlength="80" placeholder="11А, группа вечер…"></div>
-          <div class="sm:col-span-2"><label class="lbl" for="cfMax">Макс. учеников (пусто = без лимита)</label><input id="cfMax" type="number" min="1" class="inp"></div>
-          <div class="sm:col-span-2"><label class="lbl" for="cfExp">Действует до (необязательно)</label><input id="cfExp" type="date" class="inp"></div>
-          <div class="sm:col-span-2"><button class="w-full py-2.5 rounded-xl bg-amber-400 text-slate-950 font-black text-sm">➕ Создать код</button></div>
+          <p class="text-[11px] text-slate-500">Коды создаёт сервер: случайные, без похожих символов (0/O, 1/I). Подобрать нельзя — после 10 ошибок в час ввод блокируется.</p>
         </form>
+
+        <div id="genResult" class="hidden p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/40 space-y-3">
+          <div class="flex flex-wrap items-center gap-2">
+            <h3 id="genTitle" class="font-black text-emerald-300 text-sm mr-auto"></h3>
+            <button id="genCopy" class="btn-s">📋 Копировать всё</button>
+            <button id="genCsv" class="btn-s">📥 CSV</button>
+            <button id="genPrint" class="btn-s">🖨 Карточки для печати</button>
+            <button id="genClose" class="btn-s">✕</button>
+          </div>
+          <div id="genList" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-2 max-h-72 overflow-y-auto"></div>
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+          <select id="cdCourse" class="inp max-w-xs" aria-label="Курс"></select>
+          <input id="cdSearch" class="inp max-w-xs" placeholder="Код или подпись…" aria-label="Поиск кода">
+          <select id="cdStatus" class="inp max-w-[11rem]" aria-label="Статус">
+            <option value="active">Только рабочие</option>
+            <option value="all">Все коды</option>
+          </select>
+        </div>
         <div class="overflow-x-auto rounded-2xl border border-slate-800">
           <table class="w-full text-xs text-left">
             <thead class="bg-slate-900 text-slate-400 uppercase text-[10px]"><tr>
-              <th class="p-2.5">Код</th><th class="p-2.5">Курс</th><th class="p-2.5">Подпись</th><th class="p-2.5">Использован</th><th class="p-2.5">До</th><th class="p-2.5 text-right">Действия</th>
+              <th class="p-2.5">Код</th><th class="p-2.5">Курс</th><th class="p-2.5">Подпись</th><th class="p-2.5">Мест</th><th class="p-2.5">До</th><th class="p-2.5">Статус</th><th class="p-2.5 text-right">Действия</th>
             </tr></thead>
             <tbody id="codesBody" class="divide-y divide-slate-800"></tbody>
           </table>
         </div>
       </section>
 
-      <!-- Ученики -->
+      <!-- ================= Ученики ================= -->
       <section data-panel="students" class="hidden space-y-3">
         <div class="flex flex-wrap gap-2">
           <input id="stSearch" class="inp max-w-xs" placeholder="Имя или почта…" aria-label="Поиск">
@@ -80,79 +132,240 @@
         <div class="overflow-x-auto rounded-2xl border border-slate-800">
           <table class="w-full text-xs text-left">
             <thead class="bg-slate-900 text-slate-400 uppercase text-[10px]"><tr>
-              <th class="p-2.5">Имя</th><th class="p-2.5">Почта</th><th class="p-2.5">Класс</th><th class="p-2.5">Курс</th><th class="p-2.5">Способ</th><th class="p-2.5">Дата</th><th class="p-2.5 text-right"></th>
+              <th class="p-2.5">Имя</th><th class="p-2.5">Почта</th><th class="p-2.5">Класс</th><th class="p-2.5">Курс</th><th class="p-2.5">Как попал</th><th class="p-2.5">Дата</th><th class="p-2.5 text-right"></th>
             </tr></thead>
             <tbody id="studentsBody" class="divide-y divide-slate-800"></tbody>
           </table>
         </div>
       </section>
-
-      <!-- Курсы -->
-      <section data-panel="courses" class="hidden space-y-4">
-        <form id="courseForm" class="p-4 rounded-2xl bg-slate-900 border border-cyan-500/30 grid sm:grid-cols-6 gap-3">
-          <input type="hidden" id="coId">
-          <div class="sm:col-span-2"><label class="lbl" for="coSlug">Адрес (латиница, напр. geotanu)</label><input id="coSlug" class="inp font-mono" required pattern="[a-z0-9\-]{2,40}"></div>
-          <div><label class="lbl" for="coIcon">Иконка</label><input id="coIcon" class="inp" maxlength="4" value="📚"></div>
-          <div><label class="lbl" for="coOrder">Порядок</label><input id="coOrder" type="number" class="inp" value="0"></div>
-          <div class="sm:col-span-2"><label class="lbl" for="coEntry">Главный файл курса</label><input id="coEntry" class="inp font-mono" value="index.html" required></div>
-          <div class="sm:col-span-3"><label class="lbl" for="coTitleKz">Название (KZ)</label><input id="coTitleKz" class="inp" required></div>
-          <div class="sm:col-span-3"><label class="lbl" for="coTitleRu">Название (RU)</label><input id="coTitleRu" class="inp"></div>
-          <div class="sm:col-span-3"><label class="lbl" for="coDescKz">Описание (KZ)</label><textarea id="coDescKz" rows="2" class="inp"></textarea></div>
-          <div class="sm:col-span-3"><label class="lbl" for="coDescRu">Описание (RU)</label><textarea id="coDescRu" rows="2" class="inp"></textarea></div>
-          <label class="sm:col-span-2 flex items-center gap-2 text-xs font-bold"><input type="checkbox" id="coPub" checked> Показывать в каталоге</label>
-          <label class="sm:col-span-2 flex items-center gap-2 text-xs font-bold"><input type="checkbox" id="coReq" checked> Можно запросить доступ</label>
-          <div class="sm:col-span-2 flex gap-2 justify-end">
-            <button type="button" id="coReset" class="px-3 py-2 rounded-xl bg-slate-800 text-xs font-bold">Новый</button>
-            <button class="px-4 py-2 rounded-xl bg-cyan-500 text-slate-950 text-xs font-black">💾 Сохранить курс</button>
-          </div>
-        </form>
-        <div id="coursesList" class="grid sm:grid-cols-2 gap-3"></div>
-      </section>
     </div>
   </main>
+
+  <!-- ================= Редактор курса ================= -->
+  <dialog id="courseDialog" class="bg-transparent p-0 w-full max-w-2xl">
+    <form id="courseForm" class="m-3 p-5 rounded-3xl bg-slate-900 border border-cyan-500/40 grid sm:grid-cols-6 gap-3 text-slate-100">
+      <h3 id="courseDialogTitle" class="sm:col-span-6 font-black text-white">Новый курс</h3>
+      <input type="hidden" id="coId">
+      <div class="sm:col-span-2"><label class="lbl" for="coSlug">Адрес (латиница)</label><input id="coSlug" class="inp font-mono" required pattern="[a-z0-9\-]{2,40}" placeholder="geotanu"></div>
+      <div><label class="lbl" for="coIcon">Иконка</label><input id="coIcon" class="inp" maxlength="4" value="📚"></div>
+      <div><label class="lbl" for="coOrder">Порядок</label><input id="coOrder" type="number" class="inp" value="0"></div>
+      <div class="sm:col-span-2"><label class="lbl" for="coEntry">Главный файл</label><input id="coEntry" class="inp font-mono" value="index.html" required></div>
+      <div class="sm:col-span-3"><label class="lbl" for="coTitleKz">Название (KZ)</label><input id="coTitleKz" class="inp" required></div>
+      <div class="sm:col-span-3"><label class="lbl" for="coTitleRu">Название (RU)</label><input id="coTitleRu" class="inp"></div>
+      <div class="sm:col-span-3"><label class="lbl" for="coDescKz">Описание (KZ)</label><textarea id="coDescKz" rows="2" class="inp"></textarea></div>
+      <div class="sm:col-span-3"><label class="lbl" for="coDescRu">Описание (RU)</label><textarea id="coDescRu" rows="2" class="inp"></textarea></div>
+      <label class="sm:col-span-3 flex items-center gap-2 text-xs font-bold"><input type="checkbox" id="coPub" checked> Опубликован (виден ученикам в каталоге)</label>
+      <label class="sm:col-span-3 flex items-center gap-2 text-xs font-bold"><input type="checkbox" id="coReq" checked> Можно запросить доступ (иначе только по коду)</label>
+      <div class="sm:col-span-6 flex justify-end gap-2 pt-2">
+        <button type="button" id="coCancel" class="px-4 py-2 rounded-xl bg-slate-800 text-xs font-bold">Отмена</button>
+        <button class="px-4 py-2 rounded-xl bg-cyan-500 text-slate-950 text-xs font-black">💾 Сохранить</button>
+      </div>
+    </form>
+  </dialog>
 
   <script>
     const { sb, esc, toast } = SMB;
     const BUCKET = SMB.cfg.CONTENT_BUCKET || 'course-content';
-    let me = null, myProfile = null, courses = [], enrollments = [];
+    let me = null, myProfile = null;
+    let catalog = [], distinctStudents = 0, codesCache = [], enrollments = [];
+    let lastGenerated = [];
 
-    const status = document.getElementById('status');
+    const $ = id => document.getElementById(id);
     const fmtDate = d => d ? new Date(d).toLocaleString('ru-RU', { dateStyle: 'short', timeStyle: 'short' }) : '—';
-    const courseById = id => courses.find(c => c.id === id);
+    const fmtDay = d => d ? new Date(d).toLocaleDateString('ru-RU') : '—';
+    const courseById = id => catalog.find(c => c.id === id);
     const cTitle = c => c ? (c.title_ru || c.title_kz) : '—';
+    const inviteLink = code => new URL('index.html?code=' + encodeURIComponent(code), location.href).href;
     const SOURCE = { code: '🔑 код', request: '📨 запрос', admin: '👑 вручную' };
 
-    function genCode(prefix) {
-      const abc = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
-      const part = () => Array.from(crypto.getRandomValues(new Uint32Array(4)), n => abc[n % abc.length]).join('');
-      return (prefix || 'SMB').toUpperCase().slice(0, 4) + '-' + part() + '-' + part();
+    function copyText(text, okMsg) {
+      navigator.clipboard.writeText(text).then(() => toast(okMsg || 'Скопировано'), () => prompt('Скопируйте:', text));
+    }
+    function downloadCsv(name, header, rows) {
+      const q = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+      const csv = '﻿' + [header.map(q).join(',')].concat(rows.map(r => r.map(q).join(','))).join('\r\n');
+      const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+      const a = Object.assign(document.createElement('a'), { href: url, download: name });
+      document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
     }
 
     // ---------- Вкладки ----------
     function showTab(name) {
       document.querySelectorAll('[data-tab]').forEach(b => b.className = 'px-3.5 py-2 rounded-xl ' + (b.dataset.tab === name ? 'tab-on' : 'tab-off'));
       document.querySelectorAll('[data-panel]').forEach(p => p.classList.toggle('hidden', p.dataset.panel !== name));
-      ({ requests: loadRequests, codes: loadCodes, students: loadStudents, courses: renderCourses })[name]();
+      ({ catalog: renderCatalog, requests: loadRequests, codes: loadCodes, students: loadStudents })[name]();
     }
     document.querySelectorAll('[data-tab]').forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
 
-    async function loadCourses() {
-      // Админ видит все курсы, преподаватель — опубликованные и свои; управлять может только своими (это проверяет база).
-      const { data } = await sb.from('courses').select('*').order('sort_order').order('created_at');
-      courses = data || [];
-      const opts = courses.map(c => `<option value="${esc(c.id)}">${esc(c.icon)} ${esc(cTitle(c))}</option>`).join('');
-      document.getElementById('cfCourse').innerHTML = opts;
-      document.getElementById('stCourse').innerHTML = '<option value="">Все курсы</option>' + opts;
+    // =====================================================================
+    //  Каталог курсов (данные отдаёт только функция admin_course_catalog —
+    //  ученик её вызвать не может, база вернёт пусто или откажет)
+    // =====================================================================
+    async function loadCatalog() {
+      const [cat, enr] = await Promise.all([
+        sb.rpc('admin_course_catalog'),
+        sb.from('enrollments').select('user_id')
+      ]);
+      if (cat.error) { toast('Каталог: ' + cat.error.message, true); catalog = []; }
+      else catalog = cat.data || [];
+      distinctStudents = new Set((enr.data || []).map(r => r.user_id)).size;
+
+      const opts = catalog.map(c => `<option value="${esc(c.id)}">${esc(c.icon)} ${esc(cTitle(c))}${c.is_published ? '' : ' (скрыт)'}</option>`).join('');
+      $('gCourse').innerHTML = opts;
+      $('cdCourse').innerHTML = '<option value="">Все курсы</option>' + opts;
+      $('stCourse').innerHTML = '<option value="">Все курсы</option>' + opts;
+      $('reqCount').textContent = catalog.reduce((s, c) => s + Number(c.pending_requests), 0);
     }
 
-    // ---------- Запросы ----------
+    function tile(icon, value, label, sub) {
+      return `<div class="p-4 rounded-2xl bg-slate-900 border border-slate-800">
+        <div class="text-2xl font-black text-white">${icon} ${esc(value)}</div>
+        <div class="text-xs font-bold text-slate-400 mt-1">${esc(label)}</div>
+        ${sub ? `<div class="text-[11px] text-slate-500">${esc(sub)}</div>` : ''}
+      </div>`;
+    }
+
+    function renderCatalog() {
+      const pub = catalog.filter(c => c.is_published).length;
+      const sum = k => catalog.reduce((s, c) => s + Number(c[k]), 0);
+      $('tiles').innerHTML =
+        tile('📚', catalog.length, 'Курсов', `${pub} опубликовано · ${catalog.length - pub} скрыто`) +
+        tile('👥', distinctStudents, 'Учеников', `${sum('students')} записей на курсы`) +
+        tile('⏳', sum('pending_requests'), 'Ждут ответа', 'запросы на доступ') +
+        tile('🔑', sum('active_codes'), 'Рабочих кодов', `всего выдано ${sum('total_codes')}`);
+
+      const q = $('catSearch').value.toLowerCase().trim();
+      const f = $('catFilter').value;
+      const list = catalog.filter(c => {
+        if (f === 'published' && !c.is_published) return false;
+        if (f === 'hidden' && c.is_published) return false;
+        if (f === 'nofile' && c.has_content) return false;
+        if (f === 'pending' && !Number(c.pending_requests)) return false;
+        return !q || [c.slug, c.title_kz, c.title_ru].some(v => (v || '').toLowerCase().includes(q));
+      });
+
+      $('catalogGrid').innerHTML = list.length ? list.map(c => {
+        const pending = Number(c.pending_requests);
+        return `<article class="p-4 rounded-2xl bg-slate-900 border ${c.is_published ? 'border-slate-800' : 'border-dashed border-slate-600'} flex flex-col gap-3">
+          <div class="flex items-start gap-3">
+            <span class="text-3xl leading-none">${esc(c.icon)}</span>
+            <div class="min-w-0 flex-1">
+              <h3 class="font-black text-white text-sm leading-snug">${esc(c.title_kz)}</h3>
+              ${c.title_ru ? `<p class="text-xs text-slate-400">${esc(c.title_ru)}</p>` : ''}
+              <p class="text-[11px] font-mono text-slate-500 mt-0.5">${esc(c.slug)}/${esc(c.entry_file)}</p>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-1.5">
+            ${c.is_published
+              ? '<span class="chip border-emerald-500/40 text-emerald-300 bg-emerald-500/10">● Опубликован</span>'
+              : '<span class="chip border-slate-600 text-slate-400 bg-slate-800">◌ Скрыт</span>'}
+            ${c.allow_requests
+              ? '<span class="chip border-cyan-500/40 text-cyan-300 bg-cyan-500/10">📨 Запросы открыты</span>'
+              : '<span class="chip border-amber-500/40 text-amber-300 bg-amber-500/10">🔑 Только по коду</span>'}
+            ${c.has_content
+              ? '<span class="chip border-emerald-500/40 text-emerald-300 bg-emerald-500/10">✓ Файл загружен</span>'
+              : '<span class="chip border-rose-500/50 text-rose-300 bg-rose-500/10">⚠ Нет файла</span>'}
+          </div>
+          <div class="grid grid-cols-3 gap-2 text-center">
+            <button data-act="students" data-id="${esc(c.id)}" class="p-2 rounded-xl bg-slate-950 hover:bg-slate-800"><div class="font-black text-white">${esc(c.students)}</div><div class="text-[10px] text-slate-400">учеников</div></button>
+            <button data-act="requests" data-id="${esc(c.id)}" class="p-2 rounded-xl ${pending ? 'bg-rose-500/15' : 'bg-slate-950'} hover:bg-slate-800"><div class="font-black ${pending ? 'text-rose-300' : 'text-white'}">${pending}</div><div class="text-[10px] text-slate-400">запросов</div></button>
+            <button data-act="codes" data-id="${esc(c.id)}" class="p-2 rounded-xl bg-slate-950 hover:bg-slate-800"><div class="font-black text-white">${esc(c.active_codes)}<span class="text-slate-500 text-xs">/${esc(c.total_codes)}</span></div><div class="text-[10px] text-slate-400">кодов</div></button>
+          </div>
+          <p class="text-[11px] text-slate-500">Последняя запись: ${fmtDate(c.last_enrolled_at)}${c.owner_email ? ' · автор ' + esc(c.owner_email) : ''}</p>
+          <div class="flex flex-wrap gap-1.5 mt-auto">
+            <a href="course.html?c=${encodeURIComponent(c.slug)}" class="btn-s">Открыть ↗</a>
+            <button data-act="edit" data-id="${esc(c.id)}" class="btn-s">✏️ Изменить</button>
+            <label class="btn-s cursor-pointer">⬆️ Файлы<input type="file" multiple data-upload="${esc(c.id)}" class="hidden"></label>
+            <button data-act="newcodes" data-id="${esc(c.id)}" class="btn-s">🎲 Коды</button>
+            <button data-act="toggle" data-id="${esc(c.id)}" class="btn-s">${c.is_published ? '🙈 Скрыть' : '👁 Опубликовать'}</button>
+          </div>
+        </article>`;
+      }).join('') : '<p class="text-sm text-slate-400">Курсов не найдено.</p>';
+    }
+    $('catSearch').addEventListener('input', renderCatalog);
+    $('catFilter').addEventListener('change', renderCatalog);
+
+    $('catalogGrid').addEventListener('click', async e => {
+      const b = e.target.closest('[data-act]');
+      if (!b) return;
+      const c = courseById(b.dataset.id);
+      if (!c) return;
+      switch (b.dataset.act) {
+        case 'edit': openCourseDialog(c); break;
+        case 'students': showTab('students'); $('stCourse').value = c.id; renderStudents(); break;
+        case 'requests': showTab('requests'); break;
+        case 'codes': $('cdCourse').value = c.id; $('cdStatus').value = 'all'; showTab('codes'); break;
+        case 'newcodes': showTab('codes'); $('gCourse').value = c.id; $('genForm').scrollIntoView({ behavior: 'smooth' }); break;
+        case 'toggle': {
+          const { error } = await sb.from('courses').update({ is_published: !c.is_published }).eq('id', c.id);
+          if (error) return toast('Ошибка: ' + error.message, true);
+          toast(c.is_published ? 'Курс скрыт от учеников' : 'Курс опубликован');
+          await loadCatalog(); renderCatalog();
+        }
+      }
+    });
+
+    $('catalogGrid').addEventListener('change', async e => {
+      const input = e.target.closest('[data-upload]');
+      if (!input || !input.files.length) return;
+      const c = courseById(input.dataset.upload);
+      for (const f of input.files) {
+        const { error } = await sb.storage.from(BUCKET).upload(c.slug + '/' + f.name, f, { upsert: true, contentType: f.type || 'text/html' });
+        if (error) toast(f.name + ': ' + error.message, true); else toast('Загружено: ' + f.name);
+      }
+      input.value = '';
+      await loadCatalog(); renderCatalog();
+    });
+
+    // ---------- Редактор курса ----------
+    function openCourseDialog(c) {
+      const v = (id, val) => { $(id).value = val == null ? '' : val; };
+      $('courseDialogTitle').textContent = c ? 'Курс: ' + cTitle(c) : 'Новый курс';
+      v('coId', c ? c.id : ''); v('coSlug', c ? c.slug : ''); v('coIcon', c ? c.icon : '📚');
+      v('coOrder', c ? c.sort_order : catalog.length + 1); v('coEntry', c ? c.entry_file : 'index.html');
+      v('coTitleKz', c && c.title_kz); v('coTitleRu', c && c.title_ru);
+      v('coDescKz', c && c.description_kz); v('coDescRu', c && c.description_ru);
+      $('coPub').checked = c ? c.is_published : false; // новый курс — сначала черновик
+      $('coReq').checked = c ? c.allow_requests : true;
+      $('coSlug').readOnly = !!c; // адрес = папка с файлами в хранилище, менять нельзя
+      $('courseDialog').showModal();
+    }
+    $('newCourseBtn').addEventListener('click', () => openCourseDialog(null));
+    $('coCancel').addEventListener('click', () => $('courseDialog').close());
+    $('courseForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const id = $('coId').value;
+      const row = {
+        slug: $('coSlug').value.trim(),
+        icon: $('coIcon').value.trim() || '📚',
+        sort_order: Number($('coOrder').value) || 0,
+        entry_file: $('coEntry').value.trim(),
+        title_kz: $('coTitleKz').value.trim(),
+        title_ru: $('coTitleRu').value.trim() || null,
+        description_kz: $('coDescKz').value.trim() || null,
+        description_ru: $('coDescRu').value.trim() || null,
+        is_published: $('coPub').checked,
+        allow_requests: $('coReq').checked
+      };
+      const { error } = id
+        ? await sb.from('courses').update(row).eq('id', id)
+        : await sb.from('courses').insert(Object.assign(row, { owner_id: me.id }));
+      if (error) return toast(error.code === '23505' ? 'Курс с таким адресом уже есть' : 'Ошибка: ' + error.message, true);
+      $('courseDialog').close();
+      toast(id ? 'Курс сохранён' : 'Курс создан как черновик — загрузите файл и опубликуйте');
+      await loadCatalog(); renderCatalog();
+    });
+
+    // =====================================================================
+    //  Запросы
+    // =====================================================================
     async function loadRequests() {
-      const box = document.getElementById('requestsList');
+      const box = $('requestsList');
       const { data, error } = await sb.from('access_requests')
         .select('id, course_id, message, created_at, profiles!access_requests_user_id_fkey(full_name, email, grade)')
         .eq('status', 'pending').order('created_at');
       if (error) { box.textContent = 'Не удалось загрузить запросы.'; return; }
-      document.getElementById('reqCount').textContent = data.length;
+      $('reqCount').textContent = data.length;
       if (!data.length) { box.innerHTML = '<p class="p-5 rounded-2xl border border-dashed border-slate-700 text-sm text-slate-400">Новых запросов нет.</p>'; return; }
       box.innerHTML = data.map(r => {
         const p = r.profiles || {};
@@ -169,213 +382,242 @@
         </div>`;
       }).join('');
     }
-    document.getElementById('requestsList').addEventListener('click', async e => {
+    $('requestsList').addEventListener('click', async e => {
       const b = e.target.closest('[data-decide]');
       if (!b) return;
       b.disabled = true;
       const { data, error } = await sb.rpc('decide_request', { p_request: b.dataset.decide, p_approve: b.dataset.ok === '1' });
       if (error || !data || !data.ok) toast('Не получилось: ' + ((data && data.error) || (error && error.message)), true);
       else toast(b.dataset.ok === '1' ? 'Ученик добавлен на курс' : 'Запрос отклонён');
-      loadRequests();
+      await loadRequests();
+      loadCatalog();
     });
 
-    // ---------- Коды ----------
+    // =====================================================================
+    //  Коды
+    // =====================================================================
+    function codeStatus(c) {
+      if (!c.is_active) return ['off', '⏸ Выключен', 'text-slate-400'];
+      if (c.expires_at && new Date(c.expires_at) < new Date()) return ['expired', '⌛ Истёк', 'text-slate-400'];
+      if (c.max_uses && c.uses >= c.max_uses) return ['full', c.max_uses === 1 ? '✓ Использован' : '✓ Мест нет', 'text-cyan-300'];
+      return ['ok', '● Работает', 'text-emerald-300'];
+    }
+
+    document.querySelectorAll('input[name="gType"]').forEach(r => r.addEventListener('change', () => {
+      const personal = document.querySelector('input[name="gType"]:checked').value === 'personal';
+      $('gCountWrap').classList.toggle('hidden', !personal);
+      $('gMaxWrap').classList.toggle('hidden', personal);
+    }));
+
+    $('genForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const personal = document.querySelector('input[name="gType"]:checked').value === 'personal';
+      const exp = $('gExp').value;
+      const count = personal ? Math.min(200, Math.max(1, Number($('gCount').value) || 1)) : 1;
+      const btn = $('genBtn');
+      btn.disabled = true;
+      const { data, error } = await sb.rpc('generate_codes', {
+        p_course: $('gCourse').value,
+        p_count: count,
+        p_max_uses: personal ? 1 : ($('gMax').value ? Number($('gMax').value) : null),
+        p_label: $('gLabel').value.trim() || null,
+        p_expires: exp ? new Date(exp + 'T23:59:59').toISOString() : null
+      });
+      btn.disabled = false;
+      if (error) return toast('Ошибка: ' + error.message, true);
+      lastGenerated = data || [];
+      showGenerated();
+      await Promise.all([loadCodes(), loadCatalog()]);
+    });
+
+    function showGenerated() {
+      const n = lastGenerated.length;
+      $('genResult').classList.toggle('hidden', !n);
+      if (!n) return;
+      const c = courseById(lastGenerated[0].course_id);
+      $('genTitle').textContent = `Создано кодов: ${n} · ${cTitle(c)}${lastGenerated[0].label ? ' · ' + lastGenerated[0].label : ''}`;
+      $('genList').innerHTML = lastGenerated.map(x => `
+        <div class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center gap-2">
+          <span class="font-mono font-black text-amber-300 text-sm flex-1">${esc(x.code)}</span>
+          <button data-copy="${esc(x.code)}" class="btn-s" title="Копировать код">📋</button>
+          <button data-copy="${esc(inviteLink(x.code))}" class="btn-s" title="Копировать ссылку-приглашение">🔗</button>
+        </div>`).join('');
+    }
+    $('genList').addEventListener('click', e => { const b = e.target.closest('[data-copy]'); if (b) copyText(b.dataset.copy); });
+    $('genClose').addEventListener('click', () => { lastGenerated = []; showGenerated(); });
+    $('genCopy').addEventListener('click', () => copyText(lastGenerated.map(x => x.code + '  ' + inviteLink(x.code)).join('\n'), 'Скопированы все коды со ссылками'));
+    $('genCsv').addEventListener('click', () => {
+      downloadCsv('codes_' + new Date().toISOString().slice(0, 10) + '.csv',
+        ['Код', 'Ссылка-приглашение', 'Курс', 'Подпись', 'Мест', 'Действует до'],
+        lastGenerated.map(x => [x.code, inviteLink(x.code), cTitle(courseById(x.course_id)), x.label, x.max_uses || '∞', fmtDay(x.expires_at)]));
+    });
+    $('genPrint').addEventListener('click', () => {
+      const w = window.open('', '_blank');
+      if (!w) return toast('Разрешите всплывающие окна для печати', true);
+      const cards = lastGenerated.map(x => {
+        const c = courseById(x.course_id);
+        return `<div class="card">
+          <div class="course">${esc(c ? c.icon + ' ' + c.title_kz : '')}</div>
+          ${x.label ? `<div class="label">${esc(x.label)}</div>` : ''}
+          <div class="code">${esc(x.code)}</div>
+          <div class="how">Кіру / Вход: ${esc(new URL('index.html', location.href).href)}</div>
+          ${x.expires_at ? `<div class="how">Дейін / До: ${esc(fmtDay(x.expires_at))}</div>` : ''}
+        </div>`;
+      }).join('');
+      w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Коды</title><style>
+        body{font-family:system-ui,sans-serif;margin:16px;color:#000}
+        .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+        .card{border:1.5px dashed #555;border-radius:10px;padding:12px;break-inside:avoid}
+        .course{font-weight:800;font-size:12px}.label{font-size:11px;color:#444;margin-top:2px}
+        .code{font-family:ui-monospace,monospace;font-weight:900;font-size:20px;letter-spacing:1px;margin:8px 0}
+        .how{font-size:9px;color:#333;word-break:break-all}
+        @media print{body{margin:0}}
+      </style></head><body><div class="grid">${cards}</div><script>window.onload=function(){window.print()}<\/script></body></html>`);
+      w.document.close();
+    });
+
     async function loadCodes() {
       const { data, error } = await sb.from('access_codes').select('*').order('created_at', { ascending: false });
-      const body = document.getElementById('codesBody');
-      if (error) { body.innerHTML = '<tr><td colspan="6" class="p-4">Не удалось загрузить коды.</td></tr>'; return; }
-      if (!data.length) { body.innerHTML = '<tr><td colspan="6" class="p-4 text-slate-400">Кодов пока нет.</td></tr>'; return; }
-      body.innerHTML = data.map(c => {
-        const expired = c.expires_at && new Date(c.expires_at) < new Date();
-        const full = c.max_uses && c.uses >= c.max_uses;
-        return `<tr class="${c.is_active && !expired && !full ? '' : 'opacity-50'}">
-          <td class="p-2.5 font-mono font-black text-amber-300">${esc(c.code)}</td>
+      codesCache = error ? [] : data;
+      if (error) toast('Коды: ' + error.message, true);
+      renderCodes();
+    }
+    function renderCodes() {
+      const cid = $('cdCourse').value;
+      const q = $('cdSearch').value.toLowerCase().trim();
+      const onlyActive = $('cdStatus').value === 'active';
+      const list = codesCache.filter(c => (!cid || c.course_id === cid)
+        && (!onlyActive || codeStatus(c)[0] === 'ok')
+        && (!q || [c.code, c.label].some(v => (v || '').toLowerCase().includes(q))));
+      $('codesBody').innerHTML = list.length ? list.map(c => {
+        const [st, stText, stCls] = codeStatus(c);
+        return `<tr data-row="${esc(c.id)}" class="${st === 'ok' ? '' : 'opacity-70'}">
+          <td class="p-2.5 font-mono font-black text-amber-300 whitespace-nowrap">${esc(c.code)}</td>
           <td class="p-2.5">${esc(cTitle(courseById(c.course_id)))}</td>
           <td class="p-2.5 text-slate-400">${esc(c.label || '')}</td>
-          <td class="p-2.5">${c.uses}${c.max_uses ? ' / ' + c.max_uses : ''}</td>
-          <td class="p-2.5 text-slate-400">${c.expires_at ? new Date(c.expires_at).toLocaleDateString('ru-RU') : '—'}</td>
+          <td class="p-2.5 whitespace-nowrap">${c.uses} / ${c.max_uses || '∞'}</td>
+          <td class="p-2.5 text-slate-400 whitespace-nowrap">${fmtDay(c.expires_at)}</td>
+          <td class="p-2.5 font-bold whitespace-nowrap ${stCls}">${stText}</td>
           <td class="p-2.5 text-right whitespace-nowrap">
-            <button data-copy="${esc(c.code)}" class="px-2 py-1 rounded-lg bg-slate-800">📋</button>
-            <button data-toggle="${esc(c.id)}" data-active="${c.is_active ? 1 : 0}" class="px-2 py-1 rounded-lg bg-slate-800">${c.is_active ? '⏸ Выкл' : '▶ Вкл'}</button>
-            <button data-del-code="${esc(c.id)}" class="px-2 py-1 rounded-lg bg-rose-500/15 text-rose-300">🗑</button>
+            <button data-copy="${esc(c.code)}" class="btn-s" title="Копировать код">📋</button>
+            <button data-copy="${esc(inviteLink(c.code))}" class="btn-s" title="Ссылка-приглашение">🔗</button>
+            <button data-who="${esc(c.id)}" class="btn-s" title="Кто вошёл по коду">👥 ${c.uses}</button>
+            <button data-toggle="${esc(c.id)}" class="btn-s">${c.is_active ? '⏸' : '▶'}</button>
+            <button data-revoke="${esc(c.id)}" class="btn-s text-rose-300" title="Отозвать и убрать учеников">🚫</button>
+            <button data-del="${esc(c.id)}" class="btn-s text-rose-300" title="Удалить код">🗑</button>
           </td></tr>`;
-      }).join('');
+      }).join('') : '<tr><td colspan="7" class="p-4 text-slate-400">Кодов нет. Создайте их формой выше.</td></tr>';
     }
-    document.getElementById('cfGen').addEventListener('click', () => {
-      const c = courseById(document.getElementById('cfCourse').value);
-      document.getElementById('cfCode').value = genCode(c && c.slug);
-    });
-    document.getElementById('codeForm').addEventListener('submit', async e => {
-      e.preventDefault();
-      const exp = document.getElementById('cfExp').value;
-      const max = document.getElementById('cfMax').value;
-      const { error } = await sb.from('access_codes').insert({
-        course_id: document.getElementById('cfCourse').value,
-        code: document.getElementById('cfCode').value.trim().toUpperCase(),
-        label: document.getElementById('cfLabel').value.trim() || null,
-        max_uses: max ? Number(max) : null,
-        expires_at: exp ? new Date(exp + 'T23:59:59').toISOString() : null,
-        created_by: me.id
-      });
-      if (error) return toast(error.code === '23505' ? 'Такой код уже есть' : 'Ошибка: ' + error.message, true);
-      toast('Код создан');
-      e.target.reset();
-      loadCodes();
-    });
-    document.getElementById('codesBody').addEventListener('click', async e => {
-      const copy = e.target.closest('[data-copy]');
-      const tog = e.target.closest('[data-toggle]');
-      const del = e.target.closest('[data-del-code]');
-      if (copy) {
-        navigator.clipboard.writeText(copy.dataset.copy).then(() => toast('Скопировано'), () => prompt('Код:', copy.dataset.copy));
-      } else if (tog) {
-        await sb.from('access_codes').update({ is_active: tog.dataset.active !== '1' }).eq('id', tog.dataset.toggle);
-        loadCodes();
-      } else if (del && confirm('Удалить код? Ученики, уже вошедшие по нему, останутся на курсе.')) {
-        await sb.from('access_codes').delete().eq('id', del.dataset.delCode);
-        loadCodes();
-      }
+    $('cdCourse').addEventListener('change', renderCodes);
+    $('cdSearch').addEventListener('input', renderCodes);
+    $('cdStatus').addEventListener('change', renderCodes);
+
+    $('codesBody').addEventListener('click', async e => {
+      const b = e.target.closest('button');
+      if (!b) return;
+      const d = b.dataset;
+      if (d.copy) return copyText(d.copy);
+      if (d.who) return toggleWho(b, d.who);
+      if (d.toggle) {
+        const c = codesCache.find(x => x.id === d.toggle);
+        await sb.from('access_codes').update({ is_active: !c.is_active }).eq('id', c.id);
+      } else if (d.revoke) {
+        if (!confirm('Отозвать код? Он перестанет работать, а ученики, вошедшие по нему, потеряют доступ к курсу.')) return;
+        await sb.from('access_codes').update({ is_active: false }).eq('id', d.revoke);
+        const { error } = await sb.from('enrollments').delete().eq('code_id', d.revoke);
+        if (error) toast('Ошибка: ' + error.message, true); else toast('Код отозван, доступ закрыт');
+      } else if (d.del) {
+        if (!confirm('Удалить код? Ученики, уже вошедшие по нему, останутся на курсе.')) return;
+        await sb.from('access_codes').delete().eq('id', d.del);
+      } else return;
+      await Promise.all([loadCodes(), loadCatalog()]);
     });
 
-    // ---------- Ученики ----------
+    async function toggleWho(btn, codeId) {
+      const tr = btn.closest('tr');
+      const next = tr.nextElementSibling;
+      if (next && next.dataset.whoRow) { next.remove(); return; }
+      const { data } = await sb.from('enrollments')
+        .select('created_at, profiles!enrollments_user_id_fkey(full_name, email)')
+        .eq('code_id', codeId).order('created_at');
+      const row = document.createElement('tr');
+      row.dataset.whoRow = '1';
+      row.innerHTML = `<td colspan="7" class="p-3 bg-slate-950">${(data && data.length)
+        ? data.map(e => `<div class="text-xs"><b class="text-white">${esc((e.profiles || {}).full_name || '—')}</b> <span class="font-mono text-cyan-300">${esc((e.profiles || {}).email)}</span> <span class="text-slate-500">· ${fmtDate(e.created_at)}</span></div>`).join('')
+        : '<span class="text-xs text-slate-400">По этому коду ещё никто не вошёл.</span>'}</td>`;
+      tr.after(row);
+    }
+
+    // =====================================================================
+    //  Ученики
+    // =====================================================================
     async function loadStudents() {
       const { data, error } = await sb.from('enrollments')
-        .select('user_id, course_id, source, created_at, profiles!enrollments_user_id_fkey(full_name, email, grade)')
+        .select('user_id, course_id, source, created_at, profiles!enrollments_user_id_fkey(full_name, email, grade), access_codes(code)')
         .order('created_at', { ascending: false });
       enrollments = error ? [] : data;
       renderStudents();
     }
     function filteredStudents() {
-      const q = document.getElementById('stSearch').value.toLowerCase().trim();
-      const cid = document.getElementById('stCourse').value;
+      const q = $('stSearch').value.toLowerCase().trim();
+      const cid = $('stCourse').value;
       return enrollments.filter(e => (!cid || e.course_id === cid) &&
         (!q || [e.profiles && e.profiles.full_name, e.profiles && e.profiles.email].some(v => (v || '').toLowerCase().includes(q))));
     }
+    function howJoined(e) {
+      return (SOURCE[e.source] || esc(e.source)) + (e.access_codes ? ` <span class="font-mono text-amber-300">${esc(e.access_codes.code)}</span>` : '');
+    }
     function renderStudents() {
       const list = filteredStudents();
-      document.getElementById('studentsBody').innerHTML = list.length ? list.map(e => {
+      $('studentsBody').innerHTML = list.length ? list.map(e => {
         const p = e.profiles || {};
         return `<tr>
           <td class="p-2.5 font-bold text-white">${esc(p.full_name || '—')}</td>
           <td class="p-2.5 font-mono text-cyan-300">${esc(p.email)}</td>
           <td class="p-2.5">${esc(p.grade || '—')}</td>
           <td class="p-2.5">${esc(cTitle(courseById(e.course_id)))}</td>
-          <td class="p-2.5 text-slate-400">${SOURCE[e.source] || esc(e.source)}</td>
-          <td class="p-2.5 text-slate-400">${fmtDate(e.created_at)}</td>
-          <td class="p-2.5 text-right"><button data-unenroll="${esc(e.user_id)}|${esc(e.course_id)}" class="px-2 py-1 rounded-lg bg-rose-500/15 text-rose-300">Убрать с курса</button></td>
+          <td class="p-2.5 text-slate-400 whitespace-nowrap">${howJoined(e)}</td>
+          <td class="p-2.5 text-slate-400 whitespace-nowrap">${fmtDate(e.created_at)}</td>
+          <td class="p-2.5 text-right"><button data-unenroll="${esc(e.user_id)}|${esc(e.course_id)}" class="btn-s text-rose-300">Убрать с курса</button></td>
         </tr>`;
       }).join('') : '<tr><td colspan="7" class="p-4 text-slate-400">Учеников не найдено.</td></tr>';
     }
-    document.getElementById('stSearch').addEventListener('input', renderStudents);
-    document.getElementById('stCourse').addEventListener('change', renderStudents);
-    document.getElementById('studentsBody').addEventListener('click', async e => {
+    $('stSearch').addEventListener('input', renderStudents);
+    $('stCourse').addEventListener('change', renderStudents);
+    $('studentsBody').addEventListener('click', async e => {
       const b = e.target.closest('[data-unenroll]');
       if (!b || !confirm('Убрать ученика с курса? Он потеряет доступ.')) return;
       const [uid, cid] = b.dataset.unenroll.split('|');
       const { error } = await sb.from('enrollments').delete().eq('user_id', uid).eq('course_id', cid);
       if (error) return toast('Ошибка: ' + error.message, true);
-      loadStudents();
+      await Promise.all([loadStudents(), loadCatalog()]);
     });
-    document.getElementById('stCsv').addEventListener('click', () => {
+    $('stCsv').addEventListener('click', () => {
       const list = filteredStudents();
       if (!list.length) return toast('Нет данных', true);
-      const q = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
-      const rows = [['Имя', 'Почта', 'Класс', 'Курс', 'Способ', 'Дата'].join(',')].concat(list.map(e => {
-        const p = e.profiles || {};
-        return [q(p.full_name), q(p.email), q(p.grade), q(cTitle(courseById(e.course_id))), q(e.source), q(fmtDate(e.created_at))].join(',');
-      }));
-      const url = URL.createObjectURL(new Blob(['﻿' + rows.join('\r\n')], { type: 'text/csv;charset=utf-8' }));
-      const a = Object.assign(document.createElement('a'), { href: url, download: 'smb_students_' + new Date().toISOString().slice(0, 10) + '.csv' });
-      document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+      downloadCsv('smb_students_' + new Date().toISOString().slice(0, 10) + '.csv',
+        ['Имя', 'Почта', 'Класс', 'Курс', 'Как попал', 'Код', 'Дата'],
+        list.map(e => {
+          const p = e.profiles || {};
+          return [p.full_name, p.email, p.grade, cTitle(courseById(e.course_id)), e.source, e.access_codes ? e.access_codes.code : '', fmtDate(e.created_at)];
+        }));
     });
 
-    // ---------- Курсы ----------
-    function renderCourses() {
-      document.getElementById('coursesList').innerHTML = courses.map(c => `
-        <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
-          <div class="flex items-start gap-2">
-            <span class="text-2xl">${esc(c.icon)}</span>
-            <div class="flex-1 min-w-0">
-              <div class="font-black text-white text-sm">${esc(cTitle(c))}</div>
-              <div class="text-[11px] font-mono text-slate-400">${esc(c.slug)}/${esc(c.entry_file)} ${c.is_published ? '' : '· скрыт'} ${c.allow_requests ? '' : '· только по коду'}</div>
-            </div>
-          </div>
-          <div class="flex flex-wrap gap-2 text-xs font-bold">
-            <button data-edit="${esc(c.id)}" class="px-2.5 py-1.5 rounded-lg bg-slate-800">✏️ Изменить</button>
-            <label class="px-2.5 py-1.5 rounded-lg bg-cyan-500/15 text-cyan-300 cursor-pointer">⬆️ Загрузить файлы
-              <input type="file" multiple data-upload="${esc(c.id)}" class="hidden">
-            </label>
-            <a href="course.html?c=${encodeURIComponent(c.slug)}" class="px-2.5 py-1.5 rounded-lg bg-emerald-500/15 text-emerald-300">Открыть ↗</a>
-          </div>
-        </div>`).join('') || '<p class="text-sm text-slate-400">Курсов нет.</p>';
-    }
-    function fillCourseForm(c) {
-      const v = (id, val) => { document.getElementById(id).value = val == null ? '' : val; };
-      v('coId', c ? c.id : ''); v('coSlug', c ? c.slug : ''); v('coIcon', c ? c.icon : '📚');
-      v('coOrder', c ? c.sort_order : 0); v('coEntry', c ? c.entry_file : 'index.html');
-      v('coTitleKz', c && c.title_kz); v('coTitleRu', c && c.title_ru);
-      v('coDescKz', c && c.description_kz); v('coDescRu', c && c.description_ru);
-      document.getElementById('coPub').checked = c ? c.is_published : true;
-      document.getElementById('coReq').checked = c ? c.allow_requests : true;
-      document.getElementById('coSlug').readOnly = !!c; // адрес = папка с файлами, менять его нельзя
-    }
-    document.getElementById('coReset').addEventListener('click', () => fillCourseForm(null));
-    document.getElementById('courseForm').addEventListener('submit', async e => {
-      e.preventDefault();
-      const id = document.getElementById('coId').value;
-      const row = {
-        slug: document.getElementById('coSlug').value.trim(),
-        icon: document.getElementById('coIcon').value.trim() || '📚',
-        sort_order: Number(document.getElementById('coOrder').value) || 0,
-        entry_file: document.getElementById('coEntry').value.trim(),
-        title_kz: document.getElementById('coTitleKz').value.trim(),
-        title_ru: document.getElementById('coTitleRu').value.trim() || null,
-        description_kz: document.getElementById('coDescKz').value.trim() || null,
-        description_ru: document.getElementById('coDescRu').value.trim() || null,
-        is_published: document.getElementById('coPub').checked,
-        allow_requests: document.getElementById('coReq').checked
-      };
-      const { error } = id
-        ? await sb.from('courses').update(row).eq('id', id)
-        : await sb.from('courses').insert(Object.assign(row, { owner_id: me.id }));
-      if (error) return toast(error.code === '23505' ? 'Курс с таким адресом уже есть' : 'Ошибка: ' + error.message, true);
-      toast('Курс сохранён');
-      fillCourseForm(null);
-      await loadCourses();
-      renderCourses();
-    });
-    document.getElementById('coursesList').addEventListener('click', e => {
-      const b = e.target.closest('[data-edit]');
-      if (!b) return;
-      fillCourseForm(courseById(b.dataset.edit));
-      document.getElementById('courseForm').scrollIntoView({ behavior: 'smooth' });
-    });
-    document.getElementById('coursesList').addEventListener('change', async e => {
-      const input = e.target.closest('[data-upload]');
-      if (!input || !input.files.length) return;
-      const c = courseById(input.dataset.upload);
-      for (const f of input.files) {
-        const { error } = await sb.storage.from(BUCKET).upload(c.slug + '/' + f.name, f, { upsert: true, contentType: f.type || 'text/html' });
-        if (error) toast(f.name + ': ' + error.message, true); else toast('Загружено: ' + f.name);
-      }
-      input.value = '';
-    });
-
-    // ---------- Старт ----------
+    // ---------- Старт: пускаем только админа и преподавателей ----------
     (async function () {
-      if (!SMB.configured) { status.textContent = SMB.I18N.ru.notConfigured; return; }
+      if (!SMB.configured) { $('status').textContent = SMB.I18N.ru.notConfigured; return; }
       me = await SMB.currentUser();
       if (!me) { location.replace('index.html'); return; }
       myProfile = await SMB.loadProfile(me.id);
       if (!myProfile || myProfile.role === 'student') {
-        status.textContent = 'Нет прав. Эта страница — для администратора и преподавателей.';
+        $('status').textContent = '🔒 Нет доступа. Эта страница только для администратора.';
         return;
       }
-      document.getElementById('whoami').textContent = me.email + ' · ' + myProfile.role;
-      status.classList.add('hidden');
-      document.getElementById('adminApp').classList.remove('hidden');
-      await loadCourses();
-      showTab('requests');
+      $('whoami').textContent = me.email + ' · ' + (myProfile.role === 'admin' ? 'администратор' : 'преподаватель');
+      $('status').classList.add('hidden');
+      $('adminApp').classList.remove('hidden');
+      await loadCatalog();
+      showTab('catalog');
     })();
   </script>
 </body>

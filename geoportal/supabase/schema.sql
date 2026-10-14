@@ -143,12 +143,13 @@ create trigger on_auth_user_created
 
 -- Ввод кода → запись на курс. Ошибки возвращаются в ответе, а не исключением,
 -- чтобы неудачная попытка успела записаться в code_attempts.
+-- Ответ объясняет причину: код выключен, истёк, все места заняты, курс скрыт.
 create or replace function public.redeem_code(p_code text) returns json
 language plpgsql security definer set search_path = public as $$
 declare
-  v_uid  uuid := auth.uid();
-  v_code access_codes%rowtype;
-  v_slug text;
+  v_uid    uuid := auth.uid();
+  v_code   access_codes%rowtype;
+  v_course courses%rowtype;
 begin
   if v_uid is null then return json_build_object('ok', false, 'error', 'not_authenticated'); end if;
 
@@ -157,18 +158,33 @@ begin
   end if;
 
   select * into v_code from access_codes
-   where norm_code(code) = norm_code(p_code)
-     and is_active
-     and (expires_at is null or expires_at > now())
-     and (max_uses is null or uses < max_uses)
+   where length(norm_code(p_code)) >= 4 and norm_code(code) = norm_code(p_code)
    for update;
 
-  if not found or length(norm_code(p_code)) < 4 then
+  if not found then
     insert into code_attempts (user_id) values (v_uid);
     return json_build_object('ok', false, 'error', 'code_not_found');
   end if;
 
-  select slug into v_slug from courses where id = v_code.course_id;
+  select * into v_course from courses where id = v_code.course_id;
+
+  -- Уже на курсе — просто открываем, место в коде не тратим (личный код можно ввести повторно).
+  if exists (select 1 from enrollments where user_id = v_uid and course_id = v_code.course_id) then
+    return json_build_object('ok', true, 'course_id', v_course.id, 'slug', v_course.slug, 'already', true);
+  end if;
+
+  if not v_code.is_active then
+    return json_build_object('ok', false, 'error', 'code_disabled');
+  end if;
+  if v_code.expires_at is not null and v_code.expires_at <= now() then
+    return json_build_object('ok', false, 'error', 'code_expired');
+  end if;
+  if v_code.max_uses is not null and v_code.uses >= v_code.max_uses then
+    return json_build_object('ok', false, 'error', 'code_used_up');
+  end if;
+  if not v_course.is_published then
+    return json_build_object('ok', false, 'error', 'course_closed');
+  end if;
 
   insert into enrollments (user_id, course_id, source, code_id)
   values (v_uid, v_code.course_id, 'code', v_code.id)
@@ -180,8 +196,91 @@ begin
   update access_requests set status = 'approved', decided_at = now()
    where user_id = v_uid and course_id = v_code.course_id and status = 'pending';
 
-  return json_build_object('ok', true, 'course_id', v_code.course_id, 'slug', v_slug);
+  return json_build_object('ok', true, 'course_id', v_course.id, 'slug', v_course.slug);
 end $$;
+
+-- Случайный кусок кода из букв и цифр без похожих символов (нет 0/O, 1/I/L).
+-- Источник случайности — gen_random_uuid() (криптостойкий), без внешних расширений.
+create or replace function public.random_code_part(p_len int) returns text
+language plpgsql volatile as $$
+declare
+  abc constant text := 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+  v_out text := '';
+begin
+  for i in 1 .. p_len loop
+    v_out := v_out || substr(abc, get_byte(uuid_send(gen_random_uuid()), 0) % length(abc) + 1, 1);
+  end loop;
+  return v_out;
+end $$;
+
+-- Пакетная выдача кодов (только управляющий курсом).
+--   p_count    — сколько кодов создать (1–200);
+--   p_max_uses — сколько учеников может войти по каждому коду: 1 = личный код, пусто = без лимита.
+-- Формат: ПРЕФИКС-XXXX-XXXX, ~8·10¹¹ вариантов — с лимитом 10 попыток в час подобрать нельзя.
+create or replace function public.generate_codes(
+  p_course   uuid,
+  p_count    int default 1,
+  p_max_uses int default null,
+  p_label    text default null,
+  p_expires  timestamptz default null
+) returns setof public.access_codes
+language plpgsql security definer set search_path = public as $$
+declare
+  v_prefix text;
+  v_row    access_codes%rowtype;
+  v_tries  int;
+begin
+  if not can_manage_course(p_course) then raise exception 'forbidden'; end if;
+  if p_count is null or p_count < 1 or p_count > 200 then raise exception 'count must be 1..200'; end if;
+  if p_max_uses is not null and p_max_uses < 1 then raise exception 'max_uses must be >= 1'; end if;
+
+  select upper(left(regexp_replace(slug, '[^a-z0-9]', '', 'g'), 4)) into v_prefix from courses where id = p_course;
+  if coalesce(v_prefix, '') = '' then v_prefix := 'SMB'; end if;
+
+  for i in 1 .. p_count loop
+    v_tries := 0;
+    loop
+      begin
+        insert into access_codes (code, course_id, label, max_uses, expires_at, created_by)
+        values (v_prefix || '-' || random_code_part(4) || '-' || random_code_part(4), p_course,
+                nullif(left(trim(coalesce(p_label, '')), 80), ''), p_max_uses, p_expires, auth.uid())
+        returning * into v_row;
+        exit;
+      exception when unique_violation then
+        v_tries := v_tries + 1;
+        if v_tries > 5 then raise; end if;
+      end;
+    end loop;
+    return next v_row;
+  end loop;
+end $$;
+
+-- Каталог курсов для администратора: все курсы (и скрытые черновики) со статистикой.
+-- Админ видит все курсы, преподаватель — только свои; ученик не получает ничего.
+drop function if exists public.admin_course_catalog();
+create function public.admin_course_catalog()
+returns table (
+  id uuid, slug text, icon text, title_kz text, title_ru text, description_kz text, description_ru text,
+  entry_file text, is_published boolean, allow_requests boolean, sort_order int, created_at timestamptz,
+  owner_email text, students bigint, pending_requests bigint, active_codes bigint, total_codes bigint,
+  last_enrolled_at timestamptz, has_content boolean
+)
+language sql stable security definer set search_path = public as $$
+  select c.id, c.slug, c.icon, c.title_kz, c.title_ru, c.description_kz, c.description_ru,
+         c.entry_file, c.is_published, c.allow_requests, c.sort_order, c.created_at,
+         (select p.email from profiles p where p.id = c.owner_id),
+         (select count(*) from enrollments e where e.course_id = c.id),
+         (select count(*) from access_requests r where r.course_id = c.id and r.status = 'pending'),
+         (select count(*) from access_codes a where a.course_id = c.id and a.is_active
+            and (a.expires_at is null or a.expires_at > now()) and (a.max_uses is null or a.uses < a.max_uses)),
+         (select count(*) from access_codes a where a.course_id = c.id),
+         (select max(e.created_at) from enrollments e where e.course_id = c.id),
+         exists (select 1 from storage.objects o
+                  where o.bucket_id = 'course-content' and o.name = c.slug || '/' || c.entry_file)
+  from courses c
+  where public.can_manage_course(c.id)
+  order by c.sort_order, c.created_at
+$$;
 
 create or replace function public.request_access(p_course uuid, p_message text default null) returns json
 language plpgsql security definer set search_path = public as $$
@@ -278,8 +377,16 @@ create policy requests_select on public.access_requests for select using (user_i
 
 -- code_attempts: напрямую недоступна никому (пишет только redeem_code).
 
-grant execute on function public.redeem_code(text), public.request_access(uuid, text), public.decide_request(uuid, boolean) to authenticated;
-revoke execute on function public.redeem_code(text), public.request_access(uuid, text), public.decide_request(uuid, boolean) from anon;
+-- Функции по умолчанию может вызвать кто угодно (PUBLIC) — оставляем только вошедшим.
+revoke all on function
+  public.redeem_code(text), public.request_access(uuid, text), public.decide_request(uuid, boolean),
+  public.generate_codes(uuid, int, int, text, timestamptz), public.admin_course_catalog(),
+  public.random_code_part(int)
+from public, anon;
+grant execute on function
+  public.redeem_code(text), public.request_access(uuid, text), public.decide_request(uuid, boolean),
+  public.generate_codes(uuid, int, int, text, timestamptz), public.admin_course_catalog()
+to authenticated;
 
 -- ---------------------------------------------------------------------
 -- Хранилище материалов: приватный bucket, файл курса видят только записанные
