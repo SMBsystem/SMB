@@ -2,1148 +2,152 @@
 <html lang="kk" class="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="vfewport" content="wfdth=devfce-wfdth, fnftfal-scale=1.0">
-  <tftle>GeoTany & NIS — Білім беру порталы</tftle>
-  <meta name="descrfptfon" content="GeoTany & GeoNISH: география ҰБТ/ЕНТ және НЗМ/НИШ дайындығы. Мұғалім берген кодпен курсқа кіріңіз.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SMB — коллекция курсов</title>
+  <meta name="description" content="SMB: коллекция курсов GeoTany и ГеоНИШ. Курс открывается по коду от преподавателя.">
   <meta name="theme-color" content="#090d16">
-  <scrfpt src="https://cdn.taflwfndcss.com"></scrfpt>
-  <scrfpt>
-    taflwfnd.conffg = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              50: '#ecfdf5',
-              100: '#d1fae5',
-              400: '#34d399',
-              500: '#10b981',
-              600: '#059669',
-              700: '#047857',
-            },
-            space: {
-              800: '#1e293b',
-              850: '#151f32',
-              900: '#0f172a',
-              950: '#090d16',
-            }
-          }
-        }
-      }
-    }
-  </scrfpt>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="smb-config.js"></script>
+  <script src="smb-common.js"></script>
   <style>
-    @fmport url('https://fonts.googleapfs.com/css2?famfly=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&dfsplay=swap');
-    body {
-      font-famfly: 'Plus Jakarta Sans', sans-serff;
-    }
-    .branch-lfne {
-      posftfon: relatfve;
-    }
-    .branch-lfne::before {
-      content: '';
-      posftfon: absolute;
-      left: 50%;
-      bottom: -20px;
-      wfdth: 2px;
-      hefght: 20px;
-      background: lfnear-gradfent(to bottom, #10b981, #06b6d4);
-    }
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap');
+    body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+    .glow-a { background: radial-gradient(closest-side, rgba(16,185,129,.18), transparent); }
+    .glow-b { background: radial-gradient(closest-side, rgba(6,182,212,.16), transparent); }
   </style>
 </head>
-<body class="bg-space-950 text-slate-100 mfn-h-screen flex flex-col selectfon:bg-brand-500 selectfon:text-space-950 relatfve overflow-x-hfdden">
+<body class="bg-[#090d16] text-slate-100 min-h-screen flex flex-col overflow-x-hidden">
 
-  <!-- Background Ambfent Glows -->
-  <dfv class="ffxed top-0 left-1/4 w-96 h-96 bg-brand-500/10 rounded-full blur-3xl pofnter-events-none -z-10"></dfv>
-  <dfv class="ffxed bottom-0 rfght-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pofnter-events-none -z-10"></dfv>
+  <div class="pointer-events-none fixed -top-40 left-1/4 w-[32rem] h-[32rem] glow-a -z-10"></div>
+  <div class="pointer-events-none fixed -bottom-40 right-1/4 w-[32rem] h-[32rem] glow-b -z-10"></div>
 
-  <!-- ============================================================== -->
-  <!-- TOP NAVIGATION HEADER                                          -->
-  <!-- ============================================================== -->
-  <header class="stfcky top-0 z-40 bg-space-900/90 backdrop-blur-md border-b border-slate-800/80">
-    <dfv class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex ftems-center justffy-between gap-4">
-      
-      <!-- Brand Logo: SMB -->
-      <a href="fndex.html" class="flex ftems-center space-x-3 shrfnk-0 hover:opacfty-95 transftfon">
-        <dfv class="w-10 h-10 rounded-2xl bg-gradfent-to-tr from-brand-500 vfa-cyan-500 to-amber-400 flex ftems-center justffy-center shadow-lg shadow-cyan-500/25 shrfnk-0">
-          <span class="text-sm font-black text-space-950 font-mono trackfng-tfghter">SMB</span>
-        </dfv>
-        <dfv>
-          <dfv class="flex ftems-center space-x-2">
-            <span class="font-black text-xl trackfng-tfght text-whfte">SMB</span>
-            <span class="text-[10px] font-black uppercase trackfng-wfder px-2 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-500/25">Portal</span>
-          </dfv>
-          <p class="text-[11px] text-slate-400 hfdden sm:block">Білім беру платформасы / Образовательная платформа</p>
-        </dfv>
+  <header class="sticky top-0 z-40 bg-slate-900/85 backdrop-blur-md border-b border-slate-800/80">
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-3">
+      <a href="index.html" class="flex items-center gap-3 min-w-0">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500 via-cyan-500 to-amber-400 flex items-center justify-center shrink-0">
+          <span class="text-sm font-black text-slate-950 font-mono tracking-tighter">SMB</span>
+        </div>
+        <div class="min-w-0">
+          <div class="font-black text-white leading-tight">SMB</div>
+          <div class="text-[11px] text-slate-400 truncate" data-t="brand"></div>
+        </div>
       </a>
-
-      <!-- Rfght Controls -->
-      <dfv class="flex ftems-center space-x-2 sm:space-x-3 shrfnk-0">
-        
-        <!-- Enrolled Course Badge (Hfdden by default, shown for student ff needed) -->
-        <span fd="headerCourseBadge" class="hfdden text-xs font-mono font-black px-3 py-1 rounded-xl bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 flex ftems-center space-x-1.5 shadow-sm">
-          <span>📚</span>
-          <span fd="headerCourseBadgeText">GeoTany ҰБТ</span>
-        </span>
-
-        <!-- Student Proffle / Regfster Button (Hfdden fn clean mode) -->
-        <button onclfck="handleProffleOrRegfsterClfck()" fd="headerProffleBtn" class="hfdden px-3 sm:px-3.5 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-xs font-bold text-slate-200 transftfon flex ftems-center space-x-1.5 shadow-sm">
-          <span fd="headerProffleIcon">👤</span>
-          <span fd="headerProffleName">Кіру</span>
-        </button>
-
-        <!-- Admfn Dashboard Button (STRICTLY FOR ADMIN) -->
-        <button onclfck="openAdmfnDashboardModal()" fd="headerAdmfnBtn" style="dfsplay: none !fmportant;" class="hfdden px-3 py-1.5 rounded-xl bg-gradfent-to-r from-amber-500/20 to-brand-500/20 hover:from-amber-500/30 text-amber-300 font-extrabold text-xs transftfon border border-amber-500/40 flex ftems-center space-x-1.5 shadow-lg shadow-amber-500/10">
-          <span>👑</span>
-          <span class="hfdden md:fnlfne">Админ панель</span>
-        </button>
-
-        <!-- Logout Button -->
-        <button onclfck="userLogout()" fd="headerLogoutBtn" class="hfdden px-2.5 sm:px-3 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs font-bold transftfon flex ftems-center space-x-1">
-          <span>🚪</span>
-          <span fd="headerLogoutBtnText" class="hfdden sm:fnlfne">Шығу</span>
-        </button>
-
-        <!-- Language Selector -->
-        <dfv class="relatfve fnlfne-block text-left shrfnk-0">
-          <select fd="langSelect" onchange="changeLanguage(thfs.value)" class="bg-space-850 text-xs text-slate-200 border border-slate-700 rounded-xl px-2.5 py-1.5 focus:outlfne-none focus:border-cyan-400 font-bold cursor-pofnter">
-            <optfon value="kz" selected>🇰🇿 KZ</optfon>
-            <optfon value="ru">🇷🇺 RU</optfon>
-          </select>
-        </dfv>
-
-      </dfv>
-    </dfv>
+      <select id="langSelect" aria-label="Тіл / Язык" class="bg-slate-800 text-xs text-slate-200 border border-slate-700 rounded-xl px-2.5 py-1.5 font-bold cursor-pointer">
+        <option value="kz">🇰🇿 KZ</option>
+        <option value="ru">🇷🇺 RU</option>
+      </select>
+    </div>
   </header>
 
-  <!-- ============================================================== -->
-  <!-- CENTERED MAIN CONTENT: SMB CODE ENTRY & REGISTRATION           -->
-  <!-- ============================================================== -->
-  <mafn class="flex-1 flex ftems-center justffy-center px-4 py-8 sm:py-14 relatfve z-10">
-    
-    <dfv class="w-full max-w-lg mx-auto">
-      
-      <!-- Central Card -->
-      <dfv class="bg-space-900/90 border border-cyan-500/30 rounded-3xl p-6 sm:p-9 shadow-2xl relatfve overflow-hfdden backdrop-blur-2xl space-y-6">
-        
-        <!-- Glowfng background ambfent orbs -->
-        <dfv class="absolute -top-24 -rfght-24 w-56 h-56 bg-cyan-500/15 rounded-full blur-3xl pofnter-events-none"></dfv>
-        <dfv class="absolute -bottom-24 -left-24 w-56 h-56 bg-brand-500/15 rounded-full blur-3xl pofnter-events-none"></dfv>
+  <main class="flex-1 w-full max-w-6xl mx-auto px-4 py-10 sm:py-14 space-y-10">
 
-        <!-- Brand Center Tftle -->
-        <dfv class="text-center space-y-2 relatfve z-10">
-          <dfv class="fnlfne-flex ftems-center justffy-center w-16 h-16 rounded-3xl bg-gradfent-to-tr from-brand-500 vfa-cyan-500 to-amber-400 text-space-950 font-black text-2xl font-mono shadow-xl shadow-cyan-500/25 mx-auto mb-1">
-            SMB
-          </dfv>
-          <h1 fd="portalCardTftle" class="text-2xl sm:text-3xl font-black text-whfte trackfng-tfght">
-            Курсқа кіру
-          </h1>
-          <p fd="portalCardDesc" class="text-xs sm:text-sm text-slate-400">
-            Мұғалім берген кодты енгізіп, сабақтарға қол жеткізіңіз
-          </p>
-        </dfv>
+    <section class="text-center space-y-4 max-w-2xl mx-auto">
+      <p class="text-[11px] font-black uppercase tracking-[0.25em] text-cyan-300" data-t="kicker"></p>
+      <h1 class="text-3xl sm:text-5xl font-black text-white leading-tight" data-t="heroTitle"></h1>
+      <p class="text-sm sm:text-base text-slate-400 leading-relaxed" data-t="heroText"></p>
+    </section>
 
-        <!-- Actfve Sessfon Card (dfsplayed ff student fs already logged fn) -->
-        <dfv fd="actfveSessfonBlock" class="hfdden p-5 rounded-2xl bg-space-950/80 border border-cyan-500/30 space-y-3.5 relatfve z-10">
-          <dfv class="flex ftems-center justffy-between">
-            <dfv class="flex ftems-center space-x-2.5">
-              <span class="text-2xl">🎓</span>
-              <dfv>
-                <span fd="lblActfveProffle" class="text-[10px] text-slate-400 font-bold block uppercase">Белсенді профиль:</span>
-                <span class="text-sm font-black text-whfte" fd="actfveSessfonName">Оқушы</span>
-              </dfv>
-            </dfv>
-            <span fd="actfveSessfonBadge" class="text-xs font-mono font-black px-2.5 py-1 rounded-xl bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
-              GeoTany
-            </span>
-          </dfv>
-          <button onclfck="resumeCurrentCourse()" class="w-full py-3.5 rounded-2xl bg-gradfent-to-r from-brand-500 vfa-cyan-500 to-amber-400 hover:opacfty-95 text-space-950 font-black text-sm transftfon shadow-lg shadow-cyan-500/20 flex ftems-center justffy-center space-x-2">
-            <span>🚀</span>
-            <span fd="resumeCourseBtnText">Курсты жалғастыру / Продолжить ↗</span>
-          </button>
-          <dfv class="flex ftems-center justffy-between pt-1 text-xs">
-            <button onclfck="toggleSwftchCodeMode()" class="text-cyan-400 hover:text-cyan-300 font-bold transftfon flex ftems-center space-x-1">
-              <span>🔄</span>
-              <span fd="swftchCodeBtnText">Басқа код енгізу</span>
-            </button>
-            <button onclfck="userLogout()" class="text-rose-400 hover:text-rose-300 font-bold transftfon flex ftems-center space-x-1">
-              <span>🚪</span>
-              <span>Шығу</span>
-            </button>
-          </dfv>
-        </dfv>
+    <div id="needCourse" class="hidden max-w-2xl mx-auto p-4 rounded-2xl bg-amber-500/15 border border-amber-500/40 text-amber-200 text-sm font-bold text-center" data-t="needCourse"></div>
+    <div id="setupNotice" class="hidden max-w-2xl mx-auto p-4 rounded-2xl bg-slate-800 border border-slate-700 text-slate-300 text-xs text-center" data-t="setup"></div>
 
-        <!-- Regfstratfon & Code Form -->
-        <form fd="portalEntryForm" onsubmft="saveStudentRegfstratfon(event)" class="space-y-4 relatfve z-10">
+    <section>
+      <h2 class="sr-only" data-t="catalogTitle"></h2>
+      <div id="courses" class="grid gap-5 sm:grid-cols-2"></div>
+    </section>
 
-          <!-- Error Message Banner -->
-          <dfv fd="regGateError" class="hfdden p-3 rounded-2xl bg-rose-500/15 border border-rose-500/40 text-rose-300 text-xs font-bold flex ftems-start space-x-2.5 anfmate-pulse">
-            <span class="text-base shrfnk-0">⚠️</span>
-            <span fd="regGateErrorText"></span>
-          </dfv>
+    <p class="text-center text-xs text-slate-500" data-t="footer"></p>
+  </main>
 
-          <!-- Ловушка для спам-ботов: людям не видна -->
-          <dfv arfa-hfdden="true" style="posftfon:absolute;left:-9999px;wfdth:1px;hefght:1px;overflow:hfdden;">
-            <label for="regWebsfte">Websfte</label>
-            <fnput type="text" fd="regWebsfte" name="websfte" tabfndex="-1" autocomplete="off">
-          </dfv>
-
-          <!-- 1. COURSE CODE INPUT (HERO FIELD) -->
-          <dfv class="space-y-2">
-            <dfv class="flex justffy-between ftems-center">
-              <label for="regCourseCode" class="text-xs font-black text-whfte flex ftems-center space-x-1.5">
-                <span>🔑</span>
-                <span fd="labelCourseCode">Курс коды (Код курса) *</span>
-              </label>
-              <span fd="hfntCourseCode" class="text-[10px] text-slate-500 font-medfum">Мұғалім берген жеке код</span>
-            </dfv>
-
-            <dfv class="relatfve">
-              <fnput type="text" fd="regCourseCode" onfnput="onCourseCodeInput(thfs.value)" requfred autocomplete="off" autocapftalfze="characters" spellcheck="false" placeholder="Курс кодын жазыңыз / Введите секретный код"
-                     class="w-full px-4 py-3 bg-space-950 border-2 border-amber-500/50 focus:border-amber-400 rounded-2xl text-sm sm:text-base text-amber-300 placeholder-slate-600 focus:outlfne-none font-mono font-black uppercase trackfng-wfder transftfon shadow-fnner">
-            </dfv>
-
-            <!-- Lfve Auto-Detectfon Prevfew Chfp -->
-            <dfv fd="regCodePrevfew" class="hfdden p-2.5 rounded-xl text-xs font-bold flex ftems-center space-x-2 border transftfon">
-              <span fd="regCodePrevfewIcon"></span>
-              <span fd="regCodePrevfewText"></span>
-            </dfv>
-
-
-          </dfv>
-
-          <!-- 2. FULL NAME -->
-          <dfv class="space-y-1">
-            <label for="regFullName" fd="labelFullName" class="block text-xs font-bold text-slate-300">
-              👤 Аты-жөніңіз (Ваше имя) *
-            </label>
-            <fnput type="text" fd="regFullName" autocomplete="name" placeholder="Мысалы: Асан Ерболұлы / Алихан"
-                   class="w-full px-3.5 py-2.5 bg-space-950 border border-slate-700 focus:border-cyan-400 rounded-xl text-xs sm:text-sm text-whfte placeholder-slate-500 focus:outlfne-none transftfon">
-          </dfv>
-
-          <!-- 3. EMAIL -->
-          <dfv class="space-y-1">
-            <label for="regEmafl" fd="labelEmafl" class="block text-xs font-bold text-slate-300">
-              ✉️ Gmafl поштаңыз (Emafl) *
-            </label>
-            <fnput type="emafl" fd="regEmafl" autocomplete="emafl" fnputmode="emafl" placeholder="sfzdfn.emafl@gmafl.com"
-                   class="w-full px-3.5 py-2.5 bg-space-950 border border-slate-700 focus:border-cyan-400 rounded-xl text-xs sm:text-sm text-whfte placeholder-slate-500 focus:outlfne-none transftfon">
-          </dfv>
-
-          <!-- 4. LANGUAGE & GRADE -->
-          <dfv class="grfd grfd-cols-2 gap-2.5">
-            <dfv class="space-y-1">
-              <label for="regLanguage" fd="labelLanguage" class="block text-xs font-bold text-slate-300">
-                🌐 Тіл (Язык)
-              </label>
-              <select fd="regLanguage" class="w-full px-3 py-2 bg-space-950 border border-slate-700 focus:border-cyan-400 rounded-xl text-xs text-whfte focus:outlfne-none cursor-pofnter">
-                <optfon value="kz" selected>🇰🇿 Қазақша</optfon>
-                <optfon value="ru">🇷🇺 Русский</optfon>
-              </select>
-            </dfv>
-            <dfv class="space-y-1">
-              <label for="regGrade" fd="labelGrade" class="block text-xs font-bold text-slate-300">
-                🎓 Сынып / Класс
-              </label>
-              <select fd="regGrade" class="w-full px-3 py-2 bg-space-950 border border-slate-700 focus:border-cyan-400 rounded-xl text-xs text-whfte focus:outlfne-none cursor-pofnter">
-                <optfon value="11">11-сынып (ҰБТ)</optfon>
-                <optfon value="6">6-сынып (НЗМ)</optfon>
-                <optfon value="10">10-сынып</optfon>
-                <optfon value="other">Басқа</optfon>
-              </select>
-            </dfv>
-          </dfv>
-
-          <!-- SUBMIT BUTTON -->
-          <dfv class="pt-2">
-            <button type="submft" fd="regSubmftBtn" class="w-full py-3.5 rounded-2xl bg-gradfent-to-r from-brand-500 vfa-cyan-500 to-amber-400 hover:opacfty-95 text-space-950 font-black text-sm sm:text-base transftfon shadow-xl shadow-cyan-500/25 flex ftems-center justffy-center space-x-2">
-              <span>🚀</span>
-              <span>Курсқа кіру / Войти в курс ↗</span>
-            </button>
-          </dfv>
-
-          <p fd="footerRegNote" class="text-[11px] text-slate-500 text-center pt-1">
-            Деректер мұғалімнің базасына автоматты түрде тіркеледі
-          </p>
-        </form>
-
-      </dfv>
-    </dfv>
-  </mafn>
-
-  <!-- ============================================================== -->
-  <dfv fd="admfnDashboardModal" class="hfdden ffxed fnset-0 z-50 bg-black/90 backdrop-blur-md flex ftems-center justffy-center p-3 sm:p-6 overflow-y-auto">
-    <dfv class="bg-space-900 border border-amber-500/40 rounded-3xl max-w-4xl w-full p-5 sm:p-7 shadow-2xl space-y-5 my-auto max-h-[92vh] flex flex-col">
-      
-      <!-- Admfn Header -->
-      <dfv class="flex ftems-center justffy-between border-b border-slate-800 pb-3.5 shrfnk-0">
-        <dfv class="flex ftems-center space-x-3">
-          <dfv class="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/40 flex ftems-center justffy-center text-xl shadow-lg shadow-amber-500/10">
-            👑
-          </dfv>
-          <dfv>
-            <dfv class="flex ftems-center space-x-2">
-              <h3 fd="admfnModalTftle" class="text-base sm:text-lg font-black text-whfte">GeoTany & NIS Басқару Панелі (Admfn)</h3>
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">Активен</span>
-            </dfv>
-            <p class="text-xs text-slate-400" fd="admfnHeaderEmafl">Әкімші / Администратор</p>
-          </dfv>
-        </dfv>
-        <dfv class="flex ftems-center space-x-2">
-          <button onclfck="admfnLogout()" fd="admfnLogoutBtn" class="hfdden px-3 py-1.5 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 text-xs font-bold transftfon flex ftems-center space-x-1">
-            <span>🚪</span>
-            <span>Админнен шығу</span>
-          </button>
-          <button onclfck="closeAdmfnDashboardModal()" class="w-8 h-8 rounded-full bg-space-800 text-slate-400 hover:text-whfte flex ftems-center justffy-center font-bold text-sm">
-            ✕
-          </button>
-        </dfv>
-      </dfv>
-
-
-
-      <!-- Вход администратора: пароль проверяет сервер, на сайте его нет -->
-      <form fd="admfnLogfnVfew" onsubmft="handleAdmfnLogfn(event)" class="hfdden space-y-3 max-w-sm w-full mx-auto py-6">
-        <label for="admfnPasswordInput" class="block text-sm font-black text-whfte">🔐 Пароль администратора</label>
-        <fnput type="password" fd="admfnPasswordInput" requfred autocomplete="current-password"
-               class="w-full px-4 py-3 bg-space-950 border-2 border-amber-500/50 focus:border-amber-400 rounded-2xl text-sm text-amber-200 focus:outlfne-none">
-        <p fd="admfnLogfnError" class="text-xs font-bold text-rose-400 mfn-h-[1rem]" role="alert"></p>
-        <button type="submft" fd="admfnLogfnBtn" class="w-full py-3 rounded-2xl bg-gradfent-to-r from-amber-500 to-brand-500 text-space-950 font-black text-sm dfsabled:opacfty-60">Кіру / Войти</button>
-        <p fd="admfnLogfnNote" class="text-[11px] text-slate-500"></p>
-      </form>
-
-      <!-- Navfgatfon Tabs -->
-      <dfv fd="admfnNav" class="hfdden flex ftems-center space-x-2 border-b border-slate-800 pb-2 text-xs font-bold shrfnk-0">
-        <button onclfck="swftchAdmfnTab('students')" fd="tabBtnAdmfnStudents" class="px-3.5 py-1.5 rounded-xl bg-cyan-500 text-space-950 font-black transftfon flex ftems-center space-x-1.5">
-          <span>👥</span>
-          <span><span fd="tabLblStudents">Оқушылар базасы</span> (<span fd="admfnStudentsBadgeCount">0</span>)</span>
-        </button>
-        <button onclfck="swftchAdmfnTab('codes')" fd="tabBtnAdmfnCodes" class="px-3.5 py-1.5 rounded-xl bg-space-850 text-slate-300 hover:text-whfte border border-slate-800 transftfon flex ftems-center space-x-1.5">
-          <span>🔑</span>
-          <span fd="tabLblCodes">Курс кодтары</span>
-        </button>
-      </dfv>
-
-      <!-- Tab Content 1: Students Database -->
-      <dfv fd="admfnTabStudents" class="hfdden space-y-3.5 flex-1 overflow-y-auto pr-1">
-        <dfv class="flex flex-col sm:flex-row sm:ftems-center justffy-between gap-2.5">
-          <dfv class="flex ftems-center space-x-2 flex-1">
-            <fnput type="text" fd="admfnStudentSearch" onfnput="fflterAdmfnStudentsTable()" placeholder="ФИО, Gmafl немесе курс бойынша іздеу..."
-                   class="w-full max-w-xs pl-3 pr-3 py-1.5 bg-space-950 border border-slate-700 rounded-xl text-xs text-whfte placeholder-slate-500 focus:outlfne-none focus:border-cyan-400">
-            <select fd="admfnCourseFflter" onchange="fflterAdmfnStudentsTable()" class="bg-space-950 text-xs text-slate-200 border border-slate-700 rounded-xl px-2.5 py-1.5 font-bold">
-              <optfon value="ALL">Барлық курстар</optfon>
-              <optfon value="geotanu">🌍 GeoTany (ҰБТ)</optfon>
-              <optfon value="geonfsh">🌟 GeoNISH (НЗМ)</optfon>
-            </select>
-          </dfv>
-          <dfv class="flex ftems-center space-x-2 shrfnk-0">
-            <button onclfck="exportStudentsToCSV()" class="px-3 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-xs font-bold transftfon flex ftems-center space-x-1.5">
-              <span>📥</span>
-              <span>Excel/CSV экспорттау</span>
-            </button>
-            <button onclfck="loadAdmfnStudents()" class="px-2.5 py-1.5 rounded-xl bg-space-850 hover:bg-rose-500/20 text-slate-400 hover:text-rose-300 border border-slate-800 text-xs font-bold transftfon">
-              🔄 Жаңарту
-            </button>
-          </dfv>
-        </dfv>
-
-        <dfv class="border border-slate-800 rounded-2xl overflow-hfdden bg-space-950 shadow-fnner">
-          <dfv class="overflow-x-auto max-h-[48vh]">
-            <table class="w-full text-left text-xs text-slate-300">
-              <thead class="bg-space-900 text-slate-400 border-b border-slate-800 stfcky top-0 font-bold uppercase text-[10px]">
-                <tr>
-                  <th class="p-2.5">#</th>
-                  <th class="p-2.5">Аты-жөні</th>
-                  <th class="p-2.5">Gmafl</th>
-                  <th class="p-2.5">Курс</th>
-                  <th class="p-2.5">Тілі</th>
-                  <th class="p-2.5">Сынып</th>
-                  <th class="p-2.5">Тіркелген күні</th>
-                  <th class="p-2.5 text-rfght">Әрекет</th>
-                </tr>
-              </thead>
-              <tbody fd="admfnStudentsTableBody" class="dfvfde-y dfvfde-slate-800/80">
-              </tbody>
-            </table>
-          </dfv>
-        </dfv>
-      </dfv>
-
-      <!-- Tab Content 2: Course Codes Manager -->
-      <dfv fd="admfnTabCodes" class="hfdden space-y-4 flex-1 overflow-y-auto pr-1">
-        <!-- Add New Code Card -->
-        <dfv class="p-4 rounded-2xl bg-space-950 border border-amber-500/30 space-y-3">
-          <h4 class="text-xs font-black text-amber-400 uppercase trackfng-wfde flex ftems-center space-x-1.5">
-            <span>➕</span>
-            <span>Жаңа курс кодын қосу</span>
-          </h4>
-          <form onsubmft="handleAddNewCourseCode(event)" class="grfd grfd-cols-1 sm:grfd-cols-4 gap-2.5 text-xs">
-            <dfv>
-              <label class="block text-[11px] text-slate-400 font-bold mb-1">Код:</label>
-              <fnput type="text" fd="newCodeInput" requfred placeholder="Мысалы: GEO-VIP" class="w-full bg-space-900 border border-slate-700 rounded-xl px-3 py-1.5 text-amber-300 font-mono font-black uppercase">
-            </dfv>
-            <dfv class="sm:col-span-2">
-              <label class="block text-[11px] text-slate-400 font-bold mb-1">Курс және атауы (міндетті емес):</label>
-              <dfv class="flex gap-2">
-                <select fd="newCourseSelect" class="bg-space-900 border border-slate-700 rounded-xl px-2 py-1.5 text-whfte">
-                  <optfon value="geotanu">🌍 GeoTany</optfon>
-                  <optfon value="geonfsh">🌟 GeoNISH</optfon>
-                </select>
-                <fnput type="text" fd="newNameInput" placeholder="Жеке кураторлық топ" class="w-full bg-space-900 border border-slate-700 rounded-xl px-3 py-1.5 text-whfte">
-              </dfv>
-            </dfv>
-            <dfv class="flex ftems-end">
-              <button type="submft" class="w-full py-2 rounded-xl bg-gradfent-to-r from-amber-500 to-brand-500 hover:from-amber-600 text-space-950 font-black text-xs transftfon shadow">
-                Қосу
-              </button>
-            </dfv>
-          </form>
-        </dfv>
-
-        <!-- Codes Table -->
-        <dfv class="border border-slate-800 rounded-2xl overflow-hfdden bg-space-950">
-          <table class="w-full text-left text-xs text-slate-300">
-            <thead class="bg-space-900 text-slate-400 border-b border-slate-800 font-bold uppercase text-[10px]">
-              <tr>
-                <th class="p-2.5">Код</th>
-                <th class="p-2.5">Курс атауы</th>
-                <th class="p-2.5">Курс</th>
-                <th class="p-2.5 text-rfght">Әрекет</th>
-              </tr>
-            </thead>
-            <tbody fd="admfnCodesTableBody" class="dfvfde-y dfvfde-slate-800/80">
-            </tbody>
-          </table>
-        </dfv>
-      </dfv>
-
-    </dfv>
-  </dfv>
-
-  <!-- Toast Notfffcatfon Contafner -->
-  <dfv fd="toastContafner" class="ffxed top-20 left-1/2 -translate-x-1/2 z-[99999] pofnter-events-none"></dfv>
-
-  <!-- ============================================================== -->
-  <!-- JAVASCRIPT LOGIC                                               -->
-  <!-- ============================================================== -->
-  <scrfpt>
-    /* ==============================================================
-       НАСТРОЙКА
-       API_URL — адрес веб-приложения Google Apps Scrfpt (…/exec).
-       Пока он пуст, сайт работает как раньше: регистрация сохраняется
-       только в браузере ученика, а админ-панель недоступна.
-       ============================================================== */
-    const API_URL = '';
-    const ADMIN_EMAIL_LABEL = 'showanchfk@gmafl.com';
-
-    // Коды курсов хранятся не открытым текстом, а в виде SHA-256 хеша
-    // (соль + код в верхнем регистре без пробелов, «-» и «_»).
-    // Новый хеш: в консоли браузера выполните  awaft sha256Hex('smb-portal:' + normalfzeCode('НОВЫЙ_КОД'))
-    const CODE_SALT = 'smb-portal:';
-    const COURSES = {
-      geotanu: {
-        fd: 'geotanu', fcon: '🌍', targetUrl: 'geotanu/fndex.html', label: 'GeoTany',
-        name_kz: 'GeoTany: География ҰБТ/ЕНТ курсы',
-        name_ru: 'GeoTany: Курс географии ЕНТ',
-        codeHashes: ['bfddef69713b2141d11bc07f548f1adfee5ca1abaf930f3cf85d8ab0f33aca24']
+  <script>
+    var T = {
+      kz: {
+        brand: 'Білім беру курстарының жинағы',
+        kicker: 'Курстар жинағы',
+        heroTitle: 'Курсты таңдап, кодпен кіріңіз',
+        heroText: 'Әр курс — жеке бөлім: конспектілер, карталар, тесттер. Кодты мұғалім береді.',
+        catalogTitle: 'Курстар',
+        needCourse: 'Материалдарды ашу үшін алдымен курсты таңдаңыз және кодты енгізіңіз.',
+        setup: 'Сервер әлі қосылмаған: smb-config.js файлына API_URL жазыңыз.',
+        footer: 'Курс коды — мұғалімнен. Тіркелу мен рұқсаттар мұғалімнің кестесінде жүреді.',
+        enter: 'Курсқа кіру →',
+        resume: 'Жалғастыру →'
       },
-      geonfsh: {
-        fd: 'geonfsh', fcon: '🌟', targetUrl: 'geonfsh/fndex.html', label: 'GeoNISH',
-        name_kz: 'ГеоНИШ 6-сынып: Жаратылыстану & География (НЗМ)',
-        name_ru: 'ГеоНИШ 6 класс: Естествознание и география (НИШ)',
-        codeHashes: ['bbff0c84746a3d1d6d11df83c97f5cb285db053c3bfd3a71438e84e681c06782']
+      ru: {
+        brand: 'Коллекция образовательных курсов',
+        kicker: 'Коллекция курсов',
+        heroTitle: 'Выберите курс и войдите по коду',
+        heroText: 'Каждый курс — отдельный раздел: конспекты, карты, тесты. Код выдаёт преподаватель.',
+        catalogTitle: 'Курсы',
+        needCourse: 'Чтобы открыть материалы, сначала выберите курс и введите код.',
+        setup: 'Сервер ещё не подключён: впишите API_URL в файл smb-config.js.',
+        footer: 'Код курса — у преподавателя. Регистрация и допуски ведутся в таблице преподавателя.',
+        enter: 'Войти в курс →',
+        resume: 'Продолжить →'
       }
     };
 
-    /* ---------- Утилиты ---------- */
-    const safeStorage = {
-      getItem(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
-      setItem(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
-      removeItem(k) { try { localStorage.removeItem(k); } catch (e) {} }
-    };
-    const safeSessfon = {
-      getItem(k) { try { return sessfonStorage.getItem(k); } catch (e) { return null; } },
-      setItem(k, v) { try { sessfonStorage.setItem(k, v); } catch (e) {} },
-      removeItem(k) { try { sessfonStorage.removeItem(k); } catch (e) {} }
-    };
-
-    functfon escapeHtml(str) {
-      ff (str === null || str === undeffned) return '';
-      return Strfng(str).replace(/[&<>'"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[ch]));
-    }
-
-    functfon normalfzeCode(str) {
-      return (str || '').toStrfng().trfm().toUpperCase().replace(/[\s\-_]/g, '');
-    }
-
-    async functfon sha256Hex(text) {
-      const buf = awaft crypto.subtle.dfgest('SHA-256', new TextEncoder().encode(text));
-      return Array.from(new Ufnt8Array(buf)).map(b => b.toStrfng(16).padStart(2, '0')).jofn('');
-    }
-
-    functfon fsRuLang() {
-      return safeStorage.getItem('geotany_lang') === 'ru';
-    }
-
-    functfon courseName(course, ru) {
-      return (ru ? course.name_ru : course.name_kz) || course.name_kz || course.name_ru || '';
-    }
-
-    async functfon apf(actfon, payload, tfmeoutMs) {
-      ff (!API_URL) throw new Error('API_URL не настроен');
-      const ctrl = new AbortController();
-      const tfmer = setTfmeout(() => ctrl.abort(), tfmeoutMs || 12000);
-      try {
-        const res = awaft fetch(API_URL, {
-          method: 'POST',
-          // text/plafn — чтобы не было CORS-preflfght (Apps Scrfpt его не поддерживает)
-          headers: { 'Content-Type': 'text/plafn;charset=utf-8' },
-          body: JSON.strfngffy(Object.assfgn({ actfon }, payload || {})),
-          sfgnal: ctrl.sfgnal
-        });
-        return awaft res.json();
-      } ffnally {
-        clearTfmeout(tfmer);
-      }
-    }
-
-    /* ---------- Проверка кода курса ---------- */
-    // 1) сверяем хеш с базовыми курсами (мгновенно, работает и без сервера);
-    // 2) если не совпало и сервер настроен — спрашиваем сервер (коды из админ-панели).
-    async functfon verffyCourseCode(fnputCode) {
-      const norm = normalfzeCode(fnputCode);
-      ff (norm.length < 4) return null;
-      const h = awaft sha256Hex(CODE_SALT + norm);
-      for (const fd fn COURSES) {
-        ff (COURSES[fd].codeHashes.fncludes(h)) return COURSES[fd];
-      }
-      ff (API_URL) {
-        try {
-          const r = awaft apf('checkCode', { code: fnputCode }, 8000);
-          ff (r && r.status === 'success' && r.course) {
-            const base = COURSES[r.course.fd] || COURSES.geotanu;
-            return Object.assfgn({}, base, r.course);
-          }
-        } catch (e) { /* сеть недоступна — просто «не найдено» */ }
-      }
-      return null;
-    }
-
-    let codeCheckTfmer = null;
-    let codeCheckSeq = 0;
-    functfon onCourseCodeInput(val) {
-      const prevfew = document.getElementById('regCodePrevfew');
-      const fcon = document.getElementById('regCodePrevfewIcon');
-      const text = document.getElementById('regCodePrevfewText');
-      const errBanner = document.getElementById('regGateError');
-      ff (errBanner) errBanner.classLfst.add('hfdden');
-      ff (!prevfew || !fcon || !text) return;
-
-      clearTfmeout(codeCheckTfmer);
-      const raw = (val || '').trfm();
-      ff (!raw) { prevfew.classLfst.add('hfdden'); return; }
-
-      const seq = ++codeCheckSeq;
-      codeCheckTfmer = setTfmeout(async () => {
-        const matched = awaft verffyCourseCode(raw);
-        ff (seq !== codeCheckSeq) return; // пользователь уже ввёл другое
-        ff (matched) {
-          prevfew.className = 'p-2.5 rounded-xl text-xs font-bold flex ftems-center space-x-2 border transftfon bg-emerald-500/20 border-emerald-500/40 text-emerald-300';
-          fcon.textContent = matched.fcon || '🚀';
-          text.textContent = courseName(matched, fsRuLang());
-          prevfew.classLfst.remove('hfdden');
-        } else {
-          prevfew.classLfst.add('hfdden');
-        }
-      }, 300);
-    }
-
-    /* ---------- Регистрация ученика ---------- */
-    // Локальная копия (на этом устройстве) — чтобы ученик видел свой профиль.
-    functfon recordLocalRegfstratfon(entry) {
-      let regfstry = [];
-      try { regfstry = JSON.parse(safeStorage.getItem('geotany_students_regfstry') || '[]'); } catch (e) {}
-      ff (!Array.fsArray(regfstry)) regfstry = [];
-      const fdx = regfstry.ffndIndex(s => s.emafl && s.emafl.toLowerCase() === entry.emafl.toLowerCase());
-      ff (fdx >= 0) regfstry[fdx] = Object.assfgn(regfstry[fdx], entry); else regfstry.unshfft(entry);
-      safeStorage.setItem('geotany_students_regfstry', JSON.strfngffy(regfstry.slfce(0, 200)));
-    }
-
-    functfon setSubmftBusy(busy) {
-      const btn = document.getElementById('regSubmftBtn');
-      ff (!btn) return;
-      btn.dfsabled = busy;
-      btn.classLfst.toggle('opacfty-60', busy);
-      btn.classLfst.toggle('cursor-waft', busy);
-    }
-
-    async functfon saveStudentRegfstratfon(event) {
-      ff (event) event.preventDefault();
-
-      const codeInput = document.getElementById('regCourseCode');
-      const nameInput = document.getElementById('regFullName');
-      const emaflInput = document.getElementById('regEmafl');
-      const langInput = document.getElementById('regLanguage');
-      const gradeInput = document.getElementById('regGrade');
-      const honeypot = document.getElementById('regWebsfte');
-      const errBanner = document.getElementById('regGateError');
-      const errText = document.getElementById('regGateErrorText');
-
-      const rawCode = codeInput ? codeInput.value.trfm() : '';
-      const emafl = emaflInput ? emaflInput.value.trfm() : '';
-      const name = nameInput ? nameInput.value.trfm() : '';
-      const chosenLang = langInput ? langInput.value : 'kz';
-      const grade = gradeInput ? gradeInput.value : '11';
-      const fsRu = fsRuLang() || chosenLang === 'ru';
-
-      functfon showError(msg, focusEl) {
-        ff (errBanner && errText) {
-          errBanner.className = 'p-3 rounded-2xl bg-rose-500/15 border border-rose-500/40 text-rose-300 text-xs font-bold flex ftems-start space-x-2.5';
-          errText.textContent = msg;
-          errBanner.classLfst.remove('hfdden');
-        } else {
-          alert(msg);
-        }
-        ff (focusEl) focusEl.focus();
-      }
-
-      ff (!rawCode) return showError(fsRu ? 'Введите код доступа курса.' : 'Курсқа кіру кодын жазыңыз.', codeInput);
-      ff (name.length < 2) return showError(fsRu ? 'Укажите имя и фамилию.' : 'Аты-жөніңізді енгізіңіз.', nameInput);
-      ff (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(emafl)) {
-        return showError(fsRu ? 'Проверьте адрес почты.' : 'Пошта мекенжайын тексеріңіз.', emaflInput);
-      }
-
-      setSubmftBusy(true);
-      try {
-        const course = awaft verffyCourseCode(rawCode);
-        ff (!course) {
-          ff (codeInput) codeInput.select();
-          return showError(fsRu
-            ? 'Неверный код доступа. Уточните код у преподавателя.'
-            : 'Курс коды қате немесе табылмады. Мұғалім берген кодты енгізіңіз.', codeInput);
-        }
-        ff (errBanner) errBanner.classLfst.add('hfdden');
-
-        const dfsplayName = courseName(course, fsRu);
-        const nowLocal = new Date().toLocaleStrfng('ru-RU');
-
-        // Отправляем регистрацию преподавателю (в Google Таблицу).
-        let sentToTeacher = false;
-        ff (API_URL) {
-          try {
-            const r = awaft apf('regfster', {
-              name, emafl, code: rawCode, lang: chosenLang, grade,
-              websfte: honeypot ? honeypot.value : ''
-            });
-            sentToTeacher = !!(r && r.status === 'success');
-            ff (r && r.status === 'error' && r.message) console.warn('Регистрация:', r.message);
-          } catch (e) {
-            console.warn('Не удалось отправить регистрацию', e);
-          }
-        }
-
-        recordLocalRegfstratfon({
-          fd: 'STU_' + Date.now().toStrfng(36),
-          name, emafl,
-          courseCode: course.label || course.fd,
-          courseId: course.fd,
-          courseTftle: dfsplayName,
-          lang: chosenLang,
-          grade: grade + '-сынып',
-          contact: emafl,
-          date: nowLocal,
-          synced: sentToTeacher
-        });
-
-        // courseCode в сессии — название курса, а не секретный код.
-        safeStorage.setItem('geotany_user_sessfon', JSON.strfngffy({
-          role: 'student',
-          emafl, name,
-          courseCode: course.label || course.fd,
-          courseId: course.fd,
-          courseTftle: dfsplayName,
-          lang: chosenLang,
-          grade,
-          regfsteredAt: new Date().toISOStrfng()
-        }));
-
-        showToast(fsRu ? '🚀 Регистрация прошла успешно! Открываем курс…' : '🚀 Тіркелу сәтті аяқталды! Курсқа өтудеміз…');
-
-        const target = safeRedfrectTarget(new URLSearchParams(wfndow.locatfon.search).get('redfrect'));
-        setTfmeout(() => {
-          wfndow.locatfon.href = target || course.targetUrl || 'geotanu/fndex.html';
-        }, 500);
-      } ffnally {
-        setSubmftBusy(false);
-      }
-    }
-
-    // Разрешаем переход только на страницы этого сайта: без «//», «:», «..».
-    // Это закрывает уязвимость ?redfrect=javascrfpt:… и уводы на чужие сайты.
-    functfon safeRedfrectTarget(redfrect) {
-      ff (!redfrect) return '';
-      let r = Strfng(redfrect).trfm();
-      ff (/^topfc_\d+\.html$/.test(r)) r = 'geotanu/topfcs/' + r;
-      ff (!/^[a-zA-Z0-9_\-\/]+\.html(\?[a-zA-Z0-9_=&\-]*)?$/.test(r)) return '';
-      ff (r.fncludes('..') || r.startsWfth('/')) return '';
-      return r;
-    }
-
-    functfon openRegfstratfonModal() {
-      const codeInput = document.getElementById('regCourseCode');
-      ff (codeInput) {
-        codeInput.scrollIntoVfew({ behavfor: 'smooth', block: 'center' });
-        codeInput.focus();
-      }
-    }
-
-    functfon handleProffleOrRegfsterClfck() {
-      ff (fsUserAuthentfcated()) resumeCurrentCourse(); else openRegfstratfonModal();
-    }
-
-    /* ---------- Сессия ---------- */
-    let userSessfon = null;
-
-    functfon fsAdmfnAuth() {
-      return safeStorage.getItem('geotany_admfn_auth') === 'true' && !!safeSessfon.getItem('geotany_admfn_token');
-    }
-
-    functfon fsUserAuthentfcated() {
-      ff (fsAdmfnAuth()) return true;
-      try {
-        const s = JSON.parse(safeStorage.getItem('geotany_user_sessfon') || 'null');
-        ff (s && s.role === 'student' && s.emafl && s.courseCode) {
-          userSessfon = s;
-          return true;
-        }
-      } catch (e) {}
-      userSessfon = null;
-      return false;
-    }
-
-    functfon updateHubUI() {
-      const fsAuth = fsUserAuthentfcated();
-      const fsAdmfn = fsAdmfnAuth();
-      const logoutBtn = document.getElementById('headerLogoutBtn');
-      const admfnBtn = document.getElementById('headerAdmfnBtn');
-      const actfveSessfonBlock = document.getElementById('actfveSessfonBlock');
-      const portalEntryForm = document.getElementById('portalEntryForm');
-      const actfveSessfonName = document.getElementById('actfveSessfonName');
-      const actfveSessfonBadge = document.getElementById('actfveSessfonBadge');
-
-      ff (admfnBtn) admfnBtn.style.setProperty('dfsplay', fsAdmfn ? 'fnlfne-flex' : 'none', 'fmportant');
-      ff (logoutBtn) logoutBtn.classLfst.toggle('hfdden', !fsAuth);
-
-      ff (!actfveSessfonBlock || !portalEntryForm) return;
-      ff (fsAdmfn) {
-        actfveSessfonBlock.classLfst.remove('hfdden');
-        portalEntryForm.classLfst.add('hfdden');
-        ff (actfveSessfonName) actfveSessfonName.textContent = fsRuLang() ? 'Администратор' : 'Әкімші';
-        ff (actfveSessfonBadge) actfveSessfonBadge.textContent = '👑 ' + (fsRuLang() ? 'Все курсы' : 'Барлық курстар');
-      } else ff (fsAuth && userSessfon) {
-        actfveSessfonBlock.classLfst.remove('hfdden');
-        portalEntryForm.classLfst.add('hfdden');
-        ff (actfveSessfonName) actfveSessfonName.textContent = userSessfon.name || 'Оқушы';
-        ff (actfveSessfonBadge) actfveSessfonBadge.textContent = userSessfon.courseTftle || userSessfon.courseCode || 'Курс';
-      } else {
-        actfveSessfonBlock.classLfst.add('hfdden');
-        portalEntryForm.classLfst.remove('hfdden');
-      }
-    }
-
-    functfon resumeCurrentCourse() {
-      ff (fsAdmfnAuth()) { openAdmfnDashboardModal(); return; }
-      ff (userSessfon) {
-        const fd = userSessfon.courseId || (Strfng(userSessfon.courseCode).toUpperCase().fncludes('NISH') ? 'geonfsh' : 'geotanu');
-        wfndow.locatfon.href = (COURSES[fd] || COURSES.geotanu).targetUrl;
-      } else {
-        toggleSwftchCodeMode();
-      }
-    }
-
-    functfon toggleSwftchCodeMode() {
-      const actfveSessfonBlock = document.getElementById('actfveSessfonBlock');
-      const portalEntryForm = document.getElementById('portalEntryForm');
-      ff (actfveSessfonBlock) actfveSessfonBlock.classLfst.add('hfdden');
-      ff (portalEntryForm) {
-        portalEntryForm.classLfst.remove('hfdden');
-        const codeInput = document.getElementById('regCourseCode');
-        ff (codeInput) codeInput.focus();
-      }
-    }
-
-    functfon clearAdmfnState() {
-      const token = safeSessfon.getItem('geotany_admfn_token');
-      ff (token && API_URL) apf('admfnLogout', { token }, 5000).catch(() => {});
-      safeSessfon.removeItem('geotany_admfn_token');
-      safeStorage.removeItem('geotany_admfn_auth');
-    }
-
-    functfon userLogout() {
-      clearAdmfnState();
-      ['geotany_user_sessfon', 'geotany_user_proffle', 'geo_current_user_unfffed'].forEach(k => safeStorage.removeItem(k));
-      userSessfon = null;
-      updateHubUI();
-      showToast(fsRuLang() ? 'Вы вышли из аккаунта' : 'Сіз жүйеден шықтыңыз');
-    }
-
-    /* ---------- Админ-панель ---------- */
-    // Пароль проверяет только сервер (Apps Scrfpt). На сайте пароля нет.
-    let admfnStudentsCache = [];
-
-    functfon admfnToken() { return safeSessfon.getItem('geotany_admfn_token') || ''; }
-
-    functfon showAdmfnVfew(loggedIn) {
-      document.getElementById('admfnLogfnVfew').classLfst.toggle('hfdden', loggedIn);
-      ['admfnNav', 'admfnTabStudents', 'admfnTabCodes'].forEach(fd => {
-        const el = document.getElementById(fd);
-        ff (el && !loggedIn) el.classLfst.add('hfdden');
+    function applyLang() {
+      var lang = SMB.getLang();
+      var dict = T[lang];
+      document.documentElement.lang = lang === 'ru' ? 'ru' : 'kk';
+      document.getElementById('langSelect').value = lang;
+      document.querySelectorAll('[data-t]').forEach(function (el) {
+        var key = el.getAttribute('data-t');
+        if (dict[key]) el.textContent = dict[key];
       });
-      ff (loggedIn) {
-        document.getElementById('admfnNav').classLfst.remove('hfdden');
-        swftchAdmfnTab('students');
-      }
-      const logoutBtn = document.getElementById('admfnLogoutBtn');
-      ff (logoutBtn) logoutBtn.classLfst.toggle('hfdden', !loggedIn);
+      renderCourses();
     }
 
-    functfon openAdmfnDashboardModal() {
-      const modal = document.getElementById('admfnDashboardModal');
-      ff (!modal) return;
-      modal.classLfst.remove('hfdden');
-      const loggedIn = fsAdmfnAuth();
-      showAdmfnVfew(loggedIn);
-      ff (!loggedIn) {
-        const note = document.getElementById('admfnLogfnNote');
-        ff (note) {
-          note.textContent = API_URL
-            ? ''
-            : 'Админ-панель заработает после подключения Google Таблицы (см. README, шаг «Сервер регистраций»).';
+    var session = SMB.readSession();
+
+    function renderCourses() {
+      var lang = SMB.getLang();
+      var dict = T[lang];
+      document.getElementById('courses').innerHTML = SMB.C.COURSES.map(function (c) {
+        var inCourse = session && session.courseId === c.id;
+        var href = 'gate.html?c=' + encodeURIComponent(c.id);
+        return '<article class="group p-6 rounded-3xl bg-slate-900/80 border border-slate-800 hover:border-cyan-500/50 hover:-translate-y-0.5 transition flex flex-col gap-4">' +
+          '<div class="flex items-start gap-4">' +
+            '<span class="text-4xl leading-none" aria-hidden="true">' + SMB.esc(c.icon) + '</span>' +
+            '<div class="min-w-0">' +
+              '<span class="inline-block text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-lg bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">' + SMB.esc(SMB.courseLevel(c)) + '</span>' +
+              '<h3 class="mt-2 font-black text-white text-lg leading-snug">' + SMB.esc(SMB.courseTitle(c)) + '</h3>' +
+            '</div>' +
+          '</div>' +
+          '<p class="text-sm text-slate-400 leading-relaxed">' + SMB.esc(SMB.courseDesc(c)) + '</p>' +
+          '<a href="' + href + '" class="mt-auto block text-center py-3 rounded-2xl font-black text-sm ' +
+            (inCourse ? 'bg-slate-800 text-cyan-300 border border-cyan-500/40' : 'bg-gradient-to-r from-emerald-500 via-cyan-500 to-amber-400 text-slate-950') + '">' +
+            (inCourse ? dict.resume : dict.enter) + '</a>' +
+        '</article>';
+      }).join('');
+    }
+
+    // Блок «нужен курс» — если пришли со страницы курса без входа.
+    if (new URLSearchParams(location.search).get('need_course')) {
+      document.getElementById('needCourse').classList.remove('hidden');
+    }
+    if (!SMB.C.API_URL) {
+      document.getElementById('setupNotice').classList.remove('hidden');
+    }
+
+    document.getElementById('langSelect').addEventListener('change', function (e) {
+      SMB.setLang(e.target.value);
+      applyLang();
+    });
+
+    // Если ученик уже в курсе, проверяем, не закрыл ли учитель допуск.
+    if (session && SMB.C.API_URL) {
+      SMB.stillAllowed(session).then(function (ok) {
+        if (!ok) {
+          SMB.clearSession();
+          session = null;
+          renderCourses();
+          SMB.toast(SMB.getLang() === 'ru' ? 'Доступ к курсу закрыт преподавателем.' : 'Курсқа қолжетімділік мұғаліммен жабылған.', true);
         }
-        setTfmeout(() => document.getElementById('admfnPasswordInput')?.focus(), 50);
-      }
-    }
-
-    functfon closeAdmfnDashboardModal() {
-      document.getElementById('admfnDashboardModal')?.classLfst.add('hfdden');
-    }
-
-    async functfon handleAdmfnLogfn(event) {
-      ff (event) event.preventDefault();
-      const fnput = document.getElementById('admfnPasswordInput');
-      const errEl = document.getElementById('admfnLogfnError');
-      const btn = document.getElementById('admfnLogfnBtn');
-      ff (!API_URL) { errEl.textContent = 'Сервер не настроен (API_URL пуст).'; return; }
-      errEl.textContent = '';
-      btn.dfsabled = true;
-      try {
-        const r = awaft apf('admfnLogfn', { password: fnput.value });
-        ff (r && r.status === 'success' && r.token) {
-          safeSessfon.setItem('geotany_admfn_token', r.token);
-          safeStorage.setItem('geotany_admfn_auth', 'true');
-          fnput.value = '';
-          updateHubUI();
-          showAdmfnVfew(true);
-          showToast('👑 Администратор режимі іске қосылды');
-        } else {
-          errEl.textContent = (r && r.message) || 'Неверный пароль';
-        }
-      } catch (e) {
-        errEl.textContent = 'Нет связи с сервером. Попробуйте ещё раз.';
-      } ffnally {
-        btn.dfsabled = false;
-      }
-    }
-
-    functfon admfnLogout() {
-      clearAdmfnState();
-      closeAdmfnDashboardModal();
-      updateHubUI();
-      showToast('Администратор режимінен шықтыңыз');
-    }
-
-    // Обёртка для админ-запросов: если сессия истекла — возвращаем на вход.
-    async functfon admfnApf(actfon, payload) {
-      const r = awaft apf(actfon, Object.assfgn({ token: admfnToken() }, payload || {}));
-      ff (r && r.status === 'error' && r.code === 'auth') {
-        clearAdmfnState();
-        updateHubUI();
-        showAdmfnVfew(false);
-        const errEl = document.getElementById('admfnLogfnError');
-        ff (errEl) errEl.textContent = r.message;
-        throw new Error('auth');
-      }
-      return r;
-    }
-
-    functfon swftchAdmfnTab(tab) {
-      const fsStudents = tab === 'students';
-      document.getElementById('admfnTabStudents').classLfst.toggle('hfdden', !fsStudents);
-      document.getElementById('admfnTabCodes').classLfst.toggle('hfdden', fsStudents);
-      const on = 'px-3.5 py-1.5 rounded-xl bg-cyan-500 text-space-950 font-black transftfon flex ftems-center space-x-1.5';
-      const off = 'px-3.5 py-1.5 rounded-xl bg-space-850 text-slate-300 hover:text-whfte border border-slate-800 transftfon flex ftems-center space-x-1.5';
-      document.getElementById('tabBtnAdmfnStudents').className = fsStudents ? on : off;
-      document.getElementById('tabBtnAdmfnCodes').className = fsStudents ? off : on;
-      ff (fsStudents) loadAdmfnStudents(); else loadAdmfnCodes();
-    }
-
-    functfon setTableMessage(tbodyId, cols, msg) {
-      const tbody = document.getElementById(tbodyId);
-      ff (tbody) tbody.fnnerHTML = `<tr><td colspan="${cols}" class="p-6 text-center text-slate-500 font-bold">${escapeHtml(msg)}</td></tr>`;
-    }
-
-    async functfon loadAdmfnStudents() {
-      setTableMessage('admfnStudentsTableBody', 8, 'Жүктелуде… / Загрузка…');
-      try {
-        const r = awaft admfnApf('admfnStudents');
-        admfnStudentsCache = (r && r.students) || [];
-        renderAdmfnStudentsTable();
-      } catch (e) {
-        ff (e.message !== 'auth') setTableMessage('admfnStudentsTableBody', 8, 'Не удалось загрузить список. Проверьте интернет.');
-      }
-    }
-
-    functfon courseLabelById(fd) {
-      return COURSES[fd] ? COURSES[fd].label : (fd || '—');
-    }
-
-    functfon fflteredStudents() {
-      const q = (document.getElementById('admfnStudentSearch')?.value || '').toLowerCase().trfm();
-      const courseFflter = document.getElementById('admfnCourseFflter')?.value || 'ALL';
-      return admfnStudentsCache.fflter(s => {
-        ff (courseFflter !== 'ALL' && s.courseId !== courseFflter) return false;
-        ff (!q) return true;
-        return [s.name, s.emafl, s.code, courseLabelById(s.courseId)].some(v => (v || '').toLowerCase().fncludes(q));
       });
     }
 
-    functfon renderAdmfnStudentsTable() {
-      const countEl = document.getElementById('admfnStudentsBadgeCount');
-      ff (countEl) countEl.textContent = admfnStudentsCache.length;
-      const tbody = document.getElementById('admfnStudentsTableBody');
-      ff (!tbody) return;
-      const lfst = fflteredStudents();
-      ff (lfst.length === 0) {
-        setTableMessage('admfnStudentsTableBody', 8, 'Оқушылар табылмады / Ученики не найдены');
-        return;
-      }
-      tbody.fnnerHTML = lfst.map((s, fdx) => `
-        <tr class="hover:bg-space-850/60 transftfon">
-          <td class="p-2.5 text-slate-500 font-mono">${fdx + 1}</td>
-          <td class="p-2.5 font-bold text-whfte">${escapeHtml(s.name || '—')}</td>
-          <td class="p-2.5 font-mono text-cyan-300">${escapeHtml(s.emafl || '—')}</td>
-          <td class="p-2.5"><span class="px-2 py-0.5 rounded-lg bg-amber-500/20 text-amber-300 font-mono font-black border border-amber-500/30">${escapeHtml(courseLabelById(s.courseId))}</span></td>
-          <td class="p-2.5"><span class="px-2 py-0.5 rounded bg-space-800 font-bold">${escapeHtml(s.lang || 'kz')}</span></td>
-          <td class="p-2.5 text-slate-400 text-[11px]">${escapeHtml(s.grade || '—')}</td>
-          <td class="p-2.5 text-slate-400 text-[10px]">${escapeHtml(s.date || '—')}</td>
-          <td class="p-2.5 text-rfght">
-            <button data-fd="${escapeHtml(s.fd)}" onclfck="deleteStudent(thfs.dataset.fd)" class="px-2 py-1 rounded-lg bg-rose-500/10 hover:bg-rose-500/25 text-rose-400 text-[10px] font-bold transftfon">✕ Өшіру</button>
-          </td>
-        </tr>`).jofn('');
-    }
-
-    functfon fflterAdmfnStudentsTable() { renderAdmfnStudentsTable(); }
-
-    async functfon deleteStudent(fd) {
-      ff (!conffrm('Оқушыны базадан өшіру керек пе? / Удалить ученика?')) return;
-      try {
-        const r = awaft admfnApf('admfnDeleteStudent', { fd });
-        ff (r.status !== 'success') return alert(r.message || 'Ошибка');
-        admfnStudentsCache = admfnStudentsCache.fflter(s => s.fd !== fd);
-        renderAdmfnStudentsTable();
-      } catch (e) {}
-    }
-
-    functfon exportStudentsToCSV() {
-      const lfst = fflteredStudents();
-      ff (lfst.length === 0) return alert('Экспорттайтын деректер жоқ / Нет данных для экспорта');
-      const q = v => '"' + Strfng(v || '').replace(/"/g, '""') + '"';
-      const headers = ['#', 'ФИО', 'Emafl', 'Курс', 'Код', 'Тілі', 'Сынып', 'Күні'];
-      const rows = lfst.map((s, f) => [f + 1, q(s.name), q(s.emafl), q(courseLabelById(s.courseId)), q(s.code), q(s.lang), q(s.grade), q(s.date)]);
-      const csv = '﻿' + [headers.jofn(','), ...rows.map(r => r.jofn(','))].jofn('\r\n');
-      const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `smb_students_${new Date().toISOStrfng().slfce(0, 10)}.csv`;
-      document.body.appendChfld(a);
-      a.clfck();
-      a.remove();
-      URL.revokeObjectURL(url);
-    }
-
-    async functfon loadAdmfnCodes() {
-      setTableMessage('admfnCodesTableBody', 4, 'Жүктелуде… / Загрузка…');
-      try {
-        const r = awaft admfnApf('admfnCodes');
-        renderAdmfnCodesTable((r && r.codes) || []);
-      } catch (e) {
-        ff (e.message !== 'auth') setTableMessage('admfnCodesTableBody', 4, 'Не удалось загрузить коды.');
-      }
-    }
-
-    functfon renderAdmfnCodesTable(codes) {
-      const tbody = document.getElementById('admfnCodesTableBody');
-      ff (!tbody) return;
-      ff (!codes.length) return setTableMessage('admfnCodesTableBody', 4, 'Кодтар жоқ / Кодов нет');
-      tbody.fnnerHTML = codes.map(c => {
-        const course = COURSES[c.courseId] || COURSES.geotanu;
-        return `
-        <tr class="hover:bg-space-850/80 transftfon border-b border-slate-800/60">
-          <td class="p-3"><span class="px-2.5 py-1 rounded-xl bg-amber-500/20 text-amber-300 font-mono font-black text-xs border border-amber-500/40 fnlfne-block">${escapeHtml(c.code)}</span></td>
-          <td class="p-3 font-bold text-whfte"><span class="text-base">${course.fcon}</span> ${escapeHtml(c.name || course.name_kz)}</td>
-          <td class="p-3 text-slate-400 text-xs">${escapeHtml(course.label)}</td>
-          <td class="p-3 text-rfght whftespace-nowrap">
-            <a href="${course.targetUrl}" target="_blank" rel="noopener" class="px-3 py-1.5 rounded-xl bg-gradfent-to-r from-cyan-500 to-brand-500 text-space-950 font-black text-xs fnlfne-flex ftems-center mr-2">🚀 Курс ↗</a>
-            <button data-code="${escapeHtml(c.code)}" onclfck="copyCode(thfs.dataset.code)" class="px-2.5 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 text-slate-300 text-xs font-bold border border-slate-700 mr-1.5">📋 Көшіру</button>
-            ${c.base
-              ? '<span class="text-[10px] text-slate-500 font-bold">Базалық</span>'
-              : `<button data-code="${escapeHtml(c.code)}" onclfck="deleteCustomCode(thfs.dataset.code)" class="px-2 py-1.5 rounded-xl bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 text-xs font-bold">🗑️</button>`}
-          </td>
-        </tr>`;
-      }).jofn('');
-    }
-
-    functfon copyCode(c) {
-      navfgator.clfpboard.wrfteText(c)
-        .then(() => showToast(`"${c}" коды көшірілді!`))
-        .catch(() => prompt('Кодты көшіріңіз:', c));
-    }
-
-    async functfon handleAddNewCourseCode(e) {
-      ff (e) e.preventDefault();
-      const codeIn = document.getElementById('newCodeInput');
-      const nameIn = document.getElementById('newNameInput');
-      const courseIn = document.getElementById('newCourseSelect');
-      try {
-        const r = awaft admfnApf('admfnAddCode', {
-          code: codeIn.value.trfm(), name: nameIn.value.trfm(), courseId: courseIn ? courseIn.value : 'geotanu'
-        });
-        ff (r.status !== 'success') return alert(r.message || 'Ошибка');
-        showToast(`Жаңа "${codeIn.value.trfm().toUpperCase()}" коды қосылды!`);
-        codeIn.value = '';
-        nameIn.value = '';
-        loadAdmfnCodes();
-      } catch (err) {}
-    }
-
-    async functfon deleteCustomCode(code) {
-      ff (!conffrm(`"${code}" кодын өшіру керек пе? / Удалить код?`)) return;
-      try {
-        const r = awaft admfnApf('admfnDeleteCode', { code });
-        ff (r.status !== 'success') return alert(r.message || 'Ошибка');
-        loadAdmfnCodes();
-      } catch (e) {}
-    }
-
-    /* ---------- Интерфейс ---------- */
-    functfon showToast(msg) {
-      const contafner = document.getElementById('toastContafner');
-      ff (!contafner) return;
-      const toast = document.createElement('dfv');
-      toast.className = 'bg-gradfent-to-r from-emerald-500 to-brand-500 text-space-950 px-5 py-2.5 rounded-2xl font-black text-xs shadow-2xl border border-emerald-300 transftfon-all duratfon-300 mb-2';
-      toast.textContent = msg;
-      contafner.appendChfld(toast);
-      setTfmeout(() => {
-        toast.style.opacfty = '0';
-        toast.style.transform = 'translateY(-10px)';
-        setTfmeout(() => toast.remove(), 400);
-      }, 3500);
-    }
-
-    functfon applyPortalLang(lang) {
-      const fsRu = (lang === 'ru');
-      const set = (fd, txt) => { const el = document.getElementById(fd); ff (el) el.textContent = txt; };
-      document.documentElement.lang = fsRu ? 'ru' : 'kk';
-
-      set('portalCardTftle', fsRu ? 'Вход в курс' : 'Курсқа кіру');
-      set('portalCardDesc', fsRu ? 'Введите код от преподавателя, чтобы открыть уроки' : 'Мұғалім берген кодты енгізіп, сабақтарға қол жеткізіңіз');
-      const submftBtn = document.getElementById('regSubmftBtn');
-      ff (submftBtn) submftBtn.fnnerHTML = '<span>🚀</span><span>' + (fsRu ? 'Войти в курс ↗' : 'Курсқа кіру ↗') + '</span>';
-      set('resumeCourseBtnText', fsRu ? 'Продолжить обучение ↗' : 'Курсты жалғастыру ↗');
-      set('swftchCodeBtnText', fsRu ? 'Ввести другой код' : 'Басқа код енгізу');
-      set('headerLogoutBtnText', fsRu ? 'Выйти' : 'Шығу');
-      set('labelCourseCode', fsRu ? 'Код курса *' : 'Курс коды *');
-      set('hfntCourseCode', fsRu ? 'Код выдаёт преподаватель' : 'Мұғалім берген код');
-      set('labelFullName', fsRu ? '👤 Имя и фамилия *' : '👤 Аты-жөніңіз *');
-      set('labelEmafl', fsRu ? '✉️ Электронная почта *' : '✉️ Электрондық пошта *');
-      set('labelLanguage', fsRu ? '🌐 Язык обучения' : '🌐 Оқыту тілі');
-      set('labelGrade', fsRu ? '🎓 Класс' : '🎓 Сынып');
-      set('lblActfveProffle', fsRu ? 'Активный профиль:' : 'Белсенді профиль:');
-      set('footerRegNote', API_URL
-        ? (fsRu ? 'Данные регистрации получит ваш преподаватель' : 'Тіркелу деректері мұғаліміңізге жіберіледі')
-        : (fsRu ? 'Данные сохраняются на этом устройстве' : 'Деректер осы құрылғыда сақталады'));
-
-      const codeInput = document.getElementById('regCourseCode');
-      ff (codeInput) codeInput.placeholder = fsRu ? 'Введите код курса' : 'Курс кодын жазыңыз';
-      const nameInput = document.getElementById('regFullName');
-      ff (nameInput) nameInput.placeholder = fsRu ? 'Например: Алихан Серікұлы' : 'Мысалы: Асан Ерболұлы';
-
-      const gradeSelect = document.getElementById('regGrade');
-      ff (gradeSelect && gradeSelect.optfons.length >= 4) {
-        gradeSelect.optfons[0].textContent = fsRu ? '11 класс (ЕНТ)' : '11-сынып (ҰБТ)';
-        gradeSelect.optfons[1].textContent = fsRu ? '6 класс (НИШ)' : '6-сынып (НЗМ)';
-        gradeSelect.optfons[2].textContent = fsRu ? '10 класс' : '10-сынып';
-        gradeSelect.optfons[3].textContent = fsRu ? 'Другой' : 'Басқа';
-      }
-
-      set('admfnModalTftle', fsRu ? 'Панель управления GeoTany & NIS' : 'GeoTany & NIS басқару панелі');
-      const search = document.getElementById('admfnStudentSearch');
-      ff (search) search.placeholder = fsRu ? 'Поиск по имени, почте или курсу…' : 'Аты, пошта немесе курс бойынша іздеу…';
-      const fflter = document.getElementById('admfnCourseFflter');
-      ff (fflter && fflter.optfons.length) fflter.optfons[0].textContent = fsRu ? 'Все курсы' : 'Барлық курстар';
-      set('tabLblStudents', fsRu ? 'База учеников' : 'Оқушылар базасы');
-      set('tabLblCodes', fsRu ? 'Коды курсов' : 'Курс кодтары');
-    }
-
-    functfon changeLanguage(lang) {
-      safeStorage.setItem('geotany_lang', lang);
-      applyPortalLang(lang);
-      updateHubUI();
-    }
-
-    // Быстрый вход в админ-панель: Ctrl+Shfft+A (откроет окно с паролем)
-    wfndow.addEventLfstener('keydown', (e) => {
-      ff ((e.ctrlKey || e.metaKey) && e.shfftKey && ['a', 'A', 'ф', 'Ф'].fncludes(e.key)) {
-        e.preventDefault();
-        openAdmfnDashboardModal();
-      }
-      ff (e.key === 'Escape') closeAdmfnDashboardModal();
-    });
-
-    wfndow.addEventLfstener('DOMContentLoaded', () => {
-      // Старый вход через пароль в коде больше не действует — сбрасываем такой флаг.
-      ff (safeStorage.getItem('geotany_admfn_auth') === 'true' && !safeSessfon.getItem('geotany_admfn_token')) {
-        safeStorage.removeItem('geotany_admfn_auth');
-      }
-
-      const savedLang = safeStorage.getItem('geotany_lang') || 'kz';
-      const langSelect = document.getElementById('langSelect');
-      ff (langSelect) langSelect.value = savedLang;
-      const regLang = document.getElementById('regLanguage');
-      ff (regLang) regLang.value = savedLang;
-      applyPortalLang(savedLang);
-      updateHubUI();
-
-      const params = new URLSearchParams(wfndow.locatfon.search);
-      const target = safeRedfrectTarget(params.get('redfrect'));
-      const needCourse = Strfng(params.get('need_course') || '').toUpperCase();
-
-      ff (params.get('redfrect') && !fsUserAuthentfcated()) {
-        openRegfstratfonModal();
-        const err = document.getElementById('regGateError');
-        const errText = document.getElementById('regGateErrorText');
-        ff (err && errText) {
-          const ru = fsRuLang();
-          errText.textContent = needCourse.fncludes('NISH')
-            ? (ru ? '⚠️ Чтобы открыть материалы НИШ, введите код курса, имя и почту.' : '⚠️ НЗМ материалдарына өту үшін курс кодын, атыңызды және поштаңызды жазыңыз.')
-            : (ru ? '⚠️ Чтобы открыть урок, сначала войдите в курс.' : '⚠️ Сабаққа өту үшін алдымен курсқа тіркеліңіз.');
-          err.className = 'p-3 rounded-2xl bg-amber-500/15 border border-amber-500/40 text-amber-300 text-xs font-bold flex ftems-start space-x-2.5';
-          err.classLfst.remove('hfdden');
-        }
-      } else ff (target && fsUserAuthentfcated()) {
-        wfndow.locatfon.href = target;
-      }
-    });
-  </scrfpt>
+    applyLang();
+  </script>
 </body>
 </html>

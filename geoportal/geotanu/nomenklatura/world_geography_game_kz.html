@@ -11,8 +11,8 @@
         try { s = JSON.parse(localStorage.getItem('geotany_user_session') || 'null'); } catch (e) {}
         try { p = JSON.parse(localStorage.getItem('geotany_user_profile') || 'null'); } catch (e) {}
         var ok = isAdmin
-          || !!(s && s.v === 2 && s.email && (s.courseCode || s.role === 'admin'))
-          || !!(p && p.v === 2 && p.isRegistered && p.email && p.courseCode);
+          || !!(s && s.v === 2 && (s.exp || 0) > Date.now() && s.email && (s.courseCode || s.role === 'admin'))
+          || !!(p && p.v === 2 && (p.exp || 0) > Date.now() && p.isRegistered && p.email && p.courseCode);
         if (!ok) {
           window.location.replace('../geotanu.html?need_course=GEOTANY&redirect=' + encodeURIComponent('nomenklatura/' + window.location.pathname.split('/').pop()));
           return;

@@ -68,7 +68,8 @@
       try {
         localStorage.setItem('geotany_user_session', JSON.stringify({
           v: 2, role: 'student', email: user.email, name: (profile && profile.full_name) || '',
-          courseCode: slug, courseId: slug, courseTitle: courseTitle(course), lang: SMB.getLang()
+          courseCode: slug, courseId: slug, courseTitle: courseTitle(course), lang: SMB.getLang(),
+          exp: Date.now() + 4 * 3600 * 1000
         }));
       } catch (e) {}
 

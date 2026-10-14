@@ -12,7 +12,7 @@
         // Вход с главной страницы по коду НЗМ тоже даёт сессию с courseId = geonish.
         var sNis = null;
         try { sNis = JSON.parse(localStorage.getItem('geotany_user_session') || 'null'); } catch (e) {}
-        if (sNis && sNis.v === 2 && sNis.email && sNis.courseId === 'geonish') isAuthorized = true;
+        if (sNis && sNis.v === 2 && (sNis.exp || 0) > Date.now() && sNis.email && sNis.courseId === 'geonish') isAuthorized = true;
         if (!isAuthorized) {
           window.location.replace('../index.html?need_course=geonish&redirect=geonish/index.html');
           return;
@@ -1474,7 +1474,7 @@
       if (localStorage.getItem('nis_access') === 'v2') return true;
       try {
         const s = JSON.parse(localStorage.getItem('geotany_user_session') || 'null');
-        return !!(s && s.v === 2 && s.email && s.courseId === 'geonish');
+        return !!(s && s.v === 2 && (s.exp || 0) > Date.now() && s.email && s.courseId === 'geonish');
       } catch (e) { return false; }
     }
 

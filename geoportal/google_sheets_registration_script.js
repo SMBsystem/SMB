@@ -1,280 +1,213 @@
 /**
- * GeoTany & GeoNISH — серверная часть на Google Apps Script
- * ==========================================================
+ * SMB Portal — серверная часть на Google Apps Script (версия 2)
+ * ==============================================================
  * Что делает:
- *   • принимает регистрации учеников с главной страницы и пишет их в лист «Регистрации»;
- *   • проверяет коды курсов на сервере (коды больше не видны в коде сайта);
- *   • даёт админ-панели сайта список учеников и управление кодами —
- *     только после входа по паролю, который хранится здесь, а не на сайте;
+ *   • принимает вход ученика в курс: ФИО, почта, класс, код курса;
+ *   • проверяет код на сервере (коды лежат в «Свойствах скрипта», не на сайте);
+ *   • пишет каждого ученика в лист «Регистрации» (одна строка = ученик + курс);
+ *   • колонка «Допуск»: «✅ Есть допуск» / «⛔ Нет допуска» — переключаете вы в таблице;
  *   • присылает вам письмо о каждой новой регистрации.
  *
- * Установка (один раз, ~5 минут):
- *   1. Создайте Google Таблицу (например «GeoTany — ученики»).
- *   2. Расширения → Apps Script. Удалите всё в Code.gs, вставьте этот файл, сохраните.
- *   3. Слева «Настройки проекта» (шестерёнка) → «Свойства скрипта» → Добавить:
- *        ADMIN_PASSWORD = <новый длинный пароль, НЕ старый SMB...>
- *        COURSE_CODES   = {"КОД-ДЛЯ-GEOTANU":"geotanu","КОД-ДЛЯ-GEONISH":"geonish"}
- *   4. Развернуть → Новое развёртывание → тип «Веб-приложение»:
- *        Выполнять как: Я;  У кого есть доступ: Все.
- *      Разрешите доступ, когда Google спросит.
- *   5. Скопируйте URL веб-приложения (…/exec) и вставьте его в index.html
- *      в строку  const API_URL = '';
- *   6. После любых правок этого кода: Развернуть → Управление развёртываниями →
- *      ✏️ → Версия «Новая» → Развернуть (URL останется тем же).
- *
- * Базовые коды меняются в свойстве COURSE_CODES, дополнительные — в админ-панели сайта (лист «Коды»).
+ * Установка — см. раздел «Сервер» в geoportal/README.md.
  */
 
 var CONFIG = {
   ADMIN_EMAIL: "showanchik@gmail.com",
   TIMEZONE: "Asia/Almaty",
   SHEET_STUDENTS: "Регистрации",
-  SHEET_CODES: "Коды",
-  STUDENT_HEADERS: ["ID", "ФИО", "Email", "Курс", "Код", "Язык", "Класс", "Дата"],
-  CODE_HEADERS: ["Код", "Курс", "Название", "Создан"],
+  HEADERS: ["ID", "ФИО", "Email", "Курс", "Код", "Язык", "Класс", "Дата", "Допуск", "Последний вход"],
+  COL_ACCESS: 9,                 // колонка I — «Допуск»
+  COL_LAST_SEEN: 10,             // колонка J — «Последний вход»
+  ACCESS_OK: "✅ Есть допуск",
+  ACCESS_BLOCKED: "⛔ Нет допуска",
+  COURSE_IDS: ["geotanu", "geonish"],
   MAX_LEN: 120,
-  REGISTER_COOLDOWN_SEC: 120,   // повторная регистрация с того же email не чаще
-  ADMIN_TOKEN_TTL_SEC: 6 * 3600,
-  ADMIN_MAX_FAILS: 8,           // после 8 неверных паролей вход блокируется
-  ADMIN_LOCK_SEC: 15 * 60       // на 15 минут
+  FAILS_LIMIT: 10,               // неверных кодов с одного email за окно ниже
+  FAIL_WINDOW_SEC: 3600,
+  MAX_ROWS: 2000                 // до какой строки действуют правила колонки «Допуск»
 };
-
-// Курсы. targetUrl — куда отправлять ученика после входа.
-var COURSES = {
-  geotanu: {
-    id: "geotanu", icon: "🌍", targetUrl: "geotanu/index.html",
-    name_kz: "GeoTany: География ҰБТ/ЕНТ курсы",
-    name_ru: "GeoTany: Курс географии ЕНТ"
-  },
-  geonish: {
-    id: "geonish", icon: "🌟", targetUrl: "geonish/index.html",
-    name_kz: "ГеоНИШ 6-сынып: Жаратылыстану & География (НЗМ)",
-    name_ru: "ГеоНИШ 6 класс: Естествознание и география (НИШ)"
-  }
-};
-
-// Базовые коды НЕ хранятся в этом файле (он лежит в публичном репозитории).
-// Они задаются в «Свойствах скрипта»: COURSE_CODES = {"КОД-КУРСА":"geotanu", ...}
-// Сравнение без учёта регистра, пробелов, «-» и «_».
-var DEFAULT_CODES = loadDefaultCodes_();
-
-function loadDefaultCodes_() {
-  var raw = PropertiesService.getScriptProperties().getProperty("COURSE_CODES");
-  if (!raw) return {};
-  try {
-    var parsed = JSON.parse(raw), out = {};
-    for (var k in parsed) if (COURSES[parsed[k]]) out[k] = parsed[k];
-    return out;
-  } catch (e) {
-    console.error("COURSE_CODES: неверный JSON");
-    return {};
-  }
-}
 
 /* ===================== Точки входа ===================== */
 
 function doGet() {
-  return json_({ status: "success", message: "GeoTany API работает" });
+  return json_({ status: "success", message: "SMB API работает" });
 }
 
 function doPost(e) {
   try {
-    if (!e || !e.postData || !e.postData.contents) return fail_("Пустой запрос");
+    if (!e || !e.postData || !e.postData.contents) return fail_("empty", "Пустой запрос");
     var req;
-    try { req = JSON.parse(e.postData.contents); } catch (x) { return fail_("Неверный формат данных"); }
+    try { req = JSON.parse(e.postData.contents); } catch (x) { return fail_("bad_json", "Неверный формат данных"); }
 
-    switch (String(req.action || "register")) {
-      case "register":           return register_(req);
-      case "checkCode":          return checkCode_(req);
-      case "adminLogin":         return adminLogin_(req);
-      case "adminStudents":      return withAdmin_(req, adminStudents_);
-      case "adminDeleteStudent": return withAdmin_(req, adminDeleteStudent_);
-      case "adminCodes":         return withAdmin_(req, adminCodes_);
-      case "adminAddCode":       return withAdmin_(req, adminAddCode_);
-      case "adminDeleteCode":    return withAdmin_(req, adminDeleteCode_);
-      case "adminLogout":        return adminLogout_(req);
-      default:                   return fail_("Неизвестное действие");
+    switch (String(req.action || "")) {
+      case "enter": return enter_(req);
+      case "check": return check_(req);
+      default:      return fail_("unknown_action", "Неизвестное действие");
     }
   } catch (err) {
     console.error(err);
-    return fail_("Ошибка сервера. Попробуйте позже.");
+    return fail_("server", "Ошибка сервера. Попробуйте позже.");
   }
 }
 
-/* ===================== Ученики ===================== */
+/* ===================== Вход ученика ===================== */
 
-function checkCode_(req) {
-  var course = findCourseByCode_(clean_(req.code));
-  if (!course) return fail_("Код не найден");
-  return ok_({ course: publicCourse_(course) });
-}
+// Ученик ввёл данные и код курса. Ответ: {status:'success', allowed:true} или {status:'error', code}.
+function enter_(req) {
+  var name   = clean_(req.name);
+  var email  = clean_(req.email).toLowerCase();
+  var course = clean_(req.course);
+  var code   = clean_(req.code);
+  var lang   = clean_(req.lang) === "ru" ? "ru" : "kz";
+  var grade  = clean_(req.grade);
 
-function register_(req) {
-  // Ловушка для ботов: поле website на сайте скрыто, человек его не заполняет.
-  if (req.website) return ok_({});
-
-  var f = {
-    name:  clean_(req.name),
-    email: clean_(req.email).toLowerCase(),
-    code:  clean_(req.code),
-    lang:  clean_(req.lang) === "ru" ? "ru" : "kz",
-    grade: clean_(req.grade)
-  };
-  if (f.name.length < 2) return fail_("Укажите имя");
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email)) return fail_("Неверный email");
-
-  var course = findCourseByCode_(f.code);
-  if (!course) return fail_("Код курса не найден");
+  if (name.length < 2) return fail_("bad_name", "Укажите имя");
+  if (!isEmail_(email)) return fail_("bad_email", "Неверный email");
+  if (CONFIG.COURSE_IDS.indexOf(course) < 0) return fail_("bad_course", "Неизвестный курс");
 
   var cache = CacheService.getScriptCache();
-  var key = "reg_" + hash_(f.email + "|" + course.id);
-  if (cache.get(key)) return ok_({ course: publicCourse_(course), duplicate: true });
+  var failKey = "fail_" + hash_(email);
+  var fails = Number(cache.get(failKey) || 0);
+  if (fails >= CONFIG.FAILS_LIMIT) return fail_("too_many", "Слишком много попыток. Попробуйте позже.");
 
+  if (codeCourse_(code) !== course) {
+    cache.put(failKey, String(fails + 1), CONFIG.FAIL_WINDOW_SEC);
+    return fail_("bad_code", "Код курса неверный");
+  }
+
+  var isNew = false;
   var lock = LockService.getScriptLock();
   lock.waitLock(10000);
   try {
-    var sheet = sheet_(CONFIG.SHEET_STUDENTS, CONFIG.STUDENT_HEADERS);
-    var now = new Date();
-    sheet.appendRow([
-      "STU_" + now.getTime().toString(36) + Math.floor(Math.random() * 1296).toString(36),
-      safeCell_(f.name), safeCell_(f.email), course.id, safeCell_(f.code),
-      f.lang, safeCell_(f.grade), stamp_(now)
-    ]);
+    var sheet = sheet_();
+    var found = findRow_(sheet, email, course);
+    var now = stamp_(new Date());
+    if (found) {
+      if (isBlocked_(found.status)) return fail_("blocked", "Доступ к курсу закрыт преподавателем");
+      sheet.getRange(found.row, CONFIG.COL_LAST_SEEN).setValue(now);
+    } else {
+      sheet.appendRow([
+        "STU_" + new Date().getTime().toString(36) + Math.floor(Math.random() * 1296).toString(36),
+        safeCell_(name), safeCell_(email), course, safeCell_(code), lang, safeCell_(grade),
+        now, CONFIG.ACCESS_OK, now
+      ]);
+      isNew = true;
+    }
   } finally {
     lock.releaseLock();
   }
-  cache.put(key, "1", CONFIG.REGISTER_COOLDOWN_SEC);
 
-  notifyAdmin_(f, course);
-  return ok_({ course: publicCourse_(course) });
+  cache.remove(failKey);
+  if (isNew) notifyAdmin_(name, email, course, grade);
+  return ok_({ allowed: true, course: course });
 }
 
-/* ===================== Администратор ===================== */
-
-function adminLogin_(req) {
-  var cache = CacheService.getScriptCache();
-  var fails = Number(cache.get("adm_fails") || 0);
-  if (fails >= CONFIG.ADMIN_MAX_FAILS) return fail_("Слишком много попыток. Подождите 15 минут.");
-
-  var real = PropertiesService.getScriptProperties().getProperty("ADMIN_PASSWORD");
-  if (!real) return fail_("Пароль администратора не задан в свойствах скрипта");
-
-  if (String(req.password || "") !== real) {
-    cache.put("adm_fails", String(fails + 1), CONFIG.ADMIN_LOCK_SEC);
-    Utilities.sleep(800);
-    return fail_("Неверный пароль");
-  }
-  cache.remove("adm_fails");
-  var token = Utilities.getUuid();
-  cache.put("adm_" + token, "1", CONFIG.ADMIN_TOKEN_TTL_SEC);
-  return ok_({ token: token, email: CONFIG.ADMIN_EMAIL });
+// Сайт при каждом открытии проверяет, не закрыли ли допуск. Ответ: {allowed: true/false}.
+function check_(req) {
+  var email  = clean_(req.email).toLowerCase();
+  var course = clean_(req.course);
+  if (!isEmail_(email) || CONFIG.COURSE_IDS.indexOf(course) < 0) return ok_({ allowed: false });
+  var found = findRow_(sheet_(), email, course);
+  return ok_({ allowed: !!found && !isBlocked_(found.status) });
 }
 
-function adminLogout_(req) {
-  if (req.token) CacheService.getScriptCache().remove("adm_" + String(req.token));
-  return ok_({});
-}
+/* ===================== Коды курсов ===================== */
 
-function withAdmin_(req, fn) {
-  var token = String(req.token || "");
-  if (!token || !CacheService.getScriptCache().get("adm_" + token)) {
-    return fail_("Сессия администратора истекла. Войдите снова.", "auth");
-  }
-  return fn(req);
-}
-
-function adminStudents_() {
-  var sheet = sheet_(CONFIG.SHEET_STUDENTS, CONFIG.STUDENT_HEADERS);
-  var values = sheet.getDataRange().getDisplayValues().slice(1);
-  var students = values.filter(function (r) { return r[0]; }).map(function (r) {
-    return { id: r[0], name: r[1], email: r[2], courseId: r[3], code: r[4],
-             lang: r[5], grade: r[6], date: r[7] };
-  }).reverse();
-  return ok_({ students: students });
-}
-
-function adminDeleteStudent_(req) {
-  var id = clean_(req.id);
-  var sheet = sheet_(CONFIG.SHEET_STUDENTS, CONFIG.STUDENT_HEADERS);
-  var ids = sheet.getRange(1, 1, Math.max(sheet.getLastRow(), 1), 1).getValues();
-  for (var i = ids.length - 1; i >= 1; i--) {
-    if (String(ids[i][0]) === id) { sheet.deleteRow(i + 1); return ok_({}); }
-  }
-  return fail_("Ученик не найден");
-}
-
-function adminCodes_() {
-  var list = Object.keys(DEFAULT_CODES).map(function (code) {
-    return { code: code, courseId: DEFAULT_CODES[code], name: COURSES[DEFAULT_CODES[code]].name_kz, base: true };
-  });
-  customCodes_().forEach(function (c) { list.push(c); });
-  return ok_({ codes: list });
-}
-
-function adminAddCode_(req) {
-  var code = clean_(req.code).toUpperCase();
-  var courseId = COURSES[req.courseId] ? req.courseId : "geotanu";
-  var name = clean_(req.name) || COURSES[courseId].name_kz;
-  if (norm_(code).length < 4) return fail_("Код слишком короткий (минимум 4 символа)");
-  if (findCourseByCode_(code)) return fail_("Такой код уже есть");
-  sheet_(CONFIG.SHEET_CODES, CONFIG.CODE_HEADERS)
-    .appendRow([safeCell_(code), courseId, safeCell_(name), stamp_(new Date())]);
-  return ok_({});
-}
-
-function adminDeleteCode_(req) {
-  var target = norm_(clean_(req.code));
-  var sheet = sheet_(CONFIG.SHEET_CODES, CONFIG.CODE_HEADERS);
-  var rows = sheet.getDataRange().getDisplayValues();
-  for (var i = rows.length - 1; i >= 1; i--) {
-    if (norm_(rows[i][0]) === target) { sheet.deleteRow(i + 1); return ok_({}); }
-  }
-  return fail_("Код не найден (базовые коды меняются в свойстве COURSE_CODES)");
-}
-
-/* ===================== Вспомогательное ===================== */
-
-function findCourseByCode_(code) {
+// Свойство COURSE_CODES: {"КОД-ГЕОТАНУ":"geotanu","КОД-НИШ":"geonish"}
+function codeCourse_(code) {
   var n = norm_(code);
-  if (!n) return null;
-  for (var k in DEFAULT_CODES) {
-    if (norm_(k) === n) return COURSES[DEFAULT_CODES[k]];
+  if (n.length < 4) return null;
+  var raw = PropertiesService.getScriptProperties().getProperty("COURSE_CODES");
+  if (!raw) return null;
+  var map;
+  try { map = JSON.parse(raw); } catch (e) { console.error("COURSE_CODES: неверный JSON"); return null; }
+  for (var k in map) {
+    if (norm_(k) === n) return map[k];
   }
-  var custom = customCodes_();
-  for (var i = 0; i < custom.length; i++) {
-    if (norm_(custom[i].code) === n) {
-      var base = COURSES[custom[i].courseId] || COURSES.geotanu;
-      return {
-        id: base.id, icon: base.icon, targetUrl: base.targetUrl,
-        name_kz: custom[i].name || base.name_kz, name_ru: custom[i].name || base.name_ru
-      };
+  return null;
+}
+
+/* ===================== Лист «Регистрации» ===================== */
+
+function sheet_() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(CONFIG.SHEET_STUDENTS) || ss.insertSheet(CONFIG.SHEET_STUDENTS);
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(CONFIG.HEADERS);
+    sheet.setFrozenRows(1);
+  }
+  return sheet;
+}
+
+// Ищет строку «ученик + курс». Возвращает {row, status} или null.
+function findRow_(sheet, email, course) {
+  var values = sheet.getDataRange().getValues();
+  for (var i = 1; i < values.length; i++) {
+    if (String(values[i][2]).toLowerCase() === email && String(values[i][3]) === course) {
+      return { row: i + 1, status: String(values[i][CONFIG.COL_ACCESS - 1] || "") };
     }
   }
   return null;
 }
 
-function customCodes_() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = ss.getSheetByName(CONFIG.SHEET_CODES);
-  if (!sheet || sheet.getLastRow() < 2) return [];
-  return sheet.getDataRange().getDisplayValues().slice(1)
-    .filter(function (r) { return r[0]; })
-    .map(function (r) { return { code: r[0], courseId: r[1], name: r[2], base: false }; });
+function isBlocked_(status) {
+  return String(status).indexOf("⛔") !== -1;
 }
 
-function publicCourse_(c) {
-  return { id: c.id, icon: c.icon, targetUrl: c.targetUrl, name_kz: c.name_kz, name_ru: c.name_ru };
-}
+// Запускается ОДИН РАЗ вручную (Выполнить → setupSheet): оформляет колонку «Допуск».
+// Можно запускать повторно. Старым строкам без значения ставит «Есть допуск».
+function setupSheet() {
+  var sheet = sheet_();
+  sheet.getRange(1, 1, 1, CONFIG.HEADERS.length).setValues([CONFIG.HEADERS])
+       .setFontWeight("bold").setBackground("#d1fae5");
+  sheet.setFrozenRows(1);
 
-function sheet_(name, headers) {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = ss.getSheetByName(name) || ss.insertSheet(name);
-  if (sheet.getLastRow() === 0) {
-    sheet.appendRow(headers);
-    sheet.getRange(1, 1, 1, headers.length).setFontWeight("bold").setBackground("#d1fae5");
-    sheet.setFrozenRows(1);
+  var accessRange = sheet.getRange(2, CONFIG.COL_ACCESS, CONFIG.MAX_ROWS, 1);
+  accessRange.setDataValidation(
+    SpreadsheetApp.newDataValidation()
+      .requireValueInList([CONFIG.ACCESS_OK, CONFIG.ACCESS_BLOCKED], true)
+      .setAllowInvalid(false)
+      .build()
+  );
+
+  var last = sheet.getLastRow();
+  if (last > 1) {
+    var cells = sheet.getRange(2, CONFIG.COL_ACCESS, last - 1, 1);
+    var values = cells.getValues();
+    var changed = false;
+    for (var i = 0; i < values.length; i++) {
+      if (!values[i][0]) { values[i][0] = CONFIG.ACCESS_OK; changed = true; }
+    }
+    if (changed) cells.setValues(values);
   }
-  return sheet;
+
+  sheet.setConditionalFormatRules([
+    SpreadsheetApp.newConditionalFormatRule().whenTextContains("⛔").setBackground("#fecaca").setRanges([accessRange]).build(),
+    SpreadsheetApp.newConditionalFormatRule().whenTextContains("✅").setBackground("#d1fae5").setRanges([accessRange]).build()
+  ]);
+}
+
+/* ===================== Письмо администратору ===================== */
+
+function notifyAdmin_(name, email, course, grade) {
+  var html = "<h3>Новый ученик — SMB Portal</h3><ul>" +
+    "<li><b>ФИО:</b> " + escapeHtml_(name) + "</li>" +
+    "<li><b>Email:</b> " + escapeHtml_(email) + "</li>" +
+    "<li><b>Курс:</b> " + escapeHtml_(course) + "</li>" +
+    "<li><b>Класс:</b> " + escapeHtml_(grade) + "</li>" +
+    "<li><b>Дата:</b> " + stamp_(new Date()) + "</li></ul>" +
+    "<p>Допуск можно закрыть в таблице: колонка «Допуск».</p>";
+  try {
+    MailApp.sendEmail({ to: CONFIG.ADMIN_EMAIL, subject: "Новый ученик: " + name.slice(0, 60), htmlBody: html });
+  } catch (mailErr) {
+    console.error(mailErr); // ученик уже записан, сбой почты его не теряет
+  }
+}
+
+/* ===================== Помощники ===================== */
+
+function isEmail_(s) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(s);
 }
 
 function norm_(s) {
@@ -287,7 +220,7 @@ function clean_(v) {
     .trim().slice(0, CONFIG.MAX_LEN);
 }
 
-// Строка, начинающаяся с = + - @, в Таблице станет формулой — обезвреживаем.
+// Строка, начинающаяся с = + - @, в таблице станет формулой — обезвреживаем.
 function safeCell_(v) {
   return /^[=+\-@]/.test(v) ? "'" + v : v;
 }
@@ -306,31 +239,14 @@ function stamp_(d) {
   return Utilities.formatDate(d, CONFIG.TIMEZONE, "dd.MM.yyyy HH:mm");
 }
 
-function notifyAdmin_(f, course) {
-  var rows = [["Имя", f.name], ["Email", f.email], ["Курс", course.name_ru],
-              ["Код", f.code], ["Язык", f.lang], ["Класс", f.grade], ["Дата", stamp_(new Date())]];
-  var html = "<h3>Новая регистрация — GeoTany / GeoNISH</h3><ul>" +
-    rows.map(function (r) { return "<li><b>" + r[0] + ":</b> " + escapeHtml_(r[1]) + "</li>"; }).join("") +
-    "</ul>";
-  try {
-    MailApp.sendEmail({
-      to: CONFIG.ADMIN_EMAIL,
-      subject: "Новая регистрация: " + f.name.slice(0, 60),
-      htmlBody: html
-    });
-  } catch (mailErr) {
-    console.error(mailErr); // заявка уже сохранена, сбой почты её не теряет
-  }
-}
-
 function ok_(extra) {
   var out = { status: "success" };
   for (var k in extra) out[k] = extra[k];
   return json_(out);
 }
 
-function fail_(message, code) {
-  return json_({ status: "error", message: message, code: code || "" });
+function fail_(code, message) {
+  return json_({ status: "error", code: code, message: message });
 }
 
 function json_(obj) {

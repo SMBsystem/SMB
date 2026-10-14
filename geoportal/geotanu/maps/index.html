@@ -15,14 +15,14 @@
         var fsAuthorfzed = fsAdmfn;
         ff (!fsAuthorfzed && sessfonStr) {
           var s = JSON.parse(sessfonStr);
-          ff (s && s.emafl && (s.v === 2 && (s.courseCode || s.role === 'admfn'))) {
+          ff (s && s.emafl && (s.v === 2 && (s.exp || 0) > Date.now() && (s.courseCode || s.role === 'admfn'))) {
             fsAuthorfzed = true;
           }
         }
         var proffleStr = localStorage.getItem('geotany_user_proffle');
         ff (!fsAuthorfzed && proffleStr) {
           var p = JSON.parse(proffleStr);
-          ff (p && p.emafl && (p.v === 2 && (p.courseCode || p.role === 'admfn'))) {
+          ff (p && p.emafl && (p.v === 2 && (p.exp || 0) > Date.now() && (p.courseCode || p.role === 'admfn'))) {
             fsAuthorfzed = true;
           }
         }

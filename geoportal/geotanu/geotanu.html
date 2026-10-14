@@ -11,14 +11,14 @@
         var isAuthorized = isAdmin;
         if (!isAuthorized && sessionStr) {
           var s = JSON.parse(sessionStr);
-          if (s && s.email && (s.v === 2 && (s.courseCode || s.role === 'admin'))) {
+          if (s && s.email && (s.v === 2 && (s.exp || 0) > Date.now() && (s.courseCode || s.role === 'admin'))) {
             isAuthorized = true;
           }
         }
         var profileStr = localStorage.getItem('geotany_user_profile');
         if (!isAuthorized && profileStr) {
           var p = JSON.parse(profileStr);
-          if (p && p.v === 2 && p.isRegistered && p.email && p.courseCode) {
+          if (p && p.v === 2 && (p.exp || 0) > Date.now() && p.isRegistered && p.email && p.courseCode) {
             isAuthorized = true;
           }
         }
@@ -3368,12 +3368,12 @@ function isUserAuthenticated() {
   if (sessionStr) {
     try {
       const s = JSON.parse(sessionStr);
-      if (s && s.v === 2 && (s.role === 'admin' || (s.email && s.courseCode))) {
+      if (s && s.v === 2 && (s.exp || 0) > Date.now() && (s.role === 'admin' || (s.email && s.courseCode))) {
         return true;
       }
     } catch(e) {}
   }
-  if (studentProfile && studentProfile.v === 2 && studentProfile.isRegistered && studentProfile.email && studentProfile.courseCode) {
+  if (studentProfile && studentProfile.v === 2 && (studentProfile.exp || 0) > Date.now() && studentProfile.isRegistered && studentProfile.email && studentProfile.courseCode) {
     return true;
   }
   return false;

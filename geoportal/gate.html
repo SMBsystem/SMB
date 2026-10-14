@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="kk" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SMB — вход в курс</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#090d16">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="smb-config.js"></script>
+  <script src="smb-common.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap');
+    body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+    .inp { width: 100%; padding: .75rem 1rem; background: #020617; border: 1px solid #334155; border-radius: 1rem; font-size: .9rem; color: #f1f5f9; }
+    .inp:focus { outline: none; border-color: #22d3ee; }
+    .lbl { display: block; font-size: 12px; font-weight: 700; color: #cbd5e1; margin-bottom: .35rem; }
+  </style>
+</head>
+<body class="bg-[#090d16] text-slate-100 min-h-screen flex flex-col">
+
+  <header class="sticky top-0 z-40 bg-slate-900/85 backdrop-blur-md border-b border-slate-800/80">
+    <div class="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between gap-3">
+      <a href="index.html" class="text-sm font-black text-cyan-300 hover:text-cyan-200" data-t="back"></a>
+      <select id="langSelect" aria-label="Тіл / Язык" class="bg-slate-800 text-xs text-slate-200 border border-slate-700 rounded-xl px-2.5 py-1.5 font-bold cursor-pointer">
+        <option value="kz">🇰🇿 KZ</option>
+        <option value="ru">🇷🇺 RU</option>
+      </select>
+    </div>
+  </header>
+
+  <main class="flex-1 w-full max-w-3xl mx-auto px-4 py-8 sm:py-12 space-y-6">
+
+    <!-- Курс -->
+    <section id="courseCard" class="hidden p-6 rounded-3xl bg-slate-900/80 border border-slate-800 flex items-start gap-4">
+      <span id="courseIcon" class="text-4xl leading-none" aria-hidden="true"></span>
+      <div class="min-w-0">
+        <span id="courseLevel" class="inline-block text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-lg bg-cyan-500/10 text-cyan-300 border border-cyan-500/30"></span>
+        <h1 id="courseTitle" class="mt-2 font-black text-white text-xl sm:text-2xl leading-snug"></h1>
+        <p id="courseDesc" class="mt-2 text-sm text-slate-400 leading-relaxed"></p>
+      </div>
+    </section>
+
+    <div id="notFound" class="hidden p-6 rounded-3xl bg-rose-500/10 border border-rose-500/40 text-rose-200 text-sm font-bold text-center">
+      <p data-t="notFound"></p>
+      <a href="index.html" class="inline-block mt-4 px-5 py-2.5 rounded-2xl bg-slate-800 text-white font-black" data-t="toCatalog"></a>
+    </div>
+
+    <!-- Уже в курсе -->
+    <section id="inCourse" class="hidden p-6 rounded-3xl bg-emerald-500/10 border border-emerald-500/40 text-center space-y-4">
+      <p class="font-black text-emerald-300" data-t="alreadyIn"></p>
+      <div class="flex flex-col sm:flex-row gap-3 justify-center">
+        <a id="openCourse" href="#" class="px-6 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 via-cyan-500 to-amber-400 text-slate-950 font-black text-sm" data-t="openCourse"></a>
+        <button id="logoutBtn" type="button" class="px-6 py-3 rounded-2xl bg-slate-800 text-rose-300 font-bold text-sm" data-t="logout"></button>
+      </div>
+    </section>
+
+    <!-- Форма входа -->
+    <form id="enterForm" class="hidden p-6 sm:p-8 rounded-3xl bg-slate-900/80 border border-slate-800 space-y-5" novalidate>
+      <div>
+        <h2 class="font-black text-white text-lg" data-t="formTitle"></h2>
+        <p class="text-xs text-slate-400 mt-1" data-t="formHint"></p>
+      </div>
+
+      <div id="formError" role="alert" class="hidden p-3 rounded-2xl bg-rose-500/15 border border-rose-500/40 text-rose-200 text-xs font-bold"></div>
+
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div class="sm:col-span-2">
+          <label class="lbl" for="fName" data-t="lblName"></label>
+          <input id="fName" class="inp" autocomplete="name" maxlength="120" required>
+        </div>
+        <div>
+          <label class="lbl" for="fEmail" data-t="lblEmail"></label>
+          <input id="fEmail" type="email" class="inp" autocomplete="email" inputmode="email" maxlength="120" required>
+        </div>
+        <div>
+          <label class="lbl" for="fGrade" data-t="lblGrade"></label>
+          <select id="fGrade" class="inp">
+            <option value="11">11</option><option value="10">10</option><option value="9">9</option>
+            <option value="8">8</option><option value="7">7</option><option value="6">6</option>
+            <option value="other">—</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label class="lbl" for="fCode" data-t="lblCode"></label>
+        <input id="fCode" class="inp font-mono font-black uppercase tracking-wider text-amber-300 border-2 border-amber-500/50" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="40" required>
+      </div>
+
+      <button id="submitBtn" type="submit" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 via-cyan-500 to-amber-400 text-slate-950 font-black text-sm disabled:opacity-60" data-t="submit"></button>
+    </form>
+  </main>
+
+  <script>
+    var T = {
+      kz: {
+        back: '← Курстар тізімі',
+        notFound: 'Курс табылмады.',
+        toCatalog: 'Курстар тізіміне',
+        alreadyIn: 'Сіз бұл курста тұрсыз.',
+        openCourse: 'Курсты ашу →',
+        logout: 'Шығу',
+        formTitle: 'Курсқа кіру',
+        formHint: 'Мұғалім берген кодты енгізіңіз. Деректеріңіз мұғалімнің кестесіне жазылады.',
+        lblName: 'Аты-жөніңіз *',
+        lblEmail: 'Электрондық пошта *',
+        lblGrade: 'Сынып',
+        lblCode: 'Курс коды *',
+        submit: 'Кіру және курсты ашу',
+        checking: 'Тексеріліп жатыр…'
+      },
+      ru: {
+        back: '← К списку курсов',
+        notFound: 'Курс не найден.',
+        toCatalog: 'К списку курсов',
+        alreadyIn: 'Вы уже в этом курсе.',
+        openCourse: 'Открыть курс →',
+        logout: 'Выйти',
+        formTitle: 'Вход в курс',
+        formHint: 'Введите код от преподавателя. Ваши данные попадут в таблицу преподавателя.',
+        lblName: 'Имя и фамилия *',
+        lblEmail: 'Электронная почта *',
+        lblGrade: 'Класс',
+        lblCode: 'Код курса *',
+        submit: 'Войти и открыть курс',
+        checking: 'Проверяем…'
+      }
+    };
+
+    var params = new URLSearchParams(location.search);
+    var course = SMB.courseById(params.get('c') || '');
+
+    function applyLang() {
+      var lang = SMB.getLang();
+      var dict = T[lang];
+      document.documentElement.lang = lang === 'ru' ? 'ru' : 'kk';
+      document.getElementById('langSelect').value = lang;
+      document.querySelectorAll('[data-t]').forEach(function (el) {
+        var key = el.getAttribute('data-t');
+        if (dict[key]) el.textContent = dict[key];
+      });
+      if (course) {
+        document.getElementById('courseIcon').textContent = course.icon;
+        document.getElementById('courseLevel').textContent = SMB.courseLevel(course);
+        document.getElementById('courseTitle').textContent = SMB.courseTitle(course);
+        document.getElementById('courseDesc').textContent = SMB.courseDesc(course);
+        document.title = 'SMB — ' + SMB.courseTitle(course);
+      }
+    }
+
+    function showError(msg) {
+      var box = document.getElementById('formError');
+      box.textContent = msg;
+      box.classList.remove('hidden');
+    }
+    function hideError() {
+      document.getElementById('formError').classList.add('hidden');
+    }
+
+    function showForm() {
+      document.getElementById('enterForm').classList.remove('hidden');
+    }
+
+    function init() {
+      applyLang();
+      if (!course) {
+        document.getElementById('notFound').classList.remove('hidden');
+        return;
+      }
+      document.getElementById('courseCard').classList.remove('hidden');
+
+      var session = SMB.readSession();
+      if (session && session.courseId === course.id) {
+        // Уже вошёл — проверяем, не закрыли ли допуск.
+        document.getElementById('inCourse').classList.remove('hidden');
+        document.getElementById('openCourse').href = course.start;
+        SMB.stillAllowed(session).then(function (ok) {
+          if (!ok) {
+            SMB.clearSession();
+            document.getElementById('inCourse').classList.add('hidden');
+            showForm();
+            showError(SMB.errorText('blocked'));
+          }
+        });
+        return;
+      }
+      showForm();
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', function () {
+      SMB.clearSession();
+      document.getElementById('inCourse').classList.add('hidden');
+      showForm();
+    });
+
+    document.getElementById('langSelect').addEventListener('change', function (e) {
+      SMB.setLang(e.target.value);
+      applyLang();
+    });
+
+    document.getElementById('enterForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      hideError();
+      var name = document.getElementById('fName').value.trim();
+      var email = document.getElementById('fEmail').value.trim().toLowerCase();
+      var grade = document.getElementById('fGrade').value;
+      var code = document.getElementById('fCode').value.trim();
+      var lang = SMB.getLang();
+
+      if (name.length < 2) return showError(SMB.errorText('bad_name'));
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return showError(SMB.errorText('bad_email'));
+      if (!code) return showError(SMB.getLang() === 'ru' ? 'Введите код курса.' : 'Курс кодын жазыңыз.');
+
+      var btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.textContent = T[lang].checking;
+      try {
+        var r = await SMB.api('enter', { name: name, email: email, grade: grade, lang: lang, course: course.id, code: code });
+        if (!r || r.status !== 'success' || !r.allowed) {
+          return showError(SMB.errorText((r && r.code) || 'server'));
+        }
+        SMB.saveSession(course, { name: name, email: email, grade: grade, lang: lang });
+        SMB.toast(lang === 'ru' ? 'Доступ открыт! Открываем курс…' : 'Қолжетімділік ашылды! Курс ашылып жатыр…');
+        setTimeout(function () { location.href = course.start; }, 600);
+      } catch (err) {
+        showError(SMB.errorText(err && err.message === 'no_api' ? 'no_api' : 'network'));
+      } finally {
+        btn.disabled = false;
+        btn.textContent = T[SMB.getLang()].submit;
+      }
+    });
+
+    init();
+  </script>
+</body>
+</html>
