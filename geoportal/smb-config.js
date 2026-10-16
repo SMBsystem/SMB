@@ -5,7 +5,7 @@
 // Добавить курс: скопируйте блок из COURSES, поменяйте id/slug, и папка курса должна существовать.
 window.SMB_CONFIG = {
   API_URL: 'https://script.google.com/macros/s/AKfycby5cLDzx2Nu3ahPPJgg3_6mLxLYJbhGDTgr5iOAQjnVvbSuioOI-XD2wkBIOJDMbyU/exec',
-  SESSION_HOURS: 4,          // сколько часов ученик остаётся в курсе без повторной проверки
+  SESSION_HOURS: 168,        // сколько часов ученик остаётся в курсе без повторного ввода кода (168 = 7 дней)
   COURSES: [
     {
       id: 'geotanu',
