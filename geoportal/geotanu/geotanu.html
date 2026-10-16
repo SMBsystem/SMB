@@ -369,7 +369,7 @@
               <span>📖</span>
               <span id="readingCatalogTitleText">География оқу материалдары & Тесттері (Reading)</span>
             </h3>
-            <p id="readingCatalogSubtitle" class="text-xs text-slate-400 mt-0.5">20 Интерактивті сабақ, 20 Сабақ тесті, 2 Жауап кітабы және НЗМ (НИШ) материалдары</p>
+            <p id="readingCatalogSubtitle" class="text-xs text-slate-400 mt-0.5">20 интерактивті сабақ, әр сабаққа тест пен жауаптар</p>
           </div>
 
           <div class="flex items-center space-x-2.5 w-full md:w-auto">
@@ -384,27 +384,8 @@
           </div>
         </div>
 
-        <!-- Sub-tabs for Reading categories -->
-        <div class="flex items-center space-x-2 overflow-x-auto touch-scroll pb-1 scrollbar-none">
-          <button onclick="switchReadingSubTab('lessons')" id="subtab-reading-lessons" class="px-3.5 py-1.5 rounded-xl text-xs font-black transition bg-cyan-500 text-space-950 shadow-lg shadow-cyan-500/25 whitespace-nowrap">
-            📖 Интерактивті сабақтар (20)
-          </button>
-          <button onclick="switchReadingSubTab('tests')" id="subtab-reading-tests" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition bg-space-850 text-slate-400 hover:text-white border border-slate-700/80 whitespace-nowrap">
-            📝 Сабақ тесттері & Жауаптар (21)
-          </button>
-          <button onclick="switchReadingSubTab('nish')" id="subtab-reading-nish" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition bg-space-850 text-slate-400 hover:text-white border border-slate-700/80 whitespace-nowrap">
-            🏛️ НЗМ / НИШ (6-сынып) (14)
-          </button>
-        </div>
-
-        <!-- Grid 1: Lessons -->
+        <!-- Lessons (тест к уроку — кнопка в карточке урока) -->
         <div id="sabaktarGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4"></div>
-
-        <!-- Grid 2: Reading Tests & Answer Books -->
-        <div id="readingTestsGrid" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4"></div>
-
-        <!-- Grid 3: NISH Preparation -->
-        <div id="readingNishGrid" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4"></div>
       </div>
 
       <!-- VIEW B: DEDICATED IN-APP LESSON READER PAGE (САБАҚ БЕТІ) -->
@@ -2741,6 +2722,14 @@ function renderGrammarModalContent() {
       'Каспий': 'Каспий'
     };
 
+    // Тест к уроку: «1-2 сабақ бойынша тест» относится к урокам 1 и 2, «3 сабақ…» — к уроку 3
+    function readingTestForLesson(lessonId) {
+      return (window.readingTestsBank || []).find(t => {
+        const m = String(t.title_kz || '').match(/^(\d+)(?:-(\d+))?\s*сабақ/);
+        return m && lessonId >= +m[1] && lessonId <= +(m[2] || m[1]);
+      });
+    }
+
     function renderSabaktar() {
       const grid = document.getElementById('sabaktarGrid');
       if (!grid) return;
@@ -2776,6 +2765,7 @@ function renderGrammarModalContent() {
 
         const readBtnLabel = isRu ? 'Читать урок →' : 'Сабақты оқу →';
         const pdfLink = isRu ? (l.pdf_ru || l.pdf_kz) : (l.pdf_kz || l.pdf_ru);
+        const test = readingTestForLesson(l.id);
 
         const renderedTags = (l.tags || []).map(t => {
           const raw = String(t).trim();
@@ -2811,6 +2801,18 @@ function renderGrammarModalContent() {
               <span>📖</span>
               <span>${readBtnLabel}</span>
             </button>
+
+            <!-- 2. ТЕСТ К УРОКУ И ОТВЕТЫ -->
+            ${test ? `
+              <button type="button" onclick="event.stopPropagation(); openReadingTestModal(${test.id}, 'exam')" class="px-3 py-1.5 rounded-xl bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 border border-amber-500/40 text-xs font-bold transition flex items-center space-x-1" title="${isRu ? `Тест: ${test.questions.length} вопросов` : `Тест: ${test.questions.length} сұрақ`}">
+                <span>📝</span>
+                <span>Тест</span>
+              </button>
+              <button type="button" onclick="event.stopPropagation(); openReadingTestModal(${test.id}, 'solutions')" class="px-3 py-1.5 rounded-xl bg-space-850 text-slate-300 hover:text-white border border-slate-700 text-xs font-bold transition flex items-center space-x-1">
+                <span>🔑</span>
+                <span>${isRu ? 'Ответы' : 'Жауаптар'}</span>
+              </button>
+            ` : ''}
 
             <!-- 3. BLOOKET BUTTON -->
             ${l.blooket && l.blooket.startsWith('http') ? `
@@ -4879,18 +4881,9 @@ function toggleAdminEditMode() {
       const readingHdrSub = document.getElementById('readingCatalogSubtitle');
       if (readingHdrSub) {
         readingHdrSub.textContent = isRu
-          ? '20 интерактивных уроков, 20 тестов к урокам, 2 сборника ответов и материалы НИШ'
-          : '20 Интерактивті сабақ, 20 Сабақ тесті, 2 Жауап кітабы және НЗМ (НИШ) материалдары';
+          ? '20 интерактивных уроков, к каждому — тест и ответы'
+          : '20 интерактивті сабақ, әр сабаққа тест пен жауаптар';
       }
-
-      const tabLessons = document.getElementById('subtab-reading-lessons');
-      if (tabLessons) tabLessons.textContent = isRu ? '📖 Интерактивные уроки (20)' : '📖 Интерактивті сабақтар (20)';
-
-      const tabTests = document.getElementById('subtab-reading-tests');
-      if (tabTests) tabTests.textContent = isRu ? '📝 Тесты к урокам и ответы (21)' : '📝 Сабақ тесттері & Жауаптар (21)';
-
-      const tabNish = document.getElementById('subtab-reading-nish');
-      if (tabNish) tabNish.textContent = isRu ? '🏛️ НИШ / БИЛ (6 класс) (14)' : '🏛️ НЗМ / НИШ (6-сынып) (14)';
 
       // SECTION 3: Grammar / Zhattau Header
       const zhattauH3 = document.querySelector('#section-zhattau_grammar h3');
@@ -5208,164 +5201,6 @@ function toggleAdminEditMode() {
       updateRadarChart();
       updateHud();
       renderBlooketCards();
-    }
-
-    
-    // --- READING SUBTABS LOGIC ---
-    let currentReadingSubTab = 'lessons';
-
-    function switchReadingSubTab(tab) {
-      currentReadingSubTab = tab;
-      playBeep(520, 'sine', 0.04);
-
-      ['lessons', 'tests', 'nish'].forEach(t => {
-        const btn = document.getElementById('subtab-reading-' + t);
-        if (btn) {
-          if (t === tab) {
-            btn.className = "px-3.5 py-1.5 rounded-xl text-xs font-black transition bg-cyan-500 text-space-950 shadow-lg shadow-cyan-500/25 whitespace-nowrap";
-          } else {
-            btn.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold transition bg-space-850 text-slate-400 hover:text-white border border-slate-700/80 whitespace-nowrap";
-          }
-        }
-      });
-
-      const gLessons = document.getElementById('sabaktarGrid');
-      const gTests = document.getElementById('readingTestsGrid');
-      const gNish = document.getElementById('readingNishGrid');
-
-      if (gLessons) gLessons.classList.toggle('hidden', tab !== 'lessons');
-      if (gTests) gTests.classList.toggle('hidden', tab !== 'tests');
-      if (gNish) gNish.classList.toggle('hidden', tab !== 'nish');
-
-      if (tab === 'tests') renderReadingTests();
-      if (tab === 'nish') renderReadingNish();
-      if (tab === 'lessons') renderSabaktar();
-    }
-
-    function renderReadingTests() {
-      const grid = document.getElementById('readingTestsGrid');
-      if (!grid) return;
-      grid.innerHTML = '';
-
-      const isRu = (currentLang === 'ru');
-      const query = (document.getElementById('lessonSearchInput')?.value || '').toLowerCase().trim();
-
-      const bank = window.readingTestsBank || [];
-
-      bank.forEach((test, idx) => {
-        const titleKz = test.title_kz;
-        const titleRu = test.title_ru || test.title_kz;
-        const displayTitle = isRu ? titleRu : titleKz;
-
-        if (query && !displayTitle.toLowerCase().includes(query)) return;
-
-        const card = document.createElement('div');
-        card.className = "bg-space-900 border border-slate-800 rounded-2xl p-4 sm:p-5 flex flex-col justify-between shadow-xl hover:border-cyan-500/50 transition group";
-
-        card.innerHTML = `
-          <div>
-            <div class="flex justify-between items-center mb-2.5">
-              <span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
-                <span>📝</span>
-                <span>${isRu ? `Тест #${test.id}` : `Тест #${test.id}`}</span>
-              </span>
-              <span class="text-[10px] px-2.5 py-0.5 rounded-full font-bold bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">
-                ${test.questions.length} ${isRu ? 'вопросов' : 'сұрақ'}
-              </span>
-            </div>
-
-            <h4 class="text-sm sm:text-base font-extrabold text-white group-hover:text-cyan-400 transition leading-snug">
-              ${displayTitle}
-            </h4>
-            <p class="text-[11px] text-slate-400 mt-1.5 leading-relaxed">
-              ${isRu ? 'Интерактивное онлайн-тестирование внутри платформы с мгновенной проверкой и подробным авторским разбором каждого вопроса.' : 'Сайт ішіндегі интерактивті онлайн сынақ: әр сұраққа лездік бағалау және толық қадамдық шешімдер.'}
-            </p>
-          </div>
-
-          <div class="mt-4 pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-2">
-            <!-- 1. ИНТЕРАКТИВТІ ТЕСТ ТАПСЫРУ -->
-            <button type="button" onclick="openReadingTestModal(${test.id}, 'exam')" class="px-3.5 py-1.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-space-950 font-black text-xs transition flex items-center space-x-1.5 shadow-md shadow-cyan-500/20">
-              <span>⚡</span>
-              <span>${isRu ? 'Сдать тест онлайн' : 'Тест тапсыру'}</span>
-            </button>
-
-            <!-- 2. ТОЛЫҚ ТАЛДАУ ЖӘНЕ ШЕШІМДЕРДІ АШУ -->
-            <button type="button" onclick="openReadingTestModal(${test.id}, 'solutions')" class="px-3 py-1.5 rounded-xl bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 border border-amber-500/40 text-xs font-bold transition flex items-center space-x-1.5 shadow-md shadow-amber-500/10">
-              <span>🔑</span>
-              <span>${isRu ? 'Разбор и ответы' : 'Шешімдер & Талдау'}</span>
-            </button>
-          </div>
-        `;
-
-        grid.appendChild(card);
-      });
-    }
-
-    function renderReadingNish() {
-      const grid = document.getElementById('readingNishGrid');
-      if (!grid) return;
-      grid.innerHTML = '';
-
-      const isRu = (currentLang === 'ru');
-      const query = (document.getElementById('lessonSearchInput')?.value || '').toLowerCase().trim();
-
-      const nishItems = appData.nish || [];
-
-      nishItems.forEach((item) => {
-        const title = isRu ? (item.doc_ru_title || `Тема ${item.num}`) : (item.doc_kz_title || `${item.num}-тақырып`);
-        if (query && !title.toLowerCase().includes(query)) return;
-
-        const docUrl = isRu ? item.doc_ru_url : item.doc_kz_url;
-        const bkUrl = isRu ? item.blooket_ru_url : item.blooket_kz_url;
-        const testUrl = isRu ? item.test_ru_url : item.test_kz_url;
-        const testTitle = isRu ? item.test_ru_title : item.test_kz_title;
-
-        const card = document.createElement('div');
-        card.className = "bg-space-900 border border-slate-800 rounded-2xl p-4 sm:p-5 flex flex-col justify-between shadow-xl hover:border-slate-700 transition";
-
-        card.innerHTML = `
-          <div>
-            <div class="flex justify-between items-center mb-2.5">
-              <span class="text-xs font-black text-amber-400 flex items-center space-x-1.5">
-                <span>🏛️</span>
-                <span>${isRu ? `НИШ 6-класс • Тема ${item.num}` : `НЗМ 6-сынып • ${item.num}-сабақ`}</span>
-              </span>
-              <span class="text-[10px] px-2 py-0.5 rounded font-mono bg-space-850 text-slate-400 border border-slate-700/60">
-                NIS 6
-              </span>
-            </div>
-
-            <h4 class="text-sm sm:text-base font-extrabold text-white leading-snug">
-              ${title}
-            </h4>
-            <p class="text-[11px] text-slate-400 mt-1">
-              ${testTitle ? `${testTitle}` : (isRu ? 'Теория, интерактивный Blooket и проверочный тест.' : 'Теориялық конспект, Blooket ойыны және сынақ тесті.')}
-            </p>
-          </div>
-
-          <div class="mt-4 pt-3 border-t border-slate-800 flex flex-wrap items-center gap-2">
-            ${docUrl && docUrl.startsWith('http') ? `
-              <a href="${docUrl}" target="_blank" class="px-2.5 py-1.5 rounded-xl bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500/30 border border-cyan-500/40 text-xs font-bold transition flex items-center space-x-1 shadow-md shadow-cyan-500/10">
-                <span>📄</span>
-                <span>${isRu ? 'Конспект' : 'Конспект'}</span>
-              </a>
-            ` : ''}
-
-            ${bkUrl && bkUrl.startsWith('http') ? `
-              <a href="${bkUrl}" target="_blank" onclick="playSuccessChime();" class="px-2.5 py-1.5 rounded-xl bg-brand-500/20 text-brand-300 hover:bg-brand-500/30 border border-brand-500/30 text-xs font-bold transition flex items-center space-x-1 shadow-md shadow-brand-500/10">
-                <span>🎮</span>
-                <span>Blooket</span>
-              </a>
-            ` : ''}
-
-            <button type="button" onclick="openReadingTestModal(Math.min(19, ${item.num || 1}), 'exam')" class="px-2.5 py-1.5 rounded-xl bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 border border-amber-500/40 text-xs font-bold transition flex items-center space-x-1 shadow-md shadow-amber-500/10" title="${isRu ? 'Пройти онлайн-тест' : 'Онлайн тест тапсыру'}">
-              <span>⚡</span>
-              <span>${isRu ? 'Тест онлайн' : 'Тест онлайн'}</span>
-            </button>
-          </div>
-        `;
-        grid.appendChild(card);
-      });
     }
 
     
