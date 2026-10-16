@@ -159,6 +159,12 @@ function result_(req) {
     var sheet = resultsSheet_();
     attempt = 1;
     var values = sheet.getDataRange().getValues();
+    // Пишем сразу под последней заполненной строкой в колонке A («Дата»), а не в конец листа:
+    // если в листе протянуты формулы до 1000-й строки, appendRow уносил результаты вниз
+    var lastFilled = 1;
+    for (var r = values.length - 1; r >= 1; r--) {
+      if (String(values[r][0]).trim()) { lastFilled = r + 1; break; }
+    }
     for (var i = 1; i < values.length; i++) {
       if (String(values[i][2]).toLowerCase() !== email || String(values[i][5]) !== quiz) continue;
       // Та же попытка пришла второй раз (сайт не дождался ответа и отправил снова)
@@ -167,7 +173,7 @@ function result_(req) {
       }
       attempt++;
     }
-    sheet.appendRow([
+    var newRow = [
       stamp_(new Date()), safeCell_(name), safeCell_(email), safeCell_(grade), course, safeCell_(quiz), attempt,
       score, max, max ? Math.round(score / max * 100) : 0,
       num_(req.found, 0, 1000), num_(req.mistakes, 0, 10000), time,
@@ -177,7 +183,9 @@ function result_(req) {
       safeCell_(clean_(req.details, CONFIG.MAX_LONG_LEN)),
       mark || "",
       attemptId
-    ]);
+    ];
+    if (lastFilled + 1 > sheet.getMaxRows()) sheet.insertRowAfter(sheet.getMaxRows());
+    sheet.getRange(lastFilled + 1, 1, 1, newRow.length).setValues([newRow]);
   } finally {
     lock.releaseLock();
   }
