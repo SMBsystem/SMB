@@ -848,7 +848,8 @@
   </main>
   </div> <!-- /#appContainer -->
 
-  <div id="registrationModal" class="fixed inset-0 z-[99999] bg-space-950/95 backdrop-blur-2xl flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+  <!-- Скрыто по умолчанию: вход уже проверен в <head>, а lockAccessGate() покажет окно, если нужно -->
+  <div id="registrationModal" class="hidden fixed inset-0 z-[99999] bg-space-950/95 backdrop-blur-2xl flex items-center justify-center p-3 sm:p-6 overflow-y-auto" style="display:none">
     <div class="bg-space-900 border border-cyan-500/40 rounded-3xl max-w-3xl w-full p-5 sm:p-7 shadow-2xl relative overflow-hidden space-y-4 my-auto max-h-[94vh] flex flex-col">
       
       <!-- Glowing background orbs -->
@@ -4794,6 +4795,9 @@ function toggleAdminEditMode() {
     // GLOBAL LOCALIZATION (KZ / RU / DUAL) & STARTUP
     // ==============================================================
     window.addEventListener('DOMContentLoaded', () => {
+      // 0. Restore the open section before anything re-renders it
+      currentMainPart = initialMainPart();
+
       // 1. Restore Language (check URL param first for seamless return from GeoQuest)
       const urlParams = new URLSearchParams(window.location.search);
       const queryLang = urlParams.get('lang');
@@ -4827,7 +4831,7 @@ function toggleAdminEditMode() {
       // 4. Apply Language to UI & Render Sections
       applyLanguageUI();
       renderAllSections();
-      switchMainPart('blooket_vocab', false);
+      switchMainPart(currentMainPart, false);
     });
 
     function changeLanguage(lang) {
@@ -5465,18 +5469,37 @@ function toggleAdminEditMode() {
         grid.appendChild(card);
       });
     }
+    const MAIN_PARTS = [
+      'blooket_vocab',
+      'sabaktar_reading',
+      'zhattau_grammar',
+      'testter_writing',
+      'nomenklatura_speaking',
+      'videolar_listening'
+    ];
+    const LAST_PART_KEY = 'geotany_last_part';
+
+    // Какой раздел открыть при загрузке: ссылка «назад» со страницы урока
+    // (#section-…), иначе последний открытый раздел, иначе Blooket.
+    function initialMainPart() {
+      const m = /^#section-([a-z_]+)$/.exec(window.location.hash || '');
+      if (m && MAIN_PARTS.includes(m[1])) return m[1];
+      const saved = safeStorage.getItem(LAST_PART_KEY);
+      return MAIN_PARTS.includes(saved) ? saved : 'blooket_vocab';
+    }
+
     function switchMainPart(partId, playSound = true) {
+      if (!MAIN_PARTS.includes(partId)) partId = 'blooket_vocab';
       currentMainPart = partId;
       if (playSound) playBeep(520, 'sine', 0.06);
 
-      const parts = [
-        'blooket_vocab',
-        'sabaktar_reading',
-        'zhattau_grammar',
-        'testter_writing',
-        'nomenklatura_speaking',
-        'videolar_listening'
-      ];
+      // Запоминаем раздел и пишем его в адрес, чтобы кнопка «назад» вернула сюда же
+      safeStorage.setItem(LAST_PART_KEY, partId);
+      if (window.location.hash !== '#admin' && window.history && history.replaceState) {
+        try { history.replaceState(history.state, '', window.location.pathname + window.location.search + '#section-' + partId); } catch (e) {}
+      }
+
+      const parts = MAIN_PARTS;
 
       parts.forEach(p => {
         const btn = document.getElementById(`nav-btn-${p}`);
