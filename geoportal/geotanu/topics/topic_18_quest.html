@@ -675,7 +675,18 @@
 
       const student = (window.SMB && SMB.readSession) ? SMB.readSession() : null;
       lastSummary = buildPayload(sum, student);
-      if (!student) { setSend('info', L('Нәтиже мұғалімге жіберілмейді: курсқа кіру жазбасы табылмады (әкімші режимі).', 'Результат не отправлен учителю: нет записи о входе в курс (режим администратора).')); return; }
+      if (!student) {
+        if (safeStorage.getItem('geotany_admin_auth') === 'true') {
+          setSend('info', L('Әкімші режимі: нәтиже мұғалімге жіберілмейді.', 'Режим администратора: результат учителю не отправляется.'));
+          return;
+        }
+        // Нет записи о входе (например, страницу открыли в другом браузере) — не теряем результат:
+        // сохраняем и отправим, как только ученик войдёт в курс в этом браузере
+        savePending(lastSummary);
+        setSend('bad', L('Нәтиже сақталды, бірақ әлі жіберілмеді: осы браузерде курсқа кіріңіз (басты бет → GeoTany → код), содан кейін осы бетті қайта ашыңыз — нәтиже өзі жіберіледі.',
+                         'Результат сохранён, но ещё не отправлен: войдите в курс в этом браузере (главная → GeoTany → код) и снова откройте эту страницу — результат отправится сам.'));
+        return;
+      }
       sendResult(lastSummary);
     }
 
@@ -710,6 +721,8 @@
       const details = ROUNDS.map((r, i) => `${i + 1}) ${state.results[i].found.length}/${r.ids.length}, ош. ${state.results[i].mistakes}`).join('; ');
       return {
         email: student ? student.email : '',
+        name: student ? (student.name || '') : '',
+        grade: student ? (student.grade || '') : '',
         course: student ? (student.courseId || 'geotanu') : 'geotanu',
         quiz: QUIZ_ID,
         quizTitle: QUIZ_TITLE,
@@ -752,7 +765,8 @@
 
     async function postResult(payload) {
       try {
-        const r = await SMB.api('result', payload);
+        // Весь класс сдаёт одновременно, сервер ставит записи в очередь — ждём до 45 с
+        const r = await SMB.api('result', payload, 45000);
         return !!(r && r.status === 'success');
       } catch (e) {
         return false;
@@ -768,8 +782,15 @@
     async function flushPending() {
       const list = readPending();
       if (!list.length || !window.SMB) return;
+      const student = SMB.readSession ? SMB.readSession() : null;
       let left = 0;
       for (const p of list) {
+        // Результат, сохранённый без записи о входе, — подписываем текущим учеником
+        if (!p.email) {
+          if (!student) { left++; continue; }
+          Object.assign(p, { email: student.email, name: student.name || '', grade: student.grade || '', course: student.courseId || 'geotanu' });
+          savePending(p);
+        }
         // Попытки, сохранённые до новой формулы (балл из 58), пересчитываем
         if (p.max !== 100 && typeof p.found === 'number') {
           const g = gradeScore(p.found, p.mistakes || 0, p.seconds || 0);
@@ -780,6 +801,11 @@
       const note = document.getElementById('pendingNote');
       if (list.length - left > 0) {
         note.textContent = L('✓ Алдыңғы нәтиже мұғалімге жіберілді.', '✓ Прошлый результат отправлен учителю.');
+        note.classList.remove('hidden');
+      } else if (left > 0) {
+        note.textContent = student
+          ? L('Алдыңғы нәтиже әлі жіберілмеді. Интернетті тексеріп, бетті кейінірек қайта ашыңыз.', 'Прошлый результат ещё не отправлен. Проверьте интернет и откройте страницу позже.')
+          : L('Алдыңғы нәтиже сақталған, бірақ жіберілмеді: курсқа кіріп, осы бетті қайта ашыңыз.', 'Прошлый результат сохранён, но не отправлен: войдите в курс и снова откройте эту страницу.');
         note.classList.remove('hidden');
       }
     }

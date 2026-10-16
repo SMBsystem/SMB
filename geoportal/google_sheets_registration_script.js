@@ -28,7 +28,9 @@ var CONFIG = {
   MAX_ROWS: 2000,                // до какой строки действуют правила колонки «Допуск»
   SHEET_RESULTS: "Результаты",
   RESULT_HEADERS: ["Дата", "ФИО", "Email", "Класс", "Курс", "Экзамен", "Попытка", "Балл", "Макс", "%",
-                   "Найдено", "Ошибки", "Время (мин:сек)", "Язык", "Не нашёл", "Ошибочные клики", "По вопросам", "Оценка"],
+                   "Найдено", "Ошибки", "Время (мин:сек)", "Язык", "Не нашёл", "Ошибочные клики", "По вопросам", "Оценка",
+                   "ID попытки"],
+  COL_RESULT_ID: 19,             // колонка S — «ID попытки» (защита от двойной записи при повторной отправке)
   MAX_LONG_LEN: 1500             // длинные поля результата (списки стран)
 };
 
@@ -119,8 +121,9 @@ function check_(req) {
 
 /* ===================== Результаты экзаменов ===================== */
 
-// Сайт присылает результат экзамена. Пишем только учеников, записанных в курс и с открытым допуском.
-// ФИО и класс берём из листа «Регистрации», а не из запроса.
+// Сайт присылает результат экзамена. ФИО и класс берём из листа «Регистрации».
+// Если почты там нет (ученик записан под другой почтой), результат всё равно сохраняем —
+// с ФИО из запроса и пометкой, чтобы работа не потерялась. Закрытый допуск — отказ.
 function result_(req) {
   var email  = clean_(req.email).toLowerCase();
   var course = clean_(req.course);
@@ -128,10 +131,17 @@ function result_(req) {
 
   var reg = sheet_();
   var found = findRow_(reg, email, course);
-  if (!found) return fail_("bad_student", "Ученик не найден");
-  if (isBlocked_(found.status)) return fail_("blocked", "Доступ к курсу закрыт преподавателем");
-  var row = reg.getRange(found.row, 1, 1, CONFIG.HEADERS.length).getValues()[0];
-  var name = String(row[1] || ""), grade = String(row[6] || "");
+  if (found && isBlocked_(found.status)) return fail_("blocked", "Доступ к курсу закрыт преподавателем");
+  var name, grade;
+  if (found) {
+    var row = reg.getRange(found.row, 1, 1, CONFIG.HEADERS.length).getValues()[0];
+    name = String(row[1] || "");
+    grade = String(row[6] || "");
+  } else {
+    name = (clean_(req.name) || "?") + " (⚠ нет в «Регистрациях»)";
+    grade = clean_(req.grade);
+  }
+  var attemptId = clean_(req.finishedAt, 40);
 
   var quiz = clean_(req.quizTitle) || clean_(req.quiz);
   if (!quiz) return fail_("bad_quiz", "Не указан экзамен");
@@ -144,13 +154,18 @@ function result_(req) {
 
   var attempt;
   var lock = LockService.getScriptLock();
-  lock.waitLock(10000);
+  lock.waitLock(30000); // весь класс сдаёт одновременно — ждём очереди дольше
   try {
     var sheet = resultsSheet_();
     attempt = 1;
     var values = sheet.getDataRange().getValues();
     for (var i = 1; i < values.length; i++) {
-      if (String(values[i][2]).toLowerCase() === email && String(values[i][5]) === quiz) attempt++;
+      if (String(values[i][2]).toLowerCase() !== email || String(values[i][5]) !== quiz) continue;
+      // Та же попытка пришла второй раз (сайт не дождался ответа и отправил снова)
+      if (attemptId && String(values[i][CONFIG.COL_RESULT_ID - 1]) === attemptId) {
+        return ok_({ saved: true, attempt: values[i][6], duplicate: true });
+      }
+      attempt++;
     }
     sheet.appendRow([
       stamp_(new Date()), safeCell_(name), safeCell_(email), safeCell_(grade), course, safeCell_(quiz), attempt,
@@ -160,7 +175,8 @@ function result_(req) {
       safeCell_(clean_(req.missed, CONFIG.MAX_LONG_LEN)),
       safeCell_(clean_(req.wrong, CONFIG.MAX_LONG_LEN)),
       safeCell_(clean_(req.details, CONFIG.MAX_LONG_LEN)),
-      mark || ""
+      mark || "",
+      attemptId
     ]);
   } finally {
     lock.releaseLock();
@@ -173,7 +189,15 @@ function result_(req) {
 function resultsSheet_() {
   var id = PropertiesService.getScriptProperties().getProperty("RESULTS_SPREADSHEET_ID");
   var ss = id ? SpreadsheetApp.openById(String(id).trim()) : SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = ss.getSheetByName(CONFIG.SHEET_RESULTS) || ss.insertSheet(CONFIG.SHEET_RESULTS);
+  // Лист могли переименовать («Результаты 18 урока…») — берём первый, чьё имя начинается с «Результаты»
+  var sheet = ss.getSheetByName(CONFIG.SHEET_RESULTS);
+  if (!sheet) {
+    var all = ss.getSheets();
+    for (var s = 0; s < all.length && !sheet; s++) {
+      if (all[s].getName().indexOf(CONFIG.SHEET_RESULTS) === 0) sheet = all[s];
+    }
+  }
+  if (!sheet) sheet = ss.insertSheet(CONFIG.SHEET_RESULTS);
   if (sheet.getLastRow() === 0) {
     sheet.appendRow(CONFIG.RESULT_HEADERS);
     sheet.getRange(1, 1, 1, CONFIG.RESULT_HEADERS.length).setFontWeight("bold").setBackground("#cffafe");

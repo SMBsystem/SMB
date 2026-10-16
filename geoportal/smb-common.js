@@ -77,10 +77,11 @@
   }
 
   // Запрос к Google-скрипту (POST как text/plain — без CORS-проверки).
-  async function api(action, payload) {
+  // timeoutMs — сколько ждать ответа (по умолчанию 12 с; результатам экзаменов даём больше).
+  async function api(action, payload, timeoutMs) {
     if (!C.API_URL) throw new Error('no_api');
     var ctrl = new AbortController();
-    var timer = setTimeout(function () { ctrl.abort(); }, 12000);
+    var timer = setTimeout(function () { ctrl.abort(); }, timeoutMs || 12000);
     try {
       var res = await fetch(C.API_URL, {
         method: 'POST',
