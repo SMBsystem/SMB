@@ -40,6 +40,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="../smb-config.js"></script>
   <script src="../smb-common.js"></script>
+  <script src="reading-tests-options.js"></script>
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -2160,9 +2161,25 @@
           });
         });
       }
-      const view = (hits.length === 1)
-        ? { mode: 'choice', lq: hits[0], correctLetter: READING_LETTERS[hits[0].answer] }
-        : { mode: 'self' };
+      let view = { mode: 'self' };
+      if (hits.length === 1) {
+        const lq = hits[0];
+        view = {
+          mode: 'choice', correctLetter: READING_LETTERS[lq.answer],
+          q_kz: lq.q_kz, q_ru: lq.q_ru, options_kz: lq.options_kz,
+          options_ru: (Array.isArray(lq.options_ru) && lq.options_ru.length === 4) ? lq.options_ru : null
+        };
+      } else {
+        // Свои варианты из reading-tests-options.js: правильный ответ ставится
+        // на постоянное место, чтобы буква не была всегда одной и той же
+        const own = ((window.READING_TEST_OPTIONS || {})[test.id] || {})[q.num];
+        if (own && Array.isArray(own.w) && own.w.length === 3) {
+          const correctIdx = (test.id * 7 + q.num * 3) % 4;
+          const opts = own.w.slice();
+          opts.splice(correctIdx, 0, own.a || q.correct_text);
+          view = { mode: 'choice', correctLetter: READING_LETTERS[correctIdx], q_kz: own.q || q.question, q_ru: null, options_kz: opts, options_ru: null };
+        }
+      }
       readingQuestionViews[key] = view;
       return view;
     }
@@ -2338,7 +2355,7 @@
         const userChoice = currentReadingTestUserAnswers[q.num];
         const view = getReadingQuestionView(test, q);
         const questionText = view.mode === 'choice'
-          ? ((isRu ? view.lq.q_ru : view.lq.q_kz) || view.lq.q_kz || q.question)
+          ? ((isRu && view.q_ru) || view.q_kz || q.question)
           : q.question;
         const locked = readingTestSubmitted;
 
@@ -2347,7 +2364,7 @@
 
           let bodyHtml = '';
           if (view.mode === 'choice') {
-            const opts = (isRu && Array.isArray(view.lq.options_ru) && view.lq.options_ru.length === 4) ? view.lq.options_ru : view.lq.options_kz;
+            const opts = (isRu && view.options_ru) || view.options_kz;
             bodyHtml = '<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">' + READING_LETTERS.map((l, i) => {
               const isSelected = (userChoice === l);
               return `
@@ -2389,7 +2406,7 @@
           // Буква из листа ответов относится к вариантам книги, которых на сайте нет,
           // поэтому показываем букву только для вопросов с вариантами A–D
           const answerLine = view.mode === 'choice'
-            ? `${isRu ? 'Правильный ответ' : 'Дұрыс жауап'}: ${view.correctLetter}) ${escapeHtml(((isRu ? view.lq.options_ru : view.lq.options_kz) || view.lq.options_kz)[view.lq.answer])}`
+            ? `${isRu ? 'Правильный ответ' : 'Дұрыс жауап'}: ${view.correctLetter}) ${escapeHtml(((isRu && view.options_ru) || view.options_kz)[READING_LETTERS.indexOf(view.correctLetter)])}`
             : `${isRu ? 'Правильный ответ' : 'Дұрыс жауап'}: ${escapeHtml(q.correct_text)}`;
           card.className = "p-4 sm:p-5 rounded-2xl bg-space-950 border border-slate-800/90 space-y-3 hover:border-slate-700 transition";
 
