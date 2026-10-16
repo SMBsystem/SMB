@@ -369,7 +369,7 @@
               <span>📖</span>
               <span id="readingCatalogTitleText">География оқу материалдары & Тесттері (Reading)</span>
             </h3>
-            <p id="readingCatalogSubtitle" class="text-xs text-slate-400 mt-0.5">20 интерактивті сабақ, әр сабаққа тест пен жауаптар</p>
+            <p id="readingCatalogSubtitle" class="text-xs text-slate-400 mt-0.5">20 интерактивті сабақ, әр сабаққа тест</p>
           </div>
 
           <div class="flex items-center space-x-2.5 w-full md:w-auto">
@@ -2802,15 +2802,11 @@ function renderGrammarModalContent() {
               <span>${readBtnLabel}</span>
             </button>
 
-            <!-- 2. ТЕСТ К УРОКУ И ОТВЕТЫ -->
+            <!-- 2. ТЕСТ К УРОКУ -->
             ${test ? `
               <button type="button" onclick="event.stopPropagation(); openReadingTestModal(${test.id}, 'exam')" class="px-3 py-1.5 rounded-xl bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 border border-amber-500/40 text-xs font-bold transition flex items-center space-x-1" title="${isRu ? `Тест: ${test.questions.length} вопросов` : `Тест: ${test.questions.length} сұрақ`}">
                 <span>📝</span>
                 <span>Тест</span>
-              </button>
-              <button type="button" onclick="event.stopPropagation(); openReadingTestModal(${test.id}, 'solutions')" class="px-3 py-1.5 rounded-xl bg-space-850 text-slate-300 hover:text-white border border-slate-700 text-xs font-bold transition flex items-center space-x-1">
-                <span>🔑</span>
-                <span>${isRu ? 'Ответы' : 'Жауаптар'}</span>
               </button>
             ` : ''}
 
@@ -4881,8 +4877,8 @@ function toggleAdminEditMode() {
       const readingHdrSub = document.getElementById('readingCatalogSubtitle');
       if (readingHdrSub) {
         readingHdrSub.textContent = isRu
-          ? '20 интерактивных уроков, к каждому — тест и ответы'
-          : '20 интерактивті сабақ, әр сабаққа тест пен жауаптар';
+          ? '20 интерактивных уроков, к каждому — тест'
+          : '20 интерактивті сабақ, әр сабаққа тест';
       }
 
       // SECTION 3: Grammar / Zhattau Header
