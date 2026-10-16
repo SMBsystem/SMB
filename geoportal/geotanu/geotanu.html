@@ -2124,12 +2124,73 @@
     let readingTestMode = 'exam'; // 'exam' or 'solutions'
     let currentReadingTestUserAnswers = {};
     let readingTestSubmitted = false;
+    let readingTestRevealed = new Set();
+    const READING_LETTERS = ['A', 'B', 'C', 'D'];
+
+    // В банке этих тестов есть только правильный ответ и разбор (из листов ответов),
+    // вариантов A–D нет. Если тот же вопрос есть в тесте урока — берём оттуда настоящие
+    // варианты; остальные вопросы идут в режиме самопроверки (показать ответ → «білдім / қателестім»).
+    function normReadingText(s) {
+      return String(s == null ? '' : s).replace(/[\s\-–—«»"().,]+/g, ' ').trim().toLowerCase();
+    }
+
+    // «1-2 сабақ бойынша тест» → уроки 1 и 2, «5 сабақ бойынша тест» → урок 5
+    function readingTestLessonIds(test) {
+      const m = String(test.title_kz || '').match(/^(\d+)\s*-\s*(\d+)/);
+      if (m) {
+        const ids = [];
+        for (let i = +m[1]; i <= +m[2]; i++) ids.push(i);
+        return ids;
+      }
+      const one = String(test.title_kz || '').match(/\d+/);
+      return one ? [+one[0]] : [];
+    }
+
+    const readingQuestionViews = {};
+    function getReadingQuestionView(test, q) {
+      const key = test.id + ':' + q.num;
+      if (readingQuestionViews[key]) return readingQuestionViews[key];
+      const lessonIds = readingTestLessonIds(test);
+      const target = normReadingText(q.correct_text);
+      const hits = [];
+      if (target) {
+        richLessons.filter(l => lessonIds.includes(l.id)).forEach(l => {
+          ((l.test && l.test.questions) || []).forEach(lq => {
+            if (Array.isArray(lq.options_kz) && lq.options_kz.length === 4 && normReadingText(lq.options_kz[lq.answer]) === target) hits.push(lq);
+          });
+        });
+      }
+      const view = (hits.length === 1)
+        ? { mode: 'choice', lq: hits[0], correctLetter: READING_LETTERS[hits[0].answer] }
+        : { mode: 'self' };
+      readingQuestionViews[key] = view;
+      return view;
+    }
+
+    function isReadingAnswerCorrect(test, q) {
+      const ans = currentReadingTestUserAnswers[q.num];
+      if (!ans) return false;
+      const view = getReadingQuestionView(test, q);
+      return view.mode === 'choice' ? ans === view.correctLetter : ans === 'known';
+    }
+
+    function revealReadingAnswer(qNum) {
+      readingTestRevealed.add(qNum);
+      renderReadingTestContent();
+    }
+
+    function markReadingSelfCheck(qNum, known) {
+      if (readingTestSubmitted && readingTestMode === 'exam') return;
+      currentReadingTestUserAnswers[qNum] = known ? 'known' : 'unknown';
+      renderReadingTestContent();
+    }
 
     function openReadingTestModal(testId, mode = 'exam') {
       currentReadingTestId = testId;
       readingTestMode = mode;
       currentReadingTestUserAnswers = {};
       readingTestSubmitted = false;
+      readingTestRevealed = new Set();
 
       const modal = document.getElementById('readingTestModal');
       if (!modal) return;
@@ -2151,6 +2212,9 @@
     function resetReadingTestAnswers() {
       currentReadingTestUserAnswers = {};
       readingTestSubmitted = false;
+      readingTestRevealed = new Set();
+      const scoreDisplay = document.getElementById('readingTestScoreDisplay');
+      if (scoreDisplay) scoreDisplay.classList.add('hidden');
       renderReadingTestContent();
     }
 
@@ -2181,11 +2245,7 @@
       const total = test.questions.length;
 
       test.questions.forEach(q => {
-        const userChoice = (currentReadingTestUserAnswers[q.num] || '').trim().toUpperCase();
-        const correctChoice = (q.correct_letter || '').trim().toUpperCase();
-        if (userChoice && (userChoice === correctChoice || correctChoice.includes(userChoice))) {
-          correctCount++;
-        }
+        if (isReadingAnswerCorrect(test, q)) correctCount++;
       });
 
       const percentage = Math.round((correctCount / total) * 100);
@@ -2246,6 +2306,14 @@
           : (isRu ? 'Перейти в режим теста' : 'Тест тапсыруға ауысу');
       }
 
+      const bannerTexts = isRu
+        ? { readingTestQCountLabel: 'Вопросов:', readingTestAnsweredLabel: 'Отвечено:', readingTestScoreLabel: 'Результат:', readingTestResetBtn: 'Сбросить', readingTestSubmitText: 'Завершить и проверить' }
+        : { readingTestQCountLabel: 'Сұрақтар саны:', readingTestAnsweredLabel: 'Жауап берілгені:', readingTestScoreLabel: 'Нәтиже:', readingTestResetBtn: 'Тазарту', readingTestSubmitText: 'Тестті аяқтау & Тексеру' };
+      Object.keys(bannerTexts).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = bannerTexts[id];
+      });
+
       const qCountEl = document.getElementById('readingTestQCount');
       if (qCountEl) qCountEl.textContent = test.questions.length;
 
@@ -2256,60 +2324,90 @@
       if (!container) return;
       container.innerHTML = '';
 
+      if (readingTestMode === 'exam' && test.questions.some(q => getReadingQuestionView(test, q).mode === 'self')) {
+        const hint = document.createElement('div');
+        hint.className = 'p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] sm:text-xs text-amber-200 leading-relaxed';
+        hint.textContent = isRu
+          ? 'Вопросы без вариантов — самопроверка: вспомните ответ, нажмите «Показать ответ» и честно отметьте «Знал» или «Ошибся». Вопросы с вариантами A–D проверяются автоматически.'
+          : 'Нұсқасы жоқ сұрақтар — өзін-өзі тексеру: жауапты есіңізге түсіріп, «Жауабын көрсету» батырмасын басыңыз да, «Білдім» не «Қателестім» деп адал белгілеңіз. A–D нұсқалары бар сұрақтар автоматты тексеріледі.';
+        container.appendChild(hint);
+      }
+
       test.questions.forEach((q) => {
         const card = document.createElement('div');
         const userChoice = currentReadingTestUserAnswers[q.num];
-        const correctChoice = (q.correct_letter || '').trim().toUpperCase();
+        const view = getReadingQuestionView(test, q);
+        const questionText = view.mode === 'choice'
+          ? ((isRu ? view.lq.q_ru : view.lq.q_kz) || view.lq.q_kz || q.question)
+          : q.question;
+        const locked = readingTestSubmitted;
 
         if (readingTestMode === 'exam') {
           card.className = "p-4 sm:p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3";
-          
-          let optionsHtml = '';
-          const letters = ['A', 'B', 'C', 'D'];
-          
-          letters.forEach((l, lIdx) => {
-            const isSelected = (userChoice === l);
-            const isCorrect = (l === correctChoice);
-            const labelText = isCorrect ? (q.correct_text || 'Дұрыс нұсқа') : (isRu ? `Вариант ответа (${l})` : `Жауап нұсқасы (${l})`);
-            
-            optionsHtml += `
+
+          let bodyHtml = '';
+          if (view.mode === 'choice') {
+            const opts = (isRu && Array.isArray(view.lq.options_ru) && view.lq.options_ru.length === 4) ? view.lq.options_ru : view.lq.options_kz;
+            bodyHtml = '<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">' + READING_LETTERS.map((l, i) => {
+              const isSelected = (userChoice === l);
+              return `
               <button type="button" data-qnum="${q.num}" data-letter="${l}" onclick="selectReadingTestOption(${q.num}, '${l}')" class="w-full text-left p-3 rounded-xl border ${isSelected ? 'border-cyan-400 bg-cyan-500/20 text-white font-bold' : 'border-slate-800 bg-space-900/60 text-slate-300 hover:border-slate-700 hover:bg-space-850'} text-xs flex items-center space-x-2.5 transition">
                 <span class="w-6 h-6 rounded-lg bg-space-850 border border-slate-700 flex items-center justify-center font-bold text-[11px] shrink-0 ${isSelected ? 'text-cyan-400 border-cyan-400' : 'text-slate-400'}">${l}</span>
-                <span class="flex-1">${labelText}</span>
-              </button>
-            `;
-          });
+                <span class="flex-1">${escapeHtml(opts[i])}</span>
+              </button>`;
+            }).join('') + '</div>';
+          } else if (!readingTestRevealed.has(q.num)) {
+            bodyHtml = `
+              <button type="button" onclick="revealReadingAnswer(${q.num})" class="px-3.5 py-2 rounded-xl bg-space-850 hover:bg-space-800 border border-slate-700 text-cyan-300 text-xs font-bold transition">
+                👁 ${isRu ? 'Показать ответ' : 'Жауабын көрсету'}
+              </button>`;
+          } else {
+            const mark = (val, label, on, off) => `
+              <button type="button" ${locked ? 'disabled' : ''} onclick="markReadingSelfCheck(${q.num}, ${val})" class="px-3 py-1.5 rounded-xl border text-xs font-bold transition ${userChoice === (val ? 'known' : 'unknown') ? on : off}">${label}</button>`;
+            bodyHtml = `
+              <div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-xs">
+                <span class="text-emerald-300 font-extrabold">🔑 ${escapeHtml(q.correct_text)}</span>
+              </div>
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="text-[11px] text-slate-400">${isRu ? 'Вы знали ответ?' : 'Жауапты білдіңіз бе?'}</span>
+                ${mark(true, isRu ? '✓ Знал' : '✓ Білдім', 'bg-emerald-500/25 border-emerald-400 text-emerald-200', 'bg-space-900 border-slate-700 text-slate-300 hover:border-emerald-500/50')}
+                ${mark(false, isRu ? '✕ Ошибся' : '✕ Қателестім', 'bg-rose-500/25 border-rose-400 text-rose-200', 'bg-space-900 border-slate-700 text-slate-300 hover:border-rose-500/50')}
+              </div>`;
+          }
 
           card.innerHTML = `
             <div class="flex items-start justify-between gap-2">
               <div class="flex items-start space-x-2.5">
                 <span class="w-6 h-6 rounded-md bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">${q.num}</span>
-                <h4 class="text-xs sm:text-sm font-bold text-white leading-snug">${q.question}</h4>
+                <h4 class="text-xs sm:text-sm font-bold text-white leading-snug">${questionText}</h4>
               </div>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-              ${optionsHtml}
-            </div>
+            ${bodyHtml}
           `;
         } else {
-          const isUserCorrect = userChoice && (userChoice === correctChoice || correctChoice.includes(userChoice));
+          const isUserCorrect = isReadingAnswerCorrect(test, q);
+          // Буква из листа ответов относится к вариантам книги, которых на сайте нет,
+          // поэтому показываем букву только для вопросов с вариантами A–D
+          const answerLine = view.mode === 'choice'
+            ? `${isRu ? 'Правильный ответ' : 'Дұрыс жауап'}: ${view.correctLetter}) ${escapeHtml(((isRu ? view.lq.options_ru : view.lq.options_kz) || view.lq.options_kz)[view.lq.answer])}`
+            : `${isRu ? 'Правильный ответ' : 'Дұрыс жауап'}: ${escapeHtml(q.correct_text)}`;
           card.className = "p-4 sm:p-5 rounded-2xl bg-space-950 border border-slate-800/90 space-y-3 hover:border-slate-700 transition";
 
           card.innerHTML = `
             <div class="flex items-start justify-between gap-2 border-b border-slate-800/60 pb-2.5">
               <div class="flex items-start space-x-2.5">
                 <span class="w-6 h-6 rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">${q.num}</span>
-                <h4 class="text-xs sm:text-sm font-black text-white leading-snug">${q.question}</h4>
+                <h4 class="text-xs sm:text-sm font-black text-white leading-snug">${questionText}</h4>
               </div>
-              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${userChoice ? (isUserCorrect ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-300 border border-rose-500/30') : 'bg-space-850 text-slate-400'}">
-                ${userChoice ? (isUserCorrect ? '✓ Дұрыс' : '✕ Қате') : 'Сынақсыз'}
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${userChoice ? (isUserCorrect ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-300 border border-rose-500/30') : 'bg-space-850 text-slate-400'}">
+                ${userChoice ? (isUserCorrect ? (isRu ? '✓ Верно' : '✓ Дұрыс') : (isRu ? '✕ Ошибка' : '✕ Қате')) : (isRu ? 'Без ответа' : 'Жауапсыз')}
               </span>
             </div>
 
             <div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-start space-x-2.5 text-xs">
               <span class="text-emerald-400 font-black shrink-0 text-sm">🔑</span>
               <div>
-                <span class="text-emerald-300 font-extrabold block text-xs sm:text-sm">${q.full_answer_str || `Дұрыс жауап: ${q.correct_letter}) ${q.correct_text}`}</span>
+                <span class="text-emerald-300 font-extrabold block text-xs sm:text-sm">${answerLine}</span>
               </div>
             </div>
 
@@ -6670,15 +6768,15 @@ ${item.fact_kz}`);
       <!-- Test Stats / Score Bar (Shown during or after test) -->
       <div id="readingTestScoreBanner" class="p-3.5 rounded-2xl bg-space-950 border border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs">
         <div class="flex items-center space-x-3">
-          <span class="text-slate-400">Сұрақтар саны: <b id="readingTestQCount" class="text-white">40</b></span>
-          <span class="text-slate-400">Тапсырылғаны: <b id="readingTestAnsweredCount" class="text-cyan-400">0</b></span>
-          <span id="readingTestScoreDisplay" class="hidden text-amber-300 font-black">Нәтиже: <span id="readingTestScoreVal">0/40</span> (<span id="readingTestPercentVal">0%</span>)</span>
+          <span class="text-slate-400"><span id="readingTestQCountLabel">Сұрақтар саны:</span> <b id="readingTestQCount" class="text-white">40</b></span>
+          <span class="text-slate-400"><span id="readingTestAnsweredLabel">Жауап берілгені:</span> <b id="readingTestAnsweredCount" class="text-cyan-400">0</b></span>
+          <span id="readingTestScoreDisplay" class="hidden text-amber-300 font-black"><span id="readingTestScoreLabel">Нәтиже:</span> <span id="readingTestScoreVal">0/40</span> (<span id="readingTestPercentVal">0%</span>)</span>
         </div>
         <div class="flex items-center space-x-2">
           <button id="readingTestResetBtn" onclick="resetReadingTestAnswers()" class="px-2.5 py-1 rounded-lg bg-space-850 hover:bg-space-800 text-slate-400 text-[11px] font-bold border border-slate-700">Тазарту</button>
           <button id="readingTestSubmitBtn" onclick="submitReadingTestOnline()" class="px-4 py-1.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-space-950 font-black text-xs transition shadow-md shadow-cyan-500/20 flex items-center space-x-1">
             <span>✓</span>
-            <span>Тестті аяқтау & Тексеру</span>
+            <span id="readingTestSubmitText">Тестті аяқтау & Тексеру</span>
           </button>
         </div>
       </div>
