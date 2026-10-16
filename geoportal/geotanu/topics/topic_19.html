@@ -1209,6 +1209,28 @@
       return { x: 503 + 2.676 * X * lon, y: 304.3 - 242.7 * Y * Math.sign(lat) };
     }
 
+    // Контуры стран упрощены, и часть точек по настоящим координатам попадает в море или
+    // в соседнюю страну. Для них — место на холсте 1000×540, подобранное по контурам: [lon, lat, x, y]
+    const ON_MAP = [
+      [-77.04, 38.90, 311.7, 187.2],   // Вашингтон (было в море)
+      [-75.70, 45.42, 321.9, 167.4],   // Оттава (было в США)
+      [-74.0, 40.71, 320.7, 180.0],    // Нью-Йорк (было в море)
+      [-0.13, 51.51, 502.3, 149.4],    // Лондон (было в море)
+      [7.75, 48.58, 518.2, 156.7],     // Страсбург (было в Германии)
+      [6.14, 46.20, 517.6, 165.0],     // Женева (было в Италии)
+      [16.37, 48.21, 539.9, 159.3],    // Вена (было в Венгрии)
+      [76.95, 43.24, 689.4, 173.5],    // Алматы (было в Кыргызстане)
+      [106.85, -6.21, 788.3, 323.4],   // Джакарта (было в море)
+      [103.82, 1.35, 780.3, 301.35],   // Сингапур — у южной оконечности Малакки (было внутри Малайзии)
+      [50.55, 26.07, 632.4, 225.4],    // Бахрейн — в заливе между Катаром и Саудовской Аравией (было в Катаре)
+      [114.17, 22.32, 801.5, 236.9],   // Гонконг — на побережье Китая (было в море)
+      [14.38, 35.94, 539.1, 195.4]     // Мальта — к югу от Сицилии (было слишком далеко)
+    ];
+    function mapXY(lon, lat) {
+      const f = ON_MAP.find(p => p[0] === lon && p[1] === lat);
+      return f ? { x: f[2], y: f[3] } : robinsonXY(lon, lat);
+    }
+
     // [запад, юг, восток, север] → viewBox; слишком узкие области расширяем
     function boxToView(b) {
       const [w, s, e, n] = b;
@@ -1287,7 +1309,7 @@
       // малые государства точками
       (cfg.groups || []).forEach(gp => gp.ids.forEach(id => {
         if (WC[shapeId(id)] || !EXTRA_POINTS[id]) return;
-        const p = robinsonXY(EXTRA_POINTS[id].lon, EXTRA_POINTS[id].lat);
+        const p = mapXY(EXTRA_POINTS[id].lon, EXTRA_POINTS[id].lat);
         const dot = svgEl('circle', { cx: p.x.toFixed(2), cy: p.y.toFixed(2), r: (fs * 0.32).toFixed(2), fill: gp.color, stroke: '#ffffff', 'stroke-width': 1, 'vector-effect': 'non-scaling-stroke', class: 'dot' });
         dot.dataset.id = id;
         grpOf[id] = gp;
@@ -1298,7 +1320,7 @@
       (cfg.labels || []).forEach(lb => {
         // по умолчанию — центр контура страны, смещение dx/dy в долях размера шрифта
         const c = WC[shapeId(lb.id)];
-        const pos = (lb.lon != null) ? robinsonXY(lb.lon, lb.lat) : { x: c.center[0] + (lb.dx || 0) * fs, y: c.center[1] + (lb.dy || 0) * fs };
+        const pos = (lb.lon != null) ? mapXY(lb.lon, lb.lat) : { x: c.center[0] + (lb.dx || 0) * fs, y: c.center[1] + (lb.dy || 0) * fs };
         const nm = countryName(lb.id);
         ['kz', 'ru'].forEach(lang => {
           const t = svgEl('text', { x: pos.x.toFixed(2), y: pos.y.toFixed(2), 'text-anchor': lb.a || 'middle', 'font-size': (fs * 0.85).toFixed(2), fill: '#ffffff', class: 'pin-lbl', 'stroke-width': (fs * 0.22).toFixed(2), 'data-lang': lang });
@@ -1321,7 +1343,7 @@
       // штаб-квартиры и другие города
       (cfg.pins || []).forEach(p => {
         // at — привязка к центру контура (точнее на крупном масштабе)
-        const pos = p.at ? { x: WC[p.at].center[0], y: WC[p.at].center[1] } : robinsonXY(p.lon, p.lat);
+        const pos = p.at ? { x: WC[p.at].center[0], y: WC[p.at].center[1] } : mapXY(p.lon, p.lat);
         const r = fs * (p.alt ? 0.36 : 0.45);
         svg.appendChild(svgEl('circle', {
           cx: pos.x.toFixed(2), cy: pos.y.toFixed(2), r: r.toFixed(2),
