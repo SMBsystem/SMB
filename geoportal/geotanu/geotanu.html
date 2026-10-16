@@ -2713,12 +2713,6 @@ function renderGrammarModalContent() {
               <span>${readBtnLabel}</span>
             </button>
 
-            <!-- In-App Interactive Lesson Badge -->
-            <span class="px-2.5 py-1.5 rounded-xl bg-space-850 text-cyan-300 border border-slate-700/80 text-xs font-bold flex items-center space-x-1">
-              <span>⚡</span>
-              <span>100% Онлайн</span>
-            </span>
-
             <!-- 3. BLOOKET BUTTON -->
             ${l.blooket && l.blooket.startsWith('http') ? `
               <a href="${l.blooket}" target="_blank" onclick="event.stopPropagation(); playSuccessChime();" class="text-xs text-brand-400 hover:underline font-bold flex items-center space-x-1">
@@ -5058,7 +5052,7 @@ function toggleAdminEditMode() {
                 <span>${isRu ? `Тест #${test.id}` : `Тест #${test.id}`}</span>
               </span>
               <span class="text-[10px] px-2.5 py-0.5 rounded-full font-bold bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">
-                ${test.questions.length} ${isRu ? 'вопросов' : 'сұрақ'} • 100% Онлайн
+                ${test.questions.length} ${isRu ? 'вопросов' : 'сұрақ'}
               </span>
             </div>
 
@@ -5835,14 +5829,6 @@ function renderSpeakingCards() {
               <span>⚡</span>
               <span>${isRu ? 'Сдать онлайн' : 'Онлайн тапсыру'}</span>
             </button>
-
-            <div class="flex items-center space-x-1.5">
-              <!-- 2. IN-APP DETAILED REVIEW BUTTON -->
-              <button type="button" onclick="event.stopPropagation(); openWritingExam(${v.id}, true)" class="px-2.5 py-1.5 rounded-xl bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500/30 border border-cyan-500/40 text-xs font-bold transition flex items-center space-x-1 shadow-sm" title="${isRu ? 'Встроенный разбор' : 'Ішкі талдау'}">
-                <span>🔍</span>
-                <span>${isRu ? 'Разбор' : 'Талдау'}</span>
-              </button>
-            </div>
           </div>
         `;
         grid.appendChild(card);
