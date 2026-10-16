@@ -2177,11 +2177,39 @@
           const correctIdx = (test.id * 7 + q.num * 3) % 4;
           const opts = own.w.slice();
           opts.splice(correctIdx, 0, own.a || q.correct_text);
-          view = { mode: 'choice', correctLetter: READING_LETTERS[correctIdx], q_kz: own.q || q.question, q_ru: null, options_kz: opts, options_ru: null };
+          view = { mode: 'choice', correctLetter: READING_LETTERS[correctIdx], q_kz: own.q || q.question, q_ru: null, options_kz: opts, options_ru: null, explanation: own.e || null };
         }
       }
       readingQuestionViews[key] = view;
       return view;
+    }
+
+    // В части разборов в начале остался обрывок вопроса или ответа
+    // («...көрсетіңіз. Өзен суларының...», «картасы; Тақырыптық → Е) ...»). Убираем его.
+    function cleanReadingExplanation(text) {
+      const UP = 'А-ЯӘІҢҒҮҰҚӨҺЁA-Z', LO = 'а-яәіңғүұқөһёa-z';
+      let e = String(text || '').trim();
+      if (!new RegExp('^[' + LO + '0-9(]').test(e)) return e;
+      const rules = [
+        /^[^.?!→]{0,160}?(?:көрсетіңіз|анықтаңыз|табыңыз|атаңыз|белгілеңіз|таңдаңыз|сәйкестендіріңіз|есептеңіз|толтырыңыз|көрсетеді|аталады)[^.?!→]{0,40}?[.?!:]+\s+/,
+        /^[^?→]{0,200}\?\s+/,
+        new RegExp('^.{0,220}?→\\s*[' + UP + ']\\)\\s*\\S+(?:\\s+[' + LO + '0-9(]\\S*)*\\s+(?=[«"]?[' + UP + '])')
+      ];
+      for (const re of rules) {
+        const m = e.match(re);
+        if (m) { e = e.slice(m[0].length); break; }
+      }
+      // Если начало всё ещё обрывочное — до первого конца предложения
+      for (let i = 0; i < 2; i++) {
+        const messy = new RegExp('^[' + LO + '0-9(]').test(e) || /→/.test(e.slice(0, 120)) || /^\S+\)\s/.test(e);
+        if (!messy) break;
+        const m = e.match(new RegExp('^.{0,260}?[.)]\\s+(?=[«"]?[' + UP + '][' + LO + '])'));
+        if (!m || m[0].length >= e.length - 20) break;
+        e = e.slice(m[0].length);
+      }
+      const head = e.match(new RegExp('^[' + LO + '][^.?!' + UP + ']{0,40}\\s(?=[' + UP + '][' + LO + '])'));
+      if (head) e = e.slice(head[0].length);
+      return e;
     }
 
     function isReadingAnswerCorrect(test, q) {
@@ -2428,13 +2456,13 @@
               </div>
             </div>
 
-            ${q.explanation ? `
+            ${(view.explanation || q.explanation) ? `
               <div class="p-3.5 rounded-xl bg-space-900 border border-slate-800/80 text-xs text-slate-300 leading-relaxed space-y-1">
                 <div class="text-[11px] font-bold text-cyan-400 flex items-center space-x-1 mb-1">
                   <span>💡</span>
                   <span>${isRu ? 'Подробное объяснение и логика решения:' : 'Толық шешімі мен педагогикалық түсіндірмесі:'}</span>
                 </div>
-                <p class="text-slate-300">${q.explanation}</p>
+                <p class="text-slate-300">${escapeHtml(view.explanation || cleanReadingExplanation(q.explanation))}</p>
               </div>
             ` : ''}
           `;
