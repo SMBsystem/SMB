@@ -5655,15 +5655,15 @@ function renderSpeakingCards() {
         },
         'nomenklatura_speaking': {
           icon: '🗣️',
-          badge: isRu ? '5-РАЗДЕЛ • В ПРОЦЕССЕ РАЗРАБОТКИ ⏳ (ЕЩЕ НАД ПРОЦЕССОМ)' : '5-БӨЛІМ • ӘЗІРЛЕНУ ҮСТІНДЕ ⏳ (ЕЩЕ НАД ПРОЦЕССОМ)',
-          title: isRu ? 'Номенклатура (Speaking) — Раздел в процессе разработки' : 'Номенклатура (Speaking) — Бұл бөлім әлі процесс үстінде (әзірленуде)',
-          desc: isRu ? 'В настоящее время ведутся работы над данным разделом (еще над процессом). Интерактивные карты Figma и номенклатурные материалы будут добавлены в ближайшее время.' : 'Бұл бөлім бойынша жұмыстар жүргізілуде (еще над процессом). Figma интерактивті карталары мен номенклатуралық материалдар дайындалу үстінде.'
+          badge: isRu ? '5-РАЗДЕЛ (ТАБЛИЦА)' : '5-БӨЛІМ (ТАБЛИЦА)',
+          title: isRu ? 'Номенклатура (Speaking) — Карты и географические названия' : 'Номенклатура (Speaking) — Карталар мен географиялық атаулар',
+          desc: isRu ? 'Интерактивные карты и номенклатурные материалы по темам курса.' : 'Курс тақырыптары бойынша интерактивті карталар мен номенклатуралық материалдар.'
         },
         'videolar_listening': {
           icon: '🎬',
-          badge: isRu ? '6-РАЗДЕЛ • В ПРОЦЕССЕ РАЗРАБОТКИ ⏳ (ЕЩЕ НАД ПРОЦЕССОМ)' : '6-БӨЛІМ • ӘЗІРЛЕНУ ҮСТІНДЕ ⏳ (ЕЩЕ НАД ПРОЦЕССОМ)',
-          title: isRu ? 'Видео (Listening) — Раздел в процессе разработки' : 'Видеолар (Listening) — Бұл бөлім әлі процесс үстінде (әзірленуде)',
-          desc: isRu ? 'В настоящее время ведутся работы над данным разделом (еще над процессом). Видеоразборы вариантов ЕНТ монтируются и загружаются в систему.' : 'Бұл бөлім бойынша жұмыстар жүргізілуде (еще над процессом). Жаңа форматтағы ҰБТ бейнеталдаулары монтаждалып, жүйеге жүктелу процесінде.'
+          badge: isRu ? '6-РАЗДЕЛ (ТАБЛИЦА)' : '6-БӨЛІМ (ТАБЛИЦА)',
+          title: isRu ? 'Видео (Listening) — Видеоразборы ЕНТ' : 'Видеолар (Listening) — ҰБТ бейнеталдаулары',
+          desc: isRu ? 'Видеоразборы вариантов ЕНТ по темам курса.' : 'Курс тақырыптары бойынша ҰБТ нұсқаларының бейнеталдаулары.'
         }
       };
 
@@ -5683,30 +5683,6 @@ function renderSpeakingCards() {
         renderGrammarTable();
       }
 
-      if ((partId === 'nomenklatura_speaking' || partId === 'videolar_listening') && playSound) {
-        showInProcessNotification(partId === 'nomenklatura_speaking' ? (isRu ? 'Номенклатура (Speaking)' : 'Номенклатура (Speaking)') : (isRu ? 'Видео (Listening)' : 'Видеолар (Listening)'));
-      }
-    }
-
-    function showInProcessNotification(partName) {
-      const existing = document.getElementById('inProcessToastNotification');
-      if (existing) existing.remove();
-
-      const isRu = (currentLang === 'ru');
-      const toast = document.createElement('div');
-      toast.id = 'inProcessToastNotification';
-      toast.className = 'fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-gradient-to-r from-amber-500 to-amber-600 text-space-950 px-5 py-3 rounded-2xl font-black text-xs sm:text-sm shadow-2xl flex items-center space-x-2.5 border border-amber-300 transition-all duration-300';
-      const text = isRu 
-        ? `<b>${partName}:</b> Данный раздел находится в процессе разработки (еще над процессом)!`
-        : `<b>${partName}:</b> Бұл бөлім әлі процесс үстінде (әзірленуде)!`;
-      toast.innerHTML = `<span>⏳</span><span>${text}</span>`;
-      document.body.appendChild(toast);
-
-      setTimeout(() => {
-        toast.style.opacity = '0';
-        toast.style.transform = 'translate(-50%, -15px)';
-        setTimeout(() => toast.remove(), 400);
-      }, 3500);
     }
 
     function renderAllSections() {
