@@ -28,7 +28,7 @@ var CONFIG = {
   MAX_ROWS: 2000,                // до какой строки действуют правила колонки «Допуск»
   SHEET_RESULTS: "Результаты",
   RESULT_HEADERS: ["Дата", "ФИО", "Email", "Класс", "Курс", "Экзамен", "Попытка", "Балл", "Макс", "%",
-                   "Найдено", "Ошибки", "Время (мин:сек)", "Язык", "Не нашёл", "Ошибочные клики", "По вопросам"],
+                   "Найдено", "Ошибки", "Время (мин:сек)", "Язык", "Не нашёл", "Ошибочные клики", "По вопросам", "Оценка"],
   MAX_LONG_LEN: 1500             // длинные поля результата (списки стран)
 };
 
@@ -138,7 +138,9 @@ function result_(req) {
   var max = num_(req.max, 0, 1000);
   var score = Math.min(num_(req.score, 0, 1000), max);
   var seconds = num_(req.seconds, 0, 86400);
-  var time = Math.floor(seconds / 60) + ":" + ("0" + (seconds % 60)).slice(-2);
+  // Апостроф — чтобы Таблица не прочитала «38:44» как 38 часов 44 минуты
+  var time = "'" + Math.floor(seconds / 60) + ":" + ("0" + (seconds % 60)).slice(-2);
+  var mark = num_(req.mark, 0, 5);
 
   var attempt;
   var lock = LockService.getScriptLock();
@@ -157,7 +159,8 @@ function result_(req) {
       clean_(req.lang) === "ru" ? "ru" : "kz",
       safeCell_(clean_(req.missed, CONFIG.MAX_LONG_LEN)),
       safeCell_(clean_(req.wrong, CONFIG.MAX_LONG_LEN)),
-      safeCell_(clean_(req.details, CONFIG.MAX_LONG_LEN))
+      safeCell_(clean_(req.details, CONFIG.MAX_LONG_LEN)),
+      mark || ""
     ]);
   } finally {
     lock.releaseLock();
