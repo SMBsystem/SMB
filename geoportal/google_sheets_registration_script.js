@@ -6,7 +6,8 @@
  *   • проверяет код на сервере (коды лежат в «Свойствах скрипта», не на сайте);
  *   • пишет каждого ученика в лист «Регистрации» (одна строка = ученик + курс);
  *   • колонка «Допуск»: «✅ Есть допуск» / «⛔ Нет допуска» — переключаете вы в таблице;
- *   • присылает вам письмо о каждой новой регистрации.
+ *   • присылает вам письмо о каждой новой регистрации;
+ *   • записывает результаты экзаменов (GeoQuest и др.) в лист «Результаты».
  *
  * Установка — см. раздел «Сервер» в geoportal/README.md.
  */
@@ -24,7 +25,11 @@ var CONFIG = {
   MAX_LEN: 120,
   FAILS_LIMIT: 10,               // неверных кодов с одного email за окно ниже
   FAIL_WINDOW_SEC: 3600,
-  MAX_ROWS: 2000                 // до какой строки действуют правила колонки «Допуск»
+  MAX_ROWS: 2000,                // до какой строки действуют правила колонки «Допуск»
+  SHEET_RESULTS: "Результаты",
+  RESULT_HEADERS: ["Дата", "ФИО", "Email", "Класс", "Курс", "Экзамен", "Попытка", "Балл", "Макс", "%",
+                   "Найдено", "Ошибки", "Время (мин:сек)", "Язык", "Не нашёл", "Ошибочные клики", "По вопросам"],
+  MAX_LONG_LEN: 1500             // длинные поля результата (списки стран)
 };
 
 /* ===================== Точки входа ===================== */
@@ -42,6 +47,7 @@ function doPost(e) {
     switch (String(req.action || "")) {
       case "enter": return enter_(req);
       case "check": return check_(req);
+      case "result": return result_(req);
       default:      return fail_("unknown_action", "Неизвестное действие");
     }
   } catch (err) {
@@ -109,6 +115,65 @@ function check_(req) {
   if (!isEmail_(email) || CONFIG.COURSE_IDS.indexOf(course) < 0) return ok_({ allowed: false });
   var found = findRow_(sheet_(), email, course);
   return ok_({ allowed: !!found && !isBlocked_(found.status) });
+}
+
+/* ===================== Результаты экзаменов ===================== */
+
+// Сайт присылает результат экзамена. Пишем только учеников, записанных в курс и с открытым допуском.
+// ФИО и класс берём из листа «Регистрации», а не из запроса.
+function result_(req) {
+  var email  = clean_(req.email).toLowerCase();
+  var course = clean_(req.course);
+  if (!isEmail_(email) || CONFIG.COURSE_IDS.indexOf(course) < 0) return fail_("bad_student", "Ученик не найден");
+
+  var reg = sheet_();
+  var found = findRow_(reg, email, course);
+  if (!found) return fail_("bad_student", "Ученик не найден");
+  if (isBlocked_(found.status)) return fail_("blocked", "Доступ к курсу закрыт преподавателем");
+  var row = reg.getRange(found.row, 1, 1, CONFIG.HEADERS.length).getValues()[0];
+  var name = String(row[1] || ""), grade = String(row[6] || "");
+
+  var quiz = clean_(req.quizTitle) || clean_(req.quiz);
+  if (!quiz) return fail_("bad_quiz", "Не указан экзамен");
+  var max = num_(req.max, 0, 1000);
+  var score = Math.min(num_(req.score, 0, 1000), max);
+  var seconds = num_(req.seconds, 0, 86400);
+  var time = Math.floor(seconds / 60) + ":" + ("0" + (seconds % 60)).slice(-2);
+
+  var attempt;
+  var lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    var sheet = resultsSheet_();
+    attempt = 1;
+    var values = sheet.getDataRange().getValues();
+    for (var i = 1; i < values.length; i++) {
+      if (String(values[i][2]).toLowerCase() === email && String(values[i][5]) === quiz) attempt++;
+    }
+    sheet.appendRow([
+      stamp_(new Date()), safeCell_(name), safeCell_(email), safeCell_(grade), course, safeCell_(quiz), attempt,
+      score, max, max ? Math.round(score / max * 100) : 0,
+      num_(req.found, 0, 1000), num_(req.mistakes, 0, 10000), time,
+      clean_(req.lang) === "ru" ? "ru" : "kz",
+      safeCell_(clean_(req.missed, CONFIG.MAX_LONG_LEN)),
+      safeCell_(clean_(req.wrong, CONFIG.MAX_LONG_LEN)),
+      safeCell_(clean_(req.details, CONFIG.MAX_LONG_LEN))
+    ]);
+  } finally {
+    lock.releaseLock();
+  }
+  return ok_({ saved: true, attempt: attempt });
+}
+
+function resultsSheet_() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(CONFIG.SHEET_RESULTS) || ss.insertSheet(CONFIG.SHEET_RESULTS);
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(CONFIG.RESULT_HEADERS);
+    sheet.getRange(1, 1, 1, CONFIG.RESULT_HEADERS.length).setFontWeight("bold").setBackground("#cffafe");
+    sheet.setFrozenRows(1);
+  }
+  return sheet;
 }
 
 /* ===================== Коды курсов ===================== */
@@ -214,10 +279,17 @@ function norm_(s) {
   return String(s || "").trim().toUpperCase().replace(/[\s\-_]/g, "");
 }
 
-function clean_(v) {
+function clean_(v, maxLen) {
   if (v === null || v === undefined) return "";
   return String(v).replace(/[\u0000-\u001F\u007F]/g, " ").replace(/\s+/g, " ")
-    .trim().slice(0, CONFIG.MAX_LEN);
+    .trim().slice(0, maxLen || CONFIG.MAX_LEN);
+}
+
+// Целое число в пределах [min, max]; всё нечисловое → min.
+function num_(v, min, max) {
+  var n = Math.round(Number(v));
+  if (!isFinite(n)) return min;
+  return Math.max(min, Math.min(max, n));
 }
 
 // Строка, начинающаяся с = + - @, в таблице станет формулой — обезвреживаем.
