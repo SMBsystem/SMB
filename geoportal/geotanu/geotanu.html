@@ -38,6 +38,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GeoTany — 100+ Blooket Жинақтары & 6 Дағдылы география оқыту жүйесі</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="../smb-config.js"></script>
+  <script src="../smb-common.js"></script>
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -1141,6 +1143,45 @@
     </div>
   </div>
 
+  <!-- MODAL: EDIT STUDENT NAME / GRADE (прогресс не трогается) -->
+  <div id="profileEditModal" class="fixed inset-0 z-[60] bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden" role="dialog" aria-modal="true" aria-labelledby="profileEditTitle">
+    <form id="profileEditForm" onsubmit="saveProfileEdit(event)" class="bg-space-900 border border-slate-700/80 rounded-3xl max-w-md w-full p-6 shadow-2xl relative space-y-4">
+      <button type="button" onclick="closeProfileEditModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-space-800 text-slate-400 hover:text-white flex items-center justify-center text-sm font-bold" aria-label="✕">✕</button>
+      <h3 class="text-lg font-black text-white pr-10" id="profileEditTitle">Деректерді өңдеу</h3>
+      <div id="profileEditError" role="alert" class="hidden p-3 rounded-2xl bg-rose-500/15 border border-rose-500/40 text-rose-200 text-xs font-bold"></div>
+      <div>
+        <label class="block text-xs font-bold text-slate-400 mb-1" for="profileEditName" id="profileEditNameLabel">Аты-жөніңіз</label>
+        <input id="profileEditName" maxlength="120" autocomplete="name" class="w-full px-3 py-2.5 rounded-xl bg-space-950 border border-slate-700 text-white text-sm focus:border-cyan-500 outline-none">
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-400 mb-1" for="profileEditGrade" id="profileEditGradeLabel">Сынып</label>
+          <select id="profileEditGrade" class="w-full px-3 py-2.5 rounded-xl bg-space-950 border border-slate-700 text-white text-sm">
+            <option value="11">11</option><option value="10">10</option><option value="9">9</option>
+            <option value="8">8</option><option value="7">7</option><option value="6">6</option>
+            <option value="other">—</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-400 mb-1" for="profileEditLang" id="profileEditLangLabel">Тіл</label>
+          <select id="profileEditLang" class="w-full px-3 py-2.5 rounded-xl bg-space-950 border border-slate-700 text-white text-sm">
+            <option value="kz">🇰🇿 Қазақша</option>
+            <option value="ru">🇷🇺 Русский</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <span class="block text-xs font-bold text-slate-400 mb-1" id="profileEditEmailLabel">Пошта</span>
+        <span class="block text-sm text-slate-300 font-mono break-all" id="profileEditEmail"></span>
+      </div>
+      <p class="text-[11px] text-amber-200/90 bg-amber-500/10 border border-amber-500/30 rounded-xl p-2.5 leading-relaxed" id="profileEditNote"></p>
+      <div class="flex gap-2 pt-1">
+        <button type="button" onclick="closeProfileEditModal()" class="flex-1 py-2.5 rounded-xl bg-space-850 border border-slate-700 text-slate-300 hover:text-white text-xs font-bold" id="profileEditCancel">Болдырмау</button>
+        <button type="submit" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-brand-500 text-space-950 text-xs font-black" id="profileEditSave">Сақтау</button>
+      </div>
+    </form>
+  </div>
+
   <!-- MODAL: STUDENT PROFILE & 6-SIDED RADAR CHART                   -->
   <!-- ============================================================== -->
   <div id="profileModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
@@ -1169,7 +1210,7 @@
 
           <div class="mt-3 max-w-md">
             <div class="flex justify-between text-xs mb-1">
-              <span class="text-slate-400" id="profileXpProgressLabel">Келесі деңгейге: <b class="text-white" id="profileXpProgress">0 / 300 XP</b></span>
+              <span class="text-slate-400" id="profileXpProgressLabel"><span id="profileXpProgressText">Келесі деңгейге: </span><b class="text-white" id="profileXpProgress">0 / 300 XP</b></span>
               <span class="text-amber-400 font-bold" id="profilePercentLabel">0%</span>
             </div>
             <div class="w-full bg-space-950 h-2.5 rounded-full overflow-hidden border border-slate-800">
@@ -1178,16 +1219,16 @@
           </div>
 
           <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mt-4 pt-3 border-t border-slate-800/80">
-            <button onclick="openRegistrationModal(true)" class="px-3 py-1.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/30 text-xs font-bold transition flex items-center space-x-1.5">
+            <button type="button" onclick="openProfileEditModal()" class="px-3 py-1.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/30 text-xs font-bold transition flex items-center space-x-1.5">
               <span>✏️</span>
               <span id="profileEditBtnText">Деректерді өңдеу</span>
             </button>
-            <button onclick="resetStudentProfile()" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 text-slate-400 hover:text-white border border-slate-700 text-xs font-medium transition flex items-center space-x-1.5">
+            <button type="button" onclick="resetStudentProfile()" class="px-3 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 text-slate-400 hover:text-white border border-slate-700 text-xs font-medium transition flex items-center space-x-1.5">
               <span>🔄</span>
               <span id="profileResetBtnText">Басқа оқушыны тіркеу</span>
             </button>
             <!-- STUDENT LOGOUT BUTTON -->
-            <button onclick="studentLogout()" class="px-3 py-1.5 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 text-xs font-bold transition flex items-center space-x-1.5">
+            <button type="button" onclick="studentLogout()" class="px-3 py-1.5 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 text-xs font-bold transition flex items-center space-x-1.5">
               <span>🚪</span>
               <span id="profileLogoutBtnText">Шығу / Выйти</span>
             </button>
@@ -1201,9 +1242,9 @@
         <!-- Left: Prominent 6-Sided Radar Chart (R=145, 600x440) -->
         <div class="flex flex-col items-center justify-center bg-space-950/90 border border-slate-800 rounded-3xl p-4 sm:p-5 relative shadow-2xl overflow-visible">
           <div class="text-center mb-1">
-            <span class="text-[10px] font-black uppercase tracking-widest text-brand-400">6 ДАҒДЫЛЫҚ ҚҰЗЫРЕТТІЛІК МОДЕЛІ</span>
-            <h4 class="text-base font-black text-white mt-0.5">Оқушының шеберлік диаграммасы</h4>
-            <p class="text-xs text-slate-400 mt-0.5">Blooket және басқа бөлімдер орындалған сайын диаграмма ұлғаяды</p>
+            <span class="text-[10px] font-black uppercase tracking-widest text-brand-400" id="profileRadarKicker">6 ДАҒДЫЛЫҚ ҚҰЗЫРЕТТІЛІК МОДЕЛІ</span>
+            <h4 class="text-base font-black text-white mt-0.5" id="profileRadarTitle">Оқушының шеберлік диаграммасы</h4>
+            <p class="text-xs text-slate-400 mt-0.5" id="profileRadarHint">Blooket және басқа бөлімдер орындалған сайын диаграмма ұлғаяды</p>
           </div>
 
           <div class="w-full flex justify-center overflow-visible my-2">
@@ -1310,7 +1351,7 @@
 
         <!-- Right: 6 Skills Progress Bars -->
         <div class="space-y-3.5">
-          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Әр дағды бойынша игеру деңгейі:</h4>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1" id="profileSkillsHeading">Әр дағды бойынша игеру деңгейі:</h4>
           
           <div class="p-3 bg-space-850 rounded-2xl border border-slate-800">
             <div class="flex justify-between items-center text-xs mb-1">
@@ -1474,26 +1515,84 @@
           }
         } catch (e) {}
         this._mem[key] = String(val);
+      },
+      removeItem: function(key) {
+        try {
+          if (typeof window !== 'undefined' && window.localStorage) {
+            window.localStorage.removeItem(key);
+          }
+        } catch (e) {}
+        delete this._mem[key];
       }
     };
 
-        // Gamification State (Saved in LocalStorage - Clean 0 Start for Students)
-    let userXp = parseInt(safeStorage.getItem('geotany_user_xp') || '0');
-    // Auto-wipe legacy test XP (850 or 880):
-    if (userXp === 850 || userXp === 880 || isNaN(userXp)) {
-      userXp = 0;
-      safeStorage.setItem('geotany_user_xp', '0');
+    // Всплывающее сообщение (общее с порталом, smb-common.js)
+    function showToast(msg, type) {
+      if (window.SMB && SMB.toast) SMB.toast(msg, type === 'error');
     }
 
-    let storedCompleted = safeStorage.getItem('geotany_vocab_completed');
+    // Прогресс хранится в общих ключах браузера. Чтобы второй ученик на том же
+    // устройстве не получил чужие баллы, ключи привязаны к почте из записи входа:
+    // при смене ученика прогресс прежнего откладывается, а свой — восстанавливается.
+    const PROGRESS_KEYS = ['geotany_user_xp', 'geotany_vocab_completed', 'geotany_completed_lessons', 'geotany_lesson_scores', 'geotany_grammar_completed', 'geotany_writing_scores', 'geotany_reading_tests_passed'];
+    const PROGRESS_OWNER_KEY = 'geotany_progress_owner';
+
+    (function syncProgressOwner() {
+      const s = (window.SMB && SMB.readSession) ? SMB.readSession() : null;
+      const email = s && s.role !== 'admin' && s.email ? String(s.email).toLowerCase() : '';
+      if (!email) return;
+      const owner = safeStorage.getItem(PROGRESS_OWNER_KEY);
+      if (owner === email) return;
+      if (owner) {
+        const stash = {};
+        PROGRESS_KEYS.forEach(k => {
+          const v = safeStorage.getItem(k);
+          if (v !== null) stash[k] = v;
+        });
+        safeStorage.setItem('geotany_progress_' + owner, JSON.stringify(stash));
+        let mine = {};
+        try { mine = JSON.parse(safeStorage.getItem('geotany_progress_' + email) || '{}') || {}; } catch (e) {}
+        PROGRESS_KEYS.forEach(k => {
+          if (mine[k] !== undefined) safeStorage.setItem(k, mine[k]);
+          else safeStorage.removeItem(k);
+        });
+        safeStorage.removeItem('geotany_progress_' + email);
+      }
+      safeStorage.setItem(PROGRESS_OWNER_KEY, email);
+    })();
+
+    function readJsonKey(key, fallback) {
+      try {
+        const v = JSON.parse(safeStorage.getItem(key) || 'null');
+        return v === null ? fallback : v;
+      } catch (e) {
+        return fallback;
+      }
+    }
+
+    // XP не копится отдельно, а считается из сохранённого прогресса —
+    // поэтому он всегда совпадает с навыками и не обнуляется после перезагрузки.
+    function computeXpFromProgress() {
+      const count = key => { const a = readJsonKey(key, []); return Array.isArray(a) ? a.length : 0; };
+      let xp = 20 * count('geotany_vocab_completed')
+             + 30 * count('geotany_completed_lessons')
+             + 20 * count('geotany_grammar_completed')
+             + 30 * count('geotany_reading_tests_passed');
+      const writing = readJsonKey('geotany_writing_scores', {});
+      Object.values(writing || {}).forEach(s => {
+        if (!s) return;
+        xp += (s.percentage >= 70) ? 80 : Math.round((Number(s.score) || 0) * 2);
+      });
+      return xp;
+    }
+
+    // Gamification State (Saved in LocalStorage - Clean 0 Start for Students)
+    let userXp = computeXpFromProgress();
+
     let completedBlooketTopics;
     try {
-      let parsed = JSON.parse(storedCompleted || '[]');
-      if (Array.isArray(parsed) && (parsed.includes(71) || parsed.includes(65) || (parsed.length > 5 && userXp === 0))) {
-        parsed = [];
-        safeStorage.setItem('geotany_vocab_completed', '[]');
-      }
-      completedBlooketTopics = new Set(parsed);
+      const parsed = readJsonKey('geotany_vocab_completed', []);
+      completedBlooketTopics = new Set(Array.isArray(parsed) ? parsed : []);
     } catch(e) {
       completedBlooketTopics = new Set();
     }
@@ -2119,10 +2218,10 @@
       if (percentVal) percentVal.textContent = `${percentage}%`;
 
       if (isPassed) {
-        userXp += 30;
-        safeStorage.setItem('geotany_user_xp', userXp.toString());
-        const hudXp = document.getElementById('hudXp');
-        if (hudXp) hudXp.textContent = `${userXp} XP`;
+        const passedTests = new Set(readJsonKey('geotany_reading_tests_passed', []));
+        passedTests.add(test.id);
+        safeStorage.setItem('geotany_reading_tests_passed', JSON.stringify([...passedTests]));
+        updateHud();
         showToast(currentLang === 'ru' 
           ? `🎉 Тест пройден! Результат: ${correctCount}/${total} (${percentage}%) +30 XP` 
           : `🎉 Тест сәтті тапсырылды! Ұпайыңыз: ${correctCount}/${total} (${percentage}%) +30 XP`, 'success');
@@ -2479,35 +2578,35 @@ function renderGrammarModalContent() {
     }
 
     // DYNAMIC 6 SKILLS PROGRESS BAR CALCULATION
+    // Один расчёт для полос, диаграммы и легенды: сделано / всего по каждому навыку.
+    function getSkillStats() {
+      const stat = (done, total) => {
+        total = total || 1;
+        done = Math.min(done, total);
+        return { done, total, ratio: done / total, pct: Math.round((done / total) * 100) };
+      };
+      const grammarDone = readJsonKey('geotany_grammar_completed', []);
+      return {
+        vocab: stat(completedBlooketTopics.size, (appData.all_vocab_topics || []).length || 118),
+        reading: stat(completedLessons.size, richLessons.length || 20),
+        grammar: stat(Array.isArray(grammarDone) ? grammarDone.length : 0, (appData.grammar || []).length || 44),
+        writing: stat(Object.values(writingTestScores || {}).filter(s => s && s.percentage >= 70).length, writingTestsBank.length || 55),
+        // Номенклатура и видео пока не отмечаются как пройденные — прогресса по ним нет.
+        speaking: stat(0, (appData.speaking || []).length || 80),
+        listening: stat(0, (appData.listening || []).length || 1)
+      };
+    }
+
     function updateSkillsProgressBars() {
-      const totalVocab = 118;
-      const doneVocab = completedBlooketTopics.size;
-      const pVocab = Math.min(100, Math.round((doneVocab / totalVocab) * 100));
+      const st = getSkillStats();
+      Object.keys(st).forEach(k => { skillScores[k] = st[k].ratio; });
 
-      const totalReading = 20;
-      const doneReading = completedLessons.size;
-      const pReading = Math.min(100, Math.round((doneReading / totalReading) * 100));
-
-      let completedGrammarTopics = new Set();
-      try {
-        completedGrammarTopics = new Set(JSON.parse(safeStorage.getItem('geotany_grammar_completed') || '[]'));
-      } catch (e) {}
-      const totalGrammar = 44;
-      const doneGrammar = completedGrammarTopics.size;
-      const pGrammar = Math.min(100, Math.round((doneGrammar / totalGrammar) * 100));
-      skillScores.grammar = doneGrammar / totalGrammar;
-
-      const totalWriting = 55;
-      const doneWriting = Object.values(writingTestScores || {}).filter(s => s.percentage >= 70).length;
-      const pWriting = Math.min(100, Math.round((doneWriting / totalWriting) * 100));
-
-      const totalSpeaking = 80;
-      const doneSpeaking = 0;
-      const pSpeaking = Math.min(100, Math.round((doneSpeaking / totalSpeaking) * 100));
-
-      const totalListening = 23;
-      const doneListening = 0;
-      const pListening = Math.min(100, Math.round((doneListening / totalListening) * 100));
+      const totalVocab = st.vocab.total, doneVocab = st.vocab.done, pVocab = st.vocab.pct;
+      const totalReading = st.reading.total, doneReading = st.reading.done, pReading = st.reading.pct;
+      const totalGrammar = st.grammar.total, doneGrammar = st.grammar.done, pGrammar = st.grammar.pct;
+      const totalWriting = st.writing.total, doneWriting = st.writing.done, pWriting = st.writing.pct;
+      const totalSpeaking = st.speaking.total, doneSpeaking = st.speaking.done, pSpeaking = st.speaking.pct;
+      const totalListening = st.listening.total, doneListening = st.listening.done, pListening = st.listening.pct;
 
       const elVocabText = document.getElementById('statVocabText');
       const elVocabBar = document.getElementById('statVocabBar');
@@ -3830,66 +3929,159 @@ function updateProfileUI() {
     if (isAdmin) {
       modalInfo.textContent = 'Басқарушы / Бас оқытушы • GeoTany Online Academy';
     } else if (studentProfile) {
-      const schoolText = studentProfile.school || (isRu ? 'Школа' : 'Мектеп');
-      const cityText = studentProfile.city ? `${studentProfile.city}, ` : '';
-      const gradeText = studentProfile.grade || '11-сынып';
-      const courseText = studentProfile.courseTitle ? `[${studentProfile.courseTitle}] ` : (studentProfile.courseCode ? `[${studentProfile.courseCode}] ` : '');
-      modalInfo.textContent = `${courseText}${cityText}${schoolText} • ${gradeText}`;
+      const parts = [profileCourseTitle()];
+      const place = [studentProfile.city, studentProfile.school].filter(Boolean).join(', ');
+      if (place) parts.push(place);
+      const gradeText = formatGrade(studentProfile.grade, isRu);
+      if (gradeText) parts.push(gradeText);
+      modalInfo.textContent = parts.filter(Boolean).join(' • ');
     }
   }
   if (modalTarget) {
+    // Это цель ученика на ҰБТ/ЕНТ (из 50), а не набранные баллы
     const score = studentProfile ? (studentProfile.targetScore || 48) : 48;
-    modalTarget.textContent = `🎯 ${score}/50 ${isRu ? 'баллов' : 'балл'}`;
+    modalTarget.textContent = isRu ? `🎯 Цель: ${score}/50` : `🎯 Мақсат: ${score}/50`;
+    modalTarget.title = isRu ? 'Целевой балл на ЕНТ по географии' : 'География пәнінен ҰБТ-дағы мақсатты балл';
   }
+
+  const texts = isRu ? {
+    profileEditBtnText: 'Изменить данные',
+    profileResetBtnText: 'Сменить ученика',
+    profileLogoutBtnText: 'Выйти',
+    profileRadarKicker: 'МОДЕЛЬ ИЗ 6 НАВЫКОВ',
+    profileRadarTitle: 'Диаграмма навыков ученика',
+    profileRadarHint: 'Диаграмма растёт по мере прохождения Blooket, уроков, тем и тестов',
+    profileSkillsHeading: 'Освоение по каждому навыку:'
+  } : {
+    profileEditBtnText: 'Деректерді өңдеу',
+    profileResetBtnText: 'Басқа оқушыны тіркеу',
+    profileLogoutBtnText: 'Шығу',
+    profileRadarKicker: '6 ДАҒДЫЛЫҚ ҚҰЗЫРЕТТІЛІК МОДЕЛІ',
+    profileRadarTitle: 'Оқушының шеберлік диаграммасы',
+    profileRadarHint: 'Blooket, сабақтар, тақырыптар мен тесттер орындалған сайын диаграмма ұлғаяды',
+    profileSkillsHeading: 'Әр дағды бойынша игеру деңгейі:'
+  };
+  Object.keys(texts).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = texts[id];
+  });
+
+  updateHud();
+}
+
+// Название курса — из общего списка курсов портала, на языке интерфейса
+function profileCourseTitle() {
+  const isRu = (currentLang === 'ru');
+  const course = (window.SMB && SMB.courseById) ? SMB.courseById((studentProfile && studentProfile.courseId) || 'geotanu') : null;
+  if (course) return isRu ? course.title_ru : course.title_kz;
+  return (studentProfile && (studentProfile.courseTitle || studentProfile.courseCode)) || '';
+}
+
+// Портал хранит класс числом ('11'), старая форма — текстом ('11-сынып')
+function formatGrade(grade, isRu) {
+  const g = String(grade || '').trim();
+  if (!g || g === 'other') return '';
+  if (/^\d+$/.test(g)) return isRu ? `${g} класс` : `${g}-сынып`;
+  return g;
+}
+
+// Запись входа (общая с порталом) и профиль страницы курса
+function readStoredJson(key) {
+  try { return JSON.parse(safeStorage.getItem(key) || 'null'); } catch (e) { return null; }
+}
+
+function openProfileEditModal() {
+  if (!isUserAuthenticated() || isAdminAuth() || !studentProfile) return;
+  const isRu = (currentLang === 'ru');
+  const m = document.getElementById('profileEditModal');
+  if (!m) return;
+
+  const t = isRu ? {
+    profileEditTitle: 'Изменить данные', profileEditNameLabel: 'Имя и фамилия', profileEditGradeLabel: 'Класс',
+    profileEditLangLabel: 'Язык', profileEditEmailLabel: 'Почта', profileEditCancel: 'Отмена', profileEditSave: 'Сохранить',
+    profileEditNote: 'Изменения сохраняются на этом устройстве, прогресс не теряется. В таблице преподавателя остаются имя и класс, указанные при первом входе — чтобы исправить их там, напишите преподавателю.'
+  } : {
+    profileEditTitle: 'Деректерді өңдеу', profileEditNameLabel: 'Аты-жөніңіз', profileEditGradeLabel: 'Сынып',
+    profileEditLangLabel: 'Тіл', profileEditEmailLabel: 'Пошта', profileEditCancel: 'Болдырмау', profileEditSave: 'Сақтау',
+    profileEditNote: 'Өзгерістер осы құрылғыда сақталады, прогресс жоғалмайды. Мұғалімнің кестесінде алғаш кірген кездегі аты-жөн мен сынып қалады — оны түзету үшін мұғалімге жазыңыз.'
+  };
+  Object.keys(t).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = t[id];
+  });
+
+  const grade = String(studentProfile.grade || '').match(/\d+/);
+  document.getElementById('profileEditName').value = studentProfile.name || '';
+  document.getElementById('profileEditGrade').value = grade ? grade[0] : 'other';
+  if (!document.getElementById('profileEditGrade').value) document.getElementById('profileEditGrade').value = 'other';
+  document.getElementById('profileEditLang').value = (currentLang === 'ru') ? 'ru' : 'kz';
+  document.getElementById('profileEditEmail').textContent = studentProfile.email || '';
+  document.getElementById('profileEditError').classList.add('hidden');
+
+  m.classList.remove('hidden');
+  document.getElementById('profileEditName').focus();
+  playBeep(520, 'sine', 0.06);
+}
+
+function closeProfileEditModal() {
+  const m = document.getElementById('profileEditModal');
+  if (m) m.classList.add('hidden');
+}
+
+function saveProfileEdit(event) {
+  if (event) event.preventDefault();
+  const name = document.getElementById('profileEditName').value.trim().replace(/\s+/g, ' ');
+  const grade = document.getElementById('profileEditGrade').value;
+  const lang = document.getElementById('profileEditLang').value === 'ru' ? 'ru' : 'kz';
+  if (name.length < 2) {
+    const err = document.getElementById('profileEditError');
+    err.textContent = (window.SMB && SMB.errorText) ? SMB.errorText('bad_name') : 'Аты-жөніңізді толық жазыңыз.';
+    err.classList.remove('hidden');
+    return;
+  }
+
+  // Меняем только имя, класс и язык — почта, курс и срок входа остаются прежними
+  const session = readStoredJson('geotany_user_session');
+  if (session) {
+    Object.assign(session, { name, grade, lang });
+    safeStorage.setItem('geotany_user_session', JSON.stringify(session));
+  }
+  studentProfile = Object.assign({}, studentProfile || {}, { name, grade, lang });
+  safeStorage.setItem('geotany_user_profile', JSON.stringify(studentProfile));
+
+  closeProfileEditModal();
+  if (lang !== currentLang) {
+    changeLanguage(lang);
+  } else {
+    updateProfileUI();
+  }
+  playSuccessChime();
+  showToast(lang === 'ru' ? 'Данные сохранены' : 'Деректер сақталды');
+}
+
+// Выход: та же запись входа, что и на портале (smb-common.js), затем — на главную портала.
+// Прогресс ученика остаётся на устройстве и вернётся при следующем входе с той же почтой.
+function clearCourseSession() {
+  if (window.SMB && SMB.clearSession) SMB.clearSession();
+  ['geotany_user_session', 'geotany_user_profile', 'geotany_admin_auth',
+   'geo_current_user_unified', 'geo_current_user_kz', 'geo_current_user'].forEach(k => safeStorage.removeItem(k));
+  studentProfile = null;
 }
 
 function studentLogout() {
+  const isRu = (typeof currentLang !== 'undefined' && currentLang === 'ru');
   try {
-    const isRu = (typeof currentLang !== 'undefined' && currentLang === 'ru');
-
-    // 1. Thoroughly remove all session and profile storage
-    safeStorage.removeItem('geotany_user_profile');
-    safeStorage.removeItem('geotany_user_session');
-    safeStorage.removeItem('geotany_admin_auth');
-    safeStorage.removeItem('geo_current_user_unified');
-    safeStorage.removeItem('geo_current_user_kz');
-    safeStorage.removeItem('geo_current_user');
-
-    studentProfile = null;
-
-    // 2. Hide profile modal immediately
-    const pModal = document.getElementById('profileModal');
-    if (pModal) {
-      pModal.classList.add('hidden');
-      pModal.style.display = 'none';
-    }
-
-    // 3. Update UI states
-    try { initAdminState(); } catch(e) {}
-    try { updateProfileUI(); } catch(e) {}
-    try { playBeep(380, 'sine', 0.08); } catch(e) {}
-
-    // 4. Clear registration inputs so old user data is not prefilled
-    ['regFullName', 'regEmail', 'regCourseCode', 'regPhone', 'regCity', 'regSchool'].forEach(id => {
+    clearCourseSession();
+    ['profileModal', 'profileEditModal'].forEach(id => {
       const el = document.getElementById(id);
-      if (el) el.value = '';
+      if (el) el.classList.add('hidden');
     });
-
-    // 5. Show toast notification
-    showToast(isRu ? 'Вы успешно вышли из аккаунта' : 'Сіз аккаунттан сәтті шықтыңыз');
-
-    // 6. Redirect to main portal index.html
-    setTimeout(() => {
-      window.location.href = '../index.html';
-    }, 300);
-
+    playBeep(380, 'sine', 0.08);
+    showToast(isRu ? 'Вы вышли из курса' : 'Сіз курстан шықтыңыз');
   } catch (err) {
     console.error('Logout error:', err);
-    safeStorage.removeItem('geotany_user_profile');
-    safeStorage.removeItem('geotany_user_session');
-    safeStorage.removeItem('geotany_admin_auth');
-    window.location.href = '../index.html';
   }
+  setTimeout(() => { window.location.href = '../index.html'; }, 300);
 }
 
 function adminLogout() {
@@ -3940,18 +4132,21 @@ function initAdminState() {
   }
 }
 
+// Другой ученик: текущий выходит, открывается форма входа в этот курс на портале.
+// Новый ученик начинает с нуля, прогресс прежнего сохраняется за его почтой.
 function resetStudentProfile() {
   const isRu = (currentLang === 'ru');
-  const confirmReset = confirm(isRu ? 'Сменить текущего ученика и ввести новые данные?' : 'Ағымдағы оқушыны ауыстырып, жаңа деректерді енгізгіңіз келе ме?');
+  const confirmReset = confirm(isRu
+    ? 'Сменить ученика? Текущий ученик выйдет из курса (его прогресс сохранится на этом устройстве), откроется форма входа.'
+    : 'Оқушыны ауыстыру керек пе? Қазіргі оқушы курстан шығады (прогресі осы құрылғыда сақталады), кіру формасы ашылады.');
   if (!confirmReset) return;
 
-  safeStorage.removeItem('geotany_user_profile');
-  safeStorage.removeItem('geotany_user_session');
-  studentProfile = null;
-  initStudentProfile();
-  const m = document.getElementById('profileModal');
-  if (m) m.classList.add('hidden');
-  openRegistrationModal(false);
+  clearCourseSession();
+  ['profileModal', 'profileEditModal'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add('hidden');
+  });
+  window.location.href = '../gate.html?c=geotanu';
 }
 
 function showRegistrationWelcomeToast(name) {
@@ -4824,6 +5019,7 @@ function toggleAdminEditMode() {
 
     // RADAR CHART ENGINE (R=145, Canvas 600x440)
     function updateRadarChart() {
+      updateSkillsProgressBars();
       const centerX = 300;
       const centerY = 220;
       const maxRadius = 145;
@@ -4894,6 +5090,24 @@ function toggleAdminEditMode() {
         document.getElementById('radarTitle-4').textContent = `НОМЕНКЛАТУРА (SPEAKING): ${pSpeaking}%`;
         document.getElementById('radarTitle-5').textContent = `ВИДЕОЛАР (LISTENING): ${pListening}%`;
       }
+
+      // Подписи под осями и легенда — те же числа, что и в полосах справа
+      const st = getSkillStats();
+      const rows = [
+        ['vocab', 'Blooket', 'Blooket', 'legendVocab'],
+        ['reading', 'Сабақтар', 'Уроки', 'legendReading'],
+        ['grammar', 'Жаттау', 'Запоминание', 'legendGrammar'],
+        ['writing', 'Тесттер', 'Тесты', 'legendWriting'],
+        ['speaking', 'Номенклатура', 'Номенклатура', 'legendSpeaking'],
+        ['listening', 'Видеолар', 'Видео', 'legendListening']
+      ];
+      rows.forEach(([key, kz, ru, legendId], i) => {
+        const name = isRu ? ru : kz;
+        const sub = document.getElementById(`radarSub-${i}`);
+        if (sub) sub.textContent = `${name} • ${st[key].done}/${st[key].total}`;
+        const legend = document.getElementById(legendId);
+        if (legend) legend.textContent = `${name}: ${st[key].pct}%`;
+      });
     }
 
     function updateVocabScore() {
@@ -4913,12 +5127,14 @@ function toggleAdminEditMode() {
       } else if (xp >= 300) {
         return isRu ? '🧭 Путешественник (2-уровень)' : '🧭 Саяхатшы (2-деңгей)';
       } else {
-        return isRu ? '🧭 Бастаушы зерттеуші (1-деңгей)' : '🧭 Бастаушы зерттеуші (1-деңгей)';
+        return isRu ? '🧭 Начинающий исследователь (1-уровень)' : '🧭 Бастаушы зерттеуші (1-деңгей)';
       }
     }
 
     function updateHud() {
       const isRu = (currentLang === 'ru');
+      userXp = computeXpFromProgress();
+      safeStorage.setItem('geotany_user_xp', String(userXp));
       const xpEl = document.getElementById('hudXp');
       if (xpEl) xpEl.textContent = `${userXp} XP`;
 
@@ -4950,6 +5166,8 @@ function toggleAdminEditMode() {
 
       const pProg = document.getElementById('profileXpProgress');
       if (pProg) pProg.textContent = `${userXp} / ${nextLevelXp} XP`;
+      const pProgLabel = document.getElementById('profileXpProgressText');
+      if (pProgLabel) pProgLabel.textContent = isRu ? 'До следующего уровня: ' : 'Келесі деңгейге: ';
 
       const rankEl = document.getElementById('profileStudentRank');
       if (rankEl) rankEl.textContent = getStudentRank(userXp, isRu);
@@ -6231,12 +6449,6 @@ function renderSpeakingCards() {
 
       const percentage = Math.round((totalEarnedPoints / totalMaxPoints) * 100);
       const isPassed = percentage >= 70;
-      const xpReward = isPassed ? 80 : Math.round(totalEarnedPoints * 2);
-
-      userXp += xpReward;
-      safeStorage.setItem('geotany_user_xp', userXp.toString());
-      const hudXp = document.getElementById('hudXp');
-      if (hudXp) hudXp.textContent = `${userXp} XP`;
 
       writingTestScores[v.id] = {
         score: totalEarnedPoints,
@@ -6252,6 +6464,7 @@ function renderSpeakingCards() {
       };
       safeStorage.setItem('geotany_writing_scores', JSON.stringify(writingTestScores));
       updateWritingScore();
+      updateHud();
 
       if (isPassed) {
         playSuccessChime();
@@ -6526,8 +6739,6 @@ function renderSpeakingCards() {
 
         g.addEventListener('click', () => {
           playSuccessChime();
-          userXp += 20;
-          updateHud();
           alert(`📍 Номенклатура: ${item.name_kz} (${item.metric})
 ${item.fact_kz}`);
         });
