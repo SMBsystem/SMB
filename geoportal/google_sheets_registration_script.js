@@ -165,8 +165,11 @@ function result_(req) {
   return ok_({ saved: true, attempt: attempt });
 }
 
+// Свойство RESULTS_SPREADSHEET_ID (необязательно) — ID отдельной таблицы для результатов,
+// из её адреса: docs.google.com/spreadsheets/d/<ID>/edit. Без него — лист в этой же таблице.
 function resultsSheet_() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var id = PropertiesService.getScriptProperties().getProperty("RESULTS_SPREADSHEET_ID");
+  var ss = id ? SpreadsheetApp.openById(String(id).trim()) : SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheetByName(CONFIG.SHEET_RESULTS) || ss.insertSheet(CONFIG.SHEET_RESULTS);
   if (sheet.getLastRow() === 0) {
     sheet.appendRow(CONFIG.RESULT_HEADERS);
