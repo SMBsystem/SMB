@@ -735,22 +735,6 @@
     <!-- SECTION 5: НОМЕНКЛАТУРА (SPEAKING)                             -->
     <!-- ============================================================== -->
     <section id="section-nomenklatura_speaking" class="part-section hidden space-y-4 sm:space-y-6">
-      <!-- Search & Filter bar -->
-      <div class="bg-space-900 border border-slate-800 rounded-2xl p-3.5 sm:p-5 flex flex-col md:flex-row gap-3 justify-between items-center shadow-lg">
-        <div>
-          <h3 id="speakingCatalogHeading" class="text-sm sm:text-base font-extrabold text-white flex items-center space-x-2">
-            <span>🗣️</span>
-            <span id="speakingCatalogHeadingText">Номенклатура (Speaking) — 80 тақырып</span>
-          </h3>
-          <p id="speakingCatalogSubtitle" class="text-xs text-slate-400 mt-0.5">Номенклатура тақырыптары: елдер, таулар, өзендер және басқа географиялық нысандар</p>
-        </div>
-        <div class="relative w-full sm:w-72">
-          <input type="text" id="speakingSearchInput" oninput="renderSpeakingCards()" placeholder="Картаны іздеу / Поиск карты..."
-                 class="w-full pl-8 pr-3 py-2 bg-space-950 border border-slate-700 rounded-xl text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-brand-500">
-          <span class="absolute left-2.5 top-2.5 text-slate-500 text-xs">🔍</span>
-        </div>
-      </div>
-
       <!-- Interactive GeoQuest Embedded Arena inside Section 5 (Single Unified Card) -->
       <div class="p-3.5 sm:p-5 rounded-3xl bg-space-900 border border-cyan-500/30 space-y-3.5 shadow-2xl">
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-slate-800">
@@ -780,7 +764,6 @@
         </div>
       </div>
 
-      <!-- Cards Grid -->
       <!-- THEMATIC GIS MAPS HUB (ТАҚЫРЫПТЫҚ ГАЖ-КАРТАЛАР: 50 КАРТА) -->
       <div class="space-y-4 pt-2">
         <div class="bg-space-900 border border-slate-800 rounded-2xl p-4 sm:p-5 flex flex-col md:flex-row gap-3 justify-between items-center shadow-lg">
@@ -833,10 +816,6 @@
         <!-- Thematic Maps Grid -->
         <div id="thematicMapsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4"></div>
       </div>
-
-      <div class="h-4"></div>
-
-      <div id="speakingGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4"></div>
     </section>
 
     <!-- ============================================================== -->
@@ -5014,20 +4993,6 @@ function toggleAdminEditMode() {
       const fPending = document.getElementById('testFilterBtn-pending');
       if (fPending) fPending.textContent = isRu ? 'Не сданные' : 'Тапсырылмағандар';
 
-      // SECTION 5: Speaking Catalog
-      const speakingHdrTitle = document.getElementById('speakingCatalogHeadingText');
-      if (speakingHdrTitle) {
-        speakingHdrTitle.textContent = isRu
-          ? 'Номенклатура (Speaking) — 80 тем'
-          : 'Номенклатура (Speaking) — 80 тақырып';
-      }
-      const speakingHdrSub = document.getElementById('speakingCatalogSubtitle');
-      if (speakingHdrSub) {
-        speakingHdrSub.textContent = isRu
-          ? 'Темы номенклатуры: страны, горы, реки и другие географические объекты'
-          : 'Номенклатура тақырыптары: елдер, таулар, өзендер және басқа географиялық нысандар';
-      }
-
       // SECTION 6: Listening Catalog
       const listeningHdrTitle = document.getElementById('listeningCatalogHeadingText');
       if (listeningHdrTitle) {
@@ -5051,9 +5016,6 @@ function toggleAdminEditMode() {
 
       const tSearch = document.getElementById('testVariantSearchInput');
       if (tSearch) tSearch.placeholder = isRu ? 'Поиск по вариантам...' : 'Нұсқа бойынша іздеу...';
-
-      const spSearch = document.getElementById('speakingSearchInput');
-      if (spSearch) spSearch.placeholder = isRu ? 'Поиск карты...' : 'Картаны іздеу / Поиск карты...';
 
       const gqTitle = document.getElementById('geoquestHeroTitle');
       if (gqTitle) gqTitle.textContent = isRu ? 'Тренажёр «ГеоКвест: Карта Мира» (175 стран)' : '«ГеоКвест: Әлем картасы» тренажёры (175 ел)';
@@ -5384,41 +5346,6 @@ function toggleAdminEditMode() {
       });
     }
 
-function renderSpeakingCards() {
-      const grid = document.getElementById('speakingGrid');
-      if (!grid) return;
-      grid.innerHTML = '';
-
-      const isRu = (currentLang === 'ru');
-      const query = (document.getElementById('speakingSearchInput')?.value || '').toLowerCase().trim();
-
-      const items = appData.speaking || [];
-
-      items.forEach((item, idx) => {
-        const title = isRu ? (item.title_ru || item.title_kz) : (item.title_kz || item.title_ru);
-        if (query && !title.toLowerCase().includes(query)) return;
-
-        const num = parseInt(item.num, 10) || idx + 1;
-
-        const card = document.createElement('div');
-        card.className = "bg-space-900 border border-slate-800 rounded-2xl p-4 sm:p-5 flex flex-col shadow-xl hover:border-slate-700 transition";
-
-        card.innerHTML = `
-          <div class="flex items-center mb-2.5">
-            <span class="text-xs font-black text-amber-400 flex items-center space-x-1.5">
-              <span>🗣️</span>
-              <span>#${num}</span>
-            </span>
-          </div>
-          <h4 class="text-sm sm:text-base font-extrabold text-white leading-snug">
-            ${title}
-          </h4>
-          ${item.extra ? `<p class="text-[11px] text-slate-400 mt-1 line-clamp-2">${item.extra}</p>` : ''}
-        `;
-        grid.appendChild(card);
-      });
-    }
-
     let currentListeningDept = 'kz';
 
     function setListeningDepartment(dept) {
@@ -5628,7 +5555,6 @@ function renderSpeakingCards() {
       renderSabaktar();
       renderGrammarTable();
       renderTestter();
-      renderSpeakingCards();
       renderThematicMapsHub();
       renderListeningCards();
     }
