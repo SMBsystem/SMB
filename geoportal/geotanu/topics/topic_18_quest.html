@@ -249,11 +249,13 @@
     const ID_TO_SHAPE = { FRA: 'France', NOR: 'Norway' };
     const logicalId = shape => SHAPE_TO_ID[shape] || shape;
 
-    // Государства без контура на карте — рисуем кружками (lon, lat)
+    // Государства без контура на карте — рисуем кружками (lon, lat).
+    // at — точка на холсте 1000×540, где контуры упрощены и настоящие координаты
+    // попадают не туда (Монако — в море, Лихтенштейн — в Италию).
     const EXTRA_POINTS = {
       AND: { lon: 1.52, lat: 42.51, kz: 'Андорра', ru: 'Андорра' },
-      LIE: { lon: 9.55, lat: 47.17, kz: 'Лихтенштейн', ru: 'Лихтенштейн' },
-      MCO: { lon: 7.42, lat: 43.74, kz: 'Монако', ru: 'Монако' },
+      LIE: { lon: 9.55, lat: 47.17, at: { x: 522.7, y: 161.3 }, kz: 'Лихтенштейн', ru: 'Лихтенштейн' },
+      MCO: { lon: 7.42, lat: 43.74, at: { x: 517.8, y: 171.8 }, kz: 'Монако', ru: 'Монако' },
       VAT: { lon: 12.45, lat: 41.90, kz: 'Ватикан', ru: 'Ватикан' },
       MLT: { lon: 14.38, lat: 35.94, kz: 'Мальта', ru: 'Мальта' },
       SMR: { lon: 12.46, lat: 43.94, kz: 'Сан-Марино', ru: 'Сан-Марино' },
@@ -352,7 +354,7 @@
         }
       });
       Object.entries(EXTRA_POINTS).forEach(([id, p]) => {
-        const xy = robinsonXY(p.lon, p.lat);
+        const xy = p.at || robinsonXY(p.lon, p.lat);
         centerOf[id] = xy;
         addMarker(id, xy.x, xy.y);
       });
