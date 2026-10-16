@@ -525,20 +525,6 @@
     <!-- SECTION 3: ЖАТТАУ (GRAMMAR) - 44 BLOOKET LINKS                 -->
     <!-- ============================================================== -->
     <section id="section-zhattau_grammar" class="part-section hidden space-y-6">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-space-900 border border-slate-800 rounded-2xl p-4">
-        <div>
-          <h3 class="text-sm font-bold text-white">Жаттау тобын таңдаңыз / Выберите группу:</h3>
-          <p class="text-xs text-slate-400">44 тақырып бойынша Қазақша және Орысша жеке Blooket жинақтары</p>
-        </div>
-        <div class="grid grid-cols-2 gap-2 sm:flex sm:space-x-2 shrink-0">
-          <button onclick="setZhattauLang('kz')" id="btnZhattauKz" class="px-3 py-2 rounded-xl text-xs font-bold bg-brand-500 text-space-950 text-center font-bold">
-            🇰🇿 Қазақ тобы (44)
-          </button>
-          <button onclick="setZhattauLang('ru')" id="btnZhattauRu" class="px-3 py-2 rounded-xl text-xs font-bold bg-space-850 text-slate-400 hover:text-white border border-slate-700 text-center font-bold">
-            🇷🇺 Русская группа (44)
-          </button>
-        </div>
-      </div>
 
       <div class="bg-space-900 border border-slate-800 rounded-3xl p-5 shadow-xl">
         <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4">Жаттау тақырыптары мен тікелей Blooket сілтемелері:</h4>
@@ -575,16 +561,6 @@
             </span>
           </div>
         </div>
-        <!-- Department Switcher (Қазақ бөлімі / Русское отделение) -->
-        <div class="flex items-center space-x-2 overflow-x-auto touch-scroll pb-1 scrollbar-none">
-          <button onclick="setWritingDept('kz')" id="btnWritingDeptKz" class="px-3.5 py-1.5 rounded-xl text-xs font-black transition bg-amber-500 text-space-950 shadow-lg shadow-amber-500/25 whitespace-nowrap">
-            🇰🇿 Қазақ бөлімі (55 нұсқа)
-          </button>
-          <button onclick="setWritingDept('ru')" id="btnWritingDeptRu" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition bg-space-850 text-slate-400 hover:text-white border border-slate-700/80 whitespace-nowrap">
-            🇷🇺 Русское отделение (55 вариантов)
-          </button>
-        </div>
-
         <!-- Filter tabs for tests: All / Passed / Not taken -->
         <div class="flex items-center space-x-2 overflow-x-auto pb-1 no-scrollbar">
           <button onclick="setTestCatalogFilter('all')" id="testFilterBtn-all" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-brand-500 text-space-950 transition">Барлық нұсқалар</button>
@@ -872,10 +848,10 @@
         <div>
           <h3 id="listeningCatalogHeading" class="text-sm sm:text-base font-extrabold text-white flex items-center space-x-2">
             <span>🎬</span>
-            <span id="listeningCatalogHeadingText">Бейнесабақтар мен Нұсқа талдаулар (Listening) — 100 Бейнеталдау</span>
+            <span id="listeningCatalogHeadingText">Бейнесабақтар мен нұсқа талдаулар (Listening)</span>
           </h3>
           <p id="listeningCatalogSubtitle" class="text-xs text-slate-400 mt-0.5">
-            Қазақ және орыс бөлімдеріне арналған 50+50 ҰБТ нұсқа талдауы (YouTube видеолары)
+            Қазақ бөліміне арналған ҰБТ нұсқаларының авторлық бейнеталдаулары (YouTube)
           </p>
         </div>
         
@@ -887,21 +863,6 @@
         </div>
       </div>
 
-      <!-- Department Filter Pills (KZ / RU / ALL) -->
-      <div class="flex items-center space-x-2 overflow-x-auto touch-scroll pb-1 scrollbar-none text-xs font-bold">
-        <button onclick="setListeningDepartment('kz')" id="btnListenDept-kz" class="px-4 py-2 rounded-xl bg-red-600 text-white font-black whitespace-nowrap transition shadow-md shadow-red-600/30 flex items-center space-x-1.5">
-          <span>🇰🇿</span>
-          <span>Қазақ бөлімі (50 видео)</span>
-        </button>
-        <button onclick="setListeningDepartment('ru')" id="btnListenDept-ru" class="px-4 py-2 rounded-xl bg-space-850 text-slate-400 hover:text-white border border-slate-700 whitespace-nowrap transition flex items-center space-x-1.5">
-          <span>🇷🇺</span>
-          <span>Русское отделение (50 видео)</span>
-        </button>
-        <button onclick="setListeningDepartment('all')" id="btnListenDept-all" class="px-4 py-2 rounded-xl bg-space-850 text-slate-400 hover:text-white border border-slate-700 whitespace-nowrap transition flex items-center space-x-1.5">
-          <span>🌐</span>
-          <span>Барлығы / Все (100)</span>
-        </button>
-      </div>
 <div id="listeningGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4"></div>
     </section>
 
@@ -4946,20 +4907,10 @@ function toggleAdminEditMode() {
       const isRu = (currentLang === 'ru');
       const isDual = (currentLang === 'dual');
 
-      const isRuWritingUI = (currentWritingDept === 'ru' || currentLang === 'ru');
-      currentWritingDept = isRuWritingUI ? 'ru' : 'kz';
-      ['kz', 'ru'].forEach(d => {
-        const btn = document.getElementById('btnWritingDept' + (d === 'kz' ? 'Kz' : 'Ru'));
-        if (btn) {
-          if (d === currentWritingDept) {
-            btn.className = "px-3.5 py-1.5 rounded-xl text-xs font-black transition bg-amber-500 text-space-950 shadow-lg shadow-amber-500/25 whitespace-nowrap";
-          } else {
-            btn.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold transition bg-space-850 text-slate-400 hover:text-white border border-slate-700/80 whitespace-nowrap";
-          }
-          if (d === 'kz') btn.textContent = isRu ? '🇰🇿 Казахское отделение (55 вариантов)' : '🇰🇿 Қазақ бөлімі (55 нұсқа)';
-          if (d === 'ru') btn.textContent = isRu ? '🇷🇺 Русское отделение (55 вариантов)' : '🇷🇺 Русское отделение (55 вариантов)';
-        }
-      });
+      // Отделение тестов, видео и группа «Жаттау» — по языку сайта
+      currentWritingDept = isRu ? 'ru' : 'kz';
+      currentListeningDept = isRu ? 'ru' : 'kz';
+      currentZhattauLang = isRu ? 'ru' : 'kz';
 
       // Top Header HUD elements
       const streakEl = document.getElementById('streakDays');
@@ -5081,14 +5032,14 @@ function toggleAdminEditMode() {
       const listeningHdrTitle = document.getElementById('listeningCatalogHeadingText');
       if (listeningHdrTitle) {
         listeningHdrTitle.textContent = isRu
-          ? 'Видеоуроки и разборы вариантов (Listening) — 23 Эфира'
-          : 'Видеолар мен Нұсқа талдаулар (Listening) — 23 Эфир';
+          ? 'Видеоуроки и разборы вариантов (Listening)'
+          : 'Бейнесабақтар мен нұсқа талдаулар (Listening)';
       }
       const listeningHdrSub = document.getElementById('listeningCatalogSubtitle');
       if (listeningHdrSub) {
         listeningHdrSub.textContent = isRu
-          ? 'Видеоразборы вариантов на YouTube и проверочные тесты Google Drive'
-          : 'YouTube нұсқа талдау бейнесабақтары мен Google Drive сынақ тесттері';
+          ? 'Авторские видеоразборы вариантов ЕНТ для русского отделения'
+          : 'Қазақ бөліміне арналған ҰБТ нұсқаларының авторлық бейнеталдаулары (YouTube)';
       }
 
       // Search placeholders
@@ -5510,20 +5461,22 @@ function renderSpeakingCards() {
       // Update text in headers
       const headingText = document.getElementById('listeningCatalogHeadingText');
       if (headingText) {
-        headingText.textContent = isRu 
-          ? 'Видеоуроки и Разборы вариантов (Listening) — 100 Видео' 
-          : 'Бейнесабақтар мен Нұсқа талдаулар (Listening) — 100 Бейнеталдау';
+        headingText.textContent = isRu
+          ? 'Видеоуроки и разборы вариантов (Listening)'
+          : 'Бейнесабақтар мен нұсқа талдаулар (Listening)';
       }
 
       const subtitleText = document.getElementById('listeningCatalogSubtitle');
       if (subtitleText) {
-        subtitleText.textContent = isRu 
-          ? '50+50 полных авторских видеоразборов вариантов ЕНТ для казахского и русского отделений' 
-          : 'Қазақ және орыс бөлімдеріне арналған 50+50 ҰБТ нұсқа талдауы (YouTube видеолары)';
+        subtitleText.textContent = isRu
+          ? 'Авторские видеоразборы вариантов ЕНТ для русского отделения'
+          : 'Қазақ бөліміне арналған ҰБТ нұсқаларының авторлық бейнеталдаулары (YouTube)';
       }
 
+      // Отделение — по языку сайта (переключатель KZ/RU в шапке)
+      const dept = isRu ? 'ru' : 'kz';
       const filtered = items.filter(item => {
-        if (currentListeningDept !== 'all' && item.department !== currentListeningDept) return false;
+        if (item.department !== dept) return false;
         const title = (item.video_title || '').toLowerCase();
         const channel = (item.channel || '').toLowerCase();
         const topic = (item.topic_highlight || '').toLowerCase();
@@ -5929,8 +5882,8 @@ function renderSpeakingCards() {
       writingTestsBank.forEach((v) => {
         const off = (appData.writing_official || []).find(item => item.variant_num === v.id) || {};
 
-        const titleKz = `${v.id}-нұсқа: ҰБТ кешенді сынағы (40 сұрақ)`;
-        const titleRu = `${v.id} вариант: Тест ЕНТ (перевод, 40 вопросов)`;
+        const titleKz = `${v.id}-нұсқа: ҰБТ кешенді сынағы`;
+        const titleRu = `${v.id} вариант: комплексный тест ЕНТ`;
         const displayTitle = isRu ? titleRu : titleKz;
 
         const labelKz = 'ҰБТ кешенді онлайн сынақ тесті және толық авторлық талдау.';
@@ -6048,8 +6001,8 @@ function renderSpeakingCards() {
           : `ҰБТ ${v.id}-нұсқа • ${v.questions.length} сұрақ (${maxPoints} балл)`;
       }
 
-      const titleKz = `${v.id}-нұсқа: ҰБТ кешенді сынағы (${v.questions.length} сұрақ)`;
-      const titleRu = `${v.id} вариант: Тест ЕНТ (перевод, ${v.questions.length} вопросов)`;
+      const titleKz = `${v.id}-нұсқа: ҰБТ кешенді сынағы`;
+      const titleRu = `${v.id} вариант: комплексный тест ЕНТ`;
       document.getElementById('examHeaderTitle').textContent = isRu ? titleRu : titleKz;
 
       document.getElementById('examHeaderDesc').textContent = isRu
