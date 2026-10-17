@@ -789,6 +789,14 @@
     score.textContent = `${quiz.right}/${quiz.qs.length}`;
     if (!q) {
       const pct = Math.round(quiz.right / quiz.qs.length * 100);
+      // Лучший результат по карте — для прогресса в каталоге карт на странице курса
+      try {
+        const all = JSON.parse(localStorage.getItem('geotany_maps_checked') || '{}') || {};
+        if (!(all[mapNo] >= pct)) {
+          all[mapNo] = pct;
+          localStorage.setItem('geotany_maps_checked', JSON.stringify(all));
+        }
+      } catch (e) {}
       box.innerHTML = `<div class="text-center space-y-2 py-1">
           <div class="text-3xl">${pct >= 80 ? '🏆' : pct >= 50 ? '👍' : '📖'}</div>
           <div class="text-sm font-black text-white">${T('Нәтиже', 'Результат')}: ${quiz.right} / ${quiz.qs.length} (${pct}%)</div>

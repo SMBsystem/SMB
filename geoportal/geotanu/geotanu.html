@@ -179,6 +179,11 @@
     .sec-track-bar { height: 5px; margin-top: .4rem; border-radius: 9px; background: #1e293b; overflow: hidden; }
     .sec-track-bar i { display: block; height: 100%; border-radius: 9px; background: rgb(var(--ac)); transition: width .4s; }
     .sec-pills { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .9rem; padding-top: .9rem; border-top: 1px solid #1e293b; }
+    @media (max-width: 639px) {
+      .sec-pills { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-left: -1rem; margin-right: -1rem; padding-left: 1rem; padding-right: 1rem; }
+      .sec-pills::-webkit-scrollbar { display: none; }
+      .chip-btn { flex-shrink: 0; }
+    }
     .chip-btn { padding: .42rem .8rem; border-radius: .7rem; font-size: .74rem; font-weight: 700; white-space: nowrap; color: #94a3b8; background: #151e2e; border: 1px solid #263248; transition: all .15s; }
     .chip-btn:hover { color: #fff; border-color: #475569; }
     .chip-btn.on { color: #0b0f19; background: rgb(var(--ac)); border-color: rgb(var(--ac)); font-weight: 800; box-shadow: 0 6px 18px -8px rgba(var(--ac), .8); }
@@ -1481,7 +1486,7 @@
     // Прогресс хранится в общих ключах браузера. Чтобы второй ученик на том же
     // устройстве не получил чужие баллы, ключи привязаны к почте из записи входа:
     // при смене ученика прогресс прежнего откладывается, а свой — восстанавливается.
-    const PROGRESS_KEYS = ['geotany_user_xp', 'geotany_vocab_completed', 'geotany_completed_lessons', 'geotany_lesson_scores', 'geotany_grammar_completed', 'geotany_writing_scores', 'geotany_reading_tests_passed'];
+    const PROGRESS_KEYS = ['geotany_user_xp', 'geotany_vocab_completed', 'geotany_completed_lessons', 'geotany_lesson_scores', 'geotany_grammar_completed', 'geotany_writing_scores', 'geotany_reading_tests_passed', 'geotany_maps_checked', 'geotany_videos_watched'];
     const PROGRESS_OWNER_KEY = 'geotany_progress_owner';
 
     (function syncProgressOwner() {
@@ -2847,87 +2852,54 @@ function renderGrammarModalContent() {
       const isRu = (currentLang === 'ru');
       const isDual = (currentLang === 'dual');
 
-      const countBadge = document.getElementById('readingProgressCount');
-      if (countBadge) {
-        countBadge.textContent = isRu 
-          ? `${completedLessons.size} / ${richLessons.length} прочитано`
-          : `${completedLessons.size} / ${richLessons.length} оқылды`;
-      }
+      renderTrack('readingProgressCount', completedLessons.size, richLessons.length, 'оқылды', 'прочитано');
 
+      let shown = 0;
       richLessons.forEach((l) => {
         const titleKz = l.title_kz.toLowerCase();
         const titleRu = l.title_ru.toLowerCase();
-        if (query && !titleKz.includes(query) && !titleRu.includes(query)) return;
+        if (query && !titleKz.includes(query) && !titleRu.includes(query) && String(l.id) !== query) return;
+        shown++;
 
         const isDone = completedLessons.has(l.id);
         const score = lessonScores[l.id];
-
-        const card = document.createElement('div');
-        card.className = `bg-space-900 border ${isDone ? 'border-emerald-500/80 shadow-emerald-500/10' : 'border-slate-800'} rounded-2xl p-4 sm:p-5 hover:border-slate-700 transition flex flex-col justify-between shadow-xl group`;
-
         const displayTitle = isRu ? l.title_ru : (isDual ? `${l.title_kz} / ${l.title_ru}` : l.title_kz);
-        const lessonBadge = isRu ? `${l.id}-урок` : `${l.id}-сабақ`;
-        const doneBadge = isDone 
-          ? (isRu ? `✓ Прочитано (${score || 100}%)` : `✓ Оқылды (${score || 100}%)`)
-          : (isRu ? `${l.time} чтения` : l.time);
-
-        const readBtnLabel = isRu ? 'Читать урок →' : 'Сабақты оқу →';
-        const pdfLink = isRu ? (l.pdf_ru || l.pdf_kz) : (l.pdf_kz || l.pdf_ru);
         const test = readingTestForLesson(l.id);
 
-        const renderedTags = (l.tags || []).map(t => {
+        const tagNames = [...new Set((l.tags || []).map(t => {
           const raw = String(t).trim();
           const clean = raw.replace(/^#/, '');
-          const tr = isRu ? (TAGS_RU[raw] || TAGS_RU[clean] || clean) : clean;
-          return `<span class="text-[10px] bg-space-850 text-slate-400 px-2 py-0.5 rounded-md border border-slate-800">#${tr}</span>`;
-        }).join('');
+          return (isRu ? (TAGS_RU[raw] || TAGS_RU[clean] || clean) : clean).replace(/_/g, ' ');
+        }))];
+        const renderedTags = tagNames.slice(0, 3).map(tr => `<span class="gc-tag">#${tr}</span>`).join('');
 
+        const card = document.createElement('div');
+        card.className = `gc ac-cyan${isDone ? ' done' : ''}`;
         card.innerHTML = `
-          <div>
-            <div class="flex justify-between items-center mb-2.5">
-              <span class="text-xs font-black text-cyan-400 flex items-center space-x-1.5">
-                <span>📖</span>
-                <span>${lessonBadge}</span>
-              </span>
-              <span class="text-[10px] px-2.5 py-0.5 rounded-full font-bold ${isDone ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-slate-800 text-slate-400'}">
-                ${doneBadge}
-              </span>
+          <div class="gc-top">
+            <div class="gc-num">${isDone ? '✓' : l.id}</div>
+            <div class="min-w-0 flex-1">
+              <div class="gc-kicker">${isRu ? `${l.id}-урок` : `${l.id}-сабақ`} · ⏱ ${l.time || ''}</div>
+              <h4 class="gc-title">${displayTitle.replace(/^\d+\s*-?\s*(сабақ|урок)\.?\s*/i, '')}</h4>
             </div>
-            
-            <h4 class="text-sm sm:text-base font-extrabold text-white group-hover:text-cyan-400 transition leading-snug">
-              ${displayTitle}
-            </h4>
-
-            <div class="flex flex-wrap gap-1 mt-2.5">
-              ${renderedTags}
-            </div>
+            ${isDone ? `<span class="gc-status">✓ ${score || 100}%</span>` : ''}
           </div>
-
-          <div class="mt-4 pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-2">
-            <!-- 1. IN-APP LESSON OPEN BUTTON -->
-            <button onclick="event.stopPropagation(); openLessonReader(${l.id})" class="px-3 py-1.5 rounded-xl bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500/30 border border-cyan-500/40 text-xs font-bold transition flex items-center space-x-1 shadow-md shadow-cyan-500/10">
-              <span>📖</span>
-              <span>${readBtnLabel}</span>
+          ${renderedTags ? `<div class="gc-tags">${renderedTags}</div>` : ''}
+          <div class="gc-foot">
+            <button onclick="event.stopPropagation(); openLessonReader(${l.id})" class="gc-btn">
+              <span>📖</span><span>${isRu ? 'Читать урок' : 'Сабақты оқу'}</span>
             </button>
-
-            <!-- 2. ТЕСТ К УРОКУ -->
             ${test ? `
-              <button type="button" onclick="event.stopPropagation(); openReadingTestModal(${test.id}, 'exam')" class="px-3 py-1.5 rounded-xl bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 border border-amber-500/40 text-xs font-bold transition flex items-center space-x-1" title="${isRu ? `Тест: ${test.questions.length} вопросов` : `Тест: ${test.questions.length} сұрақ`}">
-                <span>📝</span>
-                <span>Тест</span>
-              </button>
-            ` : ''}
-
-            <!-- 3. BLOOKET BUTTON -->
+              <button type="button" onclick="event.stopPropagation(); openReadingTestModal(${test.id}, 'exam')" class="gc-btn2 ac-amber" title="${isRu ? `Тест: ${test.questions.length} вопросов` : `Тест: ${test.questions.length} сұрақ`}">
+                <span>📝</span><span>Тест</span>
+              </button>` : ''}
             ${l.blooket && l.blooket.startsWith('http') ? `
-              <a href="${l.blooket}" target="_blank" onclick="event.stopPropagation(); playSuccessChime();" class="text-xs text-brand-400 hover:underline font-bold flex items-center space-x-1">
-                <span>🎮 Blooket</span>
-              </a>
-            ` : ''}
+              <a href="${l.blooket}" target="_blank" onclick="event.stopPropagation(); playSuccessChime();" class="gc-btn2 ac-emerald" title="Blooket">🎮</a>` : ''}
           </div>
         `;
         grid.appendChild(card);
       });
+      if (!shown) grid.innerHTML = emptyNote();
     }
 
     function filterLessonsCatalog() {
@@ -4974,36 +4946,20 @@ function toggleAdminEditMode() {
           : '20 интерактивті сабақ, әр сабаққа тест';
       }
 
-      // SECTION 3: Grammar / Zhattau Header
-      const zhattauH3 = document.querySelector('#section-zhattau_grammar h3');
-      if (zhattauH3) {
-        zhattauH3.textContent = isRu ? 'Выберите группу для запоминания:' : 'Жаттау тобын таңдаңыз / Выберите группу:';
-      }
-      const zhattauP = document.querySelector('#section-zhattau_grammar p');
-      if (zhattauP) {
-        zhattauP.textContent = isRu 
-          ? '44 темы по географии с готовыми наборами Blooket для казахской и русской групп'
-          : '44 тақырып бойынша Қазақша және Орысша жеке Blooket жинақтары';
-      }
-      const gHeading = document.querySelector('#section-zhattau_grammar h4');
-      if (gHeading) {
-        gHeading.textContent = isRu
-          ? 'Темы для запоминания и прямые ссылки на Blooket (Русская группа):'
-          : 'Жаттау тақырыптары мен тікелей Blooket сілтемелері (Қазақ тобы):';
-      }
+      // SECTION 3: Grammar / Zhattau — заголовки панели задаёт renderGrammarTable()
 
       // SECTION 4: Writing / Testter Catalog
       const writingHdrTitle = document.getElementById('writingCatalogHeadingText');
       if (writingHdrTitle) {
         writingHdrTitle.textContent = isRu
-          ? 'Тесты ЕНТ и автопроверка (Writing / Exam Trainer)'
-          : 'ҰБТ Тесттері & Авто-бағалау (Writing / Exam Trainer)';
+          ? 'Тесты ЕНТ и автопроверка'
+          : 'ҰБТ тесттері және авто-бағалау';
       }
       const writingHdrSub = document.getElementById('writingCatalogSubtitle');
       if (writingHdrSub) {
         writingHdrSub.textContent = isRu
-          ? '1–55 вариантов ЕНТ (всего 1 885 вопросов). Подробные авторские разборы каждого вопроса и автопроверка.'
-          : '1–55 ҰБТ нұсқалары толық енгізілді (барлығы 1 885 сұрақ, бір және бірнеше дұрыс жауапты сұрақтар). Түпнұсқа жауап парағымен тексерілген авторлық разборлар мен авто-бағалау.';
+          ? '55 вариантов ЕНТ: автопроверка и авторский разбор каждого вопроса.'
+          : '55 ҰБТ нұсқасы: авто-бағалау және әр сұрақтың авторлық талдауы.';
       }
 
       const fAll = document.getElementById('testFilterBtn-all');
@@ -5269,14 +5225,7 @@ function toggleAdminEditMode() {
 
     function filterThematicCategory(cat) {
       currentThematicCategory = cat;
-      ['all', 'geopolitics', 'demography', 'economy', 'physical', 'kazakhstan'].forEach(c => {
-        const b = document.getElementById('thmCat-' + c);
-        if (b) {
-          b.className = (c === cat)
-            ? 'px-3.5 py-1.5 rounded-xl bg-cyan-500 text-space-950 font-black whitespace-nowrap transition'
-            : 'px-3 py-1.5 rounded-xl bg-space-850 text-slate-400 hover:text-white border border-slate-700 whitespace-nowrap transition';
-        }
-      });
+      setChips(['all', 'geopolitics', 'demography', 'economy', 'physical', 'kazakhstan'].map(c => 'thmCat-' + c), 'thmCat-' + cat);
       renderThematicMapsHub();
     }
 
@@ -5306,49 +5255,45 @@ function toggleAdminEditMode() {
         return true;
       });
 
+      // Результаты самопроверки на картах (пишет maps/thematic_map.js)
+      const checked = readJsonKey('geotany_maps_checked', {});
+      renderTrack('mapsTrack', THEMATIC_MAPS_BANK.filter(m => checked[m.id] !== undefined).length, THEMATIC_MAPS_BANK.length, 'тексерілді', 'проверено');
+
+      const CAT_NAMES = {
+        geopolitics: { kz: '🌐 Геосаясат', ru: '🌐 Геополитика' },
+        demography: { kz: '👥 Демография', ru: '👥 Демография' },
+        economy: { kz: '🏭 Шаруашылық', ru: '🏭 Хозяйство' },
+        physical: { kz: '🌍 Табиғат', ru: '🌍 Природа' },
+        kazakhstan: { kz: '🏛️ Қазақстан', ru: '🏛️ Казахстан' }
+      };
       filtered.forEach(m => {
-        const card = document.createElement('div');
-        card.className = 'group p-5 rounded-2xl bg-space-900 border border-slate-800 hover:border-cyan-500/50 transition flex flex-col justify-between shadow-xl';
-
-        // У карт 11–50 нет подписей категорий — берём по коду категории
-        const CAT_NAMES = {
-          geopolitics: { kz: 'Геосаясат', ru: 'Геополитика' },
-          demography: { kz: 'Демография', ru: 'Демография' },
-          economy: { kz: 'Экономика', ru: 'Экономика' },
-          physical: { kz: 'Физикалық география', ru: 'Физическая география' },
-          kazakhstan: { kz: 'Қазақстан', ru: 'Казахстан' }
-        };
-        const catName = (isRu ? m.category_ru : m.category_kz) || (CAT_NAMES[m.category] ? CAT_NAMES[m.category][isRu ? 'ru' : 'kz'] : '');
-        const title = isRu ? m.title_ru : m.title_kz;
+        const catName = CAT_NAMES[m.category] ? CAT_NAMES[m.category][isRu ? 'ru' : 'kz'] : '';
+        const title = (isRu ? m.title_ru : m.title_kz).replace(/^\d+\.\s*/, '');
         const desc = isRu ? m.desc_ru : m.desc_kz;
+        const best = checked[m.id];
+        const isDone = best !== undefined;
 
+        const card = document.createElement('div');
+        card.className = `gc ac-teal${isDone && best >= 80 ? ' done' : ''}`;
         card.innerHTML = `
-          <div class="space-y-2.5">
-            <div class="flex items-center justify-between">
-              <span class="text-[11px] font-black text-amber-400 px-2.5 py-0.5 rounded-md bg-amber-500/10 border border-amber-500/20">
-                #${m.id}
-              </span>
-              <span class="text-[10px] text-cyan-400 font-bold px-2 py-0.5 rounded-md bg-space-850 border border-slate-700">
-                ${catName}
-              </span>
+          <div class="gc-top">
+            <div class="gc-num">${m.id}</div>
+            <div class="min-w-0 flex-1">
+              <div class="gc-kicker">${catName}</div>
+              <h4 class="gc-title">${title}</h4>
             </div>
-            <h4 class="text-sm font-extrabold text-white group-hover:text-cyan-300 transition leading-snug">
-              ${title}
-            </h4>
-            <p class="text-xs text-slate-400 leading-relaxed line-clamp-2">
-              ${desc}
-            </p>
+            ${isDone ? `<span class="gc-status${best >= 80 ? '' : ' warn'}">🎯 ${best}%</span>` : ''}
           </div>
-
-          <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2">
-            <a href="maps/map_${String(m.id).padStart(2, '0')}.html?lang=${currentLang === 'ru' ? 'ru' : 'kz'}" class="flex-1 py-1.5 px-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-space-950 font-bold text-xs transition flex items-center justify-center space-x-1 shadow-sm">
-              <span>🗺️</span>
-              <span>${isRu ? 'Открыть карту' : 'Картаны ашу'} →</span>
+          <p class="gc-sub line-clamp-2">${desc}</p>
+          <div class="gc-foot">
+            <a href="maps/map_${String(m.id).padStart(2, '0')}.html?lang=${isRu ? 'ru' : 'kz'}" class="gc-btn">
+              <span>🗺️</span><span>${isRu ? 'Открыть карту' : 'Картаны ашу'}</span>
             </a>
           </div>
         `;
         container.appendChild(card);
       });
+      if (!filtered.length) container.innerHTML = emptyNote();
     }
 
     let currentListeningDept = 'kz';
@@ -5404,62 +5349,49 @@ function toggleAdminEditMode() {
         return true;
       });
 
-      filtered.forEach((item, idx) => {
-        const title = item.video_title;
+      const watched = new Set(readJsonKey('geotany_videos_watched', []));
+      const deptItems = items.filter(item => item.department === dept);
+      renderTrack('videosTrack', deptItems.filter(item => watched.has(item.video_id)).length, deptItems.length, 'көрілді', 'просмотрено');
+
+      filtered.forEach((item) => {
+        const isSeen = watched.has(item.video_id);
+        const title = String(item.video_title || '').replace(/^ГЕОГРАФИЯ\s*(ҰБТ|ЕНТ)\s*\|\s*/i, '');
         const card = document.createElement('div');
-        card.className = "bg-space-900 border border-slate-800 rounded-2xl p-4 sm:p-5 flex flex-col justify-between shadow-xl hover:border-red-500/50 transition group";
-
-        const tagsHtml = (item.tags || []).map(t => `<span class="text-[10px] bg-space-850 text-slate-400 px-2 py-0.5 rounded-md border border-slate-800">${t}</span>`).join(' ');
-
+        card.className = `gc ac-red${isSeen ? ' done' : ''}`;
         card.innerHTML = `
+          <a href="${item.video_url}" target="_blank" onclick="markVideoWatched('${item.video_id}')" class="gc-thumb block">
+            <img src="https://img.youtube.com/vi/${item.video_id}/hqdefault.jpg" alt="" loading="lazy" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent"></div>
+            <span class="absolute inset-0 flex items-center justify-center">
+              <span class="w-12 h-12 rounded-full bg-red-600/90 text-white flex items-center justify-center text-lg shadow-xl">▶</span>
+            </span>
+            <span class="absolute right-2 bottom-2 text-[10px] bg-black/80 text-slate-100 font-mono px-1.5 py-0.5 rounded font-bold">${item.duration || ''}</span>
+            ${isSeen ? `<span class="absolute left-2 top-2 gc-status">✓ ${isRu ? 'Просмотрено' : 'Көрілді'}</span>` : ''}
+          </a>
           <div>
-            <!-- Video Thumbnail with Play Button -->
-            <div class="relative w-full aspect-video rounded-xl overflow-hidden bg-space-950 border border-slate-800 mb-3 group-hover:border-red-500/40 transition">
-              <img src="https://img.youtube.com/vi/${item.video_id}/hqdefault.jpg" alt="${title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" loading="lazy" />
-              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-2.5 justify-between">
-                <span class="text-[10px] bg-red-600/95 text-white font-black px-2 py-0.5 rounded-md flex items-center space-x-1 shadow-md">
-                  <span>▶</span>
-                  <span>YouTube</span>
-                </span>
-                <span class="text-[10px] bg-black/80 text-slate-200 font-mono px-1.5 py-0.5 rounded font-bold border border-white/10">
-                  ${item.duration}
-                </span>
-              </div>
-            </div>
-
-            <!-- Header Info -->
-            <div class="flex justify-end items-center mb-2">
-              <span class="text-[10px] px-2 py-0.5 rounded font-bold bg-space-850 text-slate-300 border border-slate-700/60">
-                ${item.channel}
-              </span>
-            </div>
-
-            <!-- Title -->
-            <h4 class="text-sm sm:text-base font-extrabold text-white leading-snug line-clamp-2 group-hover:text-red-400 transition">
-              ${title}
-            </h4>
-
-            <!-- Covered Topic & Tags -->
-            <p class="text-xs text-slate-300 mt-2 leading-relaxed">
-              <span class="text-slate-400 font-medium">${isRu ? 'Тематика:' : 'Тақырыптар:'}</span> ${item.topic_highlight}
-            </p>
-
-            <div class="flex flex-wrap gap-1.5 mt-2.5">
-              ${tagsHtml}
-            </div>
+            <div class="gc-kicker">${isRu ? `Вариант ${item.variant_num}` : `${item.variant_num}-нұсқа`} · ${item.channel || ''}</div>
+            <h4 class="gc-title line-clamp-2">${title}</h4>
           </div>
-
-          <!-- Red YouTube Action Button -->
-          <div class="mt-4 pt-3 border-t border-slate-800">
-            <a href="${item.video_url}" target="_blank" onclick="event.stopPropagation();" class="w-full py-2.5 px-4 rounded-xl bg-red-600 hover:bg-red-500 text-white font-black text-xs transition flex items-center justify-center space-x-2 shadow-lg shadow-red-600/30 group">
-              <span class="text-sm">▶</span>
-              <span>${isRu ? 'Смотреть на YouTube' : 'YouTube-та көру'} ↗</span>
+          ${item.topic_highlight ? `<p class="gc-sub"><span class="text-slate-500">${isRu ? 'Темы:' : 'Тақырыптар:'}</span> ${item.topic_highlight}</p>` : ''}
+          <div class="gc-foot">
+            <a href="${item.video_url}" target="_blank" onclick="markVideoWatched('${item.video_id}')" class="gc-btn">
+              <span>▶</span><span>${isRu ? 'Смотреть на YouTube' : 'YouTube-та көру'}</span>
             </a>
           </div>
         `;
-
         grid.appendChild(card);
       });
+      if (!filtered.length) grid.innerHTML = emptyNote();
+    }
+
+    // Отметка «видео просмотрено» — по открытию ролика
+    function markVideoWatched(videoId) {
+      const list = readJsonKey('geotany_videos_watched', []);
+      if (!list.includes(videoId)) {
+        list.push(videoId);
+        safeStorage.setItem('geotany_videos_watched', JSON.stringify(list));
+      }
+      setTimeout(renderListeningCards, 300);
     }
     const MAIN_PARTS = [
       'blooket_vocab',
@@ -5565,6 +5497,29 @@ function toggleAdminEditMode() {
 
     }
 
+    // Общие элементы разделов: шкала прогресса, кнопки-фильтры, «ничего не найдено»
+    function setText(id, text) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = text;
+    }
+    function renderTrack(elId, done, total, labelKz, labelRu) {
+      const el = document.getElementById(elId);
+      if (!el) return;
+      const pct = total ? Math.round(Math.min(done, total) / total * 100) : 0;
+      el.innerHTML = `<div class="sec-track-top"><span class="sec-track-num">${done} / ${total}</span>` +
+        `<span class="sec-track-lbl">${currentLang === 'ru' ? labelRu : labelKz} · ${pct}%</span></div>` +
+        `<div class="sec-track-bar"><i style="width:${pct}%"></i></div>`;
+    }
+    function setChips(ids, activeId) {
+      ids.forEach(id => {
+        const b = document.getElementById(id);
+        if (b) b.classList.toggle('on', id === activeId);
+      });
+    }
+    function emptyNote() {
+      return `<div class="sec-empty">🔍 ${currentLang === 'ru' ? 'Ничего не найдено' : 'Ештеңе табылмады'}</div>`;
+    }
+
     function renderAllSections() {
       renderBlooketCards();
       renderSabaktar();
@@ -5584,78 +5539,61 @@ function toggleAdminEditMode() {
       const isRu = (currentLang === 'ru');
       const isDual = (currentLang === 'dual');
 
+      setText('blooketBarTitle', isRu ? 'Наборы Blooket' : 'Blooket жинақтары');
+      setText('blooketBarSub', isRu ? 'Сыграйте по теме и нажмите «Завершил» — прогресс сохранится' : 'Тақырып бойынша ойнап, «Аяқтадым» басыңыз — прогресс сақталады');
+      const allTopics = appData.modules.reduce((n, m) => n + m.topics.length, 0);
+      renderTrack('blooketTrack', completedBlooketTopics.size, allTopics, 'аяқталды', 'завершено');
+      const MOD_SHORT = { 1: ['🌊', 'Материктер', 'Материки'], 2: ['🏔️', 'Рельеф', 'Рельеф'], 3: ['💧', 'Гидрография', 'Гидрография'], 4: ['🌤️', 'Климат', 'Климат'], 5: ['🏛️', 'Қазақстан', 'Казахстан'], 6: ['🌎', 'Саяси', 'Политика'] };
+      appData.modules.forEach(m => {
+        const s = MOD_SHORT[m.id];
+        if (s) setText('mod-filter-' + m.id, `${s[0]} ${m.id}. ${isRu ? s[2] : s[1]} (${m.code || m.topics.length})`);
+      });
+      setText('mod-filter-all', `${isRu ? 'Все' : 'Барлығы'} (${allTopics})`);
+
+      let shown = 0;
       appData.modules.forEach(mod => {
         if (currentBlooketFilter !== 'all' && mod.id != currentBlooketFilter) return;
+        const modName = isRu ? (mod.name_ru || mod.name_kz) : (mod.name_kz || mod.name_ru);
 
         mod.topics.forEach(t => {
           const titleKz = t.title_kz.toLowerCase();
           const titleRu = t.title_ru.toLowerCase();
-          if (query && !titleKz.includes(query) && !titleRu.includes(query)) return;
+          if (query && !titleKz.includes(query) && !titleRu.includes(query) && String(t.num) !== query) return;
+          shown++;
 
-          let displayTitle = isRu ? t.title_ru : (isDual ? `${t.title_kz} / ${t.title_ru}` : t.title_kz);
-
+          const displayTitle = isRu ? t.title_ru : (isDual ? `${t.title_kz} / ${t.title_ru}` : t.title_kz);
           const isCompleted = completedBlooketTopics.has(t.num);
-          const isDualTopic = t.is_dual;
 
           const card = document.createElement('div');
-          card.className = `bg-space-900 border ${isCompleted ? 'border-brand-500/80 shadow-brand-500/10' : 'border-slate-800'} rounded-2xl p-4 hover:border-slate-700 transition flex flex-col justify-between group shadow-lg`;
-
-          const completeBtnLabel = isCompleted 
-            ? (isRu ? '✓ Завершено' : '✓ Аяқталды') 
-            : (isRu ? 'Аяқтадым (+20 XP)' : 'Аяқтадым (+20 XP)');
-
+          card.className = `gc ac-emerald${isCompleted ? ' done' : ''}`;
           card.innerHTML = `
-            <div>
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-xs font-mono font-bold text-slate-500">#${t.num}</span>
-                <div class="flex space-x-1">
-                  ${isDualTopic ? '<span class="text-[9px] bg-indigo-500/20 text-indigo-300 px-1.5 py-0.5 rounded font-mono font-bold">Қаз/Рус</span>' : ''}
-                  <span class="text-[9px] bg-space-850 text-slate-400 px-1.5 py-0.5 rounded border border-slate-700 font-mono">Blooket</span>
-                </div>
+            <div class="gc-top">
+              <div class="gc-num">${isCompleted ? '✓' : t.num}</div>
+              <div class="min-w-0 flex-1">
+                <div class="gc-kicker">${(MOD_SHORT[mod.id] || ['🎮'])[0]} ${modName}</div>
+                <h4 class="gc-title">${displayTitle}</h4>
               </div>
-
-              <h4 class="text-sm font-extrabold text-white group-hover:text-brand-400 transition leading-snug">
-                ${displayTitle}
-              </h4>
+              ${t.is_dual ? '<span class="gc-status warn">Қаз/Рус</span>' : ''}
             </div>
-
-            <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between">
-              <a href="${t.blooket_url}" target="_blank" onclick="event.stopPropagation(); playSuccessChime();"
-                 class="px-3 py-1.5 rounded-xl bg-brand-500/20 text-brand-300 hover:bg-brand-500/30 border border-brand-500/30 text-xs font-bold transition flex items-center space-x-1.5">
-                <span>🎮</span>
-                <span>${isRu ? 'Играть в Blooket' : 'Blooket ойнау'}</span>
+            <div class="gc-foot">
+              <a href="${t.blooket_url}" target="_blank" onclick="event.stopPropagation(); playSuccessChime();" class="gc-btn">
+                <span>🎮</span><span>${isRu ? 'Играть в Blooket' : 'Blooket ойнау'}</span>
               </a>
-
-              <button onclick="toggleCompleteTopic(${t.num}, event)" 
-                      class="text-xs font-bold px-2.5 py-1.5 rounded-xl transition ${
-                        isCompleted 
-                          ? 'bg-brand-500 text-space-950 font-black' 
-                          : 'bg-space-850 hover:bg-space-800 text-slate-400 hover:text-white border border-slate-700'
-                      }">
-                ${completeBtnLabel}
+              <button onclick="toggleCompleteTopic(${t.num}, event)" class="gc-btn2${isCompleted ? ' on' : ''}">
+                ${isCompleted ? (isRu ? '✓ Завершено' : '✓ Аяқталды') : (isRu ? 'Завершил +20 XP' : 'Аяқтадым +20 XP')}
               </button>
             </div>
           `;
           grid.appendChild(card);
         });
       });
+      if (!shown) grid.innerHTML = emptyNote();
     }
 
     function filterBlooket(modId) {
       currentBlooketFilter = modId;
       playBeep(520, 'sine', 0.04);
-
-      ['all', '1', '2', '3', '4', '5', '6'].forEach(id => {
-        const btn = document.getElementById(`mod-filter-${id}`);
-        if (btn) {
-          if (String(id) === String(modId)) {
-            btn.className = "blooket-filter-btn shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-black transition bg-brand-500 text-space-950 shadow-lg shadow-brand-500/25 whitespace-nowrap";
-          } else {
-            btn.className = "blooket-filter-btn shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-bold transition bg-space-850 text-slate-400 hover:text-white border border-slate-700/80 whitespace-nowrap";
-          }
-        }
-      });
-
+      setChips(['all', '1', '2', '3', '4', '5', '6'].map(id => 'mod-filter-' + id), 'mod-filter-' + modId);
       renderBlooketCards();
     }
 
@@ -5694,57 +5632,48 @@ function toggleAdminEditMode() {
         completedGrammarTopics = new Set(JSON.parse(safeStorage.getItem('geotany_grammar_completed') || '[]'));
       } catch (e) {}
 
+      setText('grammarBarTitle', isRu ? 'Темы для запоминания' : 'Жаттау тақырыптары');
+      setText('grammarBarSub', isRu ? 'Теория каждой темы, правила ЕНТ и набор Blooket' : 'Әр тақырыптың теориясы, ҰБТ ережелері және Blooket жинағы');
+      const gSearch = document.getElementById('grammarSearchInput');
+      if (gSearch) gSearch.placeholder = isRu ? 'Поиск темы...' : 'Тақырып іздеу...';
+      const query = (gSearch?.value || '').toLowerCase().trim();
+      renderTrack('grammarTrack', grammarData.filter((it, i) => completedGrammarTopics.has(it.num || i + 1)).length, grammarData.length, 'меңгерілді', 'изучено');
+
+      let shown = 0;
       grammarData.forEach((item, idx) => {
         const num = item.num || idx + 1;
         const padNum = String(num).padStart(2, '0');
         const title = isRu ? (item.title_ru || item.title_kz) : (item.title_kz || item.title_ru);
+        if (query && !String(item.title_kz || '').toLowerCase().includes(query) && !String(item.title_ru || '').toLowerCase().includes(query) && String(num) !== query) return;
+        shown++;
         const bkLink = isRu ? (item.blooket_ru || item.blooket_kz) : (item.blooket_kz || item.blooket_ru);
         const isCompleted = completedGrammarTopics.has(num);
+        const topicTargetUrl = `topics/topic_${padNum}.html?lang=${currentLang === 'ru' ? 'ru' : 'kz'}`;
 
-        const row = document.createElement('div');
-        row.className = `py-3 sm:py-3.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 text-xs border-b border-slate-800/80 last:border-b-0 hover:bg-space-850/60 px-3 rounded-xl transition cursor-pointer ${isCompleted ? 'bg-emerald-500/[0.04] border-emerald-500/20' : ''}`;
-        const targetTopicLang = (currentLang === 'ru') ? 'ru' : 'kz';
-        const topicTargetUrl = `topics/topic_${padNum}.html?lang=${targetTopicLang}`;
-
-        row.onclick = (e) => {
+        const card = document.createElement('div');
+        card.className = `gc ac-violet${isCompleted ? ' done' : ''} cursor-pointer`;
+        card.onclick = (e) => {
           if (e.target.closest('a') || e.target.closest('button')) return;
           window.location.href = topicTargetUrl;
         };
-
-        row.innerHTML = `
-          <div class="flex items-start space-x-2.5">
-            <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg ${isCompleted ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40' : 'bg-space-850 text-slate-400 border-slate-800'} flex items-center justify-center font-bold border shrink-0 text-[11px] sm:text-xs mt-0.5">
-              ${isCompleted ? '✓' : '#' + num}
-            </span>
+        card.innerHTML = `
+          <div class="gc-top">
+            <div class="gc-num">${isCompleted ? '✓' : num}</div>
             <div class="min-w-0 flex-1">
-              <div class="flex items-center space-x-2">
-                <span class="font-extrabold text-white block text-xs sm:text-sm leading-snug hover:text-cyan-300 transition">${title}</span>
-                ${isCompleted ? ('<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hidden sm:inline">' + (isRu ? 'Изучено' : 'Меңгерілді') + '</span>') : ''}
-              </div>
-              <span class="text-[10px] sm:text-[11px] text-slate-400 block mt-0.5">
-                ${isRu ? 'Интерактивная теория, формулы, классификация и правила' : 'Интерактивті теория, есептер мен ҰБТ ережелері'}
-              </span>
+              <div class="gc-kicker">${isRu ? `Тема ${num}` : `${num}-тақырып`}</div>
+              <h4 class="gc-title">${title}</h4>
             </div>
+            ${isCompleted ? `<span class="gc-status">${isRu ? '✓ Изучено' : '✓ Меңгерілді'}</span>` : ''}
           </div>
-          <div class="flex items-center space-x-2 pl-8 sm:pl-0 pt-0.5 sm:pt-0 shrink-0">
-            <!-- ПРЯМАЯ ССЫЛКА НА СТРАНИЦУ ТЕМЫ TOPICS/TOPIC_XX.HTML -->
-            <a href="${topicTargetUrl}" class="px-3.5 py-1.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 hover:text-white border border-cyan-500/40 text-xs font-black transition flex items-center space-x-1.5 shadow-md shadow-cyan-500/10">
-              <span>📖</span>
-              <span>${isRu ? 'Читать тему →' : 'Тақырыпты оқу →'}</span>
-            </a>
-
-            <!-- 2-КНОПКА: BLOOKET СІЛТЕМЕСІ -->
-            ${bkLink ? `
-              <a href="${bkLink}" target="_blank" onclick="playSuccessChime();" class="px-3 py-1.5 rounded-xl bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500/30 border border-cyan-500/40 text-xs font-bold transition flex items-center space-x-1.5 shadow-md shadow-cyan-500/10">
-                <span>🎮</span>
-                <span>Blooket</span>
-              </a>
-            ` : ''}
+          <p class="gc-sub">${isRu ? 'Теория, формулы, классификации и правила ЕНТ' : 'Теория, есептер, жіктелімдер және ҰБТ ережелері'}</p>
+          <div class="gc-foot">
+            <a href="${topicTargetUrl}" class="gc-btn"><span>📖</span><span>${isRu ? 'Читать тему' : 'Тақырыпты оқу'}</span></a>
+            ${bkLink ? `<a href="${bkLink}" target="_blank" onclick="playSuccessChime();" class="gc-btn2 ac-emerald"><span>🎮</span><span>Blooket</span></a>` : ''}
           </div>
         `;
-
-        list.appendChild(row);
+        list.appendChild(card);
       });
+      if (!shown) list.innerHTML = emptyNote();
     }
 
     // ==============================================================
@@ -5799,12 +5728,9 @@ function toggleAdminEditMode() {
       const progressCountEl = document.getElementById('writingProgressCount');
 
       const completedCount = Object.keys(writingTestScores).length;
-      if (progressCountEl) {
-        progressCountEl.textContent = isRu 
-          ? `${completedCount} / ${writingTestsBank.length} сдано`
-          : `${completedCount} / ${writingTestsBank.length} тапсырылды`;
-      }
+      if (progressCountEl) renderTrack('writingProgressCount', completedCount, writingTestsBank.length, 'тапсырылды', 'сдано');
 
+      let shown = 0;
       writingTestsBank.forEach((v) => {
         const off = (appData.writing_official || []).find(item => item.variant_num === v.id) || {};
 
@@ -5832,49 +5758,37 @@ function toggleAdminEditMode() {
         const testLink = isRu ? off.ru_test_url : off.kz_test_url;
         const ansLink = isRu ? off.ru_ans_url : off.kz_ans_url;
 
+        shown++;
         const card = document.createElement('div');
-        card.className = `bg-space-900 border ${isDone ? (isPassed ? 'border-emerald-500/70 shadow-emerald-500/10' : 'border-amber-500/70 shadow-amber-500/10') : 'border-slate-800'} rounded-2xl p-4 sm:p-5 hover:border-amber-500/50 transition flex flex-col justify-between shadow-xl group`;
-
-        const scoreLabel = isRu ? 'баллов' : 'балл';
-        const qLabel = isRu ? 'вопросов' : 'сұрақ';
-        const minLabel = isRu ? 'мин' : 'мин';
+        card.className = `gc ac-amber${isPassed ? ' done' : ''}`;
+        const pct = isDone ? res.percentage : 0;
 
         card.innerHTML = `
-          <div>
-            <div class="flex justify-end items-center mb-2.5">
-              <span class="text-[10px] px-2.5 py-0.5 rounded-full font-bold ${
-                isDone 
-                  ? (isPassed ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-300 border border-amber-500/30')
-                  : 'bg-space-850 text-slate-400 border border-slate-700'
-              }">
-                ${isDone ? `✓ ${res.score}/${res.maxScore || maxPoints} ${scoreLabel} (${res.percentage}%)` : `${qCount} ${qLabel} • ${v.timeMinutes || 35} ${minLabel}`}
-              </span>
+          <div class="gc-top">
+            <div class="gc-num">${v.id}</div>
+            <div class="min-w-0 flex-1">
+              <div class="gc-kicker">${isRu ? `Вариант ${v.id} · ЕНТ` : `${v.id}-нұсқа · ҰБТ`}</div>
+              <h4 class="gc-title">${isRu ? 'Комплексный тест ЕНТ' : 'ҰБТ кешенді сынағы'}</h4>
+              <p class="gc-sub mt-0.5">${isRu ? 'Онлайн-тест с авто-проверкой и разбором' : 'Авто-бағалау және толық авторлық талдау'}</p>
             </div>
-
-            <h4 class="text-sm sm:text-base font-extrabold text-white group-hover:text-amber-400 transition leading-snug">
-              ${displayTitle}
-            </h4>
-            <p class="text-xs text-slate-400 mt-1.5 leading-relaxed line-clamp-2">
-              ${displayDesc}
-            </p>
-
-            <div class="flex flex-wrap gap-1.5 mt-3">
-              <span class="text-[10px] bg-space-850 text-slate-300 px-2 py-0.5 rounded-md border border-slate-700 font-bold">${qCount} ${qLabel} (${maxPoints} ${scoreLabel})</span>
-              ${multiCount > 0 ? `<span class="text-[10px] bg-space-850 text-amber-400/90 px-2 py-0.5 rounded-md border border-slate-700 font-bold">${multiCount} контекст/көптаңдау</span>` : ''}
-              <span class="text-[10px] bg-amber-500/10 text-amber-300 px-2 py-0.5 rounded-md border border-amber-500/30 font-bold">${isRu ? 'Русское отделение' : 'Қазақ бөлімі'}</span>
-            </div>
+            ${isDone ? `<span class="gc-status${isPassed ? '' : ' warn'}">${isPassed ? '✓' : '↻'} ${res.percentage}%</span>` : ''}
           </div>
-
-          <div class="mt-4 pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-2">
-            <!-- 1. ONLINE SIMULATOR BUTTON -->
-            <button onclick="event.stopPropagation(); openWritingExam(${v.id})" class="px-3 py-1.5 rounded-xl bg-amber-500 text-space-950 hover:bg-amber-400 font-black text-xs transition shadow-md shadow-amber-500/20 flex items-center space-x-1">
-              <span>⚡</span>
-              <span>${isRu ? 'Сдать онлайн' : 'Онлайн тапсыру'}</span>
+          <div class="gc-stats">
+            <div class="gc-stat"><b>${qCount}</b><span>${isRu ? 'вопросов' : 'сұрақ'}</span></div>
+            <div class="gc-stat"><b>${v.timeMinutes || 35}</b><span>${isRu ? 'минут' : 'минут'}</span></div>
+            <div class="gc-stat"><b>${maxPoints}</b><span>${isRu ? 'баллов' : 'балл'}</span></div>
+          </div>
+          ${isDone ? `<div class="gc-bar"><i style="width:${pct}%;background:${isPassed ? '#34d399' : '#fbbf24'}"></i></div>` : ''}
+          <div class="gc-foot">
+            <button onclick="event.stopPropagation(); openWritingExam(${v.id})" class="gc-btn">
+              <span>⚡</span><span>${isDone ? (isRu ? 'Пройти снова' : 'Қайта тапсыру') : (isRu ? 'Сдать онлайн' : 'Онлайн тапсыру')}</span>
             </button>
+            ${isDone ? `<span class="text-[11px] font-mono font-bold text-slate-400 shrink-0">${res.score}/${res.maxScore || maxPoints}</span>` : ''}
           </div>
         `;
         grid.appendChild(card);
       });
+      if (!shown) grid.innerHTML = emptyNote();
     }
 
     function filterTestterCatalog() {
@@ -5883,14 +5797,7 @@ function toggleAdminEditMode() {
 
     function setTestCatalogFilter(filterType) {
       currentTestCatalogFilter = filterType;
-      ['all', 'passed', 'pending'].forEach(t => {
-        const btn = document.getElementById('testFilterBtn-' + t);
-        if (btn) {
-          btn.className = (t === filterType) 
-            ? 'px-3 py-1.5 rounded-xl text-xs font-bold bg-brand-500 text-space-950 transition'
-            : 'px-3 py-1.5 rounded-xl text-xs font-bold bg-space-850 text-slate-400 hover:text-white transition';
-        }
-      });
+      setChips(['all', 'passed', 'pending'].map(t => 'testFilterBtn-' + t), 'testFilterBtn-' + filterType);
       renderTestter();
     }
 
