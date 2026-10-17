@@ -144,6 +144,79 @@
         padding-bottom: calc(env(safe-area-inset-bottom) + 6rem) !important;
       }
     }
+
+    /* ===== Единый вид разделов: панель (поиск + прогресс) и карточки ===== */
+    .ac-emerald { --ac: 52, 211, 153; }
+    .ac-cyan { --ac: 34, 211, 238; }
+    .ac-violet { --ac: 167, 139, 250; }
+    .ac-amber { --ac: 251, 191, 36; }
+    .ac-teal { --ac: 45, 212, 191; }
+    .ac-red { --ac: 248, 113, 113; }
+
+    .sec-bar { background: linear-gradient(180deg, #111a2e 0%, #0f172a 100%); border: 1px solid #1e293b; border-radius: 1.1rem; padding: 1rem; box-shadow: 0 10px 30px -18px rgba(0,0,0,.8); }
+    @media (min-width: 640px) { .sec-bar { padding: 1.15rem 1.25rem; } }
+    .sec-head { display: flex; flex-direction: column; gap: .9rem; }
+    @media (min-width: 1024px) { .sec-head { flex-direction: row; align-items: center; } }
+    .sec-info { display: flex; align-items: center; gap: .8rem; min-width: 0; flex: 1; }
+    .sec-ico { width: 2.75rem; height: 2.75rem; border-radius: .9rem; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;
+      background: rgba(var(--ac), .13); border: 1px solid rgba(var(--ac), .35); }
+    .sec-title { font-size: .95rem; font-weight: 800; color: #fff; line-height: 1.25; }
+    .sec-sub { font-size: .75rem; color: #94a3b8; margin-top: .15rem; line-height: 1.45; }
+    .sec-tools { display: flex; flex-direction: column; gap: .6rem; width: 100%; }
+    @media (min-width: 640px) { .sec-tools { flex-direction: row; align-items: stretch; } }
+    @media (min-width: 1024px) { .sec-tools { width: auto; flex-shrink: 0; } }
+    .sec-search { position: relative; flex: 1; min-width: 0; }
+    @media (min-width: 1024px) { .sec-search { width: 16rem; flex: none; } }
+    .sec-search span { position: absolute; left: .75rem; top: 50%; transform: translateY(-50%); font-size: .75rem; color: #64748b; pointer-events: none; }
+    .sec-search input { width: 100%; height: 100%; min-height: 2.6rem; padding: .55rem .8rem .55rem 2.1rem; background: #0a1020; border: 1px solid #334155; border-radius: .8rem;
+      font-size: .78rem; color: #f1f5f9; outline: none; transition: border-color .15s, box-shadow .15s; }
+    .sec-search input::placeholder { color: #64748b; }
+    .sec-search input:focus { border-color: rgb(var(--ac)); box-shadow: 0 0 0 3px rgba(var(--ac), .15); }
+    .sec-track { min-width: 12rem; padding: .5rem .8rem; background: #0a1020; border: 1px solid #1e293b; border-radius: .8rem; display: flex; flex-direction: column; justify-content: center; }
+    .sec-track-top { display: flex; align-items: baseline; justify-content: space-between; gap: .75rem; }
+    .sec-track-num { font-family: ui-monospace, monospace; font-size: .85rem; font-weight: 800; color: #fff; }
+    .sec-track-lbl { font-size: .68rem; font-weight: 700; color: #94a3b8; }
+    .sec-track-bar { height: 5px; margin-top: .4rem; border-radius: 9px; background: #1e293b; overflow: hidden; }
+    .sec-track-bar i { display: block; height: 100%; border-radius: 9px; background: rgb(var(--ac)); transition: width .4s; }
+    .sec-pills { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .9rem; padding-top: .9rem; border-top: 1px solid #1e293b; }
+    .chip-btn { padding: .42rem .8rem; border-radius: .7rem; font-size: .74rem; font-weight: 700; white-space: nowrap; color: #94a3b8; background: #151e2e; border: 1px solid #263248; transition: all .15s; }
+    .chip-btn:hover { color: #fff; border-color: #475569; }
+    .chip-btn.on { color: #0b0f19; background: rgb(var(--ac)); border-color: rgb(var(--ac)); font-weight: 800; box-shadow: 0 6px 18px -8px rgba(var(--ac), .8); }
+
+    .gc { position: relative; display: flex; flex-direction: column; gap: .8rem; padding: 1.05rem; border-radius: 1.1rem;
+      background: linear-gradient(180deg, #111a2e 0%, #0c1322 100%); border: 1px solid #1e293b; transition: transform .18s, border-color .18s, box-shadow .18s; }
+    .gc:hover { transform: translateY(-2px); border-color: rgba(var(--ac), .55); box-shadow: 0 14px 34px -16px rgba(var(--ac), .45); }
+    .gc.done { border-color: rgba(52, 211, 153, .5); }
+    .gc-top { display: flex; align-items: flex-start; gap: .75rem; }
+    .gc-num { width: 2.6rem; height: 2.6rem; border-radius: .85rem; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: .95rem;
+      color: rgb(var(--ac)); background: rgba(var(--ac), .13); border: 1px solid rgba(var(--ac), .35); }
+    .gc.done .gc-num { color: #34d399; background: rgba(52, 211, 153, .14); border-color: rgba(52, 211, 153, .4); }
+    .gc-kicker { font-size: .66rem; font-weight: 800; text-transform: uppercase; letter-spacing: .07em; color: rgb(var(--ac)); }
+    .gc-title { font-size: .95rem; font-weight: 800; color: #fff; line-height: 1.3; margin-top: .1rem; }
+    .gc-sub { font-size: .75rem; color: #94a3b8; line-height: 1.5; }
+    .gc-status { flex-shrink: 0; font-size: .66rem; font-weight: 800; padding: .2rem .55rem; border-radius: 999px; color: #6ee7b7; background: rgba(52, 211, 153, .14); border: 1px solid rgba(52, 211, 153, .35); white-space: nowrap; }
+    .gc-status.warn { color: #fcd34d; background: rgba(251, 191, 36, .14); border-color: rgba(251, 191, 36, .35); }
+    .gc-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .45rem; }
+    .gc-stat { background: #0a1020; border: 1px solid #1e293b; border-radius: .7rem; padding: .45rem .3rem; text-align: center; }
+    .gc-stat b { display: block; font-size: .9rem; font-weight: 800; color: #fff; line-height: 1.2; }
+    .gc-stat span { display: block; font-size: .64rem; color: #94a3b8; margin-top: .1rem; }
+    .gc-tags { display: flex; flex-wrap: wrap; gap: .3rem; }
+    .gc-tag { font-size: .66rem; color: #94a3b8; background: #0a1020; border: 1px solid #1e293b; border-radius: .45rem; padding: .12rem .45rem; }
+    .gc-bar { height: 5px; border-radius: 9px; background: #1e293b; overflow: hidden; }
+    .gc-bar i { display: block; height: 100%; border-radius: 9px; }
+    .gc-foot { margin-top: auto; display: flex; align-items: center; gap: .45rem; padding-top: .8rem; border-top: 1px solid #1e293b; }
+    .gc-btn { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: .4rem; padding: .6rem .8rem; border-radius: .75rem; font-size: .78rem; font-weight: 800;
+      color: #0b0f19; background: rgb(var(--ac)); transition: filter .15s, transform .15s; white-space: nowrap; }
+    .gc-btn:hover { filter: brightness(1.1); }
+    .ac-red .gc-btn { color: #fff; background: #dc2626; }
+    .gc-btn2 { flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; gap: .3rem; padding: .6rem .75rem; border-radius: .75rem; font-size: .76rem; font-weight: 800;
+      color: rgb(var(--ac)); background: rgba(var(--ac), .1); border: 1px solid rgba(var(--ac), .32); transition: background .15s; white-space: nowrap; }
+    .gc-btn2:hover { background: rgba(var(--ac), .2); }
+    .gc-btn2.on { color: #0b0f19; background: #34d399; border-color: #34d399; }
+    .gc-thumb { position: relative; aspect-ratio: 16 / 9; border-radius: .85rem; overflow: hidden; background: #0a1020; border: 1px solid #1e293b; margin: -.2rem -.2rem 0; }
+    .gc-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s; }
+    .gc:hover .gc-thumb img { transform: scale(1.04); }
+    .sec-empty { grid-column: 1 / -1; text-align: center; padding: 2.5rem 1rem; color: #64748b; font-size: .85rem; border: 1px dashed #263248; border-radius: 1rem; }
   </style>
 </head>
 <body class="bg-space-950 text-slate-100 min-h-screen flex flex-col selection:bg-brand-500 selection:text-white">
@@ -319,42 +392,36 @@
     <!-- SECTION 1: BLOOKET (VOCABULARY) WITH ALL 118 TOPICS            -->
     <!-- ============================================================== -->
     <section id="section-blooket_vocab" class="part-section space-y-5">
-      <!-- Filter and search bar -->
-      <div class="bg-space-900 border border-slate-800 rounded-2xl p-4 flex flex-col md:flex-row gap-3 justify-between items-center">
-        <!-- Module pills inside Blooket -->
-        <div class="flex items-center space-x-2 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 touch-scroll " id="blooketModuleFilters">
-          <button onclick="filterBlooket('all')" id="mod-filter-all" class="blooket-filter-btn shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-black transition bg-brand-500 text-space-950 shadow-lg shadow-brand-500/25 whitespace-nowrap">
-            Барлығы (118)
-          </button>
-          <button onclick="filterBlooket(1)" id="mod-filter-1" class="blooket-filter-btn shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-bold transition bg-space-850 text-slate-400 hover:text-white border border-slate-700/80 whitespace-nowrap">
-            🌊 1. Материктер (1–20)
-          </button>
-          <button onclick="filterBlooket(2)" id="mod-filter-2" class="blooket-filter-btn shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-bold transition bg-space-850 text-slate-400 hover:text-white border border-slate-700/80 whitespace-nowrap">
-            🏔️ 2. Рельеф (21–40)
-          </button>
-          <button onclick="filterBlooket(3)" id="mod-filter-3" class="blooket-filter-btn shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-bold transition bg-space-850 text-slate-400 hover:text-white border border-slate-700/80 whitespace-nowrap">
-            💧 3. Гидрография (41–60)
-          </button>
-          <button onclick="filterBlooket(4)" id="mod-filter-4" class="blooket-filter-btn shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-bold transition bg-space-850 text-slate-400 hover:text-white border border-slate-700/80 whitespace-nowrap">
-            🌤️ 4. Климат (61–75)
-          </button>
-          <button onclick="filterBlooket(5)" id="mod-filter-5" class="blooket-filter-btn shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-bold transition bg-space-850 text-slate-400 hover:text-white border border-slate-700/80 whitespace-nowrap">
-            🇰🇿 5. Қазақстан (76–90)
-          </button>
-          <button onclick="filterBlooket(6)" id="mod-filter-6" class="blooket-filter-btn shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-bold transition bg-space-850 text-slate-400 hover:text-white border border-slate-700/80 whitespace-nowrap">
-            🌎 6. Саяси (91–100)
-          </button>
+      <!-- Панель раздела: заголовок, поиск, прогресс, фильтры по модулям -->
+      <div class="sec-bar ac-emerald">
+        <div class="sec-head">
+          <div class="sec-info">
+            <div class="sec-ico">🎮</div>
+            <div class="min-w-0">
+              <h3 class="sec-title" id="blooketBarTitle">Blooket жинақтары</h3>
+              <p class="sec-sub" id="blooketBarSub">Тақырып бойынша ойнап, «Аяқтадым» басыңыз — прогресс сақталады</p>
+            </div>
+          </div>
+          <div class="sec-tools">
+            <label class="sec-search"><span>🔍</span>
+              <input type="text" id="blooketSearch" oninput="renderBlooketCards()" placeholder="Тақырып іздеу...">
+            </label>
+            <div class="sec-track" id="blooketTrack"></div>
+          </div>
         </div>
-
-        <div class="relative w-full md:w-64">
-          <input type="text" id="blooketSearch" oninput="renderBlooketCards()" placeholder="Тақырып іздеу..."
-                 class="w-full pl-8 pr-3 py-1.5 bg-space-950 border border-slate-700 rounded-xl text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-brand-500">
-          <span class="absolute left-2.5 top-2 text-slate-500 text-xs">🔍</span>
+        <div class="sec-pills" id="blooketModuleFilters">
+          <button onclick="filterBlooket('all')" id="mod-filter-all" class="chip-btn on">Барлығы (118)</button>
+          <button onclick="filterBlooket(1)" id="mod-filter-1" class="chip-btn">🌊 1. Материктер (1–20)</button>
+          <button onclick="filterBlooket(2)" id="mod-filter-2" class="chip-btn">🏔️ 2. Рельеф (21–40)</button>
+          <button onclick="filterBlooket(3)" id="mod-filter-3" class="chip-btn">💧 3. Гидрография (41–60)</button>
+          <button onclick="filterBlooket(4)" id="mod-filter-4" class="chip-btn">🌤️ 4. Климат (61–75)</button>
+          <button onclick="filterBlooket(5)" id="mod-filter-5" class="chip-btn">🏛️ 5. Қазақстан (76–90)</button>
+          <button onclick="filterBlooket(6)" id="mod-filter-6" class="chip-btn">🌎 6. Саяси (91–100)</button>
         </div>
       </div>
 
       <!-- Topics Grid: Every card has a valid Blooket link! -->
-      <div id="blooketCardsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5"></div>
+      <div id="blooketCardsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4"></div>
     </section>
 
     <!-- ============================================================== -->
@@ -365,24 +432,21 @@
       <!-- VIEW A: LESSONS CATALOG (САБАҚТАР ТІЗІМІ) -->
       <div id="readingCatalogView" class="space-y-4 sm:space-y-5">
         <!-- Filter and Search Header -->
-        <div class="bg-space-900 border border-slate-800 rounded-2xl p-3.5 sm:p-5 flex flex-col md:flex-row gap-3 justify-between items-center shadow-lg">
-          <div>
-            <h3 id="readingCatalogTitle" class="text-sm sm:text-base font-extrabold text-white flex items-center space-x-2">
-              <span>📖</span>
-              <span id="readingCatalogTitleText">География оқу материалдары & Тесттері (Reading)</span>
-            </h3>
-            <p id="readingCatalogSubtitle" class="text-xs text-slate-400 mt-0.5">20 интерактивті сабақ, әр сабаққа тест</p>
-          </div>
-
-          <div class="flex items-center space-x-2.5 w-full md:w-auto">
-            <div class="relative w-full sm:w-64">
-              <input type="text" id="lessonSearchInput" oninput="filterLessonsCatalog()" placeholder="Тақырыпты іздеу / Поиск темы..."
-                     class="w-full pl-8 pr-3 py-2 bg-space-950 border border-slate-700 rounded-xl text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-brand-500">
-              <span class="absolute left-2.5 top-2.5 text-slate-500 text-xs">🔍</span>
+        <div class="sec-bar ac-cyan">
+          <div class="sec-head">
+            <div class="sec-info">
+              <div class="sec-ico">📖</div>
+              <div class="min-w-0">
+                <h3 class="sec-title" id="readingCatalogTitleText">География оқу материалдары & Тесттері (Reading)</h3>
+                <p class="sec-sub" id="readingCatalogSubtitle">20 интерактивті сабақ, әр сабаққа тест</p>
+              </div>
             </div>
-            <span class="text-xs bg-cyan-500/10 text-cyan-400 px-2.5 py-1.5 rounded-xl border border-cyan-500/20 font-bold font-mono whitespace-nowrap" id="readingProgressCount">
-              0 / 20 оқылды
-            </span>
+            <div class="sec-tools">
+              <label class="sec-search"><span>🔍</span>
+                <input type="text" id="lessonSearchInput" oninput="filterLessonsCatalog()" placeholder="Сабақты іздеу...">
+              </label>
+              <div class="sec-track" id="readingProgressCount"></div>
+            </div>
           </div>
         </div>
 
@@ -527,10 +591,24 @@
     <!-- ============================================================== -->
     <section id="section-zhattau_grammar" class="part-section hidden space-y-6">
 
-      <div class="bg-space-900 border border-slate-800 rounded-3xl p-5 shadow-xl">
-        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4">Жаттау тақырыптары мен тікелей Blooket сілтемелері:</h4>
-        <div class="divide-y divide-slate-800" id="grammarTableList"></div>
+      <div class="sec-bar ac-violet">
+        <div class="sec-head">
+          <div class="sec-info">
+            <div class="sec-ico">🧠</div>
+            <div class="min-w-0">
+              <h3 class="sec-title" id="grammarBarTitle">Жаттау тақырыптары</h3>
+              <p class="sec-sub" id="grammarBarSub">Әр тақырыптың теориясы, ҰБТ ережелері және Blooket жинағы</p>
+            </div>
+          </div>
+          <div class="sec-tools">
+            <label class="sec-search"><span>🔍</span>
+              <input type="text" id="grammarSearchInput" oninput="renderGrammarTable()" placeholder="Тақырып іздеу...">
+            </label>
+            <div class="sec-track" id="grammarTrack"></div>
+          </div>
+        </div>
       </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4" id="grammarTableList"></div>
     </section>
 
     <!-- ============================================================== -->
@@ -542,31 +620,27 @@
       <!-- VIEW A: TEST VARIANTS CATALOG (ҰБТ НҰСҚАЛАРЫНЫҢ ТІЗІМІ) -->
       <div id="testterCatalogView" class="space-y-5">
         <!-- Filter and Search Header -->
-        <div class="bg-space-900 border border-slate-800 rounded-2xl p-4 sm:p-5 flex flex-col md:flex-row gap-4 justify-between items-center shadow-lg">
-          <div>
-            <h3 id="writingCatalogHeading" class="text-base font-extrabold text-white flex items-center space-x-2">
-              <span>📝</span>
-              <span id="writingCatalogHeadingText">ҰБТ Тесттері & Авто-бағалау (Writing / Exam Trainer)</span>
-            </h3>
-            <p id="writingCatalogSubtitle" class="text-xs text-slate-400 mt-0.5">1–55 ҰБТ нұсқалары толық енгізілді (барлығы 1 885 сұрақ, бір және бірнеше дұрыс жауапты сұрақтар). Түпнұсқа жауап парағымен тексерілген авторлық разборлар мен авто-бағалау.</p>
-          </div>
-
-          <div class="flex items-center space-x-3 w-full md:w-auto">
-            <div class="relative w-full sm:w-64">
-              <input type="text" id="testVariantSearchInput" oninput="filterTestterCatalog()" placeholder="Нұсқа бойынша іздеу..."
-                     class="w-full pl-8 pr-3 py-2 bg-space-950 border border-slate-700 rounded-xl text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-brand-500">
-              <span class="absolute left-2.5 top-2.5 text-slate-500 text-xs">🔍</span>
+        <div class="sec-bar ac-amber">
+          <div class="sec-head">
+            <div class="sec-info">
+              <div class="sec-ico">📝</div>
+              <div class="min-w-0">
+                <h3 class="sec-title" id="writingCatalogHeadingText">ҰБТ Тесттері & Авто-бағалау (Writing / Exam Trainer)</h3>
+                <p class="sec-sub" id="writingCatalogSubtitle">1–55 ҰБТ нұсқалары: авто-бағалау және әр сұрақтың авторлық талдауы.</p>
+              </div>
             </div>
-            <span class="text-xs bg-amber-500/10 text-amber-400 px-3 py-1.5 rounded-xl border border-amber-500/20 font-bold font-mono whitespace-nowrap" id="writingProgressCount">
-              0 / 55 тапсырылды
-            </span>
+            <div class="sec-tools">
+              <label class="sec-search"><span>🔍</span>
+                <input type="text" id="testVariantSearchInput" oninput="filterTestterCatalog()" placeholder="Нұсқа бойынша іздеу...">
+              </label>
+              <div class="sec-track" id="writingProgressCount"></div>
+            </div>
           </div>
-        </div>
-        <!-- Filter tabs for tests: All / Passed / Not taken -->
-        <div class="flex items-center space-x-2 overflow-x-auto pb-1 no-scrollbar">
-          <button onclick="setTestCatalogFilter('all')" id="testFilterBtn-all" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-brand-500 text-space-950 transition">Барлық нұсқалар</button>
-          <button onclick="setTestCatalogFilter('passed')" id="testFilterBtn-passed" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-space-850 text-slate-400 hover:text-white transition">Тапсырылғандар (Өтті)</button>
-          <button onclick="setTestCatalogFilter('pending')" id="testFilterBtn-pending" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-space-850 text-slate-400 hover:text-white transition">Тапсырылмағандар</button>
+          <div class="sec-pills">
+            <button onclick="setTestCatalogFilter('all')" id="testFilterBtn-all" class="chip-btn on">Барлық нұсқалар</button>
+            <button onclick="setTestCatalogFilter('passed')" id="testFilterBtn-passed" class="chip-btn">Тапсырылғандар (Өтті)</button>
+            <button onclick="setTestCatalogFilter('pending')" id="testFilterBtn-pending" class="chip-btn">Тапсырылмағандар</button>
+          </div>
         </div>
 
         <!-- Test Variants Grid -->
@@ -738,47 +812,30 @@
     <section id="section-nomenklatura_speaking" class="part-section hidden space-y-4 sm:space-y-6">
       <!-- THEMATIC GIS MAPS HUB (ТАҚЫРЫПТЫҚ ГАЖ-КАРТАЛАР: 50 КАРТА) -->
       <div class="space-y-4">
-        <div class="bg-space-900 border border-slate-800 rounded-2xl p-4 sm:p-5 flex flex-col md:flex-row gap-3 justify-between items-center shadow-lg">
-          <div>
-            <h4 class="text-sm sm:text-base font-extrabold text-white flex items-center space-x-2">
-              <span>🗺️</span>
-              <span id="thematicMapsHeadingText">Тақырыптық интерактивті карталар (50)</span>
-            </h4>
-            <p class="text-xs text-slate-400 mt-0.5" id="thematicMapsSubtitleText">
-              Геосаясат, халық, шаруашылық, әлем табиғаты және Қазақстан. Әр картада — түсіндірме, ҰБТ фактілері және өзін-өзі тексеру.
-            </p>
-          </div>
-
-          <!-- Search -->
-          <div class="flex items-center w-full md:w-auto">
-            <div class="relative w-full sm:w-64">
-              <input type="text" id="thematicMapSearchInput" oninput="renderThematicMapsHub()" placeholder="Картаны іздеу / Поиск..."
-                     class="w-full pl-8 pr-3 py-2 bg-space-950 border border-slate-700 rounded-xl text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500">
-              <span class="absolute left-2.5 top-2.5 text-slate-500 text-xs">🔍</span>
+        <div class="sec-bar ac-teal">
+          <div class="sec-head">
+            <div class="sec-info">
+              <div class="sec-ico">🗺️</div>
+              <div class="min-w-0">
+                <h3 class="sec-title" id="thematicMapsHeadingText">Тақырыптық интерактивті карталар (50)</h3>
+                <p class="sec-sub" id="thematicMapsSubtitleText">Геосаясат, халық, шаруашылық, әлем табиғаты және Қазақстан. Әр картада — түсіндірме, ҰБТ фактілері және өзін-өзі тексеру.</p>
+              </div>
+            </div>
+            <div class="sec-tools">
+              <label class="sec-search"><span>🔍</span>
+                <input type="text" id="thematicMapSearchInput" oninput="renderThematicMapsHub()" placeholder="Картаны іздеу...">
+              </label>
+              <div class="sec-track" id="mapsTrack"></div>
             </div>
           </div>
-        </div>
-
-        <!-- Category Pill Buttons -->
-        <div class="flex items-center space-x-1.5 overflow-x-auto touch-scroll pb-1 scrollbar-none text-xs font-bold">
-          <button onclick="filterThematicCategory('all')" id="thmCat-all" class="px-3.5 py-1.5 rounded-xl bg-cyan-500 text-space-950 font-black whitespace-nowrap transition">
-            Барлығы (50)
-          </button>
-          <button onclick="filterThematicCategory('geopolitics')" id="thmCat-geopolitics" class="px-3 py-1.5 rounded-xl bg-space-850 text-slate-400 hover:text-white border border-slate-700 whitespace-nowrap transition">
-            🌐 Геосаясат (10)
-          </button>
-          <button onclick="filterThematicCategory('demography')" id="thmCat-demography" class="px-3 py-1.5 rounded-xl bg-space-850 text-slate-400 hover:text-white border border-slate-700 whitespace-nowrap transition">
-            👥 Демография (10)
-          </button>
-          <button onclick="filterThematicCategory('economy')" id="thmCat-economy" class="px-3 py-1.5 rounded-xl bg-space-850 text-slate-400 hover:text-white border border-slate-700 whitespace-nowrap transition">
-            🏭 Шаруашылық (10)
-          </button>
-          <button onclick="filterThematicCategory('physical')" id="thmCat-physical" class="px-3 py-1.5 rounded-xl bg-space-850 text-slate-400 hover:text-white border border-slate-700 whitespace-nowrap transition">
-            🌍 Табиғат (10)
-          </button>
-          <button onclick="filterThematicCategory('kazakhstan')" id="thmCat-kazakhstan" class="px-3 py-1.5 rounded-xl bg-space-850 text-slate-400 hover:text-white border border-slate-700 whitespace-nowrap transition">
-            🇰🇿 Қазақстан (10)
-          </button>
+          <div class="sec-pills">
+            <button onclick="filterThematicCategory('all')" id="thmCat-all" class="chip-btn on">Барлығы (50)</button>
+            <button onclick="filterThematicCategory('geopolitics')" id="thmCat-geopolitics" class="chip-btn">🌐 Геосаясат (10)</button>
+            <button onclick="filterThematicCategory('demography')" id="thmCat-demography" class="chip-btn">👥 Демография (10)</button>
+            <button onclick="filterThematicCategory('economy')" id="thmCat-economy" class="chip-btn">🏭 Шаруашылық (10)</button>
+            <button onclick="filterThematicCategory('physical')" id="thmCat-physical" class="chip-btn">🌍 Табиғат (10)</button>
+            <button onclick="filterThematicCategory('kazakhstan')" id="thmCat-kazakhstan" class="chip-btn">🏛️ Қазақстан (10)</button>
+          </div>
         </div>
 
         <!-- Thematic Maps Grid -->
@@ -791,22 +848,21 @@
     <!-- ============================================================== -->
     <section id="section-videolar_listening" class="part-section hidden space-y-4 sm:space-y-6">
       <!-- Search & Filter bar -->
-      <div class="bg-space-900 border border-slate-800 rounded-2xl p-3.5 sm:p-5 flex flex-col md:flex-row gap-3 justify-between items-center shadow-lg">
-        <div>
-          <h3 id="listeningCatalogHeading" class="text-sm sm:text-base font-extrabold text-white flex items-center space-x-2">
-            <span>🎬</span>
-            <span id="listeningCatalogHeadingText">Бейнесабақтар мен нұсқа талдаулар (Listening)</span>
-          </h3>
-          <p id="listeningCatalogSubtitle" class="text-xs text-slate-400 mt-0.5">
-            Қазақ бөліміне арналған ҰБТ нұсқаларының авторлық бейнеталдаулары (YouTube)
-          </p>
-        </div>
-        
-        <!-- Search Input -->
-        <div class="relative w-full sm:w-72">
-          <input type="text" id="listeningSearchInput" oninput="renderListeningCards()" placeholder="Видеоны іздеу / Поиск видео..."
-                 class="w-full pl-8 pr-3 py-2 bg-space-950 border border-slate-700 rounded-xl text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-red-500">
-          <span class="absolute left-2.5 top-2.5 text-slate-500 text-xs">🔍</span>
+      <div class="sec-bar ac-red">
+        <div class="sec-head">
+          <div class="sec-info">
+            <div class="sec-ico">🎬</div>
+            <div class="min-w-0">
+              <h3 class="sec-title" id="listeningCatalogHeadingText">Бейнесабақтар мен нұсқа талдаулар (Listening)</h3>
+              <p class="sec-sub" id="listeningCatalogSubtitle">Қазақ бөліміне арналған ҰБТ нұсқаларының авторлық бейнеталдаулары (YouTube)</p>
+            </div>
+          </div>
+          <div class="sec-tools">
+            <label class="sec-search"><span>🔍</span>
+              <input type="text" id="listeningSearchInput" oninput="renderListeningCards()" placeholder="Видеоны іздеу...">
+            </label>
+            <div class="sec-track" id="videosTrack"></div>
+          </div>
         </div>
       </div>
 
