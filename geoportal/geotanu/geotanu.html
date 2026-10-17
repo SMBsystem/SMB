@@ -5275,7 +5275,9 @@ function toggleAdminEditMode() {
 
       // Результаты самопроверки на картах (пишет maps/thematic_map.js)
       const checked = readJsonKey('geotany_maps_checked', {});
-      renderTrack('mapsTrack', THEMATIC_MAPS_BANK.filter(m => checked[m.id] !== undefined).length, THEMATIC_MAPS_BANK.length, 'тексерілді', 'проверено');
+      // Лучшие баллы GeoQuest по картам (пишет maps/geoquest.js)
+      const questBest = readJsonKey('geotany_maps_quest', {});
+      renderTrack('mapsTrack', THEMATIC_MAPS_BANK.filter(m => checked[m.id] !== undefined || questBest[m.id] !== undefined).length, THEMATIC_MAPS_BANK.length, 'тексерілді', 'проверено');
 
       const CAT_NAMES = {
         geopolitics: { kz: '🌐 Геосаясат', ru: '🌐 Геополитика' },
@@ -5297,9 +5299,13 @@ function toggleAdminEditMode() {
         const desc = isRu ? m.desc_ru : m.desc_kz;
         const best = checked[m.id];
         const isDone = best !== undefined;
+        // Балл GeoQuest (экзамен по карте) важнее самопроверки — показываем его, если есть
+        const qBest = questBest[m.id];
+        const isQuest = qBest !== undefined;
+        const lng = isRu ? 'ru' : 'kz';
 
         const card = document.createElement('div');
-        card.className = `gc ac-teal${isDone && best >= 80 ? ' done' : ''}`;
+        card.className = `gc ac-teal${(isQuest ? qBest >= 70 : isDone && best >= 80) ? ' done' : ''}`;
         card.innerHTML = `
           <div class="gc-top">
             <div class="gc-num">${m.id}</div>
@@ -5307,12 +5313,16 @@ function toggleAdminEditMode() {
               <div class="gc-kicker">${catName}</div>
               <h4 class="gc-title">${title}</h4>
             </div>
-            ${isDone ? `<span class="gc-status${best >= 80 ? '' : ' warn'}">🎯 ${best}%</span>` : ''}
+            ${isQuest ? `<span class="gc-status${qBest >= 70 ? '' : ' warn'}" title="GeoQuest">🏁 ${qBest}</span>`
+              : isDone ? `<span class="gc-status${best >= 80 ? '' : ' warn'}">🎯 ${best}%</span>` : ''}
           </div>
           <p class="gc-sub line-clamp-2">${desc}</p>
           <div class="gc-foot">
-            <a href="maps/map_${String(m.id).padStart(2, '0')}.html?lang=${isRu ? 'ru' : 'kz'}" class="gc-btn">
+            <a href="maps/map_${String(m.id).padStart(2, '0')}.html?lang=${lng}" class="gc-btn">
               <span>🗺️</span><span>${isRu ? 'Открыть карту' : 'Картаны ашу'}</span>
+            </a>
+            <a href="maps/quest.html?map=${m.id}&lang=${lng}" class="gc-btn2 ac-amber" title="${isRu ? 'GeoQuest — экзамен по карте' : 'GeoQuest — карта бойынша емтихан'}">
+              <span>🏁</span><span>GeoQuest</span>
             </a>
           </div>
         `;

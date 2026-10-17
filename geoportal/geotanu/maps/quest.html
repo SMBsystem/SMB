@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="kk" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GeoQuest | GeoTany</title>
+
+  <!-- Вход только для учеников курса -->
+  <style id="authCloak">body { display: none !important; }</style>
+  <script>
+    (function() {
+      try {
+        var isAdmin = localStorage.getItem('geotany_admin_auth') === 'true';
+        var sessionStr = localStorage.getItem('geotany_user_session');
+        var isAuthorized = isAdmin;
+        if (!isAuthorized && sessionStr) {
+          var s = JSON.parse(sessionStr);
+          if (s && s.email && (s.v === 2 && (s.exp || 0) > Date.now() && (s.courseCode || s.role === 'admin'))) {
+            isAuthorized = true;
+          }
+        }
+        var profileStr = localStorage.getItem('geotany_user_profile');
+        if (!isAuthorized && profileStr) {
+          var p = JSON.parse(profileStr);
+          if (p && p.email && (p.v === 2 && (p.exp || 0) > Date.now() && (p.courseCode || p.role === 'admin'))) {
+            isAuthorized = true;
+          }
+        }
+        if (!isAuthorized) {
+          window.location.replace('../geotanu.html?error=unauthorized_course');
+          return;
+        }
+        var cloak = document.getElementById('authCloak');
+        if (cloak) cloak.remove();
+      } catch (e) {
+        window.location.replace('../geotanu.html?error=unauthorized_course');
+      }
+    })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'] },
+          colors: {
+            space: { 800: '#1E293B', 850: '#151E2E', 900: '#0F172A', 950: '#0B0F19' },
+            brand: { 400: '#34D399', 500: '#10B981', 600: '#059669' }
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Вход ученика и отправка результата учителю -->
+  <script src="../../smb-config.js"></script>
+  <script src="../../smb-common.js"></script>
+
+  <!-- Контуры стран, данные карты из адреса (?map=9 → data/map_09.js) и движок экзамена -->
+  <script src="world_countries.js"></script>
+  <script>
+    (function () {
+      var n = parseInt(new URLSearchParams(location.search).get('map'), 10);
+      if (!(n >= 1 && n <= 50)) n = 1;
+      document.write('<script src="data/map_' + (n < 10 ? '0' : '') + n + '.js"><\/script>');
+    })();
+  </script>
+  <script src="geoquest.js"></script>
+</head>
+<body class="bg-space-950 text-slate-100 min-h-screen font-sans antialiased flex flex-col">
+  <div id="app" class="flex flex-col min-h-screen"></div>
+</body>
+</html>

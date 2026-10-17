@@ -271,6 +271,14 @@
           <span id="tmQuizScore" class="text-[11px] font-mono font-bold text-slate-400"></span>
         </div>
         <div id="tmQuiz" class="space-y-2.5 text-xs"></div>
+        <a id="tmQuest" href="#" class="flex items-center gap-3 p-3 rounded-2xl bg-amber-500/10 hover:bg-amber-500/15 border border-amber-500/30 transition">
+          <span class="text-xl">🏁</span>
+          <span class="min-w-0 flex-1">
+            <span class="block text-xs font-black text-amber-300">GeoQuest</span>
+            <span id="tmQuestText" class="block text-[11px] text-slate-400 leading-snug"></span>
+          </span>
+          <span class="text-amber-300 font-black">→</span>
+        </a>
       </section>
     </aside>
 
@@ -852,6 +860,8 @@
     document.getElementById('tmLegendTitle').textContent = T('Шартты белгілер', 'Условные обозначения');
     document.getElementById('tmShowAll').textContent = T('Барлығын көрсету', 'Показать все');
     document.getElementById('tmQuizTitle').textContent = T('Өзіңді тексер', 'Проверь себя');
+    document.getElementById('tmQuest').href = `quest.html?map=${mapNo}&lang=${lang}`;
+    document.getElementById('tmQuestText').textContent = T('Карта бойынша емтихан: контур картадан табу, балл мұғалімге жіберіледі', 'Экзамен по карте: найти на контурной карте, балл уходит учителю');
     const facts = (isRu() ? D.facts_ru : D.facts_kz) || [];
     document.getElementById('tmFactsBox').classList.toggle('hidden', !facts.length);
     document.getElementById('tmFactsTitle').textContent = T('ҰБТ-да есте сақта', 'Запомни для ЕНТ');
