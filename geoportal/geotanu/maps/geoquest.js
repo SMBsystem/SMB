@@ -62,7 +62,7 @@
     const a = Math.min(Math.abs(lat), 89.99) / 5, i = Math.floor(a), f = a - i;
     const X = ROB_X[i] + (ROB_X[i + 1] - ROB_X[i]) * f;
     const Y = ROB_Y[i] + (ROB_Y[i + 1] - ROB_Y[i]) * f;
-    return { x: 503 + 2.676 * X * lon, y: 304.3 - 242.7 * Y * Math.sign(lat) };
+    return { x: 499.94 + 2.6985 * X * lon, y: 304.9 - 246.31 * Y * Math.sign(lat) };
   }
 
   // ---------------------------------------------------------------- язык
@@ -361,11 +361,18 @@
     return { x: box.x + box.w / 2 - w / 2, y: box.y + box.h / 2 - h / 2, w, h };
   }
   let vb = initialView();
-  const zk = () => Math.pow(vb.w / W, 0.85);   // размер значков и подписей при приближении
+  // Значки и подписи — в пикселях экрана (как в thematic_map.js): pxU() — единиц карты на 1 пиксель
+  function pxU() {
+    const s = svg();
+    const w = (s && s.clientWidth) || 800, h = (s && s.clientHeight) || 450;
+    return 1 / Math.min(w / vb.w, h / vb.h);
+  }
+  const labelPx = () => (window.innerWidth < 640 ? 10 : 11.5);
 
   const nodesOf = {};   // key → [svg-элементы, которые красим]
   const addNode = (key, n) => { (nodesOf[key] = nodesOf[key] || []).push(n); };
-  const dots = [];      // кружки: радиус пересчитываем при масштабе
+  const dots = { points: [], micro: [] };   // кружки: размер и раздвигание пересчитываем при масштабе
+  const shownAt = {};   // key → где значок нарисован (после раздвигания)
 
   function buildMap() {
     const defs = document.getElementById('gqDefs');
@@ -411,14 +418,14 @@
     const gPoints = document.getElementById('gqPoints');
     (D.points || []).forEach((o, i) => {
       const pos = proj(o.lon, o.lat);
-      addDot(gPoints, 'p:' + i, pos, o.big ? 4.2 : 3.2, 'gq-pt');
+      addDot(gPoints, dots.points, 'p:' + i, pos, o.big ? 6 : 4.5, 'gq-pt');
     });
     // Маленькие страны: кружок, чтобы по ним можно было попасть
     const gMicro = document.getElementById('gqMicro');
     Object.values(ITEMS).forEach((it) => {
-      if (it.kind === 'micro') addDot(gMicro, it.key, it.m.at || proj(it.m.lon, it.m.lat), 3.2, 'gq-mk');
+      if (it.kind === 'micro') addDot(gMicro, dots.micro, it.key, it.m.at || proj(it.m.lon, it.m.lat), 4, 'gq-mk');
       else if (it.kind === 'country' && it.g && it.c.bbox && it.c.bbox[2] <= 6 && it.c.bbox[3] <= 6 && it.c.center && it.c.center.length === 2) {
-        addDot(gMicro, it.key, { x: it.c.center[0], y: it.c.center[1] }, 3.2, 'gq-mk');
+        addDot(gMicro, dots.micro, it.key, { x: it.c.center[0], y: it.c.center[1] }, 4, 'gq-mk');
       }
     });
     resizeDots();
@@ -429,18 +436,45 @@
     g.appendChild(p);
     addNode(key, p);
   }
-  function addDot(g, key, pos, r, cls) {
+  function addDot(g, list, key, pos, rPx, cls) {
     // Невидимый круг побольше — чтобы в значок было легко попасть пальцем
-    const hit = el('circle', { cx: pos.x.toFixed(2), cy: pos.y.toFixed(2), fill: 'transparent', 'data-k': key, style: 'cursor:pointer' });
-    const c = el('circle', { cx: pos.x.toFixed(2), cy: pos.y.toFixed(2), class: cls, 'data-k': key });
+    const hit = el('circle', { fill: 'transparent', 'data-k': key, style: 'cursor:pointer' });
+    const c = el('circle', { class: cls, 'data-k': key });
     g.prepend(hit);   // все невидимые круги — под значками, чтобы не перекрывать соседние
     g.appendChild(c);
     addNode(key, c);
-    dots.push({ c, r }, { c: hit, r: r * 2.4 });
+    list.push({ key, bx: pos.x, by: pos.y, r: rPx, c, hit });
   }
+  // Размер в пикселях + раздвигание значков, которые на экране наезжают друг на друга
+  // (иначе в нижний из двух совпадающих значков нельзя попасть)
   function resizeDots() {
-    const s = zk();
-    dots.forEach((d) => d.c.setAttribute('r', (d.r * s).toFixed(2)));
+    const u = pxU();
+    Object.values(dots).forEach((list) => {
+      list.forEach((d) => { d.x = d.bx; d.y = d.by; });
+      for (let it = 0; it < 40; it++) {
+        let moved = false;
+        for (let i = 0; i < list.length; i++) {
+          for (let j = i + 1; j < list.length; j++) {
+            const a = list[i], b = list[j];
+            const need = (a.r + b.r + 1.5) * u;
+            let dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy);
+            if (d >= need) continue;
+            if (d < 1e-6) { const ang = (i * 2.4 + j) % (2 * Math.PI); dx = Math.cos(ang); dy = Math.sin(ang); d = 1; }
+            const push = (need - Math.hypot(b.x - a.x, b.y - a.y)) / 2 + 0.01 * u;
+            a.x -= (dx / d) * push; a.y -= (dy / d) * push;
+            b.x += (dx / d) * push; b.y += (dy / d) * push;
+            moved = true;
+          }
+        }
+        if (!moved) break;
+      }
+      list.forEach((d) => {
+        [d.c, d.hit].forEach((n) => { n.setAttribute('cx', d.x.toFixed(3)); n.setAttribute('cy', d.y.toFixed(3)); });
+        d.c.setAttribute('r', (d.r * u).toFixed(3));
+        d.hit.setAttribute('r', (d.r * 2.4 * u).toFixed(3));
+        shownAt[d.key] = { x: d.x, y: d.y, r: d.r * u };
+      });
+    });
   }
 
   // В вопросе про страны видны и нажимаются только страны (линии и значки подсказали бы ответ),
@@ -471,9 +505,13 @@
   const labelled = new Set();
   function labelPos(it) {
     if (it.kind === 'country') return it.c.center && it.c.center.length === 2 ? { x: it.c.center[0], y: it.c.center[1], a: 'middle' } : null;
-    if (it.kind === 'micro') { const p = it.m.at || proj(it.m.lon, it.m.lat); return { x: p.x, y: p.y - 5 * zk(), a: 'middle' }; }
-    if (it.kind === 'point') { const p = proj(it.o.lon, it.o.lat); return { x: p.x + 5 * zk(), y: p.y + 2.6 * zk(), a: 'start' }; }
-    if (it.kind === 'line') { const pts = it.o.pts; const m = pts[Math.floor(pts.length / 2)]; const p = proj(m[0], m[1]); return { x: p.x, y: p.y - 4 * zk(), a: 'middle' }; }
+    const u = pxU();
+    if (it.kind === 'micro' || (it.kind === 'country' && shownAt[it.key])) {
+      const p = shownAt[it.key] || it.m.at || proj(it.m.lon, it.m.lat);
+      return { x: p.x, y: p.y - (p.r || 0) - 4 * u, a: 'middle' };
+    }
+    if (it.kind === 'point') { const p = shownAt[it.key] || proj(it.o.lon, it.o.lat); return { x: p.x + (p.r || 0) + 3 * u, y: p.y + 4 * u, a: 'start' }; }
+    if (it.kind === 'line') { const pts = it.o.pts; const m = pts[Math.floor(pts.length / 2)]; const p = proj(m[0], m[1]); return { x: p.x, y: p.y - 5 * u, a: 'middle' }; }
     if (it.kind === 'area') {
       if (it.o.at) { const p = proj(it.o.at[0], it.o.at[1]); return { x: p.x, y: p.y, a: 'middle' }; }
       let x = 0, y = 0;
@@ -486,7 +524,7 @@
   function renderLabels() {
     const g = document.getElementById('gqLabels');
     g.innerHTML = '';
-    const size = 8 * zk();
+    const size = labelPx() * pxU();
     labelled.forEach((key) => {
       const it = ITEMS[key];
       const p = it && labelPos(it);
@@ -568,6 +606,8 @@
     };
     vp.addEventListener('pointerup', end);
     vp.addEventListener('pointercancel', end);
+    // Размеры значков в пикселях: при смене ширины окна и повороте телефона — пересчитать
+    if (window.ResizeObserver) new ResizeObserver(() => { if (vp.clientWidth) { resizeDots(); renderLabels(); } }).observe(vp);
     vp.addEventListener('wheel', (e) => {
       e.preventDefault();
       const p = toSvg(e.clientX, e.clientY);

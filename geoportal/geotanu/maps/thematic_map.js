@@ -64,14 +64,17 @@
     STP: { lon: 6.61, lat: 0.34, ru: 'Сан-Томе и Принсипи', kz: 'Сан-Томе және Принсипи' }
   };
 
-  // Та же проекция, что у контуров стран: Робинсон, подогнанный под холст 1000×540
+  // Та же проекция, что у контуров стран: Робинсон, подогнанный под холст 1000×540.
+  // Коэффициенты подобраны по крайним точкам 15 стран (Казахстан, Бразилия, Индия, Мексика…):
+  // точки и линии ложатся на контуры с точностью ~0,4 единицы холста (раньше расходились до 5,
+  // и города у южной границы Казахстана оказывались за его пределами).
   const ROB_X = [1.0000, 0.9986, 0.9954, 0.9900, 0.9822, 0.9730, 0.9600, 0.9427, 0.9216, 0.8962, 0.8679, 0.8350, 0.7986, 0.7597, 0.7186, 0.6732, 0.6213, 0.5722, 0.5322];
   const ROB_Y = [0.0000, 0.0620, 0.1240, 0.1860, 0.2480, 0.3100, 0.3720, 0.4340, 0.4958, 0.5571, 0.6176, 0.6769, 0.7346, 0.7903, 0.8435, 0.8936, 0.9394, 0.9761, 1.0000];
   function proj(lon, lat) {
     const a = Math.min(Math.abs(lat), 89.99) / 5, i = Math.floor(a), f = a - i;
     const X = ROB_X[i] + (ROB_X[i + 1] - ROB_X[i]) * f;
     const Y = ROB_Y[i] + (ROB_Y[i + 1] - ROB_Y[i]) * f;
-    return { x: 503 + 2.676 * X * lon, y: 304.3 - 242.7 * Y * Math.sign(lat) };
+    return { x: 499.94 + 2.6985 * X * lon, y: 304.9 - 246.31 * Y * Math.sign(lat) };
   }
 
   // ---------------------------------------------------------------- язык
@@ -168,7 +171,8 @@
   let vb = initialView();
   let highlight = null;     // id выделенной группы легенды
   let selectedKey = null;   // выбранный объект
-  let showLabels = isKz || (D.points || []).length <= 30;
+  // Подписи включены всегда: раскладка сама прячет те, что не помещаются (они видны при приближении)
+  let showLabels = true;
   let showGrid = !!D.graticule;
 
   // ---------------------------------------------------------------- страница
@@ -226,7 +230,7 @@
           <g id="tmLabels" pointer-events="none"></g>
         </svg>
 
-        <div class="absolute right-2 top-2 sm:right-3 sm:top-3 z-20 flex flex-col gap-1.5 bg-space-900/90 backdrop-blur-md p-1.5 rounded-2xl border border-slate-800 shadow-xl">
+        <div id="tmCtl" class="absolute right-2 top-2 sm:right-3 sm:top-3 z-20 flex flex-col gap-1.5 bg-space-900/90 backdrop-blur-md p-1.5 rounded-2xl border border-slate-800 shadow-xl">
           <button data-act="in" class="tm-btn" title="+">+</button>
           <button data-act="out" class="tm-btn" title="−">−</button>
           <button data-act="reset" class="tm-btn text-cyan-400 text-xs" id="tmResetBtn">⟲</button>
@@ -355,10 +359,12 @@
       { lat: 66.56, kz: 'Солтүстік полярлық шеңбер', ru: 'Северный полярный круг', c: '#38BDF8' },
       { lat: -66.56, kz: 'Оңтүстік полярлық шеңбер', ru: 'Южный полярный круг', c: '#38BDF8' }
     ];
+    const u = pxU();
     lines.forEach((l) => {
       const y = proj(0, l.lat).y;
       g.appendChild(el('line', { x1: -50, x2: W + 50, y1: y, y2: y, stroke: l.c, 'stroke-width': 1, 'stroke-dasharray': '6 5', 'vector-effect': 'non-scaling-stroke', opacity: 0.7 }));
-      const t = el('text', { x: 6, y: y - 2, fill: l.c, 'font-size': 7, 'font-weight': 700, opacity: 0.85 });
+      // Подпись — у левого края видимой части карты, размером 10 px
+      const t = el('text', { x: Math.max(6, vb.x + 6 * u), y: y - 3 * u, fill: l.c, 'font-size': 10 * u, 'font-weight': 700, opacity: 0.9 });
       t.textContent = T(l.kz, l.ru);
       g.appendChild(t);
     });
@@ -397,7 +403,9 @@
     g.innerHTML = '';
     const add = (key, d, it) => {
       const clip = it.o.clip === 'KAZ' ? 'url(#clipKAZ)' : (it.o.clip === 'none' ? null : 'url(#clipLand)');
-      const p = el('path', { d, fill: colorOf(it.g), opacity: dimmed(it.g) ? 0.12 : (it.o.op || 0.72), 'clip-path': clip, class: 'tm-hit', 'data-k': key });
+      // Контур того же цвета — чтобы бледные и небольшие области были заметны
+      const p = el('path', { d, fill: colorOf(it.g), 'fill-opacity': dimmed(it.g) ? 0.12 : (it.o.op || 0.72), stroke: colorOf(it.g), 'stroke-opacity': dimmed(it.g) ? 0.2 : 0.95,
+        'stroke-width': 1.2, 'vector-effect': 'non-scaling-stroke', 'clip-path': clip, class: 'tm-hit', 'data-k': key });
       if (selectedKey === key) p.classList.add('tm-sel');
       g.appendChild(p);
     };
@@ -414,13 +422,33 @@
     return `M ${x2.toFixed(2)} ${y2.toFixed(2)} L ${(x2 + s * Math.cos(a1)).toFixed(2)} ${(y2 + s * Math.sin(a1)).toFixed(2)} L ${(x2 + s * Math.cos(a2)).toFixed(2)} ${(y2 + s * Math.sin(a2)).toFixed(2)} Z`;
   }
 
-  // Линии, точки и подписи зависят от масштаба — перерисовываем при зуме
+  // Размеры значков и подписей задаются в пикселях экрана: на карте Казахстана (сильно приближенной)
+  // и на телефоне они не мельчают. pxU() — сколько единиц карты приходится на 1 пиксель.
+  function pxU() {
+    const s = svg();
+    const w = (s && s.clientWidth) || 800, h = (s && s.clientHeight) || 450;
+    return 1 / Math.min(w / vb.w, h / vb.h);
+  }
+  const PX = {
+    dot: 4.5, dotBig: 6, micro: 4,
+    label: () => (window.innerWidth < 640 ? 10 : 11.5),
+    arrow: 9, gap: 3
+  };
+  const measureCtx = document.createElement('canvas').getContext('2d');
+  function textWidthPx(text, px) {
+    measureCtx.font = `700 ${px}px "Plus Jakarta Sans", system-ui, sans-serif`;
+    return measureCtx.measureText(text).width;
+  }
+
+  // Линии, точки и подписи зависят от масштаба — перерисовываем при зуме и при смене размера окна
   function renderOverlays() {
-    const s = Math.pow(k(), 0.85);
+    const u = pxU();
     const lg = document.getElementById('tmLines');
     const pg = document.getElementById('tmPoints');
     const tg = document.getElementById('tmLabels');
     lg.innerHTML = ''; pg.innerHTML = ''; tg.innerHTML = '';
+    const labels = [];      // кандидаты в подписи: раскладываем в конце, без наложений
+    const obstacles = [];   // значки — подписи их не закрывают
 
     (D.lines || []).forEach((l, i) => {
       const key = 'l:' + i;
@@ -431,50 +459,133 @@
       const op = dimmed(l.g) ? 0.15 : 0.95;
       const sel = selectedKey === key;
       const grp = el('g', { opacity: op });
-      grp.appendChild(el('path', { d, fill: 'none', stroke: 'transparent', 'stroke-width': 12, 'vector-effect': 'non-scaling-stroke', 'data-k': key, style: 'cursor:pointer' }));
+      grp.appendChild(el('path', { d, fill: 'none', stroke: 'transparent', 'stroke-width': 14, 'vector-effect': 'non-scaling-stroke', 'data-k': key, style: 'cursor:pointer' }));
       grp.appendChild(el('path', {
-        d, fill: 'none', stroke: sel ? '#FDE047' : col, 'stroke-width': sel ? 3.6 : (l.w || 2.4), 'stroke-linecap': 'round', 'stroke-linejoin': 'round',
+        d, fill: 'none', stroke: sel ? '#FDE047' : col, 'stroke-width': sel ? 3.8 : (l.w || 2.6), 'stroke-linecap': 'round', 'stroke-linejoin': 'round',
         'stroke-dasharray': l.dash ? '6 4' : null, 'vector-effect': 'non-scaling-stroke', 'pointer-events': 'none'
       }));
       if (l.arrow !== false) {
         const a = pts[pts.length - 2], b = pts[pts.length - 1];
-        grp.appendChild(el('path', { d: arrowHead(a.x, a.y, b.x, b.y, 7 * s), fill: sel ? '#FDE047' : col, 'pointer-events': 'none' }));
+        grp.appendChild(el('path', { d: arrowHead(a.x, a.y, b.x, b.y, PX.arrow * u), fill: sel ? '#FDE047' : col, 'pointer-events': 'none' }));
       }
       lg.appendChild(grp);
-      if (showLabels && l.label !== false) {
-        const mid = pts[Math.floor(pts.length / 2)];
-        addLabel(tg, mid.x, mid.y - 4 * s, txt(l), 7.5 * s, col);
+      if (showLabels && l.label !== false && !dimmed(l.g)) {
+        // Подпись — у середины линии, запасные места — на трети и двух третях
+        const at = (f) => pts[Math.min(pts.length - 1, Math.floor((pts.length - 1) * f + 0.5))];
+        const spots = [0.5, 0.3, 0.7].map(at).map((p) => ({ x: p.x, y: p.y - 5 * u, a: 'middle' }));
+        labels.push({ key, text: txt(l), color: col, prio: sel ? 0 : 4, spots });
       }
     });
 
-    const drawDot = (key, x, y, g, big, label) => {
-      const r = (big ? 4.2 : 3) * s;
+    const drawDot = (key, x, y, g, rPx, label, prio) => {
       const sel = selectedKey === key;
-      const c = el('circle', {
-        cx: x.toFixed(2), cy: y.toFixed(2), r: (sel ? r * 1.5 : r).toFixed(2), fill: colorOf(g), class: 'tm-hit', 'data-k': key,
-        opacity: dimmed(g) ? 0.2 : 1, stroke: sel ? '#FDE047' : '#FFFFFF', 'stroke-width': sel ? 2 : 0.9, 'vector-effect': 'non-scaling-stroke', style: 'cursor:pointer'
-      });
-      pg.appendChild(c);
-      if (label && showLabels && !dimmed(g)) addLabel(tg, x + r + 1.5 * s, y + 2.6 * s, label, 7.5 * s, null, 'start');
+      const r = (sel ? rPx * 1.4 : rPx) * u;
+      const dark = isDark(colorOf(g));   // тёмный значок (нефть) — с широким светлым кольцом, иначе пропадает на фоне
+      pg.appendChild(el('circle', {
+        cx: x.toFixed(2), cy: y.toFixed(2), r: r.toFixed(3), fill: colorOf(g), class: 'tm-hit', 'data-k': key,
+        opacity: dimmed(g) ? 0.2 : 1, stroke: sel ? '#FDE047' : '#FFFFFF', 'stroke-width': sel ? 2.2 : (dark ? 2 : 1.2), 'vector-effect': 'non-scaling-stroke', style: 'cursor:pointer'
+      }));
+      obstacles.push({ x0: x - r, y0: y - r, x1: x + r, y1: y + r });
+      if (label && showLabels && !dimmed(g)) {
+        const gap = r + PX.gap * u;
+        labels.push({ key, text: label, prio: sel ? 0 : prio, spots: [
+          { x: x + gap, y, a: 'start', v: 'mid' },
+          { x: x - gap, y, a: 'end', v: 'mid' },
+          { x, y: y - gap, a: 'middle', v: 'top' },
+          { x, y: y + gap, a: 'middle', v: 'bottom' }
+        ] });
+      }
     };
 
+    const dotList = [];
     Object.values(ITEMS).forEach((it) => {
       if (it.kind !== 'micro') return;
       const pos = it.m.at || proj(it.m.lon, it.m.lat);
-      drawDot(it.key, pos.x, pos.y, it.g, false, null);
+      dotList.push({ key: it.key, x: pos.x, y: pos.y, g: it.g, r: PX.micro, label: null, prio: 9 });
     });
     (D.points || []).forEach((p, i) => {
       const pos = proj(p.lon, p.lat);
-      drawDot('p:' + i, pos.x, pos.y, p.g, p.big, txt(p));
+      dotList.push({ key: 'p:' + i, x: pos.x, y: pos.y, g: p.g, r: p.big ? PX.dotBig : PX.dot, label: txt(p), prio: p.big ? 1 : 3 });
     });
+    spreadDots(dotList, u);
+    dotList.forEach((d) => drawDot(d.key, d.x, d.y, d.g, d.r, d.label, d.prio));
 
     if (showLabels) {
       (D.areas || []).forEach((a, i) => {
         if (a.label === false || dimmed(a.g)) return;
         const at = a.at ? proj(a.at[0], a.at[1]) : centroid(a.poly);
-        addLabel(tg, at.x, at.y, txt(a), 7 * s, '#FFFFFF', 'middle');
+        const key = 'a:' + i;
+        labels.push({ key, text: txt(a), color: '#FFFFFF', prio: selectedKey === key ? 0 : 2, spots: [
+          { x: at.x, y: at.y, a: 'middle', v: 'mid' },
+          { x: at.x, y: at.y - 14 * u, a: 'middle', v: 'mid' },
+          { x: at.x, y: at.y + 14 * u, a: 'middle', v: 'mid' }
+        ] });
       });
     }
+    placeLabels(tg, labels, obstacles, u);
+  }
+
+  // Значки, которые на экране наезжают друг на друга (два завода в одном городе, Лондон и Париж
+  // на карте мира), понемногу расталкиваем, пока они не перестанут перекрываться.
+  // Сдвиг — всего несколько пикселей; при приближении значки стоят точно на своих местах.
+  function spreadDots(list, u) {
+    for (let it = 0; it < 40; it++) {
+      let moved = false;
+      for (let i = 0; i < list.length; i++) {
+        for (let j = i + 1; j < list.length; j++) {
+          const a = list[i], b = list[j];
+          const need = (a.r + b.r + 1.5) * u;
+          let dx = b.x - a.x, dy = b.y - a.y;
+          let d = Math.hypot(dx, dy);
+          if (d >= need) continue;
+          if (d < 1e-6) { const ang = (i * 2.4 + j) % (2 * Math.PI); dx = Math.cos(ang); dy = Math.sin(ang); d = 1; }
+          const push = (need - Math.hypot(b.x - a.x, b.y - a.y)) / 2 + 0.01 * u;
+          a.x -= (dx / d) * push; a.y -= (dy / d) * push;
+          b.x += (dx / d) * push; b.y += (dy / d) * push;
+          moved = true;
+        }
+      }
+      if (!moved) break;
+    }
+  }
+  function isDark(hex) {
+    const m = /^#?([0-9a-f]{6})$/i.exec(hex || '');
+    if (!m) return false;
+    const n = parseInt(m[1], 16);
+    return (0.299 * (n >> 16) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) < 60;
+  }
+
+  // Раскладка подписей: важные — первыми; если подпись не помещается ни в одно из мест,
+  // её не рисуем (название видно по наведению и нажатию, а при приближении места станет больше)
+  function placeLabels(tg, labels, dotBoxes, u) {
+    let obstacles = dotBoxes;
+    const fs = PX.label() * u;
+    const pad = 2 * u;
+    const placed = [];
+    const hits = (b, list) => list.some((o) => b.x0 < o.x1 + pad && b.x1 > o.x0 - pad && b.y0 < o.y1 + pad && b.y1 > o.y0 - pad);
+    // Подпись не должна вылезать за край видимой части карты и заходить под кнопки масштаба и поиск
+    const outside = (b) => b.x0 < vb.x || b.x1 > vb.x + vb.w || b.y0 < vb.y || b.y1 > vb.y + vb.h;
+    ['tmCtl', 'tmSearch'].forEach((id) => {
+      const r = document.getElementById(id) && document.getElementById(id).getBoundingClientRect();
+      if (!r || !r.width) return;
+      const a = toSvg(r.left, r.top), b = toSvg(r.right, r.bottom);
+      obstacles = obstacles.concat([{ x0: a.x, y0: a.y, x1: b.x, y1: b.y }]);
+    });
+    labels.sort((a, b) => a.prio - b.prio);
+    labels.forEach((lb) => {
+      if (!lb.text) return;
+      const w = textWidthPx(lb.text, PX.label()) * u;
+      for (const sp of lb.spots) {
+        // y — базовая линия текста; v — где точка привязки относительно текста
+        const base = sp.v === 'top' ? sp.y : sp.v === 'bottom' ? sp.y + fs * 0.8 : sp.y + fs * 0.35;
+        const x0 = sp.a === 'start' ? sp.x : sp.a === 'end' ? sp.x - w : sp.x - w / 2;
+        const box = { x0, x1: x0 + w, y0: base - fs * 0.8, y1: base + fs * 0.25 };
+        if (lb.prio > 0 && (outside(box) || hits(box, placed) || hits(box, obstacles))) continue;
+        placed.push(box);
+        addLabel(tg, sp.x, base, lb.text, fs, lb.color, sp.a);
+        return;
+      }
+    });
   }
   function centroid(poly) {
     let x = 0, y = 0;
@@ -483,7 +594,7 @@
   }
   function addLabel(g, x, y, text, size, color, anchor) {
     if (!text) return;
-    const t = el('text', { x: x.toFixed(2), y: y.toFixed(2), 'font-size': size.toFixed(2), class: 'tm-label', 'text-anchor': anchor || 'middle', 'stroke-width': (size * 0.28).toFixed(2) });
+    const t = el('text', { x: x.toFixed(2), y: y.toFixed(2), 'font-size': size.toFixed(3), class: 'tm-label', 'text-anchor': anchor || 'middle', 'stroke-width': (size * 0.3).toFixed(3) });
     if (color) t.setAttribute('fill', color);
     t.textContent = text;
     g.appendChild(t);
@@ -503,7 +614,7 @@
   let lastK = k();
   function afterZoom() {
     applyView();
-    if (Math.abs(k() - lastK) > 1e-6) { lastK = k(); renderOverlays(); }
+    if (Math.abs(k() - lastK) > 1e-6) { lastK = k(); renderOverlays(); if (showGrid) renderGrid(); }
   }
   function toSvg(clientX, clientY) {
     const m = svg().getScreenCTM();
@@ -593,6 +704,8 @@
       pointers.delete(e.pointerId);
       if (pointers.size < 2) pinch = null;
       vp.classList.remove('dragging');
+      // После перетаскивания — заново разложить подписи (они не выходят за край видимой части)
+      if (moved && pointers.size === 0) { renderOverlays(); if (showGrid) renderGrid(); }
       if (!moved && pointers.size === 0 && e.type === 'pointerup') {
         const hit = document.elementFromPoint(e.clientX, e.clientY);
         const node = hit && hit.closest && hit.closest('[data-k]');
@@ -600,6 +713,17 @@
         else select(null);
       }
     };
+    // Размеры в пикселях: при повороте телефона, смене ширины окна и полном экране — перерисовать
+    if (window.ResizeObserver) {
+      let rw = 0, rh = 0;
+      new ResizeObserver(() => {
+        const w = vp.clientWidth, h = vp.clientHeight;
+        if (Math.abs(w - rw) < 2 && Math.abs(h - rh) < 2) return;
+        rw = w; rh = h;
+        renderOverlays();
+        if (showGrid) renderGrid();
+      }).observe(vp);
+    }
     vp.addEventListener('pointerup', end);
     vp.addEventListener('pointercancel', end);
     vp.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') hideTooltip(); });
@@ -909,6 +1033,8 @@
     document.getElementById('tmLangRu').onclick = () => setLang('ru');
     document.getElementById('tmShowAll').onclick = () => { highlight = null; renderLegend(); renderLand(); renderAreas(); renderOverlays(); };
     window.addEventListener('keydown', (e) => { if (e.key === 'Escape') select(null); });
+    // Ширина подписей считается по шрифту — когда он догрузится, раскладываем подписи заново
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => renderOverlays());
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
