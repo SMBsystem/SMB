@@ -42,6 +42,7 @@
   <script src="../smb-common.js"></script>
   <script src="reading-tests-options.js"></script>
   <script src="maps/maps_index.js"></script>
+  <script src="tests/data/index.js"></script>
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -5785,12 +5786,10 @@ function toggleAdminEditMode() {
         if (currentTestCatalogFilter === 'passed' && !isPassed) return;
         if (currentTestCatalogFilter === 'pending' && isDone) return;
 
-        const qCount = v.questions.length;
-        const multiCount = v.questions.filter(q => q.isMulti).length;
-        const maxPoints = v.questions.reduce((sum, q) => sum + (q.isMulti ? 2 : 1), 0);
-
-        const testLink = isRu ? off.ru_test_url : off.kz_test_url;
-        const ansLink = isRu ? off.ru_ans_url : off.kz_ans_url;
+        // Пересобранный вариант — данные из tests/data/index.js (файл с вопросами грузится при открытии)
+        const ready = testReady(v.id) ? window.GEOTANY_TEST_READY[v.id] : null;
+        const qCount = ready ? ready.count : v.questions.length;
+        const maxPoints = ready ? ready.points : variantMax(v);
 
         shown++;
         const card = document.createElement('div');
@@ -5808,7 +5807,7 @@ function toggleAdminEditMode() {
           </div>
           <div class="gc-stats">
             <div class="gc-stat"><b>${qCount}</b><span>${isRu ? 'вопросов' : 'сұрақ'}</span></div>
-            <div class="gc-stat"><b>${v.timeMinutes || 35}</b><span>${isRu ? 'минут' : 'минут'}</span></div>
+            <div class="gc-stat"><b>${(ready && ready.time) || v.timeMinutes || 35}</b><span>${isRu ? 'минут' : 'минут'}</span></div>
             <div class="gc-stat"><b>${maxPoints}</b><span>${isRu ? 'баллов' : 'балл'}</span></div>
           </div>
           ${isDone ? `<div class="gc-bar"><i style="width:${pct}%;background:${isPassed ? '#34d399' : '#fbbf24'}"></i></div>` : ''}
@@ -5834,15 +5833,79 @@ function toggleAdminEditMode() {
       renderTestter();
     }
 
+    // ===== Варианты ҰБТ: пересобранные по оригиналам лежат в tests/data/test_NN.js =====
+    // Типы вопросов: single — 1 ответ (1 балл), multi — 1 или несколько ответов (2 балла: все верно — 2, одна ошибка — 1),
+    // match — соответствие А/В → 1–4 (2 балла: по 1 за каждую верную пару). У старого банка тип берётся из isMulti.
+    const testReady = (id) => !!(window.GEOTANY_TEST_READY && window.GEOTANY_TEST_READY[id]);
+    function getWritingVariant(id) {
+      const loaded = window.GEOTANY_TESTS && window.GEOTANY_TESTS[id];
+      return loaded || writingTestsBank.find(item => item.id === id) || null;
+    }
+    function loadWritingVariant(id) {
+      if (!testReady(id) || (window.GEOTANY_TESTS && window.GEOTANY_TESTS[id])) return Promise.resolve(getWritingVariant(id));
+      return new Promise((resolve) => {
+        const s = document.createElement('script');
+        s.src = `tests/data/test_${String(id).padStart(2, '0')}.js`;
+        s.onload = () => resolve(getWritingVariant(id));
+        s.onerror = () => resolve(writingTestsBank.find(item => item.id === id) || null);
+        document.head.appendChild(s);
+      });
+    }
+    const qType = (q) => q.type || (q.isMulti ? 'multi' : 'single');
+    const qMax = (q) => (qType(q) === 'single' ? 1 : 2);
+    const variantMax = (v) => v.questions.reduce((sum, q) => sum + qMax(q), 0);
+    function qAnswered(q, ans) {
+      const t = qType(q);
+      if (t === 'multi') return Array.isArray(ans) && ans.length > 0;
+      if (t === 'match') return Array.isArray(ans) && ans.some(x => x !== null && x !== undefined);
+      return ans !== undefined;
+    }
+    function qEarned(q, ans) {
+      const t = qType(q);
+      if (t === 'match') {
+        if (!Array.isArray(ans)) return 0;
+        return q.answer.reduce((s, a, i) => s + (ans[i] === a ? 1 : 0), 0);
+      }
+      if (t === 'multi') {
+        const user = Array.isArray(ans) ? ans : [];
+        const right = Array.isArray(q.answer) ? q.answer : [q.answer];
+        if (!user.length) return 0;
+        const errors = right.filter(x => !user.includes(x)).length + user.filter(x => !right.includes(x)).length;
+        return errors === 0 ? 2 : (errors === 1 ? 1 : 0);
+      }
+      return ans === q.answer ? 1 : 0;
+    }
+    // Текст к заданиям 26–30, картинка к вопросу (своя для русского отделения, если есть)
+    function examContextHtml(v, q, isRu, shown) {
+      if (!q.ctx || !v.contexts || !v.contexts[q.ctx] || shown.has(q.ctx)) return '';
+      shown.add(q.ctx);
+      const c = v.contexts[q.ctx];
+      return `<div class="p-4 sm:p-5 rounded-2xl bg-space-900 border border-cyan-500/30 space-y-2">
+          <div class="text-[10px] font-black uppercase tracking-wider text-cyan-400">${isRu ? 'Текст к заданиям' : 'Тапсырмаларға мәтін'}</div>
+          <h4 class="text-sm font-black text-white">${isRu ? (c.title_ru || c.title_kz || '') : (c.title_kz || '')}</h4>
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">${isRu ? (c.ru || c.kz) : c.kz}</p>
+        </div>`;
+    }
+    function examImageHtml(q, isRu) {
+      const src = isRu ? (q.img_ru || q.img) : q.img;
+      if (!src) return '';
+      return `<a href="${src}" target="_blank" class="block rounded-xl overflow-hidden border border-slate-700 bg-white">
+          <img src="${src}" alt="" loading="lazy" class="w-full max-h-[420px] object-contain">
+        </a>`;
+    }
+
     function openWritingExam(variantId, autoReview = false) {
+      loadWritingVariant(variantId).then(v => { if (v) openWritingExamReady(v, autoReview); });
+    }
+    function openWritingExamReady(v, autoReview) {
+      const variantId = v.id;
       currentWritingVariantId = variantId;
-      const v = writingTestsBank.find(item => item.id === variantId) || writingTestsBank[0];
 
       document.getElementById('testterCatalogView').classList.add('hidden');
       document.getElementById('testterExamView').classList.remove('hidden');
 
       const isRu = (currentWritingDept === 'ru' || currentLang === 'ru');
-      const maxPoints = v.questions.reduce((sum, q) => sum + (q.isMulti ? 2 : 1), 0);
+      const maxPoints = variantMax(v);
       const passingPoints = Math.round(maxPoints * 0.7);
 
       const catBadge = document.getElementById('examHeaderCategory');
@@ -5896,7 +5959,9 @@ function toggleAdminEditMode() {
         `;
       }
 
-      const isPreviouslySaved = writingTestScores[variantId] !== undefined;
+      // Ответы, сохранённые до пересборки варианта, относятся к другим вопросам — разбор по ним не показываем
+      const saved = writingTestScores[variantId];
+      const isPreviouslySaved = saved !== undefined && (!testReady(variantId) || saved.ver === 2);
 
       if (autoReview && isPreviouslySaved) {
         currentWritingAnswers = writingTestScores[variantId].answers || {};
@@ -5982,41 +6047,57 @@ function toggleAdminEditMode() {
       container.innerHTML = '';
 
       const isRu = (currentWritingDept === 'ru' || currentLang === 'ru');
+      const ctxShown = new Set();
 
       v.questions.forEach((q, idx) => {
+        const ctxHtml = examContextHtml(v, q, isRu, ctxShown);
+        if (ctxHtml) {
+          const ctxBox = document.createElement('div');
+          ctxBox.innerHTML = ctxHtml;
+          container.appendChild(ctxBox.firstElementChild);
+        }
+
         const qCard = document.createElement('div');
         qCard.id = `exam-q-card-${q.id}`;
         qCard.className = 'bg-space-850 border border-slate-800 rounded-2xl p-5 space-y-4 transition';
 
         const qNumber = idx + 1;
-        const isMulti = !!q.isMulti;
+        const type = qType(q);
+        const isMulti = type === 'multi';
         const currentAns = currentWritingAnswers[q.id];
-        const isAnswered = isMulti 
-          ? (Array.isArray(currentAns) && currentAns.length > 0)
-          : (currentAns !== undefined);
+        const isAnswered = qAnswered(q, currentAns);
 
         const qPrefix = isRu ? 'Вопрос' : 'Сұрақ';
-        const multiBadgeText = isRu ? 'Несколько верных ответов (2 балла)' : 'Бірнеше дұрыс жауапты (2 балл)';
+        const multiBadgeText = isRu ? 'Один или несколько ответов (2 балла)' : 'Бір немесе бірнеше жауап (2 балл)';
         const singleBadgeText = isRu ? '1 верный ответ (1 балл)' : '1 дұрыс жауапты (1 балл)';
+        const matchBadgeText = isRu ? 'Соответствие (2 балла)' : 'Сәйкестендіру (2 балл)';
 
         const qText = isRu ? (q.q_ru || q.q) : q.q;
         const qOpts = isRu ? (q.options_ru || q.options) : q.options;
 
-        qCard.innerHTML = `
+        const header = `
           <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
             <span class="text-xs font-black text-amber-400 flex items-center space-x-1.5">
               <span>${qPrefix} #${qNumber}</span>
               <span id="q-status-dot-${q.id}" class="w-2 h-2 rounded-full ${isAnswered ? 'bg-cyan-400' : 'bg-slate-600'}"></span>
             </span>
-            ${isMulti 
-              ? `<span class="text-[10px] text-amber-300 font-mono font-bold bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">${multiBadgeText}</span>` 
+            ${type !== 'single'
+              ? `<span class="text-[10px] text-amber-300 font-mono font-bold bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">${type === 'match' ? matchBadgeText : multiBadgeText}</span>`
               : `<span class="text-[10px] text-slate-500 font-mono">${singleBadgeText}</span>`}
           </div>
 
           <p class="text-sm sm:text-base font-extrabold text-slate-100 leading-relaxed">
             ${qText}
           </p>
+          ${examImageHtml(q, isRu)}`;
 
+        if (type === 'match') {
+          qCard.innerHTML = header + matchQuestionHtml(q, isRu, currentAns);
+          container.appendChild(qCard);
+          return;
+        }
+
+        qCard.innerHTML = header + `
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
             ${qOpts.map((opt, optIdx) => {
               const letter = alphabetLetters[optIdx] || String.fromCharCode(65 + optIdx);
@@ -6049,11 +6130,53 @@ function toggleAdminEditMode() {
       });
     }
 
+    // Соответствие: слева A/B, справа варианты 1–4; ответ — номер варианта для каждой буквы
+    const MATCH_LETTERS = ['A', 'B', 'C', 'D'];
+    const matchBtnClass = (on) => `w-10 h-10 rounded-xl border text-sm font-black transition ${on
+      ? 'bg-cyan-500/25 border-cyan-400 text-white shadow-lg shadow-cyan-500/10'
+      : 'bg-space-950/80 border-slate-700/80 text-slate-300 hover:border-slate-500 hover:bg-space-900'}`;
+    function matchListsHtml(q, isRu) {
+      const left = isRu ? (q.left_ru || q.left) : q.left;
+      const opts = isRu ? (q.options_ru || q.options) : q.options;
+      return `
+        <div class="grid sm:grid-cols-2 gap-2.5 text-xs sm:text-sm">
+          <div class="space-y-1.5">${left.map((l, i) => `<div class="p-2.5 rounded-xl bg-space-950/80 border border-slate-700/80 text-slate-200"><b class="text-amber-300">${MATCH_LETTERS[i]})</b> ${l}</div>`).join('')}</div>
+          <div class="space-y-1.5">${opts.map((o, i) => `<div class="p-2.5 rounded-xl bg-space-950/80 border border-slate-700/80 text-slate-300"><b class="text-cyan-300">${i + 1}.</b> ${o}</div>`).join('')}</div>
+        </div>`;
+    }
+    function matchQuestionHtml(q, isRu, ans) {
+      return matchListsHtml(q, isRu) + `
+        <div class="space-y-2 pt-1">
+          ${q.left.map((l, row) => `
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="w-9 shrink-0 text-xs font-black text-amber-300">${MATCH_LETTERS[row]} →</span>
+              ${q.options.map((o, i) => `<button type="button" id="m-btn-${q.id}-${row}-${i}" onclick="selectMatchOption(${q.id}, ${row}, ${i})" class="${matchBtnClass(Array.isArray(ans) && ans[row] === i)}">${i + 1}</button>`).join('')}
+            </div>`).join('')}
+        </div>`;
+    }
+    function selectMatchOption(qId, row, optIdx) {
+      if (currentWritingSubmitted) return;
+      const v = getWritingVariant(currentWritingVariantId);
+      const q = v ? v.questions.find(item => item.id === qId) : null;
+      if (!q) return;
+      const ans = Array.isArray(currentWritingAnswers[qId]) ? currentWritingAnswers[qId] : q.left.map(() => null);
+      ans[row] = ans[row] === optIdx ? null : optIdx;
+      if (qAnswered(q, ans)) currentWritingAnswers[qId] = ans; else delete currentWritingAnswers[qId];
+      q.options.forEach((o, i) => {
+        const b = document.getElementById(`m-btn-${qId}-${row}-${i}`);
+        if (b) b.className = matchBtnClass(ans[row] === i);
+      });
+      const dot = document.getElementById(`q-status-dot-${qId}`);
+      if (dot) dot.className = `w-2 h-2 rounded-full ${qAnswered(q, ans) ? 'bg-cyan-400' : 'bg-slate-600'}`;
+      updateExamAnsweredUI(v);
+      playBeep(640, 'sine', 0.04);
+    }
+
     function selectWritingExamOption(qId, optIdx) {
       if (currentWritingSubmitted) return;
       currentWritingAnswers[qId] = optIdx;
 
-      const v = writingTestsBank.find(item => item.id === currentWritingVariantId);
+      const v = getWritingVariant(currentWritingVariantId);
       const q = v ? v.questions.find(item => item.id === qId) : null;
       const numOptions = q ? q.options.length : 8;
 
@@ -6103,7 +6226,7 @@ function toggleAdminEditMode() {
         delete currentWritingAnswers[qId];
       }
 
-      const v = writingTestsBank.find(item => item.id === currentWritingVariantId);
+      const v = getWritingVariant(currentWritingVariantId);
       const q = v ? v.questions.find(item => item.id === qId) : null;
       const numOptions = q ? q.options.length : 8;
       const currentList = currentWritingAnswers[qId] || [];
@@ -6158,7 +6281,7 @@ function toggleAdminEditMode() {
     }
 
     function submitWritingExam() {
-      const v = writingTestsBank.find(item => item.id === currentWritingVariantId);
+      const v = getWritingVariant(currentWritingVariantId);
       if (!v) return;
 
       const isRu = (currentLang === 'ru');
@@ -6182,33 +6305,13 @@ function toggleAdminEditMode() {
       let wrongCount = 0;
 
       v.questions.forEach(q => {
-        if (q.isMulti) {
-          totalMaxPoints += 2;
-          const userChoices = Array.isArray(currentWritingAnswers[q.id]) ? currentWritingAnswers[q.id] : [];
-          const correctChoices = Array.isArray(q.answer) ? q.answer : [q.answer];
-
-          const missed = correctChoices.filter(x => !userChoices.includes(x)).length;
-          const extra = userChoices.filter(x => !correctChoices.includes(x)).length;
-          const errors = missed + extra;
-
-          if (errors === 0 && userChoices.length > 0) {
-            totalEarnedPoints += 2;
-            fullyCorrectCount++;
-          } else if (errors === 1 && userChoices.length > 0) {
-            totalEarnedPoints += 1;
-            partiallyCorrectCount++;
-          } else {
-            wrongCount++;
-          }
-        } else {
-          totalMaxPoints += 1;
-          if (currentWritingAnswers[q.id] === q.answer) {
-            totalEarnedPoints += 1;
-            fullyCorrectCount++;
-          } else {
-            wrongCount++;
-          }
-        }
+        const max = qMax(q);
+        const earned = qEarned(q, currentWritingAnswers[q.id]);
+        totalMaxPoints += max;
+        totalEarnedPoints += earned;
+        if (earned === max) fullyCorrectCount++;
+        else if (earned > 0) partiallyCorrectCount++;
+        else wrongCount++;
       });
 
       const percentage = Math.round((totalEarnedPoints / totalMaxPoints) * 100);
@@ -6223,6 +6326,7 @@ function toggleAdminEditMode() {
         wrong: wrongCount,
         percentage: percentage,
         answers: currentWritingAnswers,
+        ver: testReady(v.id) ? 2 : 1,
         timeSeconds: writingExamElapsedSeconds,
         date: new Date().toISOString()
       };
@@ -6246,7 +6350,7 @@ function toggleAdminEditMode() {
       document.getElementById('examTimerDisplay').classList.add('hidden');
 
       const isRu = (currentLang === 'ru');
-      const maxPoints = v.questions.reduce((sum, q) => sum + (q.isMulti ? 2 : 1), 0);
+      const maxPoints = variantMax(v);
       const res = writingTestScores[v.id] || {
         score: 0,
         maxScore: maxPoints,
@@ -6324,7 +6428,7 @@ function toggleAdminEditMode() {
             : 'px-2.5 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white';
         }
       });
-      const v = writingTestsBank.find(item => item.id === currentWritingVariantId);
+      const v = getWritingVariant(currentWritingVariantId);
       if (v) renderBreakdownQuestions(v);
     }
 
@@ -6334,38 +6438,24 @@ function toggleAdminEditMode() {
       container.innerHTML = '';
 
       const isRu = (currentWritingDept === 'ru' || currentLang === 'ru');
+      const ctxShown = new Set();
 
       v.questions.forEach((q, idx) => {
-        const isMulti = !!q.isMulti;
-        let earned = 0;
-        let maxQPoints = isMulti ? 2 : 1;
-
+        const type = qType(q);
+        const isMulti = type === 'multi';
         const userAns = currentWritingAnswers[q.id];
-
-        if (isMulti) {
-          const userChoices = Array.isArray(userAns) ? userAns : [];
-          const correctChoices = Array.isArray(q.answer) ? q.answer : [q.answer];
-          const missed = correctChoices.filter(x => !userChoices.includes(x)).length;
-          const extra = userChoices.filter(x => !correctChoices.includes(x)).length;
-          const errors = missed + extra;
-
-          if (errors === 0 && userChoices.length > 0) {
-            earned = 2;
-          } else if (errors === 1 && userChoices.length > 0) {
-            earned = 1;
-          } else {
-            earned = 0;
-          }
-        } else {
-          if (userAns === q.answer) {
-            earned = 1;
-          } else {
-            earned = 0;
-          }
-        }
+        const maxQPoints = qMax(q);
+        const earned = qEarned(q, userAns);
 
         if (currentBreakdownFilter === 'wrong' && earned === maxQPoints) return;
         if (currentBreakdownFilter === 'correct' && earned !== maxQPoints) return;
+
+        const ctxHtml = examContextHtml(v, q, isRu, ctxShown);
+        if (ctxHtml) {
+          const ctxBox = document.createElement('div');
+          ctxBox.innerHTML = ctxHtml;
+          container.appendChild(ctxBox.firstElementChild);
+        }
 
         const qCard = document.createElement('div');
         const borderColor = earned === maxQPoints 
@@ -6380,16 +6470,28 @@ function toggleAdminEditMode() {
         } else if (earned > 0) {
           statusBadgeHtml = `<span class="px-2 py-0.5 rounded-md text-[10px] bg-amber-500/20 text-amber-300 font-bold">${isRu ? `▲ Частично верно (+${earned} б)` : `▲ Жартылай дұрыс (+${earned} балл)`}</span>`;
         } else {
-          const wasAnswered = isMulti ? (Array.isArray(userAns) && userAns.length > 0) : (userAns !== undefined);
+          const wasAnswered = qAnswered(q, userAns);
           statusBadgeHtml = `<span class="px-2 py-0.5 rounded-md text-[10px] bg-rose-500/20 text-rose-300 font-bold">${wasAnswered ? (isRu ? '✗ Ошибка (0 б)' : '✗ Қате (0 балл)') : (isRu ? '⚪ Не отвечено (0 б)' : '⚪ Жауап берілмеді (0 балл)')}</span>`;
         }
 
         const qPrefix = isRu ? 'Вопрос' : 'Сұрақ';
-        const typeBadge = isMulti ? (isRu ? 'Множественный выбор (2 балла)' : 'Көпжауапты (2 балл)') : (isRu ? 'Одиночный выбор (1 балл)' : '1 жауапты (1 балл)');
+        const typeBadge = type === 'match' ? (isRu ? 'Соответствие (2 балла)' : 'Сәйкестендіру (2 балл)')
+          : isMulti ? (isRu ? 'Один или несколько ответов (2 балла)' : 'Бір немесе бірнеше жауап (2 балл)') : (isRu ? 'Одиночный выбор (1 балл)' : '1 жауапты (1 балл)');
 
         const qText = isRu ? (q.q_ru || q.q) : q.q;
         const qOpts = isRu ? (q.options_ru || q.options) : q.options;
         const qExp = isRu ? (q.explanation_ru || q.explanation) : q.explanation;
+
+        // Соответствие: по каждой букве — ответ ученика и верный номер
+        const matchReviewHtml = type !== 'match' ? '' : matchListsHtml(q, isRu) + `
+          <div class="flex flex-wrap gap-2 pt-1 text-xs">
+            ${q.answer.map((a, row) => {
+              const mine = Array.isArray(userAns) ? userAns[row] : null;
+              const ok = mine === a;
+              return `<span class="px-3 py-1.5 rounded-xl border font-bold ${ok ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-200' : 'bg-rose-500/15 border-rose-500/40 text-rose-200'}">
+                ${MATCH_LETTERS[row]} → ${mine === null || mine === undefined ? '—' : mine + 1}${ok ? ' ✓' : ` ✗ <span class="text-emerald-300">(${isRu ? 'верно' : 'дұрысы'}: ${a + 1})</span>`}</span>`;
+            }).join('')}
+          </div>`;
 
         qCard.innerHTML = `
           <div class="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -6403,9 +6505,11 @@ function toggleAdminEditMode() {
           <p class="text-sm sm:text-base font-extrabold text-white leading-relaxed">
             ${qText}
           </p>
+          ${examImageHtml(q, isRu)}
+          ${matchReviewHtml}
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs pt-1">
-            ${qOpts.map((opt, optIdx) => {
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs pt-1 ${type === 'match' ? 'hidden' : ''}">
+            ${(type === 'match' ? [] : qOpts).map((opt, optIdx) => {
               const letter = alphabetLetters[optIdx] || String.fromCharCode(65 + optIdx);
               const isSelected = isMulti 
                 ? (Array.isArray(userAns) && userAns.includes(optIdx)) 
