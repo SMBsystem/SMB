@@ -93,7 +93,54 @@
     details.t21-q[open] .n { background: var(--c); }
     details.t21-q .ans { padding: 8px 12px 11px 44px; font-size: 12px; color: #cbd5e1; border-top: 1px dashed #1e293b; }
     details.t21-q .ans b { color: var(--c); }
+
+    /* Topic 23 — interactive relief map */
+    #tableContainer tr[data-ri] { cursor: pointer; }
+    #tableContainer tr[data-ri] td:first-child { position: relative; padding-left: 26px; }
+    #tableContainer tr[data-ri] td:first-child::before { content: ""; position: absolute; left: 9px; top: 50%; width: 9px; height: 9px; margin-top: -4.5px; border-radius: 3px; background: var(--rc); box-shadow: 0 0 0 3px color-mix(in srgb, var(--rc) 25%, transparent); }
+    #tableContainer tr[data-ri]:hover td { background: color-mix(in srgb, var(--rc) 9%, transparent); }
+    #tableContainer tr[data-ri].rel-row-sel td { background: color-mix(in srgb, var(--rc) 18%, transparent); }
+    #tableContainer tr[data-ri].rel-row-sel td:first-child { box-shadow: inset 3px 0 0 var(--rc); }
+    .rel-chip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; font-size: 11px; font-weight: 700; color: #cbd5e1; cursor: pointer; transition: all .2s;
+      background: rgba(15,23,42,.8); border: 1px solid #1e293b; }
+    .rel-chip i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); box-shadow: 0 0 8px var(--c); }
+    .rel-chip:hover { border-color: var(--c); color: #fff; }
+    .rel-chip.on { color: #0b1120; background: var(--c); border-color: var(--c); }
+    .rel-chip.on i { background: #0b1120; box-shadow: none; }
+    .rel-lay { padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; color: #94a3b8; cursor: pointer; border: 1px solid #1e293b; background: rgba(15,23,42,.8); }
+    .rel-lay.on { color: #0b1120; background: #22d3ee; border-color: #22d3ee; }
+    .rel-mapbox { position: relative; border-radius: 16px; overflow: hidden; border: 1px solid #1e293b; box-shadow: 0 0 0 1px rgba(34,211,238,.08), 0 18px 40px -20px rgba(0,0,0,.8); }
+    #reliefMap { height: 520px; background: #0b1120; }
+    @media (max-width: 640px) { #reliefMap { height: 420px; } }
+    #reliefMap .leaflet-popup-content-wrapper, #reliefMap .leaflet-popup-tip { background: #0f172a; color: #e2e8f0; }
+    #reliefMap .leaflet-control-attribution { background: rgba(11,17,32,.8) !important; color: #64748b !important; font-size: 9px; }
+    #reliefMap .leaflet-control-attribution a { color: #94a3b8 !important; }
+    #reliefMap .leaflet-bar a { background: #0f172a; color: #e2e8f0; border-color: #334155; }
+    #reliefMap .leaflet-bar a:hover { background: #1e293b; }
+    .rel-poly { transition: fill-opacity .25s, stroke-width .25s; cursor: pointer; }
+    .rel-poly.sel { stroke-dasharray: 9 6; animation: relDash 1.2s linear infinite; filter: drop-shadow(0 0 7px var(--c)); }
+    @keyframes relDash { to { stroke-dashoffset: -30; } }
+    .leaflet-tooltip.rel-name { background: transparent; border: 0; box-shadow: none; padding: 0; font: 800 11px 'Outfit', sans-serif; color: #fff; text-shadow: 0 1px 3px #000, 0 0 6px #000, 0 0 2px #000; pointer-events: none; white-space: nowrap; }
+    .leaflet-tooltip.rel-name::before { display: none; }
+    .leaflet-tooltip.rel-name.sel { font-size: 13px; color: var(--c); }
+    .leaflet-tooltip.rel-pt { background: rgba(11,17,32,.92); border: 1px solid var(--c); border-radius: 8px; color: #e2e8f0; font: 600 11px 'Outfit', sans-serif; padding: 2px 7px; box-shadow: 0 4px 14px rgba(0,0,0,.5); white-space: nowrap; }
+    .leaflet-tooltip.rel-pt b { color: var(--c); font-weight: 800; }
+    .leaflet-tooltip.rel-pt::before { display: none; }
+    .rel-icon { position: relative; display: grid; place-items: center; }
+    .rel-icon svg { width: 22px; height: 22px; filter: drop-shadow(0 2px 3px rgba(0,0,0,.7)); }
+    .rel-icon .dot { width: 11px; height: 11px; border-radius: 50%; background: #fff; border: 3px solid var(--c); box-shadow: 0 0 8px var(--c); }
+    .rel-icon.pulse::after { content: ""; position: absolute; width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--c); animation: relPulse 1.6s ease-out infinite; }
+    @keyframes relPulse { from { transform: scale(.8); opacity: 1; } to { transform: scale(3.2); opacity: 0; } }
+    .rel-info { border-radius: 16px; padding: 14px 16px; background: rgba(15,23,42,.8); border: 1px solid #1e293b; border-left: 4px solid var(--c, #22d3ee); }
+    .rel-info .nm { font-size: 15px; font-weight: 900; color: var(--c, #22d3ee); }
+    .rel-info .hi { margin-top: 6px; font-size: 12px; font-weight: 600; color: #e2e8f0; }
+    .rel-info .hi small { display: block; font-size: 10px; font-weight: 800; letter-spacing: .05em; color: #64748b; text-transform: uppercase; }
+    .rel-info .dt { margin-top: 8px; font-size: 12px; line-height: 1.55; color: #cbd5e1; }
+    .rel-nav { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: #e2e8f0; font-weight: 900; cursor: pointer; }
+    .rel-nav:hover { border-color: #22d3ee; color: #22d3ee; }
   </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 </head>
 <body class="bg-[#070b14] text-slate-100 min-h-screen flex flex-col selection:bg-cyan-500 selection:text-space-950">
 
@@ -490,6 +537,22 @@
       </div>
     </section>
 
+    <!-- 4b. INTERACTIVE RELIEF MAP (linked to the table above) -->
+    <section id="reliefMapSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl" style="scroll-margin-top:72px">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <h3 class="text-xs font-black text-cyan-400 flex items-center space-x-2">
+          <span>🗺️</span>
+          <span id="relTitle">ИНТЕРАКТИВТІ РЕЛЬЕФ КАРТАСЫ</span>
+        </h3>
+        <div class="flex items-center gap-1.5" id="relLayers"></div>
+      </div>
+      <p id="relHint" class="text-[11px] text-slate-400"></p>
+      <div id="relChips" class="flex flex-wrap gap-1.5"></div>
+      <div class="rel-mapbox"><div id="reliefMap"></div></div>
+      <div id="relInfo" class="rel-info"></div>
+      <p id="relLegend" class="text-[10px] text-slate-500"></p>
+    </section>
+
     <!-- 5. KEY FACTS FOR UNT / ЕНТ -->
     <section id="factsSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl">
       <h3 class="text-xs font-black text-amber-400 flex items-center space-x-2">
@@ -628,8 +691,9 @@
         html += `<th class="p-2.5 sm:p-3 bg-space-900/60 rounded-lg whitespace-nowrap text-cyan-300 font-bold">${col}</th>`;
       });
       html += '</tr></thead><tbody class="divide-y divide-slate-800/60">';
-      tbl.rows.forEach(row => {
-        html += '<tr class="hover:bg-space-900/40 transition">';
+      tbl.rows.forEach((row, ri) => {
+        const rc = (window.RelMap && RelMap.color(ri)) || '#22d3ee';
+        html += `<tr data-ri="${ri}" style="--rc:${rc}" class="transition">`;
         row.forEach((cell, idx) => {
           const cls = idx === 0 ? "font-bold text-white whitespace-nowrap" : (idx === 1 ? "text-cyan-300 font-medium" : "text-slate-300");
           html += `<td class="p-2.5 sm:p-3 ${cls}">${cell}</td>`;
@@ -638,6 +702,10 @@
       });
       html += '</tbody></table>';
       container.innerHTML = html;
+      container.querySelectorAll('tr[data-ri]').forEach(tr => {
+        tr.addEventListener('click', () => { if (window.RelMap) RelMap.select(+tr.dataset.ri, true); });
+      });
+      if (window.RelMap) RelMap.markRow();
     }
 
     function renderFacts(isRu) {
@@ -665,6 +733,204 @@
         return `<p class="leading-relaxed flex items-start space-x-2">${icon}<span>${str}</span></p>`;
       }).join('');
     }
+
+    // ===== Interactive relief map: table row <-> polygon on the map (order = rows of the table) =====
+    window.RelMap = (function () {
+      // Polygons are schematic outlines, [lat, lon]. pk: main points {t: peak|low|area}; pt: extra features.
+      const R = [
+        { c: '#38bdf8', kz: 'Шығыс Еуропа жазығы', ru: 'Восточно-Европейская равнина',
+          polys: [[[51.6,47.0],[51.9,50.5],[51.4,54.0],[50.8,57.0],[49.8,58.0],[48.0,57.6],[46.5,57.0],[45.5,55.5],[45.0,53.0],[45.2,51.2],[46.2,49.5],[47.0,48.0]]],
+          pk: [{ ll: [47.8,50.3], t: 'area', kz: 'Каспий маңы ойпаты', ru: 'Прикаспийская низменность', h: '−28…+200 м' }],
+          pt: [{ ll: [51.2,52.6], kz: 'Жалпы Сырт', ru: 'Общий Сырт' }, { ll: [48.5,54.8], kz: 'Жайық-Жем үстірті', ru: 'плато Урал-Эмба' },
+               { ll: [48.4,51.9], kz: 'Тұз күмбездері', ru: 'Соляные купола', h: '50 м' }, { ll: [46.7,50.6], kz: 'Бэр төбешіктері', ru: 'Бэровские бугры', h: '15–20 м' },
+               { ll: [47.2,48.6], kz: 'Нарын құмдары', ru: 'Нарынские пески' }] },
+        { c: '#34d399', kz: 'Батыс Сібір жазығы', ru: 'Западно-Сибирская равнина',
+          polys: [[[54.6,61.6],[55.1,65.0],[54.9,69.0],[54.4,73.0],[54.0,76.5],[53.2,79.5],[51.6,81.0],[51.2,79.5],[51.9,76.8],[52.8,74.0],[53.9,71.5],[53.8,67.8],[52.4,66.5],[51.4,64.5],[51.0,61.8]]],
+          pk: [{ ll: [54.2,66.3], t: 'area', kz: 'Орташа биіктік', ru: 'Средние высоты', h: '130–200 м' }],
+          pt: [{ ll: [54.3,69.0], kz: 'Есіл орманды даласы', ru: 'Лесостепь Есиля' }, { ll: [53.0,63.5], kz: 'Тобыл-Обаған', ru: 'Тобыл-Обаганская' },
+               { ll: [53.8,73.0], kz: 'Есіл-Ертіс', ru: 'Есиль-Иртышская' }, { ll: [52.6,78.0], kz: 'Ертіс-Құлынды', ru: 'Иртыш-Кулундинская' }] },
+        { c: '#fbbf24', kz: 'Тұран ойпаты', ru: 'Туранская низменность',
+          polys: [[[46.3,53.0],[47.0,56.0],[46.5,59.0],[47.0,62.0],[47.4,65.0],[47.2,69.0],[46.4,71.0],[45.5,73.5],[44.5,75.2],[43.3,73.6],[42.7,71.0],[42.2,69.5],[42.0,66.5],[43.0,64.0],[43.5,61.0],[43.0,58.0],[42.5,56.0],[44.0,54.5]]],
+          pk: [{ ll: [43.4,51.7], t: 'low', kz: 'Қарақия ойысы', ru: 'Впадина Каракия', h: '−132 м' }],
+          pt: [{ ll: [43.6,54.6], kz: 'Қауынды ойысы', ru: 'впадина Кауынды', h: '−57 м' }, { ll: [44.4,53.0], kz: 'Қарынжарық ойысы', ru: 'впадина Карынжарык', h: '−40 м' },
+               { ll: [46.5,70.5], kz: 'Бетпақдала жазығы', ru: 'плато Бетпакдала' }, { ll: [44.85,65.5], kz: 'Қызылорда (Сырдария)', ru: 'Кызылорда (Сырдарья)' }],
+          line: { ll: [[41.25,68.0],[42.6,68.3],[43.7,67.2],[44.85,65.5],[45.8,63.4],[46.1,61.0]], kz: 'Сырдария', ru: 'Сырдарья' } },
+        { c: '#fb923c', kz: 'Сарыарқа', ru: 'Сарыарка',
+          polys: [[[53.8,67.8],[53.9,71.5],[52.8,73.8],[51.9,76.6],[50.6,78.8],[49.3,79.3],[48.3,78.2],[47.6,76.0],[47.2,73.5],[47.4,70.5],[47.8,67.8],[48.9,65.8],[50.2,65.0],[51.4,64.7],[52.4,66.5]]],
+          pk: [{ ll: [49.18,75.28], t: 'peak', kz: 'Ақсораң (Қызыларай)', ru: 'Аксоран (Кызыларай)', h: '1565 м' }],
+          pt: [{ ll: [53.3,69.5], kz: 'Көкшетау', ru: 'Кокшетау' }, { ll: [48.65,67.0], kz: 'Ұлытау', ru: 'Улытау' }, { ll: [50.4,69.1], kz: 'Теңіз', ru: 'Тениз' },
+               { ll: [49.4,75.0], kz: 'Қарқаралы', ru: 'Каркаралы', h: '1400 м' }, { ll: [49.05,75.9], kz: 'Кент', ru: 'Кент' }, { ll: [50.75,75.7], kz: 'Баянауыл', ru: 'Баянаул' }] },
+        { c: '#f472b6', kz: 'Мұғалжар', ru: 'Мугалжары',
+          polys: [[[50.6,58.4],[50.5,59.4],[49.5,59.9],[48.3,59.6],[47.2,59.0],[46.7,58.4],[47.6,58.0],[48.8,58.3],[49.8,58.1]]],
+          pk: [{ ll: [48.9,58.9], t: 'peak', kz: 'Үлкен Боқтыбай', ru: 'Большой Бокты-Бай', h: '657 м' }],
+          pt: [{ ll: [47.9,58.4], kz: 'Біршоғыр ойысы', ru: 'Берчогурская впадина' }] },
+        { c: '#a3e635', kz: 'Маңғыстау таулары', ru: 'Горы Мангистау',
+          polys: [[[45.0,50.8],[45.3,52.5],[44.6,53.5],[43.5,53.7],[42.5,53.0],[42.0,52.3],[42.3,51.0],[43.3,50.5],[44.2,50.4]]],
+          pk: [{ ll: [44.0,52.4], t: 'peak', kz: 'Бесшоқы (Шығыс Қаратау)', ru: 'Бесшоки (Восточный Каратау)', h: '556 м' }],
+          pt: [{ ll: [44.5,51.1], kz: 'Солтүстік Ақтау (Бозащы)', ru: 'Северный Актау (Бозащы)' }, { ll: [43.5,53.1], kz: 'Оңтүстік Ақтау (Үстірт)', ru: 'Южный Актау (Устюрт)' }] },
+        { c: '#34d399', kz: 'Алтай', ru: 'Алтай',
+          polys: [[[51.2,82.8],[51.0,85.0],[50.6,86.8],[50.0,87.5],[49.2,87.4],[48.6,86.6],[48.3,85.3],[48.6,84.0],[49.3,83.2],[50.2,82.3]]],
+          pk: [{ ll: [49.81,86.58], t: 'peak', kz: 'Мұзтау (Белуха)', ru: 'Музтау (Белуха)', h: '4506 м' }],
+          pt: [{ ll: [48.8,85.8], kz: 'Марқакөл', ru: 'оз. Маркаколь', h: '1449 м' }, { ll: [49.05,83.9], kz: 'Сарышоқы (Қалба)', ru: 'Сарышоки (Калба)', h: '1608 м' },
+               { ll: [49.4,84.6], kz: 'Нарын-Бұқтырма', ru: 'Нарын-Бухтарма' }, { ll: [50.4,83.8], kz: 'Кенді Алтай', ru: 'Рудный Алтай' }] },
+        { c: '#facc15', kz: 'Тарбағатай · Сауыр', ru: 'Тарбагатай · Саур',
+          polys: [[[47.3,81.2],[47.7,82.5],[47.7,83.8],[47.2,84.0],[47.0,82.6],[46.9,81.5]], [[47.6,84.0],[47.8,85.2],[47.0,85.6],[46.8,84.8],[47.1,84.1]]],
+          pk: [{ ll: [47.3,83.0], t: 'peak', kz: 'Тастау (Тарбағатай)', ru: 'Тастау (Тарбагатай)', h: '2992 м' }, { ll: [47.3,84.8], t: 'peak', kz: 'Мұзтау (Сауыр)', ru: 'Музтау (Саур)', h: '3816 м' }],
+          pt: [{ ll: [46.3,83.0], kz: 'Алакөл мен Жайсаң аралығы', ru: 'между Алаколем и Зайсаном' }] },
+        { c: '#60a5fa', kz: 'Жетісу Алатауы', ru: 'Жетысуский Алатау',
+          polys: [[[45.0,77.8],[45.6,79.0],[45.6,80.5],[44.9,80.9],[44.4,80.3],[44.2,79.0],[44.0,78.2],[44.4,77.6]]],
+          pk: [{ ll: [44.95,79.9], t: 'peak', kz: 'Бесбақан (Солтүстік жота)', ru: 'Бесбакан (Северный хребет)', h: '4622 м' }],
+          pt: [{ ll: [44.3,79.1], kz: 'Мұзтау (Оңтүстік жота)', ru: 'Музтау (Южный хребет)', h: '4370 м' }, { ll: [45.15,82.3], kz: 'Жоңғар қақпасы', ru: 'Джунгарские ворота' }] },
+        { c: '#e879f9', kz: 'Тянь-Шань', ru: 'Тянь-Шань', lbl: [43.0, 77.2],
+          polys: [[[43.5,74.8],[43.65,77.0],[43.5,79.0],[43.1,80.4],[42.6,80.5],[42.0,80.4],[41.9,78.3],[42.3,75.5],[42.9,74.2]],
+                  [[44.5,68.2],[44.8,68.8],[43.9,69.9],[43.0,70.9],[42.4,71.2],[42.3,70.6],[43.2,69.6],[44.0,68.6]]],
+          pk: [{ ll: [42.2,80.17], t: 'peak', kz: 'Хан-Тәңірі (Орталық Тянь-Шань)', ru: 'Хан-Тенгри (Центральный Тянь-Шань)', h: '6995 м' }],
+          pt: [{ ll: [43.05,77.25], kz: 'Талғар (Іле Алатауы)', ru: 'Талгар (Заилийский Алатау)', h: '4973 м' }, { ll: [43.3,79.4], kz: 'Кетпен', ru: 'Кетмень', h: '3652 м' },
+               { ll: [42.95,70.65], kz: 'Бессаз (Қаратау)', ru: 'Бессаз (Каратау)', h: '2176 м' }] }
+      ];
+      const T = {
+        kz: { title: 'ИНТЕРАКТИВТІ РЕЛЬЕФ КАРТАСЫ', hint: 'Кестедегі жолды немесе картадағы аймақты басыңыз — ол картада жарқырап көрінеді.', all: 'Барлығы',
+              empty: 'Кестеден жолды таңдаңыз немесе картадағы түсті аймақты басыңыз.', hi: 'Ең биік нүктесі', more: 'Құрамы мен ерекшеліктері',
+              legend: '▲ шың  ▼ ең төмен нүкте  ● нысан. Контурлар — схемалық, нақты шекара емес.', dark: 'Қараңғы', topo: 'Топо', sat: 'Спутник' },
+        ru: { title: 'ИНТЕРАКТИВНАЯ КАРТА РЕЛЬЕФА', hint: 'Нажмите строку таблицы или область на карте — она подсветится на карте.', all: 'Все',
+              empty: 'Выберите строку таблицы или нажмите на цветную область карты.', hi: 'Высшая точка', more: 'Составные части и особенности',
+              legend: '▲ вершина  ▼ самая низкая точка  ● объект. Контуры схематичные, не точные границы.', dark: 'Тёмная', topo: 'Топо', sat: 'Спутник' }
+      };
+      let map, polys = [], lbls = [], lineLayer, mk, sel = -1, ru = false, baseKey = 'dark', bases = {}, ready = false;
+      const tt = () => T[ru ? 'ru' : 'kz'];
+      const nm = (o) => ru ? o.ru : o.kz;
+      const tbl = () => ru ? (topicData.table_ru || topicData.table_kz) : topicData.table_kz;
+      const tri = (c, down) => `<svg viewBox="0 0 24 24"><path d="${down ? 'M12 21 L2 4 H22Z' : 'M12 3 L22 21 H2Z'}" fill="${c}" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg>`;
+      const icon = (c, kind, pulse) => L.divIcon({ className: 'rel-icon' + (pulse ? ' pulse' : ''), iconSize: [22, 22], iconAnchor: [11, 11],
+        html: (kind === 'peak' ? tri(c) : kind === 'low' ? tri(c, true) : '<div class="dot"></div>') });
+      const ptLabel = (o) => `<b>${nm(o)}</b>${o.h ? ' · ' + o.h.replace(' м', ru ? ' м' : ' м') : ''}`;
+      const center = (i) => R[i].lbl || L.latLngBounds(R[i].polys.flat()).getCenter();
+
+      function basesInit() {
+        bases.dark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 18, subdomains: 'abcd', attribution: '&copy; OpenStreetMap, &copy; CARTO' });
+        bases.topo = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', { maxZoom: 16, subdomains: 'abc', attribution: '&copy; OpenStreetMap, SRTM | &copy; OpenTopoMap' });
+        bases.sat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 18, attribution: 'Tiles &copy; Esri' });
+      }
+      function setBase(k) {
+        if (bases[baseKey] && map.hasLayer(bases[baseKey])) map.removeLayer(bases[baseKey]);
+        baseKey = k; bases[k].addTo(map).bringToBack();
+        renderLayers();
+      }
+      function renderLayers() {
+        document.getElementById('relLayers').innerHTML = ['dark', 'topo', 'sat'].map(k => `<button type="button" class="rel-lay${k === baseKey ? ' on' : ''}" data-b="${k}">${tt()[k]}</button>`).join('');
+        document.querySelectorAll('#relLayers [data-b]').forEach(b => b.onclick = () => setBase(b.dataset.b));
+      }
+      function renderChips() {
+        const rows = tbl().rows;
+        document.getElementById('relChips').innerHTML =
+          `<button type="button" class="rel-chip${sel < 0 ? ' on' : ''}" style="--c:#22d3ee" data-i="-1"><i></i>${tt().all}</button>` +
+          R.map((r, i) => `<button type="button" class="rel-chip${i === sel ? ' on' : ''}" style="--c:${r.c}" data-i="${i}"><i></i>${nm(r)}</button>`).join('');
+        document.querySelectorAll('#relChips [data-i]').forEach(b => b.onclick = () => select(+b.dataset.i));
+      }
+      function renderInfo() {
+        const el = document.getElementById('relInfo');
+        if (sel < 0) { el.style.setProperty('--c', '#22d3ee'); el.innerHTML = `<div class="text-xs text-slate-400">${tt().empty}</div>`; return; }
+        const row = tbl().rows[sel], r = R[sel];
+        el.style.setProperty('--c', r.c);
+        el.innerHTML = `<div class="flex items-start justify-between gap-3"><div class="nm">${row[0]}</div>
+            <div class="flex gap-1.5 shrink-0"><button type="button" class="rel-nav" id="relPrev" aria-label="prev">‹</button><button type="button" class="rel-nav" id="relNext" aria-label="next">›</button></div></div>
+          <div class="hi"><small>⛰ ${tt().hi}</small>${row[1]}</div>
+          <div class="dt"><small class="block text-[10px] font-extrabold tracking-wider text-slate-500 uppercase">${tt().more}</small>${row[2]}</div>`;
+        document.getElementById('relPrev').onclick = () => select((sel + R.length - 1) % R.length);
+        document.getElementById('relNext').onclick = () => select((sel + 1) % R.length);
+      }
+      function styleAll() {
+        polys.forEach(({ i, layer }) => {
+          const on = i === sel, dim = sel >= 0 && !on;
+          layer.setStyle({ color: R[i].c, weight: on ? 3 : 1.6, opacity: dim ? .55 : 1, fillColor: R[i].c, fillOpacity: on ? .5 : dim ? .12 : .3 });
+          const el = layer.getElement();
+          if (el) { el.classList.toggle('sel', on); el.style.setProperty('--c', R[i].c); }
+          if (on) layer.bringToFront();
+        });
+        lbls.forEach(({ i, tip }) => {
+          const el = tip.getElement();
+          if (el) { el.classList.toggle('sel', i === sel); el.style.setProperty('--c', R[i].c); el.style.opacity = (sel >= 0 && i !== sel) ? .55 : 1; }
+        });
+      }
+      function drawMarkers() {
+        mk.clearLayers();
+        R.forEach((r, i) => {
+          const on = i === sel;
+          if (sel >= 0 && !on) return;
+          const list = r.pk.concat(on ? r.pt : []);
+          list.forEach((p, k) => {
+            const main = k < r.pk.length;
+            const m = L.marker(p.ll, { icon: icon(r.c, main ? p.t : 'pt', on && main), keyboard: false, riseOnHover: true }).addTo(mk);
+            m.bindTooltip(ptLabel(p), { permanent: on, direction: main ? 'top' : 'right', offset: [main ? 0 : 6, main ? -8 : 0], className: 'rel-pt' });
+            m.on('click', () => select(i));
+            const t = m.getTooltip(); t.on('add', () => { const e = t.getElement(); if (e) e.style.setProperty('--c', r.c); });
+            if (on) setTimeout(() => { const e = m.getTooltip() && m.getTooltip().getElement(); if (e) e.style.setProperty('--c', r.c); }, 0);
+          });
+          if (on && r.line) {
+            const ln = L.polyline(r.line.ll, { color: '#7dd3fc', weight: 3, opacity: .9, dashArray: '2 6', lineCap: 'round' }).addTo(mk).bindTooltip(nm(r.line), { sticky: true, className: 'rel-pt' });
+            ln.on('add', () => {});
+          }
+        });
+        if (sel < 0) R.forEach((r, i) => { /* overview: main points only (already drawn) */ });
+      }
+      function boundsOf(i) {
+        const pts = R[i].polys.flat().concat(R[i].pk.map(p => p.ll));
+        return L.latLngBounds(pts);
+      }
+      function ensureVisible() {
+        const el = document.getElementById('reliefMapSection'), r = el.getBoundingClientRect();
+        if (r.top > window.innerHeight * 0.55 || r.bottom < 120) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      function select(i, fromTable) {
+        if (!ready) return;
+        sel = (i === sel && fromTable) ? sel : i;
+        styleAll(); drawMarkers(); renderInfo(); renderChips(); markRow();
+        if (sel >= 0) map.flyToBounds(boundsOf(sel), { padding: [36, 36], maxZoom: 7, duration: .9 });
+        else map.flyTo([47.4, 68], 4.25, { duration: .8 });
+        if (fromTable) ensureVisible();
+      }
+      function markRow() {
+        document.querySelectorAll('#tableContainer tr[data-ri]').forEach(tr => tr.classList.toggle('rel-row-sel', +tr.dataset.ri === sel));
+      }
+      function build() {
+        if (!window.L) { document.getElementById('reliefMapSection').classList.add('hidden'); return; }
+        map = L.map('reliefMap', { zoomControl: true, scrollWheelZoom: false, zoomSnap: .25, worldCopyJump: false, minZoom: 3, maxBounds: [[28, 30], [66, 110]] }).setView([47.4, 68], 4.25);
+        basesInit(); setBase('dark');
+        mk = L.layerGroup().addTo(map);
+        const bottom = L.layerGroup().addTo(map);
+        map.on('click', () => { if (sel >= 0) select(-1); });
+        map.once('focus', () => map.scrollWheelZoom.enable());
+        map.on('mousedown', () => map.scrollWheelZoom.enable());
+        // draw big plains first so mountains stay on top
+        const order = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+        order.forEach(i => {
+          R[i].polys.forEach(p => {
+            const layer = L.polygon(p, { className: 'rel-poly', smoothFactor: 1.2, lineJoin: 'round', bubblingMouseEvents: false }).addTo(bottom);
+            layer.on('click', (e) => { L.DomEvent.stopPropagation(e); select(i); });
+            layer.on('mouseover', () => { if (i !== sel) layer.setStyle({ fillOpacity: .5, weight: 2.4 }); });
+            layer.on('mouseout', () => { if (i !== sel) styleAll(); });
+            polys.push({ i, layer });
+          });
+          const tip = L.tooltip({ permanent: true, direction: 'center', className: 'rel-name', interactive: false }).setLatLng(center(i)).setContent(nm(R[i])).addTo(map);
+          lbls.push({ i, tip });
+        });
+        ready = true;
+        styleAll(); drawMarkers();
+        setTimeout(() => map.invalidateSize(), 300);
+      }
+      function update(isRu) {
+        ru = isRu;
+        const t = tt();
+        document.getElementById('relTitle').textContent = t.title;
+        document.getElementById('relHint').textContent = t.hint;
+        document.getElementById('relLegend').textContent = t.legend;
+        if (!ready) build();
+        if (!ready) return;
+        lbls.forEach(({ i, tip }) => tip.setContent(nm(R[i])));
+        renderLayers(); renderChips(); renderInfo(); drawMarkers(); styleAll();
+      }
+      return { update, select, markRow, color: (i) => (R[i] ? R[i].c : null) };
+    })();
 
     function setLang(lang) {
       currentLang = lang;
@@ -704,6 +970,7 @@
       // Table, Facts, Traps
       document.getElementById('tableHeader').textContent = isRu ? "СТРУКТУРИРОВАННАЯ ТАБЛИЦА ПОКАЗАТЕЛЕЙ И КЛАССИФИКАЦИИ" : "НАҚТЫ КӨРСЕТКІШТЕР МЕН КЛАССИФИКАЦИЯ КЕСТЕСІ";
       renderTable(isRu);
+      if (window.RelMap) RelMap.update(isRu);
 
       document.getElementById('factsHeader').textContent = isRu ? "ГЛАВНЫЕ ФАКТЫ ДЛЯ ЕНТ И ЗАПОМИНАНИЯ" : "ҰБТ-ҒА ҚАЖЕТТІ НЕГІЗГІ ЕРЕЖЕЛЕР МЕН ФАКТІЛЕР";
       renderFacts(isRu);
