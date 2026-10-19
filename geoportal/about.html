@@ -100,12 +100,6 @@
       </div>
     </section>
 
-    <!-- ===== Курсы ===== -->
-    <section class="panel">
-      <h2 class="h2">📚 <span data-lang="kz">Менің курстарым</span><span data-lang="ru">Мои курсы</span></h2>
-      <div id="courses" class="grid gap-4 sm:grid-cols-2"></div>
-    </section>
-
     <div class="grid gap-6 lg:grid-cols-2">
       <!-- ===== Интересы ===== -->
       <section class="panel">
@@ -148,33 +142,14 @@
     <!-- ===== Призыв ===== -->
     <section class="panel text-center space-y-4">
       <h2 class="text-xl sm:text-2xl font-black text-white"><span data-lang="kz">Курсқа қосылғыңыз келе ме?</span><span data-lang="ru">Хотите на курс?</span></h2>
-      <p class="text-sm text-slate-400"><span data-lang="kz">Курсты таңдаңыз — кіру коды мұғалімнен беріледі.</span><span data-lang="ru">Выберите курс — код для входа выдаёт преподаватель.</span></p>
-      <a href="index.html" class="inline-block px-6 py-3 rounded-2xl font-black text-sm bg-gradient-to-r from-emerald-500 via-cyan-500 to-amber-400 text-slate-950"><span data-lang="kz">Курстарды көру →</span><span data-lang="ru">Смотреть курсы →</span></a>
+      <p class="text-sm text-slate-400"><span data-lang="kz">Кіру коды мұғалімнен беріледі — оны басты беттен енгізіңіз.</span><span data-lang="ru">Код для входа выдаёт преподаватель — введите его на главной странице.</span></p>
+      <a href="index.html" class="inline-block px-6 py-3 rounded-2xl font-black text-sm bg-gradient-to-r from-emerald-500 via-cyan-500 to-amber-400 text-slate-950"><span data-lang="kz">Код енгізу →</span><span data-lang="ru">Ввести код →</span></a>
     </section>
 
     <p class="text-center text-xs text-slate-500 pb-4">© 2026 Шоқан · SMB</p>
   </main>
 
   <script>
-    var ENTER = { kz: 'Курсқа кіру →', ru: 'Войти в курс →' };
-
-    function renderCourses() {
-      var lang = SMB.getLang();
-      document.getElementById('courses').innerHTML = SMB.C.COURSES.map(function (c) {
-        return '<a href="gate.html?c=' + encodeURIComponent(c.id) + '" class="group p-5 rounded-2xl bg-slate-950/60 border border-slate-800 hover:border-cyan-500/50 hover:-translate-y-0.5 transition flex flex-col gap-3">' +
-          '<div class="flex items-start gap-3">' +
-            '<span class="text-3xl leading-none" aria-hidden="true">' + SMB.esc(c.icon) + '</span>' +
-            '<div class="min-w-0">' +
-              '<span class="inline-block text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-lg bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">' + SMB.esc(SMB.courseLevel(c)) + '</span>' +
-              '<h3 class="mt-1.5 font-black text-white leading-snug">' + SMB.esc(SMB.courseTitle(c)) + '</h3>' +
-            '</div>' +
-          '</div>' +
-          '<p class="text-sm text-slate-400 leading-relaxed">' + SMB.esc(SMB.courseDesc(c)) + '</p>' +
-          '<span class="mt-auto text-sm font-black text-cyan-300 group-hover:text-white">' + ENTER[lang] + '</span>' +
-        '</a>';
-      }).join('');
-    }
-
     function applyLang() {
       var lang = SMB.getLang();
       var root = document.documentElement;
@@ -182,7 +157,6 @@
       root.lang = lang === 'ru' ? 'ru' : 'kk';
       document.title = lang === 'ru' ? 'Шоқан — автор SMB' : 'Шоқан — SMB авторы';
       document.getElementById('langSelect').value = lang;
-      renderCourses();
     }
 
     document.getElementById('langSelect').addEventListener('change', function (e) {
