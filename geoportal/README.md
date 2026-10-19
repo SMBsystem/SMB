@@ -76,7 +76,7 @@
 2. В ней: **Расширения → Apps Script**. Удалите всё в `Code.gs` и вставьте
    содержимое `google_sheets_registration_script.js`. Сохраните.
 3. **Настройки проекта** (шестерёнка) → **Свойства скрипта** → добавить:
-   `COURSE_CODES` = `{"TANU-Q7TR-TSH8":"geotanu","NISH-J57F-E39Q":"geonish"}`
+   `COURSE_CODES` = `{"TANU-XXXX-XXXX":"geotanu","NISH-XXXX-XXXX":"geonish"}`
    (здесь свои коды курсов; сами коды на сайт не попадают).
 4. В редакторе Apps Script выберите функцию **`setupSheet`** и нажмите **Выполнить**.
    Разрешите доступ, когда Google спросит. Функция создаст колонку «Допуск» с выпадающим списком.
