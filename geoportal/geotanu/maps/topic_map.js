@@ -120,8 +120,33 @@
                  ru: 'Высокие горы Казахстана — на востоке и юго-востоке: Алтай, Тарбагатай, Саур, Жетысуский Алатау, Тянь-Шань (высшая точка — Хан-Тенгри).' }
     },
 
-    deep: {
-      view: [18, 7, 98, 56],
+    peaks: {
+      view: [48, 40, 90, 54],
+      fs: 0.0148,
+      pointsK: 0.85,
+      points: [
+        { lon: 80.17, lat: 42.2, kz: 'Хан-Тәңірі 6995', ru: 'Хан-Тенгри 6995', type: 'peak', big: true, pc: '#e879f9', dx: 0.9, dy: 1.1 },
+        { lon: 77.2, lat: 43.05, kz: 'Талғар 4973', ru: 'Талгар 4973', type: 'peak', pc: '#e879f9', dx: -0.9, a: 'end', dy: 0.9 },
+        { lon: 79.9, lat: 44.7, kz: 'Бесбақан 4622', ru: 'Бесбакан 4622', type: 'peak', pc: '#60a5fa', dx: 0.9, dy: -0.2 },
+        { lon: 86.58, lat: 49.8, kz: 'Мұзтау 4506', ru: 'Музтау 4506', type: 'peak', pc: '#34d399', dx: -0.9, a: 'end', dy: -0.6 },
+        { lon: 84.7, lat: 47.1, kz: 'Мұзтау 3816', ru: 'Музтау 3816', type: 'peak', pc: '#fbbf24', dx: 0.9, dy: 0.6 },
+        { lon: 79.3, lat: 43.35, kz: 'Кетмен 3652', ru: 'Небесная 3652', type: 'peak', pc: '#e879f9', dx: 0.9, dy: -0.6 },
+        { lon: 83.0, lat: 47.3, kz: 'Тастау 2992', ru: 'Тастау 2992', type: 'peak', pc: '#fbbf24', dx: -0.9, a: 'end', dy: -0.6 },
+        { lon: 70.1, lat: 42.95, kz: 'Бессаз 2176', ru: 'Бессаз 2176', type: 'peak', pc: '#e879f9', dx: -0.9, a: 'end', dy: 0.9 },
+        { lon: 75.1, lat: 48.9, kz: 'Ақсораң 1565', ru: 'Аксоран 1565', type: 'peak', pc: '#fb923c', dx: 0.9, dy: 0.4 },
+        { lon: 58.9, lat: 49.0, kz: 'Үлкен Боқтыбай 657', ru: 'Улькен Бокты 657', type: 'peak', pc: '#fb923c', dx: 0.9, dy: 0.4 },
+        { lon: 52.5, lat: 44.0, kz: 'Бесшоқы 556', ru: 'Бесшокы 556', type: 'peak', pc: '#fb923c', dx: 0.9, dy: 0.9 }
+      ],
+      legend: [
+        { c: '#e879f9', kz: 'Тянь-Шань', ru: 'Тянь-Шань' }, { c: '#60a5fa', kz: 'Жетісу Алатауы', ru: 'Жетысуский Алатау' },
+        { c: '#34d399', kz: 'Алтай', ru: 'Алтай' }, { c: '#fbbf24', kz: 'Сауыр · Тарбағатай', ru: 'Саур · Тарбагатай' },
+        { c: '#fb923c', kz: 'Аласа таулар', ru: 'Низкие горы' }
+      ],
+      caption: { kz: 'Қазақстанның ең биік шыңдары картада (биіктік метрмен). Түсі — тау жүйесі.',
+                 ru: 'Высочайшие вершины Казахстана на карте (высота в метрах). Цвет — горная система.' }
+    },
+
+    deep: {      view: [18, 7, 98, 56],
       fs: 0.0205,
       kazFocus: true,
       noNeighbors: true,
@@ -265,12 +290,12 @@
       } else if (pt.type === 'peak') {
         const s = r * 1.9;
         out += el('path', { d: 'M' + f1(p.x) + ' ' + (p.y - s).toFixed(2) + ' L' + (p.x + s).toFixed(2) + ' ' + (p.y + s * 0.8).toFixed(2) + ' L' + (p.x - s).toFixed(2) + ' ' + (p.y + s * 0.8).toFixed(2) + ' Z',
-          fill: pt.big ? '#fde047' : '#f8fafc', stroke: '#0b1120', 'stroke-width': 0.35 });
+          fill: pt.pc || (pt.big ? '#fde047' : '#f8fafc'), stroke: '#0b1120', 'stroke-width': 0.35 });
       } else {
         out += el('circle', { cx: f1(p.x), cy: f1(p.y), r: r.toFixed(2), fill: pt.big ? '#fbbf24' : '#e2e8f0', stroke: '#0b1120', 'stroke-width': 0.3 });
       }
       const dx = (pt.dx == null ? 0.8 : pt.dx) * fs, dy = (pt.dy || 0) * fs + fs * 0.34;
-      out += txt(p.x + dx, p.y + dy, L(pt), { a: pt.a, c: pt.n ? (pt.c || '#a5f3fc') : (pt.type === 'peak' ? '#f8fafc' : '#e2e8f0'), bold: !!(pt.n || pt.type === 'peak'), k: 0.9 });
+      out += txt(p.x + dx, p.y + dy, L(pt), { a: pt.a, c: pt.n ? (pt.c || '#a5f3fc') : (pt.type === 'peak' ? '#f8fafc' : '#e2e8f0'), bold: !!(pt.n || pt.type === 'peak'), k: 0.9 * (d.pointsK || 1) });
     });
 
     const svg = '<svg viewBox="' + [f1(x1), f1(y1), f1(vw), f1(vh)].join(' ') + '" xmlns="' + NS + '" role="img" aria-label="' + esc(L(d.caption)) + '" '
@@ -282,7 +307,10 @@
       legend += '<span data-c="' + r.c + '" style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:#cbd5e1">'
         + '<i style="width:12px;height:12px;border-radius:4px;background:' + r.c + ';opacity:.7;display:inline-block"></i>' + esc(L(r)) + '</span>';
     });
-    if (d.points && d.points.some((p) => p.type === 'peak')) {
+    (d.legend || []).forEach((g) => {
+      legend += '<span style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:#cbd5e1"><b style="color:' + g.c + '">▲</b> ' + esc(L(g)) + '</span>';
+    });
+    if (!d.legend && d.points && d.points.some((p) => p.type === 'peak')) {
       legend += '<span style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:#cbd5e1"><b style="color:#f8fafc">▲</b> '
         + (lang === 'ru' ? 'вершина' : 'шың') + '</span>';
     }

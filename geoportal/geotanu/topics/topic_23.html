@@ -476,6 +476,7 @@
         <span id="svgHeader">КӨРНЕКІ СХЕМА МЕН ИНФОГРАФИКА</span>
       </div>
       <div id="svgContainer" class="w-full flex justify-center overflow-x-auto"></div>
+      <div class="tmap" data-map="peaks"></div>
     </section>
 
     <!-- 4. STRUCTURED DATA TABLE -->
@@ -693,7 +694,7 @@
       // Theory
       document.getElementById('theoryHeader').textContent = isRu ? "ПОЛНЫЙ ТЕОРЕТИЧЕСКИЙ МАТЕРИАЛ И КОНСПЕКТ" : "ТОЛЫҚ ТЕОРИЯЛЫҚ МАТЕРИАЛ МЕН КОНСПЕКТ";
       document.getElementById('theoryContent').innerHTML = isRu ? topicData.full_theory_ru : topicData.full_theory_kz;
-      if (window.TopicMaps) TopicMaps.render(document.getElementById('theoryContent'));
+      if (window.TopicMaps) TopicMaps.render(document);
 
       // SVG
       document.getElementById('svgHeader').textContent = isRu ? "НАГЛЯДНАЯ СХЕМА И ИНФОГРАФИКА" : "КӨРНЕКІ СХЕМА МЕН ИНФОГРАФИКА";
