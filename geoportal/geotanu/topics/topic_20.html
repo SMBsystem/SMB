@@ -89,6 +89,23 @@
     @keyframes t20pulse { 0% { box-shadow: 0 0 0 0 rgba(244,63,94,.7); } 70% { box-shadow: 0 0 0 18px rgba(244,63,94,0); } 100% { box-shadow: 0 0 0 0 rgba(244,63,94,0); } }
     .t20-label { background: rgba(11,17,32,.85); border: 1px solid #334155; color: #e2e8f0; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 6px; box-shadow: none; }
     .t20-label:before { display: none; }
+    /* Phone layout: less nesting padding, tables become stacked cards (no sideways scroll) */
+    @media (max-width: 639px) {
+      main { padding-left: .625rem; padding-right: .625rem; }
+      main > section, main > div { padding: .875rem !important; }
+      #theoryContent .p-5 { padding: .875rem !important; }
+      #theoryContent .p-4 { padding: .7rem !important; }
+      #theoryContent .text-5xl { font-size: 2.25rem; }
+      #theoryContent .gap-4 { gap: .75rem; }
+      .t20-stack { min-width: 0 !important; width: 100%; }
+      .t20-stack thead { display: none; }
+      .t20-stack, .t20-stack tbody, .t20-stack tr, .t20-stack td { display: block; width: 100%; }
+      .t20-stack tr { padding: .6rem .75rem; border-bottom: 1px solid rgba(30,41,59,.9); }
+      .t20-stack tr:last-child { border-bottom: 0; }
+      .t20-stack td { padding: .2rem 0 !important; white-space: normal !important; }
+      .t20-stack td:not(:first-child)::before { content: attr(data-label); display: block; font-size: .62rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: #64748b; }
+      .t20-stack td:first-child { font-size: .9rem; padding-bottom: .3rem !important; }
+    }
   </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
@@ -1546,6 +1563,20 @@
         ['t20map', 'mqMap'].forEach(id => { document.getElementById(id).innerHTML = '<div class="h-full flex items-center justify-center text-xs text-slate-500 p-6 text-center">Map library failed to load. Check your internet connection.</div>'; });
       }
     }
+
+    // Label table cells with their column header so tables can stack into cards on phones
+    function t20StackTables() {
+      document.querySelectorAll('#theoryContent table, #tableContainer table').forEach(tb => {
+        const heads = Array.from(tb.querySelectorAll('thead th')).map(th => th.textContent.trim());
+        if (!heads.length) return;
+        tb.classList.add('t20-stack');
+        tb.querySelectorAll('tbody tr').forEach(tr => {
+          Array.from(tr.children).forEach((td, i) => td.setAttribute('data-label', heads[i] || ''));
+        });
+      });
+    }
+    ['theoryContent', 'tableContainer'].forEach(id => new MutationObserver(t20StackTables).observe(document.getElementById(id), { childList: true, subtree: true }));
+    t20StackTables();
 
     window.addEventListener('scroll', () => {
       document.getElementById('btnTop').classList.toggle('hidden', window.scrollY < 600);
