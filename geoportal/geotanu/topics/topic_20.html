@@ -185,42 +185,6 @@
       </p>
     </section>
 
-    <!-- 1a. SCIENTISTS GALLERY -->
-    <section id="gallerySection" class="p-5 sm:p-6 rounded-2xl bg-space-950 border border-slate-800 space-y-4 shadow-xl">
-      <div class="flex flex-wrap items-center justify-between gap-2">
-        <h2 class="text-xs sm:text-sm font-black text-white uppercase tracking-wider flex items-center space-x-2">
-          <span>👤</span><span id="galleryHeader">10 ҒАЛЫМ: ПОРТРЕТ ГАЛЕРЕЯСЫ</span>
-        </h2>
-        <button id="btnHideNames" type="button" onclick="toggleHideNames()" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-space-900 border border-slate-700 text-slate-300 hover:text-white hover:border-cyan-500/50 transition">🙈 Аттарды жасыру</button>
-      </div>
-      <p id="galleryIntro" class="text-xs text-slate-400"></p>
-      <div id="galleryGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3"></div>
-      <div class="rounded-xl bg-space-900/60 border border-slate-800 p-4 space-y-3">
-        <div class="flex flex-wrap items-baseline justify-between gap-2">
-          <h3 id="timelineHeader" class="text-[11px] font-black tracking-widest text-slate-300 uppercase">⏳ Уақыт сызығы</h3>
-          <span id="timelineNote" class="text-[10px] text-slate-500"></span>
-        </div>
-        <div id="timeline" class="space-y-1.5"></div>
-      </div>
-      <p id="galleryCredit" class="text-[10px] text-slate-500"></p>
-    </section>
-
-    <!-- 1b. INTERACTIVE MAP -->
-    <section id="mapSection" class="p-5 sm:p-6 rounded-2xl bg-space-950 border border-emerald-500/40 space-y-4 shadow-xl">
-      <div class="flex flex-wrap items-center justify-between gap-2">
-        <h2 class="text-xs sm:text-sm font-black text-white uppercase tracking-wider flex items-center space-x-2">
-          <span>🗺️</span><span id="mapHeader">ҒАЛЫМДАР ЗЕРТТЕГЕН ЖЕРЛЕР КАРТАСЫ</span>
-        </h2>
-        <div id="mapBaseSwitch" class="inline-flex p-1 bg-space-900 border border-slate-800 rounded-xl gap-1 text-[11px] font-bold"></div>
-      </div>
-      <p id="mapIntro" class="text-xs text-slate-400"></p>
-      <div id="mapFilters" class="flex flex-wrap gap-1.5"></div>
-      <div class="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-4">
-        <div id="t20map" class="t20-map w-full h-[380px] sm:h-[480px] rounded-xl border border-slate-800 overflow-hidden"></div>
-        <aside id="mapPanel" class="rounded-xl bg-space-900/70 border border-slate-800 p-4 space-y-3 text-xs lg:max-h-[480px] lg:overflow-y-auto"></aside>
-      </div>
-      <div id="mapLegend" class="flex flex-wrap gap-x-4 gap-y-1.5 text-[11px] text-slate-400"></div>
-    </section>
 
     <!-- 2. FULL THEORY SECTION -->
     <section id="theorySection" class="p-5 sm:p-7 rounded-2xl bg-space-950 border border-slate-800 space-y-4 shadow-xl">
@@ -440,6 +404,68 @@
       </div>
     </section>
 
+    <!-- 5. KEY FACTS FOR UNT / ЕНТ -->
+    <section id="factsSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl">
+      <h3 class="text-xs font-black text-amber-400 flex items-center space-x-2">
+        <span>⚡</span>
+        <span id="factsHeader">ҰБТ-ҒА ҚАЖЕТТІ НЕГІЗГІ ЕРЕЖЕЛЕР МЕН ФАКТІЛЕР</span>
+      </h3>
+      <ul id="factsList" class="space-y-2 text-xs text-slate-300">
+        <!-- Rendered via JS -->
+      </ul>
+    </section>
+
+    <!-- 6. TRAPS AND HACKS -->
+    <section id="trapsSection" class="p-5 rounded-2xl bg-gradient-to-r from-amber-950/40 via-space-950 to-space-950 border border-amber-500/40 space-y-3 shadow-xl">
+      <h3 class="text-xs font-black text-amber-400 flex items-center space-x-2">
+        <span>💡</span>
+        <span id="trapsHeader">ҰБТ ҚАҚПАНДАРЫ МЕН ЛАЙФХАКТАР</span>
+      </h3>
+      <div id="trapsList" class="space-y-2 text-xs text-slate-200">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <details id="extraMaterials" class="t20-extra rounded-2xl border border-slate-700/80 bg-space-950/50 p-3 sm:p-4">
+      <summary class="cursor-pointer select-none flex flex-wrap items-center gap-x-3 gap-y-1 text-sm font-black text-white"><span id="extraMatTitle">extraMaterials</span><span id="extraMatSub" class="text-[11px] font-bold text-slate-400"></span><span id="extraMaterialsHint" class="ml-auto text-[11px] font-bold text-cyan-400"></span></summary>
+      <div class="space-y-6 mt-4">
+    <!-- 1a. SCIENTISTS GALLERY -->
+    <section id="gallerySection" class="p-5 sm:p-6 rounded-2xl bg-space-950 border border-slate-800 space-y-4 shadow-xl">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <h2 class="text-xs sm:text-sm font-black text-white uppercase tracking-wider flex items-center space-x-2">
+          <span>👤</span><span id="galleryHeader">10 ҒАЛЫМ: ПОРТРЕТ ГАЛЕРЕЯСЫ</span>
+        </h2>
+        <button id="btnHideNames" type="button" onclick="toggleHideNames()" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-space-900 border border-slate-700 text-slate-300 hover:text-white hover:border-cyan-500/50 transition">🙈 Аттарды жасыру</button>
+      </div>
+      <p id="galleryIntro" class="text-xs text-slate-400"></p>
+      <div id="galleryGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3"></div>
+      <div class="rounded-xl bg-space-900/60 border border-slate-800 p-4 space-y-3">
+        <div class="flex flex-wrap items-baseline justify-between gap-2">
+          <h3 id="timelineHeader" class="text-[11px] font-black tracking-widest text-slate-300 uppercase">⏳ Уақыт сызығы</h3>
+          <span id="timelineNote" class="text-[10px] text-slate-500"></span>
+        </div>
+        <div id="timeline" class="space-y-1.5"></div>
+      </div>
+      <p id="galleryCredit" class="text-[10px] text-slate-500"></p>
+    </section>
+
+    <!-- 1b. INTERACTIVE MAP -->
+    <section id="mapSection" class="p-5 sm:p-6 rounded-2xl bg-space-950 border border-emerald-500/40 space-y-4 shadow-xl">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <h2 class="text-xs sm:text-sm font-black text-white uppercase tracking-wider flex items-center space-x-2">
+          <span>🗺️</span><span id="mapHeader">ҒАЛЫМДАР ЗЕРТТЕГЕН ЖЕРЛЕР КАРТАСЫ</span>
+        </h2>
+        <div id="mapBaseSwitch" class="inline-flex p-1 bg-space-900 border border-slate-800 rounded-xl gap-1 text-[11px] font-bold"></div>
+      </div>
+      <p id="mapIntro" class="text-xs text-slate-400"></p>
+      <div id="mapFilters" class="flex flex-wrap gap-1.5"></div>
+      <div class="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-4">
+        <div id="t20map" class="t20-map w-full h-[380px] sm:h-[480px] rounded-xl border border-slate-800 overflow-hidden"></div>
+        <aside id="mapPanel" class="rounded-xl bg-space-900/70 border border-slate-800 p-4 space-y-3 text-xs lg:max-h-[480px] lg:overflow-y-auto"></aside>
+      </div>
+      <div id="mapLegend" class="flex flex-wrap gap-x-4 gap-y-1.5 text-[11px] text-slate-400"></div>
+    </section>
+
     <!-- 3. VISUAL SVG DIAGRAM / ILLUSTRATION -->
     <section id="svgSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl">
       <div class="flex items-center space-x-2 text-amber-400 font-extrabold text-xs">
@@ -517,46 +543,8 @@
         <!-- Rendered via JS -->
       </div>
     </section>
-
-    <!-- 5. KEY FACTS FOR UNT / ЕНТ -->
-    <section id="factsSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl">
-      <h3 class="text-xs font-black text-amber-400 flex items-center space-x-2">
-        <span>⚡</span>
-        <span id="factsHeader">ҰБТ-ҒА ҚАЖЕТТІ НЕГІЗГІ ЕРЕЖЕЛЕР МЕН ФАКТІЛЕР</span>
-      </h3>
-      <ul id="factsList" class="space-y-2 text-xs text-slate-300">
-        <!-- Rendered via JS -->
-      </ul>
-    </section>
-
-    <!-- 6. TRAPS AND HACKS -->
-    <section id="trapsSection" class="p-5 rounded-2xl bg-gradient-to-r from-amber-950/40 via-space-950 to-space-950 border border-amber-500/40 space-y-3 shadow-xl">
-      <h3 class="text-xs font-black text-amber-400 flex items-center space-x-2">
-        <span>💡</span>
-        <span id="trapsHeader">ҰБТ ҚАҚПАНДАРЫ МЕН ЛАЙФХАКТАР</span>
-      </h3>
-      <div id="trapsList" class="space-y-2 text-xs text-slate-200">
-        <!-- Rendered via JS -->
       </div>
-    </section>
-
-    <!-- 7. PRACTICE CASES -->
-    <section id="casesSection" class="p-5 rounded-2xl bg-space-950 border border-cyan-500/40 space-y-4 shadow-xl">
-      <div class="flex flex-wrap items-center justify-between gap-2">
-        <h3 class="text-xs font-black text-cyan-400 flex items-center space-x-2">
-          <span>🧪</span>
-          <span id="casesHeader">ҒЫЛЫМИ-ҚОЛДАНБАЛЫ ТӘЖІРИБЕДЕН 5 КЕЙС</span>
-        </h3>
-        <div class="flex items-center gap-2">
-          <span id="casesProgress" class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-space-900 border border-slate-700 text-slate-300">0 / 5</span>
-          <button id="casesReset" type="button" onclick="renderCases()" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-space-900 border border-slate-700 text-slate-300 hover:text-white hover:border-cyan-500/50 transition">Қайта бастау</button>
-        </div>
-      </div>
-      <p id="casesIntro" class="text-xs text-slate-400">Әр кейсте тәсілді таңда. Жауаптан кейін себеп-салдар тізбегі мен әр нұсқаға түсініктеме ашылады.</p>
-      <div id="casesList" class="space-y-4">
-        <!-- Rendered via JS -->
-      </div>
-    </section>
+    </details>
 
     <!-- 8. SELF-CHECK QUIZ -->
     <section id="quizSection" class="p-5 rounded-2xl bg-space-950 border border-purple-500/40 space-y-4 shadow-xl">
@@ -577,6 +565,27 @@
       <div id="quizFinal" class="hidden p-4 rounded-xl bg-purple-500/10 border border-purple-500/40 text-sm font-bold text-white"></div>
     </section>
 
+    <details id="extraPractice" class="t20-extra rounded-2xl border border-slate-700/80 bg-space-950/50 p-3 sm:p-4">
+      <summary class="cursor-pointer select-none flex flex-wrap items-center gap-x-3 gap-y-1 text-sm font-black text-white"><span id="extraPrTitle">extraPractice</span><span id="extraPrSub" class="text-[11px] font-bold text-slate-400"></span><span id="extraPracticeHint" class="ml-auto text-[11px] font-bold text-cyan-400"></span></summary>
+      <div class="space-y-6 mt-4">
+    <!-- 7. PRACTICE CASES -->
+    <section id="casesSection" class="p-5 rounded-2xl bg-space-950 border border-cyan-500/40 space-y-4 shadow-xl">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <h3 class="text-xs font-black text-cyan-400 flex items-center space-x-2">
+          <span>🧪</span>
+          <span id="casesHeader">ҒЫЛЫМИ-ҚОЛДАНБАЛЫ ТӘЖІРИБЕДЕН 5 КЕЙС</span>
+        </h3>
+        <div class="flex items-center gap-2">
+          <span id="casesProgress" class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-space-900 border border-slate-700 text-slate-300">0 / 5</span>
+          <button id="casesReset" type="button" onclick="renderCases()" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-space-900 border border-slate-700 text-slate-300 hover:text-white hover:border-cyan-500/50 transition">Қайта бастау</button>
+        </div>
+      </div>
+      <p id="casesIntro" class="text-xs text-slate-400">Әр кейсте тәсілді таңда. Жауаптан кейін себеп-салдар тізбегі мен әр нұсқаға түсініктеме ашылады.</p>
+      <div id="casesList" class="space-y-4">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
     <!-- 9. MAP QUIZ -->
     <section id="mapQuizSection" class="p-5 rounded-2xl bg-space-950 border border-rose-500/40 space-y-4 shadow-xl">
       <div class="flex flex-wrap items-center justify-between gap-2">
@@ -594,6 +603,8 @@
         <div id="mqPanel" class="space-y-3"></div>
       </div>
     </section>
+      </div>
+    </details>
 
     <!-- FOOTER NAVIGATION -->
     <nav class="pt-4 pb-8 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3 text-xs">
@@ -1125,7 +1136,7 @@
 
     const T20_UI = {
       kz: {
-        nav: { summarySection: 'Шолу', gallerySection: '👤 Ғалымдар', mapSection: '🗺️ Карта', theorySection: '📚 Теория', svgSection: 'Схема', tableSection: 'Кесте', factsSection: 'Фактілер', trapsSection: 'Қақпандар', casesSection: 'Кейстер', quizSection: '🎯 Тест', mapQuizSection: '📍 Карта-тест' },
+        nav: { summarySection: 'Шолу', theorySection: '📚 Теория', factsSection: 'Фактілер', trapsSection: 'Қақпандар', quizSection: '🎯 Тест', extraMaterials: '➕ Қосымша', extraPractice: '🧪 Кейс пен карта-тест' },
         galleryHeader: '10 ҒАЛЫМ: ПОРТРЕТ ГАЛЕРЕЯСЫ', galleryIntro: 'Карточканы бас — карта сол ғалымның зерттеген жерлеріне ұшып барады. «Аттарды жасыру» режимінде портрет пен кілт сөз бойынша ғалымды таны, тексеру үшін карточканы бас.',
         galleryCredit: 'Фото дереккөздері: Wikimedia Commons — Ш. Уәлиханов (1859), Қ. Сәтбаев («Казахстанская правда», 1949); У. Ахмедсафин (1960); Н.Н. Пальгов — «Гидрометеорология и экология» журналы (2014); М.Ж. Жандаев — ҚазҰУ биобиблиографиясы (1996); А.П. Горбунов — Informburo; Ә.С. Бейсенова, Ш.М. Надыров — «Казахстанская правда». Өтемағамбетов пен Ярмухамедовтың портреті ашық дереккөздерде табылмады, сондықтан олардың оқулық мұқабасы көрсетілген (📕 белгісі).',
         hide: '🙈 Аттарды жасыру', show: '👁️ Аттарды көрсету', toMap: '📍 Картадан', block: 'Блок',
@@ -1141,7 +1152,7 @@
         timelineHeader: '⏳ Уақыт сызығы: кім қашан өмір сүрді', timelineNote: 'Туған жылы бойынша реттелген; «→» — өлген жылы белгісіз немесе тірі', born: 'туған'
       },
       ru: {
-        nav: { summarySection: 'Обзор', gallerySection: '👤 Учёные', mapSection: '🗺️ Карта', theorySection: '📚 Теория', svgSection: 'Схема', tableSection: 'Таблица', factsSection: 'Факты', trapsSection: 'Ловушки', casesSection: 'Кейсы', quizSection: '🎯 Тест', mapQuizSection: '📍 Тест по карте' },
+        nav: { summarySection: 'Обзор', theorySection: '📚 Теория', factsSection: 'Факты', trapsSection: 'Ловушки', quizSection: '🎯 Тест', extraMaterials: '➕ Дополнительно', extraPractice: '🧪 Кейсы и тест по карте' },
         galleryHeader: '10 УЧЁНЫХ: ПОРТРЕТНАЯ ГАЛЕРЕЯ', galleryIntro: 'Нажми на карточку — карта перелетит к местам, которые изучал этот учёный. В режиме «Скрыть имена» узнай учёного по портрету и ключевым словам, нажми на карточку для проверки.',
         galleryCredit: 'Источники фото: Wikimedia Commons — Ч. Валиханов (1859), К. Сатпаев («Казахстанская правда», 1949); У. Ахмедсафин (1960); Н.Н. Пальгов — журнал «Гидрометеорология и экология» (2014); М.Ж. Жандаев — биобиблиография КазНУ (1996); А.П. Горбунов — Informburo; А.С. Бейсенова, Ш.М. Надыров — «Казахстанская правда». Портретов Утемагамбетова и Ярмухамедова в открытых источниках нет, поэтому показаны обложки их учебников (значок 📕).',
         hide: '🙈 Скрыть имена', show: '👁️ Показать имена', toMap: '📍 На карте', block: 'Блок',
@@ -1582,5 +1593,34 @@
       document.getElementById('btnTop').classList.toggle('hidden', window.scrollY < 600);
     }, { passive: true });
   </script>
-</body>
+  <script>
+    /* Simplified layout: secondary sections live in collapsible groups */
+    (function () {
+      var L = {"nav_kz":"nav: { summarySection: \u0027Шолу\u0027, theorySection: \u0027📚 Теория\u0027, factsSection: \u0027Фактілер\u0027, trapsSection: \u0027Қақпандар\u0027, quizSection: \u0027🎯 Тест\u0027, extraMaterials: \u0027➕ Қосымша\u0027, extraPractice: \u0027🧪 Кейс пен карта-тест\u0027 }","nav_ru":"nav: { summarySection: \u0027Обзор\u0027, theorySection: \u0027📚 Теория\u0027, factsSection: \u0027Факты\u0027, trapsSection: \u0027Ловушки\u0027, quizSection: \u0027🎯 Тест\u0027, extraMaterials: \u0027➕ Дополнительно\u0027, extraPractice: \u0027🧪 Кейсы и тест по карте\u0027 }","extraMat_kz":"➕ Қосымша материалдар","extraMat_ru":"➕ Дополнительные материалы","extraMatSub_kz":"ғалымдар галереясы · карта · схема · кесте","extraMatSub_ru":"галерея учёных · карта · схема · таблица","extraPr_kz":"🧪 Қосымша жаттығулар","extraPr_ru":"🧪 Дополнительные упражнения","extraPrSub_kz":"5 кейс · карта бойынша тест","extraPrSub_ru":"5 кейсов · тест по карте","hint_kz":"басып ашыңыз","hint_ru":"нажмите, чтобы открыть"};
+      function paint() {
+        var ru = (typeof t20Lang !== 'undefined' && t20Lang === 'ru');
+        var k = ru ? 'ru' : 'kz';
+        function set(id, v) { var e = document.getElementById(id); if (e) e.textContent = v; }
+        set('extraMatTitle', L['extraMat_' + k]); set('extraMatSub', L['extraMatSub_' + k]);
+        set('extraPrTitle', L['extraPr_' + k]); set('extraPrSub', L['extraPrSub_' + k]);
+        ['extraMaterials', 'extraPractice'].forEach(function (id) { set(id + 'Hint', L['hint_' + k]); });
+      }
+      var base = window.t20Render;
+      if (typeof base === 'function') { window.t20Render = function (isRu) { var r = base.apply(this, arguments); paint(); return r; }; }
+      paint();
+      function refreshMaps() {
+        setTimeout(function () {
+          try { if (typeof t20Map !== 'undefined' && t20Map) { t20Map.invalidateSize(); if (typeof t20FitSelection === 'function') t20FitSelection(false); } } catch (e) {}
+          try { if (typeof mqMap !== 'undefined' && mqMap) mqMap.invalidateSize(); } catch (e) {}
+        }, 60);
+      }
+      document.querySelectorAll('details.t20-extra').forEach(function (d) { d.addEventListener('toggle', function () { if (d.open) refreshMaps(); }); });
+      document.addEventListener('click', function (ev) {
+        var a = ev.target.closest && ev.target.closest('a[href^="#extra"]');
+        if (!a) return;
+        var d = document.querySelector(a.getAttribute('href'));
+        if (d && d.tagName === 'DETAILS') d.open = true;
+      });
+    })();
+  </script></body>
 </html>
