@@ -49,6 +49,7 @@ function doPost(e) {
     switch (String(req.action || "")) {
       case "enter": return enter_(req);
       case "check": return check_(req);
+      case "resolve": return resolve_(req);
       case "result": return result_(req);
       default:      return fail_("unknown_action", "Неизвестное действие");
     }
@@ -108,6 +109,23 @@ function enter_(req) {
   cache.remove(failKey);
   if (isNew) notifyAdmin_(name, email, course, grade);
   return ok_({ allowed: true, course: course });
+}
+
+// Главная страница: ученик ввёл код — узнаём, к какому курсу он относится. Личных данных не нужно.
+// Ответ: {status:'success', course:'geotanu'} или {status:'error', code:'bad_code'|'too_many'}.
+function resolve_(req) {
+  var cache = CacheService.getScriptCache();
+  var device = clean_(req.device, 40) || "anon";
+  var failKey = "rfail_" + hash_(device);
+  var fails = Number(cache.get(failKey) || 0);
+  if (fails >= CONFIG.FAILS_LIMIT) return fail_("too_many", "Слишком много попыток. Попробуйте позже.");
+
+  var course = codeCourse_(clean_(req.code));
+  if (!course || CONFIG.COURSE_IDS.indexOf(course) < 0) {
+    cache.put(failKey, String(fails + 1), CONFIG.FAIL_WINDOW_SEC);
+    return fail_("bad_code", "Код курса неверный");
+  }
+  return ok_({ course: course });
 }
 
 // Сайт при каждом открытии проверяет, не закрыли ли допуск. Ответ: {allowed: true/false}.

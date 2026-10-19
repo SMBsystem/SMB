@@ -185,6 +185,15 @@
         });
         return;
       }
+      // Код и данные, введённые раньше, подставляем сами.
+      var saved = SMB.walletEntry(course.id);
+      if (saved && saved.code) document.getElementById('fCode').value = saved.code;
+      var prof = SMB.readProfile();
+      if (prof) {
+        if (prof.name) document.getElementById('fName').value = prof.name;
+        if (prof.email) document.getElementById('fEmail').value = prof.email;
+        if (prof.grade) document.getElementById('fGrade').value = prof.grade;
+      }
       showForm();
     }
 
@@ -221,6 +230,7 @@
           return showError(SMB.errorText((r && r.code) || 'server'));
         }
         SMB.saveSession(course, { name: name, email: email, grade: grade, lang: lang });
+        SMB.addToWallet(course.id, code);
         SMB.toast(lang === 'ru' ? 'Доступ открыт! Открываем курс…' : 'Қолжетімділік ашылды! Курс ашылып жатыр…');
         setTimeout(function () { location.href = course.start; }, 600);
       } catch (err) {

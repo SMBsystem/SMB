@@ -133,7 +133,54 @@
     box._t = setTimeout(function () { box.style.opacity = '0'; }, 3500);
   }
 
+  // «Мои курсы» — список открытых по коду курсов в этом браузере: [{id, code, at}].
+  var WALLET_KEY = 'smb_courses';
+  var DEVICE_KEY = 'smb_device';
+
+  function readWallet() {
+    try {
+      var list = JSON.parse(localStorage.getItem(WALLET_KEY) || '[]');
+      if (Array.isArray(list)) return list.filter(function (x) { return x && courseById(x.id); });
+    } catch (e) {}
+    return [];
+  }
+  function writeWallet(list) {
+    try { localStorage.setItem(WALLET_KEY, JSON.stringify(list)); } catch (e) {}
+  }
+  function walletEntry(id) {
+    var list = readWallet();
+    for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i];
+    return null;
+  }
+  // Добавляет курс (повторный код того же курса просто обновляет запись). Возвращает true, если курс новый.
+  function addToWallet(id, code) {
+    var list = readWallet();
+    var isNew = true;
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].id === id) { list[i].code = code; isNew = false; }
+    }
+    if (isNew) list.push({ id: id, code: code, at: Date.now() });
+    writeWallet(list);
+    return isNew;
+  }
+  function removeFromWallet(id) {
+    writeWallet(readWallet().filter(function (x) { return x.id !== id; }));
+  }
+  // Случайный id устройства — только чтобы считать неверные попытки ввода кода.
+  function deviceId() {
+    try {
+      var d = localStorage.getItem(DEVICE_KEY);
+      if (!d) { d = Math.random().toString(36).slice(2, 12); localStorage.setItem(DEVICE_KEY, d); }
+      return d;
+    } catch (e) { return 'anon'; }
+  }
+  function readProfile() {
+    try { return JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null'); } catch (e) { return null; }
+  }
+
   window.SMB = {
+    readWallet: readWallet, walletEntry: walletEntry, addToWallet: addToWallet,
+    removeFromWallet: removeFromWallet, deviceId: deviceId, readProfile: readProfile,
     C: C, getLang: getLang, setLang: setLang,
     courseById: courseById, courseTitle: courseTitle, courseDesc: courseDesc, courseLevel: courseLevel,
     readSession: readSession, clearSession: clearSession, saveSession: saveSession,

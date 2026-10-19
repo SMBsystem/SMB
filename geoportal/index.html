@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SMB — коллекция курсов</title>
+  <title>SMB — вход по коду</title>
   <meta name="description" content="SMB: коллекция курсов GeoTany и ГеоНИШ. Курс открывается по коду от преподавателя.">
   <meta name="theme-color" content="#090d16">
   <script src="https://cdn.tailwindcss.com"></script>
@@ -39,25 +39,40 @@
     </div>
   </header>
 
-  <main class="flex-1 w-full max-w-6xl mx-auto px-4 pt-10 pb-24 sm:pt-14 space-y-10">
+  <main class="flex-1 w-full max-w-5xl mx-auto px-4 pt-10 pb-28 sm:pt-16 space-y-10">
 
-    <section class="text-center space-y-4 max-w-2xl mx-auto">
+    <section id="hero" class="text-center space-y-5 max-w-2xl mx-auto">
       <p class="text-[11px] font-black uppercase tracking-[0.25em] text-cyan-300" data-t="kicker"></p>
-      <h1 class="text-3xl sm:text-5xl font-black text-white leading-tight" data-t="heroTitle"></h1>
-      <p class="text-sm sm:text-base text-slate-400 leading-relaxed" data-t="heroText"></p>
+      <h1 id="heroTitle" class="text-3xl sm:text-5xl font-black text-white leading-tight" data-t="heroTitle"></h1>
+      <p id="heroText" class="text-sm sm:text-base text-slate-400 leading-relaxed" data-t="heroText"></p>
+
+      <form id="codeForm" class="flex flex-col sm:flex-row gap-3 pt-2" novalidate>
+        <label class="sr-only" for="codeInput" data-t="codeLabel"></label>
+        <input id="codeInput" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="40"
+          class="flex-1 min-w-0 px-5 py-4 rounded-full bg-slate-900 border-2 border-slate-700 focus:border-cyan-400 outline-none text-center sm:text-left font-mono font-black uppercase tracking-widest text-amber-300 placeholder:normal-case placeholder:font-sans placeholder:font-semibold placeholder:tracking-normal placeholder:text-slate-500"
+          data-ph="codePlaceholder">
+        <button id="codeBtn" type="submit" class="px-8 py-4 rounded-full bg-gradient-to-r from-emerald-500 via-cyan-500 to-amber-400 text-slate-950 font-black text-sm disabled:opacity-60" data-t="activate"></button>
+      </form>
+      <p id="codeError" role="alert" class="hidden text-sm font-bold text-rose-300"></p>
     </section>
 
     <div id="needCourse" class="hidden max-w-2xl mx-auto p-4 rounded-2xl bg-amber-500/15 border border-amber-500/40 text-amber-200 text-sm font-bold text-center" data-t="needCourse"></div>
     <div id="setupNotice" class="hidden max-w-2xl mx-auto p-4 rounded-2xl bg-slate-800 border border-slate-700 text-slate-300 text-xs text-center" data-t="setup"></div>
 
-    <section>
-      <h2 class="sr-only" data-t="catalogTitle"></h2>
+    <section id="myCourses" class="hidden space-y-5">
+      <div class="flex items-end justify-between gap-3">
+        <h2 class="text-lg font-black text-white" data-t="myCourses"></h2>
+        <p class="text-xs text-slate-500" data-t="addMore"></p>
+      </div>
       <div id="courses" class="grid gap-5 sm:grid-cols-2"></div>
+      <div id="saveHint" class="hidden p-4 rounded-2xl bg-slate-900/80 border border-cyan-500/30 text-sm text-slate-300 flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
+        <span data-t="saveHint"></span>
+        <a id="saveBtn" href="#" class="shrink-0 text-center px-5 py-2.5 rounded-2xl bg-slate-800 border border-cyan-500/40 text-cyan-300 font-black text-xs" data-t="saveBtn"></a>
+      </div>
     </section>
 
     <p class="text-center text-xs text-slate-500" data-t="footer"></p>
   </main>
-
   <!-- Автор — карточка в левом нижнем углу -->
   <a href="about.html" class="fixed bottom-4 left-4 z-30 flex items-center gap-3 pl-1.5 pr-4 py-1.5 rounded-full bg-slate-900/90 backdrop-blur border border-slate-700 hover:border-cyan-500/60 shadow-2xl transition group">
     <span class="w-10 h-10 rounded-full p-[2px] bg-gradient-to-tr from-emerald-500 via-cyan-500 to-amber-400 shrink-0">
@@ -73,28 +88,54 @@
     var T = {
       kz: {
         brand: 'Білім беру курстарының жинағы',
-        kicker: 'Курстар жинағы',
-        heroTitle: 'Курсты таңдап, кодпен кіріңіз',
-        heroText: 'Әр курс — жеке бөлім: конспектілер, карталар, тесттер. Кодты мұғалім береді.',
-        catalogTitle: 'Курстар',
-        needCourse: 'Материалдарды ашу үшін алдымен курсты таңдаңыз және кодты енгізіңіз.',
+        kicker: 'SMB · жабық курстар',
+        heroTitle: 'Курс кодын енгізіңіз',
+        addTitle: 'Тағы бір курс қосу',
+        heroText: 'Мұғалім берген код курсты ашады. Ашылған курстар осы бетте сақталады.',
+        codeLabel: 'Курс коды',
+        codePlaceholder: 'Мұғалім кодын жазыңыз',
+        activate: 'Қолжетімділік алу',
+        checking: 'Тексеріліп жатыр…',
+        empty: 'Кодты жазыңыз.',
+        myCourses: 'Менің курстарым',
+        addMore: 'Басқа курс үшін кодты жоғарыда жазыңыз',
+        needCourse: 'Материалдарды ашу үшін алдымен курс кодын енгізіңіз.',
         setup: 'Сервер әлі қосылмаған: smb-config.js файлына API_URL жазыңыз.',
         footer: 'Курс коды — мұғалімнен. Тіркелу мен рұқсаттар мұғалімнің кестесінде жүреді.',
         enter: 'Курсқа кіру →',
         resume: 'Жалғастыру →',
+        remove: 'Тізімнен алып тастау',
+        removeAsk: 'Курсты тізімнен алып тастаймыз ба? Қайта ашу үшін код қажет болады.',
+        added: 'Курс ашылды!',
+        already: 'Бұл курс тізімде бар.',
+        saveHint: 'Курстар осы браузерде сақталады. Тіркеліп, курсқа кіріңіз — деректеріңіз мұғалімнің кестесінде тіркеледі.',
+        saveBtn: 'Курсқа кіру',
         author: 'Автор туралы →'
       },
       ru: {
         brand: 'Коллекция образовательных курсов',
-        kicker: 'Коллекция курсов',
-        heroTitle: 'Выберите курс и войдите по коду',
-        heroText: 'Каждый курс — отдельный раздел: конспекты, карты, тесты. Код выдаёт преподаватель.',
-        catalogTitle: 'Курсы',
-        needCourse: 'Чтобы открыть материалы, сначала выберите курс и введите код.',
+        kicker: 'SMB · закрытые курсы',
+        heroTitle: 'Введите код курса',
+        addTitle: 'Добавить ещё курс',
+        heroText: 'Код от преподавателя открывает курс. Открытые курсы сохраняются на этой странице.',
+        codeLabel: 'Код курса',
+        codePlaceholder: 'Введите код от преподавателя',
+        activate: 'Получить доступ',
+        checking: 'Проверяем…',
+        empty: 'Введите код.',
+        myCourses: 'Мои курсы',
+        addMore: 'Чтобы добавить ещё курс, введите код выше',
+        needCourse: 'Чтобы открыть материалы, сначала введите код курса.',
         setup: 'Сервер ещё не подключён: впишите API_URL в файл smb-config.js.',
         footer: 'Код курса — у преподавателя. Регистрация и допуски ведутся в таблице преподавателя.',
         enter: 'Войти в курс →',
         resume: 'Продолжить →',
+        remove: 'Убрать из списка',
+        removeAsk: 'Убрать курс из списка? Чтобы открыть снова, понадобится код.',
+        added: 'Курс открыт!',
+        already: 'Этот курс уже в вашем списке.',
+        saveHint: 'Курсы хранятся в этом браузере. Войдите в курс с именем и почтой — вы зарегистрируетесь у преподавателя.',
+        saveBtn: 'Войти в курс',
         author: 'Об авторе →'
       }
     };
@@ -108,19 +149,30 @@
         var key = el.getAttribute('data-t');
         if (dict[key]) el.textContent = dict[key];
       });
+      document.querySelectorAll('[data-ph]').forEach(function (el) {
+        el.placeholder = dict[el.getAttribute('data-ph')] || '';
+      });
       renderCourses();
     }
 
     var session = SMB.readSession();
 
     function renderCourses() {
-      var lang = SMB.getLang();
-      var dict = T[lang];
-      document.getElementById('courses').innerHTML = SMB.C.COURSES.map(function (c) {
+      var dict = T[SMB.getLang()];
+      var wallet = SMB.readWallet();
+      var has = wallet.length > 0;
+      document.getElementById('myCourses').classList.toggle('hidden', !has);
+      document.getElementById('heroTitle').textContent = has ? dict.addTitle : dict.heroTitle;
+      document.getElementById('heroText').classList.toggle('hidden', has);
+      document.getElementById('saveHint').classList.toggle('hidden', !(has && !session));
+      if (has && !session) document.getElementById('saveBtn').href = 'gate.html?c=' + encodeURIComponent(wallet[0].id);
+      document.getElementById('courses').innerHTML = wallet.map(function (w) {
+        var c = SMB.courseById(w.id);
         var inCourse = session && session.courseId === c.id;
-        var href = 'gate.html?c=' + encodeURIComponent(c.id);
-        return '<article class="group p-6 rounded-3xl bg-slate-900/80 border border-slate-800 hover:border-cyan-500/50 hover:-translate-y-0.5 transition flex flex-col gap-4">' +
-          '<div class="flex items-start gap-4">' +
+        var href = inCourse ? c.start : 'gate.html?c=' + encodeURIComponent(c.id);
+        return '<article data-id="' + SMB.esc(c.id) + '" class="relative group p-6 rounded-3xl bg-slate-900/80 border border-slate-800 hover:border-cyan-500/50 hover:-translate-y-0.5 transition flex flex-col gap-4">' +
+          '<button type="button" data-remove="' + SMB.esc(c.id) + '" title="' + SMB.esc(dict.remove) + '" aria-label="' + SMB.esc(dict.remove) + '" class="absolute top-3 right-3 w-8 h-8 rounded-full text-slate-500 hover:text-rose-300 hover:bg-slate-800 text-lg leading-none">×</button>' +
+          '<div class="flex items-start gap-4 pr-6">' +
             '<span class="text-4xl leading-none" aria-hidden="true">' + SMB.esc(c.icon) + '</span>' +
             '<div class="min-w-0">' +
               '<span class="inline-block text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-lg bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">' + SMB.esc(SMB.courseLevel(c)) + '</span>' +
@@ -134,6 +186,49 @@
         '</article>';
       }).join('');
     }
+
+    function showCodeError(msg) {
+      var box = document.getElementById('codeError');
+      box.textContent = msg || '';
+      box.classList.toggle('hidden', !msg);
+    }
+
+    document.getElementById('codeForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      showCodeError('');
+      var lang = SMB.getLang();
+      var input = document.getElementById('codeInput');
+      var code = input.value.trim();
+      if (!code) return showCodeError(T[lang].empty);
+      var btn = document.getElementById('codeBtn');
+      btn.disabled = true;
+      btn.textContent = T[lang].checking;
+      try {
+        var r = await SMB.api('resolve', { code: code, device: SMB.deviceId() });
+        var course = r && r.status === 'success' ? SMB.courseById(r.course) : null;
+        if (!course) return showCodeError(SMB.errorText((r && r.code) || 'server'));
+        var isNew = SMB.addToWallet(course.id, code);
+        input.value = '';
+        renderCourses();
+        SMB.toast(isNew ? T[lang].added : T[lang].already);
+        var card = document.querySelector('[data-id="' + course.id + '"]');
+        if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } catch (err) {
+        showCodeError(SMB.errorText(err && err.message === 'no_api' ? 'no_api' : 'network'));
+      } finally {
+        btn.disabled = false;
+        btn.textContent = T[SMB.getLang()].activate;
+      }
+    });
+
+    document.getElementById('courses').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-remove]');
+      if (!b) return;
+      if (confirm(T[SMB.getLang()].removeAsk)) {
+        SMB.removeFromWallet(b.getAttribute('data-remove'));
+        renderCourses();
+      }
+    });
 
     // Блок «нужен курс» — если пришли со страницы курса без входа.
     if (new URLSearchParams(location.search).get('need_course')) {
@@ -161,6 +256,5 @@
     }
 
     applyLang();
-  </script>
-</body>
+  </script></body>
 </html>
