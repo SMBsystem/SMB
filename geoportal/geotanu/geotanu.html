@@ -479,7 +479,7 @@
       <div id="readingReaderView" class="hidden space-y-6">
         
         <!-- Reader Navigation Top Bar -->
-        <div class="bg-space-900 border border-slate-800 rounded-2xl p-2.5 sm:p-4 flex flex-wrap items-center justify-between gap-2.5 shadow-xl sticky top-[105px] sm:top-20 z-40 backdrop-blur-md bg-space-900/95">
+        <div class="bg-space-900 border border-slate-800 rounded-2xl p-2.5 sm:p-4 flex flex-wrap items-center justify-between gap-2.5 shadow-xl sticky top-[var(--hdr-h,112px)] z-40 backdrop-blur-md bg-space-900/95">
           <div class="flex items-center space-x-3">
             <button onclick="closeLessonReader()" class="px-3.5 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 text-slate-200 text-xs font-bold border border-slate-700 transition flex items-center space-x-1.5">
               <span>←</span>
@@ -672,7 +672,7 @@
       <div id="testterExamView" class="hidden space-y-6">
         
         <!-- Exam Top Navigation Bar (Mobile-safe sticky) -->
-        <div class="bg-space-900 border border-slate-800 rounded-2xl p-2.5 sm:p-4 flex flex-wrap items-center justify-between gap-2.5 shadow-xl sticky top-[105px] sm:top-20 z-40 backdrop-blur-md bg-space-900/95">
+        <div class="bg-space-900 border border-slate-800 rounded-2xl p-2.5 sm:p-4 flex flex-wrap items-center justify-between gap-2.5 shadow-xl sticky top-[var(--hdr-h,112px)] z-40 backdrop-blur-md bg-space-900/95">
           <div class="flex items-center space-x-3">
             <button onclick="closeWritingExam()" class="px-3.5 py-1.5 rounded-xl bg-space-850 hover:bg-space-800 text-slate-200 text-xs font-bold border border-slate-700 transition flex items-center space-x-1.5">
               <span>←</span>
@@ -6948,5 +6948,12 @@ ${item.fact_kz}`);
     </div>
   </div>
 
+<script>
+(function(){
+  function setHdrH(){var h=document.querySelector('header');if(h)document.documentElement.style.setProperty('--hdr-h',(h.offsetHeight+8)+'px');}
+  window.addEventListener('load',setHdrH);window.addEventListener('resize',setHdrH);setHdrH();
+  if(window.ResizeObserver){document.addEventListener('DOMContentLoaded',function(){var h=document.querySelector('header');if(h)new ResizeObserver(setHdrH).observe(h);});}
+})();
+</script>
 </body>
 </html>
