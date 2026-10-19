@@ -268,6 +268,91 @@
                  ru: 'Золото — север и восток, уран — юг (Чу-Сарысу, Сырдарья), фосфориты — Каратау.' }
     },
 
+    minerals: {
+      view: [48, 41, 88.5, 55],
+      fs: 0.0150,
+      pointsK: 0.95,
+      cats: [
+        { id: 'oil', c: '#fb923c', kz: 'Мұнай', ru: 'Нефть' },
+        { id: 'gas', c: '#38bdf8', kz: 'Газ', ru: 'Газ' },
+        { id: 'coal', c: '#94a3b8', kz: 'Көмір', ru: 'Уголь' },
+        { id: 'iron', c: '#f87171', kz: 'Темір', ru: 'Железо' },
+        { id: 'mn', c: '#c084fc', kz: 'Марганец', ru: 'Марганец' },
+        { id: 'cr', c: '#a3e635', kz: 'Хром', ru: 'Хром' },
+        { id: 'cu', c: '#2dd4bf', kz: 'Мыс', ru: 'Медь' },
+        { id: 'poly', c: '#60a5fa', kz: 'Полиметалл', ru: 'Полиметаллы' },
+        { id: 'al', c: '#e2e8f0', kz: 'Алюминий', ru: 'Алюминий' },
+        { id: 'ti', c: '#a78bfa', kz: 'Титан-магний', ru: 'Титан-магний' },
+        { id: 'au', c: '#fde047', kz: 'Алтын', ru: 'Золото' },
+        { id: 'u', c: '#4ade80', kz: 'Уран', ru: 'Уран' },
+        { id: 'ph', c: '#f472b6', kz: 'Фосфорит, тұз', ru: 'Фосфориты, соль' }
+      ],
+      points: [
+        // нефть
+        { cat: 'oil', lon: 53.2, lat: 47.6, kz: 'Доссор · Мақат', ru: 'Доссор · Макат', dx: 0.8, dy: -0.6 },
+        { cat: 'oil', lon: 53.4, lat: 46.15, kz: 'Теңіз', ru: 'Тенгиз', big: true, dx: 0.8, dy: 0.5 },
+        { cat: 'oil', lon: 51.3, lat: 45.7, kz: 'Қашаған', ru: 'Кашаган', big: true, dx: -0.8, a: 'end', dy: -0.1 },
+        { cat: 'oil', lon: 57.1, lat: 48.3, kz: 'Жаңажол · Кеңқияқ', ru: 'Жанажол · Кенкияк', dx: 0.8 },
+        { cat: 'oil', lon: 52.8, lat: 43.5, kz: 'Өзен · Жетібай', ru: 'Узень · Жетыбай', dx: 0.8, dy: 0.9 },
+        { cat: 'oil', lon: 51.9, lat: 44.45, kz: 'Қаражамбас · Қаламқас', ru: 'Каражанбас · Каламкас', dx: -0.8, a: 'end', dy: 0.6 },
+        { cat: 'oil', lon: 65.2, lat: 46.9, kz: 'Құмкөл', ru: 'Кумколь', dx: 0.8 },
+        { cat: 'oil', lon: 51.9, lat: 47.1, kz: 'Атырау МӨЗ', ru: 'Атырау НПЗ', shape: 'sq', dx: -0.9, a: 'end', dy: -0.3 },
+        { cat: 'oil', lon: 69.6, lat: 42.3, kz: 'Шымкент МӨЗ', ru: 'Шымкент НПЗ', shape: 'sq', dx: 0.9 },
+        { cat: 'oil', lon: 76.97, lat: 52.3, kz: 'Павлодар МӨЗ', ru: 'Павлодар НПЗ', shape: 'sq', dx: 0.9 },
+        // газ
+        { cat: 'gas', lon: 51.2, lat: 51.4, kz: 'Қарашығанақ (газ 70%)', ru: 'Карачаганак (газ 70%)', big: true, dx: 0.8 },
+        { cat: 'gas', lon: 70.3, lat: 43.5, kz: 'Амангелді', ru: 'Амангельды', dx: 0.8, dy: 1.0 },
+        // уголь
+        { cat: 'coal', lon: 73.1, lat: 49.8, kz: 'Қарағанды (кокс)', ru: 'Караганда (кокс)', big: true, dx: 0.9, dy: 0.9 },
+        { cat: 'coal', lon: 75.3, lat: 51.7, kz: 'Екібастұз (ашық)', ru: 'Экибастуз (открытый)', big: true, dx: 0.9, dy: -0.4 },
+        { cat: 'coal', lon: 70.9, lat: 49.7, kz: 'Шұбаркөл', ru: 'Шубарколь', dx: -0.9, a: 'end', dy: -0.5 },
+        { cat: 'coal', lon: 75.9, lat: 51.0, kz: 'Майкүбі', ru: 'Майкуби', dx: 0.9, dy: 0.7 },
+        { cat: 'coal', lon: 64.7, lat: 52.8, kz: 'Құсмұрын', ru: 'Кушмурун', dx: 0.9 },
+        { cat: 'coal', lon: 79.5, lat: 49.9, kz: 'Қаражыра', ru: 'Каражыра', dx: 0.9 },
+        { cat: 'coal', lon: 84.3, lat: 47.9, kz: 'Кендірлік', ru: 'Кендырлык', dx: 0.9 },
+        { cat: 'coal', lon: 77.9, lat: 43.9, kz: 'Төменгі Іле', ru: 'Нижнее Или', dx: 0.9 },
+        // железо, марганец, хром
+        { cat: 'iron', lon: 63.2, lat: 52.5, kz: 'Соколов-Сарыбай · Лисаков', ru: 'Соколовско-Сарбайское · Лисаковское', big: true, dx: 0.9, dy: -0.5 },
+        { cat: 'iron', lon: 67.2, lat: 48.2, kz: 'Атасу', ru: 'Атасу', dx: -0.9, a: 'end', dy: -0.4 },
+        { cat: 'iron', lon: 70.8, lat: 48.0, kz: 'Қаражал', ru: 'Каражал', dx: 0.9 },
+        { cat: 'iron', lon: 72.9, lat: 50.05, kz: 'Теміртау комбинаты', ru: 'Темиртау (комбинат)', shape: 'sq', dx: 0.9, dy: 0.7 },
+        { cat: 'mn', lon: 67.8, lat: 47.6, kz: 'Жезді', ru: 'Жезды', dx: -0.9, a: 'end', dy: 1.0 },
+        { cat: 'cr', lon: 58.4, lat: 50.25, kz: 'Хромтау · Дөң (хром 97%)', ru: 'Хромтау · Донское (хром 97%)', big: true, dx: 0.9, dy: -0.5 },
+        { cat: 'cr', lon: 57.2, lat: 50.3, kz: 'Ақтөбе феррохром', ru: 'Актобе феррохром', shape: 'sq', dx: -0.9, a: 'end', dy: 0.2 },
+        { cat: 'cr', lon: 76.9, lat: 52.0, kz: 'Ақсу ферросплав', ru: 'Аксу ферросплавы', shape: 'sq', dx: 0.9 },
+        // медь
+        { cat: 'cu', lon: 67.7, lat: 47.8, kz: 'Жезқазған', ru: 'Жезказган', big: true, dx: -0.9, a: 'end', dy: 0.4 },
+        { cat: 'cu', lon: 77.1, lat: 46.9, kz: 'Саяқ', ru: 'Саяк', dx: 0.9, dy: 0.3 },
+        { cat: 'cu', lon: 73.1, lat: 46.95, kz: 'Қоңырат', ru: 'Конырат', dx: -0.9, a: 'end', dy: 0.9 },
+        { cat: 'cu', lon: 79.9, lat: 46.97, kz: 'Ақтоғай', ru: 'Актогай', dx: 0.9, dy: 0.9 },
+        { cat: 'cu', lon: 75.8, lat: 51.2, kz: 'Бозшакөл', ru: 'Бозшаколь', dx: 0.9, dy: -0.8 },
+        { cat: 'cu', lon: 74.9, lat: 46.85, kz: 'Балқаш (балқыту)', ru: 'Балхаш (плавка)', shape: 'sq', dx: 0.0, a: 'middle', dy: 1.9 },
+        { cat: 'cu', lon: 76.95, lat: 43.25, kz: 'Алматы (өңдеу)', ru: 'Алматы (переработка)', shape: 'sq', dx: 0.9 },
+        // полиметаллы
+        { cat: 'poly', lon: 83.5, lat: 50.35, kz: 'Риддер', ru: 'Риддер', dx: 0.9, dy: -0.7 },
+        { cat: 'poly', lon: 84.3, lat: 49.7, kz: 'Зырян', ru: 'Зыряновск', dx: 0.9, dy: 0.7 },
+        { cat: 'poly', lon: 78.8, lat: 44.85, kz: 'Текелі', ru: 'Текели', dx: 0.9 },
+        { cat: 'poly', lon: 72.8, lat: 48.6, kz: 'Жәйрем', ru: 'Жайрем', dx: 0.9, dy: -0.7 },
+        { cat: 'poly', lon: 68.6, lat: 43.8, kz: 'Қаратау: Ащысай · Шалқия', ru: 'Каратау: Ащысай · Шалкия', dx: 0.9, dy: 0.9 },
+        // алюминий, титан
+        { cat: 'al', lon: 66.9, lat: 50.25, kz: 'Арқалық (боксит)', ru: 'Аркалык (бокситы)', dx: -0.9, a: 'end' },
+        { cat: 'al', lon: 77.3, lat: 52.1, kz: 'Павлодар (алюминий зауыты)', ru: 'Павлодар (алюминиевый завод)', shape: 'sq', dx: 0.9, dy: 0.7 },
+        { cat: 'ti', lon: 82.6, lat: 49.95, kz: 'Өскемен (титан-магний)', ru: 'Усть-Каменогорск (титан-магний)', shape: 'sq', dx: -0.9, a: 'end', dy: 0.9 },
+        // золото, уран, фосфориты
+        { cat: 'au', lon: 70.2, lat: 53.0, kz: 'Васильков · Жолымбет · Бестөбе · Ақсу', ru: 'Васильковское · Жолымбет · Бестобе · Аксу', big: true, dx: -0.9, a: 'end', dy: -0.8 },
+        { cat: 'au', lon: 82.0, lat: 48.7, kz: 'Бақыршық · Суздаль', ru: 'Бакырчик · Суздальское', dx: -0.9, a: 'end', dy: 0.4 },
+        { cat: 'au', lon: 60.0, lat: 50.7, kz: 'Юбилейное', ru: 'Юбилейное', dx: 0.9, dy: -0.4 },
+        { cat: 'au', lon: 71.3, lat: 45.0, kz: 'Ақбақай', ru: 'Акбакай', dx: 0.9, dy: -0.7 },
+        { cat: 'u', lon: 68.5, lat: 44.0, kz: 'Шу-Сарысу · Созақ · Мыңқұдық', ru: 'Чу-Сарысу · Сузак · Мынкудук', big: true, dx: -0.9, a: 'end', dy: 0.3 },
+        { cat: 'u', lon: 65.5, lat: 44.4, kz: 'Сырдария (Қорасан)', ru: 'Сырдарья (Хорасан)', dx: -0.9, a: 'end', dy: -0.7 },
+        { cat: 'u', lon: 72.0, lat: 52.0, kz: 'Солтүстік Қазақстан', ru: 'Северный Казахстан', dx: 0.9, dy: 0.6 },
+        { cat: 'ph', lon: 69.7, lat: 43.1, kz: 'Қаратау фосфориті', ru: 'Фосфориты Каратау', shape: 'sq', dx: 0.9, dy: 1.0 },
+        { cat: 'ph', lon: 51.9, lat: 48.0, kz: 'Индер (тұз)', ru: 'Индер (соль)', shape: 'sq', dx: 0.9 }
+      ],
+      caption: { kz: 'Пайдалы қазбалар картасы: жоғарыдағы батырманы бассаң, картада тек сол қазбаның кен орындары көрінеді.',
+                 ru: 'Карта полезных ископаемых: нажми кнопку сверху — на карте останутся только месторождения этого ископаемого.' }
+    },
+
     deep: {
       view: [18, 7, 98, 56],
       fs: 0.0205,
@@ -380,7 +465,7 @@
         out += txt(p.x, p.y, L(CASPIAN), { a: 'middle', c: '#4f8fc7', i: true, k: 0.85 });
       }
       LAKES.forEach((lk) => {
-        if (!lk.kz || key === 'highmt' || key === 'nonferrous' || !inView(lk.at[0], lk.at[1])) return;
+        if (!lk.kz || key === 'highmt' || key === 'nonferrous' || key === 'minerals' || !inView(lk.at[0], lk.at[1])) return;
         const p = P(lk.at[0], lk.at[1]);
         out += txt(p.x + fs * (lk.dx || 0), p.y + fs * (lk.dy || 0), L(lk), { a: lk.dx ? 'end' : 'middle', c: '#4f8fc7', i: true, k: 0.75 });
       });
@@ -401,27 +486,34 @@
     });
 
     // точки
+    const catById = {};
+    (d.cats || []).forEach((ct) => { catById[ct.id] = ct; });
     (d.points || []).forEach((pt) => {
       const p = P(pt.lon, pt.lat);
-      const c = pt.c || (pt.type === 'peak' ? '#f8fafc' : '#e2e8f0');
-      const r = fs * (pt.big ? 0.42 : 0.32);
+      const cat = catById[pt.cat];
+      const r = fs * (pt.big ? 0.42 : 0.32) * (cat ? 1.25 : 1);
+      const pc = pt.pc || (cat && cat.c);
+      let sh = '', lb = '';
       if (pt.n) {
         const R = fs * 0.95, col = pt.c || '#22d3ee';
-        out += el('circle', { cx: f1(p.x), cy: f1(p.y), r: R.toFixed(2), fill: col, stroke: '#0b1120', 'stroke-width': 0.5 });
-        out += el('text', { x: f1(p.x), y: (p.y + fs * 0.36).toFixed(2), 'text-anchor': 'middle', 'font-size': (fs * 1.05).toFixed(2), 'font-weight': 900, fill: '#0b1120',
+        sh += el('circle', { cx: f1(p.x), cy: f1(p.y), r: R.toFixed(2), fill: col, stroke: '#0b1120', 'stroke-width': 0.5 });
+        sh += el('text', { x: f1(p.x), y: (p.y + fs * 0.36).toFixed(2), 'text-anchor': 'middle', 'font-size': (fs * 1.05).toFixed(2), 'font-weight': 900, fill: '#0b1120',
           style: "font-family:'Outfit','Inter',sans-serif" }, String(pt.n));
       } else if (pt.shape === 'sq') {
         const s = r * 1.9;
-        out += el('rect', { x: (p.x - s).toFixed(2), y: (p.y - s).toFixed(2), width: (s * 2).toFixed(2), height: (s * 2).toFixed(2), fill: pt.pc || '#f8fafc', stroke: '#0b1120', 'stroke-width': 0.35 });
+        sh += el('rect', { x: (p.x - s).toFixed(2), y: (p.y - s).toFixed(2), width: (s * 2).toFixed(2), height: (s * 2).toFixed(2), fill: pc || '#f8fafc', stroke: '#0b1120', 'stroke-width': 0.35 });
       } else if (pt.type === 'peak') {
         const s = r * 1.9;
-        out += el('path', { d: 'M' + f1(p.x) + ' ' + (p.y - s).toFixed(2) + ' L' + (p.x + s).toFixed(2) + ' ' + (p.y + s * 0.8).toFixed(2) + ' L' + (p.x - s).toFixed(2) + ' ' + (p.y + s * 0.8).toFixed(2) + ' Z',
-          fill: pt.pc || (pt.big ? '#fde047' : '#f8fafc'), stroke: '#0b1120', 'stroke-width': 0.35 });
+        sh += el('path', { d: 'M' + f1(p.x) + ' ' + (p.y - s).toFixed(2) + ' L' + (p.x + s).toFixed(2) + ' ' + (p.y + s * 0.8).toFixed(2) + ' L' + (p.x - s).toFixed(2) + ' ' + (p.y + s * 0.8).toFixed(2) + ' Z',
+          fill: pc || (pt.big ? '#fde047' : '#f8fafc'), stroke: '#0b1120', 'stroke-width': 0.35 });
       } else {
-        out += el('circle', { cx: f1(p.x), cy: f1(p.y), r: (r * 1.4).toFixed(2), fill: pt.pc || (pt.big ? '#fbbf24' : '#e2e8f0'), stroke: '#0b1120', 'stroke-width': 0.3 });
+        sh += el('circle', { cx: f1(p.x), cy: f1(p.y), r: (r * 1.4).toFixed(2), fill: pc || (pt.big ? '#fbbf24' : '#e2e8f0'), stroke: '#0b1120', 'stroke-width': 0.3 });
       }
       const dx = (pt.dx == null ? 0.8 : pt.dx) * fs, dy = (pt.dy || 0) * fs + fs * 0.34;
-      out += txt(p.x + dx, p.y + dy, L(pt), { a: pt.a, c: pt.n ? (pt.c || '#a5f3fc') : (pt.type === 'peak' ? '#f8fafc' : '#e2e8f0'), bold: !!(pt.n || pt.type === 'peak'), k: 0.9 * (d.pointsK || 1) });
+      lb = txt(p.x + dx, p.y + dy, L(pt), { a: pt.a, c: cat ? cat.c : (pt.n ? (pt.c || '#a5f3fc') : (pt.type === 'peak' ? '#f8fafc' : '#e2e8f0')), bold: !!(pt.n || pt.type === 'peak' || cat), k: 0.9 * (d.pointsK || 1) });
+      out += cat
+        ? '<g class="mm-pt" data-cat="' + cat.id + '"><title>' + esc(L(pt)) + '</title>' + sh + '<g class="mm-lb" style="display:none">' + lb + '</g></g>'
+        : sh + lb;
     });
 
     const svg = '<svg viewBox="' + [f1(x1), f1(y1), f1(vw), f1(vh)].join(' ') + '" xmlns="' + NS + '" role="img" aria-label="' + esc(L(d.caption)) + '" '
@@ -441,11 +533,56 @@
         + (lang === 'ru' ? 'вершина' : 'шың') + '</span>';
     }
 
-    return '<figure style="margin:14px 0 0;padding:10px;border-radius:14px;background:#0b1120;border:1px solid #1e293b">'
-      + '<div style="overflow-x:auto;border-radius:10px;border:1px solid #1e293b">' + svg + '</div>'
+    let chips = '', list = '';
+    if (d.cats) {
+      const chip = 'display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;font:700 12px \'Outfit\',\'Inter\',sans-serif;cursor:pointer;color:#cbd5e1;background:#111c33;border:1px solid #2a3855;';
+      chips = '<div class="mm-chips" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">'
+        + '<button type="button" data-cat="all" style="' + chip + '"><span>🗺️</span>' + (lang === 'ru' ? 'Все' : 'Барлығы') + '</button>'
+        + d.cats.map((ct) => '<button type="button" data-cat="' + ct.id + '" style="' + chip + '"><i style="width:10px;height:10px;border-radius:50%;background:' + ct.c + ';display:inline-block"></i>' + esc(L(ct)) + '</button>').join('')
+        + '</div>';
+      list = '<div class="mm-list" style="margin-top:8px;font-size:12px;line-height:1.6;color:#cbd5e1"></div>';
+    }
+
+    return '<figure class="' + (d.cats ? 'mm-fig' : '') + '" style="margin:14px 0 0;padding:10px;border-radius:14px;background:#0b1120;border:1px solid #1e293b">'
+      + chips
+      + '<div style="overflow-x:auto;border-radius:10px;border:1px solid #1e293b">' + svg + '</div>' + list
       + (legend ? '<div style="display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px">' + legend + '</div>' : '')
       + '<figcaption style="margin-top:8px;font-size:11px;line-height:1.5;color:#94a3b8">🗺️ ' + esc(L(d.caption))
       + ' <span style="color:#64748b">· ' + (lang === 'ru' ? 'схема, границы областей приблизительные' : 'схема, аймақ шекаралары шамамен') + '</span></figcaption></figure>';
+  }
+
+  // фильтр по полезному ископаемому: показывает только выбранные месторождения и их подписи
+  function bindFilter(box, d, lang) {
+    const fig = box.querySelector('.mm-fig');
+    if (!fig) return;
+    const L = (o) => (o && (o[lang] || o.kz)) || '';
+    const list = fig.querySelector('.mm-list');
+    const hint = lang === 'ru' ? 'Нажми на полезное ископаемое — на карте останутся только его месторождения. ■ — завод / комбинат.'
+      : 'Пайдалы қазбаны бас — картада тек сол кен орындары қалады. ■ — зауыт / комбинат.';
+    function select(id) {
+      fig.querySelectorAll('.mm-pt').forEach((g) => {
+        const on = id === 'all' || g.getAttribute('data-cat') === id;
+        g.style.display = on ? '' : 'none';
+        g.querySelector('.mm-lb').style.display = id === 'all' ? 'none' : '';
+      });
+      fig.querySelectorAll('.mm-chips button').forEach((b) => {
+        const cid = b.getAttribute('data-cat'), ct = d.cats.filter((x) => x.id === cid)[0];
+        const on = cid === id, col = ct ? ct.c : '#22d3ee';
+        b.style.borderColor = on ? col : '#2a3855';
+        b.style.background = on ? col + '33' : '#111c33';
+        b.style.color = on ? '#fff' : '#cbd5e1';
+      });
+      if (id === 'all') { list.innerHTML = '<span style="color:#94a3b8">' + hint + '</span>'; return; }
+      const ct = d.cats.filter((x) => x.id === id)[0];
+      list.innerHTML = '<b style="color:' + ct.c + '">' + esc(L(ct)) + ':</b> ' + d.points.filter((p) => p.cat === id).map((p) =>
+        '<span style="display:inline-block;margin:2px 4px 2px 0;padding:2px 9px;border-radius:999px;background:#111c33;border:1px solid ' + ct.c + '66;font-weight:700">'
+        + (p.shape === 'sq' ? '■ ' : '') + esc(L(p)) + '</span>').join('');
+    }
+    fig.querySelector('.mm-chips').addEventListener('click', (e) => {
+      const b = e.target.closest('button[data-cat]');
+      if (b) select(b.getAttribute('data-cat'));
+    });
+    select('all');
   }
 
   function render(root) {
@@ -453,7 +590,7 @@
     (root || document).querySelectorAll('.tmap').forEach((box) => {
       const key = box.getAttribute('data-map');
       if (!DEFS[key]) return;
-      try { box.innerHTML = build(key, DEFS[key], lang); } catch (e) { box.innerHTML = ''; if (window.console) console.warn('TopicMaps', key, e); }
+      try { box.innerHTML = build(key, DEFS[key], lang); bindFilter(box, DEFS[key], lang); } catch (e) { box.innerHTML = ''; if (window.console) console.warn('TopicMaps', key, e); }
     });
   }
 
