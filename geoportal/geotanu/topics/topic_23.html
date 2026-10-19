@@ -109,7 +109,7 @@
     .rel-chip.on i { background: #0b1120; box-shadow: none; }
     .rel-lay { padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; color: #94a3b8; cursor: pointer; border: 1px solid #1e293b; background: rgba(15,23,42,.8); }
     .rel-lay.on { color: #0b1120; background: #22d3ee; border-color: #22d3ee; }
-    .rel-mapbox { position: relative; border-radius: 16px; overflow: hidden; border: 1px solid #1e293b; box-shadow: 0 0 0 1px rgba(34,211,238,.08), 0 18px 40px -20px rgba(0,0,0,.8); }
+    .rel-mapbox { position: relative; z-index: 0; isolation: isolate;border-radius: 16px; overflow: hidden; border: 1px solid #1e293b; box-shadow: 0 0 0 1px rgba(34,211,238,.08), 0 18px 40px -20px rgba(0,0,0,.8); }
     #reliefMap { height: 520px; background: #0b1120; }
     @media (max-width: 640px) { #reliefMap { height: 420px; } }
     #reliefMap .leaflet-popup-content-wrapper, #reliefMap .leaflet-popup-tip { background: #0f172a; color: #e2e8f0; }
@@ -807,13 +807,16 @@
       const center = (i) => R[i].lbl || L.latLngBounds(R[i].polys.flat()).getCenter();
 
       function basesInit() {
-        bases.dark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 18, subdomains: 'abcd', attribution: '&copy; OpenStreetMap, &copy; CARTO' });
-        bases.topo = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', { maxZoom: 16, subdomains: 'abc', attribution: '&copy; OpenStreetMap, SRTM | &copy; OpenTopoMap' });
-        bases.sat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 18, attribution: 'Tiles &copy; Esri' });
+        const esri = (svc, z) => L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/' + svc + '/MapServer/tile/{z}/{y}/{x}', { maxZoom: z, attribution: 'Tiles &copy; Esri' });
+        bases.dark = esri('Canvas/World_Dark_Gray_Base', 16);
+        bases.darkRef = esri('Canvas/World_Dark_Gray_Reference', 16);
+        bases.topo = esri('World_Topo_Map', 17);
+        bases.sat = esri('World_Imagery', 17);
       }
       function setBase(k) {
-        if (bases[baseKey] && map.hasLayer(bases[baseKey])) map.removeLayer(bases[baseKey]);
+        [baseKey, 'darkRef'].forEach(b => { if (bases[b] && map.hasLayer(bases[b])) map.removeLayer(bases[b]); });
         baseKey = k; bases[k].addTo(map).bringToBack();
+        if (k === 'dark') bases.darkRef.addTo(map);
         renderLayers();
       }
       function renderLayers() {
