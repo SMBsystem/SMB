@@ -30,6 +30,18 @@ window.SMB_CONFIG = {
       desc_ru: '14 научных блоков, 42 урока, конспекты и онлайн-тесты',
       level_kz: 'НЗМ / 6 сынып',
       level_ru: 'НИШ / 6 класс'
+    },
+    {
+      id: 'ielts',
+      icon: '🎓',
+      label: 'IELTS',
+      start: 'ielts/ielts.html',
+      title_kz: 'IELTS-ке қалай дайындалу керек',
+      title_ru: 'Как готовиться к IELTS',
+      desc_kz: '20 толық сынақ: Reading, Listening, Writing, Speaking және ЖИ-емтихан алушы',
+      desc_ru: '20 полных пробников: Reading, Listening, Writing, Speaking и ИИ-экзаменатор',
+      level_kz: 'IELTS Academic',
+      level_ru: 'IELTS Academic'
     }
   ]
 };

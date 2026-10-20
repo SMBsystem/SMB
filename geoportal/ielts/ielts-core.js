@@ -155,8 +155,32 @@
     var s = readSessionRaw();
     return getUsers()[s.email] || null;
   }
-  function startSession(user) {
-    var iat = Date.now(), exp = iat + SESSION_MS;
+  // true: вход только по коду курса (сессия портала SMB, courseId = 'ielts'); false: своя регистрация email + пароль.
+  var REQUIRE_CODE = true;
+  var SMB_SESSION_KEY = 'geotany_user_session';
+
+  function readSmbIeltsSession() {
+    var s = jsonGet(SMB_SESSION_KEY, null);
+    return s && s.v === 2 && s.courseId === 'ielts' && s.exp > Date.now() && /^[^\s@]+@[^\s@]+$/.test(s.email || '') ? s : null;
+  }
+  // Сессия, выданная порталом после проверки кода, превращается в подписанную сессию курса.
+  function adoptSmbSession() {
+    var s = readSmbIeltsSession();
+    if (!s) return false;
+    var email = normEmail(s.email);
+    var cur = readSessionRaw();
+    if (verifySessionIntegrity() && cur.email === email) return true;
+    var users = getUsers();
+    var u = users[email];
+    if (!u || u.algo !== 'smb') {
+      u = users[email] = { email: email, name: String(s.name || email).slice(0, 80), salt: '', algo: 'smb', hash: hmacHex(SECURITY_PEPPER, 'smb|' + email), createdAt: Date.now() };
+      lsSet(USERS_KEY, JSON.stringify(users));
+    }
+    startSession(u, s.exp);
+    return true;
+  }
+  function startSession(user, capExp) {
+    var iat = Date.now(), exp = Math.min(iat + SESSION_MS, capExp || Infinity);
     var s = { v: 1, email: user.email, iat: iat, exp: exp, sig: computeSessionSignature(user.email, user.name, iat, exp, String(user.hash).slice(0, 24)) };
     lsSet(SESSION_KEY, JSON.stringify(s));
   }
@@ -171,6 +195,7 @@
   function logout() {
     flushSave();
     lsDel(SESSION_KEY);
+    if (readSmbIeltsSession()) lsDel(SMB_SESSION_KEY);
     progress = null;
     pendingProtectedRoute = null;
     wipeProtectedDom();
@@ -238,7 +263,9 @@
     n.textContent = notice || '';
     n.classList.toggle('hidden', !notice);
     $('profileBox').classList.toggle('hidden', !user);
-    $('authForms').classList.toggle('hidden', !!user);
+    $('authForms').classList.toggle('hidden', !!user || REQUIRE_CODE);
+    $('codeBox').classList.toggle('hidden', !!user || !REQUIRE_CODE);
+    if (!user && REQUIRE_CODE) { $('authTitle').textContent = 'Нужен код курса'; return; }
     if (user) {
       $('authTitle').textContent = 'Профиль';
       $('profName').textContent = user.name;
@@ -439,7 +466,8 @@
     if (!route || route.screen === 'home') {
       try {
         var p = JSON.parse(sessionStorage.getItem('ielts_pending') || 'null');
-        if (p && !verifySessionIntegrity()) { pendingProtectedRoute = normalizeRoute(p); }
+        if (p && verifySessionIntegrity()) { sessionStorage.removeItem('ielts_pending'); return navigateTo(p, { replace: true }); }
+        if (p) pendingProtectedRoute = normalizeRoute(p);
       } catch (e) {}
       return navigateTo({ screen: 'home' }, { replace: true });
     }
@@ -550,6 +578,16 @@
     bindUI();
     installGuards();
     if (IELTS.ai) IELTS.ai.bindSettings();
+    if (REQUIRE_CODE) {
+      adoptSmbSession();
+      // преподаватель мог закрыть допуск в таблице
+      var smb = readSmbIeltsSession();
+      if (smb && window.SMB && window.SMB.C.API_URL) {
+        window.SMB.stillAllowed(smb).then(function (ok) {
+          if (!ok) { lsDel(SMB_SESSION_KEY); invalidateTamperedSession(true); navigateTo({ screen: 'home' }); toast('Доступ к курсу закрыт преподавателем.', true); }
+        });
+      }
+    }
     if (readSessionRaw() && !verifySessionIntegrity()) {
       var s = readSessionRaw();
       invalidateTamperedSession(s && s.exp > Date.now() ? false : true);
@@ -570,6 +608,7 @@
   IELTS.navigateTo = navigateTo;
   IELTS.parseAndGuardDeepLink = parseAndGuardDeepLink;
   IELTS.currentUser = currentUser;
+  IELTS.adoptSmbSession = adoptSmbSession;
   IELTS.vstate = vstate;
   IELTS.touch = touch;
   IELTS.scheduleSave = scheduleSave;
