@@ -50,7 +50,7 @@
     var evals = Object.keys(st.ev || {}).length;
     return '<article class="bg-white border border-slate-200 rounded-2xl p-5 flex flex-col gap-3 ' + (ready ? 'hover:border-indigo-300' : 'opacity-60') + ' transition">' +
       '<div class="flex items-center justify-between"><span class="text-xs font-bold text-indigo-600">Вариант ' + i + '</span>' +
-      (started ? '<span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700">' + (st.a && st.a._score ? 'Результат ' + esc(st.a._score) : 'Начато') + (evals ? ' · ИИ ×' + evals : '') + '</span>' : '') + '</div>' +
+      (started ? '<span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700">' + (st.a && st.a._score ? 'Результат ' + esc(st.a._score) + (bandFromScore(skill, st.a._score) != null ? ' · Band ' + fmtBand(bandFromScore(skill, st.a._score)) : '') : 'Начато') + (evals ? ' · ИИ ×' + evals : '') + '</span>' : '') + '</div>' +
       title + '<p class="text-xs text-slate-500">' + esc(spec) + '</p>' +
       (takeaway ? '<p class="text-sm text-slate-600 leading-relaxed"><b class="text-slate-800">Польза:</b> ' + esc(takeaway) + '</p>' : '') +
       (ready ? '<button type="button" data-open-test="' + i + '" data-skill="' + skill + '" data-topic="' + topic + '" class="btn btn-primary mt-auto">' + (started ? 'Продолжить' : 'Начать') + ' →</button>' : '<span class="mt-auto text-xs font-semibold text-slate-400">Скоро</span>') + '</article>';
@@ -133,9 +133,30 @@
     st.a._score = score; st.a._checked = 1;
     return { right: right, total: qs.length, score: score };
   }
-  function resultBanner(g) {
+  // Пересчёт числа верных ответов в бэнд: результат приводится к шкале из 40 вопросов
+  // и переводится по официальным таблицам IELTS Academic (минимальный балл для каждого бэнда).
+  var BAND_TABLE = {
+    listening: [[39, 9], [37, 8.5], [35, 8], [32, 7.5], [30, 7], [26, 6.5], [23, 6], [18, 5.5], [16, 5], [13, 4.5], [10, 4], [8, 3.5], [6, 3], [4, 2.5]],
+    reading: [[39, 9], [37, 8.5], [35, 8], [33, 7.5], [30, 7], [27, 6.5], [23, 6], [19, 5.5], [15, 5], [13, 4.5], [10, 4], [8, 3.5], [6, 3], [4, 2.5]]
+  };
+  function bandFromRaw(skill, right, total) {
+    var t = BAND_TABLE[skill];
+    if (!t || !total) return null;
+    var s40 = Math.round(40 * right / total);
+    for (var i = 0; i < t.length; i++) if (s40 >= t[i][0]) return t[i][1];
+    return 2;
+  }
+  function bandFromScore(skill, score) {
+    var m = /^(\d+)\/(\d+)$/.exec(String(score || ''));
+    return m ? bandFromRaw(skill, +m[1], +m[2]) : null;
+  }
+  function fmtBand(b) { return b == null ? '' : (b % 1 ? b.toFixed(1) : b.toFixed(1)); }
+  function resultBanner(g, skill) {
     var pct = Math.round(100 * g.right / g.total);
-    return '<div class="p-3 rounded-xl border ' + (pct >= 70 ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-amber-50 border-amber-200 text-amber-800') + ' text-sm font-semibold">Результат: ' + g.score + ' (' + pct + '%). Разберите объяснения под каждым вопросом.</div>';
+    var band = bandFromRaw(skill, g.right, g.total);
+    return '<div class="p-3 rounded-xl border ' + (pct >= 70 ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-amber-50 border-amber-200 text-amber-800') + ' text-sm font-semibold">Результат: ' + g.score + ' (' + pct + '%)' +
+      (band != null ? '<div class="text-lg mt-1">Примерный Band: ' + fmtBand(band) + '</div><div class="text-xs font-normal mt-0.5">Оценка ориентировочная: результат пересчитан на шкалу из 40 вопросов по таблице IELTS Academic (' + (skill === 'reading' ? 'Reading' : 'Listening') + '). Настоящий экзамен может оценить иначе.</div>' : '') +
+      '<div class="text-xs font-normal mt-1">Разберите объяснения под каждым вопросом.</div></div>';
   }
 
   // автосохранение полей с data-k
@@ -406,7 +427,7 @@
     var pre = skill === 'reading' ? 'rd' : 'ls';
     function check() {
       var g = gradeQuestions(root, qs, st);
-      root.querySelector('#' + pre + 'Result').innerHTML = resultBanner(g);
+      root.querySelector('#' + pre + 'Result').innerHTML = resultBanner(g, skill);
       if (skill === 'listening') { $('lsShow').checked = true; $('lsTranscript').classList.remove('hidden'); }
       IELTS.touch(skill, v);
     }
