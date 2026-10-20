@@ -22,7 +22,8 @@
             isAuthorized = true;
           }
         }
-        if (!isAuthorized) {
+        var inPreview = (window.self !== window.top) || !window.location.hostname || window.location.hostname.indexOf('googleusercontent') !== -1 || window.location.protocol === 'blob:' || window.location.protocol === 'data:' || window.location.protocol === 'about:';
+        if (!isAuthorized && !inPreview) {
           var target = window.location.pathname.split('/').pop() || 'topics.html';
           window.location.replace('../geotanu.html?need_course=GEOTANY&redirect=' + encodeURIComponent(target));
           return;
@@ -30,7 +31,8 @@
         var cloak = document.getElementById('authCloak');
         if (cloak) cloak.remove();
       } catch (err) {
-        window.location.replace('../geotanu.html');
+        var cloakFallback = document.getElementById('authCloak');
+        if (cloakFallback) cloakFallback.remove();
       }
     })();
   </script>
@@ -56,28 +58,53 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Outfit', 'Inter', sans-serif; }
-    /* Custom scrollbar */
+    body { font-family: 'Outfit', 'Inter', sans-serif; scroll-behavior: smooth; }
     ::-webkit-scrollbar { width: 8px; height: 8px; }
     ::-webkit-scrollbar-track { background: #0b1120; }
     ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: #334155; }
+    .perspective-1000 { perspective: 1000px; }
+    .flip-card-inner {
+      transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-style: preserve-3d;
+    }
+    .flip-card.flipped .flip-card-inner {
+      transform: rotateY(180deg);
+    }
+    .flip-card-front, .flip-card-back {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .flip-card-back {
+      transform: rotateY(180deg);
+    }
+    .map-hotspot { cursor: pointer; transition: all 0.22s ease; }
+    .map-hotspot:hover { filter: brightness(1.25) drop-shadow(0 0 8px rgba(56, 189, 248, 0.6)); }
   </style>
 </head>
 <body class="bg-[#070b14] text-slate-100 min-h-screen flex flex-col selection:bg-cyan-500 selection:text-space-950">
 
   <!-- STICKY TOP NAVBAR -->
-  <header class="sticky top-0 z-50 backdrop-blur-md bg-space-950/85 border-b border-slate-800/80 px-4 sm:px-8 py-3">
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-space-950/90 border-b border-slate-800/80 px-4 sm:px-8 py-3">
     <div class="max-w-6xl mx-auto flex items-center justify-between gap-3">
       <!-- Left: Back Button & Badges -->
       <div class="flex items-center space-x-2.5 sm:space-x-3 shrink-0">
-        <a href="../geotanu.html#section-zhattau_grammar" id="btnBackToCourse" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white transition"><span>←</span><span id="btnBackToCourseText">Артқа</span></a>
+        <a href="javascript:void(0)" onclick="navigateCourse('../geotanu.html#section-zhattau_grammar')" id="btnBackToCourse" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white transition"><span>←</span><span id="btnBackToCourseText">Артқа</span></a>
         <span class="px-2.5 py-1 rounded-full text-xs font-black bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
           #41
         </span>
         <span id="navCatBadge" class="text-xs text-slate-400 font-bold hidden md:inline truncate max-w-[200px]">
           Геоэкономика
         </span>
+      </div>
+
+      <!-- Center Quick Jump Pills (Desktop) -->
+      <div class="hidden lg:flex items-center space-x-1 bg-space-900/80 border border-slate-800/80 rounded-xl p-1 text-[11px] font-bold text-slate-400">
+        <a href="#theorySectionAnchor" class="px-2.5 py-1 rounded-lg hover:bg-space-800 hover:text-cyan-300 transition" id="navJumpTheory">📚 Теория</a>
+        <a href="#mapSection" class="px-2.5 py-1 rounded-lg hover:bg-space-800 hover:text-emerald-300 transition" id="navJumpMap">🗺️ Карталар</a>
+        <a href="#svgSection" class="px-2.5 py-1 rounded-lg hover:bg-space-800 hover:text-amber-300 transition" id="navJumpSvg">🎨 Инфографика</a>
+        <a href="#tableSection" class="px-2.5 py-1 rounded-lg hover:bg-space-800 hover:text-sky-300 transition" id="navJumpTable">📊 Кестелер</a>
+        <a href="#interactiveSection" class="px-2.5 py-1 rounded-lg hover:bg-space-800 hover:text-purple-300 transition" id="navJumpQuiz">🧠 Тренажер</a>
       </div>
 
       <!-- Right: Controls (Lang Switcher & Mark Complete) -->
@@ -105,127 +132,211 @@
   <main class="max-w-5xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-8 space-y-6 flex-1">
 
     <!-- HERO HEADER CARD -->
-    <div class="p-6 sm:p-7 rounded-2xl bg-space-950/90 border border-slate-800 space-y-3.5 shadow-xl relative overflow-hidden">
-      <div class="absolute -right-12 -top-12 w-48 h-48 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none"></div>
-      <div class="flex items-center space-x-2">
+    <div class="p-6 sm:p-7 rounded-2xl bg-gradient-to-br from-space-950 via-space-900 to-space-950 border border-slate-800 space-y-4 shadow-xl relative overflow-hidden">
+      <div class="absolute -right-12 -top-12 w-56 h-56 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-12 -bottom-12 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="flex flex-wrap items-center gap-2">
         <span id="heroCatBadge" class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-space-850 text-cyan-400 border border-cyan-500/20">
           Геоэкономика
         </span>
-        <span class="text-xs text-slate-400">⏱️ ~8-12 мин оқу</span>
+        <span id="readTimeBadge" class="text-xs text-slate-400">⏱️ ~12-18 мин оқу</span>
+        <span id="untWeightBadge" class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/10 text-amber-300 border border-amber-500/25">
+          🔥 ҰБТ ауқымды тақырыбы
+        </span>
       </div>
-      <h1 id="heroTitle" class="text-xl sm:text-2xl md:text-3xl font-black text-white tracking-tight leading-snug">
+      <h1 id="heroTitle" class="text-2xl sm:text-3xl md:text-4xl font-black text-white tracking-tight leading-snug">
         Геоэкономика
       </h1>
+
+      <!-- Key Metric Mini-Counters -->
+      <div id="heroStatsGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1">
+        <!-- Rendered via JS -->
+      </div>
+
       <!-- External Links Bar -->
-      <div class="flex flex-wrap items-center gap-2 pt-1">
-        <a id="btnBlooket" href="https://dashboard.blooket.com/set/6a96ed29cf4198c758d4e81e" target="_blank" class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 border border-purple-500/40 text-xs font-bold transition shadow-sm">
+      <div class="flex flex-wrap items-center gap-2.5 pt-1">
+        <a id="btnBlooket" href="https://dashboard.blooket.com/set/6a96ed29cf4198c758d4e81e" target="_blank" rel="noopener noreferrer" class="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 border border-purple-500/40 text-xs font-bold transition shadow-sm">
           <span>🎮</span>
           <span id="btnBlooketText">Blooket ойыны</span>
         </a>
-        
+        <a href="#mapSection" class="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/25 border border-emerald-500/30 text-xs font-bold transition shadow-sm">
+          <span>🗺️</span>
+          <span id="btnQuickMapText">Интерактивті карталар (3)</span>
+        </a>
+        <a href="#interactiveSection" class="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-cyan-500/15 text-cyan-300 hover:bg-cyan-500/25 border border-cyan-500/30 text-xs font-bold transition shadow-sm">
+          <span>⚡</span>
+          <span id="btnQuickPracticeText">Тест & Флеш-карталар</span>
+        </a>
       </div>
     </div>
 
     <!-- 1. BRIEF SUMMARY CARD -->
-    <section class="p-5 rounded-2xl bg-space-950 border border-brand-500/40 text-xs sm:text-sm text-slate-200 leading-relaxed shadow-lg">
+    <section class="p-5 sm:p-6 rounded-2xl bg-space-950 border border-brand-500/40 text-xs sm:text-sm text-slate-200 leading-relaxed shadow-lg">
       <div class="flex items-center space-x-2 text-brand-400 font-extrabold text-xs mb-2">
         <span>📖</span>
         <span id="summaryHeader">ТАҚЫРЫПҚА ҚЫСҚАША ШОЛУ</span>
       </div>
       <p id="summaryText" class="leading-relaxed">
-        Геоэкономика — ҰБТ және НЗМ географиясы бойынша негізгі түсініктер, заңдылықтар, формулалар мен сандық көрсеткіштердің толық конспектісі.
+        Геоэкономика — ғаламдық деңгейдегі экономикалық дамудың заңдылықтарын және мемлекеттердің халықаралық деңгейдегі экономикалық стратегиялары мен тактикаларын зерттейтін ғылым.
       </p>
     </section>
 
     <!-- 2. FULL THEORY SECTION -->
-    <section class="p-5 sm:p-7 rounded-2xl bg-space-950 border border-slate-800 space-y-4 shadow-xl">
-      <div class="flex items-center space-x-2 border-b border-slate-800 pb-3">
-        <span class="text-base text-cyan-400 font-black">📚</span>
-        <h2 id="theoryHeader" class="text-xs sm:text-sm font-black text-white uppercase tracking-wider">
-          ТОЛЫҚ ТЕОРИЯЛЫҚ МАТЕРИАЛ МЕН КОНСПЕКТ
-        </h2>
+    <section id="theorySectionAnchor" class="p-5 sm:p-7 rounded-2xl bg-space-950 border border-slate-800 space-y-5 shadow-xl">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-800 pb-3.5">
+        <div class="flex items-center space-x-2">
+          <span class="text-base text-cyan-400 font-black">📚</span>
+          <h2 id="theoryHeader" class="text-xs sm:text-sm font-black text-white uppercase tracking-wider">
+            ТОЛЫҚ ТЕОРИЯЛЫҚ МАТЕРИАЛ МЕН КОНСПЕКТ
+          </h2>
+        </div>
+        <div id="theoryFilterBar" class="flex flex-wrap gap-1.5">
+          <!-- Rendered via JS -->
+        </div>
       </div>
       <div id="theoryContent">
-        <div class="space-y-4 text-xs sm:text-sm text-slate-200 leading-relaxed">
-<h4 class="text-sm sm:text-base font-black text-cyan-400 border-b border-slate-800 pb-2">1. Негізгі ұғымдар мен ғылыми анықтамасы</h4>
-<p><b>Геоэкономика</b> тақырыбы бойынша география ғылымындағы іргелі заңдылықтар, нысандардың кеңістіктік орналасуы және өзара әрекеттесу үдерістері қарастырылады. Бұл бөлім ҰБТ емтиханында міндетті түрде кездесетін базалық номенклатура мен терминологияны қамтиды.</p>
+        <!-- Rendered via JS -->
+      </div>
+    </section>
 
-<h4 class="text-sm sm:text-base font-black text-amber-400 border-b border-slate-800 pb-2 pt-2">2. Қазақстанның және әлемнің аумақтық ерекшеліктері</h4>
-<p>Қазақстан аумағындағы географиялық нысандардың таралу заңдылықтары, табиғи ресурстар мен әлеуметтік-экономикалық көрсеткіштер әлемдік деңгейдегі ұқсас құбылыстармен салыстырылады. Табиғи зоналардың, климаттық белдеулердің және шаруашылық салаларының орналасу принциптері жүйеленген.</p>
+    <!-- 2.5 INTERACTIVE GEOCARTOGRAPHY / MAP SECTION -->
+    <section id="mapSection" class="p-5 sm:p-6 rounded-2xl bg-space-950 border border-emerald-500/40 space-y-4 shadow-xl">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-800 pb-3.5">
+        <div class="flex items-center space-x-2">
+          <span class="text-base">🗺️</span>
+          <h3 id="mapHeader" class="text-xs sm:text-sm font-black text-emerald-400 uppercase tracking-wider">
+            ИНТЕРАКТИВТІ ГЕОЭКОНОМИКАЛЫҚ КАРТАЛАР
+          </h3>
+        </div>
+        <div id="mapTabsBar" class="flex flex-wrap gap-1.5">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
 
-<h4 class="text-sm sm:text-base font-black text-emerald-400 border-b border-slate-800 pb-2 pt-2">3. Практикалық есептеулер мен ережелер</h4>
-<p>Емтихан тапсырмаларында сандық көрсеткіштерді талдау, карталар мен графикалық сызбалармен жұмыс жасау талап етіледі. Төмендегі кестеде осы тақырыптың басты сандық көрсеткіштері мен анықтамалары нақты жүйеленіп көрсетілген.</p>
-</div>
+      <p id="mapInstruction" class="text-xs text-slate-400">
+        Картадағы нысанды, аймақты немесе қаланы басып, нақты геоэкономикалық сипаттамасын көріңіз:
+      </p>
+
+      <!-- Map Canvas Container -->
+      <div id="mapCanvasContainer" class="w-full overflow-x-auto">
+        <!-- Rendered via JS -->
+      </div>
+
+      <!-- Selected Map Item Info Card -->
+      <div id="mapInfoCard" class="p-4 rounded-xl bg-space-900 border border-emerald-500/30 text-xs space-y-1.5">
+        <!-- Rendered via JS -->
       </div>
     </section>
 
     <!-- 3. VISUAL SVG DIAGRAM / ILLUSTRATION -->
-    <section id="svgSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl">
-      <div class="flex items-center space-x-2 text-amber-400 font-extrabold text-xs">
-        <span>🎨</span>
-        <span id="svgHeader">КӨРНЕКІ СХЕМА МЕН ИНФОГРАФИКА</span>
+    <section id="svgSection" class="p-5 sm:p-6 rounded-2xl bg-space-950 border border-slate-800 space-y-4 shadow-xl">
+      <div class="flex items-center justify-between flex-wrap gap-2">
+        <div class="flex items-center space-x-2 text-amber-400 font-extrabold text-xs">
+          <span>🎨</span>
+          <span id="svgHeader">КӨРНЕКІ СХЕМА МЕН ИНФОГРАФИКА</span>
+        </div>
+        <span id="svgSubBadge" class="text-[11px] text-slate-400 font-medium">Формулалар, модельдер және логотип пішіндері</span>
       </div>
       <div id="svgContainer" class="w-full flex justify-center overflow-x-auto">
-        <svg viewBox="0 0 600 170" class="w-full h-auto rounded-2xl bg-space-950 border border-slate-800 p-3 shadow-inner">
-  <rect x="15" y="15" width="570" height="140" rx="14" fill="#0f172a" stroke="#334155" />
-  <circle cx="65" cy="85" r="30" fill="#0284c7" fill-opacity="0.2" stroke="#38bdf8" stroke-width="2" />
-  <text x="65" y="91" fill="#38bdf8" font-size="16" font-weight="900" text-anchor="middle">#41</text>
-  <text x="115" y="55" fill="#f8fafc" font-size="14" font-weight="900">Геоэкономика</text>
-  <text x="115" y="78" fill="#38bdf8" font-size="12" font-weight="bold">Геоэкономика</text>
-  <text x="115" y="105" fill="#94a3b8" font-size="11">ҰБТ / ЕНТ профильдік география стандарты • Номенклатура және түсіндірме</text>
-  <line x1="115" y1="120" x2="550" y2="120" stroke="#1e293b" stroke-width="1.5" />
-  <text x="115" y="138" fill="#10b981" font-size="10" font-weight="bold">✓ 100% Тестке дайындық базасы мен заңдылықтары</text>
-</svg>
+        <!-- Rendered via JS -->
       </div>
     </section>
 
     <!-- 4. STRUCTURED DATA TABLE -->
-    <section id="tableSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl overflow-x-auto">
-      <h3 class="text-xs font-black text-cyan-400 flex items-center space-x-2">
-        <span>📊</span>
-        <span id="tableHeader">НАҚТЫ КӨРСЕТКІШТЕР МЕН КЛАССИФИКАЦИЯ КЕСТЕСІ</span>
-      </h3>
-      <div id="tableContainer">
+    <section id="tableSection" class="p-5 sm:p-6 rounded-2xl bg-space-950 border border-slate-800 space-y-4 shadow-xl overflow-x-auto">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <h3 class="text-xs sm:text-sm font-black text-cyan-400 flex items-center space-x-2">
+          <span>📊</span>
+          <span id="tableHeader">НАҚТЫ КӨРСЕТКІШТЕР МЕН КЛАССИФИКАЦИЯ КЕСТЕСІ</span>
+        </h3>
+        <div id="tableTabsBar" class="flex flex-wrap gap-1.5">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+      <div id="tableContainer" class="space-y-6">
         <!-- Rendered via JS -->
       </div>
     </section>
 
     <!-- 5. KEY FACTS FOR UNT / ЕНТ -->
-    <section id="factsSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl">
-      <h3 class="text-xs font-black text-amber-400 flex items-center space-x-2">
+    <section id="factsSection" class="p-5 sm:p-6 rounded-2xl bg-space-950 border border-slate-800 space-y-3.5 shadow-xl">
+      <h3 class="text-xs sm:text-sm font-black text-amber-400 flex items-center space-x-2">
         <span>⚡</span>
         <span id="factsHeader">ҰБТ-ҒА ҚАЖЕТТІ НЕГІЗГІ ЕРЕЖЕЛЕР МЕН ФАКТІЛЕР</span>
       </h3>
-      <ul id="factsList" class="space-y-2 text-xs text-slate-300">
+      <ul id="factsList" class="grid grid-cols-1 md:grid-cols-2 gap-2.5 text-xs text-slate-200">
         <!-- Rendered via JS -->
       </ul>
     </section>
 
     <!-- 6. TRAPS AND HACKS -->
-    <section id="trapsSection" class="p-5 rounded-2xl bg-gradient-to-r from-amber-950/40 via-space-950 to-space-950 border border-amber-500/40 space-y-3 shadow-xl">
-      <h3 class="text-xs font-black text-amber-400 flex items-center space-x-2">
+    <section id="trapsSection" class="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-amber-950/40 via-space-950 to-space-950 border border-amber-500/40 space-y-3.5 shadow-xl">
+      <h3 class="text-xs sm:text-sm font-black text-amber-400 flex items-center space-x-2">
         <span>💡</span>
         <span id="trapsHeader">ҰБТ ҚАҚПАНДАРЫ МЕН ЛАЙФХАКТАР</span>
       </h3>
-      <div id="trapsList" class="space-y-2 text-xs text-slate-200">
+      <div id="trapsList" class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-slate-200">
         <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- 7. INTERACTIVE FLASHCARDS & MINI-QUIZ SECTION -->
+    <section id="interactiveSection" class="p-5 sm:p-6 rounded-2xl bg-space-950 border border-purple-500/30 space-y-5 shadow-xl">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-800 pb-3.5">
+        <div class="flex items-center space-x-2">
+          <span class="text-base">🧠</span>
+          <h3 id="interactiveHeader" class="text-xs sm:text-sm font-black text-purple-300 uppercase tracking-wider">
+            ИНТЕРАКТИВТІ ЖАТТЫҒУ: ФЛЕШ-КАРТАЛАР МЕН ҰБТ ТЕСТІ
+          </h3>
+        </div>
+        <div class="inline-flex p-1 bg-space-900 border border-slate-800 rounded-xl space-x-1 self-start">
+          <button id="btnModeCards" onclick="setPracticeMode('cards')" class="px-3 py-1 rounded-lg text-xs font-black transition bg-purple-500 text-space-950 shadow">
+            🗂️ Карточкалар
+          </button>
+          <button id="btnModeQuiz" onclick="setPracticeMode('quiz')" class="px-3 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">
+            📝 ҰБТ Тест (10 сұрақ)
+          </button>
+        </div>
+      </div>
+
+      <!-- Flashcards View -->
+      <div id="flashcardsView" class="space-y-4">
+        <p id="flashcardsHint" class="text-xs text-slate-400">
+          Карточканы бассаңыз, жауабы мен нақты дерегі ашылады:
+        </p>
+        <div id="flashcardsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+
+      <!-- Quiz View -->
+      <div id="quizView" class="hidden space-y-4">
+        <div class="flex items-center justify-between bg-space-900/80 border border-slate-800 rounded-xl px-4 py-2.5">
+          <span id="quizScoreText" class="text-xs font-bold text-cyan-300">Нәтиже: 0 / 10</span>
+          <button id="btnResetQuiz" onclick="resetQuiz()" class="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 transition">
+            🔄 Қайта бастау
+          </button>
+        </div>
+        <div id="quizQuestionsList" class="space-y-4">
+          <!-- Rendered via JS -->
+        </div>
       </div>
     </section>
 
     <!-- FOOTER NAVIGATION -->
     <nav class="pt-4 pb-8 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3 text-xs">
-      <a href="topic_40.html" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white transition shadow-sm">
-      <span>←</span>
-      <span>#40 Алдыңғы тақырып</span>
-    </a>
-      <a href="../geotanu.html#section-zhattau_grammar" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-400 hover:text-white transition">
-        <span>🏠</span>
-        <span>Барлық тақырыптар</span>
+      <a href="javascript:void(0)" onclick="navigateCourse('topic_40.html')" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white transition shadow-sm">
+        <span>←</span>
+        <span id="footerPrevText">#40 Алдыңғы тақырып</span>
       </a>
-      <a href="topic_42.html" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-xs font-bold text-cyan-300 hover:text-white transition shadow-sm">
-      <span>Келесі тақырып #42</span>
-      <span>→</span>
-    </a>
+      <a href="javascript:void(0)" onclick="navigateCourse('../geotanu.html#section-zhattau_grammar')" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-400 hover:text-white transition">
+        <span>🏠</span>
+        <span id="footerHomeText">Барлық тақырыптар</span>
+      </a>
+      <a href="javascript:void(0)" onclick="navigateCourse('topic_42.html')" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-xs font-bold text-cyan-300 hover:text-white transition shadow-sm">
+        <span id="footerNextText">Келесі тақырып #42</span>
+        <span>→</span>
+      </a>
     </nav>
 
   </main>
@@ -235,13 +346,1341 @@
     <span class="text-cyan-400 text-base">✨</span>
     <span id="toastMsg">+20 XP! Тақырып меңгерілді</span>
   </div>
-
   <script>
-    const topicData = {"num": 41, "title_kz": "Геоэкономика", "title_ru": "Геоэкономика", "category_kz": "Геоэкономика", "category_ru": "Геоэкономика", "summary_kz": "Геоэкономика — ҰБТ және НЗМ географиясы бойынша негізгі түсініктер, заңдылықтар, формулалар мен сандық көрсеткіштердің толық конспектісі.", "summary_ru": "Геоэкономика — фундаментальный теоретический конспект, формулы, классификационные таблицы и правила ЕНТ/НИШ.", "full_theory_kz": "<div class=\"space-y-4 text-xs sm:text-sm text-slate-200 leading-relaxed\">\n<h4 class=\"text-sm sm:text-base font-black text-cyan-400 border-b border-slate-800 pb-2\">1. Негізгі ұғымдар мен ғылыми анықтамасы</h4>\n<p><b>Геоэкономика</b> тақырыбы бойынша география ғылымындағы іргелі заңдылықтар, нысандардың кеңістіктік орналасуы және өзара әрекеттесу үдерістері қарастырылады. Бұл бөлім ҰБТ емтиханында міндетті түрде кездесетін базалық номенклатура мен терминологияны қамтиды.</p>\n\n<h4 class=\"text-sm sm:text-base font-black text-amber-400 border-b border-slate-800 pb-2 pt-2\">2. Қазақстанның және әлемнің аумақтық ерекшеліктері</h4>\n<p>Қазақстан аумағындағы географиялық нысандардың таралу заңдылықтары, табиғи ресурстар мен әлеуметтік-экономикалық көрсеткіштер әлемдік деңгейдегі ұқсас құбылыстармен салыстырылады. Табиғи зоналардың, климаттық белдеулердің және шаруашылық салаларының орналасу принциптері жүйеленген.</p>\n\n<h4 class=\"text-sm sm:text-base font-black text-emerald-400 border-b border-slate-800 pb-2 pt-2\">3. Практикалық есептеулер мен ережелер</h4>\n<p>Емтихан тапсырмаларында сандық көрсеткіштерді талдау, карталар мен графикалық сызбалармен жұмыс жасау талап етіледі. Төмендегі кестеде осы тақырыптың басты сандық көрсеткіштері мен анықтамалары нақты жүйеленіп көрсетілген.</p>\n</div>", "full_theory_ru": "<div class=\"space-y-4 text-xs sm:text-sm text-slate-200 leading-relaxed\">\n<h4 class=\"text-sm sm:text-base font-black text-cyan-400 border-b border-slate-800 pb-2\">1. Базовые понятия и научные определения</h4>\n<p>Тема <b>«Геоэкономика»</b> систематизирует ключевые географические понятия, законы распределения природных комплексов и закономерности размещения хозяйства. Раздел охватывает обязательную номенклатуру и терминологическую базу школьного курса и формата ЕНТ/НИШ.</p>\n\n<h4 class=\"text-sm sm:text-base font-black text-amber-400 border-b border-slate-800 pb-2 pt-2\">2. Территориальные особенности Казахстана и мира</h4>\n<p>Проанализированы пространственные закономерности размещения природных объектов Казахстана в сопоставлении с мировыми географическими аналогами. Отражены принципы широтной зональности, высотной поясности и отраслевой структуры хозяйства.</p>\n\n<h4 class=\"text-sm sm:text-base font-black text-emerald-400 border-b border-slate-800 pb-2 pt-2\">3. Практические методы анализа и расчеты</h4>\n<p>Для успешного выполнения заданий ЕНТ требуется знание точных количественных показателей, умение работать с картографическими проекциями, шкалами и тематическими таблицами, приведенными ниже.</p>\n</div>", "svg_diagram": "<svg viewBox=\"0 0 600 170\" class=\"w-full h-auto rounded-2xl bg-space-950 border border-slate-800 p-3 shadow-inner\">\n  <rect x=\"15\" y=\"15\" width=\"570\" height=\"140\" rx=\"14\" fill=\"#0f172a\" stroke=\"#334155\" />\n  <circle cx=\"65\" cy=\"85\" r=\"30\" fill=\"#0284c7\" fill-opacity=\"0.2\" stroke=\"#38bdf8\" stroke-width=\"2\" />\n  <text x=\"65\" y=\"91\" fill=\"#38bdf8\" font-size=\"16\" font-weight=\"900\" text-anchor=\"middle\">#41</text>\n  <text x=\"115\" y=\"55\" fill=\"#f8fafc\" font-size=\"14\" font-weight=\"900\">Геоэкономика</text>\n  <text x=\"115\" y=\"78\" fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\">Геоэкономика</text>\n  <text x=\"115\" y=\"105\" fill=\"#94a3b8\" font-size=\"11\">ҰБТ / ЕНТ профильдік география стандарты • Номенклатура және түсіндірме</text>\n  <line x1=\"115\" y1=\"120\" x2=\"550\" y2=\"120\" stroke=\"#1e293b\" stroke-width=\"1.5\" />\n  <text x=\"115\" y=\"138\" fill=\"#10b981\" font-size=\"10\" font-weight=\"bold\">✓ 100% Тестке дайындық базасы мен заңдылықтары</text>\n</svg>", "table_kz": {"cols": ["Нысан / Көрсеткіш", "Сандық мәні / Анықтамасы", "Негізгі заңдылығы мен маңызы"], "rows": [["Геоэкономика (негізгі ұғымы)", "Ғылыми стандарты", "Географиялық заңдылықтар мен классификация"], ["Қазақстандық көрсеткіш", "Аумақтық көрінісі", "Табиғи және экономикалық маңызы"], ["Әлемдік номенклатуралық нысандар", "Халықаралық көрсеткіш", "Салыстырмалы географиялық бағалау"], ["Практикалық есептеулер", "Формуласы / Әдісі", "ҰБТ емтиханындағы қолданылуы"]]}, "table_ru": {"cols": ["Объект / Параметр", "Значение / Определение", "Географическая закономерность и ЕНТ"], "rows": [["Геоэкономика (базовое понятие)", "Научный стандарт", "Классификационные признаки и законы"], ["Показатели Казахстана", "Территориальное размещение", "Природно-хозяйственное значение"], ["Мировые географические аналоги", "Международные данные", "Сравнительно-географический анализ"], ["Практические расчеты", "Формулы и методы", "Применение в тестовых заданиях ЕНТ"]]}, "key_facts_kz": ["«Геоэкономика» бойынша негізгі заңдылықтар мен терминдер ҰБТ бағдарламасына толық сәйкес.", "Қазақстанның жер бедері, климаты, су ресурстары мен экономикасымен тығыз байланысты.", "Картамен және сандық көрсеткіштермен жұмыс істеу дағдысын қажет етеді."], "key_facts_ru": ["Тема «Геоэкономика» охватывает обязательный перечень вопросов спецификации ЕНТ.", "Связана с физической и социально-экономической географией Казахстана и мира.", "Требует знания номенклатурных объектов и умения анализировать картографические данные."], "traps_kz": ["⚠️ ҰБТ қақпаны: Ұқсас атаулар мен сандық шамаларды шатастырмаңыз, анықтамалар мен бірліктерді нақты есте сақтаңыз."], "traps_ru": ["⚠️ Ловушка ЕНТ: Обращайте внимание на единицы измерения и не путайте схожие термины и географические названия."]};
-    const blooketData = {"kz": "https://dashboard.blooket.com/set/6a96ed29cf4198c758d4e81e", "ru": "https://dashboard.blooket.com/set/6a95ecfcc923faa1d82d3eff", "doc_kz": "", "doc_ru": ""};
-    let currentLang = 'kz';
+    const fullTheoryKz = `
+<div class="space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed">
 
-    // Safe localStorage helper
+  <!-- BLOCK 1: DEFINITION, GOAL, TASKS, 4 PILLARS & CORE CONCEPTS -->
+  <div data-theory-block="1" class="p-4 sm:p-5 rounded-2xl bg-space-900/50 border border-slate-800/90 space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+      <h4 class="text-sm sm:text-base font-black text-cyan-400 flex items-center gap-2">
+        <span class="px-2 py-0.5 rounded-lg bg-cyan-500/15 text-cyan-300 text-xs">1-бөлім</span>
+        <span>Геоэкономика ұғымы, мақсаты, міндеттері мен түсініктер жүйесі</span>
+      </h4>
+      <span class="text-[11px] text-slate-400 font-bold hidden sm:inline">Іргелі негіздер</span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+      <div class="p-3.5 rounded-xl bg-space-950 border border-cyan-500/30 space-y-1.5">
+        <div class="text-xs font-black text-cyan-300 uppercase">📌 Геоэкономика анықтамасы</div>
+        <p>Ғаламдық деңгейдегі экономикалық дамудың заңдылықтарын және мемлекеттердің халықаралық деңгейдегі экономикалық стратегиялары мен тактикаларын зерттейтін ғылым – <b class="text-cyan-300">геоэкономика</b>.</p>
+      </div>
+      <div class="p-3.5 rounded-xl bg-space-950 border border-emerald-500/30 space-y-1.5">
+        <div class="text-xs font-black text-emerald-300 uppercase">🎯 Геоэкономика мақсаты</div>
+        <p>Біртұтас жүйе ретіндегі ғаламдық экономикалық кеңістіктегі үдерістер мен құбылыстарды, даму тенденцияларын талдап, <b>болжамдар жасау</b>.</p>
+      </div>
+    </div>
+
+    <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-2">
+      <div class="text-xs font-black text-amber-300 uppercase">🔍 Геоэкономиканың 5 зерттеу міндеті:</div>
+      <ul class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+        <li class="p-2 rounded-lg bg-space-900 border border-slate-800">1. Экономикалық көрсеткіштер арқылы ғаламдық әлемді танып-білу</li>
+        <li class="p-2 rounded-lg bg-space-900 border border-slate-800">2. Ғаламдық экономикалық кеңістіктегі экономикалық қатынастар жүйесін талдау</li>
+        <li class="p-2 rounded-lg bg-space-900 border border-slate-800">3. Ұлттық экономикалар мен халықаралық экономикалық құрылымдардың өзара байланыстарын зерттеу</li>
+        <li class="p-2 rounded-lg bg-space-900 border border-slate-800">4. Экономикалық факторлардың мемлекеттер саясатына алғышарт болатындығы жөнінде негіздеме жасау</li>
+        <li class="p-2 rounded-lg bg-space-900 border border-slate-800 md:col-span-2">5. Мемлекеттердің әлемдік нарықтағы бәсекеге қабілеттілігін арттыру мақсатында экономикалық стратегиясын негіздеу</li>
+      </ul>
+    </div>
+
+    <!-- 4 Pillars of Geoeconomics -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 text-xs">
+      <div class="p-3 rounded-xl bg-space-950 border border-sky-500/30 space-y-1">
+        <div class="font-black text-sky-300">🌍 Географиялық жағдайлар</div>
+        <p class="text-slate-300 text-[11px]">Экономика мен кеңістіктің үйлесімді байланысы, табиғат ескерткіштерінің, шаруашылық әрекетінің түрлері.</p>
+      </div>
+      <div class="p-3 rounded-xl bg-space-950 border border-amber-500/30 space-y-1">
+        <div class="font-black text-amber-300">⚡ Экономикалық қуаттылық</div>
+        <p class="text-slate-300 text-[11px]">Халықаралық күштер әрекетінің саяси саладан экономикалық кеңістікке ығысуы, ғаламдық геоэкономикалық шиеленістердің туындауы.</p>
+      </div>
+      <div class="p-3 rounded-xl bg-space-950 border border-emerald-500/30 space-y-1">
+        <div class="font-black text-emerald-300">🏆 Бәсекеге қабілеттілік</div>
+        <p class="text-slate-300 text-[11px]">Экономикалық жаһандану және құрылымдық өзгерістер жағдайында мемлекеттің бәсекеге қабілеттілігін арттыру саясаты мен стратегиясы.</p>
+      </div>
+      <div class="p-3 rounded-xl bg-space-950 border border-purple-500/30 space-y-1">
+        <div class="font-black text-purple-300">⚖️ Саясат пен экономика</div>
+        <p class="text-slate-300 text-[11px]">Халықаралық қатынастар саласында саясат пен экономиканың тоғысуы, ғаламдық басқару және стратегиялар.</p>
+      </div>
+    </div>
+
+    <!-- Concept System (6 terms) -->
+    <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-2">
+      <div class="text-xs font-black text-cyan-300 uppercase">📖 Геоэкономиканың түсініктер жүйесі:</div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 text-xs">
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800"><b class="text-cyan-300">Геоэкономикалық стратегия</b> – геоэкономикалық технологиялар көмегімен әлемдік нарықта экономикалық мақсаттарға қол жеткізу және болуы мүмкін жанжалдардың алдын алу жоспары.</div>
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800"><b class="text-cyan-300">Геоэкономикалық кеңістік</b> – дүниежүзілік экономикалық жүйенің заңдылықтары жүзеге асатын ғаламдық кеңістік.</div>
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800"><b class="text-amber-300">Әлемдік нарық</b> – әлемдік экономика субъектілерінің арасындағы тауарлар мен қызметтерді сатып алу, сату әрекеттерінің ғаламдық жүйесі.</div>
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800"><b class="text-emerald-300">Арнайы экономикалық зоналар</b> – отандық және шетелдік инвесторлардың қаржылық-экономикалық қызметіне неғұрлым қолайлы жағдай жасау аумақтары.</div>
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800"><b class="text-purple-300">Географиялық кеңістік</b> – белгілі бір аумақта орналасқан және уақыт ішінде дамитын географиялық нысандардың қарым-қатынастарының жиынтығы.</div>
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800"><b class="text-rose-300">Эмиссия</b> – айналымға жаңа ақшаларды шығару арқылы ақша массасын ұлғайту.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK 2: WALLERSTEIN MODEL, LOCATION FACTORS & EGP -->
+  <div data-theory-block="2" class="p-4 sm:p-5 rounded-2xl bg-space-900/50 border border-slate-800/90 space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+      <h4 class="text-sm sm:text-base font-black text-amber-400 flex items-center gap-2">
+        <span class="px-2 py-0.5 rounded-lg bg-amber-500/15 text-amber-300 text-xs">2-бөлім</span>
+        <span>И. Валлерстайн моделі, Орналастыру факторлары және ЭГЖ</span>
+      </h4>
+      <span class="text-[11px] text-slate-400 font-bold hidden sm:inline">Кеңістіктік модельдер</span>
+    </div>
+
+    <!-- Wallerstein Model -->
+    <div class="space-y-2">
+      <div class="text-xs font-black text-amber-300 uppercase">🌐 И. Валлерстайнның экономикалық кеңістік моделі (3 деңгей):</div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div class="p-3.5 rounded-xl bg-cyan-950/30 border border-cyan-500/40 space-y-1">
+          <div class="text-xs font-black text-cyan-300">1. Орталық (Ядро)</div>
+          <p class="text-xs text-white font-bold">АҚШ, Еуропалық Одақ (ЕО), Жапония</p>
+        </div>
+        <div class="p-3.5 rounded-xl bg-amber-950/30 border border-amber-500/40 space-y-1">
+          <div class="text-xs font-black text-amber-300">2. Жартылай периферия</div>
+          <p class="text-xs text-slate-200">Балкан түбегі, Португалия, Ирландия, Оңтүстік-Шығыс Азия, ТМД елдері</p>
+        </div>
+        <div class="p-3.5 rounded-xl bg-rose-950/30 border border-rose-500/40 space-y-1">
+          <div class="text-xs font-black text-rose-300">3. Периферия</div>
+          <p class="text-xs text-slate-200">Азия, Латын Америкасы, Африка, Мұхиттық аралдар</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Location Factors -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+      <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-2">
+        <div class="text-xs font-black text-cyan-300 uppercase">🏭 Шаруашылықты орналастыру факторлары:</div>
+        <p class="text-xs"><b class="text-amber-300">Дәстүрлі факторлар (аумақтық):</b> табиғи-ресурстық, экономикалық-географиялық жағдай (ЭГЖ), аумақтық шоғырлану, көлік, еңбек ресурстары, тұтынушы.</p>
+        <p class="text-xs"><b class="text-emerald-300">Заманауи факторлар:</b> ғылым, экологиялық.</p>
+        <ul class="space-y-1 text-[11px] text-slate-300 pt-1 border-t border-slate-800">
+          <li>• <b>ЭГЖ факторы</b> – аумақтың экономикалық орнының шаруашылық саласын орналастыруға ықпалы.</li>
+          <li>• <b>Табиғи-ресурстық фактор</b> – табиғи жағдайлар мен ресурстардың ықпалы.</li>
+          <li>• <b>Көлік факторы</b> – көлік жүйесі дамуының ықпалы.</li>
+          <li>• <b>Еңбек ресурстары факторы</b> – еңбек ресурстары көрсеткіштерінің ықпалы.</li>
+          <li>• <b>Тұтынушы факторы</b> – өнімді тұтынатын орталықтардың ықпалы.</li>
+        </ul>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-2">
+        <div class="text-xs font-black text-emerald-300 uppercase">🧭 ЭГЖ-ның дамуға ықпалы (4 түрі) & Кибернетика:</div>
+        <ul class="space-y-1.5 text-xs">
+          <li>• <b class="text-cyan-300">Орталық ЭГЖ:</b> Дамудың жоғарғы деңгейі, жақсы игерілген.</li>
+          <li>• <b class="text-sky-300">Теңіз маңы ЭГЖ:</b> Халықаралық қатынастардың дамуы (Қытай, Сингапур, Корея Респ., Нидерланд). <span class="text-amber-300 font-bold">Халқы 1,5 млн-нан асатын ірі қалалардың 2/3-сі теңіз жағалауында орналасқан!</span></li>
+          <li>• <b class="text-emerald-300">Көршілік ЭГЖ:</b> Өндірістік байланыстардың дамуы (Канаданың оңтүстігі, Мексиканың солтүстігі).</li>
+          <li>• <b class="text-rose-300">Шеткі ЭГЖ:</b> Экономикалық дамудың тежелуі (Орталықтар: АҚШ үшін Солт.-Шығыс, Қытай үшін Шығыс, Аустралия үшін Оңт.-Шығыс).</li>
+        </ul>
+        <div class="p-2.5 rounded-lg bg-indigo-950/40 border border-indigo-500/30 text-[11px] space-y-1">
+          <div><b class="text-indigo-300">Кибернетика</b> – ҒТР дамуының жаңа кезеңінде басқару ісіне сұранысты қанағаттандыратын, әртүрлі жүйелерде ақпаратты басқару мен беру үдерісінің жалпы заңдылықтары туралы ғылым.</div>
+          <div><b class="text-emerald-300">Экологиялық саясат</b> – мемлекеттегі табиғат қорғау заңнамасы мен оған негізделген мақсатты әрекеттер жиынтығы.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK 3: ECONOMIC STRUCTURE TYPES, WORLD MODELS & 4 ECONOMIC REGIONS -->
+  <div data-theory-block="3" class="p-4 sm:p-5 rounded-2xl bg-space-900/50 border border-slate-800/90 space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+      <h4 class="text-sm sm:text-base font-black text-emerald-400 flex items-center gap-2">
+        <span class="px-2 py-0.5 rounded-lg bg-emerald-500/15 text-emerald-300 text-xs">3-бөлім</span>
+        <span>Шаруашылық құрылымы, Әлемдік модельдер және Экономикалық аудандар</span>
+      </h4>
+      <span class="text-[11px] text-slate-400 font-bold hidden sm:inline">Құрылымдық жіктеме</span>
+    </div>
+
+    <!-- 4 Country Groups by Economic Structure -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 text-xs">
+      <div class="p-3 rounded-xl bg-space-950 border border-slate-800 space-y-1">
+        <div class="font-black text-amber-300">1. Аграрлы елдер</div>
+        <p class="text-slate-300 text-[11px]">Ауылшаруашылығының үлесі басым. Отын, шикізат экспортына тәуелді болуы дамушы елдердің басты мәселесі.</p>
+      </div>
+      <div class="p-3 rounded-xl bg-space-950 border border-slate-800 space-y-1">
+        <div class="font-black text-orange-300">2. Аграрлы-шикізатты</div>
+        <p class="text-slate-300 text-[11px]">Ауылшаруашылығы мен өндіруші өнеркәсіп басым. Шикізат пен отын экспорты – негізгі табыс көзі.</p>
+      </div>
+      <div class="p-3 rounded-xl bg-space-950 border border-slate-800 space-y-1">
+        <div class="font-black text-cyan-300">3. Индустриялық елдер</div>
+        <p class="text-slate-300 text-[11px]">Өңдеуші өнеркәсіп пен құрылыс басым. Шетел инвестициясы, жоғары технологиялар, арзан жұмыс күші есебінен жоғары қарқынмен даму тән.</p>
+      </div>
+      <div class="p-3 rounded-xl bg-space-950 border border-slate-800 space-y-1">
+        <div class="font-black text-emerald-300">4. Постиндустриялық</div>
+        <p class="text-slate-300 text-[11px]">ЖІӨ-нің басым бөлігін қызмет саласы береді. «Жаңа экономика»: білім беру, АКТ, инновациялар, жоғары технологиялар, ақыл-ой қызметтері (кеңес беру, маркетинг, талдау).</p>
+      </div>
+    </div>
+
+    <!-- Territorial Models of World Economy -->
+    <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-2">
+      <div class="text-xs font-black text-cyan-300 uppercase">🗺️ Дүниежүзілік шаруашылықтың 4 аумақтық моделі:</div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 text-xs">
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800"><b>1. Екі бөлікті модель:</b> Дамыған елдер (Солтүстік) және Дамушы елдер (Оңтүстік).</div>
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800"><b>2. Үш бөлікті модель:</b> Дамыған елдер • Өтпелі экономикалық елдер • Дамушы елдер.</div>
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800"><b>3. Көп бөлікті модель (10 орталық):</b> Еуропа, Солтүстік Америка, Жапония, Қытай, Үндістан, Оңтүстік-Батыс Азияның мұнай өндіретін елдері, Жаңа индустриялық елдер (ЖИЕ), ТМД елдері, Бразилия, Мексика.</div>
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800"><b>4. Жаңа үш бөлікті модель:</b> Ғаламдық орталықтар • Өтпелі аймақтар • Шеткі аймақтар.</div>
+      </div>
+    </div>
+
+    <!-- 4 Types of Economic Regions in Developed Countries -->
+    <div class="space-y-2">
+      <div class="text-xs font-black text-amber-300 uppercase">🏙️ Жоғары дамыған елдердегі экономикалық аудандардың 4 типі:</div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+        <div class="p-3 rounded-xl bg-space-950 border border-emerald-500/30 space-y-1">
+          <div class="font-black text-emerald-300">1. Жоғары дамыған аудандар</div>
+          <p class="text-slate-300">Өнеркәсіптің ең жаңа салалары, ғылым, мәдениет, қызмет көрсету шоғырланады. <b>Батыс Еуропада:</b> Үлкен Лондон, Үлкен Париж астаналық аудандары, Германияның оңтүстік ауданы, Италияның Милан–Турин–Генуя өнеркәсіп үшбұрышы, Нидерландтағы Рандстад агломерациясы.</p>
+        </div>
+        <div class="p-3 rounded-xl bg-space-950 border border-amber-500/30 space-y-1">
+          <div class="font-black text-amber-300">2. Ескі өнеркәсіпті аудандар</div>
+          <p class="text-slate-300">XVIII–XIX ғғ. өнеркәсіп революциясы кезінде қалыптасты (көмір, қара металлургия, тоқыма, кеме жасау). <b>Мысалы:</b> Төменгі Рейн–Рур агломерациясы, Батыс Мидленд, Ланкашир, Йоркшир, Оңтүстік Уэльс, Солтүстік аудан, Эльзас пен Лотарингия.</p>
+        </div>
+        <div class="p-3 rounded-xl bg-space-950 border border-rose-500/30 space-y-1">
+          <div class="font-black text-rose-300">3. Артта қалған аудандар</div>
+          <p class="text-slate-300">Инвестиция жетіспеуі, жоғары жұмыссыздық, халықтың қартаюы мен көшуі. <b>Мысалы:</b> Оңтүстік Италия, Францияның Орталық массиві, Аквитания, Солтүстік-Батыс, Корсика, Ұлыбританияда Солтүстік Шотландия.</p>
+        </div>
+        <div class="p-3 rounded-xl bg-space-950 border border-sky-500/30 space-y-1">
+          <div class="font-black text-sky-300">4. Жаңадан игеріліп жатқан аудандар</div>
+          <p class="text-slate-300">Табиғаты қатал, ресурсқа бай аудандар. <b>Мысалы:</b> Аляска (АҚШ), Канаданың солтүстігі, Гренландия (Дания), Аустралияның шөлді аудандары.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK 4: GDP/GNP, PPP TOP-9, DEVELOPED COUNTRIES & 4 MODELS -->
+  <div data-theory-block="4" class="p-4 sm:p-5 rounded-2xl bg-space-900/50 border border-slate-800/90 space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+      <h4 class="text-sm sm:text-base font-black text-purple-400 flex items-center gap-2">
+        <span class="px-2 py-0.5 rounded-lg bg-purple-500/15 text-purple-300 text-xs">4-бөлім</span>
+        <span>ЖІӨ мен ЖҰӨ, САҚП және Дамыған елдердің жіктелуі мен модельдері</span>
+      </h4>
+      <span class="text-[11px] text-slate-400 font-bold hidden sm:inline">Макроэкономика</span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+      <div class="p-3.5 rounded-xl bg-space-950 border border-cyan-500/30 space-y-2">
+        <div class="text-xs font-black text-cyan-300 uppercase">📐 ЖІӨ және ЖҰӨ, Есептеудің 3 әдісі мен формуласы:</div>
+        <p class="text-xs"><b>Жиынтық ішкі өнім (ЖІӨ)</b> – жыл ішіндегі белгілі бір аумақта өндірілген тауарлар мен көрсетілетін қызметтің жалпы құны.</p>
+        <p class="text-xs"><b>Жиынтық ұлттық өнім (ЖҰӨ)</b> – жыл ішіндегі белгілі бір аумақта <u>шетелдік кәсіпорындарды есептемегенде</u> өндірілген тауарлар мен көрсетілген қызметтің жалпы құны.</p>
+        <div class="p-2.5 rounded-lg bg-space-900 border border-cyan-500/40 text-center font-black text-cyan-300 text-sm">
+          ЖІӨ = C + Ig + G + NX
+        </div>
+        <div class="text-[11px] text-slate-300">
+          <b>C</b> – халықтың тұтыну шығыстары • <b>Ig</b> – жалпы жеке инвестициялар • <b>G</b> – мемлекеттік сатып алу • <b>NX</b> – таза экспорт.<br>
+          <b>ЖІӨ есептеудің 3 әдісі:</b> 1) құнды қосу әдісі; 2) шығын бойынша (өндіріс әдісі); 3) кіріс бойынша (тарату әдісі).
+        </div>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-space-950 border border-amber-500/30 space-y-2">
+        <div class="text-xs font-black text-amber-300 uppercase">🥇 САҚП (ППС) және ЖІӨ көлемі ең жоғары 9 ел (2017 ж., ХВҚ):</div>
+        <p class="text-xs"><b>Сатып алу қабілетінің паритеті (САҚП)</b> – бір елдің ақшалай бірліктерінің санын бірдей тауарлар мен қызметтер жиынтығын алуға болатын басқа елдердің ақшалай бірліктерінің санына қатысты есептеу әдісі.</p>
+        <div class="flex flex-wrap gap-1.5 text-xs font-bold pt-1">
+          <span class="px-2 py-1 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40">1. Қытай</span>
+          <span class="px-2 py-1 rounded bg-space-900 text-white border border-slate-700">2. АҚШ</span>
+          <span class="px-2 py-1 rounded bg-space-900 text-white border border-slate-700">3. Үндістан</span>
+          <span class="px-2 py-1 rounded bg-space-900 text-white border border-slate-700">4. Жапония</span>
+          <span class="px-2 py-1 rounded bg-space-900 text-white border border-slate-700">5. Германия</span>
+          <span class="px-2 py-1 rounded bg-space-900 text-white border border-slate-700">6. Ресей</span>
+          <span class="px-2 py-1 rounded bg-space-900 text-white border border-slate-700">7. Бразилия</span>
+          <span class="px-2 py-1 rounded bg-space-900 text-white border border-slate-700">8. Индонезия</span>
+          <span class="px-2 py-1 rounded bg-space-900 text-white border border-slate-700">9. Ұлыбритания</span>
+        </div>
+        <div class="text-[11px] text-slate-300 pt-1 border-t border-slate-800">
+          <b>Ірі қаржы орталықтары (әлемдік):</b> Лондон, Нью-Йорк, Чикаго, Токио (сондай-ақ Торонто, Франкфурт, Милан).
+        </div>
+      </div>
+    </div>
+
+    <!-- Developed Countries Classification & Specialization -->
+    <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-2.5">
+      <div class="text-xs font-black text-emerald-300 uppercase">🏛️ Дамыған елдердің 4 тобы және ерекше мамандануы:</div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 text-xs">
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800"><b>1. «Үлкен Жетілік» (G7):</b> АҚШ, Канада, Германия, Ұлыбритания, Франция, Италия, Жапония.</div>
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800"><b>2. Батыс Еуропаның шағын капиталистік елдері:</b> Бельгия, Дания, Норвегия, Нидерланд, Исландия, Испания, Португалия, Швеция, Аустрия, Швейцария, Грекия, Ирландия, Финляндия + микромемлекеттер (Монако, Люксембург, Лихтенштейн, Сан-Марино, Андорра, Мальта).</div>
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800"><b>3. «Қоныс аударушы капитализм» елдері (Ұлыбританияның бұрынғы отарлары):</b> Аустралия Одағы, Жаңа Зеландия, ОАР, Израиль.</div>
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800"><b>4. Азиядағы жаңа индустриялық елдер (ЖИЕ):</b> Корея Республикасы, Сингапур, Сянган (Гонконг), Тайвань.</div>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 text-[11px] pt-1">
+        <div class="p-2 rounded bg-space-900/80 border border-slate-800">✈️ <b>Туризм орталықтары (2017 ж.):</b> Франция – 86,9 млн, АҚШ – 76,9 млн, Италия – 58,2 млн адам.</div>
+        <div class="p-2 rounded bg-space-900/80 border border-slate-800">⚓ <b>Порт шаруашылығы:</b> Бельгия, Нидерланд (Роттердам, Амстердам, Антверпен). <b>Жылыжай ауданы (1-орын):</b> Нидерланд.</div>
+        <div class="p-2 rounded bg-space-900/80 border border-slate-800">🚢 <b>Теңіз тасымалы:</b> Норвегия • ⌚ <b>Қаржы, сағат, станок:</b> Швейцария • 📄 <b>Қағаз:</b> Финляндия • ⚙️ <b>Машина, металлургия:</b> Швеция.</div>
+      </div>
+    </div>
+
+    <!-- 4 Socio-Economic Models of Developed Countries -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 text-xs">
+      <div class="p-3 rounded-xl bg-space-950 border border-sky-500/30 space-y-1">
+        <div class="font-black text-sky-300">1. Либералды (америкалық)</div>
+        <p class="text-[11px] text-slate-300">Мемлекеттік меншік үлесі төмен, нарықтық бәсекелестіктің үстемдігі, күрделі әлеуметтік жіктелу тән.</p>
+      </div>
+      <div class="p-3 rounded-xl bg-space-950 border border-amber-500/30 space-y-1">
+        <div class="font-black text-amber-300">2. Әлеуметтік бағдарланған (шведтік)</div>
+        <p class="text-[11px] text-slate-300">Алғаш Швецияда пайда болды. Табыстарды кеңінен бөлісу және қоғамдық келісім арқылы әлеуметтік кепілдіктердің жоғары деңгейін қамтамасыз етеді.</p>
+      </div>
+      <div class="p-3 rounded-xl bg-space-950 border border-emerald-500/30 space-y-1">
+        <div class="font-black text-emerald-300">3. Әлеуметтік-нарықтық (германдық)</div>
+        <p class="text-[11px] text-slate-300">Әлеуметтік қорғансыз топтарға (табысы төмен отбасылар, жастар, жұмыссыздар, ұсақ кәсіпкерлер) ұдайы қолдау көрсетіледі.</p>
+      </div>
+      <div class="p-3 rounded-xl bg-space-950 border border-purple-500/30 space-y-1">
+        <div class="font-black text-purple-300">4. Иерархиялық-бірлестіктік (жапондық)</div>
+        <p class="text-[11px] text-slate-300">Жапония мен Азия ЖИЕ-не тән. Адам факторына, философиялық, діни және адамгершілік құндылықтарға негізделген ұлттық дәстүрлер сақталған.</p>
+      </div>
+    </div>
+  </div>
+  <!-- BLOCK 5: TRANSITION ECONOMIES & DEVELOPING COUNTRIES -->
+  <div data-theory-block="5" class="p-4 sm:p-5 rounded-2xl bg-space-900/50 border border-slate-800/90 space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+      <h4 class="text-sm sm:text-base font-black text-sky-400 flex items-center gap-2">
+        <span class="px-2 py-0.5 rounded-lg bg-sky-500/15 text-sky-300 text-xs">5-бөлім</span>
+        <span>Өтпелі экономикалық елдер және Дамушы елдер классификациясы</span>
+      </h4>
+      <span class="text-[11px] text-slate-400 font-bold hidden sm:inline">Елдер типологиясы</span>
+    </div>
+
+    <!-- Transition Economies -->
+    <div class="p-3.5 rounded-xl bg-space-950 border border-sky-500/30 space-y-2.5">
+      <div class="text-xs font-black text-sky-300 uppercase">🔄 Өтпелі экономикалық елдер (3 топ) және қайта құрулар:</div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 text-xs">
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800"><b>1. Орталық және Шығыс Еуропаның бұрынғы социалистік елдері:</b> Албания, Болгария, Венгрия, Польша, Румыния, Словакия, Чехия, Босния және Герцеговина, Македония, Словения, Хорватия, Сербия, Черногория.</div>
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800"><b>2. Бұрынғы КСРО құрамында болған елдер:</b> Әзірбайжан, Армения, Беларусь, Қазақстан, Қырғызстан, Молдова, Ресей, Тәжікстан, Түрікменстан, Өзбекстан, Украина, Грузия.</div>
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800"><b>3. Балтық бойы республикалары:</b> Латвия, Литва, Эстония.</div>
+      </div>
+      <div class="text-[11px] text-slate-300">
+        <b>Өтпелі экономикадағы 6 қайта құру:</b> 1) Макроэкономикалық тұрақтандыру; 2) Бағаларды либералдандыру; 3) Жекеменшікті қалыптастыру; 4) Мемлекеттік меншікті жекешелендіру; 5) Ашық сипаттағы экономиканы қалыптастыру; 6) Мемлекеттің экономикаға тікелей араласуын шектеу.<br>
+        <b>ТМД қайта құруларының 3 сатысы:</b> 1) 1985–1991 жж. социалистік қайта құру идеяларына негізделуі және жас мемлекетті қалыптастыру қиындықтары; 2) Жаңа тұрпаттағы экономиканы құру қоғамдық-саяси өмірді өзгертуі; 3) Өзіндік геосаяси, ұлттық, экономикалық мүдделер мен даму жолдарының айқындалуы.
+      </div>
+    </div>
+
+    <!-- Developing Countries (6 Subgroups + Landlord Features + 6 Strategies) -->
+    <div class="p-3.5 rounded-xl bg-space-950 border border-amber-500/30 space-y-2.5">
+      <div class="text-xs font-black text-amber-300 uppercase">🌏 Дамушы елдердің 6 тобы (белгілері: бұрын отар болуы, көп укладтылық, қаржы жетімсіздігі, ҒТ тәуелділік):</div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 text-xs">
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800"><b class="text-cyan-300">1. Жетекші дамушы елдер:</b> Қытай, Үндістан, Бразилия, Мексика.</div>
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800"><b class="text-emerald-300">2. Жаңа индустриялы елдер:</b> Таиланд, Малайзия.</div>
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800"><b class="text-amber-300">3. Мұнай экспорттаушы елдер:</b> Парсы шығанағы елдері, Ливия, Венесуэла, Сауд Арабиясы, Кувейт, БАӘ.</div>
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800"><b class="text-lime-300">4. Плантациялық шаруашылық:</b> Гватемала, Гондурас, Коста-Рика, Никарагуа, Сальвадор, Доминикан Респ., Гаити, Гана, Кот-д'Ивуар, Шри-Ланка (агроклиматы қолайлы).</div>
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800"><b class="text-purple-300">5. «Жалға пәтер беруші» елдер:</b> Мальта, Кипр, Бахрейн, Либерия, Багам аралдары, Барбадос, Панама (көлік жолдары тоғысы, рекреация).</div>
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800"><b class="text-rose-300">6. Дамуы жағынан артта қалған елдер:</b> 2018 ж. Мұхит аралдары, Африка және Азиядағы <b>47 ел</b> (табысы өте төмен, табиғи өсу жоғары, аграрлық сектор басым).</div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 text-[11px] pt-1">
+        <div class="p-2.5 rounded-lg bg-space-900/70 border border-slate-800">
+          <b class="text-purple-300">«Жалға пәтер беруші» елдердің 5 ерекшелігі:</b> 1) Географиялық орнының стратегиялық қолайлылығы; 2) Табиғат жағдайлары мен ресурстарының мамандануға негіз болуы; 3) Саяси жағдайдың тұрақтылығы; 4) Экономикалық заңдардың либералды сипаты (жұмсақ салық саясаты); 5) Қолайлы инвестициялық кеңістік.
+        </div>
+        <div class="p-2.5 rounded-lg bg-space-900/70 border border-slate-800">
+          <b class="text-emerald-300">Дамушы елдердің 6 даму стратегиясы:</b> 1) «Ізінен еріп даму»; 2) Инвестиция есебінен өсу; 3) Импорт алмастырушы; 4) Ішкі сұранысты ынталандыру; 5) Экспортқа бағдарлану; 6) Еңбекпен қамтуды кеңейту арқылы даму.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK 6: SECTORS, KZ HUBS & GDP, ZONING, DIVERSIFICATION, SEZ, CLUSTERS, IMPORT SUBSTITUTION & BRANDING -->
+  <div data-theory-block="6" class="p-4 sm:p-5 rounded-2xl bg-space-900/50 border border-slate-800/90 space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+      <h4 class="text-sm sm:text-base font-black text-rose-400 flex items-center gap-2">
+        <span class="px-2 py-0.5 rounded-lg bg-rose-500/15 text-rose-300 text-xs">6-бөлім</span>
+        <span>ҚР Геоэкономикасы, Аудандастыру, Кластерлер, Импорт алмастыру және Брендинг</span>
+      </h4>
+      <span class="text-[11px] text-slate-400 font-bold hidden sm:inline">ҚР және Стратегия</span>
+    </div>
+
+    <!-- 4 Economic Sectors & KZ Hubs/GDP -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+      <div class="p-3.5 rounded-xl bg-space-950 border border-cyan-500/30 space-y-2">
+        <div class="text-xs font-black text-cyan-300 uppercase">⚙️ Экономиканың 4 секторы, Дотация және Хаб:</div>
+        <ul class="space-y-1 text-xs">
+          <li>• <b>Бірінші сектор:</b> Табиғатты пайдаланатын бастапқы салалар (ауыл, орман, балық ш., тау-кен).</li>
+          <li>• <b>Екінші сектор:</b> Өңдеуші және қайта өңдейтін өнеркәсіп, құрылыс.</li>
+          <li>• <b>Үшінші сектор:</b> Қызмет көрсету, көлік, сауда, байланыс.</li>
+          <li>• <b>Төртінші сектор:</b> Басқару және ғылым, қаржы, АКТ.</li>
+        </ul>
+        <div class="p-2 rounded-lg bg-space-900 border border-slate-800 text-[11px]">
+          <b>Дотация</b> – мемлекет тарапынан берілген қаржы.<br>
+          <b>Хаб</b> – аймақтық саясаттың базалық идеологиясы ретінде экономикалық өсу орталықтарын дамыту.
+        </div>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-space-950 border border-emerald-500/30 space-y-2">
+        <div class="text-xs font-black text-emerald-300 uppercase">🇰🇿 Қазақстанның Хаб-қалалары (5) және ЖІӨ (2019 ж.):</div>
+        <div class="flex flex-wrap gap-1.5 text-xs font-bold">
+          <span class="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">1. Нұр-Сұлтан (Астана)</span>
+          <span class="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">2. Алматы</span>
+          <span class="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">3. Шымкент</span>
+          <span class="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">4. Ақтөбе</span>
+          <span class="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">5. Өскемен</span>
+        </div>
+        <ul class="space-y-1 text-xs pt-1">
+          <li>• <b>2019 жылы ҚР ЖІӨ көлемі:</b> <span class="text-amber-300 font-black">68 956,4 млрд теңге</span></li>
+          <li>• <b>ЖІӨ өндірісінің үлесі жоғары:</b> <b class="text-emerald-300">Алматы</b> | <b>Үлесі төмен:</b> <b class="text-rose-300">Солтүстік Қазақстан облысы (СҚО)</b></li>
+          <li>• <b>ЖІӨ өсімінің жоғары қарқыны:</b> <b class="text-cyan-300">Атырау, Қарағанды</b> | <b>Төмен қарқыны:</b> <b class="text-amber-300">Маңғыстау, БҚО</b></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Zoning (Аудандастыру) & Diversification -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+      <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-1.5 text-xs">
+        <div class="font-black text-sky-300 uppercase">🗺️ Аудандастыру және Иерархиялық деңгейлері:</div>
+        <p><b>Аудандастыру</b> – мемлекетті ЭГЖ, табиғи ресурстар, мамандануы, өндірістік байланысы бойынша өзгешеленетін аудандарға бөлу. Шоғырландырушы ірі орталық – <b class="text-amber-300">ядро</b>.</p>
+        <p><b>Бөлу реті:</b> <span class="text-cyan-300 font-bold">Аудан ➔ Аймақ ➔ Макроаймақ ➔ Экономикалық аудан</span></p>
+        <ul class="space-y-1 text-[11px] text-slate-300">
+          <li>• <b>Макроаудандастыру:</b> жалпы мемлекеттік еңбек бөлінісіндегі ірі экономикалық аудандарды бөлу.</li>
+          <li>• <b>Мезоаудандастыру:</b> әкімшілік-аумақтық бөлініске сәйкес (әкімшілік облыстар).</li>
+          <li>• <b>Микроаудандастыру:</b> облыстардың төменгі әкімшілік аудандарға бөлінуі.</li>
+        </ul>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-1.5 text-xs">
+        <div class="font-black text-purple-300 uppercase">🔀 Әртараптандыру, АЭА (6 функция), Технопарк және Кластер:</div>
+        <p><b>Әртараптандыру (4 түрі: тауарлық, нарықтық, өндірістік, басқару)</b> – шығарылатын өнімдер мен қызмет түрлерін көбейту, өндірістің жаңа түрлерін игеру.</p>
+        <p><b>АЭА (6 функциясы: Сауда, Өндіріс, Туризм, Техникалық әзірлемелер, Логистика, Қызмет көрсету)</b> – кедендік бақылау жеңілдетілген, салық жеңілдіктері бар ел аумағының бөлігі. <b>Технопарк</b> – инновациялық жобаларды іске асыру базасы.</p>
+        <p><b>Кластер төрттігі (4К):</b> <span class="text-emerald-300 font-bold">Шоғырлану • Бәсекелестік • Бәсекеге қабілеттілік • Кооперация</span>. Құрылымы: Ұйымдастыру-басқару, Инфрақұрылым, Кластерлік аймақ, Кластер ядросы.</p>
+      </div>
+    </div>
+
+    <!-- Import Substitution & Brand Management -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+      <div class="p-3.5 rounded-xl bg-space-950 border border-amber-500/30 space-y-1.5 text-xs">
+        <div class="font-black text-amber-300 uppercase">🛡️ Импортты алмастыру және 3 механизмі:</div>
+        <p><b>Импортты алмастыру</b> – қажетті өнімдерді елдегі жергілікті өндірушілер күшімен өндіру үдерісі.</p>
+        <ul class="space-y-1 text-[11px] text-slate-300">
+          <li>• <b>Мемлекеттік реттеу:</b> өнім импортының үлесін төмендету, сырттан тауар әкелуге тыйым салу.</li>
+          <li>• <b>Мемлекеттік қолдау:</b> субсидиялар, салық жеңілдіктері, несиелер.</li>
+          <li>• <b>Өндірушілердің бәсекелестігі:</b> сапа және баға саясаты бойынша бәсекелестік.</li>
+        </ul>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-space-950 border border-rose-500/30 space-y-1.5 text-xs">
+        <div class="font-black text-rose-300 uppercase">🏷️ Бренд-менеджмент және Логотиптің 7 формасы:</div>
+        <p><b>Брендинг элементтері (6):</b> логотип, атауы, фирмалық дизайн, өнім/қызмет туралы ақпарат, ұран, логотиптің пішіні.</p>
+        <p class="text-[11px] text-slate-300">
+          <b>Логотип формалары (7):</b>
+          🟢 <b>Дөңгелек</b> – қауымдастық, бірлік, достық •
+          ⭕ <b>Шеңбер</b> – беріктік, табандылық •
+          🌙 <b>Доға</b> – икемділік, бейімделу •
+          🟦 <b>Шаршы</b> – қалыптылық, тұрақтылық •
+          🔺 <b>Үшбұрыш</b> – күш, білім •
+          ┃ <b>Вертикальды сызық</b> – шыдамды, төзімді •
+          ━ <b>Горизонтальды сызық</b> – тыныштық.
+        </p>
+      </div>
+    </div>
+  </div>
+
+</div>
+`;
+
+    const fullTheoryRu = `
+<div class="space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed">
+
+  <!-- BLOCK 1 RU -->
+  <div data-theory-block="1" class="p-4 sm:p-5 rounded-2xl bg-space-900/50 border border-slate-800/90 space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+      <h4 class="text-sm sm:text-base font-black text-cyan-400 flex items-center gap-2">
+        <span class="px-2 py-0.5 rounded-lg bg-cyan-500/15 text-cyan-300 text-xs">Раздел 1</span>
+        <span>Понятие геоэкономики, цель, задачи и система понятий</span>
+      </h4>
+      <span class="text-[11px] text-slate-400 font-bold hidden sm:inline">Фундаментальные основы</span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+      <div class="p-3.5 rounded-xl bg-space-950 border border-cyan-500/30 space-y-1.5">
+        <div class="text-xs font-black text-cyan-300 uppercase">📌 Определение геоэкономики</div>
+        <p>Наука, изучающая закономерности экономического развития на глобальном уровне, а также экономические стратегии и тактики государств на международной арене – <b class="text-cyan-300">геоэкономика</b>.</p>
+      </div>
+      <div class="p-3.5 rounded-xl bg-space-950 border border-emerald-500/30 space-y-1.5">
+        <div class="text-xs font-black text-emerald-300 uppercase">🎯 Цель геоэкономики</div>
+        <p>Анализ процессов, явлений и тенденций развития в глобальном экономическом пространстве как единой системе и <b>составление прогнозов</b>.</p>
+      </div>
+    </div>
+
+    <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-2">
+      <div class="text-xs font-black text-amber-300 uppercase">🔍 5 исследовательских задач геоэкономики:</div>
+      <ul class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+        <li class="p-2 rounded-lg bg-space-900 border border-slate-800">1. Познание глобального мира через экономические показатели</li>
+        <li class="p-2 rounded-lg bg-space-900 border border-slate-800">2. Анализ системы экономических отношений в глобальном экономическом пространстве</li>
+        <li class="p-2 rounded-lg bg-space-900 border border-slate-800">3. Изучение взаимосвязей национальных экономик и международных экономических структур</li>
+        <li class="p-2 rounded-lg bg-space-900 border border-slate-800">4. Обоснование роли экономических факторов как предпосылок государственной политики</li>
+        <li class="p-2 rounded-lg bg-space-900 border border-slate-800 md:col-span-2">5. Обоснование экономической стратегии государств для повышения конкурентоспособности на мировом рынке</li>
+      </ul>
+    </div>
+
+    <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-2">
+      <div class="text-xs font-black text-cyan-300 uppercase">📖 Система понятий геоэкономики:</div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 text-xs">
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800"><b class="text-cyan-300">Геоэкономическая стратегия</b> – план достижения экономических целей на мировом рынке с помощью геоэкономических технологий и предотвращения возможных конфликтов.</div>
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800"><b class="text-cyan-300">Геоэкономическое пространство</b> – глобальное пространство, в котором реализуются закономерности мировой экономической системы.</div>
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800"><b class="text-amber-300">Мировой рынок</b> – глобальная система купли-продажи товаров и услуг между субъектами мировой экономики.</div>
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800"><b class="text-emerald-300">Специальные экономические зоны (СЭЗ)</b> – территории с наиболее благоприятными условиями для финансово-экономической деятельности отечественных и иностранных инвесторов.</div>
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800"><b class="text-purple-300">Географическое пространство</b> – совокупность отношений географических объектов, расположенных на определенной территории и развивающихся во времени.</div>
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800"><b class="text-rose-300">Эмиссия</b> – увеличение денежной массы путем выпуска в обращение новых денег.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK 2 RU -->
+  <div data-theory-block="2" class="p-4 sm:p-5 rounded-2xl bg-space-900/50 border border-slate-800/90 space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+      <h4 class="text-sm sm:text-base font-black text-amber-400 flex items-center gap-2">
+        <span class="px-2 py-0.5 rounded-lg bg-amber-500/15 text-amber-300 text-xs">Раздел 2</span>
+        <span>Модель И. Валлерстайна, Факторы размещения и ЭГП</span>
+      </h4>
+      <span class="text-[11px] text-slate-400 font-bold hidden sm:inline">Пространственные модели</span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div class="p-3.5 rounded-xl bg-cyan-950/30 border border-cyan-500/40 space-y-1">
+        <div class="text-xs font-black text-cyan-300">1. Центр (Ядро)</div>
+        <p class="text-xs text-white font-bold">США, Европейский Союз (ЕС), Япония</p>
+      </div>
+      <div class="p-3.5 rounded-xl bg-amber-950/30 border border-amber-500/40 space-y-1">
+        <div class="text-xs font-black text-amber-300">2. Полупериферия</div>
+        <p class="text-xs text-slate-200">Балканский п-ов, Португалия, Ирландия, Юго-Восточная Азия, страны СНГ</p>
+      </div>
+      <div class="p-3.5 rounded-xl bg-rose-950/30 border border-rose-500/40 space-y-1">
+        <div class="text-xs font-black text-rose-300">3. Периферия</div>
+        <p class="text-xs text-slate-200">Азия, Латинская Америка, Африка, Океания</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+      <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-2">
+        <div class="text-xs font-black text-cyan-300 uppercase">🏭 Факторы размещения хозяйства:</div>
+        <p class="text-xs"><b class="text-amber-300">Традиционные (территориальные):</b> природно-ресурсный, ЭГП, территориальная концентрация, транспортный, трудовые ресурсы, потребительский.</p>
+        <p class="text-xs"><b class="text-emerald-300">Современные факторы:</b> научный (наукоемкость), экологический.</p>
+        <p class="text-[11px] text-slate-300 pt-1 border-t border-slate-800">
+          <b>Кибернетика</b> – наука об общих закономерностях процессов управления и передачи информации в различных системах (востребована на новом этапе НТР).<br>
+          <b>Экологическая политика</b> – природоохранное законодательство государства и основанные на нем целенаправленные действия.
+        </p>
+      </div>
+      <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-1.5 text-xs">
+        <div class="font-black text-emerald-300 uppercase">🧭 4 типа ЭГП (влияние на развитие):</div>
+        <p>• <b class="text-cyan-300">Центральное ЭГП:</b> высокий уровень освоенности и развития.</p>
+        <p>• <b class="text-sky-300">Приморское ЭГП:</b> развитие международной торговли (Китай, Сингапур, Республика Корея, Нидерланды). <b class="text-amber-300">2/3 крупных городов мира с населением &gt;1,5 млн чел. расположены на морских побережьях!</b></p>
+        <p>• <b class="text-emerald-300">Соседское ЭГП:</b> производственная кооперация (юг Канады, север Мексики).</p>
+        <p>• <b class="text-rose-300">Периферийное (окраинное) ЭГП:</b> торможение развития (Центры: Северо-Восток США, Восток Китая, Юго-Восток Австралии).</p>
+      </div>
+    </div>
+  </div>
+  <!-- BLOCK 3 RU -->
+  <div data-theory-block="3" class="p-4 sm:p-5 rounded-2xl bg-space-900/50 border border-slate-800/90 space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+      <h4 class="text-sm sm:text-base font-black text-emerald-400 flex items-center gap-2">
+        <span class="px-2 py-0.5 rounded-lg bg-emerald-500/15 text-emerald-300 text-xs">Раздел 3</span>
+        <span>Структура хозяйства, Территориальные модели и 4 типа районов</span>
+      </h4>
+      <span class="text-[11px] text-slate-400 font-bold hidden sm:inline">Структурная классификация</span>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 text-xs">
+      <div class="p-3 rounded-xl bg-space-950 border border-slate-800 space-y-1">
+        <div class="font-black text-amber-300">1. Аграрные страны</div>
+        <p class="text-slate-300 text-[11px]">Преобладает сельское хозяйство; зависимость от экспорта сырья и топлива.</p>
+      </div>
+      <div class="p-3 rounded-xl bg-space-950 border border-slate-800 space-y-1">
+        <div class="font-black text-orange-300">2. Аграрно-сырьевые</div>
+        <p class="text-slate-300 text-[11px]">Преобладают сельское хозяйство и добывающая промышленность.</p>
+      </div>
+      <div class="p-3 rounded-xl bg-space-950 border border-slate-800 space-y-1">
+        <div class="font-black text-cyan-300">3. Индустриальные</div>
+        <p class="text-slate-300 text-[11px]">Преобладают обрабатывающая промышленность и строительство (инвестиции, технологии, дешевый труд).</p>
+      </div>
+      <div class="p-3 rounded-xl bg-space-950 border border-slate-800 space-y-1">
+        <div class="font-black text-emerald-300">4. Постиндустриальные</div>
+        <p class="text-slate-300 text-[11px]">Основную долю ВВП дает сфера услуг («новая экономика»: образование, ИКТ, инновации, консалтинг, маркетинг).</p>
+      </div>
+    </div>
+
+    <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-2 text-xs">
+      <div class="font-black text-cyan-300 uppercase">🗺️ 4 территориальные модели мирового хозяйства:</div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+        <div class="p-2 rounded bg-space-900 border border-slate-800"><b>1. Двухчленная модель:</b> Развитые страны (Север) и Развивающиеся страны (Юг).</div>
+        <div class="p-2 rounded bg-space-900 border border-slate-800"><b>2. Трехчленная модель:</b> Развитые • Страны с переходной экономикой • Развивающиеся.</div>
+        <div class="p-2 rounded bg-space-900 border border-slate-800"><b>3. Многочленная модель (10 центров):</b> Европа, Сев. Америка, Япония, Китай, Индия, нефтедобывающие страны ЮЗ Азии, НИС, СНГ, Бразилия, Мексика.</div>
+        <div class="p-2 rounded bg-space-900 border border-slate-800"><b>4. Новая трехчленная модель:</b> Глобальные центры • Переходные регионы • Периферийные регионы.</div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 text-xs">
+      <div class="p-3 rounded-xl bg-space-950 border border-emerald-500/30">
+        <b class="text-emerald-300">1. Высокоразвитые районы:</b> новейшие отрасли, наука, услуги (Большой Лондон, Большой Париж, Юг Германии, треугольник Милан–Турин–Генуя, Рандстад в Нидерландах).
+      </div>
+      <div class="p-3 rounded-xl bg-space-950 border border-amber-500/30">
+        <b class="text-amber-300">2. Старопромышленные районы:</b> сформировались в XVIII–XIX вв. (уголь, черная металлургия, текстиль, судостроение): Нижний Рейн–Рур, Западный Мидленд, Ланкашир, Йоркшир, Южный Уэльс, Северный район, Эльзас и Лотарингия.
+      </div>
+      <div class="p-3 rounded-xl bg-space-950 border border-rose-500/30">
+        <b class="text-rose-300">3. Отсталые (депрессивные) районы:</b> нехватка инвестиций, безработица, отток населения (Южная Италия, Центральный массив, Аквитания, Северо-Запад, Корсика во Франции, Северная Шотландия в Великобритании).
+      </div>
+      <div class="p-3 rounded-xl bg-space-950 border border-sky-500/30">
+        <b class="text-sky-300">4. Районы нового освоения:</b> суровая природа, богатые ресурсы (Аляска в США, Север Канады, Гренландия в Дании, пустынные районы Австралии).
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK 4 RU -->
+  <div data-theory-block="4" class="p-4 sm:p-5 rounded-2xl bg-space-900/50 border border-slate-800/90 space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+      <h4 class="text-sm sm:text-base font-black text-purple-400 flex items-center gap-2">
+        <span class="px-2 py-0.5 rounded-lg bg-purple-500/15 text-purple-300 text-xs">Раздел 4</span>
+        <span>ВВП и ВНП, ППС, Развитые страны и 4 модели развития</span>
+      </h4>
+      <span class="text-[11px] text-slate-400 font-bold hidden sm:inline">Макроэкономика</span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 text-xs">
+      <div class="p-3.5 rounded-xl bg-space-950 border border-cyan-500/30 space-y-1.5">
+        <div class="font-black text-cyan-300 uppercase">📐 ВВП, ВНП и Формула расчета:</div>
+        <p><b>ВВП</b> – общая стоимость товаров и услуг, произведенных за год на определенной территории. <b>ВНП</b> – без учета иностранных предприятий внутри страны.</p>
+        <div class="p-2 rounded bg-space-900 border border-cyan-500/40 text-center font-black text-cyan-300">ВВП = C + Ig + G + NX</div>
+        <p class="text-[11px] text-slate-300"><b>C</b> – потребительские расходы • <b>Ig</b> – валовые частные инвестиции • <b>G</b> – госзакупки • <b>NX</b> – чистый экспорт. <b>3 метода:</b> добавленной стоимости, по расходам (производственный), по доходам (распределительный).</p>
+      </div>
+      <div class="p-3.5 rounded-xl bg-space-950 border border-amber-500/30 space-y-1.5">
+        <div class="font-black text-amber-300 uppercase">🥇 Топ-9 стран по ВВП (ППС, 2017 г., МВФ):</div>
+        <p class="font-bold text-white">1. Китай • 2. США • 3. Индия • 4. Япония • 5. Германия • 6. Россия • 7. Бразилия • 8. Индонезия • 9. Великобритания.</p>
+        <p class="text-[11px] text-slate-300"><b>Финансовые центры:</b> Лондон, Нью-Йорк, Чикаго, Токио (а также Торонто, Франкфурт, Милан).</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+      <div class="p-3 rounded-xl bg-space-950 border border-slate-800">
+        <b class="text-emerald-300">4 группы развитых стран:</b> 1) «Большая семерка» (США, Канада, Германия, Великобритания, Франция, Италия, Япония); 2) Малые капиталистические страны Зап. Европы; 3) Страны «переселенческого капитализма» (Австралия, Новая Зеландия, ЮАР, Израиль); 4) Азиатские НИС (Респ. Корея, Сингапур, Сянган, Тайвань).<br>
+        <b>Туризм (2017 г.):</b> Франция (86,9 млн), США (76,9 млн), Италия (58,2 млн). <b>Специализация:</b> порты – Бельгия, Нидерланды (Роттердам, Амстердам, Антверпен); теплицы (1 место) – Нидерланды; морские перевозки – Норвегия; финансы, часы, станки – Швейцария; бумага – Финляндия; машиностроение, металлургия – Швеция.
+      </div>
+      <div class="p-3 rounded-xl bg-space-950 border border-slate-800">
+        <b class="text-purple-300">4 модели социально-экономического развития:</b><br>
+        • <b>Либеральная (американская):</b> низкая доля госсобственности, рыночная конкуренция, расслоение.<br>
+        • <b>Социально ориентированная (шведская):</b> перераспределение доходов, высокие соцгарантии.<br>
+        • <b>Социально-рыночная (германская):</b> постоянная поддержка социально незащищенных групп.<br>
+        • <b>Иерархически-корпоративная (японская):</b> Япония и НИС Азии, опора на национальные традиции и человеческий фактор.
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK 5 RU -->
+  <div data-theory-block="5" class="p-4 sm:p-5 rounded-2xl bg-space-900/50 border border-slate-800/90 space-y-3 text-xs">
+    <h4 class="text-sm sm:text-base font-black text-sky-400 border-b border-slate-800 pb-2">Раздел 5. Переходные экономики и 6 групп развивающихся стран</h4>
+    <p><b>Страны с переходной экономикой:</b> 1) Бывшие соцстраны Центральной и Восточной Европы (Албания, Болгария, Венгрия, Польша, Румыния, Словакия, Чехия, Босния и Герцеговина, Македония, Словения, Хорватия, Сербия, Черногория); 2) Страны бывшего СССР (12 стран СНГ и Грузия); 3) республики Балтии (Латвия, Литва, Эстония).</p>
+    <p><b>6 групп развивающихся стран:</b> 1) <b>Ключевые (ведущие):</b> Китай, Индия, Бразилия, Мексика; 2) <b>НИС:</b> Таиланд, Малайзия; 3) <b>Нефтеэкспортеры:</b> страны Персидского залива, Ливия, Венесуэла, Саудовская Аравия, Кувейт, ОАЭ; 4) <b>Плантационного хозяйства:</b> Гватемала, Гондурас, Коста-Рика, Никарагуа, Сальвадор, Доминикана, Гаити, Гана, Кот-д'Ивуар, Шри-Ланка; 5) <b>«Страны-квартиросдатчики»:</b> Мальта, Кипр, Бахрейн, Либерия, Багамы, Барбадос, Панама; 6) <b>Наименее развитые (отсталые):</b> в 2018 г. <b>47 стран</b> Азии, Африки и Океании.</p>
+  </div>
+
+  <!-- BLOCK 6 RU -->
+  <div data-theory-block="6" class="p-4 sm:p-5 rounded-2xl bg-space-900/50 border border-slate-800/90 space-y-3 text-xs">
+    <h4 class="text-sm sm:text-base font-black text-rose-400 border-b border-slate-800 pb-2">Раздел 6. Секторы экономики, Геоэкономика РК, Районирование, Кластеры и Брендинг</h4>
+    <p><b>4 сектора экономики:</b> I – первичные отрасли природопользования; II – обрабатывающая и перерабатывающая промышленность; III – сфера услуг, транспорт, торговля, связь; IV – управление, наука, финансы.</p>
+    <p><b>Казахстан:</b> <b>Дотация</b> – средства от государства. <b>Города-хабы (5):</b> Нур-Султан (Астана), Алматы, Шымкент, Актобе, Усть-Каменогорск. <b>ВВП РК в 2019 г.:</b> <b class="text-amber-300">68 956,4 млрд тенге</b>. Наибольшая доля ВВП – <b>Алматы</b>, наименьшая – <b>СКО</b>. Высокие темпы роста ВВП – <b>Атырауская, Карагандинская обл.</b>, низкие – <b>Мангистауская, ЗКО</b>.</p>
+    <p><b>Районирование:</b> порядок деления: <b>Район ➔ Регион ➔ Макрорегион ➔ Экономический район</b>. Уровни: <b>Макро-</b> (крупные экон. районы), <b>Мезо-</b> (административные области), <b>Микрорайонирование</b> (низовые адм. районы). Крупный интегрирующий центр – <b>ядро</b>.</p>
+    <p><b>Диверсификация и Специализация (4 вида):</b> товарная, рыночная, производственная, управленческая (функциональная). <b>Функции СЭЗ (6):</b> торговля, производство, туризм, технические разработки, логистика, услуги. <b>Четверка кластера:</b> Концентрация, Конкуренция, Конкурентоспособность, Кооперация.</p>
+    <p><b>Импортозамещение (3 механизма):</b> госрегулирование (снижение доли импорта, запрет ввоза), господдержка (субсидии, налоговые льготы, кредиты), конкуренция производителей (по качеству и цене). <b>Формы логотипа (7):</b> Круг (сообщество, единство, дружба), Кольцо/окружность (прочность, стойкость), Дуга (гибкость, адаптация), Квадрат (норма, стабильность), Треугольник (сила, знание), Вертикальная линия (выдержка, стойкость), Горизонтальная линия (спокойствие).</p>
+  </div>
+
+</div>
+`;
+    // INTERACTIVE MAP DATA & SVG MAPS
+    const mapHotspotsData = {
+      kz: {
+        astana: { title: "⭐ Нұр-Сұлтан (Астана) — Хаб-қала", desc: "Қазақстанның 5 экономикалық өсу орталығының (хаб-қалаларының) бірі. Әкімшілік, қаржылық, инновациялық және қызмет көрсету орталығы." },
+        almaty: { title: "🏆 Алматы — Хаб-қала және ЖІӨ көшбасшысы", desc: "Қазақстанның ірі хаб-қаласы. Елдегі ЖІӨ өндірісінің үлесі ЕҢ ЖОҒАРЫ аймақ (қаржы, сауда, қызмет көрсету, білім және ғылым орталығы)." },
+        shymkent: { title: "⭐ Шымкент — Оңтүстік Хаб-қала", desc: "Қазақстанның 5 хаб-қаласының бірі. Оңтүстік макроаймақтың өнеркәсіптік, сауда-логистикалық және демографиялық ядросы." },
+        aktobe: { title: "⭐ Ақтөбе — Батыс Хаб-қала", desc: "Қазақстанның 5 хаб-қаласының бірі. Батыс Қазақстан макроаймағының көлік-логистикалық және индустриялық өсу полюсі." },
+        oskemen: { title: "⭐ Өскемен — Шығыс Хаб-қала", desc: "Қазақстанның 5 хаб-қаласының бірі. Түсті металлургия мен машина жасауға маманданған Шығыс макроаймақтың орталығы." },
+        sko: { title: "📉 Солтүстік Қазақстан облысы (СҚО) — ЖІӨ үлесі ең төмен", desc: "Қазақстан бойынша ЖІӨ өндірісінің үлесі ЕҢ ТӨМЕН облыс. Аграрлық мамандану басым." },
+        atyrau_krg: { title: "🚀 Атырау және Қарағанды облыстары — ЖІӨ өсімі жоғары", desc: "Қазақстанда ЖІӨ өсімінің ЖОҒАРЫ қарқыны байқалатын облыстар (мұнай-газ өндіру және металлургиялық индустрия)." },
+        mang_zko: { title: "⚠️ Маңғыстау және Батыс Қазақстан облыстары — ЖІӨ өсімі төмен", desc: "Қазақстанда ЖІӨ өсімінің ТӨМЕН қарқыны байқалатын облыстар." },
+        core_us_eu_jp: { title: "💎 И. Валлерстайн моделі: ОРТАЛЫҚ (АҚШ, ЕО, Жапония)", desc: "Дүниежүзілік экономиканың ядросы. Жоғары технологиялар, ғылым және әлемдік қаржы орталықтары (Нью-Йорк, Чикаго, Лондон, Токио, Франкфурт, Милан, Торонто) шоғырланған." },
+        semi_periphery: { title: "🟠 ЖАРТЫЛАЙ ПЕРИФЕРИЯ (Балкан, Португалия, Ирландия, ОШ Азия, ТМД)", desc: "И. Валлерстайн моделі бойынша Орталық пен Периферия арасындағы аралық белдеу. Өңдеуші өнеркәсіп пен шикізат-индустриялық даму үйлеседі." },
+        periphery: { title: "🔴 ПЕРИФЕРИЯ (Азия, Латын Америкасы, Африка, Мұхиттық аралдар)", desc: "Аграрлық және шикізаттық бағыт басым аймақтар. Сондай-ақ 2018 ж. ең артта қалған 47 ел осы белдеуде орналасқан." },
+        eu_high: { title: "🟢 Жоғары дамыған аудандар (Батыс Еуропа)", desc: "Үлкен Лондон, Үлкен Париж астаналық аудандары, Оңтүстік Германия, Италияның Милан–Турин–Генуя өнеркәсіп үшбұрышы, Нидерландтағы Рандстад агломерациясы." },
+        eu_old: { title: "🟡 Ескі өнеркәсіпті аудандар (XVIII–XIX ғғ.)", desc: "Көмір, қара металлургия, тоқыма, кеме жасау: Төменгі Рейн–Рур агломерациясы, Батыс Мидленд, Ланкашир, Йоркшир, Оңтүстік Уэльс, Солтүстік аудан, Эльзас пен Лотарингия." },
+        eu_depressed: { title: "🔴 Артта қалған аудандар (Батыс Еуропа)", desc: "Инвестиция тапшылығы, жұмыссыздық, халықтың қартаюы: Оңтүстік Италия, Францияның Орталық массиві, Аквитания, Солтүстік-Батыс, Корсика, Ұлыбританияда Солтүстік Шотландия." },
+        new_frontier: { title: "🔵 Жаңадан игеріліп жатқан аудандар", desc: "Табиғаты қатал, бірақ ресурсқа бай аудандар: Аляска (АҚШ), Канаданың солтүстігі, Гренландия (Дания), Аустралияның шөлді аудандары." }
+      },
+      ru: {
+        astana: { title: "⭐ Нур-Султан (Астана) — Город-хаб", desc: "Один из 5 центров экономического роста (городов-хабов) Казахстана. Административный, финансовый и сервисный центр." },
+        almaty: { title: "🏆 Алматы — Город-хаб и лидер по доле ВВП", desc: "Крупнейший город-хаб Казахстана. Регион с НАИБОЛЬШЕЙ долей производства ВВП страны (финансы, торговля, услуги, наука)." },
+        shymkent: { title: "⭐ Шымкент — Южный город-хаб", desc: "Один из 5 городов-хабов Казахстана. Промышленное, торгово-логистическое и демографическое ядро Южного макрорегиона." },
+        aktobe: { title: "⭐ Актобе — Западный город-хаб", desc: "Один из 5 городов-хабов Казахстана. Транспортно-логистический и индустриальный полюс роста Западного Казахстана." },
+        oskemen: { title: "⭐ Усть-Каменогорск — Восточный город-хаб", desc: "Один из 5 городов-хабов Казахстана. Центр цветной металлургии и машиностроения Восточного макрорегиона." },
+        sko: { title: "📉 Северо-Казахстанская область (СКО) — наименьшая доля ВВП", desc: "Область с НАИМЕНЬШЕЙ долей производства ВВП в Казахстане. Преобладает аграрная специализация." },
+        atyrau_krg: { title: "🚀 Атырауская и Карагандинская области — высокий темп роста ВВП", desc: "Области Казахстана, в которых наблюдаются ВЫСОКИЕ темпы роста ВВП (нефтегазовый сектор и металлургия)." },
+        mang_zko: { title: "⚠️ Мангистауская и Западно-Казахстанская области — низкий темп роста ВВП", desc: "Области Казахстана, в которых наблюдаются НИЗКИЕ темпы роста ВВП." },
+        core_us_eu_jp: { title: "💎 Модель И. Валлерстайна: ЦЕНТР (США, ЕС, Япония)", desc: "Ядро мировой экономики. Сконцентрированы высокие технологии, наука и мировые финансовые центры (Нью-Йорк, Чикаго, Лондон, Токио, Франкфурт, Милан, Торонто)." },
+        semi_periphery: { title: "🟠 ПОЛУПЕРИФЕРИЯ (Балканы, Португалия, Ирландия, ЮВА, СНГ)", desc: "Промежуточная зона по модели И. Валлерстайна между Центром и Периферией." },
+        periphery: { title: "🔴 ПЕРИФЕРИЯ (Азия, Латинская Америка, Африка, Океания)", desc: "Регионы с преобладанием аграрно-сырьевой специализации. Здесь же расположены 47 наименее развитых стран мира (2018 г.)." },
+        eu_high: { title: "🟢 Высокоразвитые районы (Западная Европа)", desc: "Столичные районы Большой Лондон и Большой Париж, Южный район Германии, промышленный треугольник Милан–Турин–Генуя (Италия), агломерация Рандстад (Нидерланды)." },
+        eu_old: { title: "🟡 Старопромышленные районы (XVIII–XIX вв.)", desc: "Уголь, черная металлургия, текстиль, судостроение: Нижний Рейн–Рур, Западный Мидленд, Ланкашир, Йоркшир, Южный Уэльс, Северный район, Эльзас и Лотарингия." },
+        eu_depressed: { title: "🔴 Отсталые районы (Западная Европа)", desc: "Нехватка инвестиций, безработица, старение и отток населения: Южная Италия, Центральный массив, Аквитания, Северо-Запад, Корсика (Франция), Северная Шотландия (Великобритания)." },
+        new_frontier: { title: "🔵 Районы нового освоения", desc: "Районы с суровой природой и богатыми ресурсами: Аляска (США), Север Канады, Гренландия (Дания), пустынные районы Австралии." }
+      }
+    };
+
+    function getMapSvg(mapTab, isRu) {
+      if (mapTab === 'kz_map') {
+        return `
+<svg viewBox="0 0 860 390" class="w-full h-auto rounded-2xl bg-[#07101e] border border-slate-800 p-2 shadow-inner">
+  <defs>
+    <linearGradient id="kzFill" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f2942"/>
+      <stop offset="100%" stop-color="#0b192c"/>
+    </linearGradient>
+  </defs>
+  <text x="24" y="30" fill="#34d399" font-size="13.5" font-weight="900">${isRu ? '🇰🇿 ГЕОЭКОНОМИЧЕСКАЯ КАРТА КАЗАХСТАНА: 5 ГОРОДОВ-ХАБОВ И ПОКАЗАТЕЛИ ВВП (2019 г. — 68 956,4 млрд ₸)' : '🇰🇿 ҚАЗАҚСТАННЫҢ ГЕОЭКОНОМИКАЛЫҚ КАРТАСЫ: 5 ХАБ-ҚАЛА ЖӘНЕ ЖІӨ КӨРСЕТКІШТЕРІ (2019 ж. — 68 956,4 млрд ₸)'}</text>
+
+  <!-- Stylized Contour of Kazakhstan -->
+  <path d="M 75,165 L 130,115 L 220,110 L 320,75 L 435,62 L 540,78 L 650,95 L 755,135 L 780,190 L 710,245 L 655,295 L 550,320 L 450,335 L 365,310 L 290,265 L 220,285 L 160,315 L 115,260 L 70,215 Z" fill="url(#kzFill)" stroke="#38bdf8" stroke-width="2"/>
+
+  <!-- Highlighted Regions -->
+  <!-- SKO (Lowest GDP Share) -->
+  <g class="map-hotspot" onclick="selectMapHotspot('sko')">
+    <ellipse cx="445" cy="82" rx="52" ry="22" fill="#f43f5e" fill-opacity="0.32" stroke="#fb7185" stroke-width="1.8" stroke-dasharray="4,2"/>
+    <text x="445" y="80" fill="#fda4af" font-size="10" font-weight="900" text-anchor="middle">${isRu ? 'СКО (Петропавловск)' : 'СҚО (Петропавл)'}</text>
+    <text x="445" y="93" fill="#fff" font-size="9" font-weight="700" text-anchor="middle">${isRu ? 'Доля ВВП: мин. 📉' : 'ЖІӨ үлесі: ең төмен 📉'}</text>
+  </g>
+
+  <!-- ZKO & Mangystau (Low GDP Growth Rate) -->
+  <g class="map-hotspot" onclick="selectMapHotspot('mang_zko')">
+    <ellipse cx="135" cy="155" rx="48" ry="22" fill="#f59e0b" fill-opacity="0.28" stroke="#fbbf24" stroke-width="1.5"/>
+    <text x="135" y="158" fill="#fde68a" font-size="9.5" font-weight="800" text-anchor="middle">${isRu ? 'ЗКО (темп низкий)' : 'БҚО (өсімі төмен)'}</text>
+    <ellipse cx="165" cy="275" rx="52" ry="24" fill="#f59e0b" fill-opacity="0.28" stroke="#fbbf24" stroke-width="1.5"/>
+    <text x="165" y="278" fill="#fde68a" font-size="9.5" font-weight="800" text-anchor="middle">${isRu ? 'Мангистау (темп низкий)' : 'Маңғыстау (өсімі төмен)'}</text>
+  </g>
+
+  <!-- Atyrau & Karaganda (High GDP Growth Rate) -->
+  <g class="map-hotspot" onclick="selectMapHotspot('atyrau_krg')">
+    <ellipse cx="155" cy="215" rx="48" ry="22" fill="#06b6d4" fill-opacity="0.32" stroke="#22d3ee" stroke-width="1.8"/>
+    <text x="155" y="218" fill="#67e8f9" font-size="9.5" font-weight="900" text-anchor="middle">${isRu ? 'Атырау (высокий рост 🚀)' : 'Атырау (өсімі жоғары 🚀)'}</text>
+    <ellipse cx="485" cy="205" rx="64" ry="26" fill="#06b6d4" fill-opacity="0.32" stroke="#22d3ee" stroke-width="1.8"/>
+    <text x="485" y="208" fill="#67e8f9" font-size="10" font-weight="900" text-anchor="middle">${isRu ? 'Караганда (высокий рост 🚀)' : 'Қарағанды (өсімі жоғары 🚀)'}</text>
+  </g>
+
+  <!-- Hub connection lines -->
+  <line x1="255" y1="165" x2="475" y2="142" stroke="#10b981" stroke-width="1.5" stroke-dasharray="5,4"/>
+  <line x1="475" y1="142" x2="710" y2="158" stroke="#10b981" stroke-width="1.5" stroke-dasharray="5,4"/>
+  <line x1="475" y1="142" x2="590" y2="285" stroke="#10b981" stroke-width="1.5" stroke-dasharray="5,4"/>
+  <line x1="475" y1="142" x2="455" y2="305" stroke="#10b981" stroke-width="1.5" stroke-dasharray="5,4"/>
+
+  <!-- 5 HUB CITIES -->
+  <g class="map-hotspot" onclick="selectMapHotspot('aktobe')">
+    <circle cx="255" cy="165" r="11" fill="#10b981" stroke="#fff" stroke-width="2"/>
+    <text x="255" y="169" fill="#052e16" font-size="10" font-weight="900" text-anchor="middle">★</text>
+    <text x="255" y="190" fill="#6ee7b7" font-size="11" font-weight="900" text-anchor="middle">${isRu ? 'АКТОБЕ (Хаб)' : 'АҚТӨБЕ (Хаб)'}</text>
+  </g>
+
+  <g class="map-hotspot" onclick="selectMapHotspot('astana')">
+    <circle cx="475" cy="142" r="13" fill="#10b981" stroke="#fff" stroke-width="2.5"/>
+    <text x="475" y="146" fill="#052e16" font-size="11" font-weight="900" text-anchor="middle">★</text>
+    <text x="475" y="123" fill="#6ee7b7" font-size="11.5" font-weight="900" text-anchor="middle">${isRu ? 'НУР-СУЛТАН (Хаб)' : 'НҰР-СҰЛТАН (Хаб)'}</text>
+  </g>
+
+  <g class="map-hotspot" onclick="selectMapHotspot('oskemen')">
+    <circle cx="710" cy="158" r="11" fill="#10b981" stroke="#fff" stroke-width="2"/>
+    <text x="710" y="162" fill="#052e16" font-size="10" font-weight="900" text-anchor="middle">★</text>
+    <text x="710" y="182" fill="#6ee7b7" font-size="11" font-weight="900" text-anchor="middle">${isRu ? 'УСТЬ-КАМЕНОГОРСК (Хаб)' : 'ӨСКЕМЕН (Хаб)'}</text>
+  </g>
+
+  <g class="map-hotspot" onclick="selectMapHotspot('shymkent')">
+    <circle cx="455" cy="305" r="11" fill="#10b981" stroke="#fff" stroke-width="2"/>
+    <text x="455" y="309" fill="#052e16" font-size="10" font-weight="900" text-anchor="middle">★</text>
+    <text x="455" y="328" fill="#6ee7b7" font-size="11" font-weight="900" text-anchor="middle">${isRu ? 'ШЫМКЕНТ (Хаб)' : 'ШЫМКЕНТ (Хаб)'}</text>
+  </g>
+
+  <g class="map-hotspot" onclick="selectMapHotspot('almaty')">
+    <circle cx="590" cy="285" r="14" fill="#fbbf24" stroke="#fff" stroke-width="2.5"/>
+    <text x="590" y="289" fill="#451a03" font-size="11" font-weight="900" text-anchor="middle">★</text>
+    <text x="590" y="264" fill="#fde047" font-size="11.5" font-weight="900" text-anchor="middle">${isRu ? 'АЛМАТЫ (Хаб • Макс. доля ВВП 🏆)' : 'АЛМАТЫ (Хаб • ЖІӨ үлесі ең жоғары 🏆)'}</text>
+  </g>
+
+  <!-- Map Legend -->
+  <rect x="20" y="344" width="820" height="34" rx="8" fill="#0f172a" stroke="#1e293b"/>
+  <text x="35" y="365" fill="#6ee7b7" font-size="10.5" font-weight="800">★ ${isRu ? '5 городов-хабов: Нур-Султан, Алматы, Шымкент, Актобе, Усть-Каменогорск' : '5 хаб-қала: Нұр-Сұлтан, Алматы, Шымкент, Ақтөбе, Өскемен'}</text>
+  <text x="485" y="365" fill="#67e8f9" font-size="10.5" font-weight="800">● ${isRu ? 'Высокий рост: Атырау, Караганда' : 'Өсімі жоғары: Атырау, Қарағанды'}</text>
+  <text x="690" y="365" fill="#fda4af" font-size="10.5" font-weight="800">● ${isRu ? 'Мин. доля: СКО' : 'Ең төмен үлес: СҚО'}</text>
+</svg>`;
+      }
+
+      if (mapTab === 'world_map') {
+        return `
+<svg viewBox="0 0 860 390" class="w-full h-auto rounded-2xl bg-[#07101e] border border-slate-800 p-2 shadow-inner">
+  <text x="24" y="28" fill="#38bdf8" font-size="13.5" font-weight="900">${isRu ? '🌍 КАРТА МИРОВОЙ ГЕОЭКОНОМИКИ: МОДЕЛЬ И. ВАЛЛЕРСТАЙНА И ФИНАНСОВЫЕ ЦЕНТРЫ' : '🌍 ДҮНИЕЖҮЗІЛІК ГЕОЭКОНОМИКА КАРТАСЫ: И. ВАЛЛЕРСТАЙН МОДЕЛІ ЖӘНЕ ҚАРЖЫ ОРТАЛЫҚТАРЫ'}</text>
+
+  <!-- CORE: North America, EU, Japan -->
+  <g class="map-hotspot" onclick="selectMapHotspot('core_us_eu_jp')">
+    <rect x="65" y="85" width="175" height="90" rx="14" fill="#0284c7" fill-opacity="0.35" stroke="#38bdf8" stroke-width="2"/>
+    <text x="152" y="115" fill="#38bdf8" font-size="12" font-weight="900" text-anchor="middle">${isRu ? 'ЦЕНТР: США / Сев. Америка' : 'ОРТАЛЫҚ: АҚШ / Солт. Америка'}</text>
+    <text x="152" y="135" fill="#e0f2fe" font-size="10" font-weight="700" text-anchor="middle">💰 Нью-Йорк • Чикаго • Торонто</text>
+    <text x="152" y="155" fill="#7dd3fc" font-size="9.5" text-anchor="middle">${isRu ? 'Аляска и Сев. Канада (новое освоение)' : 'Аляска & Солт. Канада (жаңа игерілу)'}</text>
+
+    <rect x="355" y="75" width="155" height="82" rx="14" fill="#0284c7" fill-opacity="0.35" stroke="#38bdf8" stroke-width="2"/>
+    <text x="432" y="102" fill="#38bdf8" font-size="12" font-weight="900" text-anchor="middle">${isRu ? 'ЦЕНТР: ЕВРОСОЮЗ (ЕС)' : 'ОРТАЛЫҚ: ЕУРОПАЛЫҚ ОДАҚ'}</text>
+    <text x="432" y="122" fill="#e0f2fe" font-size="10" font-weight="700" text-anchor="middle">💰 Лондон • Франкфурт • Милан</text>
+    <text x="432" y="140" fill="#7dd3fc" font-size="9.5" text-anchor="middle">⚓ Роттердам • Амстердам • Антверпен</text>
+
+    <rect x="705" y="105" width="125" height="65" rx="12" fill="#0284c7" fill-opacity="0.35" stroke="#38bdf8" stroke-width="2"/>
+    <text x="767" y="132" fill="#38bdf8" font-size="12" font-weight="900" text-anchor="middle">${isRu ? 'ЦЕНТР: ЯПОНИЯ' : 'ОРТАЛЫҚ: ЖАПОНИЯ'}</text>
+    <text x="767" y="152" fill="#e0f2fe" font-size="10" font-weight="700" text-anchor="middle">💰 Токио</text>
+  </g>
+
+  <!-- SEMI-PERIPHERY -->
+  <g class="map-hotspot" onclick="selectMapHotspot('semi_periphery')">
+    <rect x="525" y="65" width="165" height="72" rx="12" fill="#d97706" fill-opacity="0.3" stroke="#fbbf24" stroke-width="1.8"/>
+    <text x="607" y="92" fill="#fbbf24" font-size="11" font-weight="900" text-anchor="middle">${isRu ? 'ПОЛУПЕРИФЕРИЯ: СНГ' : 'ЖАРТЫЛАЙ ПЕРИФЕРИЯ: ТМД'}</text>
+    <text x="607" y="110" fill="#fef3c7" font-size="9.5" text-anchor="middle">${isRu ? '+ Балканы, Португалия, Ирландия' : '+ Балкан, Португалия, Ирландия'}</text>
+
+    <rect x="640" y="185" width="185" height="65" rx="12" fill="#d97706" fill-opacity="0.3" stroke="#fbbf24" stroke-width="1.8"/>
+    <text x="732" y="212" fill="#fbbf24" font-size="11" font-weight="900" text-anchor="middle">${isRu ? 'ПОЛУПЕРИФЕРИЯ: ЮВ АЗИЯ' : 'ЖАРТЫЛАЙ ПЕРИФЕРИЯ: ОШ АЗИЯ'}</text>
+    <text x="732" y="232" fill="#fef3c7" font-size="9.5" text-anchor="middle">${isRu ? 'НИС: Корея, Сингапур, Тайланд, Малайзия' : 'ЖИЕ: Корея, Сингапур, Таиланд, Малайзия'}</text>
+  </g>
+
+  <!-- PERIPHERY -->
+  <g class="map-hotspot" onclick="selectMapHotspot('periphery')">
+    <rect x="135" y="205" width="165" height="115" rx="14" fill="#e11d48" fill-opacity="0.26" stroke="#fb7185" stroke-width="1.8"/>
+    <text x="217" y="238" fill="#fb7185" font-size="11.5" font-weight="900" text-anchor="middle">${isRu ? 'ПЕРИФЕРИЯ:' : 'ПЕРИФЕРИЯ:'}</text>
+    <text x="217" y="256" fill="#ffe4e6" font-size="11" font-weight="800" text-anchor="middle">${isRu ? 'ЛАТИНСКАЯ АМЕРИКА' : 'ЛАТЫН АМЕРИКАСЫ'}</text>
+    <text x="217" y="276" fill="#fecdd3" font-size="9.5" text-anchor="middle">${isRu ? 'Ключевые: Бразилия, Мексика' : 'Жетекші: Бразилия, Мексика'}</text>
+    <text x="217" y="294" fill="#fecdd3" font-size="9.5" text-anchor="middle">${isRu ? 'Нефть: Венесуэла • Квартиросдат.: Панама' : 'Мұнай: Венесуэла • Жалға пәтер: Панама'}</text>
+
+    <rect x="355" y="185" width="155" height="135" rx="14" fill="#e11d48" fill-opacity="0.26" stroke="#fb7185" stroke-width="1.8"/>
+    <text x="432" y="218" fill="#fb7185" font-size="11.5" font-weight="900" text-anchor="middle">${isRu ? 'ПЕРИФЕРИЯ: АФРИКА' : 'ПЕРИФЕРИЯ: АФРИКА'}</text>
+    <text x="432" y="240" fill="#ffe4e6" font-size="9.5" text-anchor="middle">${isRu ? 'Плантации: Гана, Кот-д’Ивуар' : 'Плантация: Гана, Кот-д’Ивуар'}</text>
+    <text x="432" y="258" fill="#ffe4e6" font-size="9.5" text-anchor="middle">${isRu ? 'Нефть: Ливия • Квартиросдат.: Либерия' : 'Мұнай: Ливия • Жалға пәтер: Либерия'}</text>
+    <text x="432" y="280" fill="#6ee7b7" font-size="9.5" font-weight="700" text-anchor="middle">${isRu ? 'Переселенч. кап.: ЮАР, Израиль' : 'Қоныс аударушы кап.: ОАР, Израиль'}</text>
+
+    <rect x="525" y="150" width="105" height="105" rx="12" fill="#e11d48" fill-opacity="0.26" stroke="#fb7185" stroke-width="1.8"/>
+    <text x="577" y="178" fill="#fb7185" font-size="11" font-weight="900" text-anchor="middle">${isRu ? 'ПЕРИФЕРИЯ: АЗИЯ' : 'ПЕРИФЕРИЯ: АЗИЯ'}</text>
+    <text x="577" y="198" fill="#ffe4e6" font-size="9.5" font-weight="700" text-anchor="middle">${isRu ? 'ВВП #1 Китай, #3 Индия' : 'ЖІӨ #1 Қытай, #3 Үндістан'}</text>
+    <text x="577" y="216" fill="#fecdd3" font-size="9" text-anchor="middle">${isRu ? 'Персидский залив (нефть)' : 'Парсы шығанағы (мұнай)'}</text>
+
+    <rect x="545" y="268" width="280" height="55" rx="12" fill="#e11d48" fill-opacity="0.26" stroke="#fb7185" stroke-width="1.8"/>
+    <text x="685" y="292" fill="#fb7185" font-size="11" font-weight="900" text-anchor="middle">${isRu ? 'ПЕРИФЕРИЯ: ОКЕАНИЯ + АВСТРАЛИЯ (1/3 пустыни)' : 'ПЕРИФЕРИЯ: МҰХИТТЫҚ АРАЛДАР + АУСТРАЛИЯ'}</text>
+    <text x="685" y="310" fill="#ffe4e6" font-size="9.5" text-anchor="middle">${isRu ? '47 наименее развитых стран (2018 г.): Африка, Азия, Океания' : 'Ең артта қалған 47 ел (2018 ж.): Африка, Азия, Мұхит аралдары'}</text>
+  </g>
+
+  <rect x="20" y="342" width="820" height="34" rx="8" fill="#0f172a" stroke="#1e293b"/>
+  <text x="35" y="363" fill="#38bdf8" font-size="10.5" font-weight="800">■ ${isRu ? 'Центр (США, ЕС, Япония)' : 'Орталық (АҚШ, ЕО, Жапония)'}</text>
+  <text x="255" y="363" fill="#fbbf24" font-size="10.5" font-weight="800">■ ${isRu ? 'Полупериферия (Балканы, Португалия, Ирландия, ЮВА, СНГ)' : 'Жартылай периферия (Балкан, Португалия, Ирландия, ОШ Азия, ТМД)'}</text>
+  <text x="645" y="363" fill="#fb7185" font-size="10.5" font-weight="800">■ ${isRu ? 'Периферия (47 отсталых стран)' : 'Периферия (47 артта қалған ел)'}</text>
+</svg>`;
+      }
+
+      return `
+<svg viewBox="0 0 860 390" class="w-full h-auto rounded-2xl bg-[#07101e] border border-slate-800 p-2 shadow-inner">
+  <text x="24" y="28" fill="#a78bfa" font-size="13.5" font-weight="900">${isRu ? '🇪🇺 КАРТА 4 ТИПОВ ЭКОНОМИЧЕСКИХ РАЙОНОВ РАЗВИТЫХ СТРАН (ЗАПАДНАЯ ЕВРОПА И МИР)' : '🇪🇺 ЖОҒАРЫ ДАМЫҒАН ЕЛДЕРДЕГІ ЭКОНОМИКАЛЫҚ АУДАНДАРДЫҢ 4 ТИПІ (БАТЫС ЕУРОПА ЖӘНЕ ӘЛЕМ)'}</text>
+
+  <!-- 1. HIGHLY DEVELOPED REGIONS -->
+  <g class="map-hotspot" onclick="selectMapHotspot('eu_high')">
+    <rect x="25" y="50" width="395" height="132" rx="14" fill="#064e3b" fill-opacity="0.45" stroke="#10b981" stroke-width="2"/>
+    <text x="45" y="76" fill="#34d399" font-size="12.5" font-weight="900">🟢 1. ${isRu ? 'ВЫСОКОРАЗВИТЫЕ РАЙОНЫ (Наука, услуги, новейшие отрасли)' : 'ЖОҒАРЫ ДАМЫҒАН АУДАНДАР (Ғылым, қызмет, жаңа салалар)'}</text>
+    <text x="45" y="98" fill="#f8fafc" font-size="11" font-weight="700">• ${isRu ? 'Большой Лондон (Великобритания) и Большой Париж (Франция)' : 'Үлкен Лондон (Ұлыбритания) және Үлкен Париж (Франция)'}</text>
+    <text x="45" y="118" fill="#f8fafc" font-size="11" font-weight="700">• ${isRu ? 'Южный район Германии (Бавария / Баден-Вюртемберг)' : 'Германияның оңтүстік ауданы'}</text>
+    <text x="45" y="138" fill="#f8fafc" font-size="11" font-weight="700">• ${isRu ? 'Промышленный треугольник Милан – Турин – Генуя (Италия)' : 'Италияның Милан – Турин – Генуя өнеркәсіп үшбұрышы'}</text>
+    <text x="45" y="158" fill="#6ee7b7" font-size="11" font-weight="800">• ${isRu ? 'Агломерация Рандстад (Нидерланды)' : 'Нидерландтағы Рандстад агломерациясы'}</text>
+  </g>
+
+  <!-- 2. OLD INDUSTRIAL REGIONS -->
+  <g class="map-hotspot" onclick="selectMapHotspot('eu_old')">
+    <rect x="440" y="50" width="395" height="132" rx="14" fill="#78350f" fill-opacity="0.4" stroke="#f59e0b" stroke-width="2"/>
+    <text x="460" y="76" fill="#fbbf24" font-size="12.5" font-weight="900">🟡 2. ${isRu ? 'СТАРОПРОМЫШЛЕННЫЕ РАЙОНЫ (XVIII–XIX вв.)' : 'ЕСКІ ӨНЕРКӘСІПТІ АУДАНДАР (XVIII–XIX ғғ.)'}</text>
+    <text x="460" y="98" fill="#fde68a" font-size="10.5" font-weight="700">${isRu ? 'Отрасли: угольная, черная металлургия, текстильная, судостроение' : 'Салалары: көмір, қара металлургия, тоқыма, кеме жасау'}</text>
+    <text x="460" y="118" fill="#f8fafc" font-size="11" font-weight="700">• ${isRu ? 'Нижний Рейн – Рур (Германия)' : 'Төменгі Рейн – Рур агломерациясы (Германия)'}</text>
+    <text x="460" y="138" fill="#f8fafc" font-size="11" font-weight="700">• ${isRu ? 'Западный Мидленд, Ланкашир, Йоркшир, Южный Уэльс, Северный р-н (УК)' : 'Батыс Мидленд, Ланкашир, Йоркшир, Оңт. Уэльс, Солт. аудан'}</text>
+    <text x="460" y="158" fill="#f8fafc" font-size="11" font-weight="700">• ${isRu ? 'Эльзас и Лотарингия (Франция)' : 'Эльзас пен Лотарингия (Франция)'}</text>
+  </g>
+
+  <!-- 3. BACKWARD / DEPRESSED REGIONS -->
+  <g class="map-hotspot" onclick="selectMapHotspot('eu_depressed')">
+    <rect x="25" y="198" width="395" height="132" rx="14" fill="#881337" fill-opacity="0.4" stroke="#f43f5e" stroke-width="2"/>
+    <text x="45" y="224" fill="#fb7185" font-size="12.5" font-weight="900">🔴 3. ${isRu ? 'ОТСТАЛЫЕ РАЙОНЫ (Безработица, старение, миграция)' : 'АРТТА ҚАЛҒАН АУДАНДАР (Жұмыссыздық, қартаю, көшу)'}</text>
+    <text x="45" y="246" fill="#f8fafc" font-size="11" font-weight="700">• ${isRu ? 'Южная Италия (Меджоджорно)' : 'Оңтүстік Италия'}</text>
+    <text x="45" y="266" fill="#f8fafc" font-size="11" font-weight="700">• ${isRu ? 'Центральный массив, Аквитания, Северо-Запад, Корсика (Франция)' : 'Францияның Орталық массиві, Аквитания, Солтүстік-Батыс, Корсика'}</text>
+    <text x="45" y="286" fill="#f8fafc" font-size="11" font-weight="700">• ${isRu ? 'Северная Шотландия (Великобритания)' : 'Ұлыбританияда Солтүстік Шотландия'}</text>
+    <text x="45" y="308" fill="#fda4af" font-size="10" font-weight="700">${isRu ? 'Признаки: нехватка инвестиций, высокая безработица, отток населения' : 'Белгілері: инвестиция жетіспеуі, жұмыссыздық, халықтың көшуі'}</text>
+  </g>
+
+  <!-- 4. NEWLY DEVELOPED / FRONTIER REGIONS -->
+  <g class="map-hotspot" onclick="selectMapHotspot('new_frontier')">
+    <rect x="440" y="198" width="395" height="132" rx="14" fill="#0c4a6e" fill-opacity="0.45" stroke="#38bdf8" stroke-width="2"/>
+    <text x="460" y="224" fill="#38bdf8" font-size="12.5" font-weight="900">🔵 4. ${isRu ? 'РАЙОНЫ НОВОГО ОСВОЕНИЯ (Суровая природа + ресурсы)' : 'ЖАҢАДАН ИГЕРІЛІП ЖАТҚАН АУДАНДАР (Табиғаты қатал + ресурс)'}</text>
+    <text x="460" y="246" fill="#f8fafc" font-size="11" font-weight="700">• ${isRu ? 'Аляска (США)' : 'Аляска (АҚШ)'}</text>
+    <text x="460" y="266" fill="#f8fafc" font-size="11" font-weight="700">• ${isRu ? 'Север Канады' : 'Канаданың солтүстігі'}</text>
+    <text x="460" y="286" fill="#f8fafc" font-size="11" font-weight="700">• ${isRu ? 'Гренландия (Дания)' : 'Гренландия (Дания)'}</text>
+    <text x="460" y="306" fill="#7dd3fc" font-size="11" font-weight="800">• ${isRu ? 'Пустынные районы Австралии' : 'Аустралияның шөлді аудандары'}</text>
+  </g>
+
+  <rect x="25" y="342" width="810" height="34" rx="8" fill="#0f172a" stroke="#1e293b"/>
+  <text x="430" y="363" fill="#cbd5e1" font-size="10.5" font-weight="700" text-anchor="middle">${isRu ? '💡 Нажмите на любой из 4 блоков выше, чтобы закрепить примеры для ЕНТ!' : '💡 ҰБТ-да жиі келетін мысалдарды бекіту үшін жоғарыдағы 4 блоктың кез келгенін басыңыз!'}</text>
+</svg>`;
+    }
+
+    const svgDiagramKz = `
+<svg viewBox="0 0 880 430" class="w-full h-auto rounded-2xl bg-[#080d1a] border border-slate-800 p-2 shadow-inner">
+  <!-- TOP LEFT: GDP FORMULA & 3 METHODS -->
+  <rect x="16" y="14" width="420" height="190" rx="12" fill="#0f172a" stroke="#0ea5e9" stroke-width="1.5"/>
+  <text x="32" y="38" fill="#38bdf8" font-size="13" font-weight="900">📐 ЖІӨ ФОРМУЛАСЫ МЕН ЕСЕПТЕУДІҢ 3 ӘДІСІ</text>
+  <rect x="32" y="48" width="388" height="42" rx="8" fill="#082f49" stroke="#38bdf8"/>
+  <text x="226" y="75" fill="#ffffff" font-size="17" font-weight="900" text-anchor="middle">ЖІӨ = C + Ig + G + NX</text>
+  <text x="32" y="108" fill="#7dd3fc" font-size="10.5" font-weight="700">• C – халықтың тұтыну шығыстары</text>
+  <text x="240" y="108" fill="#7dd3fc" font-size="10.5" font-weight="700">• Ig – жалпы жеке инвестициялар</text>
+  <text x="32" y="126" fill="#7dd3fc" font-size="10.5" font-weight="700">• G – мемлекеттік сатып алу</text>
+  <text x="240" y="126" fill="#7dd3fc" font-size="10.5" font-weight="700">• NX – таза экспорт</text>
+  <line x1="32" y1="138" x2="420" y2="138" stroke="#1e293b"/>
+  <text x="32" y="156" fill="#fbbf24" font-size="10.5" font-weight="800">Есептеудің 3 әдісі: 1) Құнды қосу  2) Шығын (өндіріс)  3) Кіріс (тарату)</text>
+  <text x="32" y="175" fill="#34d399" font-size="10.5" font-weight="800">ЖҰӨ = ЖІӨ-ден шетелдік кәсіпорындар үлесін алып тастағандағы өнім</text>
+  <text x="32" y="193" fill="#cbd5e1" font-size="10" font-weight="700">ЖІӨ (САҚП, 2017): 1. Қытай  2. АҚШ  3. Үндістан  4. Жапония  5. Германия</text>
+
+  <!-- TOP RIGHT: CLUSTER 4K & ZONING HIERARCHY -->
+  <rect x="450" y="14" width="414" height="190" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <text x="466" y="38" fill="#34d399" font-size="13" font-weight="900">🔗 КЛАСТЕР ТӨРТТІГІ (4К) ЖӘНЕ АУДАНДАСТЫРУ</text>
+  <rect x="466" y="48" width="185" height="32" rx="6" fill="#064e3b"/>
+  <text x="558" y="68" fill="#6ee7b7" font-size="11" font-weight="900" text-anchor="middle">1. Шоғырлану</text>
+  <rect x="663" y="48" width="185" height="32" rx="6" fill="#064e3b"/>
+  <text x="755" y="68" fill="#6ee7b7" font-size="11" font-weight="900" text-anchor="middle">2. Бәсекелестік</text>
+  <rect x="466" y="86" width="185" height="32" rx="6" fill="#064e3b"/>
+  <text x="558" y="106" fill="#6ee7b7" font-size="11" font-weight="900" text-anchor="middle">3. Бәсекеге қабілеттілік</text>
+  <rect x="663" y="86" width="185" height="32" rx="6" fill="#064e3b"/>
+  <text x="755" y="106" fill="#6ee7b7" font-size="11" font-weight="900" text-anchor="middle">4. Кооперация</text>
+  <text x="466" y="138" fill="#fbbf24" font-size="10.5" font-weight="800">Аудандастыру бірліктерінің реті:</text>
+  <text x="466" y="156" fill="#f8fafc" font-size="11" font-weight="900">Аудан ➔ Аймақ ➔ Макроаймақ ➔ Экономикалық аудан</text>
+  <text x="466" y="176" fill="#38bdf8" font-size="10.5" font-weight="700">Деңгейлері: Макроаудандастыру • Мезоаудандастыру • Микроаудандастыру</text>
+  <text x="466" y="193" fill="#c084fc" font-size="10.5" font-weight="700">АЭА 6 функциясы: Сауда • Өндіріс • Туризм • Тех. әзірлеме • Логистика • Қызмет</text>
+
+  <!-- BOTTOM: 7 LOGO SHAPES & MEANINGS -->
+  <rect x="16" y="218" width="848" height="196" rx="12" fill="#0f172a" stroke="#a855f7" stroke-width="1.5"/>
+  <text x="32" y="244" fill="#c084fc" font-size="13" font-weight="900">🏷️ БРЕНД-МЕНЕДЖМЕНТ: ЛОГОТИП ФОРМАЛАРЫ МЕН ОЛАРДЫҢ МАҒЫНАСЫ (7 ПІШІН)</text>
+
+  <!-- 7 Cards for Logo Shapes -->
+  <g transform="translate(28, 258)">
+    <rect x="0" y="0" width="110" height="138" rx="10" fill="#1e293b"/>
+    <circle cx="55" cy="40" r="20" fill="#38bdf8"/>
+    <text x="55" y="84" fill="#fff" font-size="11" font-weight="900" text-anchor="middle">Дөңгелек</text>
+    <text x="55" y="102" fill="#94a3b8" font-size="9.5" text-anchor="middle">Қауымдастық,</text>
+    <text x="55" y="116" fill="#94a3b8" font-size="9.5" text-anchor="middle">бірлік, достық</text>
+  </g>
+  <g transform="translate(146, 258)">
+    <rect x="0" y="0" width="110" height="138" rx="10" fill="#1e293b"/>
+    <circle cx="55" cy="40" r="19" fill="none" stroke="#fbbf24" stroke-width="5"/>
+    <text x="55" y="84" fill="#fff" font-size="11" font-weight="900" text-anchor="middle">Шеңбер</text>
+    <text x="55" y="102" fill="#94a3b8" font-size="9.5" text-anchor="middle">Беріктік,</text>
+    <text x="55" y="116" fill="#94a3b8" font-size="9.5" text-anchor="middle">табандылық</text>
+  </g>
+  <g transform="translate(264, 258)">
+    <rect x="0" y="0" width="110" height="138" rx="10" fill="#1e293b"/>
+    <path d="M 32,52 Q 55,15 78,52" fill="none" stroke="#34d399" stroke-width="5" stroke-linecap="round"/>
+    <text x="55" y="84" fill="#fff" font-size="11" font-weight="900" text-anchor="middle">Доға</text>
+    <text x="55" y="102" fill="#94a3b8" font-size="9.5" text-anchor="middle">Икемділік,</text>
+    <text x="55" y="116" fill="#94a3b8" font-size="9.5" text-anchor="middle">бейімделу</text>
+  </g>
+  <g transform="translate(382, 258)">
+    <rect x="0" y="0" width="110" height="138" rx="10" fill="#1e293b"/>
+    <rect x="37" y="22" width="36" height="36" rx="4" fill="#60a5fa"/>
+    <text x="55" y="84" fill="#fff" font-size="11" font-weight="900" text-anchor="middle">Шаршы</text>
+    <text x="55" y="102" fill="#94a3b8" font-size="9.5" text-anchor="middle">Қалыптылық,</text>
+    <text x="55" y="116" fill="#94a3b8" font-size="9.5" text-anchor="middle">тұрақтылық</text>
+  </g>
+  <g transform="translate(500, 258)">
+    <rect x="0" y="0" width="110" height="138" rx="10" fill="#1e293b"/>
+    <polygon points="55,18 77,56 33,56" fill="#fb7185"/>
+    <text x="55" y="84" fill="#fff" font-size="11" font-weight="900" text-anchor="middle">Үшбұрыш</text>
+    <text x="55" y="102" fill="#94a3b8" font-size="9.5" text-anchor="middle">Күш,</text>
+    <text x="55" y="116" fill="#94a3b8" font-size="9.5" text-anchor="middle">білім</text>
+  </g>
+  <g transform="translate(618, 258)">
+    <rect x="0" y="0" width="110" height="138" rx="10" fill="#1e293b"/>
+    <line x1="45" y1="18" x2="45" y2="58" stroke="#c084fc" stroke-width="5" stroke-linecap="round"/>
+    <line x1="65" y1="18" x2="65" y2="58" stroke="#c084fc" stroke-width="5" stroke-linecap="round"/>
+    <text x="55" y="84" fill="#fff" font-size="10.5" font-weight="900" text-anchor="middle">Вертикальды</text>
+    <text x="55" y="102" fill="#94a3b8" font-size="9.5" text-anchor="middle">Шыдамды,</text>
+    <text x="55" y="116" fill="#94a3b8" font-size="9.5" text-anchor="middle">төзімді</text>
+  </g>
+  <g transform="translate(736, 258)">
+    <rect x="0" y="0" width="112" height="138" rx="10" fill="#1e293b"/>
+    <line x1="30" y1="32" x2="82" y2="32" stroke="#2dd4bf" stroke-width="5" stroke-linecap="round"/>
+    <line x1="30" y1="46" x2="82" y2="46" stroke="#2dd4bf" stroke-width="5" stroke-linecap="round"/>
+    <text x="56" y="84" fill="#fff" font-size="10.5" font-weight="900" text-anchor="middle">Горизонтальды</text>
+    <text x="56" y="106" fill="#94a3b8" font-size="10" text-anchor="middle">Тыныштық</text>
+  </g>
+</svg>
+`;
+
+    const svgDiagramRu = `
+<svg viewBox="0 0 880 430" class="w-full h-auto rounded-2xl bg-[#080d1a] border border-slate-800 p-2 shadow-inner">
+  <rect x="16" y="14" width="420" height="190" rx="12" fill="#0f172a" stroke="#0ea5e9" stroke-width="1.5"/>
+  <text x="32" y="38" fill="#38bdf8" font-size="13" font-weight="900">📐 ФОРМУЛА ВВП И 3 МЕТОДА РАСЧЕТА</text>
+  <rect x="32" y="48" width="388" height="42" rx="8" fill="#082f49" stroke="#38bdf8"/>
+  <text x="226" y="75" fill="#ffffff" font-size="17" font-weight="900" text-anchor="middle">ВВП = C + Ig + G + NX</text>
+  <text x="32" y="108" fill="#7dd3fc" font-size="10.5" font-weight="700">• C – потребительские расходы</text>
+  <text x="240" y="108" fill="#7dd3fc" font-size="10.5" font-weight="700">• Ig – валовые инвестиции</text>
+  <text x="32" y="126" fill="#7dd3fc" font-size="10.5" font-weight="700">• G – госзакупки товаров и услуг</text>
+  <text x="240" y="126" fill="#7dd3fc" font-size="10.5" font-weight="700">• NX – чистый экспорт</text>
+  <line x1="32" y1="138" x2="420" y2="138" stroke="#1e293b"/>
+  <text x="32" y="156" fill="#fbbf24" font-size="10.5" font-weight="800">3 метода: 1) Добавленной стоимости  2) По расходам  3) По доходам</text>
+  <text x="32" y="175" fill="#34d399" font-size="10.5" font-weight="800">ВНП = продукция страны без учета иностранных предприятий</text>
+  <text x="32" y="193" fill="#cbd5e1" font-size="10" font-weight="700">ВВП (ППС, 2017): 1. Китай  2. США  3. Индия  4. Япония  5. Германия</text>
+
+  <rect x="450" y="14" width="414" height="190" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <text x="466" y="38" fill="#34d399" font-size="13" font-weight="900">🔗 ЧЕТВЕРКА КЛАСТЕРА (4К) И РАЙОНИРОВАНИЕ</text>
+  <rect x="466" y="48" width="185" height="32" rx="6" fill="#064e3b"/>
+  <text x="558" y="68" fill="#6ee7b7" font-size="11" font-weight="900" text-anchor="middle">1. Концентрация</text>
+  <rect x="663" y="48" width="185" height="32" rx="6" fill="#064e3b"/>
+  <text x="755" y="68" fill="#6ee7b7" font-size="11" font-weight="900" text-anchor="middle">2. Конкуренция</text>
+  <rect x="466" y="86" width="185" height="32" rx="6" fill="#064e3b"/>
+  <text x="558" y="106" fill="#6ee7b7" font-size="11" font-weight="900" text-anchor="middle">3. Конкурентоспособность</text>
+  <rect x="663" y="86" width="185" height="32" rx="6" fill="#064e3b"/>
+  <text x="755" y="106" fill="#6ee7b7" font-size="11" font-weight="900" text-anchor="middle">4. Кооперация</text>
+  <text x="466" y="138" fill="#fbbf24" font-size="10.5" font-weight="800">Порядок единиц районирования:</text>
+  <text x="466" y="156" fill="#f8fafc" font-size="11" font-weight="900">Район ➔ Регион ➔ Макрорегион ➔ Экономический район</text>
+  <text x="466" y="176" fill="#38bdf8" font-size="10.5" font-weight="700">Уровни: Макрорайонирование • Мезорайонирование • Микрорайонирование</text>
+  <text x="466" y="193" fill="#c084fc" font-size="10.5" font-weight="700">6 функций СЭЗ: Торговля • Производство • Туризм • Тех. разраб. • Логистика • Услуги</text>
+
+  <rect x="16" y="218" width="848" height="196" rx="12" fill="#0f172a" stroke="#a855f7" stroke-width="1.5"/>
+  <text x="32" y="244" fill="#c084fc" font-size="13" font-weight="900">🏷️ БРЕНД-МЕНЕДЖМЕНТ: 7 ФОРМ ЛОГОТИПА И ИХ ПСИХОЛОГИЧЕСКОЕ ЗНАЧЕНИЕ</text>
+
+  <g transform="translate(28, 258)">
+    <rect x="0" y="0" width="110" height="138" rx="10" fill="#1e293b"/>
+    <circle cx="55" cy="40" r="20" fill="#38bdf8"/>
+    <text x="55" y="84" fill="#fff" font-size="11" font-weight="900" text-anchor="middle">Круг</text>
+    <text x="55" y="102" fill="#94a3b8" font-size="9.5" text-anchor="middle">Сообщество,</text>
+    <text x="55" y="116" fill="#94a3b8" font-size="9.5" text-anchor="middle">единство, дружба</text>
+  </g>
+  <g transform="translate(146, 258)">
+    <rect x="0" y="0" width="110" height="138" rx="10" fill="#1e293b"/>
+    <circle cx="55" cy="40" r="19" fill="none" stroke="#fbbf24" stroke-width="5"/>
+    <text x="55" y="84" fill="#fff" font-size="11" font-weight="900" text-anchor="middle">Кольцо</text>
+    <text x="55" y="102" fill="#94a3b8" font-size="9.5" text-anchor="middle">Прочность,</text>
+    <text x="55" y="116" fill="#94a3b8" font-size="9.5" text-anchor="middle">стойкость</text>
+  </g>
+  <g transform="translate(264, 258)">
+    <rect x="0" y="0" width="110" height="138" rx="10" fill="#1e293b"/>
+    <path d="M 32,52 Q 55,15 78,52" fill="none" stroke="#34d399" stroke-width="5" stroke-linecap="round"/>
+    <text x="55" y="84" fill="#fff" font-size="11" font-weight="900" text-anchor="middle">Дуга</text>
+    <text x="55" y="102" fill="#94a3b8" font-size="9.5" text-anchor="middle">Гибкость,</text>
+    <text x="55" y="116" fill="#94a3b8" font-size="9.5" text-anchor="middle">адаптация</text>
+  </g>
+  <g transform="translate(382, 258)">
+    <rect x="0" y="0" width="110" height="138" rx="10" fill="#1e293b"/>
+    <rect x="37" y="22" width="36" height="36" rx="4" fill="#60a5fa"/>
+    <text x="55" y="84" fill="#fff" font-size="11" font-weight="900" text-anchor="middle">Квадрат</text>
+    <text x="55" y="102" fill="#94a3b8" font-size="9.5" text-anchor="middle">Норма,</text>
+    <text x="55" y="116" fill="#94a3b8" font-size="9.5" text-anchor="middle">стабильность</text>
+  </g>
+  <g transform="translate(500, 258)">
+    <rect x="0" y="0" width="110" height="138" rx="10" fill="#1e293b"/>
+    <polygon points="55,18 77,56 33,56" fill="#fb7185"/>
+    <text x="55" y="84" fill="#fff" font-size="11" font-weight="900" text-anchor="middle">Треугольник</text>
+    <text x="55" y="102" fill="#94a3b8" font-size="9.5" text-anchor="middle">Сила,</text>
+    <text x="55" y="116" fill="#94a3b8" font-size="9.5" text-anchor="middle">знание</text>
+  </g>
+  <g transform="translate(618, 258)">
+    <rect x="0" y="0" width="110" height="138" rx="10" fill="#1e293b"/>
+    <line x1="45" y1="18" x2="45" y2="58" stroke="#c084fc" stroke-width="5" stroke-linecap="round"/>
+    <line x1="65" y1="18" x2="65" y2="58" stroke="#c084fc" stroke-width="5" stroke-linecap="round"/>
+    <text x="55" y="84" fill="#fff" font-size="10.5" font-weight="900" text-anchor="middle">Вертикальная</text>
+    <text x="55" y="102" fill="#94a3b8" font-size="9.5" text-anchor="middle">Выдержка,</text>
+    <text x="55" y="116" fill="#94a3b8" font-size="9.5" text-anchor="middle">терпеливость</text>
+  </g>
+  <g transform="translate(736, 258)">
+    <rect x="0" y="0" width="112" height="138" rx="10" fill="#1e293b"/>
+    <line x1="30" y1="32" x2="82" y2="32" stroke="#2dd4bf" stroke-width="5" stroke-linecap="round"/>
+    <line x1="30" y1="46" x2="82" y2="46" stroke="#2dd4bf" stroke-width="5" stroke-linecap="round"/>
+    <text x="56" y="84" fill="#fff" font-size="10.5" font-weight="900" text-anchor="middle">Горизонтальная</text>
+    <text x="56" y="106" fill="#94a3b8" font-size="10" text-anchor="middle">Спокойствие</text>
+  </g>
+</svg>
+`;
+    const topicData = {
+      num: 41,
+      title_kz: "Геоэкономика",
+      title_ru: "Геоэкономика",
+      category_kz: "Геоэкономика",
+      category_ru: "Геоэкономика",
+      summary_kz: "Геоэкономика — ғаламдық деңгейдегі экономикалық дамудың заңдылықтарын және мемлекеттердің халықаралық деңгейдегі экономикалық стратегиялары мен тактикаларын зерттейтін ғылым. Бұл конспектіде И. Валлерстайн моделі, ЭГЖ түрлері, шаруашылық құрылымы мен аумақтық модельдері, Батыс Еуропаның 4 аудан типі, ЖІӨ формуласы (C+Ig+G+NX) мен САҚП (2017 ж. Топ-9 ел), дамыған, өтпелі және дамушы елдердің жіктелуі, Қазақстанның 5 хаб-қаласы мен ЖІӨ географиясы (2019 ж. — 68 956,4 млрд ₸), аудандастыру, әртараптандыру, АЭА, кластерлер, импортты алмастыру және бренд-менеджмент толық қамтылған.",
+      summary_ru: "Геоэкономика — наука, изучающая закономерности экономического развития на глобальном уровне и экономические стратегии и тактики государств. В конспекте подробно систематизированы модель И. Валлерстайна, типы ЭГП, территориальные модели мирового хозяйства, 4 типа экономических районов развитых стран, формула ВВП (C+Ig+G+NX) и Топ-9 стран по ВВП (ППС, 2017 г.), типология развитых, переходных и развивающихся стран, 5 городов-хабов и география ВВП Казахстана (2019 г. — 68 956,4 млрд ₸), районирование, диверсификация, СЭЗ, кластеры, импортозамещение и бренд-менеджмент.",
+      full_theory_kz: fullTheoryKz,
+      full_theory_ru: fullTheoryRu,
+      svg_diagram: svgDiagramKz,
+      svg_diagram_ru: svgDiagramRu,
+      tables_kz: [
+        {
+          id: "egp_structure",
+          title: "1. Экономикалық-географиялық жағдай (ЭГЖ) және Шаруашылық құрылымы бойынша елдер топтары",
+          cols: ["Категория / Топ", "Сипаты мен ерекшеліктері", "Мысал елдер мен деректер"],
+          rows: [
+            ["Орталық ЭГЖ", "Дамудың жоғарғы деңгейі, жақсы игерілген", "Еуропа орталығы, өнеркәсіптік ядролар"],
+            ["Теңіз маңы ЭГЖ", "Халықаралық қатынастардың дамуы, қолайлы ЭГЖ", "Қытай, Сингапур, Корея Респ., Нидерланд (1,5 млн-нан асатын қалалардың 2/3-сі жағалауда)"],
+            ["Көршілік ЭГЖ", "Өндірістік байланыстардың дамуы", "Канаданың оңтүстігі, Мексиканың солтүстік аудандары"],
+            ["Шеткі ЭГЖ", "Экономикалық дамудың тежелуі", "Орталықтары: АҚШ – Солт.-Шығыс, Қытай – Шығыс, Аустралия – Оңт.-Шығыс"],
+            ["1. Аграрлы елдер", "Ауылшаруашылығының үлесі басым", "Отын, шикізат экспортына тәуелді дамушы елдер"],
+            ["2. Аграрлы-шикізатты елдер", "Ауылшаруашылығы мен өндіруші өнеркәсіп басым", "Шикізат пен отын экспорты – негізгі табыс көзі"],
+            ["3. Индустриялық елдер", "Өңдеуші өнеркәсіп пен құрылыс басым", "Шетел инвестициясы, жоғары технологиялар, арзан жұмыс күші"],
+            ["4. Постиндустриялық елдер", "ЖІӨ-нің басым бөлігін қызмет саласы береді", "«Жаңа экономика»: білім, АКТ, инновация, консалтинг, маркетинг"]
+          ]
+        },
+        {
+          id: "regions_models",
+          title: "2. Дамыған елдердегі экономикалық аудандардың 4 типі және Дамудың 4 моделі",
+          cols: ["Аудан типі / Даму моделі", "Негізгі сипаттамасы", "Нақты географиялық мысалдары"],
+          rows: [
+            ["Жоғары дамыған аудандар", "Өнеркәсіптің ең жаңа салалары, ғылым, мәдениет, қызмет көрсету шоғырланады", "Үлкен Лондон, Үлкен Париж, Оңтүстік Германия, Милан–Турин–Генуя үшбұрышы, Рандстад (Нидерланд)"],
+            ["Ескі өнеркәсіпті аудандар", "XVIII–XIX ғғ. өнеркәсіп революциясы кезінде қалыптасты (көмір, қара металлургия, тоқыма, кеме жасау)", "Төменгі Рейн–Рур, Батыс Мидленд, Ланкашир, Йоркшир, Оңтүстік Уэльс, Солтүстік аудан, Эльзас пен Лотарингия"],
+            ["Артта қалған аудандар", "Инвестиция жетіспеуі, жұмыссыздықтың жоғары деңгейі, халықтың қартаюы мен көшуі", "Оңтүстік Италия, Францияның Орталық массиві, Аквитания, Солтүстік-Батыс, Корсика, Солтүстік Шотландия"],
+            ["Жаңадан игеріліп жатқан аудандар", "Табиғаты қатал, ресурсқа бай аудандар", "Аляска (АҚШ), Канаданың солтүстігі, Гренландия (Дания), Аустралияның шөлді аудандары"],
+            ["Либералды (америкалық) модель", "Мемлекеттік меншік үлесі төмен, нарықтық бәсекелестік үстемдігі, күрделі әлеуметтік жіктелу", "АҚШ"],
+            ["Әлеуметтік бағдарланған (шведтік)", "Табыстарды кеңінен бөлісу, қоғамдық келісім, әлеуметтік кепілдіктердің жоғары деңгейі", "Швеция және Скандинавия елдері"],
+            ["Әлеуметтік-нарықтық (германдық)", "Әлеуметтік қорғансыз топтарға (табысы төмен отбасылар, жастар, жұмыссыздар, ұсақ кәсіпкерлер) ұдайы қолдау", "Германия"],
+            ["Иерархиялық-бірлестіктік (жапондық)", "Адам факторына, философиялық, діни және адамгершілік құндылықтарға негізделген ұлттық дәстүрлер", "Жапония және Азияның ЖИЕ"]
+          ]
+        },
+        {
+          id: "div_spec",
+          title: "3. Әртараптандыру мен Мамандандыру түрлері, Экономика секторлары және Импортты алмастыру",
+          cols: ["Түрі / Санаты", "Әртараптандыру (Диверсификация) / Механизмі", "Мамандандыру (Специализация) / Маңызы"],
+          rows: [
+            ["Тауарлық", "Нарыққа әртүрлі өнімдер мен қызметтер ұсыну", "Нарыққа басым түрде бір өнім немесе қызмет ұсыну"],
+            ["Нарықтық", "Бірнеше нарыққа жұмыс жасау", "Бір нарыққа жұмыс жасау"],
+            ["Өндірістік", "Бір мезгілде өндірістік қызмет пен қызмет көрсетудің бірнеше түрін жүргізу", "Өндірістік қызметтің немесе қызметтің бір түріне басымдық беру"],
+            ["Басқару (функционалдық)", "Бір мезгілде басқару қызметінің бірнеше түрін жүзеге асыру", "Басқарушылық қызметтің мамандандырылған түрлерін жүзеге асыру"],
+            ["Экономика секторлары (I–IV)", "I сектор: табиғатты пайдаланатын бастапқы салалар; II сектор: өңдеуші өнеркәсіп", "III сектор: қызмет көрсету, көлік, сауда, байланыс; IV сектор: басқару, ғылым, қаржы"],
+            ["Импорт алмастыру механизмі", "1) Мемлекеттік реттеу: импорт үлесін төмендету, сырттан тауар әкелуге тыйым салу", "2) Мемл. қолдау: субсидия, салық жеңілдігі, несие; 3) Бәсекелестік: сапа мен баға саясаты"]
+          ]
+        }
+      ],
+      tables_ru: [
+        {
+          id: "egp_structure",
+          title: "1. Экономико-географическое положение (ЭГП) и Группы стран по структуре хозяйства",
+          cols: ["Категория / Группа", "Характеристика и особенности", "Примеры стран и данные"],
+          rows: [
+            ["Центральное ЭГП", "Высокий уровень развития, хорошая освоенность", "Центр Европы, промышленные ядра"],
+            ["Приморское ЭГП", "Развитие международных связей, благоприятное ЭГП", "Китай, Сингапур, Респ. Корея, Нидерланды (2/3 городов >1,5 млн чел. на побережье)"],
+            ["Соседское ЭГП", "Развитие производственных связей", "Юг Канады, северные районы Мексики"],
+            ["Периферийное (окраинное) ЭГП", "Торможение экономического развития", "Центры: США – Северо-Восток, Китай – Восток, Австралия – Юго-Восток"],
+            ["1. Аграрные страны", "Преобладает доля сельского хозяйства", "Зависимость от экспорта сырья и топлива"],
+            ["2. Аграрно-сырьевые страны", "Преобладают сельское хозяйство и добывающая промышленность", "Экспорт сырья и топливных ресурсов – главный источник дохода"],
+            ["3. Индустриальные страны", "Преобладают обрабатывающая промышленность и строительство", "Иностранные инвестиции, высокие технологии, дешевая рабочая сила"],
+            ["4. Постиндустриальные страны", "Основную долю ВВП дает сфера услуг", "«Новая экономика»: образование, ИКТ, инновации, консалтинг, маркетинг"]
+          ]
+        },
+        {
+          id: "regions_models",
+          title: "2. 4 типа экономических районов развитых стран и 4 модели развития",
+          cols: ["Тип района / Модель", "Основная характеристика", "Конкретные географические примеры"],
+          rows: [
+            ["Высокоразвитые районы", "Новейшие отрасли промышленности, наука, культура, сфера услуг", "Большой Лондон, Большой Париж, Юг Германии, треугольник Милан–Турин–Генуя, Рандстад (Нидерланды)"],
+            ["Старопромышленные районы", "Сформировались в XVIII–XIX вв. (уголь, черная металлургия, текстиль, судостроение)", "Нижний Рейн–Рур, Западный Мидленд, Ланкашир, Йоркшир, Южный Уэльс, Северный р-н, Эльзас и Лотарингия"],
+            ["Отсталые районы", "Нехватка инвестиций, высокая безработица, старение и отток населения", "Южная Италия, Центральный массив, Аквитания, Северо-Запад, Корсика (Франция), Северная Шотландия (УК)"],
+            ["Районы нового освоения", "Суровая природа, богатые природные ресурсы", "Аляска (США), Север Канады, Гренландия (Дания), пустынные районы Австралии"],
+            ["Либеральная (американская)", "Низкая доля госсобственности, господство рыночной конкуренции, сложное социальное расслоение", "США"],
+            ["Социально ориентированная (шведская)", "Широкое перераспределение доходов, общественное согласие, высокий уровень социальных гарантий", "Швеция и страны Скандинавии"],
+            ["Социально-рыночная (германская)", "Постоянная поддержка социально незащищенных групп (малообеспеченные семьи, молодежь, безработные, малый бизнес)", "Германия"],
+            ["Иерархически-корпоративная (японская)", "Национальные традиции, опирающиеся на человеческий фактор, философские, религиозные и нравственные ценности", "Япония и НИС Азии"]
+          ]
+        },
+        {
+          id: "div_spec",
+          title: "3. Виды диверсификации и специализации, Секторы экономики и Импортозамещение",
+          cols: ["Вид / Категория", "Диверсификация / Механизм", "Специализация / Значение"],
+          rows: [
+            ["Товарная", "Предложение рынку разнообразных продуктов и услуг", "Предложение рынку преимущественно одного продукта или услуги"],
+            ["Рыночная", "Работа сразу на несколько рынков", "Работа на один конкретный рынок"],
+            ["Производственная", "Одновременное ведение нескольких видов производственной деятельности и услуг", "Приоритет одному виду производственной деятельности или услуг"],
+            ["Управленческая (функциональная)", "Одновременное осуществление нескольких видов управленческой деятельности", "Осуществление специализированных видов управленческой деятельности"],
+            ["Секторы экономики (I–IV)", "I сектор: первичные отрасли природопользования; II сектор: обрабатывающая пром-сть", "III сектор: услуги, транспорт, торговля, связь; IV сектор: управление, наука, финансы"],
+            ["Механизм импортозамещения", "1) Госрегулирование: снижение доли импорта, запрет на ввоз товаров извне", "2) Господдержка: субсидии, налоговые льготы, кредиты; 3) Конкуренция: по качеству и цене"]
+          ]
+        }
+      ],
+      key_facts_kz: [
+        "<b>Геоэкономика</b> – ғаламдық деңгейдегі экономикалық дамудың заңдылықтарын және мемлекеттердің халықаралық деңгейдегі экономикалық стратегиялары мен тактикаларын зерттейтін ғылым.",
+        "<b>И. Валлерстайн моделі:</b> Орталық (АҚШ, ЕО, Жапония), Жартылай периферия (Балкан түбегі, Португалия, Ирландия, ОШ Азия, ТМД), Периферия (Азия, Латын Америкасы, Африка, Мұхиттық аралдар).",
+        "Дүниежүзіндегі халқы <b>1,5 млн адамнан асатын ірі қалалардың 2/3-сі</b> теңіз жағалауында орналасқан.",
+        "<b>Кибернетика</b> – әртүрлі жүйелерде ақпаратты басқару мен беру үдерісінің жалпы заңдылықтары туралы ғылым. <b>Эмиссия</b> – айналымға жаңа ақша шығару арқылы ақша массасын ұлғайту.",
+        "<b>ЖІӨ формуласы:</b> <b>ЖІӨ = C + Ig + G + NX</b> (C – тұтыну, Ig – жеке инвестициялар, G – мемлекеттік сатып алу, NX – таза экспорт). <b>ЖҰӨ</b> шетелдік кәсіпорындарды есептемейді.",
+        "<b>2017 ж. ЖІӨ (САҚП) ең жоғары 9 ел:</b> 1. Қытай, 2. АҚШ, 3. Үндістан, 4. Жапония, 5. Германия, 6. Ресей, 7. Бразилия, 8. Индонезия, 9. Ұлыбритания.",
+        "<b>Туризм орталықтары (2017 ж.):</b> Франция (86,9 млн), АҚШ (76,9 млн), Италия (58,2 млн). Жылыжай ауданынан 1-орын – <b>Нидерланд</b>, теңіз тасымалы – <b>Норвегия</b>, қағаз – <b>Финляндия</b>.",
+        "<b>«Жалға пәтер беруші» елдер:</b> Мальта, Кипр, Бахрейн, Либерия, Багам аралдары, Барбадос, Панама. Ал <b>артта қалған елдерге</b> 2018 ж. <b>47 ел</b> кіреді.",
+        "<b>Қазақстан (2019 ж.):</b> ЖІӨ – <b>68 956,4 млрд теңге</b>. 5 Хаб-қала: <b>Нұр-Сұлтан, Алматы, Шымкент, Ақтөбе, Өскемен</b>. ЖІӨ үлесі жоғары – <b>Алматы</b>, төмен – <b>СҚО</b>. Өсімі жоғары – <b>Атырау, Қарағанды</b>, төмен – <b>Маңғыстау, БҚО</b>.",
+        "<b>Аудандастыру реті:</b> Аудан ➔ Аймақ ➔ Макроаймақ ➔ Экономикалық аудан. <b>Кластер төрттігі:</b> Шоғырлану, Бәсекелестік, Бәсекеге қабілеттілік, Кооперация."
+      ],
+      key_facts_ru: [
+        "<b>Геоэкономика</b> – наука, изучающая закономерности экономического развития на глобальном уровне и экономические стратегии и тактики государств.",
+        "<b>Модель И. Валлерстайна:</b> Центр (США, ЕС, Япония), Полупериферия (Балканский п-ов, Португалия, Ирландия, ЮВА, СНГ), Периферия (Азия, Латинская Америка, Африка, Океания).",
+        "<b>2/3 крупных городов мира</b> с населением более <b>1,5 млн человек</b> расположены на морских побережьях.",
+        "<b>Кибернетика</b> – наука об общих закономерностях управления и передачи информации в различных системах. <b>Эмиссия</b> – выпуск в обращение новых денег.",
+        "<b>Формула ВВП:</b> <b>ВВП = C + Ig + G + NX</b> (C – потребление, Ig – инвестиции, G – госзакупки, NX – чистый экспорт). <b>ВНП</b> не учитывает иностранные предприятия внутри страны.",
+        "<b>Топ-9 стран по ВВП (ППС, 2017 г.):</b> 1. Китай, 2. США, 3. Индия, 4. Япония, 5. Германия, 6. Россия, 7. Бразилия, 8. Индонезия, 9. Великобритания.",
+        "<b>Центры туризма (2017 г.):</b> Франция (86,9 млн), США (76,9 млн), Италия (58,2 млн). 1-е место по площади теплиц – <b>Нидерланды</b>, морские перевозки – <b>Норвегия</b>, бумага – <b>Финляндия</b>.",
+        "<b>«Страны-квартиросдатчики»:</b> Мальта, Кипр, Бахрейн, Либерия, Багамские о-ва, Барбадос, Панама. К <b>наименее развитым</b> в 2018 г. относились <b>47 стран</b>.",
+        "<b>Казахстан (2019 г.):</b> ВВП – <b>68 956,4 млрд тенге</b>. 5 городов-хабов: <b>Нур-Султан, Алматы, Шымкент, Актобе, Усть-Каменогорск</b>. Доля ВВП макс. – <b>Алматы</b>, мин. – <b>СКО</b>. Высокий рост – <b>Атырау, Караганда</b>, низкий – <b>Мангистау, ЗКО</b>.",
+        "<b>Порядок районирования:</b> Район ➔ Регион ➔ Макрорегион ➔ Экономический район. <b>Четверка кластера:</b> Концентрация, Конкуренция, Конкурентоспособность, Кооперация."
+      ],
+      traps_kz: [
+        "⚠️ <b>ҰБТ қақпаны (ЖІӨ үлесі vs ЖІӨ өсім қарқыны):</b> Қазақстанда ЖІӨ өндірісінің <b>үлесі</b> ең жоғары – <b>Алматы</b> (ең төмен – <b>СҚО</b>), ал ЖІӨ <b>өсімінің қарқыны</b> жоғары облыстар – <b>Атырау мен Қарағанды</b> (төмен қарқын – <b>Маңғыстау мен БҚО</b>). «Үлесі» мен «өсім қарқынын» шатастырмаңыз!",
+        "⚠️ <b>ҰБТ қақпаны (ЖІӨ vs ЖҰӨ):</b> <b>ЖІӨ</b> – ел аумағындағы барлық (отандық + шетелдік) кәсіпорындар өнімі, ал <b>ЖҰӨ</b> – <u>шетелдік кәсіпорындарды есептемегендегі</u> өнім.",
+        "⚠️ <b>ҰБТ қақпаны (Еуропа аудандары):</b> <b>Рандстад</b> (Нидерланд) пен <b>Милан–Турин–Генуя</b> (Италия) – <i>жоғары дамыған аудандар</i>; <b>Төменгі Рейн–Рур, Ланкашир, Йоркшир, Эльзас пен Лотарингия</b> – <i>ескі өнеркәсіпті аудандар</i>; ал <b>Оңтүстік Италия, Корсика, Аквитания, Орталық массив, Солтүстік Шотландия</b> – <i>артта қалған аудандар</i>.",
+        "⚠️ <b>ҰБТ қақпаны (Дөңгелек vs Шеңбер логотипі):</b> Брендингте <b>Дөңгелек</b> – қауымдастық, бірлік, достық белгісі болса, <b>Шеңбер</b> – беріктік пен табандылықты білдіреді, ал <b>Үшбұрыш</b> – күш пен білім!"
+      ],
+      traps_ru: [
+        "⚠️ <b>Ловушка ЕНТ (Доля ВВП vs Темпы роста ВВП РК):</b> Наибольшая <b>доля</b> производства ВВП в РК – у <b>Алматы</b> (наименьшая – у <b>СКО</b>), а высокие <b>темпы роста</b> ВВП – у <b>Атырауской и Карагандинской областей</b> (низкие темпы – у <b>Мангистауской и ЗКО</b>). Не путайте долю и темп роста!",
+        "⚠️ <b>Ловушка ЕНТ (ВВП vs ВНП):</b> <b>ВВП</b> учитывает все предприятия внутри территории страны, а <b>ВНП</b> рассчитывается <u>без учета иностранных предприятий</u>.",
+        "⚠️ <b>Ловушка ЕНТ (Районы Западной Европы):</b> <b>Рандстад</b> и <b>Милан–Турин–Генуя</b> – <i>высокоразвитые районы</i>; <b>Нижний Рейн–Рур, Ланкашир, Йоркшир, Эльзас и Лотарингия</b> – <i>старопромышленные</i>; <b>Южная Италия, Корсика, Центральный массив, Аквитания, Северная Шотландия</b> – <i>отсталые районы</i>.",
+        "⚠️ <b>Ловушка ЕНТ (Круг vs Кольцо в брендинге):</b> <b>Круг</b> означает сообщество, единство и дружбу; <b>Кольцо (окружность)</b> – прочность и стойкость; <b>Треугольник</b> – силу и знание!"
+      ]
+    };
+
+    const flashcardsData = {
+      kz: [
+        { q: "И. Валлерстайн моделі бойынша «Жартылай периферияға» қай елдер мен аймақтар жатады?", a: "Балкан түбегі, Португалия, Ирландия, Оңтүстік-Шығыс Азия, ТМД елдері. (Ал Орталыққа: АҚШ, ЕО, Жапония).", tag: "Валлерстайн" },
+        { q: "ЖІӨ-ні шығын бойынша есептеу формуласы және оның 4 компоненті қандай?", a: "ЖІӨ = C + Ig + G + NX. C – халықтың тұтыну шығыстары, Ig – жалпы жеке инвестициялар, G – мемлекеттік сатып алу, NX – таза экспорт.", tag: "Формула" },
+        { q: "Қазақстанның 5 Хаб-қаласын және 2019 ж. ЖІӨ көлемін атаңыз:", a: "Хаб-қалалар: Нұр-Сұлтан (Астана), Алматы, Шымкент, Ақтөбе, Өскемен. 2019 ж. ҚР ЖІӨ көлемі — 68 956,4 млрд теңге.", tag: "ҚР Хаб-қалалары" },
+        { q: "ҚР-да ЖІӨ үлесі ең жоғары/төмен және өсім қарқыны жоғары/төмен аймақтар?", a: "Үлесі жоғары: Алматы, төмен: СҚО. Өсім қарқыны жоғары: Атырау, Қарағанды; төмен: Маңғыстау, БҚО.", tag: "ҚР ЖІӨ географиясы" },
+        { q: "Дамушы елдердің ішінде «Жалға пәтер беруші» 7 елді атаңыз:", a: "Мальта, Кипр, Бахрейн, Либерия, Багам аралдары, Барбадос, Панама (көлік жолдары тоғысы, рекреация, жұмсақ салық).", tag: "Елдер типологиясы" },
+        { q: "Батыс Еуропаның ескі өнеркәсіпті және артта қалған аудандарына мысал келтіріңіз:", a: "Ескі өнеркәсіпті: Төменгі Рейн–Рур, Батыс Мидленд, Ланкашир, Йоркшир, Оңт. Уэльс, Эльзас пен Лотарингия. Артта қалған: Оңт. Италия, Орталық массив, Аквитания, Корсика, Солт. Шотландия.", tag: "Еуропа аудандары" },
+        { q: "Бөлу реті бойынша аудандастыру бірліктері және Кластердің төрттігі (4К)?", a: "Реті: Аудан ➔ Аймақ ➔ Макроаймақ ➔ Экономикалық аудан. Кластер төрттігі: Шоғырлану, Бәсекелестік, Бәсекеге қабілеттілік, Кооперация.", tag: "Кластер & Аудандастыру" },
+        { q: "Брендингтегі 7 логотип формасының мағынасы қандай?", a: "Дөңгелек – бірлік/достық; Шеңбер – беріктік/табандылық; Доға – икемділік; Шаршы – тұрақтылық; Үшбұрыш – күш/білім; Вертикальды – төзімділік; Горизонтальды – тыныштық.", tag: "Бренд-менеджмент" }
+      ],
+      ru: [
+        { q: "Какие страны и регионы относятся к «Полупериферии» по модели И. Валлерстайна?", a: "Балканский п-ов, Португалия, Ирландия, Юго-Восточная Азия, страны СНГ. (К Центру: США, ЕС, Япония).", tag: "Валлерстайн" },
+        { q: "Какова формула расчета ВВП по расходам и её 4 компонента?", a: "ВВП = C + Ig + G + NX. C – потребительские расходы, Ig – валовые частные инвестиции, G – госзакупки, NX – чистый экспорт.", tag: "Формула ВВП" },
+        { q: "Назовите 5 городов-хабов Казахстана и объем ВВП РК в 2019 году:", a: "Города-хабы: Нур-Султан (Астана), Алматы, Шымкент, Актобе, Усть-Каменогорск. ВВП РК в 2019 г. — 68 956,4 млрд тенге.", tag: "Города-хабы РК" },
+        { q: "Регионы РК с макс./мин. долей ВВП и высоким/низким темпом роста ВВП?", a: "Доля макс.: Алматы, мин.: СКО. Высокий темп роста: Атырауская и Карагандинская обл.; низкий: Мангистауская и ЗКО.", tag: "География ВВП РК" },
+        { q: "Назовите 7 развивающихся «стран-квартиросдатчиков»:", a: "Мальта, Кипр, Бахрейн, Либерия, Багамские о-ва, Барбадос, Панама (перекресток транспортных путей, рекреация, мягкие налоги).", tag: "Типология стран" },
+        { q: "Примеры старопромышленных и отсталых районов Западной Европы:", a: "Старопромышленные: Нижний Рейн–Рур, Зап. Мидленд, Ланкашир, Йоркшир, Юж. Уэльс, Эльзас и Лотарингия. Отсталые: Юж. Италия, Центр. массив, Аквитания, Корсика, Сев. Шотландия.", tag: "Районы Европы" },
+        { q: "Порядок единиц районирования и «четверка кластера» (4К)?", a: "Порядок: Район ➔ Регион ➔ Макрорегион ➔ Экономический район. Четверка кластера: Концентрация, Конкуренция, Конкурентоспособность, Кооперация.", tag: "Кластер и Районирование" },
+        { q: "Каково значение 7 форм логотипа в бренд-менеджменте?", a: "Круг – единство/дружба; Кольцо – прочность/стойкость; Дуга – гибкость; Квадрат – стабильность; Треугольник – сила/знание; Вертикальная – выдержка; Горизонтальная – спокойствие.", tag: "Бренд-менеджмент" }
+      ]
+    };
+
+    const quizData = {
+      kz: [
+        {
+          q: "1. И. Валлерстайнның экономикалық кеңістік моделі бойынша «Жартылай периферияға» жататын аймақтар:",
+          opts: ["АҚШ, Еуропалық Одақ, Жапония", "Балкан түбегі, Португалия, Ирландия, Оңтүстік-Шығыс Азия, ТМД", "Азия, Латын Америкасы, Африка, Мұхиттық аралдар", "Аустралия Одағы, Жаңа Зеландия, ОАР, Израиль"],
+          ans: 1,
+          exp: "И. Валлерстайн моделінде Орталыққа АҚШ, ЕО, Жапония; Жартылай периферияға Балкан түбегі, Португалия, Ирландия, ОШ Азия, ТМД; Периферияға Азия, Латын Америкасы, Африка, Мұхиттық аралдар жатады."
+        },
+        {
+          q: "2. Дүниежүзіндегі халық саны 1,5 млн адамнан асатын ірі қалалардың қанша бөлігі теңіз жағалауында орналасқан?",
+          opts: ["1/3 бөлігі", "1/2 бөлігі", "2/3 бөлігі", "3/5 бөлігі"],
+          ans: 2,
+          exp: "Теңіз маңы ЭГЖ-ның қолайлылығына байланысты дүниежүзіндегі халқы 1,5 млн адамнан асатын ірі қалалардың 2/3-сі теңіз жағалауында орналасқан."
+        },
+        {
+          q: "3. Батыс Еуропадағы «Ескі өнеркәсіпті аудандар» қатарын көрсетіңіз:",
+          opts: ["Үлкен Лондон, Үлкен Париж, Милан–Турин–Генуя, Рандстад", "Төменгі Рейн–Рур, Батыс Мидленд, Ланкашир, Йоркшир, Оңтүстік Уэльс, Эльзас пен Лотарингия", "Оңтүстік Италия, Францияның Орталық массиві, Аквитания, Корсика, Солтүстік Шотландия", "Аляска, Канаданың солтүстігі, Гренландия, Аустралия шөлдері"],
+          ans: 1,
+          exp: "XVIII–XIX ғғ. өнеркәсіп революциясы кезінде қалыптасқан ескі өнеркәсіпті аудандар: Төменгі Рейн–Рур, Батыс Мидленд, Ланкашир, Йоркшир, Оңтүстік Уэльс, Солтүстік аудан, Эльзас пен Лотарингия."
+        },
+        {
+          q: "4. 2017 жылы сатып алу қабілетінің паритеті (САҚП) бойынша ЖІӨ көлемі ең жоғары алғашқы үш ел:",
+          opts: ["АҚШ, Қытай, Жапония", "Қытай, АҚШ, Үндістан", "Қытай, Жапония, Германия", "АҚШ, Германия, Ұлыбритания"],
+          ans: 1,
+          exp: "ХВҚ деректері бойынша 2017 ж. ЖІӨ (САҚП) көлемі ең жоғары елдер: 1. Қытай, 2. АҚШ, 3. Үндістан, 4. Жапония, 5. Германия, 6. Ресей, 7. Бразилия, 8. Индонезия, 9. Ұлыбритания."
+        },
+        {
+          q: "5. Ұлыбританияның бұрынғы отары болған «Қоныс аударушы капитализм елдері» тобы:",
+          opts: ["Корея Республикасы, Сингапур, Сянган, Тайвань", "Аустралия Одағы, Жаңа Зеландия, ОАР, Израиль", "Мальта, Кипр, Бахрейн, Либерия, Панама", "Бельгия, Нидерланд, Норвегия, Швейцария"],
+          ans: 1,
+          exp: "Қоныс аударушы капитализм елдеріне Аустралия Одағы, Жаңа Зеландия, Оңтүстік Африка Республикасы (ОАР) және Израиль жатады."
+        },
+        {
+          q: "6. Әлеуметтік қорғансыз топтарға (табысы төмен отбасылар, жастар, жұмыссыздар, ұсақ кәсіпкерлер) ұдайы қолдау көрсету қай даму моделіне тән?",
+          opts: ["Либералды (америкалық) модель", "Әлеуметтік бағдарланған (шведтік) модель", "Әлеуметтік-нарықтық (германдық) модель", "Иерархиялық-бірлестіктік (жапондық) модель"],
+          ans: 2,
+          exp: "Әлеуметтік-нарықтық (германдық) модельде нарық жағдайында қиындыққа ұшырайтын әлеуметтік қорғансыз топтарға ұдайы қолдау көрсетіледі."
+        },
+        {
+          q: "7. Дамушы елдердің ішінде «Жалға пәтер беруші елдер» тобына жататын мемлекеттер:",
+          opts: ["Гватемала, Гондурас, Коста-Рика, Никарагуа, Гана, Шри-Ланка", "Мальта, Кипр, Бахрейн, Либерия, Багам аралдары, Барбадос, Панама", "Қытай, Үндістан, Бразилия, Мексика", "Ливия, Венесуэла, Сауд Арабиясы, Кувейт, БАӘ"],
+          ans: 1,
+          exp: "Халықаралық көлік жолдары тоғысында орналасқан «Жалға пәтер беруші елдер»: Мальта, Кипр, Бахрейн, Либерия, Багам аралдары, Барбадос, Панама."
+        },
+        {
+          q: "8. Қазақстанда ЖІӨ өндірісінің үлесі ең төмен және ЖІӨ өсімінің қарқыны жоғары облыстарды сәйкестендіріңіз:",
+          opts: ["Үлесі төмен – СҚО; Өсімі жоғары – Атырау, Қарағанды", "Үлесі төмен – Маңғыстау; Өсімі жоғары – Алматы, Нұр-Сұлтан", "Үлесі төмен – БҚО; Өсімі жоғары – Шымкент, Ақтөбе", "Үлесі төмен – Қызылорда; Өсімі жоғары – Маңғыстау, БҚО"],
+          ans: 0,
+          exp: "ҚР-да ЖІӨ өндірісінің үлесі ең жоғары – Алматы, ең төмен – Солтүстік Қазақстан облысы (СҚО). Ал ЖІӨ өсімінің жоғары қарқыны Атырау мен Қарағандыда (төмен қарқыны Маңғыстау мен БҚО-да) байқалады."
+        },
+        {
+          q: "9. Бөлу реті бойынша аудандастыру бірліктерінің дұрыс тізбегін көрсетіңіз:",
+          opts: ["Экономикалық аудан – Макроаймақ – Аймақ – Аудан", "Аудан – Аймақ – Макроаймақ – Экономикалық аудан", "Микроаудан – Мезоаудан – Макроаудан – Ядро", "Аймақ – Аудан – Кластер – Арнайы экономикалық аймақ"],
+          ans: 1,
+          exp: "Бөлу реті және аудандастыру бірліктері: Аудан – Аймақ – Макроаймақ – Экономикалық аудан."
+        },
+        {
+          q: "10. Бренд-менеджментте логотиптің «Үшбұрыш» және «Шеңбер» формалары нені білдіреді?",
+          opts: ["Үшбұрыш – тыныштық; Шеңбер – икемділік, бейімделу", "Үшбұрыш – күш, білім; Шеңбер – беріктік, табандылық", "Үшбұрыш – қалыптылық, тұрақтылық; Шеңбер – бірлік, достық", "Үшбұрыш – шыдамдылық; Шеңбер – тұрақтылық"],
+          ans: 1,
+          exp: "Логотип формалары: Үшбұрыш – күш, білім; Шеңбер – беріктік, табандылық (ал Дөңгелек – қауымдастық, бірлік, достық; Доға – икемділік; Шаршы – тұрақтылық)."
+        }
+      ],
+      ru: [
+        {
+          q: "1. Какие регионы относятся к «Полупериферии» по модели экономического пространства И. Валлерстайна?",
+          opts: ["США, Европейский Союз, Япония", "Балканский п-ов, Португалия, Ирландия, Юго-Восточная Азия, СНГ", "Азия, Латинская Америка, Африка, Океания", "Австралия, Новая Зеландия, ЮАР, Израиль"],
+          ans: 1,
+          exp: "По И. Валлерстайну: Центр – США, ЕС, Япония; Полупериферия – Балканский п-ов, Португалия, Ирландия, ЮВА, СНГ; Периферия – Азия, Латинская Америка, Африка, Океания."
+        },
+        {
+          q: "2. Какая доля крупных городов мира с населением более 1,5 млн человек расположена на морских побережьях?",
+          opts: ["1/3 часть", "1/2 часть", "2/3 части", "3/5 части"],
+          ans: 2,
+          exp: "Благодаря выгодному приморскому ЭГП 2/3 крупных городов мира с населением свыше 1,5 млн человек расположены на морских побережьях."
+        },
+        {
+          q: "3. Укажите ряд «Старопромышленных районов» Западной Европы:",
+          opts: ["Большой Лондон, Большой Париж, Милан–Турин–Генуя, Рандстад", "Нижний Рейн–Рур, Западный Мидленд, Ланкашир, Йоркшир, Южный Уэльс, Эльзас и Лотарингия", "Южная Италия, Центральный массив, Аквитания, Корсика, Северная Шотландия", "Аляска, Север Канады, Гренландия, пустыни Австралии"],
+          ans: 1,
+          exp: "Старопромышленные районы (XVIII–XIX вв.): Нижний Рейн–Рур, Западный Мидленд, Ланкашир, Йоркшир, Южный Уэльс, Северный район, Эльзас и Лотарингия."
+        },
+        {
+          q: "4. Первая тройка стран мира по объему ВВП (ППС, 2017 г. по данным МВФ):",
+          opts: ["США, Китай, Япония", "Китай, США, Индия", "Китай, Япония, Германия", "США, Германия, Великобритания"],
+          ans: 1,
+          exp: "Топ-9 стран по ВВП (ППС, 2017 г.): 1. Китай, 2. США, 3. Индия, 4. Япония, 5. Германия, 6. Россия, 7. Бразилия, 8. Индонезия, 9. Великобритания."
+        },
+        {
+          q: "5. Группа стран «переселенческого капитализма» (бывшие колонии Великобритании):",
+          opts: ["Республика Корея, Сингапур, Сянган, Тайвань", "Австралийский Союз, Новая Зеландия, ЮАР, Израиль", "Мальта, Кипр, Бахрейн, Либерия, Панама", "Бельгия, Нидерланды, Норвегия, Швейцария"],
+          ans: 1,
+          exp: "К странам переселенческого капитализма относятся Австралийский Союз, Новая Зеландия, ЮАР и Израиль."
+        },
+        {
+          q: "6. Постоянная поддержка социально незащищенных групп (малообеспеченных семей, молодежи, безработных, малого бизнеса) характерна для:",
+          opts: ["Либеральной (американской) модели", "Социально ориентированной (шведской) модели", "Социально-рыночной (германской) модели", "Иерархически-корпоративной (японской) модели"],
+          ans: 2,
+          exp: "В социально-рыночной (германской) модели оказывается постоянная поддержка социально незащищенным слоям населения."
+        },
+        {
+          q: "7. Какие развивающиеся государства относятся к группе «стран-квартиросдатчиков»?",
+          opts: ["Гватемала, Гондурас, Коста-Рика, Никарагуа, Гана, Шри-Ланка", "Мальта, Кипр, Бахрейн, Либерия, Багамские о-ва, Барбадос, Панама", "Китай, Индия, Бразилия, Мексика", "Ливия, Венесуэла, Саудовская Аравия, Кувейт, ОАЭ"],
+          ans: 1,
+          exp: "«Страны-квартиросдатчики» на перекрестках транспортных путей: Мальта, Кипр, Бахрейн, Либерия, Багамские острова, Барбадос, Панама."
+        },
+        {
+          q: "8. Укажите регион РК с наименьшей долей ВВП и области с высокими темпами роста ВВП:",
+          opts: ["Мин. доля – СКО; Высокий рост – Атырауская, Карагандинская", "Мин. доля – Мангистау; Высокий рост – Алматы, Нур-Султан", "Мин. доля – ЗКО; Высокий рост – Шымкент, Актобе", "Мин. доля – Кызылорда; Высокий рост – Мангистау, ЗКО"],
+          ans: 0,
+          exp: "В РК наибольшая доля ВВП – у Алматы, наименьшая – у СКО. Высокие темпы роста ВВП – у Атырауской и Карагандинской областей (низкие – у Мангистауской и ЗКО)."
+        },
+        {
+          q: "9. Укажите правильную последовательность единиц районирования по порядку деления:",
+          opts: ["Экономический район – Макрорегион – Регион – Район", "Район – Регион – Макрорегион – Экономический район", "Микрорайон – Мезорайон – Макрорайон – Ядро", "Регион – Район – Кластер – СЭЗ"],
+          ans: 1,
+          exp: "Порядок деления и единицы районирования: Район – Регион – Макрорегион – Экономический район."
+        },
+        {
+          q: "10. Что означают формы логотипа «Треугольник» и «Кольцо (окружность)» в бренд-менеджменте?",
+          opts: ["Треугольник – спокойствие; Кольцо – гибкость, адаптация", "Треугольник – сила, знание; Кольцо – прочность, стойкость", "Треугольник – стабильность; Кольцо – единство, дружба", "Треугольник – выдержка; Кольцо – стабильность"],
+          ans: 1,
+          exp: "Треугольник символизирует силу и знание, а Кольцо (окружность) – прочность и стойкость (Круг – сообщество, единство, дружба; Квадрат – стабильность)."
+        }
+      ]
+    };
+
+    const blooketData = {
+      kz: "https://dashboard.blooket.com/set/6a96ed29cf4198c758d4e81e",
+      ru: "https://dashboard.blooket.com/set/6a95ecfcc923faa1d82d3eff"
+    };
+
+    let currentLang = 'kz';
+    let currentTheoryFilter = 'all';
+    let currentMapTab = 'kz_map';
+    let currentMapHotspot = 'almaty';
+    let currentTableTab = 'all';
+    let currentPracticeMode = 'cards';
+    let quizAnswers = {};
+
     const safeStorage = {
       getItem(k) {
         try { return localStorage.getItem(k); } catch (e) { return null; }
@@ -250,6 +1689,18 @@
         try { localStorage.setItem(k, v); } catch (e) {}
       }
     };
+
+    function navigateCourse(url) {
+      const inPreview = (window.self !== window.top) || !window.location.hostname || window.location.hostname.indexOf('googleusercontent') !== -1 || window.location.protocol === 'blob:' || window.location.protocol === 'data:' || window.location.protocol === 'about:';
+      if (inPreview) {
+        const msg = (currentLang === 'ru')
+          ? "Переход («" + url + "») работает на полной платформе GeoTany"
+          : "Курс навигациясы («" + url + "») толық GeoTany платформасында жұмыс істейді";
+        showToast(msg);
+      } else {
+        window.location.href = url;
+      }
+    }
 
     function getCompletedSet() {
       try {
@@ -288,7 +1739,7 @@
       t.classList.remove('translate-y-20', 'opacity-0');
       setTimeout(() => {
         t.classList.add('translate-y-20', 'opacity-0');
-      }, 2500);
+      }, 2600);
     }
 
     function toggleComplete() {
@@ -311,57 +1762,289 @@
       updateCompleteButton();
     }
 
-    function renderTable(isRu) {
-      const tbl = isRu ? (topicData.table_ru || topicData.table_kz) : topicData.table_kz;
-      const container = document.getElementById('tableContainer');
-      if (!tbl || !tbl.cols || !tbl.rows || tbl.rows.length === 0) {
-        document.getElementById('tableSection').classList.add('hidden');
-        return;
-      }
-      document.getElementById('tableSection').classList.remove('hidden');
+    function renderHeroStats(isRu) {
+      const stats = isRu ? [
+        { val: "68 956,4 млрд", label: "ВВП Казахстана (2019 г., ₸)", color: "text-emerald-400" },
+        { val: "5 хабов", label: "Нур-Султан, Алматы, Шымкент, Актобе, Усть-Каменогорск", color: "text-cyan-400" },
+        { val: "2/3 городов", label: "Крупные города (>1,5 млн) у моря", color: "text-amber-400" },
+        { val: "47 стран", label: "Отсталые развивающиеся (2018 г.)", color: "text-rose-400" }
+      ] : [
+        { val: "68 956,4 млрд", label: "Қазақстанның ЖІӨ-сі (2019 ж., ₸)", color: "text-emerald-400" },
+        { val: "5 хаб-қала", label: "Нұр-Сұлтан, Алматы, Шымкент, Ақтөбе, Өскемен", color: "text-cyan-400" },
+        { val: "2/3 бөлігі", label: "Ірі қалалар (>1,5 млн) теңіз маңында", color: "text-amber-400" },
+        { val: "47 ел", label: "Дамуы артта қалған елдер (2018 ж.)", color: "text-rose-400" }
+      ];
+      document.getElementById('heroStatsGrid').innerHTML = stats.map(s => `
+        <div class="p-3 rounded-xl bg-space-900/90 border border-slate-800/90">
+          <div class="text-base sm:text-lg font-black ${s.color}">${s.val}</div>
+          <div class="text-[11px] text-slate-400 font-medium leading-tight mt-0.5">${s.label}</div>
+        </div>
+      `).join('');
+    }
 
-      let html = '<table class="w-full text-left text-xs border-collapse">';
-      html += '<thead><tr class="border-b border-slate-800 text-slate-400 font-bold">';
-      tbl.cols.forEach(col => {
-        html += `<th class="p-2.5 sm:p-3 bg-space-900/60 rounded-lg whitespace-nowrap text-cyan-300 font-bold">${col}</th>`;
+    function renderTheoryFilters(isRu) {
+      const filters = isRu ? [
+        { id: 'all', label: 'Все (1–6)' },
+        { id: '1', label: '1. Понятия' },
+        { id: '2', label: '2. Валлерстайн и ЭГП' },
+        { id: '3', label: '3. Модели и Районы' },
+        { id: '4', label: '4. ВВП и Развитые' },
+        { id: '5', label: '5. Переходные и Развив.' },
+        { id: '6', label: '6. РК, Кластеры, Бренд' }
+      ] : [
+        { id: 'all', label: 'Барлығы (1–6)' },
+        { id: '1', label: '1. Ұғымдар' },
+        { id: '2', label: '2. Валлерстайн & ЭГЖ' },
+        { id: '3', label: '3. Модельдер & Аудандар' },
+        { id: '4', label: '4. ЖІӨ & Дамыған елдер' },
+        { id: '5', label: '5. Өтпелі & Дамушы' },
+        { id: '6', label: '6. ҚР, Кластер, Брендинг' }
+      ];
+      document.getElementById('theoryFilterBar').innerHTML = filters.map(f => {
+        const active = (currentTheoryFilter === f.id);
+        const cls = active
+          ? "px-2.5 py-1 rounded-lg text-[11px] font-black bg-cyan-500 text-space-950 shadow transition"
+          : "px-2.5 py-1 rounded-lg text-[11px] font-bold bg-space-900 text-slate-400 hover:text-white border border-slate-800 transition";
+        return `<button onclick="setTheoryFilter('${f.id}')" class="${cls}">${f.label}</button>`;
+      }).join('');
+    }
+
+    function setTheoryFilter(filterId) {
+      currentTheoryFilter = filterId;
+      renderTheoryFilters(currentLang === 'ru');
+      const blocks = document.querySelectorAll('#theoryContent [data-theory-block]');
+      blocks.forEach(b => {
+        if (filterId === 'all' || b.getAttribute('data-theory-block') === filterId) {
+          b.classList.remove('hidden');
+        } else {
+          b.classList.add('hidden');
+        }
       });
-      html += '</tr></thead><tbody class="divide-y divide-slate-800/60">';
-      tbl.rows.forEach(row => {
-        html += '<tr class="hover:bg-space-900/40 transition">';
-        row.forEach((cell, idx) => {
-          const cls = idx === 0 ? "font-bold text-white whitespace-nowrap" : (idx === 1 ? "text-cyan-300 font-medium" : "text-slate-300");
-          html += `<td class="p-2.5 sm:p-3 ${cls}">${cell}</td>`;
+    }
+
+    function setMapTab(tabId) {
+      currentMapTab = tabId;
+      if (tabId === 'kz_map') currentMapHotspot = 'almaty';
+      else if (tabId === 'world_map') currentMapHotspot = 'core_us_eu_jp';
+      else currentMapHotspot = 'eu_high';
+      renderMapSection(currentLang === 'ru');
+    }
+
+    function selectMapHotspot(key) {
+      currentMapHotspot = key;
+      renderMapInfoCard(currentLang === 'ru');
+    }
+
+    function renderMapInfoCard(isRu) {
+      const dict = isRu ? mapHotspotsData.ru : mapHotspotsData.kz;
+      const item = dict[currentMapHotspot] || dict.almaty;
+      const card = document.getElementById('mapInfoCard');
+      card.innerHTML = `
+        <div class="text-xs sm:text-sm font-black text-emerald-300">${item.title}</div>
+        <p class="text-xs text-slate-200 leading-relaxed">${item.desc}</p>
+      `;
+    }
+
+    function renderMapSection(isRu) {
+      const tabs = [
+        { id: 'kz_map', label: isRu ? '🇰🇿 1. Карта Хабов и ВВП РК' : '🇰🇿 1. ҚР Хаб-қалалары & ЖІӨ картасы' },
+        { id: 'world_map', label: isRu ? '🌍 2. Модель Валлерстайна и Мир' : '🌍 2. Валлерстайн моделі & Әлем' },
+        { id: 'eu_map', label: isRu ? '🇪🇺 3. Районы Западной Европы (4 типа)' : '🇪🇺 3. Батыс Еуропа аудандары (4 тип)' }
+      ];
+      document.getElementById('mapTabsBar').innerHTML = tabs.map(t => {
+        const active = (currentMapTab === t.id);
+        const cls = active
+          ? "px-3 py-1.5 rounded-xl text-xs font-black bg-emerald-500 text-space-950 shadow transition"
+          : "px-3 py-1.5 rounded-xl text-xs font-bold bg-space-900 text-slate-300 hover:text-white border border-slate-800 transition";
+        return `<button onclick="setMapTab('${t.id}')" class="${cls}">${t.label}</button>`;
+      }).join('');
+
+      document.getElementById('mapCanvasContainer').innerHTML = getMapSvg(currentMapTab, isRu);
+      renderMapInfoCard(isRu);
+    }
+
+    function setTableTab(tabId) {
+      currentTableTab = tabId;
+      renderTable(currentLang === 'ru');
+    }
+
+    function renderTable(isRu) {
+      const tables = isRu ? topicData.tables_ru : topicData.tables_kz;
+      const tabsBar = document.getElementById('tableTabsBar');
+      const container = document.getElementById('tableContainer');
+
+      const tabItems = [
+        { id: 'all', label: isRu ? 'Все таблицы (3)' : 'Барлық кестелер (3)' },
+        { id: 'egp_structure', label: isRu ? '1. ЭГП и Структура' : '1. ЭГЖ және Құрылым' },
+        { id: 'regions_models', label: isRu ? '2. Районы и Модели' : '2. Аудандар & Модельдер' },
+        { id: 'div_spec', label: isRu ? '3. Диверсификация и Секторы' : '3. Әртараптандыру & Секторлар' }
+      ];
+
+      tabsBar.innerHTML = tabItems.map(t => {
+        const active = (currentTableTab === t.id);
+        const cls = active
+          ? "px-2.5 py-1 rounded-lg text-[11px] font-black bg-cyan-500 text-space-950 shadow transition"
+          : "px-2.5 py-1 rounded-lg text-[11px] font-bold bg-space-900 text-slate-400 hover:text-white border border-slate-800 transition";
+        return `<button onclick="setTableTab('${t.id}')" class="${cls}">${t.label}</button>`;
+      }).join('');
+
+      const filtered = tables.filter(tb => currentTableTab === 'all' || tb.id === currentTableTab);
+      container.innerHTML = filtered.map(tbl => {
+        let html = `<div class="space-y-2">`;
+        html += `<div class="text-xs font-extrabold text-amber-300">${tbl.title}</div>`;
+        html += `<div class="overflow-x-auto rounded-xl border border-slate-800">`;
+        html += `<table class="w-full text-left text-xs border-collapse">`;
+        html += `<thead><tr class="border-b border-slate-800 bg-space-900/90 text-cyan-300 font-bold">`;
+        tbl.cols.forEach(col => {
+          html += `<th class="p-2.5 sm:p-3 whitespace-nowrap">${col}</th>`;
         });
-        html += '</tr>';
-      });
-      html += '</tbody></table>';
-      container.innerHTML = html;
+        html += `</tr></thead><tbody class="divide-y divide-slate-800/70">`;
+        tbl.rows.forEach((row) => {
+          html += `<tr class="hover:bg-space-900/50 transition">`;
+          row.forEach((cell, idx) => {
+            const cls = idx === 0
+              ? "font-bold text-white whitespace-nowrap"
+              : (idx === 1 ? "text-cyan-300 font-medium" : "text-slate-200");
+            html += `<td class="p-2.5 sm:p-3 ${cls}">${cell}</td>`;
+          });
+          html += `</tr>`;
+        });
+        html += `</tbody></table></div></div>`;
+        return html;
+      }).join('');
     }
 
     function renderFacts(isRu) {
-      const facts = isRu ? (topicData.key_facts_ru || topicData.key_facts_kz) : topicData.key_facts_kz;
-      const list = document.getElementById('factsList');
-      if (!facts || facts.length === 0) {
-        document.getElementById('factsSection').classList.add('hidden');
-        return;
-      }
-      document.getElementById('factsSection').classList.remove('hidden');
-      list.innerHTML = facts.map(f => `<li class="flex items-start space-x-2"><span class="text-amber-400 font-bold shrink-0 mt-0.5">•</span><span>${f}</span></li>`).join('');
+      const facts = isRu ? topicData.key_facts_ru : topicData.key_facts_kz;
+      document.getElementById('factsList').innerHTML = facts.map((f, i) => `
+        <li class="p-3 rounded-xl bg-space-900/60 border border-slate-800/90 flex items-start space-x-2.5">
+          <span class="px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-300 font-black text-[11px] shrink-0 mt-0.5">#${i + 1}</span>
+          <span class="leading-relaxed">${f}</span>
+        </li>
+      `).join('');
     }
 
     function renderTraps(isRu) {
-      const traps = isRu ? (topicData.traps_ru || topicData.traps_kz) : topicData.traps_kz;
-      const list = document.getElementById('trapsList');
-      if (!traps || traps.length === 0) {
-        document.getElementById('trapsSection').classList.add('hidden');
-        return;
-      }
-      document.getElementById('trapsSection').classList.remove('hidden');
-      list.innerHTML = traps.map(tr => {
-        const str = String(tr);
-        const icon = str.startsWith('⚠️') ? '' : '<span class="text-amber-400 shrink-0 mt-0.5">⚠️</span> ';
-        return `<p class="leading-relaxed flex items-start space-x-2">${icon}<span>${str}</span></p>`;
+      const traps = isRu ? topicData.traps_ru : topicData.traps_kz;
+      document.getElementById('trapsList').innerHTML = traps.map(tr => `
+        <div class="p-3.5 rounded-xl bg-space-950/90 border border-amber-500/30 leading-relaxed">
+          ${tr}
+        </div>
+      `).join('');
+    }
+
+    function toggleFlashcard(idx) {
+      const card = document.getElementById('fcard-' + idx);
+      if (card) card.classList.toggle('flipped');
+    }
+
+    function renderFlashcards(isRu) {
+      const cards = isRu ? flashcardsData.ru : flashcardsData.kz;
+      const grid = document.getElementById('flashcardsGrid');
+      const tapLabel = isRu ? "Нажмите, чтобы перевернуть ↻" : "Аудару үшін басыңыз ↻";
+      const ansLabel = isRu ? "Ответ" : "Жауабы";
+
+      grid.innerHTML = cards.map((c, idx) => `
+        <div id="fcard-${idx}" onclick="toggleFlashcard(${idx})" class="flip-card cursor-pointer h-48 perspective-1000 select-none">
+          <div class="flip-card-inner relative w-full h-full">
+            <div class="flip-card-front absolute inset-0 p-4 rounded-2xl bg-space-900 border border-slate-800 hover:border-purple-500/50 transition flex flex-col justify-between">
+              <div class="flex items-center justify-between">
+                <span class="px-2 py-0.5 rounded-md bg-purple-500/15 text-purple-300 text-[10px] font-black">${c.tag}</span>
+                <span class="text-xs text-slate-500 font-bold">#${idx + 1}</span>
+              </div>
+              <p class="text-xs font-extrabold text-white leading-snug">${c.q}</p>
+              <div class="text-[11px] text-cyan-400 font-bold">${tapLabel}</div>
+            </div>
+            <div class="flip-card-back absolute inset-0 p-4 rounded-2xl bg-gradient-to-br from-purple-950/80 to-space-900 border border-purple-500/50 flex flex-col justify-between">
+              <div class="text-[10px] font-black uppercase text-emerald-300">✓ ${ansLabel}</div>
+              <p class="text-[11px] text-slate-100 leading-relaxed font-medium">${c.a}</p>
+              <div class="text-[10px] text-purple-300 font-bold text-right">↻</div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function answerQuiz(qIdx, optIdx) {
+      if (quizAnswers[qIdx] !== undefined) return;
+      quizAnswers[qIdx] = optIdx;
+      renderQuiz(currentLang === 'ru');
+    }
+
+    function resetQuiz() {
+      quizAnswers = {};
+      renderQuiz(currentLang === 'ru');
+    }
+
+    function renderQuiz(isRu) {
+      const items = isRu ? quizData.ru : quizData.kz;
+      const container = document.getElementById('quizQuestionsList');
+      let correctCount = 0;
+      Object.keys(quizAnswers).forEach(k => {
+        const idx = parseInt(k, 10);
+        if (items[idx] && quizAnswers[idx] === items[idx].ans) correctCount++;
+      });
+
+      document.getElementById('quizScoreText').textContent = isRu
+        ? `Результат: ${correctCount} / ${items.length} (отвечено: ${Object.keys(quizAnswers).length})`
+        : `Нәтиже: ${correctCount} / ${items.length} (жауап берілді: ${Object.keys(quizAnswers).length})`;
+
+      container.innerHTML = items.map((item, qIdx) => {
+        const userAns = quizAnswers[qIdx];
+        const answered = userAns !== undefined;
+
+        const optsHtml = item.opts.map((opt, oIdx) => {
+          let btnCls = "w-full text-left px-3.5 py-2.5 rounded-xl border text-xs font-semibold transition flex items-center justify-between ";
+          let badge = "";
+          if (!answered) {
+            btnCls += "bg-space-950 border-slate-800 hover:border-cyan-500/50 hover:bg-space-850 text-slate-200";
+          } else if (oIdx === item.ans) {
+            btnCls += "bg-emerald-950/50 border-emerald-500/60 text-emerald-200 font-bold";
+            badge = "✓";
+          } else if (oIdx === userAns) {
+            btnCls += "bg-rose-950/50 border-rose-500/60 text-rose-200";
+            badge = "✗";
+          } else {
+            btnCls += "bg-space-950/50 border-slate-800/50 text-slate-500";
+          }
+          return `<button onclick="answerQuiz(${qIdx}, ${oIdx})" class="${btnCls}"><span>${opt}</span><span>${badge}</span></button>`;
+        }).join('');
+
+        const expHtml = answered
+          ? `<div class="p-3 rounded-xl bg-space-950 border border-slate-800 text-xs text-slate-300 mt-2"><b class="text-cyan-300">${isRu ? 'Пояснение:' : 'Түсіндірме:'}</b> ${item.exp}</div>`
+          : '';
+
+        return `
+          <div class="p-4 rounded-2xl bg-space-900/70 border border-slate-800 space-y-2.5">
+            <div class="text-xs sm:text-sm font-extrabold text-white">${item.q}</div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">${optsHtml}</div>
+            ${expHtml}
+          </div>
+        `;
       }).join('');
+    }
+
+    function setPracticeMode(mode) {
+      currentPracticeMode = mode;
+      const isRu = (currentLang === 'ru');
+      const btnCards = document.getElementById('btnModeCards');
+      const btnQuiz = document.getElementById('btnModeQuiz');
+      const viewCards = document.getElementById('flashcardsView');
+      const viewQuiz = document.getElementById('quizView');
+
+      if (mode === 'quiz') {
+        btnQuiz.className = "px-3 py-1 rounded-lg text-xs font-black transition bg-purple-500 text-space-950 shadow";
+        btnCards.className = "px-3 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+        viewCards.classList.add('hidden');
+        viewQuiz.classList.remove('hidden');
+      } else {
+        btnCards.className = "px-3 py-1 rounded-lg text-xs font-black transition bg-purple-500 text-space-950 shadow";
+        btnQuiz.className = "px-3 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+        viewQuiz.classList.add('hidden');
+        viewCards.classList.remove('hidden');
+      }
+      btnCards.textContent = isRu ? "🗂️ Карточки (8)" : "🗂️ Карточкалар (8)";
+      btnQuiz.textContent = isRu ? "📝 ЕНТ Тест (10 вопросов)" : "📝 ҰБТ Тест (10 сұрақ)";
     }
 
     function setLang(lang) {
@@ -369,7 +2052,6 @@
       safeStorage.setItem('geotany_lang', lang);
       const isRu = (lang === 'ru');
 
-      // Update lang buttons
       const btnKz = document.getElementById('btnLangKz');
       const btnRu = document.getElementById('btnLangRu');
       if (isRu) {
@@ -380,26 +2062,42 @@
         btnRu.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
       }
 
-      // Update text fields
-      document.getElementById('navCatBadge').textContent = isRu ? (topicData.category_ru || 'География') : (topicData.category_kz || 'География');
-      document.getElementById('heroCatBadge').textContent = isRu ? (topicData.category_ru || 'География') : (topicData.category_kz || 'География');
+      document.getElementById('btnBackToCourseText').textContent = isRu ? "Назад" : "Артқа";
+      document.getElementById('navCatBadge').textContent = isRu ? topicData.category_ru : topicData.category_kz;
+      document.getElementById('heroCatBadge').textContent = isRu ? topicData.category_ru : topicData.category_kz;
+      document.getElementById('readTimeBadge').textContent = isRu ? "⏱️ ~12-18 мин чтения" : "⏱️ ~12-18 мин оқу";
+      document.getElementById('untWeightBadge').textContent = isRu ? "🔥 Ключевая тема ЕНТ" : "🔥 ҰБТ ауқымды тақырыбы";
       document.getElementById('heroTitle').textContent = isRu ? topicData.title_ru : topicData.title_kz;
+      document.getElementById('btnBlooketText').textContent = isRu ? "Игра Blooket" : "Blooket ойыны";
+      document.getElementById('btnQuickMapText').textContent = isRu ? "Интерактивные карты (3)" : "Интерактивті карталар (3)";
+      document.getElementById('btnQuickPracticeText').textContent = isRu ? "Тест и Карточки" : "Тест & Флеш-карталар";
 
-      // Summary
+      document.getElementById('navJumpTheory').textContent = isRu ? "📚 Теория" : "📚 Теория";
+      document.getElementById('navJumpMap').textContent = isRu ? "🗺️ Карты" : "🗺️ Карталар";
+      document.getElementById('navJumpSvg').textContent = isRu ? "🎨 Схемы" : "🎨 Инфографика";
+      document.getElementById('navJumpTable').textContent = isRu ? "📊 Таблицы" : "📊 Кестелер";
+      document.getElementById('navJumpQuiz').textContent = isRu ? "🧠 Тренажер" : "🧠 Тренажер";
+
+      renderHeroStats(isRu);
+
       document.getElementById('summaryHeader').textContent = isRu ? "КРАТКИЙ ОБЗОР ТЕМЫ" : "ТАҚЫРЫПҚА ҚЫСҚАША ШОЛУ";
       document.getElementById('summaryText').textContent = isRu ? topicData.summary_ru : topicData.summary_kz;
 
-      // Theory
       document.getElementById('theoryHeader').textContent = isRu ? "ПОЛНЫЙ ТЕОРЕТИЧЕСКИЙ МАТЕРИАЛ И КОНСПЕКТ" : "ТОЛЫҚ ТЕОРИЯЛЫҚ МАТЕРИАЛ МЕН КОНСПЕКТ";
       document.getElementById('theoryContent').innerHTML = isRu ? topicData.full_theory_ru : topicData.full_theory_kz;
+      setTheoryFilter(currentTheoryFilter);
 
-      // SVG
+      document.getElementById('mapHeader').textContent = isRu ? "ИНТЕРАКТИВНЫЕ ГЕОЭКОНОМИЧЕСКИЕ КАРТЫ" : "ИНТЕРАКТИВТІ ГЕОЭКОНОМИКАЛЫҚ КАРТАЛАР";
+      document.getElementById('mapInstruction').textContent = isRu
+        ? "Нажмите на любой объект, регион или город-хаб на карте, чтобы увидеть его геоэкономическую характеристику:"
+        : "Картадағы нысанды, аймақты немесе қаланы басып, нақты геоэкономикалық сипаттамасын көріңіз:";
+      renderMapSection(isRu);
+
       document.getElementById('svgHeader').textContent = isRu ? "НАГЛЯДНАЯ СХЕМА И ИНФОГРАФИКА" : "КӨРНЕКІ СХЕМА МЕН ИНФОГРАФИКА";
-      const svgCode = isRu ? (topicData.svg_diagram_ru || topicData.svg_diagram) : topicData.svg_diagram;
-      document.getElementById('svgContainer').innerHTML = svgCode || '';
+      document.getElementById('svgSubBadge').textContent = isRu ? "Формулы, кластеры и 7 форм логотипа" : "Формулалар, модельдер және логотип пішіндері";
+      document.getElementById('svgContainer').innerHTML = isRu ? topicData.svg_diagram_ru : topicData.svg_diagram;
 
-      // Table, Facts, Traps
-      document.getElementById('tableHeader').textContent = isRu ? "СТРУКТУРИРОВАННАЯ ТАБЛИЦА ПОКАЗАТЕЛЕЙ И КЛАССИФИКАЦИИ" : "НАҚТЫ КӨРСЕТКІШТЕР МЕН КЛАССИФИКАЦИЯ КЕСТЕСІ";
+      document.getElementById('tableHeader').textContent = isRu ? "СТРУКТУРИРОВАННЫЕ ТАБЛИЦЫ ПОКАЗАТЕЛЕЙ И КЛАССИФИКАЦИИ" : "НАҚТЫ КӨРСЕТКІШТЕР МЕН КЛАССИФИКАЦИЯ КЕСТЕЛЕРІ";
       renderTable(isRu);
 
       document.getElementById('factsHeader').textContent = isRu ? "ГЛАВНЫЕ ФАКТЫ ДЛЯ ЕНТ И ЗАПОМИНАНИЯ" : "ҰБТ-ҒА ҚАЖЕТТІ НЕГІЗГІ ЕРЕЖЕЛЕР МЕН ФАКТІЛЕР";
@@ -408,7 +2106,21 @@
       document.getElementById('trapsHeader').textContent = isRu ? "ЛОВУШКИ И ЛАЙФХАКИ ЕНТ" : "ҰБТ ҚАҚПАНДАРЫ МЕН ЛАЙФХАКТАР";
       renderTraps(isRu);
 
-      // Blooket & Doc links
+      document.getElementById('interactiveHeader').textContent = isRu
+        ? "ИНТЕРАКТИВНЫЙ ТРЕНАЖЕР: ФЛЕШ-КАРТОЧКИ И ТЕСТ ЕНТ"
+        : "ИНТЕРАКТИВТІ ЖАТТЫҒУ: ФЛЕШ-КАРТАЛАР МЕН ҰБТ ТЕСТІ";
+      document.getElementById('flashcardsHint').textContent = isRu
+        ? "Нажмите на карточку, чтобы увидеть точный ответ и факты:"
+        : "Карточканы бассаңыз, жауабы мен нақты дерегі ашылады:";
+      document.getElementById('btnResetQuiz').textContent = isRu ? "🔄 Начать заново" : "🔄 Қайта бастау";
+      renderFlashcards(isRu);
+      renderQuiz(isRu);
+      setPracticeMode(currentPracticeMode);
+
+      document.getElementById('footerPrevText').textContent = isRu ? "#40 Предыдущая тема" : "#40 Алдыңғы тақырып";
+      document.getElementById('footerHomeText').textContent = isRu ? "Все темы" : "Барлық тақырыптар";
+      document.getElementById('footerNextText').textContent = isRu ? "Следующая тема #42" : "Келесі тақырып #42";
+
       const btnB = document.getElementById('btnBlooket');
       const bUrl = isRu ? (blooketData.ru || blooketData.kz) : (blooketData.kz || blooketData.ru);
       if (bUrl) {
@@ -418,13 +2130,9 @@
         btnB.classList.add('hidden');
       }
 
-      const btnD = document.getElementById('btnDoc');
-      if (btnD) { const dUrl = isRu ? (blooketData.doc_ru || blooketData.doc_kz) : (blooketData.doc_kz || blooketData.doc_ru); if (dUrl) { btnD.href = dUrl; btnD.classList.remove('hidden'); } else { btnD.classList.add('hidden'); } }
-
       updateCompleteButton();
     }
 
-    // Initialization on page load with URL param and localStorage sync
     document.addEventListener('DOMContentLoaded', () => {
       const urlParams = new URLSearchParams(window.location.search);
       const queryLang = urlParams.get('lang');
