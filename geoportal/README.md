@@ -38,7 +38,8 @@
 │   ├── ielts-ai.js             # evaluateWithAI: проверка соответствия заданию + оценка
 │   ├── ielts-audio.js          # многоголосая озвучка и распознавание речи
 │   ├── ielts-ui.js             # отрисовка Reading / Listening / Writing / Speaking
-│   └── data/                   # контент (грузится только после входа): reading, listening, writing, speaking
+│   └── data/                   # контент (грузится только после входа): reading, listening, writing, speaking (тема IELTS);
+│                               # names-index.js, names-verses.js (аяты из alquran.cloud), names-r01.js / names-l01.js … (тема «99 имён», по 10 имён)
 │
 └── platform/                   # Отдельная платформа на Supabase (пока не подключена)
 ```

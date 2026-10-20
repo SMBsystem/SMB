@@ -50,7 +50,7 @@
     <section id="screenHome" class="space-y-6">
       <div class="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 class="text-2xl font-extrabold">Курсы IELTS Academic</h1>
+          <h1 class="text-2xl font-extrabold">Темы для подготовки к IELTS</h1>
           <p id="welcomeLine" class="text-sm text-slate-500 mt-1"></p>
         </div>
         <span id="securityBadge" class="self-start sm:self-auto text-xs font-semibold px-3 py-1.5 rounded-full"></span>
@@ -60,7 +60,7 @@
         <div class="flex flex-col md:flex-row gap-5 md:items-center">
           <div class="text-5xl" aria-hidden="true">🎓</div>
           <div class="flex-1 min-w-0">
-            <span class="text-[11px] font-bold uppercase tracking-wider text-indigo-600">Курс №1 · флагман</span>
+            <span class="text-[11px] font-bold uppercase tracking-wider text-indigo-600">Тема №1 · флагман</span>
             <h2 class="text-xl font-bold mt-1">Как готовиться к IELTS</h2>
             <p class="text-sm text-slate-600 mt-2 leading-relaxed">20 полноразмерных пробников: Reading, Listening, Writing, Speaking — по 5 вариантов в каждом. Академические тексты по когнитивной науке обучения, психометрии экзамена и ESP, многоголосая озвучка, ИИ-экзаменатор с проверкой соответствия заданию.</p>
             <div class="flex flex-wrap gap-2 mt-3 text-xs text-slate-600">
@@ -72,6 +72,22 @@
           <button id="btnOpenCourse" type="button" class="btn btn-primary md:self-center">Открыть курс →</button>
         </div>
       </article>
+      <article class="bg-white border border-slate-200 rounded-2xl p-6 hover:border-indigo-300 transition">
+        <div class="flex flex-col md:flex-row gap-5 md:items-center">
+          <div class="text-5xl" aria-hidden="true">🌙</div>
+          <div class="flex-1 min-w-0">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-indigo-600">Тема №2 · ESP</span>
+            <h2 class="text-xl font-bold mt-1">99 имён Аллаха</h2>
+            <p class="text-sm text-slate-600 mt-2 leading-relaxed">Узнавайте новое и готовьтесь к экзамену одновременно. 99 вариантов — по одному на каждое имя: значение на русском, казахском и английском, аяты Корана, практические советы, а также Reading, Listening, Writing и Speaking в формате IELTS по теме имени.</p>
+            <div class="flex flex-wrap gap-2 mt-3 text-xs text-slate-600">
+              <span class="px-2 py-1 bg-slate-100 rounded-lg">99 вариантов</span>
+              <span class="px-2 py-1 bg-slate-100 rounded-lg">RU · KZ · EN</span>
+              <span class="px-2 py-1 bg-slate-100 rounded-lg">4 раздела IELTS на каждое имя</span>
+            </div>
+          </div>
+          <button id="btnOpenNames" type="button" class="btn btn-primary md:self-center">Открыть →</button>
+        </div>
+      </article>
       <p class="text-xs text-slate-400">Оценки ИИ-экзаменатора — тренировочные ориентиры, а не официальный балл IELTS.</p>
     </section>
 
@@ -79,10 +95,11 @@
     <section id="screenCourse" class="hidden space-y-5">
       <div class="flex items-center justify-between gap-3">
         <button type="button" data-nav="home" class="btn btn-ghost">← Курсы</button>
-        <h2 class="font-bold text-lg">Как готовиться к IELTS</h2>
+        <h2 id="courseTitle" class="font-bold text-lg">Как готовиться к IELTS</h2>
         <span></span>
       </div>
       <div id="skillTabs" role="tablist" class="flex gap-1 border-b border-slate-200 overflow-x-auto"></div>
+      <div id="variantSearchWrap" class="hidden"><input id="variantSearch" type="search" class="inp" placeholder="Поиск имени: арабский, транслитерация, перевод или номер" aria-label="Поиск"></div>
       <div id="variantsList" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
     </section>
 

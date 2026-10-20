@@ -13,50 +13,83 @@
   var loading = {};
 
   /* ---------- загрузка контента (только для подтверждённой сессии) ---------- */
-  function loadSkill(skill) {
+  function loadScript(file) {
     if (!IELTS.verifySessionIntegrity()) return Promise.reject(new Error('no session'));
-    if (IELTS.DATA[skill]) return Promise.resolve(IELTS.DATA[skill]);
-    if (loading[skill]) return loading[skill];
-    loading[skill] = new Promise(function (resolve, reject) {
+    if (loading[file]) return loading[file];
+    loading[file] = new Promise(function (resolve, reject) {
       var s = document.createElement('script');
-      s.src = 'data/' + skill + '.js?v=1';
-      s.onload = function () { delete loading[skill]; IELTS.DATA[skill] ? resolve(IELTS.DATA[skill]) : reject(new Error('empty data')); };
-      s.onerror = function () { delete loading[skill]; reject(new Error('load error')); };
+      s.src = 'data/' + file + '.js?v=2';
+      s.onload = function () { resolve(); };
+      s.onerror = function () { delete loading[file]; reject(new Error('load error')); };
       document.head.appendChild(s);
     });
-    return loading[skill];
+    return loading[file];
   }
-
+  function chunkOf(id) { return ('0' + Math.ceil(id / 10)).slice(-2); }
+  // Загрузка данных темы: ielts — файл раздела; names — индекс + аяты + блок из 10 имён.
+  function loadSkill(topic, skill, variant) {
+    if (!IELTS.NIDX && !Object.keys(IELTS.DATA).length && !Object.keys(IELTS.NDATA).length) loading = {};
+    if (topic === 'names') {
+      var jobs = [loadScript('names-index'), loadScript('names-verses')];
+      return Promise.all(jobs).then(function () {
+        if (!variant) return null;
+        var c = chunkOf(variant);
+        if (variant > (IELTS.NREADY || 0)) return null;
+        return Promise.all([loadScript('names-r' + c), loadScript('names-l' + c)]);
+      });
+    }
+    if (IELTS.DATA[skill]) return Promise.resolve(IELTS.DATA[skill]);
+    return loadScript(skill).then(function () { if (!IELTS.DATA[skill]) throw new Error('empty data'); return IELTS.DATA[skill]; });
+  }
+  function curTopic() { return IELTS.getRoute().topic || 'ielts'; }
   /* ---------- экран 2: список вариантов ---------- */
+  function variantCard(skill, i, title, spec, takeaway, ready, topic) {
+    var st = IELTS.vstate(skill, i);
+    var started = Object.keys(st.a || {}).length || Object.keys(st.d || {}).length;
+    var evals = Object.keys(st.ev || {}).length;
+    return '<article class="bg-white border border-slate-200 rounded-2xl p-5 flex flex-col gap-3 ' + (ready ? 'hover:border-indigo-300' : 'opacity-60') + ' transition">' +
+      '<div class="flex items-center justify-between"><span class="text-xs font-bold text-indigo-600">Вариант ' + i + '</span>' +
+      (started ? '<span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700">' + (st.a && st.a._score ? 'Результат ' + esc(st.a._score) : 'Начато') + (evals ? ' · ИИ ×' + evals : '') + '</span>' : '') + '</div>' +
+      title + '<p class="text-xs text-slate-500">' + esc(spec) + '</p>' +
+      (takeaway ? '<p class="text-sm text-slate-600 leading-relaxed"><b class="text-slate-800">Польза:</b> ' + esc(takeaway) + '</p>' : '') +
+      (ready ? '<button type="button" data-open-test="' + i + '" data-skill="' + skill + '" data-topic="' + topic + '" class="btn btn-primary mt-auto">' + (started ? 'Продолжить' : 'Начать') + ' →</button>' : '<span class="mt-auto text-xs font-semibold text-slate-400">Скоро</span>') + '</article>';
+  }
   function renderCourse(skill) {
     if (!IELTS.verifySessionIntegrity()) return;
+    var topic = curTopic();
+    var count = IELTS.TOPICS[topic].count;
+    $('courseTitle').textContent = topic === 'names' ? '99 имён Аллаха' : 'Как готовиться к IELTS';
+    $('variantSearchWrap').classList.toggle('hidden', topic !== 'names');
     var tabs = IELTS.SKILLS.map(function (s) {
       var m = SKILL_META[s];
-      return '<button type="button" role="tab" aria-selected="' + (s === skill) + '" data-open-skill="' + s + '" class="px-4 py-2.5 text-sm font-semibold border-b-2 whitespace-nowrap ' + (s === skill ? 'tab-on' : 'border-transparent text-slate-500 hover:text-slate-800') + '">' + m.icon + ' ' + m.label + ' <span class="text-xs font-normal text-slate-400">(5 вариантов)</span></button>';
+      return '<button type="button" role="tab" aria-selected="' + (s === skill) + '" data-open-skill="' + s + '" data-topic="' + topic + '" class="px-4 py-2.5 text-sm font-semibold border-b-2 whitespace-nowrap ' + (s === skill ? 'tab-on' : 'border-transparent text-slate-500 hover:text-slate-800') + '">' + m.icon + ' ' + m.label + ' <span class="text-xs font-normal text-slate-400">(' + count + ' вариантов)</span></button>';
     }).join('');
     $('skillTabs').innerHTML = tabs;
+    if (topic === 'names') return renderNamesList(skill);
     var list = IELTS.DATA[skill] || [];
     $('variantsList').innerHTML = list.map(function (d, i) {
-      var st = IELTS.vstate(skill, i + 1);
-      var started = Object.keys(st.a || {}).length || Object.keys(st.d || {}).length;
-      var evals = Object.keys(st.ev || {}).length;
-      return '<article class="bg-white border border-slate-200 rounded-2xl p-5 flex flex-col gap-3 hover:border-indigo-300 transition">' +
-        '<div class="flex items-center justify-between"><span class="text-xs font-bold text-indigo-600">Вариант ' + (i + 1) + '</span>' +
-        (started ? '<span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700">' + (st.a && st.a._score ? 'Результат ' + esc(st.a._score) : 'Начато') + (evals ? ' · ИИ ×' + evals : '') + '</span>' : '') + '</div>' +
-        '<h3 class="font-bold leading-snug">' + esc(d.title) + '</h3>' +
-        '<p class="text-xs text-slate-500">' + esc(d.spec) + '</p>' +
-        '<p class="text-sm text-slate-600 leading-relaxed"><b class="text-slate-800">Польза:</b> ' + esc(d.takeaway) + '</p>' +
-        '<button type="button" data-open-test="' + (i + 1) + '" data-skill="' + skill + '" class="btn btn-primary mt-auto">' + (started ? 'Продолжить' : 'Начать') + ' →</button></article>';
+      return variantCard(skill, i + 1, '<h3 class="font-bold leading-snug">' + esc(d.title) + '</h3>', d.spec, d.takeaway, true, 'ielts');
     }).join('');
   }
+  function renderNamesList(skill) {
+    var q = ($('variantSearch').value || '').trim().toLowerCase();
+    var ready = IELTS.NREADY || 0;
+    var cards = (IELTS.NIDX || []).filter(function (n) {
+      return !q || [n.id, n.tr, n.en, n.ru, n.kk, n.ar].join(' ').toLowerCase().indexOf(q) >= 0;
+    }).map(function (n) {
+      var title = '<div class="text-center"><div class="ar text-3xl" lang="ar">' + esc(n.ar) + '</div><h3 class="font-bold">' + esc(n.tr) + '</h3><p class="text-xs text-slate-500">' + esc(n.ru) + ' · ' + esc(n.kk) + '</p></div>';
+      return variantCard(skill, n.id, title, SKILL_META[skill].label + ' · ' + n.en, '', n.id <= ready, 'names');
+    });
+    $('variantsList').innerHTML = cards.join('') || '<p class="text-sm text-slate-500 col-span-full">Ничего не найдено.</p>';
+  }
+  $('variantSearch').addEventListener('input', function () { if (IELTS.verifySessionIntegrity() && curTopic() === 'names') renderNamesList(IELTS.getRoute().skill || 'reading'); });
 
   document.addEventListener('click', function (e) {
     var t = e.target.closest && e.target.closest('[data-open-skill]');
-    if (t) return IELTS.navigateTo({ screen: 'course', skill: t.getAttribute('data-open-skill') });
+    if (t) return IELTS.navigateTo({ screen: 'course', topic: t.getAttribute('data-topic') || 'ielts', skill: t.getAttribute('data-open-skill') });
     t = e.target.closest && e.target.closest('[data-open-test]');
-    if (t) return IELTS.navigateTo({ screen: 'test', skill: t.getAttribute('data-skill'), variant: t.getAttribute('data-open-test') });
+    if (t) return IELTS.navigateTo({ screen: 'test', topic: t.getAttribute('data-topic') || 'ielts', skill: t.getAttribute('data-skill'), variant: t.getAttribute('data-open-test') });
   });
-
   /* ---------- общие помощники ---------- */
   function norm(s) {
     return String(s == null ? '' : s).toLowerCase().replace(/[£$€]/g, '').replace(/(\d),(\d{3})/g, '$1$2').replace(/(\d)(st|nd|rd|th)\b/g, '$1')
@@ -65,11 +98,12 @@
   function wordCount(t) { return (String(t || '').trim().match(/[A-Za-z0-9'’-]+/g) || []).length; }
   function header(skill, v, d) {
     var m = SKILL_META[skill];
-    var prev = v > 1 ? '<button type="button" class="btn btn-ghost" data-open-test="' + (v - 1) + '" data-skill="' + skill + '">←</button>' : '';
-    var next = v < 5 ? '<button type="button" class="btn btn-ghost" data-open-test="' + (v + 1) + '" data-skill="' + skill + '">→</button>' : '';
+    var topic = curTopic(), count = IELTS.TOPICS[topic].count, ready = topic === 'names' ? (IELTS.NREADY || 0) : count;
+    var prev = v > 1 ? '<button type="button" class="btn btn-ghost" data-open-test="' + (v - 1) + '" data-skill="' + skill + '" data-topic="' + topic + '">←</button>' : '';
+    var next = v < ready ? '<button type="button" class="btn btn-ghost" data-open-test="' + (v + 1) + '" data-skill="' + skill + '" data-topic="' + topic + '">→</button>' : '';
     return '<div class="flex flex-wrap items-center justify-between gap-3 mb-5">' +
-      '<button type="button" class="btn btn-ghost" data-nav="course" data-skill="' + skill + '">← ' + m.label + '</button>' +
-      '<div class="text-center flex-1 min-w-[200px]"><div class="text-xs font-bold text-indigo-600">' + m.icon + ' ' + m.label + ' · вариант ' + v + ' из 5</div><h2 class="font-bold text-lg leading-tight">' + esc(d.title) + '</h2></div>' +
+      '<button type="button" class="btn btn-ghost" data-nav="course" data-skill="' + skill + '" data-topic="' + topic + '">← ' + m.label + '</button>' +
+      '<div class="text-center flex-1 min-w-[200px]"><div class="text-xs font-bold text-indigo-600">' + m.icon + ' ' + m.label + ' · вариант ' + v + ' из ' + count + '</div><h2 class="font-bold text-lg leading-tight">' + esc(d.title) + '</h2></div>' +
       '<div class="flex gap-2">' + prev + next + '</div></div>';
   }
 
@@ -113,8 +147,7 @@
       else st.a[k] = el.value;
       IELTS.touch(skill, v);
     }
-    root.addEventListener('input', function (e) { save(e.target); });
-    root.addEventListener('change', function (e) { save(e.target); });
+    root.oninput = root.onchange = function (e) { save(e.target); };
     // восстановление
     root.querySelectorAll('[data-k]').forEach(function (el) {
       var val = st.a[el.getAttribute('data-k')];
@@ -129,20 +162,20 @@
     var h = header('reading', v, d) + '<div class="grid lg:grid-cols-2 gap-5"><div class="bg-white border border-slate-200 rounded-2xl p-5 scroll-y passage"><h3 class="font-bold text-lg mb-1">' + esc(d.passage.heading) + '</h3><p class="text-xs text-slate-400 mb-4">' + esc(d.spec) + '</p>' +
       d.passage.paras.map(function (p) { return '<p><b class="inline-block w-6 text-indigo-600">' + p.l + '</b>' + esc(p.t) + '</p>'; }).join('') + '</div>';
     h += '<div class="bg-white border border-slate-200 rounded-2xl p-5 scroll-y space-y-6" id="rdQuestions">';
-    var n = 1;
-    h += '<div><h4 class="font-bold">Questions 1–4</h4><p class="text-xs text-slate-500 mb-3">Which paragraph (A–F) contains the following information? You may use any letter more than once.</p>';
+    var n = 1, letters = d.passage.paras.map(function (p) { return p.l; }), lastL = letters[letters.length - 1];
+    h += '<div><h4 class="font-bold">Questions 1–' + d.match.length + '</h4><p class="text-xs text-slate-500 mb-3">Which paragraph (A–' + lastL + ') contains the following information? You may use any letter more than once.</p>';
     d.match.forEach(function (q, i) {
       var k = 'm' + i; qs.push({ k: k, a: [q.a], e: q.e });
-      h += '<div class="mb-3"><div class="flex gap-2 items-start"><span class="font-bold text-sm w-6">' + (n++) + '</span><span class="flex-1 text-sm">' + esc(q.q) + '</span><select class="inp !w-20" data-k="' + k + '"><option value=""></option>' + 'ABCDEF'.split('').map(function (c) { return '<option>' + c + '</option>'; }).join('') + '</select></div><div data-fb="' + k + '" class="hidden"></div></div>';
+      h += '<div class="mb-3"><div class="flex gap-2 items-start"><span class="font-bold text-sm w-6">' + (n++) + '</span><span class="flex-1 text-sm">' + esc(q.q) + '</span><select class="inp !w-20" data-k="' + k + '"><option value=""></option>' + letters.map(function (c) { return '<option>' + c + '</option>'; }).join('') + '</select></div><div data-fb="' + k + '" class="hidden"></div></div>';
     });
-    h += '</div><div><h4 class="font-bold">Questions 5–8</h4><p class="text-xs text-slate-500 mb-3">Do the following statements agree with the information in the passage? Choose TRUE, FALSE or NOT GIVEN.</p>';
+    h += '</div><div><h4 class="font-bold">Questions ' + (d.match.length + 1) + '–' + (d.match.length + d.tfng.length) + '</h4><p class="text-xs text-slate-500 mb-3">Do the following statements agree with the information in the passage? Choose TRUE, FALSE or NOT GIVEN.</p>';
     d.tfng.forEach(function (q, i) {
       var k = 't' + i; qs.push({ k: k, a: [q.a], e: q.e });
       h += '<div class="mb-3"><div class="flex gap-2 items-start"><span class="font-bold text-sm w-6">' + (n++) + '</span><span class="flex-1 text-sm">' + esc(q.q) + '</span><select class="inp !w-36" data-k="' + k + '"><option value=""></option><option>TRUE</option><option>FALSE</option><option>NOT GIVEN</option></select></div><div data-fb="' + k + '" class="hidden"></div></div>';
     });
-    h += '</div><div><h4 class="font-bold">Questions 9–12</h4><p class="text-xs text-slate-500 mb-3">Complete the summary. Choose ONE WORD ONLY from the passage for each answer.</p><p class="text-sm leading-8">' +
+    h += '</div><div><h4 class="font-bold">Questions ' + (d.match.length + d.tfng.length + 1) + '–' + (d.match.length + d.tfng.length + d.gaps.items.length) + '</h4><p class="text-xs text-slate-500 mb-3">Complete the summary. Choose ONE WORD ONLY from the passage for each answer.</p><p class="text-sm leading-8">' +
       esc(d.gaps.text).replace(/\{(\d+)\}/g, function (m, num) {
-        var gi = parseInt(num, 10) - 9; return '<span class="whitespace-nowrap font-bold text-xs text-slate-500">' + num + '</span> <input class="gap" data-k="g' + gi + '" autocomplete="off" spellcheck="false" aria-label="Answer ' + num + '">';
+        var gi = parseInt(num, 10) - (d.match.length + d.tfng.length + 1); return '<span class="whitespace-nowrap font-bold text-xs text-slate-500">' + num + '</span> <input class="gap" data-k="g' + gi + '" autocomplete="off" spellcheck="false" aria-label="Answer ' + num + '">';
       }) + '</p>';
     d.gaps.items.forEach(function (it, i) { qs.push({ k: 'g' + i, a: it.a, e: it.e }); h += '<div data-fb="g' + i + '" class="hidden"></div>'; });
     h += '</div><div class="flex flex-wrap gap-2 items-center sticky bottom-0 bg-white pt-3 border-t border-slate-100"><button type="button" id="rdCheck" class="btn btn-primary">Проверить ответы</button><button type="button" id="rdReset" class="btn btn-ghost">Сбросить</button></div><div id="rdResult"></div></div></div>';
@@ -255,7 +288,8 @@
     return h;
   }
   function renderWriting(d, v) {
-    return { html: header('writing', v, d) + '<div class="grid lg:grid-cols-2 gap-5 items-start">' + writingTaskHtml(d, 1) + writingTaskHtml(d, 2) + '</div>', qs: [] };
+    var two = !!d.task1;
+    return { html: header('writing', v, d) + '<div class="grid ' + (two ? 'lg:grid-cols-2' : 'max-w-3xl mx-auto') + ' gap-5 items-start">' + (two ? writingTaskHtml(d, 1) : '') + writingTaskHtml(d, 2) + '</div>', qs: [] };
   }
 
   /* ---------- Speaking ---------- */
@@ -288,21 +322,47 @@
   }
 
   /* ---------- сборка теста ---------- */
+  // Баннер имени (тема «99 имён»): арабское написание, переводы, суть, практика и аяты.
+  function nameBanner(id) {
+    var x = (IELTS.NIDX || [])[id - 1], m = (IELTS.NDATA[id] || {}).meta;
+    if (!x) return '';
+    var verses = m && m.refs ? m.refs.map(function (ref) {
+      var vs = (IELTS.VERSES || {})[ref];
+      return vs ? '<div class="border border-slate-200 rounded-xl p-3 bg-white"><div class="text-[11px] font-bold text-indigo-600 mb-1">Коран ' + esc(ref) + '</div><p class="ar text-xl leading-loose" lang="ar">' + esc(vs.ar) + '</p><p class="text-sm text-slate-700 mt-1"><b>EN:</b> ' + esc(vs.en) + '</p><p class="text-sm text-slate-700 mt-1"><b>RU:</b> ' + esc(vs.ru) + '</p></div>' : '';
+    }).join('') : '';
+    return '<div class="bg-white border border-slate-200 rounded-2xl p-5 mb-5"><div class="flex flex-wrap items-center gap-4"><div class="ar text-5xl" lang="ar">' + esc(x.ar) + '</div><div class="flex-1 min-w-[200px]"><h3 class="text-lg font-extrabold">' + esc(x.tr) + '</h3><p class="text-sm"><b>RU:</b> ' + esc(x.ru) + ' · <b>KZ:</b> ' + esc(x.kk) + ' · <b>EN:</b> ' + esc(x.en) + '</p></div><button type="button" id="nmSpeak" class="btn btn-ghost">🔊 Произношение</button></div>' +
+      (m ? '<details class="mt-3"><summary class="cursor-pointer text-sm font-semibold text-indigo-700">Суть, практические советы и аяты (RU · KZ)</summary><div class="grid sm:grid-cols-2 gap-4 mt-3"><div><h4 class="font-bold text-sm mb-1">Суть · RU</h4><p class="text-sm leading-relaxed">' + esc(m.essence.ru) + '</p><h4 class="font-bold text-sm mt-3 mb-1">Практика · RU</h4><p class="text-sm leading-relaxed">' + esc(m.practice.ru) + '</p></div><div><h4 class="font-bold text-sm mb-1">Мәні · KZ</h4><p class="text-sm leading-relaxed">' + esc(m.essence.kk) + '</p><h4 class="font-bold text-sm mt-3 mb-1">Тәжірибе · KZ</h4><p class="text-sm leading-relaxed">' + esc(m.practice.kk) + '</p></div></div><div class="space-y-2 mt-3">' + verses + '</div></details>' : '') + '</div>';
+  }
+  function speakName(text, lang) {
+    if (!('speechSynthesis' in window)) return;
+    speechSynthesis.cancel();
+    var u = new SpeechSynthesisUtterance(text); u.lang = lang; u.rate = 0.85;
+    var vv = speechSynthesis.getVoices().filter(function (z) { return z.lang.toLowerCase().indexOf(lang.slice(0, 2)) === 0; })[0];
+    if (vv) u.voice = vv;
+    speechSynthesis.speak(u);
+  }
+
   function renderTest(skill, v) {
     if (!IELTS.verifySessionIntegrity()) return;
-    var d = (IELTS.DATA[skill] || [])[v - 1];
+    var topic = curTopic();
+    var d = topic === 'names' ? (IELTS.NDATA[v] || {})[skill] : (IELTS.DATA[skill] || [])[v - 1];
     var root = $('testWorkspace');
-    if (!d) { root.innerHTML = '<p class="text-sm text-slate-500">Вариант не найден.</p>'; return; }
+    if (!d) { root.innerHTML = '<p class="text-sm text-slate-500">Вариант пока не готов — скоро.</p><button type="button" class="btn btn-ghost mt-3" data-nav="course" data-skill="' + skill + '" data-topic="' + topic + '">← К списку</button>'; return; }
     var st = IELTS.vstate(skill, v);
     var built = skill === 'reading' ? renderReading(d, v) : skill === 'listening' ? renderListening(d, v) : skill === 'writing' ? renderWriting(d, v) : renderSpeaking(d, v);
     root.innerHTML = built.html;
+    if (topic === 'names') {
+      var anchor = root.firstElementChild; // шапка навигации
+      anchor.insertAdjacentHTML('afterend', nameBanner(v));
+      var sp = $('nmSpeak'), nm = IELTS.NIDX[v - 1];
+      if (sp) sp.addEventListener('click', function () { speakName(nm.ar, 'ar-SA'); setTimeout(function () { speakName(nm.tr, 'en-GB'); }, 1800); });
+    }
     IELTS.touch(skill, v);
     if (skill === 'reading' || skill === 'listening') wireQuiz(root, skill, v, d, built.qs, st);
     if (skill === 'listening') wireListening(root, d);
     if (skill === 'writing') wireWriting(root, skill, v, d, st);
     if (skill === 'speaking') wireSpeaking(root, skill, v, d, st, built.items);
   }
-
   function wireQuiz(root, skill, v, d, qs, st) {
     bindAutosave(root, skill, v);
     var pre = skill === 'reading' ? 'rd' : 'ls';
@@ -357,6 +417,7 @@
 
   function wireWriting(root, skill, v, d, st) {
     [1, 2].forEach(function (n) {
+      if (n === 1 && !d.task1) return;
       var key = 'w' + n, t = n === 1 ? d.task1 : d.task2, min = n === 1 ? 150 : 250;
       var ta = root.querySelector('[data-draft="' + key + '"]'), cnt = root.querySelector('[data-count="' + key + '"]');
       ta.value = st.d[key] || '';
@@ -372,7 +433,7 @@
       var dataText = n === 1 ? chartText(t.chart) : '';
       root.querySelector('[data-ai="' + key + '"]').addEventListener('click', function () {
         var other = n === 1 ? d.task2 : d.task1;
-        var cross = { promptText: other.prompt, keywords: other.keywords, dataText: n === 1 ? '' : chartText(other.chart) };
+        var cross = other ? { promptText: other.prompt, keywords: other.keywords, dataText: n === 1 ? '' : chartText(other.chart) } : undefined;
         aiRunner(this, skill, v, st, key, out, n === 1 ? 'w1' : 'w2', d.title + ' — Writing Task ' + n, t.prompt, ta.value, min, { keywords: t.keywords, dataText: dataText, cross: cross });
       });
     });

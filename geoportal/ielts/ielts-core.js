@@ -14,7 +14,7 @@
   var PBKDF2_ROUNDS = 150000;
   var JS_ROUNDS = 6000;
 
-  var IELTS = window.IELTS = { DATA: {}, SKILLS: ['reading', 'listening', 'writing', 'speaking'] };
+  var IELTS = window.IELTS = { DATA: {}, NDATA: {}, NIDX: null, VERSES: null, SKILLS: ['reading', 'listening', 'writing', 'speaking'] };
   var pendingProtectedRoute = null;
   var currentRoute = { screen: 'home' };
   var progress = null;      // прогресс текущего пользователя
@@ -366,9 +366,10 @@
   function scheduleSave() { clearTimeout(saveTimer); saveTimer = setTimeout(saveCurrentUserProgress, 600); }
   function flushSave() { clearTimeout(saveTimer); saveCurrentUserProgress(); }
   // Состояние одного варианта: { a: ответы, d: черновики, ev: оценки ИИ, t: время }
+  function vkey(skill) { var tp = currentRoute.topic; return tp && tp !== 'ielts' ? tp + '-' + skill : skill; }
   function vstate(skill, variant) {
     if (!progress) return { a: {}, d: {}, ev: {}, t: 0 };
-    var key = skill + ':' + variant;
+    var key = vkey(skill) + ':' + variant;
     var it = progress.items[key];
     if (!it) it = progress.items[key] = { a: {}, d: {}, ev: {}, t: 0 };
     return it;
@@ -391,29 +392,33 @@
   }
 
   /* ---------- Route Guard ---------- */
+  var TOPICS = { ielts: { count: 5 }, names: { count: 99 } };
   function routeToString(r) {
-    if (r.screen === 'course') return '#course/' + r.skill;
-    if (r.screen === 'test') return '#test/' + r.skill + '/' + r.variant;
+    var pre = r.topic && r.topic !== 'ielts' ? '#' + r.topic + '/' : '#';
+    if (r.screen === 'course') return pre + 'course/' + r.skill;
+    if (r.screen === 'test') return pre + 'test/' + r.skill + '/' + r.variant;
     return '';
   }
   function normalizeRoute(r) {
     if (typeof r === 'string') r = parseRoute(r);
     if (!r || !r.screen) return { screen: 'home' };
     if (r.screen !== 'home') {
+      if (!TOPICS[r.topic]) r.topic = 'ielts';
       if (IELTS.SKILLS.indexOf(r.skill) < 0) r.skill = 'reading';
       if (r.screen === 'test') {
         var v = parseInt(r.variant, 10);
-        if (!(v >= 1 && v <= 5)) return { screen: 'course', skill: r.skill };
+        if (!(v >= 1 && v <= TOPICS[r.topic].count)) return { screen: 'course', skill: r.skill, topic: r.topic };
         r.variant = v;
       }
     }
     return r;
   }
   function parseRoute(str) {
-    var h = String(str || '').replace(/^#/, '').split('/');
-    if (h[0] === 'course') return { screen: 'course', skill: h[1] };
-    if (h[0] === 'test') return { screen: 'test', skill: h[1], variant: h[2] };
-    if (h[0] === 'courses' || h[0] === 'course-list') return { screen: 'course', skill: 'reading' };
+    var h = String(str || '').replace(/^#/, '').split('/'), topic = 'ielts';
+    if (h[0] && h[0] !== 'ielts' && TOPICS[h[0]]) { topic = h.shift(); }
+    if (h[0] === 'course') return { screen: 'course', skill: h[1], topic: topic };
+    if (h[0] === 'test') return { screen: 'test', skill: h[1], variant: h[2], topic: topic };
+    if (h[0] === 'courses' || h[0] === 'course-list') return { screen: 'course', skill: 'reading', topic: topic };
     return { screen: 'home' };
   }
   function setRoute(r, replace) {
@@ -444,7 +449,7 @@
     setRoute(route, !!opts.replace);
     showScreen(route.screen);
     if (route.screen === 'home') { refreshHome(); return true; }
-    IELTS.ui.loadSkill(route.skill).then(function () {
+    IELTS.ui.loadSkill(route.topic, route.skill, route.variant).then(function () {
       if (!verifySessionIntegrity()) return;
       if (route.screen === 'course') IELTS.ui.renderCourse(route.skill);
       else IELTS.ui.renderTest(route.skill, route.variant);
@@ -460,8 +465,8 @@
     if (location.hash && location.hash.length > 1) route = parseRoute(location.hash);
     if ((!route || route.screen === 'home') && location.search) {
       var q = new URLSearchParams(location.search);
-      var skill = (q.get('skill') || '').toLowerCase();
-      if (skill) route = q.get('variant') ? { screen: 'test', skill: skill, variant: q.get('variant') } : { screen: 'course', skill: skill };
+      var skill = (q.get('skill') || '').toLowerCase(), topic = (q.get('topic') || 'ielts').toLowerCase();
+      if (skill) route = q.get('variant') ? { screen: 'test', skill: skill, variant: q.get('variant'), topic: topic } : { screen: 'course', skill: skill, topic: topic };
     }
     if (!route || route.screen === 'home') {
       try {
@@ -486,7 +491,7 @@
     $('variantsList').innerHTML = '';
     $('testWorkspace').innerHTML = '';
     $('skillTabs').innerHTML = '';
-    IELTS.DATA = {};
+    IELTS.DATA = {}; IELTS.NDATA = {}; IELTS.NIDX = null; IELTS.VERSES = null;
   }
   function lockDownSection(el) {
     if (verifySessionIntegrity()) return;
@@ -544,7 +549,10 @@
   /* ---------- запуск ---------- */
   function bindUI() {
     $('btnProfile').addEventListener('click', function () { openAuth(''); });
-    $('btnOpenCourse').addEventListener('click', function () { navigateTo({ screen: 'course', skill: 'reading' }); });
+    $('btnOpenCourse').addEventListener('click', function () { navigateTo({ screen: 'course', topic: 'ielts', skill: 'reading' }); });
+    $('btnOpenNames').addEventListener('click', function () {
+      navigateTo({ screen: 'course', topic: 'names', skill: 'reading' });
+    });
     $('logoLink').addEventListener('click', function (e) { e.preventDefault(); navigateTo({ screen: 'home' }); });
     $('authClose').addEventListener('click', closeAuth);
     $('authModal').addEventListener('click', function (e) { if (e.target === $('authModal')) closeAuth(); });
@@ -563,7 +571,7 @@
       if (nav) {
         var t = nav.getAttribute('data-nav');
         if (t === 'home') navigateTo({ screen: 'home' });
-        else if (t === 'course') navigateTo({ screen: 'course', skill: nav.getAttribute('data-skill') || currentRoute.skill || 'reading' });
+        else if (t === 'course') navigateTo({ screen: 'course', topic: nav.getAttribute('data-topic') || currentRoute.topic || 'ielts', skill: nav.getAttribute('data-skill') || currentRoute.skill || 'reading' });
       }
     });
     document.addEventListener('keydown', function (e) {
@@ -616,6 +624,7 @@
   IELTS.openAuth = openAuth;
   IELTS.hashUserPassword = hashUserPassword;
   IELTS.getRoute = function () { return currentRoute; };
+  IELTS.TOPICS = TOPICS;
   IELTS.getPending = function () { return pendingProtectedRoute; };
   IELTS.lsGet = lsGet; IELTS.lsSet = lsSet; IELTS.lsDel = lsDel;
 })();
