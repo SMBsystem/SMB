@@ -50,7 +50,7 @@
     var evals = Object.keys(st.ev || {}).length;
     return '<article class="bg-white border border-slate-200 rounded-2xl p-5 flex flex-col gap-3 ' + (ready ? 'hover:border-indigo-300' : 'opacity-60') + ' transition">' +
       '<div class="flex items-center justify-between"><span class="text-xs font-bold text-indigo-600">Вариант ' + i + '</span>' +
-      (started ? '<span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700">' + (st.a && st.a._score ? 'Результат ' + esc(st.a._score) + (bandFromScore(skill, st.a._score) != null ? ' · Band ' + fmtBand(bandFromScore(skill, st.a._score)) : '') : 'Начато') + (evals ? ' · ИИ ×' + evals : '') + '</span>' : '') + '</div>' +
+      (started ? '<span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700">' + (st.a && st.a._score ? 'Результат ' + esc(st.a._score) + (bandFromScore(skill, st.a._score) != null ? ' · Band ' + fmtBand(bandFromScore(skill, st.a._score)) : '') : 'Начато') + (productiveBand(skill, st) ? ' · Band ' + productiveBand(skill, st).band.toFixed(1) : '') + (evals ? ' · ИИ ×' + evals : '') + '</span>' : '') + '</div>' +
       title + '<p class="text-xs text-slate-500">' + esc(spec) + '</p>' +
       (takeaway ? '<p class="text-sm text-slate-600 leading-relaxed"><b class="text-slate-800">Польза:</b> ' + esc(takeaway) + '</p>' : '') +
       (ready ? '<button type="button" data-open-test="' + i + '" data-skill="' + skill + '" data-topic="' + topic + '" class="btn btn-primary mt-auto">' + (started ? 'Продолжить' : 'Начать') + ' →</button>' : '<span class="mt-auto text-xs font-semibold text-slate-400">Скоро</span>') + '</article>';
@@ -151,6 +151,33 @@
     return m ? bandFromRaw(skill, +m[1], +m[2]) : null;
   }
   function fmtBand(b) { return b == null ? '' : (b % 1 ? b.toFixed(1) : b.toFixed(1)); }
+  // Сводный бэнд Writing / Speaking по оценкам ИИ (st.ev[ключ].overall).
+  // Writing: как в IELTS, Task 2 весит вдвое больше Task 1. Speaking: среднее по проверенным ответам.
+  function round05(x) { return Math.round(x * 2) / 2; }
+  function productiveBand(skill, st) {
+    var ev = (st && st.ev) || {};
+    function ov(k) { var e = ev[k]; return e && typeof e.overall === 'number' ? e.overall : null; }
+    if (skill === 'writing') {
+      var t1 = ov('w1'), t2 = ov('w2');
+      if (t1 != null && t2 != null) return { band: round05((t1 + 2 * t2) / 3), note: 'Task 1: ' + t1.toFixed(1) + ' · Task 2: ' + t2.toFixed(1) };
+      if (t2 != null) return { band: t2, note: 'только Task 2' };
+      if (t1 != null) return { band: t1, note: 'только Task 1' };
+      return null;
+    }
+    if (skill === 'speaking') {
+      var vals = Object.keys(ev).map(ov).filter(function (x) { return x != null; });
+      if (!vals.length) return null;
+      var sum = vals.reduce(function (a, b) { return a + b; }, 0);
+      return { band: round05(sum / vals.length), note: 'среднее по ' + vals.length + ' проверенным ответам' };
+    }
+    return null;
+  }
+  function productiveLine(skill, st) {
+    var p = productiveBand(skill, st);
+    if (!p) return '';
+    return '<div class="p-3 rounded-xl border border-indigo-200 bg-indigo-50 text-indigo-900 text-sm"><span class="font-bold text-lg">Сводный Band: ' + p.band.toFixed(1) + '</span> <span class="text-xs">(' + esc(p.note) + ')</span>' +
+      '<div class="text-xs mt-0.5">Оценка ориентировочная, её даёт ИИ-проверка; настоящий экзаменатор может оценить иначе.</div></div>';
+  }
   function resultBanner(g, skill) {
     var pct = Math.round(100 * g.right / g.total);
     var band = bandFromRaw(skill, g.right, g.total);
@@ -348,7 +375,7 @@
   }
   function renderWriting(d, v) {
     var two = !!d.task1;
-    return { html: header('writing', v, d) + '<div class="grid ' + (two ? 'lg:grid-cols-2' : 'max-w-3xl mx-auto') + ' gap-5 items-start">' + (two ? writingTaskHtml(d, 1) : '') + writingTaskHtml(d, 2) + '</div>', qs: [] };
+    return { html: header('writing', v, d) + '<div class="grid ' + (two ? 'lg:grid-cols-2' : 'max-w-3xl mx-auto') + ' gap-5 items-start">' + (two ? writingTaskHtml(d, 1) : '') + writingTaskHtml(d, 2) + '</div><div data-bandsum class="mt-4 max-w-3xl mx-auto"></div>', qs: [] };
   }
 
   /* ---------- Speaking ---------- */
@@ -376,7 +403,7 @@
       '<p id="spQuestion" class="text-sm bg-slate-50 border border-slate-200 rounded-xl p-3"></p>' +
       '<textarea id="spText" class="inp !min-h-[180px] leading-relaxed" placeholder="Говорите в микрофон или печатайте ответ на английском…" maxlength="5000"></textarea>' +
       '<div class="flex flex-wrap items-center justify-between gap-2"><span id="spCount" class="text-sm font-semibold">0 слов</span><div class="flex gap-2"><button type="button" id="spMic" class="btn btn-ghost">🎙 Запись</button><button type="button" id="spAi" class="btn btn-primary">🤖 Оценить ИИ</button></div></div>' +
-      '<p id="spHint" class="text-[11px] text-slate-400"></p><div id="spEval"></div></section></div>';
+      '<p id="spHint" class="text-[11px] text-slate-400"></p><div id="spEval"></div><div data-bandsum class="mt-3"></div></section></div>';
     return { html: h, qs: [], items: items };
   }
 
@@ -468,6 +495,7 @@
       if (!IELTS.verifySessionIntegrity()) return;
       st.ev[evKey] = r; IELTS.touch(skill, v);
       outEl.innerHTML = window.renderAiEvaluationCard(r);
+      var bs = document.querySelector('[data-bandsum]'); if (bs) bs.innerHTML = productiveLine(skill, st);
       outEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }).catch(function (e) {
       IELTS.toast('Ошибка проверки: ' + (e && e.message), true);
@@ -475,6 +503,7 @@
   }
 
   function wireWriting(root, skill, v, d, st) {
+    var bs0 = root.querySelector('[data-bandsum]'); if (bs0) bs0.innerHTML = productiveLine(skill, st);
     [1, 2].forEach(function (n) {
       if (n === 1 && !d.task1) return;
       var key = 'w' + n, t = n === 1 ? d.task1 : d.task2, min = n === 1 ? 150 : 250;
@@ -501,6 +530,7 @@
   function wireSpeaking(root, skill, v, d, st, items) {
     var sel = $('spSelect'), ta = $('spText'), cnt = $('spCount'), out = $('spEval'), hint = $('spHint'), mic = $('spMic');
     var conf = null, rec = null;
+    var bs1 = root.querySelector('[data-bandsum]'); if (bs1) bs1.innerHTML = productiveLine(skill, st);
     function cur() { return items[parseInt(sel.value, 10) || 0]; }
     function upd() { var c = wordCount(ta.value), it = cur(); cnt.textContent = c + ' слов (цель ≥ ' + it.min + ')'; cnt.className = 'text-sm font-semibold ' + (c >= it.min ? 'text-emerald-600' : 'text-slate-600'); }
     function load() {
