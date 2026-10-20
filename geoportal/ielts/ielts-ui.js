@@ -35,7 +35,8 @@
         if (!variant) return null;
         var c = chunkOf(variant);
         if (variant > (IELTS.NREADY || 0)) return null;
-        return Promise.all([loadScript('names-r' + c), loadScript('names-l' + c)]);
+        // names-xNN — необязательные дополнения (Writing Task 1, новые типы заданий); их отсутствие не ошибка
+        return Promise.all([loadScript('names-r' + c), loadScript('names-l' + c)]).then(function () { return loadScript('names-x' + c).catch(function () { return null; }); });
       });
     }
     if (IELTS.DATA[skill]) return Promise.resolve(IELTS.DATA[skill]);
@@ -157,31 +158,46 @@
   }
 
   /* ---------- Reading ---------- */
+  var ROMAN = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x'];
+  function qRange(from, count) { return count > 1 ? from + '–' + (from + count - 1) : String(from); }
   function renderReading(d, v) {
     var qs = [];
     var h = header('reading', v, d) + '<div class="grid lg:grid-cols-2 gap-5"><div class="bg-white border border-slate-200 rounded-2xl p-5 scroll-y passage"><h3 class="font-bold text-lg mb-1">' + esc(d.passage.heading) + '</h3><p class="text-xs text-slate-400 mb-4">' + esc(d.spec) + '</p>' +
       d.passage.paras.map(function (p) { return '<p><b class="inline-block w-6 text-indigo-600">' + p.l + '</b>' + esc(p.t) + '</p>'; }).join('') + '</div>';
     h += '<div class="bg-white border border-slate-200 rounded-2xl p-5 scroll-y space-y-6" id="rdQuestions">';
     var n = 1, letters = d.passage.paras.map(function (p) { return p.l; }), lastL = letters[letters.length - 1];
-    h += '<div><h4 class="font-bold">Questions 1–' + d.match.length + '</h4><p class="text-xs text-slate-500 mb-3">Which paragraph (A–' + lastL + ') contains the following information? You may use any letter more than once.</p>';
-    d.match.forEach(function (q, i) {
-      var k = 'm' + i; qs.push({ k: k, a: [q.a], e: q.e });
-      h += '<div class="mb-3"><div class="flex gap-2 items-start"><span class="font-bold text-sm w-6">' + (n++) + '</span><span class="flex-1 text-sm">' + esc(q.q) + '</span><select class="inp !w-20" data-k="' + k + '"><option value=""></option>' + letters.map(function (c) { return '<option>' + c + '</option>'; }).join('') + '</select></div><div data-fb="' + k + '" class="hidden"></div></div>';
-    });
-    h += '</div><div><h4 class="font-bold">Questions ' + (d.match.length + 1) + '–' + (d.match.length + d.tfng.length) + '</h4><p class="text-xs text-slate-500 mb-3">Do the following statements agree with the information in the passage? Choose TRUE, FALSE or NOT GIVEN.</p>';
-    d.tfng.forEach(function (q, i) {
-      var k = 't' + i; qs.push({ k: k, a: [q.a], e: q.e });
-      h += '<div class="mb-3"><div class="flex gap-2 items-start"><span class="font-bold text-sm w-6">' + (n++) + '</span><span class="flex-1 text-sm">' + esc(q.q) + '</span><select class="inp !w-36" data-k="' + k + '"><option value=""></option><option>TRUE</option><option>FALSE</option><option>NOT GIVEN</option></select></div><div data-fb="' + k + '" class="hidden"></div></div>';
-    });
-    h += '</div><div><h4 class="font-bold">Questions ' + (d.match.length + d.tfng.length + 1) + '–' + (d.match.length + d.tfng.length + d.gaps.items.length) + '</h4><p class="text-xs text-slate-500 mb-3">Complete the summary. Choose ONE WORD ONLY from the passage for each answer.</p><p class="text-sm leading-8">' +
+    function selectRow(k, q, opts, width) {
+      return '<div class="mb-3"><div class="flex gap-2 items-start"><span class="font-bold text-sm w-6">' + (n++) + '</span><span class="flex-1 text-sm">' + esc(q) + '</span><select class="inp ' + width + '" data-k="' + k + '"><option value=""></option>' + opts.map(function (c) { return '<option>' + c + '</option>'; }).join('') + '</select></div><div data-fb="' + k + '" class="hidden"></div></div>';
+    }
+    // необязательно: соответствие заголовков абзацам (Matching Headings)
+    if (d.heads && d.heads.items.length) {
+      var hs = d.heads, hn = hs.items.length;
+      h += '<div><h4 class="font-bold">Questions ' + qRange(n, hn) + '</h4><p class="text-xs text-slate-500 mb-2">The passage has paragraphs ' + letters.join(', ') + '. Choose the correct heading for each paragraph below from the list of headings.</p>' +
+        '<ul class="rounded-xl bg-slate-50 border border-slate-200 p-3 mb-3 text-sm space-y-1">' + hs.list.map(function (x, i) { return '<li><b class="inline-block w-8 text-indigo-600">' + ROMAN[i] + '</b>' + esc(x) + '</li>'; }).join('') + '</ul>';
+      hs.items.forEach(function (q, i) { var k = 'h' + i; qs.push({ k: k, a: [q.a], e: q.e }); h += selectRow(k, 'Paragraph ' + q.p, ROMAN.slice(0, hs.list.length), '!w-20'); });
+      h += '</div>';
+    }
+    h += '<div><h4 class="font-bold">Questions ' + qRange(n, d.match.length) + '</h4><p class="text-xs text-slate-500 mb-3">Which paragraph (A–' + lastL + ') contains the following information? You may use any letter more than once.</p>';
+    d.match.forEach(function (q, i) { var k = 'm' + i; qs.push({ k: k, a: [q.a], e: q.e }); h += selectRow(k, q.q, letters, '!w-20'); });
+    h += '</div><div><h4 class="font-bold">Questions ' + qRange(n, d.tfng.length) + '</h4><p class="text-xs text-slate-500 mb-3">Do the following statements agree with the information in the passage? Choose TRUE, FALSE or NOT GIVEN.</p>';
+    d.tfng.forEach(function (q, i) { var k = 't' + i; qs.push({ k: k, a: [q.a], e: q.e }); h += selectRow(k, q.q, ['TRUE', 'FALSE', 'NOT GIVEN'], '!w-36'); });
+    h += '</div>';
+    // необязательно: мнения автора (Yes / No / Not Given)
+    if (d.ynng && d.ynng.length) {
+      h += '<div><h4 class="font-bold">Questions ' + qRange(n, d.ynng.length) + '</h4><p class="text-xs text-slate-500 mb-3">Do the following statements agree with the views of the writer? Choose YES, NO or NOT GIVEN.</p>';
+      d.ynng.forEach(function (q, i) { var k = 'y' + i; qs.push({ k: k, a: [q.a], e: q.e }); h += selectRow(k, q.q, ['YES', 'NO', 'NOT GIVEN'], '!w-36'); });
+      h += '</div>';
+    }
+    var gStart = n, firstGap = Math.min.apply(null, (d.gaps.text.match(/\{(\d+)\}/g) || ['{0}']).map(function (x) { return parseInt(x.slice(1), 10); }));
+    h += '<div><h4 class="font-bold">Questions ' + qRange(n, d.gaps.items.length) + '</h4><p class="text-xs text-slate-500 mb-3">Complete the summary. Choose ONE WORD ONLY from the passage for each answer.</p><p class="text-sm leading-8">' +
       esc(d.gaps.text).replace(/\{(\d+)\}/g, function (m, num) {
-        var gi = parseInt(num, 10) - (d.match.length + d.tfng.length + 1); return '<span class="whitespace-nowrap font-bold text-xs text-slate-500">' + num + '</span> <input class="gap" data-k="g' + gi + '" autocomplete="off" spellcheck="false" aria-label="Answer ' + num + '">';
+        // номера в данных — авторские; на экране нумерация считается от реального начала блока
+        var gi = parseInt(num, 10) - firstGap, shown = gStart + gi; return '<span class="whitespace-nowrap font-bold text-xs text-slate-500">' + shown + '</span> <input class="gap" data-k="g' + gi + '" autocomplete="off" spellcheck="false" aria-label="Answer ' + shown + '">';
       }) + '</p>';
     d.gaps.items.forEach(function (it, i) { qs.push({ k: 'g' + i, a: it.a, e: it.e }); h += '<div data-fb="g' + i + '" class="hidden"></div>'; });
     h += '</div><div class="flex flex-wrap gap-2 items-center sticky bottom-0 bg-white pt-3 border-t border-slate-100"><button type="button" id="rdCheck" class="btn btn-primary">Проверить ответы</button><button type="button" id="rdReset" class="btn btn-ghost">Сбросить</button></div><div id="rdResult"></div></div></div>';
     return { html: h, qs: qs };
   }
-
   /* ---------- Listening ---------- */
   function renderListening(d, v) {
     var qs = [];
@@ -207,7 +223,29 @@
         q.opts.map(function (o, j) { var L = 'ABC'[j]; return '<label class="flex gap-2 items-start text-sm py-0.5 cursor-pointer"><input type="radio" name="' + k + '" value="' + L + '" data-k="' + k + '" class="mt-1"><span><b>' + L + '</b> ' + esc(o) + '</span></label>'; }).join('') +
         '<div data-fb="' + k + '" class="hidden"></div></div>';
     });
-    h += '</div><div class="flex flex-wrap gap-2 sticky bottom-0 bg-white pt-3 border-t border-slate-100"><button type="button" id="lsCheck" class="btn btn-primary">Проверить ответы</button><button type="button" id="lsReset" class="btn btn-ghost">Сбросить</button></div><div id="lsResult"></div></div></div>';
+    h += '</div>';
+    var ln = 6 + d.mc.length;
+    // необязательно: Matching — сопоставить пункты с вариантами A–E
+    if (d.matching && d.matching.items.length) {
+      var mt = d.matching, L2 = 'ABCDEFG'.slice(0, mt.options.length).split('');
+      h += '<div><h4 class="font-bold">Questions ' + qRange(ln, mt.items.length) + '</h4><p class="text-xs text-slate-500 mb-2">' + esc(mt.instruction) + '</p>' +
+        '<ul class="rounded-xl bg-slate-50 border border-slate-200 p-3 mb-3 text-sm space-y-1">' + mt.options.map(function (o, j) { return '<li><b class="inline-block w-6 text-indigo-600">' + L2[j] + '</b>' + esc(o) + '</li>'; }).join('') + '</ul>';
+      mt.items.forEach(function (q, i) {
+        var k = 'x' + i; qs.push({ k: k, a: [q.a], e: q.e });
+        h += '<div class="mb-3"><div class="flex gap-2 items-start"><span class="font-bold text-sm w-6">' + (ln++) + '</span><span class="flex-1 text-sm">' + esc(q.q) + '</span><select class="inp !w-20" data-k="' + k + '"><option value=""></option>' + L2.map(function (c) { return '<option>' + c + '</option>'; }).join('') + '</select></div><div data-fb="' + k + '" class="hidden"></div></div>';
+      });
+      h += '</div>';
+    }
+    // необязательно: Short-answer — короткий ответ своими словами (до трёх слов)
+    if (d.short && d.short.length) {
+      h += '<div><h4 class="font-bold">Questions ' + qRange(ln, d.short.length) + '</h4><p class="text-xs text-slate-500 mb-3">Answer the questions. Write NO MORE THAN THREE WORDS AND/OR A NUMBER for each answer.</p>';
+      d.short.forEach(function (q, i) {
+        var k = 's' + i; qs.push({ k: k, a: q.a, e: q.e });
+        h += '<div class="mb-3 text-sm"><div class="flex gap-2 items-center"><span class="font-bold w-6">' + (ln++) + '</span><span class="flex-1">' + esc(q.q) + '</span></div><input class="gap !w-full mt-1" data-k="' + k + '" autocomplete="off" spellcheck="false" aria-label="Answer ' + (ln - 1) + '"><div data-fb="' + k + '" class="hidden"></div></div>';
+      });
+      h += '</div>';
+    }
+    h += '<div class="flex flex-wrap gap-2 sticky bottom-0 bg-white pt-3 border-t border-slate-100"><button type="button" id="lsCheck" class="btn btn-primary">Проверить ответы</button><button type="button" id="lsReset" class="btn btn-ghost">Сбросить</button></div><div id="lsResult"></div></div></div>';
     return { html: h, qs: qs };
   }
 
