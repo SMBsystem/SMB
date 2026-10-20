@@ -404,6 +404,23 @@
       </div>
     </section>
 
+    <!-- 1b. INTERACTIVE MAP -->
+    <section id="mapSection" class="p-5 sm:p-6 rounded-2xl bg-space-950 border border-emerald-500/40 space-y-4 shadow-xl">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <h2 class="text-xs sm:text-sm font-black text-white uppercase tracking-wider flex items-center space-x-2">
+          <span>🗺️</span><span id="mapHeader">ҒАЛЫМДАР ЗЕРТТЕГЕН ЖЕРЛЕР КАРТАСЫ</span>
+        </h2>
+        <div id="mapBaseSwitch" class="inline-flex p-1 bg-space-900 border border-slate-800 rounded-xl gap-1 text-[11px] font-bold"></div>
+      </div>
+      <p id="mapIntro" class="text-xs text-slate-400"></p>
+      <div id="mapFilters" class="flex flex-wrap gap-1.5"></div>
+      <div class="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-4">
+        <div id="t20map" class="t20-map w-full h-[380px] sm:h-[480px] rounded-xl border border-slate-800 overflow-hidden"></div>
+        <aside id="mapPanel" class="rounded-xl bg-space-900/70 border border-slate-800 p-4 space-y-3 text-xs lg:max-h-[480px] lg:overflow-y-auto"></aside>
+      </div>
+      <div id="mapLegend" class="flex flex-wrap gap-x-4 gap-y-1.5 text-[11px] text-slate-400"></div>
+    </section>
+
     <!-- 5. KEY FACTS FOR UNT / ЕНТ -->
     <section id="factsSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl">
       <h3 class="text-xs font-black text-amber-400 flex items-center space-x-2">
@@ -447,23 +464,6 @@
         <div id="timeline" class="space-y-1.5"></div>
       </div>
       <p id="galleryCredit" class="text-[10px] text-slate-500"></p>
-    </section>
-
-    <!-- 1b. INTERACTIVE MAP -->
-    <section id="mapSection" class="p-5 sm:p-6 rounded-2xl bg-space-950 border border-emerald-500/40 space-y-4 shadow-xl">
-      <div class="flex flex-wrap items-center justify-between gap-2">
-        <h2 class="text-xs sm:text-sm font-black text-white uppercase tracking-wider flex items-center space-x-2">
-          <span>🗺️</span><span id="mapHeader">ҒАЛЫМДАР ЗЕРТТЕГЕН ЖЕРЛЕР КАРТАСЫ</span>
-        </h2>
-        <div id="mapBaseSwitch" class="inline-flex p-1 bg-space-900 border border-slate-800 rounded-xl gap-1 text-[11px] font-bold"></div>
-      </div>
-      <p id="mapIntro" class="text-xs text-slate-400"></p>
-      <div id="mapFilters" class="flex flex-wrap gap-1.5"></div>
-      <div class="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-4">
-        <div id="t20map" class="t20-map w-full h-[380px] sm:h-[480px] rounded-xl border border-slate-800 overflow-hidden"></div>
-        <aside id="mapPanel" class="rounded-xl bg-space-900/70 border border-slate-800 p-4 space-y-3 text-xs lg:max-h-[480px] lg:overflow-y-auto"></aside>
-      </div>
-      <div id="mapLegend" class="flex flex-wrap gap-x-4 gap-y-1.5 text-[11px] text-slate-400"></div>
     </section>
 
     <!-- 3. VISUAL SVG DIAGRAM / ILLUSTRATION -->
@@ -1136,7 +1136,7 @@
 
     const T20_UI = {
       kz: {
-        nav: { summarySection: 'Шолу', theorySection: '📚 Теория', factsSection: 'Фактілер', trapsSection: 'Қақпандар', quizSection: '🎯 Тест', extraMaterials: '➕ Қосымша', extraPractice: '🧪 Кейс пен карта-тест' },
+        nav: { summarySection: 'Шолу', theorySection: '📚 Теория', mapSection: '🗺️ Карта', factsSection: 'Фактілер', trapsSection: 'Қақпандар', quizSection: '🎯 Тест', extraMaterials: '➕ Қосымша', extraPractice: '🧪 Кейс пен карта-тест' },
         galleryHeader: '10 ҒАЛЫМ: ПОРТРЕТ ГАЛЕРЕЯСЫ', galleryIntro: 'Карточканы бас — карта сол ғалымның зерттеген жерлеріне ұшып барады. «Аттарды жасыру» режимінде портрет пен кілт сөз бойынша ғалымды таны, тексеру үшін карточканы бас.',
         galleryCredit: 'Фото дереккөздері: Wikimedia Commons — Ш. Уәлиханов (1859), Қ. Сәтбаев («Казахстанская правда», 1949); У. Ахмедсафин (1960); Н.Н. Пальгов — «Гидрометеорология и экология» журналы (2014); М.Ж. Жандаев — ҚазҰУ биобиблиографиясы (1996); А.П. Горбунов — Informburo; Ә.С. Бейсенова, Ш.М. Надыров — «Казахстанская правда». Өтемағамбетов пен Ярмухамедовтың портреті ашық дереккөздерде табылмады, сондықтан олардың оқулық мұқабасы көрсетілген (📕 белгісі).',
         hide: '🙈 Аттарды жасыру', show: '👁️ Аттарды көрсету', toMap: '📍 Картадан', block: 'Блок',
@@ -1152,7 +1152,7 @@
         timelineHeader: '⏳ Уақыт сызығы: кім қашан өмір сүрді', timelineNote: 'Туған жылы бойынша реттелген; «→» — өлген жылы белгісіз немесе тірі', born: 'туған'
       },
       ru: {
-        nav: { summarySection: 'Обзор', theorySection: '📚 Теория', factsSection: 'Факты', trapsSection: 'Ловушки', quizSection: '🎯 Тест', extraMaterials: '➕ Дополнительно', extraPractice: '🧪 Кейсы и тест по карте' },
+        nav: { summarySection: 'Обзор', theorySection: '📚 Теория', mapSection: '🗺️ Карта', factsSection: 'Факты', trapsSection: 'Ловушки', quizSection: '🎯 Тест', extraMaterials: '➕ Дополнительно', extraPractice: '🧪 Кейсы и тест по карте' },
         galleryHeader: '10 УЧЁНЫХ: ПОРТРЕТНАЯ ГАЛЕРЕЯ', galleryIntro: 'Нажми на карточку — карта перелетит к местам, которые изучал этот учёный. В режиме «Скрыть имена» узнай учёного по портрету и ключевым словам, нажми на карточку для проверки.',
         galleryCredit: 'Источники фото: Wikimedia Commons — Ч. Валиханов (1859), К. Сатпаев («Казахстанская правда», 1949); У. Ахмедсафин (1960); Н.Н. Пальгов — журнал «Гидрометеорология и экология» (2014); М.Ж. Жандаев — биобиблиография КазНУ (1996); А.П. Горбунов — Informburo; А.С. Бейсенова, Ш.М. Надыров — «Казахстанская правда». Портретов Утемагамбетова и Ярмухамедова в открытых источниках нет, поэтому показаны обложки их учебников (значок 📕).',
         hide: '🙈 Скрыть имена', show: '👁️ Показать имена', toMap: '📍 На карте', block: 'Блок',
@@ -1596,7 +1596,7 @@
   <script>
     /* Simplified layout: secondary sections live in collapsible groups */
     (function () {
-      var L = {"nav_kz":"nav: { summarySection: \u0027Шолу\u0027, theorySection: \u0027📚 Теория\u0027, factsSection: \u0027Фактілер\u0027, trapsSection: \u0027Қақпандар\u0027, quizSection: \u0027🎯 Тест\u0027, extraMaterials: \u0027➕ Қосымша\u0027, extraPractice: \u0027🧪 Кейс пен карта-тест\u0027 }","nav_ru":"nav: { summarySection: \u0027Обзор\u0027, theorySection: \u0027📚 Теория\u0027, factsSection: \u0027Факты\u0027, trapsSection: \u0027Ловушки\u0027, quizSection: \u0027🎯 Тест\u0027, extraMaterials: \u0027➕ Дополнительно\u0027, extraPractice: \u0027🧪 Кейсы и тест по карте\u0027 }","extraMat_kz":"➕ Қосымша материалдар","extraMat_ru":"➕ Дополнительные материалы","extraMatSub_kz":"ғалымдар галереясы · карта · схема · кесте","extraMatSub_ru":"галерея учёных · карта · схема · таблица","extraPr_kz":"🧪 Қосымша жаттығулар","extraPr_ru":"🧪 Дополнительные упражнения","extraPrSub_kz":"5 кейс · карта бойынша тест","extraPrSub_ru":"5 кейсов · тест по карте","hint_kz":"басып ашыңыз","hint_ru":"нажмите, чтобы открыть"};
+      var L = {"nav_kz":"nav: { summarySection: \u0027Шолу\u0027, theorySection: \u0027📚 Теория\u0027, factsSection: \u0027Фактілер\u0027, trapsSection: \u0027Қақпандар\u0027, quizSection: \u0027🎯 Тест\u0027, extraMaterials: \u0027➕ Қосымша\u0027, extraPractice: \u0027🧪 Кейс пен карта-тест\u0027 }","nav_ru":"nav: { summarySection: \u0027Обзор\u0027, theorySection: \u0027📚 Теория\u0027, factsSection: \u0027Факты\u0027, trapsSection: \u0027Ловушки\u0027, quizSection: \u0027🎯 Тест\u0027, extraMaterials: \u0027➕ Дополнительно\u0027, extraPractice: \u0027🧪 Кейсы и тест по карте\u0027 }","extraMat_kz":"➕ Қосымша материалдар","extraMat_ru":"➕ Дополнительные материалы","extraMatSub_kz":"ғалымдар галереясы · схема · кесте","extraMatSub_ru":"галерея учёных · схема · таблица","extraPr_kz":"🧪 Қосымша жаттығулар","extraPr_ru":"🧪 Дополнительные упражнения","extraPrSub_kz":"5 кейс · карта бойынша тест","extraPrSub_ru":"5 кейсов · тест по карте","hint_kz":"басып ашыңыз","hint_ru":"нажмите, чтобы открыть"};
       function paint() {
         var ru = (typeof t20Lang !== 'undefined' && t20Lang === 'ru');
         var k = ru ? 'ru' : 'kz';
