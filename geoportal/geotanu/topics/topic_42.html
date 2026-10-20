@@ -22,7 +22,8 @@
             isAuthorized = true;
           }
         }
-        if (!isAuthorized) {
+        var inPreview = (window.self !== window.top) || !window.location.hostname || window.location.hostname.indexOf('googleusercontent') !== -1 || window.location.protocol === 'blob:' || window.location.protocol === 'data:' || window.location.protocol === 'about:';
+        if (!isAuthorized && !inPreview) {
           var target = window.location.pathname.split('/').pop() || 'topics.html';
           window.location.replace('../geotanu.html?need_course=GEOTANY&redirect=' + encodeURIComponent(target));
           return;
@@ -30,7 +31,8 @@
         var cloak = document.getElementById('authCloak');
         if (cloak) cloak.remove();
       } catch (err) {
-        window.location.replace('../geotanu.html');
+        var cloakFallback = document.getElementById('authCloak');
+        if (cloakFallback) cloakFallback.remove();
       }
     })();
   </script>
@@ -56,28 +58,50 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Outfit', 'Inter', sans-serif; }
-    /* Custom scrollbar */
+    body { font-family: 'Outfit', 'Inter', sans-serif; scroll-behavior: smooth; }
     ::-webkit-scrollbar { width: 8px; height: 8px; }
     ::-webkit-scrollbar-track { background: #0b1120; }
     ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: #334155; }
+    .perspective-1000 { perspective: 1000px; }
+    .flip-card-inner {
+      transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-style: preserve-3d;
+    }
+    .flip-card.flipped .flip-card-inner {
+      transform: rotateY(180deg);
+    }
+    .flip-card-front, .flip-card-back {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .flip-card-back {
+      transform: rotateY(180deg);
+    }
   </style>
 </head>
 <body class="bg-[#070b14] text-slate-100 min-h-screen flex flex-col selection:bg-cyan-500 selection:text-space-950">
 
   <!-- STICKY TOP NAVBAR -->
-  <header class="sticky top-0 z-50 backdrop-blur-md bg-space-950/85 border-b border-slate-800/80 px-4 sm:px-8 py-3">
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-space-950/90 border-b border-slate-800/80 px-4 sm:px-8 py-3">
     <div class="max-w-6xl mx-auto flex items-center justify-between gap-3">
       <!-- Left: Back Button & Badges -->
       <div class="flex items-center space-x-2.5 sm:space-x-3 shrink-0">
-        <a href="../geotanu.html#section-zhattau_grammar" id="btnBackToCourse" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white transition"><span>←</span><span id="btnBackToCourseText">Артқа</span></a>
+        <a href="javascript:void(0)" onclick="navigateCourse('../geotanu.html#section-zhattau_grammar')" id="btnBackToCourse" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white transition"><span>←</span><span id="btnBackToCourseText">Артқа</span></a>
         <span class="px-2.5 py-1 rounded-full text-xs font-black bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
           #42
         </span>
-        <span id="navCatBadge" class="text-xs text-slate-400 font-bold hidden md:inline truncate max-w-[200px]">
+        <span id="navCatBadge" class="text-xs text-slate-400 font-bold hidden md:inline truncate max-w-[220px]">
           Геосаяси концепциялар
         </span>
+      </div>
+
+      <!-- Center Quick Jump Pills (Desktop) -->
+      <div class="hidden lg:flex items-center space-x-1 bg-space-900/80 border border-slate-800/80 rounded-xl p-1 text-[11px] font-bold text-slate-400">
+        <a href="#theorySectionAnchor" class="px-2.5 py-1 rounded-lg hover:bg-space-800 hover:text-cyan-300 transition" id="navJumpTheory">📚 Теория</a>
+        <a href="#svgSection" class="px-2.5 py-1 rounded-lg hover:bg-space-800 hover:text-amber-300 transition" id="navJumpSvg">🎨 Инфографика</a>
+        <a href="#tableSection" class="px-2.5 py-1 rounded-lg hover:bg-space-800 hover:text-emerald-300 transition" id="navJumpTable">📊 Кестелер</a>
+        <a href="#interactiveSection" class="px-2.5 py-1 rounded-lg hover:bg-space-800 hover:text-purple-300 transition" id="navJumpQuiz">🧠 Тренажер</a>
       </div>
 
       <!-- Right: Controls (Lang Switcher & Mark Complete) -->
@@ -105,127 +129,181 @@
   <main class="max-w-5xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-8 space-y-6 flex-1">
 
     <!-- HERO HEADER CARD -->
-    <div class="p-6 sm:p-7 rounded-2xl bg-space-950/90 border border-slate-800 space-y-3.5 shadow-xl relative overflow-hidden">
-      <div class="absolute -right-12 -top-12 w-48 h-48 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none"></div>
-      <div class="flex items-center space-x-2">
+    <div class="p-6 sm:p-7 rounded-2xl bg-gradient-to-br from-space-950 via-space-900 to-space-950 border border-slate-800 space-y-4 shadow-xl relative overflow-hidden">
+      <div class="absolute -right-12 -top-12 w-56 h-56 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-12 -bottom-12 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      
+      <div class="flex flex-wrap items-center gap-2">
         <span id="heroCatBadge" class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-space-850 text-cyan-400 border border-cyan-500/20">
           Геосаяси концепциялар
         </span>
-        <span class="text-xs text-slate-400">⏱️ ~8-12 мин оқу</span>
+        <span id="readTimeBadge" class="text-xs text-slate-400">⏱️ ~10-15 мин оқу</span>
+        <span id="untWeightBadge" class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/10 text-amber-300 border border-amber-500/25">
+          🔥 ҰБТ маңызды тақырыбы
+        </span>
       </div>
-      <h1 id="heroTitle" class="text-xl sm:text-2xl md:text-3xl font-black text-white tracking-tight leading-snug">
+
+      <h1 id="heroTitle" class="text-2xl sm:text-3xl md:text-4xl font-black text-white tracking-tight leading-snug">
         Геосаясат
       </h1>
+
+      <!-- Key Metric Mini-Counters -->
+      <div id="heroStatsGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1">
+        <!-- Rendered via JS -->
+      </div>
+
       <!-- External Links Bar -->
-      <div class="flex flex-wrap items-center gap-2 pt-1">
-        <a id="btnBlooket" href="https://dashboard.blooket.com/set/6a96ed4bab599b2e92eceacf" target="_blank" class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 border border-purple-500/40 text-xs font-bold transition shadow-sm">
+      <div class="flex flex-wrap items-center gap-2.5 pt-1">
+        <a id="btnBlooket" href="https://dashboard.blooket.com/set/6a96ed4bab599b2e92eceacf" target="_blank" rel="noopener noreferrer" class="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 border border-purple-500/40 text-xs font-bold transition shadow-sm">
           <span>🎮</span>
           <span id="btnBlooketText">Blooket ойыны</span>
         </a>
-        
+        <a href="#interactiveSection" class="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-cyan-500/15 text-cyan-300 hover:bg-cyan-500/25 border border-cyan-500/30 text-xs font-bold transition shadow-sm">
+          <span>⚡</span>
+          <span id="btnQuickPracticeText">Тест & Флеш-карталар</span>
+        </a>
       </div>
     </div>
 
     <!-- 1. BRIEF SUMMARY CARD -->
-    <section class="p-5 rounded-2xl bg-space-950 border border-brand-500/40 text-xs sm:text-sm text-slate-200 leading-relaxed shadow-lg">
+    <section class="p-5 sm:p-6 rounded-2xl bg-space-950 border border-brand-500/40 text-xs sm:text-sm text-slate-200 leading-relaxed shadow-lg">
       <div class="flex items-center space-x-2 text-brand-400 font-extrabold text-xs mb-2">
         <span>📖</span>
         <span id="summaryHeader">ТАҚЫРЫПҚА ҚЫСҚАША ШОЛУ</span>
       </div>
-      <p id="summaryText" class="leading-relaxed">
-        Геосаясат — ҰБТ және НЗМ географиясы бойынша негізгі түсініктер, заңдылықтар, формулалар мен сандық көрсеткіштердің толық конспектісі.
+      <p id="summaryText" class="leading-relaxed text-slate-200">
+        Геосаясат — мемлекеттің стратегиялық әлеуетіне ықпал ететін географиялық, саяси, тарихи және басқа факторларды тұтас бірлікте зерттейтін ғылым. Бұл бөлімде экспансия, талассократия мен теллурократия, XXI ғасырдағы саяси факторлар, ядролық державалар, И.И. Пирожников бойынша елдер классификациясы, мемлекет морфологиясы және Қазақстан шегараларының делимитациясы мен демаркациясы толық қамтылған.
       </p>
     </section>
 
     <!-- 2. FULL THEORY SECTION -->
-    <section class="p-5 sm:p-7 rounded-2xl bg-space-950 border border-slate-800 space-y-4 shadow-xl">
-      <div class="flex items-center space-x-2 border-b border-slate-800 pb-3">
-        <span class="text-base text-cyan-400 font-black">📚</span>
-        <h2 id="theoryHeader" class="text-xs sm:text-sm font-black text-white uppercase tracking-wider">
-          ТОЛЫҚ ТЕОРИЯЛЫҚ МАТЕРИАЛ МЕН КОНСПЕКТ
-        </h2>
+    <section id="theorySectionAnchor" class="p-5 sm:p-7 rounded-2xl bg-space-950 border border-slate-800 space-y-5 shadow-xl">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-800 pb-3.5">
+        <div class="flex items-center space-x-2">
+          <span class="text-base text-cyan-400 font-black">📚</span>
+          <h2 id="theoryHeader" class="text-xs sm:text-sm font-black text-white uppercase tracking-wider">
+            ТОЛЫҚ ТЕОРИЯЛЫҚ МАТЕРИАЛ МЕН КОНСПЕКТ
+          </h2>
+        </div>
+        <!-- Filter Pills for Theory Sections -->
+        <div id="theoryFilterBar" class="flex flex-wrap gap-1.5">
+          <!-- Rendered via JS -->
+        </div>
       </div>
       <div id="theoryContent">
-        <div class="space-y-4 text-xs sm:text-sm text-slate-200 leading-relaxed">
-<h4 class="text-sm sm:text-base font-black text-cyan-400 border-b border-slate-800 pb-2">1. Негізгі ұғымдар мен ғылыми анықтамасы</h4>
-<p><b>Геосаясат</b> тақырыбы бойынша география ғылымындағы іргелі заңдылықтар, нысандардың кеңістіктік орналасуы және өзара әрекеттесу үдерістері қарастырылады. Бұл бөлім ҰБТ емтиханында міндетті түрде кездесетін базалық номенклатура мен терминологияны қамтиды.</p>
-
-<h4 class="text-sm sm:text-base font-black text-amber-400 border-b border-slate-800 pb-2 pt-2">2. Қазақстанның және әлемнің аумақтық ерекшеліктері</h4>
-<p>Қазақстан аумағындағы географиялық нысандардың таралу заңдылықтары, табиғи ресурстар мен әлеуметтік-экономикалық көрсеткіштер әлемдік деңгейдегі ұқсас құбылыстармен салыстырылады. Табиғи зоналардың, климаттық белдеулердің және шаруашылық салаларының орналасу принциптері жүйеленген.</p>
-
-<h4 class="text-sm sm:text-base font-black text-emerald-400 border-b border-slate-800 pb-2 pt-2">3. Практикалық есептеулер мен ережелер</h4>
-<p>Емтихан тапсырмаларында сандық көрсеткіштерді талдау, карталар мен графикалық сызбалармен жұмыс жасау талап етіледі. Төмендегі кестеде осы тақырыптың басты сандық көрсеткіштері мен анықтамалары нақты жүйеленіп көрсетілген.</p>
-</div>
+        <!-- Rendered via JS -->
       </div>
     </section>
 
     <!-- 3. VISUAL SVG DIAGRAM / ILLUSTRATION -->
-    <section id="svgSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl">
-      <div class="flex items-center space-x-2 text-amber-400 font-extrabold text-xs">
-        <span>🎨</span>
-        <span id="svgHeader">КӨРНЕКІ СХЕМА МЕН ИНФОГРАФИКА</span>
+    <section id="svgSection" class="p-5 sm:p-6 rounded-2xl bg-space-950 border border-slate-800 space-y-4 shadow-xl">
+      <div class="flex items-center justify-between flex-wrap gap-2">
+        <div class="flex items-center space-x-2 text-amber-400 font-extrabold text-xs">
+          <span>🎨</span>
+          <span id="svgHeader">КӨРНЕКІ СХЕМА МЕН ИНФОГРАФИКА</span>
+        </div>
+        <span id="svgSubBadge" class="text-[11px] text-slate-400 font-medium">Визуалды тірек-схемалар</span>
       </div>
       <div id="svgContainer" class="w-full flex justify-center overflow-x-auto">
-        <svg viewBox="0 0 600 170" class="w-full h-auto rounded-2xl bg-space-950 border border-slate-800 p-3 shadow-inner">
-  <rect x="15" y="15" width="570" height="140" rx="14" fill="#0f172a" stroke="#334155" />
-  <circle cx="65" cy="85" r="30" fill="#0284c7" fill-opacity="0.2" stroke="#38bdf8" stroke-width="2" />
-  <text x="65" y="91" fill="#38bdf8" font-size="16" font-weight="900" text-anchor="middle">#42</text>
-  <text x="115" y="55" fill="#f8fafc" font-size="14" font-weight="900">Геополитика</text>
-  <text x="115" y="78" fill="#38bdf8" font-size="12" font-weight="bold">Геосаясат</text>
-  <text x="115" y="105" fill="#94a3b8" font-size="11">ҰБТ / ЕНТ профильдік география стандарты • Номенклатура және түсіндірме</text>
-  <line x1="115" y1="120" x2="550" y2="120" stroke="#1e293b" stroke-width="1.5" />
-  <text x="115" y="138" fill="#10b981" font-size="10" font-weight="bold">✓ 100% Тестке дайындық базасы мен заңдылықтары</text>
-</svg>
+        <!-- Rendered via JS -->
       </div>
     </section>
 
     <!-- 4. STRUCTURED DATA TABLE -->
-    <section id="tableSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl overflow-x-auto">
-      <h3 class="text-xs font-black text-cyan-400 flex items-center space-x-2">
-        <span>📊</span>
-        <span id="tableHeader">НАҚТЫ КӨРСЕТКІШТЕР МЕН КЛАССИФИКАЦИЯ КЕСТЕСІ</span>
-      </h3>
-      <div id="tableContainer">
+    <section id="tableSection" class="p-5 sm:p-6 rounded-2xl bg-space-950 border border-slate-800 space-y-4 shadow-xl overflow-x-auto">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <h3 class="text-xs sm:text-sm font-black text-cyan-400 flex items-center space-x-2">
+          <span>📊</span>
+          <span id="tableHeader">НАҚТЫ КӨРСЕТКІШТЕР МЕН КЛАССИФИКАЦИЯ КЕСТЕСІ</span>
+        </h3>
+        <div id="tableTabsBar" class="flex flex-wrap gap-1.5">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+      <div id="tableContainer" class="space-y-6">
         <!-- Rendered via JS -->
       </div>
     </section>
 
     <!-- 5. KEY FACTS FOR UNT / ЕНТ -->
-    <section id="factsSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl">
-      <h3 class="text-xs font-black text-amber-400 flex items-center space-x-2">
+    <section id="factsSection" class="p-5 sm:p-6 rounded-2xl bg-space-950 border border-slate-800 space-y-3.5 shadow-xl">
+      <h3 class="text-xs sm:text-sm font-black text-amber-400 flex items-center space-x-2">
         <span>⚡</span>
         <span id="factsHeader">ҰБТ-ҒА ҚАЖЕТТІ НЕГІЗГІ ЕРЕЖЕЛЕР МЕН ФАКТІЛЕР</span>
       </h3>
-      <ul id="factsList" class="space-y-2 text-xs text-slate-300">
+      <ul id="factsList" class="grid grid-cols-1 md:grid-cols-2 gap-2.5 text-xs text-slate-200">
         <!-- Rendered via JS -->
       </ul>
     </section>
 
     <!-- 6. TRAPS AND HACKS -->
-    <section id="trapsSection" class="p-5 rounded-2xl bg-gradient-to-r from-amber-950/40 via-space-950 to-space-950 border border-amber-500/40 space-y-3 shadow-xl">
-      <h3 class="text-xs font-black text-amber-400 flex items-center space-x-2">
+    <section id="trapsSection" class="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-amber-950/40 via-space-950 to-space-950 border border-amber-500/40 space-y-3.5 shadow-xl">
+      <h3 class="text-xs sm:text-sm font-black text-amber-400 flex items-center space-x-2">
         <span>💡</span>
         <span id="trapsHeader">ҰБТ ҚАҚПАНДАРЫ МЕН ЛАЙФХАКТАР</span>
       </h3>
-      <div id="trapsList" class="space-y-2 text-xs text-slate-200">
+      <div id="trapsList" class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-slate-200">
         <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- 7. INTERACTIVE FLASHCARDS & MINI-QUIZ SECTION -->
+    <section id="interactiveSection" class="p-5 sm:p-6 rounded-2xl bg-space-950 border border-purple-500/30 space-y-5 shadow-xl">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-800 pb-3.5">
+        <div class="flex items-center space-x-2">
+          <span class="text-base">🧠</span>
+          <h3 id="interactiveHeader" class="text-xs sm:text-sm font-black text-purple-300 uppercase tracking-wider">
+            ИНТЕРАКТИВТІ ЖАТТЫҒУ: ФЛЕШ-КАРТАЛАР МЕН ҰБТ ТЕСТІ
+          </h3>
+        </div>
+        <div class="inline-flex p-1 bg-space-900 border border-slate-800 rounded-xl space-x-1 self-start">
+          <button id="btnModeCards" onclick="setPracticeMode('cards')" class="px-3 py-1 rounded-lg text-xs font-black transition bg-purple-500 text-space-950 shadow">
+            🗂️ Карточкалар
+          </button>
+          <button id="btnModeQuiz" onclick="setPracticeMode('quiz')" class="px-3 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">
+            📝 ҰБТ Тест (8 сұрақ)
+          </button>
+        </div>
+      </div>
+
+      <!-- Flashcards View -->
+      <div id="flashcardsView" class="space-y-4">
+        <p id="flashcardsHint" class="text-xs text-slate-400">
+          Карточканы бассаңыз, жауабы мен нақты дерегі ашылады:
+        </p>
+        <div id="flashcardsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+
+      <!-- Quiz View -->
+      <div id="quizView" class="hidden space-y-4">
+        <div class="flex items-center justify-between bg-space-900/80 border border-slate-800 rounded-xl px-4 py-2.5">
+          <span id="quizScoreText" class="text-xs font-bold text-cyan-300">Нәтиже: 0 / 8</span>
+          <button id="btnResetQuiz" onclick="resetQuiz()" class="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 transition">
+            🔄 Қайта бастау
+          </button>
+        </div>
+        <div id="quizQuestionsList" class="space-y-4">
+          <!-- Rendered via JS -->
+        </div>
       </div>
     </section>
 
     <!-- FOOTER NAVIGATION -->
     <nav class="pt-4 pb-8 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3 text-xs">
-      <a href="topic_41.html" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white transition shadow-sm">
-      <span>←</span>
-      <span>#41 Алдыңғы тақырып</span>
-    </a>
-      <a href="../geotanu.html#section-zhattau_grammar" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-400 hover:text-white transition">
-        <span>🏠</span>
-        <span>Барлық тақырыптар</span>
+      <a href="javascript:void(0)" onclick="navigateCourse('topic_41.html')" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white transition shadow-sm">
+        <span>←</span>
+        <span id="footerPrevText">#41 Алдыңғы тақырып</span>
       </a>
-      <a href="topic_43.html" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-xs font-bold text-cyan-300 hover:text-white transition shadow-sm">
-      <span>Келесі тақырып #43</span>
-      <span>→</span>
-    </a>
+      <a href="javascript:void(0)" onclick="navigateCourse('../geotanu.html#section-zhattau_grammar')" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-400 hover:text-white transition">
+        <span>🏠</span>
+        <span id="footerHomeText">Барлық тақырыптар</span>
+      </a>
+      <a href="javascript:void(0)" onclick="navigateCourse('topic_43.html')" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-xs font-bold text-cyan-300 hover:text-white transition shadow-sm">
+        <span id="footerNextText">Келесі тақырып #43</span>
+        <span>→</span>
+      </a>
     </nav>
 
   </main>
@@ -237,9 +315,1291 @@
   </div>
 
   <script>
-    const topicData = {"num": 42, "title_kz": "Геосаясат", "title_ru": "Геополитика", "category_kz": "Геосаяси концепциялар", "category_ru": "Геополитические концепции", "summary_kz": "Геосаясат — ҰБТ және НЗМ географиясы бойынша негізгі түсініктер, заңдылықтар, формулалар мен сандық көрсеткіштердің толық конспектісі.", "summary_ru": "Геополитика — фундаментальный теоретический конспект, формулы, классификационные таблицы и правила ЕНТ/НИШ.", "full_theory_kz": "<div class=\"space-y-4 text-xs sm:text-sm text-slate-200 leading-relaxed\">\n<h4 class=\"text-sm sm:text-base font-black text-cyan-400 border-b border-slate-800 pb-2\">1. Негізгі ұғымдар мен ғылыми анықтамасы</h4>\n<p><b>Геосаясат</b> тақырыбы бойынша география ғылымындағы іргелі заңдылықтар, нысандардың кеңістіктік орналасуы және өзара әрекеттесу үдерістері қарастырылады. Бұл бөлім ҰБТ емтиханында міндетті түрде кездесетін базалық номенклатура мен терминологияны қамтиды.</p>\n\n<h4 class=\"text-sm sm:text-base font-black text-amber-400 border-b border-slate-800 pb-2 pt-2\">2. Қазақстанның және әлемнің аумақтық ерекшеліктері</h4>\n<p>Қазақстан аумағындағы географиялық нысандардың таралу заңдылықтары, табиғи ресурстар мен әлеуметтік-экономикалық көрсеткіштер әлемдік деңгейдегі ұқсас құбылыстармен салыстырылады. Табиғи зоналардың, климаттық белдеулердің және шаруашылық салаларының орналасу принциптері жүйеленген.</p>\n\n<h4 class=\"text-sm sm:text-base font-black text-emerald-400 border-b border-slate-800 pb-2 pt-2\">3. Практикалық есептеулер мен ережелер</h4>\n<p>Емтихан тапсырмаларында сандық көрсеткіштерді талдау, карталар мен графикалық сызбалармен жұмыс жасау талап етіледі. Төмендегі кестеде осы тақырыптың басты сандық көрсеткіштері мен анықтамалары нақты жүйеленіп көрсетілген.</p>\n</div>", "full_theory_ru": "<div class=\"space-y-4 text-xs sm:text-sm text-slate-200 leading-relaxed\">\n<h4 class=\"text-sm sm:text-base font-black text-cyan-400 border-b border-slate-800 pb-2\">1. Базовые понятия и научные определения</h4>\n<p>Тема <b>«Геополитика»</b> систематизирует ключевые географические понятия, законы распределения природных комплексов и закономерности размещения хозяйства. Раздел охватывает обязательную номенклатуру и терминологическую базу школьного курса и формата ЕНТ/НИШ.</p>\n\n<h4 class=\"text-sm sm:text-base font-black text-amber-400 border-b border-slate-800 pb-2 pt-2\">2. Территориальные особенности Казахстана и мира</h4>\n<p>Проанализированы пространственные закономерности размещения природных объектов Казахстана в сопоставлении с мировыми географическими аналогами. Отражены принципы широтной зональности, высотной поясности и отраслевой структуры хозяйства.</p>\n\n<h4 class=\"text-sm sm:text-base font-black text-emerald-400 border-b border-slate-800 pb-2 pt-2\">3. Практические методы анализа и расчеты</h4>\n<p>Для успешного выполнения заданий ЕНТ требуется знание точных количественных показателей, умение работать с картографическими проекциями, шкалами и тематическими таблицами, приведенными ниже.</p>\n</div>", "svg_diagram": "<svg viewBox=\"0 0 600 170\" class=\"w-full h-auto rounded-2xl bg-space-950 border border-slate-800 p-3 shadow-inner\">\n  <rect x=\"15\" y=\"15\" width=\"570\" height=\"140\" rx=\"14\" fill=\"#0f172a\" stroke=\"#334155\" />\n  <circle cx=\"65\" cy=\"85\" r=\"30\" fill=\"#0284c7\" fill-opacity=\"0.2\" stroke=\"#38bdf8\" stroke-width=\"2\" />\n  <text x=\"65\" y=\"91\" fill=\"#38bdf8\" font-size=\"16\" font-weight=\"900\" text-anchor=\"middle\">#42</text>\n  <text x=\"115\" y=\"55\" fill=\"#f8fafc\" font-size=\"14\" font-weight=\"900\">Геополитика</text>\n  <text x=\"115\" y=\"78\" fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\">Геосаясат</text>\n  <text x=\"115\" y=\"105\" fill=\"#94a3b8\" font-size=\"11\">ҰБТ / ЕНТ профильдік география стандарты • Номенклатура және түсіндірме</text>\n  <line x1=\"115\" y1=\"120\" x2=\"550\" y2=\"120\" stroke=\"#1e293b\" stroke-width=\"1.5\" />\n  <text x=\"115\" y=\"138\" fill=\"#10b981\" font-size=\"10\" font-weight=\"bold\">✓ 100% Тестке дайындық базасы мен заңдылықтары</text>\n</svg>", "table_kz": {"cols": ["Нысан / Көрсеткіш", "Сандық мәні / Анықтамасы", "Негізгі заңдылығы мен маңызы"], "rows": [["Геосаясат (негізгі ұғымы)", "Ғылыми стандарты", "Географиялық заңдылықтар мен классификация"], ["Қазақстандық көрсеткіш", "Аумақтық көрінісі", "Табиғи және экономикалық маңызы"], ["Әлемдік номенклатуралық нысандар", "Халықаралық көрсеткіш", "Салыстырмалы географиялық бағалау"], ["Практикалық есептеулер", "Формуласы / Әдісі", "ҰБТ емтиханындағы қолданылуы"]]}, "table_ru": {"cols": ["Объект / Параметр", "Значение / Определение", "Географическая закономерность и ЕНТ"], "rows": [["Геополитика (базовое понятие)", "Научный стандарт", "Классификационные признаки и законы"], ["Показатели Казахстана", "Территориальное размещение", "Природно-хозяйственное значение"], ["Мировые географические аналоги", "Международные данные", "Сравнительно-географический анализ"], ["Практические расчеты", "Формулы и методы", "Применение в тестовых заданиях ЕНТ"]]}, "key_facts_kz": ["«Геосаясат» бойынша негізгі заңдылықтар мен терминдер ҰБТ бағдарламасына толық сәйкес.", "Қазақстанның жер бедері, климаты, су ресурстары мен экономикасымен тығыз байланысты.", "Картамен және сандық көрсеткіштермен жұмыс істеу дағдысын қажет етеді."], "key_facts_ru": ["Тема «Геополитика» охватывает обязательный перечень вопросов спецификации ЕНТ.", "Связана с физической и социально-экономической географией Казахстана и мира.", "Требует знания номенклатурных объектов и умения анализировать картографические данные."], "traps_kz": ["⚠️ ҰБТ қақпаны: Ұқсас атаулар мен сандық шамаларды шатастырмаңыз, анықтамалар мен бірліктерді нақты есте сақтаңыз."], "traps_ru": ["⚠️ Ловушка ЕНТ: Обращайте внимание на единицы измерения и не путайте схожие термины и географические названия."]};
-    const blooketData = {"kz": "https://dashboard.blooket.com/set/6a96ed4bab599b2e92eceacf", "ru": "https://dashboard.blooket.com/set/6a95ed18089e743aeedae673", "doc_kz": "", "doc_ru": ""};
+    const fullTheoryKz = `
+<div class="space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed">
+
+  <!-- BLOCK 1: DEFINITION, EXPANSION, TOOLS, THALASSOCRACY & TELLUROCRACY -->
+  <div data-theory-block="1" class="p-4 sm:p-5 rounded-2xl bg-space-900/50 border border-slate-800/90 space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+      <h4 class="text-sm sm:text-base font-black text-cyan-400 flex items-center gap-2">
+        <span class="px-2 py-0.5 rounded-lg bg-cyan-500/15 text-cyan-300 text-xs">1-бөлім</span>
+        <span>Геосаясат ұғымы, міндеттері мен негізгі құралдары</span>
+      </h4>
+      <span class="text-[11px] text-slate-400 font-bold hidden sm:inline">Базалық ұғымдар</span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+      <div class="p-3.5 rounded-xl bg-space-950 border border-cyan-500/30 space-y-1.5">
+        <div class="text-xs font-black text-cyan-300 uppercase tracking-wide">📌 Геосаясат анықтамасы</div>
+        <p class="text-slate-200">
+          Мемлекеттің стратегиялық әлеуетіне ықпал ететін <b>географиялық, саяси, тарихи және басқа факторларды</b> тұтас бірлікте зерттейтін ғылым – <span class="text-cyan-300 font-extrabold">геосаясат</span>.
+        </p>
+      </div>
+      <div class="p-3.5 rounded-xl bg-space-950 border border-rose-500/30 space-y-1.5">
+        <div class="text-xs font-black text-rose-300 uppercase tracking-wide">🎯 Геосаясаттың міндеті — Экспансия</div>
+        <p class="text-slate-200">
+          <span class="text-rose-300 font-extrabold">Экспансия</span> – басым топтардың, мемлекеттердің және т.б. <b>күш көрсету, экономикалық немесе мәдени-ақпараттық</b> ықпал ету аймақтарының кеңеюі.
+        </p>
+      </div>
+    </div>
+
+    <!-- 5 Tools of Geopolitics -->
+    <div class="space-y-2">
+      <div class="text-xs font-extrabold text-slate-300">🛠️ Геосаясаттың 5 негізгі құралы:</div>
+      <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+        <div class="p-2.5 rounded-xl bg-space-950 border border-slate-800 text-center">
+          <div class="text-base mb-1">🏛️</div>
+          <div class="font-bold text-white text-xs">Саяси</div>
+        </div>
+        <div class="p-2.5 rounded-xl bg-space-950 border border-slate-800 text-center">
+          <div class="text-base mb-1">🧠</div>
+          <div class="font-bold text-white text-xs">Идеологиялық</div>
+        </div>
+        <div class="p-2.5 rounded-xl bg-space-950 border border-slate-800 text-center">
+          <div class="text-base mb-1">💰</div>
+          <div class="font-bold text-white text-xs">Экономикалық</div>
+        </div>
+        <div class="p-2.5 rounded-xl bg-space-950 border border-slate-800 text-center">
+          <div class="text-base mb-1">📡</div>
+          <div class="font-bold text-white text-xs">Ақпараттық</div>
+        </div>
+        <div class="p-2.5 rounded-xl bg-space-950 border border-slate-800 text-center col-span-2 sm:col-span-1">
+          <div class="text-base mb-1">🎭</div>
+          <div class="font-bold text-white text-xs">Мәдени</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Thalassocracy vs Tellurocracy & 3 Bases of Dominance -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div class="p-3.5 rounded-xl bg-sky-950/30 border border-sky-500/30 space-y-1">
+        <div class="text-xs font-black text-sky-300">🌊 Талассократия</div>
+        <p class="text-[11px] text-sky-200/80 italic">(гр. таласса – теңіз, кратос – билік)</p>
+        <p class="text-xs text-slate-200">Мемлекеттің <b>теңіз арқылы</b> басымдылыққа ие болуы.</p>
+      </div>
+      <div class="p-3.5 rounded-xl bg-amber-950/30 border border-amber-500/30 space-y-1">
+        <div class="text-xs font-black text-amber-300">🌍 Теллурократия</div>
+        <p class="text-[11px] text-amber-200/80 italic">(теллус – ежелгі римдіктердің Жер-Ана құдайы)</p>
+        <p class="text-xs text-slate-200">Мемлекеттің <b>құрлық арқылы</b> басымдылыққа ие болуы.</p>
+      </div>
+      <div class="p-3.5 rounded-xl bg-indigo-950/30 border border-indigo-500/30 space-y-1.5">
+        <div class="text-xs font-black text-indigo-300">👑 Геосаяси басымдылық негіздері (3):</div>
+        <ul class="space-y-1 text-xs text-slate-200">
+          <li>• <b>Саяси</b> басымдылық</li>
+          <li>• <b>Экономикалық</b> басымдылық</li>
+          <li>• <b>Идеологиялық</b> басымдылық</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK 2: XXI CENTURY FACTORS, ATTAC-FRANCE & US STAGES -->
+  <div data-theory-block="2" class="p-4 sm:p-5 rounded-2xl bg-space-900/50 border border-slate-800/90 space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+      <h4 class="text-sm sm:text-base font-black text-amber-400 flex items-center gap-2">
+        <span class="px-2 py-0.5 rounded-lg bg-amber-500/15 text-amber-300 text-xs">2-бөлім</span>
+        <span>XXI ғасырдағы саяси факторлар және АҚШ-тың геосаяси кезеңдері</span>
+      </h4>
+      <span class="text-[11px] text-slate-400 font-bold hidden sm:inline">Ғаламдық үдерістер</span>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div class="lg:col-span-2 p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-2">
+        <div class="text-xs font-black text-amber-300 uppercase">🌐 XXI ғасырдағы әлем дамуына ықпал ететін 6 саяси фактор:</div>
+        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-200">
+          <li class="p-2 rounded-lg bg-space-900/70 border border-slate-800/80">1. <b>Қытайдың</b> әлемдік көшбасшылар тобына енуі, оның саяси салмағының артуы</li>
+          <li class="p-2 rounded-lg bg-space-900/70 border border-slate-800/80">2. <b>АҚШ-тың</b> әлемдік деңгейде саяси және әскери үстемдігі</li>
+          <li class="p-2 rounded-lg bg-space-900/70 border border-slate-800/80">3. <b>Ресей Федерациясының</b> геоэкономикалық қуатының артуы</li>
+          <li class="p-2 rounded-lg bg-space-900/70 border border-slate-800/80">4. <b>Еуропалық Одақ</b> шеңберінде ынтымақтастықтың дамуы</li>
+          <li class="p-2 rounded-lg bg-space-900/70 border border-slate-800/80">5. <b>НАТО</b> ұйымының шығысқа қарай кеңеюі</li>
+          <li class="p-2 rounded-lg bg-space-900/70 border border-slate-800/80">6. <b>Халықаралық лаңкестік</b> және оған қарсы күрестің күшеюі</li>
+        </ul>
+      </div>
+
+      <!-- ATTAC-France Highlight -->
+      <div class="p-4 rounded-xl bg-gradient-to-br from-purple-950/50 to-space-950 border border-purple-500/40 flex flex-col justify-between space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="px-2 py-0.5 rounded-md bg-purple-500/20 text-purple-300 text-[11px] font-black">1998 ж. • Франция</span>
+          <span class="text-lg">🛑</span>
+        </div>
+        <div class="text-xs font-black text-white">«АТТАК-Франция»</div>
+        <p class="text-xs text-slate-300">
+          (Қаржы операцияларына салық салуды жақтайтын азаматтар ассоциациясы) — <b class="text-purple-300">Антиглобализмнің алғашқы ресми ұйымы</b>.
+        </p>
+      </div>
+    </div>
+
+    <!-- US 3 Stages Timeline -->
+    <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-2.5">
+      <div class="text-xs font-black text-cyan-300 uppercase">🦅 АҚШ-тың ғаламдық геосаясатқа ықпал ету кезеңдері (3 кезең):</div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div class="p-3 rounded-xl bg-space-900 border-l-4 border-cyan-400 space-y-1">
+          <div class="text-[11px] font-black text-cyan-400">1-кезең • Екінші дүниежүзілік соғыс</div>
+          <p class="text-xs text-slate-200">АҚШ ХХ ғасырда Екінші дүниежүзілік соғысқа араласып, алып державалармен бірге <b>әлемді бөлісу кезеңі</b>.</p>
+        </div>
+        <div class="p-3 rounded-xl bg-space-900 border-l-4 border-amber-400 space-y-1">
+          <div class="text-[11px] font-black text-amber-400">2-кезең • Қырғиқабақ соғыс</div>
+          <p class="text-xs text-slate-200">АҚШ пен Кеңес Одағы және олардың одақтастары арасындағы <b>қырғиқабақ кезеңі</b>.</p>
+        </div>
+        <div class="p-3 rounded-xl bg-space-900 border-l-4 border-emerald-400 space-y-1">
+          <div class="text-[11px] font-black text-emerald-400">3-кезең • 1991 жылдан қазіргі кезге дейін</div>
+          <p class="text-xs text-slate-200">Ғаламдық ірі геосаяси күш ретінде <b>әлемдік тәртіпке ықпал ету кезеңі</b>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK 3: ASIA, NUCLEAR WEAPONS & CENTRAL ASIA SECURITY -->
+  <div data-theory-block="3" class="p-4 sm:p-5 rounded-2xl bg-space-900/50 border border-slate-800/90 space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+      <h4 class="text-sm sm:text-base font-black text-emerald-400 flex items-center gap-2">
+        <span class="px-2 py-0.5 rounded-lg bg-emerald-500/15 text-emerald-300 text-xs">3-бөлім</span>
+        <span>Азиядағы геосаяси кеңістік, Ядролық қару және Орталық Азия</span>
+      </h4>
+      <span class="text-[11px] text-slate-400 font-bold hidden sm:inline">Аймақтық геосаясат</span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Asia 6 Factors -->
+      <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-2">
+        <div class="text-xs font-black text-emerald-300 uppercase">🌏 Азиядағы геосаяси кеңістікке ықпал ететін 6 фактор:</div>
+        <ul class="space-y-1.5 text-xs text-slate-200">
+          <li>1. Азияда әлемдегі <b>аумағы, халқының саны</b> жағынан аса ірі елдердің орналасуы.</li>
+          <li>2. Діни, мәдени ала-құлалықтар, <b>әлемдік діндердің отаны</b> болуы.</li>
+          <li>3. Азияда <b>әлемдік экономика алпауыттарының</b> орналасуы.</li>
+          <li>4. Ұзақ жылдар бойы шешілмей келе жатқан <b>шиеленіс</b> (араб-израиль, Корея түбегі және т.б.).</li>
+          <li>5. Азияда саяси тұрғыдан <b>«салмақты» саяси күштердің</b> шоғырлануы.</li>
+          <li>6. Аймақ елдерінің <b>даму деңгейінің</b> үлкен айырмашылық жасауы.</li>
+        </ul>
+      </div>
+
+      <!-- Nuclear Club & Central Asia -->
+      <div class="space-y-3.5">
+        <div class="p-3.5 rounded-xl bg-rose-950/30 border border-rose-500/40 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-black text-rose-300 uppercase">☢️ Ядролық қаруға ие елдер</span>
+            <span class="px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 text-[11px] font-black">Әлемде ресми: 8 ел</span>
+          </div>
+          <p class="text-xs text-slate-200">
+            Қазіргі кезде әлемде ресми түрде <b>8 мемлекет</b> ядролық қаруға ие екендігін жариялаған. Олардың <b>төртеуі (4) Азия елдері</b>:
+          </p>
+          <div class="grid grid-cols-2 gap-1.5 text-xs font-bold text-amber-300">
+            <div class="px-2.5 py-1.5 rounded-lg bg-space-950 border border-slate-800">🇨🇳 Қытай</div>
+            <div class="px-2.5 py-1.5 rounded-lg bg-space-950 border border-slate-800">🇮🇳 Үндістан</div>
+            <div class="px-2.5 py-1.5 rounded-lg bg-space-950 border border-slate-800">🇵🇰 Пәкістан</div>
+            <div class="px-2.5 py-1.5 rounded-lg bg-space-950 border border-slate-800">🇰🇵 КХДР</div>
+          </div>
+          <div class="pt-1 text-xs text-cyan-300 font-bold">
+            🏆 Ядролық қуаты жоғары ел – <span class="underline">Ресей Федерациясы</span>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-space-950 border border-amber-500/30 space-y-1.5">
+          <div class="text-xs font-black text-amber-300 uppercase">🛡️ Орталық Азиядағы қауіпсіздік мәселелері (3):</div>
+          <ul class="space-y-1 text-xs text-slate-200">
+            <li>• <b>Ауғанстаннан</b> аймаққа қарулы жасақтардың өтуі, заңсыз есірткі және қару-жарақ саудасының қаупі.</li>
+            <li>• Аймақтың бірқатар елдерінде <b>ішкі ұлтаралық кикілжіңдердің, жікшілдік</b> көріністерінің болуы.</li>
+            <li>• Орталық Азия елдерінің <b>экономикалық даму деңгейлерінің әркелкілігі</b>, шешілмеген әлеуметтік-экономикалық мәселелер, <b>шегара маңы жанжалдары</b>.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK 4: ECONOMIC, SOCIAL, POLITICAL RESOURCES & TECHNOLOGY FACTORS -->
+  <div data-theory-block="4" class="p-4 sm:p-5 rounded-2xl bg-space-900/50 border border-slate-800/90 space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+      <h4 class="text-sm sm:text-base font-black text-purple-400 flex items-center gap-2">
+        <span class="px-2 py-0.5 rounded-lg bg-purple-500/15 text-purple-300 text-xs">4-бөлім</span>
+        <span>Экономикалық, әлеуметтік, саяси ресурстар және технологиялар</span>
+      </h4>
+      <span class="text-[11px] text-slate-400 font-bold hidden sm:inline">Ішкі және сыртқы әлеует</span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-2">
+        <div class="text-xs font-black text-cyan-300 uppercase">📈 Геосаясатқа ықпал ететін экономикалық факторлар (5):</div>
+        <ul class="space-y-1 text-xs text-slate-200">
+          <li>1. Елдің әлемдік экономикадағы орны мен технологиялық деңгейі</li>
+          <li>2. Халықаралық аймақтық деңгейдегі экономикалық ынтымақтастығы</li>
+          <li>3. Әлемдік экономикалық кеңістікке кірігу деңгейі</li>
+          <li>4. Елдің экономикалық стратегияларының саяси мүдделерге сәйкес келуі</li>
+          <li>5. Елдің экономикалық даму деңгейі мен қуаттылығы</li>
+        </ul>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-2">
+        <div class="text-xs font-black text-amber-300 uppercase">👥 Әлеуметтік факторлардың геосаяси ортаға ықпалы (5):</div>
+        <ul class="space-y-1 text-xs text-slate-200">
+          <li>1. Қоғамдағы құбылыстар мен үдерістер, адамдар арасындағы қарым-қатынастар</li>
+          <li>2. Қоғамдағы әлеуметтік даму</li>
+          <li>3. Халықтың ұлттық, діни құрамының ерекшеліктері</li>
+          <li>4. Қоғамдағы әртүрлі әлеуметтік топтардың ықпалы</li>
+          <li>5. Мемлекет басшылары мен қоғамдық ұйымдардың беделі және олардың саяси жағдайға ықпалы</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="p-3.5 rounded-xl bg-space-950 border border-indigo-500/30 space-y-2">
+        <div class="text-xs font-black text-indigo-300 uppercase">⚖️ Мемлекеттің басты саяси ресурстарын бағалау (6):</div>
+        <ul class="space-y-1 text-xs text-slate-200">
+          <li>• Елдің халықаралық ұйымдардағы рөлі мен белсенді қызметі</li>
+          <li>• Мемлекеттің даму тарихында жинақтаған беделі</li>
+          <li>• Елдің геостратегиясын жасайтын кәсіби деңгейі жоғары саясаткерлердің болуы</li>
+          <li>• Күрделі саяси жағдайда мемлекет мүддесіне сай шешімдер қабылдау</li>
+          <li>• Әлемдегі геоэкономикалық және геосаяси жағдайдың өзгерістеріне сай әрекет етуі</li>
+          <li>• Елдің геосаяси жағдайын жақсарту үшін шешімдер қабылдауы</li>
+        </ul>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-space-950 border border-purple-500/30 space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-black text-purple-300 uppercase">💻 Технологиялардың ықпал ету жолдары (7):</span>
+          <span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 text-[10px] font-bold">Кибершабуыл</span>
+        </div>
+        <p class="text-[11px] text-rose-200 bg-rose-950/40 border border-rose-500/30 rounded-lg px-2.5 py-1.5">
+          <b>Кибершабуыл</b> – ақпараттық қауіпсіздік жүйесіне қастандық.
+        </p>
+        <ul class="space-y-1 text-xs text-slate-200">
+          <li>1. Жаңа әскери-техникалық құралдардың пайда болуы</li>
+          <li>2. Үлкен қашықтықтарда жылдам жүріп өтетін көліктердің пайда болуы</li>
+          <li>3. Елдің қауіпсіздігі мен біртұтастығына қарсы бағытталған ақпарат ағындарының таралуы</li>
+          <li>4. Қарсыластардың қару-жарағын тауып, жойып жіберетін құралдар</li>
+          <li>5. Ғылыми-технологиялық әлеуеті жоғары шағын елдердің басымдылығы</li>
+          <li>6. Қарулы күштерді басқарудың техникалық құралдары</li>
+          <li>7. Дамыған елдердің экономикасы мен әскери әлеуетіне кибершабуылдар</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK 5: STATE TERRITORY, PIROZHNIKOV CLASSIFICATION & MORPHOLOGY -->
+  <div data-theory-block="5" class="p-4 sm:p-5 rounded-2xl bg-space-900/50 border border-slate-800/90 space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+      <h4 class="text-sm sm:text-base font-black text-sky-400 flex items-center gap-2">
+        <span class="px-2 py-0.5 rounded-lg bg-sky-500/15 text-sky-300 text-xs">5-бөлім</span>
+        <span>Мемлекет аумағының белгілері, ауданы (И.И. Пирожников) және морфологиясы</span>
+      </h4>
+      <span class="text-[11px] text-slate-400 font-bold hidden sm:inline">Аумақтық талдау</span>
+    </div>
+
+    <!-- 5 Main Features of State Territory -->
+    <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-2">
+      <div class="text-xs font-black text-sky-300 uppercase">🗺️ Мемлекет аумағының 5 басты белгісі:</div>
+      <div class="grid grid-cols-1 sm:grid-cols-5 gap-2 text-xs">
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800 font-semibold text-center">1. Игерілу деңгейі</div>
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800 font-semibold text-center">2. Табиғи ландшафтыларының типтері</div>
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800 font-semibold text-center">3. Мемлекеттік шегаралардың түрлері мен пішіндері</div>
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800 font-semibold text-center">4. Географиялық орнының ерекшеліктері</div>
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800 font-semibold text-center">5. Жер ауданы</div>
+      </div>
+    </div>
+
+    <!-- 9 Giant Countries & Special Facts -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="p-3.5 rounded-xl bg-space-950 border border-cyan-500/30 space-y-2">
+        <div class="text-xs font-black text-cyan-300 uppercase">🏆 Ауданы бойынша ерекшеленетін 9 алып ел (&gt;2,5 млн км²):</div>
+        <p class="text-xs text-slate-300">Жалпы ауданы: <b>75,8 млн км²</b> (құрлықтың <b>55,8%</b>):</p>
+        <div class="flex flex-wrap gap-1.5 text-xs font-bold">
+          <span class="px-2.5 py-1 rounded-lg bg-space-900 border border-slate-700 text-white">1. Ресей</span>
+          <span class="px-2.5 py-1 rounded-lg bg-space-900 border border-slate-700 text-white">2. Канада</span>
+          <span class="px-2.5 py-1 rounded-lg bg-space-900 border border-slate-700 text-white">3. Қытай</span>
+          <span class="px-2.5 py-1 rounded-lg bg-space-900 border border-slate-700 text-white">4. АҚШ</span>
+          <span class="px-2.5 py-1 rounded-lg bg-space-900 border border-slate-700 text-white">5. Бразилия</span>
+          <span class="px-2.5 py-1 rounded-lg bg-space-900 border border-slate-700 text-white">6. Аустралия</span>
+          <span class="px-2.5 py-1 rounded-lg bg-space-900 border border-slate-700 text-white">7. Үндістан</span>
+          <span class="px-2.5 py-1 rounded-lg bg-space-900 border border-slate-700 text-white">8. Аргентина</span>
+          <span class="px-2.5 py-1 rounded-lg bg-cyan-500/20 border border-cyan-500/40 text-cyan-300">9. Қазақстан</span>
+        </div>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-space-950 border border-amber-500/30 space-y-2">
+        <div class="text-xs font-black text-amber-300 uppercase">📌 Игерілу деңгейі, микромемлекеттер және экватор:</div>
+        <ul class="space-y-1.5 text-xs text-slate-200">
+          <li>• <b>Микромемлекеттер (&lt;30 мың км², 66 ел, 1,8 млн км² / 1,3%)</b>: Еуропаның «ергежейлі» және Мұхит аралдары мемлекеттері – <i>Ватикан, Монако, Лихтенштейн, Мальта, Андорра, Мальдив Республикасы, Науру, Тувалу</i> және т.б.</li>
+          <li>• <b>Табиғаты қатал елдер</b>: <b>Аустралияның 1/3 бөлігі</b> – шөлдер, <b>Ресейдің 3/5 бөлігі</b> – климаты қатал аудандар.</li>
+          <li>• <b>Экватор сызығы</b> кесіп өтетін елдер саны – <b class="text-amber-300">13 ел</b>.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Morphological Classification (4 Types) -->
+    <div class="space-y-2">
+      <div class="text-xs font-black text-emerald-300 uppercase">🧩 Мемлекет аумағының морфологиялық ерекшеліктері бойынша жіктелуі (4 тип):</div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div class="p-3 rounded-xl bg-space-950 border border-slate-800 space-y-1">
+          <div class="text-xs font-black text-cyan-300">📏 Созылыңқы пішіндегі</div>
+          <p class="text-xs text-slate-300">Чили, Норвегия, Швеция, Вьетнам, Италия, Панама, Того, Гамбия.</p>
+        </div>
+        <div class="p-3 rounded-xl bg-space-950 border border-slate-800 space-y-1">
+          <div class="text-xs font-black text-emerald-300">⬢ Біртұтас аумақты</div>
+          <p class="text-xs text-slate-300">Франция, Испания, Польша, Венгрия.</p>
+        </div>
+        <div class="p-3 rounded-xl bg-space-950 border border-slate-800 space-y-1">
+          <div class="text-xs font-black text-amber-300">🏝️ Шашыраңқы мемлекеттер</div>
+          <p class="text-xs text-slate-300">Индонезия, Филиппин (аралдық), 2 бөліктен тұратын Малайзия, АҚШ (Гавай, Аляска).</p>
+        </div>
+        <div class="p-3 rounded-xl bg-space-950 border border-slate-800 space-y-1">
+          <div class="text-xs font-black text-rose-300">🎯 Құрамында анклав бар</div>
+          <p class="text-xs text-slate-300">Ресей (Калининград), Испания (Сеута, Мелилья анклавтары).</p>
+        </div>
+      </div>
+      <div class="p-3 rounded-xl bg-indigo-950/30 border border-indigo-500/30 text-xs text-slate-200">
+        <b>Анклав</b> – ел аумағының басқа мемлекет аумағымен толығымен қоршалып жатқан бөлігі.
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK 6: BORDERS, DELIMITATION, DEMARCATION & KAZAKHSTAN BORDERS -->
+  <div data-theory-block="6" class="p-4 sm:p-5 rounded-2xl bg-space-900/50 border border-slate-800/90 space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+      <h4 class="text-sm sm:text-base font-black text-rose-400 flex items-center gap-2">
+        <span class="px-2 py-0.5 rounded-lg bg-rose-500/15 text-rose-300 text-xs">6-бөлім</span>
+        <span>Мемлекеттік шегаралар: Делимитация, Демаркация және ҚР шегарасы</span>
+      </h4>
+      <span class="text-[11px] text-slate-400 font-bold hidden sm:inline">Шегара динамикасы</span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+      <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-2">
+        <div class="text-xs font-black text-cyan-300 uppercase">🏔️ Мемлекеттік шегара түрлері (2):</div>
+        <ul class="space-y-1.5 text-xs text-slate-200">
+          <li>• <b class="text-emerald-300">Табиғи шегара</b> – елдердің аумағын теңіз, өзен, көл, тау жоталары бөліп жатқан шегара түрі.</li>
+          <li>• <b class="text-amber-300">Жасанды шегара</b> – адам қолымен жасалған арнайы инженерлік құрылғылар көмегімен белгіленген шегара түрі.</li>
+        </ul>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-2">
+        <div class="text-xs font-black text-rose-300 uppercase">📏 Шегараны анықтау мен белгілеу кезеңдері:</div>
+        <ul class="space-y-1.5 text-xs text-slate-200">
+          <li>• <b class="text-cyan-300">Делимитация</b> – көршілес мемлекеттердің арасында келіссөздер арқылы мемлекеттік шегаралардың жалпы ережесі мен бағыттарын анықтау <i>(картада сызу)</i>.</li>
+          <li>• <b class="text-amber-300">Демаркация</b> – шегараларды делимитациялау жөнінде келіссөздерге сәйкес, жергілікті жерде шегаралық белгілер қою арқылы мемлекеттік шегараны анықтау мен белгілеу <i>(жерде бағандар қою)</i>.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Kazakhstan Border Formation Cards -->
+    <div class="space-y-2">
+      <div class="text-xs font-black text-white uppercase">🇰🇿 Қазақстан Республикасының мемлекеттік шегараларының қалыптасу үдерісі:</div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 text-xs">
+        <div class="p-3 rounded-xl bg-space-950 border border-slate-800 space-y-1">
+          <div class="font-black text-rose-300">🇨🇳 Қытай</div>
+          <div class="text-slate-400 text-[11px]">Делимитация: <b class="text-white">1992–1998 жж.</b></div>
+          <div class="text-slate-400 text-[11px]">Демаркация: <b class="text-emerald-300">2002 ж.</b></div>
+        </div>
+        <div class="p-3 rounded-xl bg-space-950 border border-slate-800 space-y-1">
+          <div class="font-black text-sky-300">🇷🇺 Ресей</div>
+          <div class="text-slate-400 text-[11px]">Делимитация: <b class="text-white">1999 ж. қыркүйек – 2005 ж. қаңтар</b></div>
+          <div class="text-slate-400 text-[11px]">Демаркация: <b class="text-emerald-300">2009 ж.</b></div>
+        </div>
+        <div class="p-3 rounded-xl bg-space-950 border border-slate-800 space-y-1">
+          <div class="font-black text-emerald-300">🇺🇿 Өзбекстан</div>
+          <div class="text-slate-400 text-[11px]">Делимитация: <b class="text-white">2000–2002 жж.</b></div>
+          <div class="text-slate-400 text-[11px]">Демаркация: <b class="text-emerald-300">2003–2004 жж.</b></div>
+        </div>
+        <div class="p-3 rounded-xl bg-space-950 border border-slate-800 space-y-1">
+          <div class="font-black text-amber-300">🇹🇲 Түрікменстан</div>
+          <div class="text-slate-400 text-[11px]">Делимитация: <b class="text-white">2001 ж.</b></div>
+          <div class="text-slate-400 text-[11px]">Демаркация: <b class="text-emerald-300">2003 ж. басталып, 2017 ж. нақтыланды</b></div>
+        </div>
+        <div class="p-3 rounded-xl bg-space-950 border border-slate-800 space-y-1">
+          <div class="font-black text-purple-300">🇰🇬 Қырғызстан</div>
+          <div class="text-slate-400 text-[11px]">Делимитация: <b class="text-white">1999 ж. қараша – 2001 ж. желтоқсан</b></div>
+          <div class="text-slate-400 text-[11px]">Демаркация: <b class="text-emerald-300">2008 ж. басталып, 2017 ж. нақтыланды</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+`;
+
+    const fullTheoryRu = `
+<div class="space-y-6 text-xs sm:text-sm text-slate-200 leading-relaxed">
+
+  <!-- BLOCK 1: DEFINITION, EXPANSION, TOOLS, THALASSOCRACY & TELLUROCRACY -->
+  <div data-theory-block="1" class="p-4 sm:p-5 rounded-2xl bg-space-900/50 border border-slate-800/90 space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+      <h4 class="text-sm sm:text-base font-black text-cyan-400 flex items-center gap-2">
+        <span class="px-2 py-0.5 rounded-lg bg-cyan-500/15 text-cyan-300 text-xs">Раздел 1</span>
+        <span>Понятие геополитики, задачи и основные инструменты</span>
+      </h4>
+      <span class="text-[11px] text-slate-400 font-bold hidden sm:inline">Базовые понятия</span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+      <div class="p-3.5 rounded-xl bg-space-950 border border-cyan-500/30 space-y-1.5">
+        <div class="text-xs font-black text-cyan-300 uppercase tracking-wide">📌 Определение геополитики</div>
+        <p class="text-slate-200">
+          Наука, изучающая в целостном единстве <b>географические, политические, исторические и другие факторы</b>, влияющие на стратегический потенциал государства – <span class="text-cyan-300 font-extrabold">геополитика</span>.
+        </p>
+      </div>
+      <div class="p-3.5 rounded-xl bg-space-950 border border-rose-500/30 space-y-1.5">
+        <div class="text-xs font-black text-rose-300 uppercase tracking-wide">🎯 Задача геополитики — Экспансия</div>
+        <p class="text-slate-200">
+          <span class="text-rose-300 font-extrabold">Экспансия</span> – расширение сфер <b>силового, экономического или культурно-информационного влияния</b> доминирующих групп, государств и т.д.
+        </p>
+      </div>
+    </div>
+
+    <!-- 5 Tools of Geopolitics -->
+    <div class="space-y-2">
+      <div class="text-xs font-extrabold text-slate-300">🛠️ 5 основных инструментов геополитики:</div>
+      <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+        <div class="p-2.5 rounded-xl bg-space-950 border border-slate-800 text-center">
+          <div class="text-base mb-1">🏛️</div>
+          <div class="font-bold text-white text-xs">Политические</div>
+        </div>
+        <div class="p-2.5 rounded-xl bg-space-950 border border-slate-800 text-center">
+          <div class="text-base mb-1">🧠</div>
+          <div class="font-bold text-white text-xs">Идеологические</div>
+        </div>
+        <div class="p-2.5 rounded-xl bg-space-950 border border-slate-800 text-center">
+          <div class="text-base mb-1">💰</div>
+          <div class="font-bold text-white text-xs">Экономические</div>
+        </div>
+        <div class="p-2.5 rounded-xl bg-space-950 border border-slate-800 text-center">
+          <div class="text-base mb-1">📡</div>
+          <div class="font-bold text-white text-xs">Информационные</div>
+        </div>
+        <div class="p-2.5 rounded-xl bg-space-950 border border-slate-800 text-center col-span-2 sm:col-span-1">
+          <div class="text-base mb-1">🎭</div>
+          <div class="font-bold text-white text-xs">Культурные</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Thalassocracy vs Tellurocracy & 3 Bases of Dominance -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div class="p-3.5 rounded-xl bg-sky-950/30 border border-sky-500/30 space-y-1">
+        <div class="text-xs font-black text-sky-300">🌊 Талассократия</div>
+        <p class="text-[11px] text-sky-200/80 italic">(греч. таласса – море, кратос – власть)</p>
+        <p class="text-xs text-slate-200">Обладание государством превосходством <b>через морское могущество</b>.</p>
+      </div>
+      <div class="p-3.5 rounded-xl bg-amber-950/30 border border-amber-500/30 space-y-1">
+        <div class="text-xs font-black text-amber-300">🌍 Теллурократия</div>
+        <p class="text-[11px] text-amber-200/80 italic">(теллус – древнеримская богиня Мать-Земля)</p>
+        <p class="text-xs text-slate-200">Обладание государством превосходством <b>через сушу (континентальное могущество)</b>.</p>
+      </div>
+      <div class="p-3.5 rounded-xl bg-indigo-950/30 border border-indigo-500/30 space-y-1.5">
+        <div class="text-xs font-black text-indigo-300">👑 Основы геополитического превосходства (3):</div>
+        <ul class="space-y-1 text-xs text-slate-200">
+          <li>• <b>Политическое</b> превосходство</li>
+          <li>• <b>Экономическое</b> превосходство</li>
+          <li>• <b>Идеологическое</b> превосходство</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK 2: XXI CENTURY FACTORS, ATTAC-FRANCE & US STAGES -->
+  <div data-theory-block="2" class="p-4 sm:p-5 rounded-2xl bg-space-900/50 border border-slate-800/90 space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+      <h4 class="text-sm sm:text-base font-black text-amber-400 flex items-center gap-2">
+        <span class="px-2 py-0.5 rounded-lg bg-amber-500/15 text-amber-300 text-xs">Раздел 2</span>
+        <span>Политические факторы XXI века и этапы влияния США</span>
+      </h4>
+      <span class="text-[11px] text-slate-400 font-bold hidden sm:inline">Глобальные процессы</span>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div class="lg:col-span-2 p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-2">
+        <div class="text-xs font-black text-amber-300 uppercase">🌐 6 политических факторов развития мира в XXI веке:</div>
+        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-200">
+          <li class="p-2 rounded-lg bg-space-900/70 border border-slate-800/80">1. Вхождение <b>Китая</b> в группу мировых лидеров, рост его политического веса</li>
+          <li class="p-2 rounded-lg bg-space-900/70 border border-slate-800/80">2. Политическое и военное доминирование <b>США</b> на мировом уровне</li>
+          <li class="p-2 rounded-lg bg-space-900/70 border border-slate-800/80">3. Рост геоэкономической мощи <b>Российской Федерации</b></li>
+          <li class="p-2 rounded-lg bg-space-900/70 border border-slate-800/80">4. Развитие сотрудничества в рамках <b>Европейского Союза</b></li>
+          <li class="p-2 rounded-lg bg-space-900/70 border border-slate-800/80">5. Расширение организации <b>НАТО</b> на восток</li>
+          <li class="p-2 rounded-lg bg-space-900/70 border border-slate-800/80">6. <b>Международный терроризм</b> и усиление борьбы с ним</li>
+        </ul>
+      </div>
+
+      <!-- ATTAC-France Highlight -->
+      <div class="p-4 rounded-xl bg-gradient-to-br from-purple-950/50 to-space-950 border border-purple-500/40 flex flex-col justify-between space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="px-2 py-0.5 rounded-md bg-purple-500/20 text-purple-300 text-[11px] font-black">1998 г. • Франция</span>
+          <span class="text-lg">🛑</span>
+        </div>
+        <div class="text-xs font-black text-white">«АТТАК-Франция»</div>
+        <p class="text-xs text-slate-300">
+          (Ассоциация граждан за налогообложение финансовых операций) — <b class="text-purple-300">первая официальная организация антиглобализма</b>.
+        </p>
+      </div>
+    </div>
+
+    <!-- US 3 Stages Timeline -->
+    <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-2.5">
+      <div class="text-xs font-black text-cyan-300 uppercase">🦅 Этапы влияния США на глобальную геополитику (3 этапа):</div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div class="p-3 rounded-xl bg-space-900 border-l-4 border-cyan-400 space-y-1">
+          <div class="text-[11px] font-black text-cyan-400">1-й этап • Вторая мировая война</div>
+          <p class="text-xs text-slate-200">Вступление США во Вторую мировую войну в ХХ веке и <b>раздел мира вместе с великими державами</b>.</p>
+        </div>
+        <div class="p-3 rounded-xl bg-space-900 border-l-4 border-amber-400 space-y-1">
+          <div class="text-[11px] font-black text-amber-400">2-й этап • Холодная война</div>
+          <p class="text-xs text-slate-200">Период <b>«холодной войны»</b> между США, Советским Союзом и их союзниками.</p>
+        </div>
+        <div class="p-3 rounded-xl bg-space-900 border-l-4 border-emerald-400 space-y-1">
+          <div class="text-[11px] font-black text-emerald-400">3-й этап • С 1991 г. по настоящее время</div>
+          <p class="text-xs text-slate-200">Влияние на <b>мировой порядок</b> в качестве крупной глобальной геополитической силы.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK 3: ASIA, NUCLEAR WEAPONS & CENTRAL ASIA SECURITY -->
+  <div data-theory-block="3" class="p-4 sm:p-5 rounded-2xl bg-space-900/50 border border-slate-800/90 space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+      <h4 class="text-sm sm:text-base font-black text-emerald-400 flex items-center gap-2">
+        <span class="px-2 py-0.5 rounded-lg bg-emerald-500/15 text-emerald-300 text-xs">Раздел 3</span>
+        <span>Геополитика Азии, Ядерный клуб и Центральная Азия</span>
+      </h4>
+      <span class="text-[11px] text-slate-400 font-bold hidden sm:inline">Региональная геополитика</span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Asia 6 Factors -->
+      <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-2">
+        <div class="text-xs font-black text-emerald-300 uppercase">🌏 6 факторов, влияющих на геополитическое пространство Азии:</div>
+        <ul class="space-y-1.5 text-xs text-slate-200">
+          <li>1. Расположение в Азии крупнейших стран мира по <b>площади территории и численности населения</b>.</li>
+          <li>2. Религиозно-культурная пестрота, регион является <b>родиной мировых религий</b>.</li>
+          <li>3. Расположение в Азии <b>гигантов мировой экономики</b>.</li>
+          <li>4. Многолетние неразрешенные <b>конфликты</b> (арабо-израильский, Корейский полуостров и др.).</li>
+          <li>5. Концентрация в Азии политически <b>«весомых» сил</b>.</li>
+          <li>6. Большие различия в <b>уровне развития</b> стран региона.</li>
+        </ul>
+      </div>
+
+      <!-- Nuclear Club & Central Asia -->
+      <div class="space-y-3.5">
+        <div class="p-3.5 rounded-xl bg-rose-950/30 border border-rose-500/40 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-black text-rose-300 uppercase">☢️ Государства с ядерным оружием</span>
+            <span class="px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 text-[11px] font-black">Официально в мире: 8 стран</span>
+          </div>
+          <p class="text-xs text-slate-200">
+            В настоящее время в мире официально <b>8 государств</b> объявили о наличии ядерного оружия. Из них <b>четыре (4) — страны Азии</b>:
+          </p>
+          <div class="grid grid-cols-2 gap-1.5 text-xs font-bold text-amber-300">
+            <div class="px-2.5 py-1.5 rounded-lg bg-space-950 border border-slate-800">🇨🇳 Китай</div>
+            <div class="px-2.5 py-1.5 rounded-lg bg-space-950 border border-slate-800">🇮🇳 Индия</div>
+            <div class="px-2.5 py-1.5 rounded-lg bg-space-950 border border-slate-800">🇵🇰 Пакистан</div>
+            <div class="px-2.5 py-1.5 rounded-lg bg-space-950 border border-slate-800">🇰🇵 КНДР</div>
+          </div>
+          <div class="pt-1 text-xs text-cyan-300 font-bold">
+            🏆 Страна с наибольшей ядерной мощью – <span class="underline">Российская Федерация</span>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-space-950 border border-amber-500/30 space-y-1.5">
+          <div class="text-xs font-black text-amber-300 uppercase">🛡️ Проблемы безопасности в Центральной Азии (3):</div>
+          <ul class="space-y-1 text-xs text-slate-200">
+            <li>• Угроза проникновения вооруженных формирований из <b>Афганистана</b>, незаконной торговли наркотиками и оружием.</li>
+            <li>• Наличие в ряде стран региона <b>внутренних межнациональных конфликтов и сепаратизма</b>.</li>
+            <li>• <b>Неравномерность экономического развития</b> стран Центральной Азии, нерешенные социально-экономические проблемы, <b>приграничные конфликты</b>.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK 4: ECONOMIC, SOCIAL, POLITICAL RESOURCES & TECHNOLOGY FACTORS -->
+  <div data-theory-block="4" class="p-4 sm:p-5 rounded-2xl bg-space-900/50 border border-slate-800/90 space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+      <h4 class="text-sm sm:text-base font-black text-purple-400 flex items-center gap-2">
+        <span class="px-2 py-0.5 rounded-lg bg-purple-500/15 text-purple-300 text-xs">Раздел 4</span>
+        <span>Экономические, социальные, политические ресурсы и технологии</span>
+      </h4>
+      <span class="text-[11px] text-slate-400 font-bold hidden sm:inline">Потенциал государства</span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-2">
+        <div class="text-xs font-black text-cyan-300 uppercase">📈 Экономические факторы, влияющие на геополитику (5):</div>
+        <ul class="space-y-1 text-xs text-slate-200">
+          <li>1. Место страны в мировой экономике и технологический уровень</li>
+          <li>2. Экономическое сотрудничество на международном региональном уровне</li>
+          <li>3. Уровень интеграции в мировое экономическое пространство</li>
+          <li>4. Соответствие экономических стратегий страны политическим интересам</li>
+          <li>5. Уровень экономического развития и мощь страны</li>
+        </ul>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-2">
+        <div class="text-xs font-black text-amber-300 uppercase">👥 Влияние социальных факторов на геополитическую среду (5):</div>
+        <ul class="space-y-1 text-xs text-slate-200">
+          <li>1. Явления и процессы в обществе, взаимоотношения между людьми</li>
+          <li>2. Социальное развитие в обществе</li>
+          <li>3. Особенности национального и религиозного состава населения</li>
+          <li>4. Влияние различных социальных групп в обществе</li>
+          <li>5. Авторитет глав государств и общественных организаций и их влияние на политическую ситуацию</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="p-3.5 rounded-xl bg-space-950 border border-indigo-500/30 space-y-2">
+        <div class="text-xs font-black text-indigo-300 uppercase">⚖️ Оценка главных политических ресурсов государства (6):</div>
+        <ul class="space-y-1 text-xs text-slate-200">
+          <li>• Роль и активная деятельность страны в международных организациях</li>
+          <li>• Авторитет, накопленный в истории развития государства</li>
+          <li>• Наличие высокопрофессиональных политиков, создающих геостратегию страны</li>
+          <li>• Принятие решений в интересах государства в сложной политической обстановке</li>
+          <li>• Действия сообразно изменениям геоэкономической и геополитической ситуации в мире</li>
+          <li>• Принятие решений для улучшения геополитического положения страны</li>
+        </ul>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-space-950 border border-purple-500/30 space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-black text-purple-300 uppercase">💻 Пути влияния технологий на геополитику (7):</span>
+          <span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 text-[10px] font-bold">Кибератака</span>
+        </div>
+        <p class="text-[11px] text-rose-200 bg-rose-950/40 border border-rose-500/30 rounded-lg px-2.5 py-1.5">
+          <b>Кибератака</b> – посягательство на систему информационной безопасности.
+        </p>
+        <ul class="space-y-1 text-xs text-slate-200">
+          <li>1. Появление новых военно-технических средств</li>
+          <li>2. Появление транспорта, быстро преодолевающего большие расстояния</li>
+          <li>3. Распространение информационных потоков, направленных против безопасности и целостности страны</li>
+          <li>4. Средства обнаружения и уничтожения вооружений противника</li>
+          <li>5. Превосходство малых стран с высоким научно-технологическим потенциалом</li>
+          <li>6. Технические средства управления вооруженными силами</li>
+          <li>7. Кибератаки на экономику и военный потенциал развитых стран</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK 5: STATE TERRITORY, PIROZHNIKOV CLASSIFICATION & MORPHOLOGY -->
+  <div data-theory-block="5" class="p-4 sm:p-5 rounded-2xl bg-space-900/50 border border-slate-800/90 space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+      <h4 class="text-sm sm:text-base font-black text-sky-400 flex items-center gap-2">
+        <span class="px-2 py-0.5 rounded-lg bg-sky-500/15 text-sky-300 text-xs">Раздел 5</span>
+        <span>Признаки территории, группировка по площади (И.И. Пирожников) и морфология</span>
+      </h4>
+      <span class="text-[11px] text-slate-400 font-bold hidden sm:inline">Территориальный анализ</span>
+    </div>
+
+    <!-- 5 Main Features of State Territory -->
+    <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-2">
+      <div class="text-xs font-black text-sky-300 uppercase">🗺️ 5 главных признаков территории государства:</div>
+      <div class="grid grid-cols-1 sm:grid-cols-5 gap-2 text-xs">
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800 font-semibold text-center">1. Уровень освоенности</div>
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800 font-semibold text-center">2. Типы природных ландшафтов</div>
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800 font-semibold text-center">3. Виды и формы государственных границ</div>
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800 font-semibold text-center">4. Особенности географического положения</div>
+        <div class="p-2.5 rounded-lg bg-space-900 border border-slate-800 font-semibold text-center">5. Площадь территории</div>
+      </div>
+    </div>
+
+    <!-- 9 Giant Countries & Special Facts -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="p-3.5 rounded-xl bg-space-950 border border-cyan-500/30 space-y-2">
+        <div class="text-xs font-black text-cyan-300 uppercase">🏆 9 гигантских стран мира по площади (&gt;2,5 млн км²):</div>
+        <p class="text-xs text-slate-300">Общая площадь: <b>75,8 млн км²</b> (<b>55,8%</b> обитаемой суши):</p>
+        <div class="flex flex-wrap gap-1.5 text-xs font-bold">
+          <span class="px-2.5 py-1 rounded-lg bg-space-900 border border-slate-700 text-white">1. Россия</span>
+          <span class="px-2.5 py-1 rounded-lg bg-space-900 border border-slate-700 text-white">2. Канада</span>
+          <span class="px-2.5 py-1 rounded-lg bg-space-900 border border-slate-700 text-white">3. Китай</span>
+          <span class="px-2.5 py-1 rounded-lg bg-space-900 border border-slate-700 text-white">4. США</span>
+          <span class="px-2.5 py-1 rounded-lg bg-space-900 border border-slate-700 text-white">5. Бразилия</span>
+          <span class="px-2.5 py-1 rounded-lg bg-space-900 border border-slate-700 text-white">6. Австралия</span>
+          <span class="px-2.5 py-1 rounded-lg bg-space-900 border border-slate-700 text-white">7. Индия</span>
+          <span class="px-2.5 py-1 rounded-lg bg-space-900 border border-slate-700 text-white">8. Аргентина</span>
+          <span class="px-2.5 py-1 rounded-lg bg-cyan-500/20 border border-cyan-500/40 text-cyan-300">9. Казахстан</span>
+        </div>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-space-950 border border-amber-500/30 space-y-2">
+        <div class="text-xs font-black text-amber-300 uppercase">📌 Уровень освоенности, микрогосударства и экватор:</div>
+        <ul class="space-y-1.5 text-xs text-slate-200">
+          <li>• <b>Микрогосударства (&lt;30 тыс. км², 66 стран, 1,8 млн км² / 1,3%)</b>: «карликовые» государства Европы и островные страны Океании – <i>Ватикан, Монако, Лихтенштейн, Мальта, Андорра, Мальдивская Республика, Науру, Тувалу</i> и др.</li>
+          <li>• <b>Страны с суровыми природными условиями</b>: у <b>Австралии 1/3 территории</b> – пустыни, у <b>России 3/5 территории</b> – районы с суровым климатом.</li>
+          <li>• Количество стран, которые пересекает <b>линия экватора</b> – <b class="text-amber-300">13 стран</b>.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Morphological Classification (4 Types) -->
+    <div class="space-y-2">
+      <div class="text-xs font-black text-emerald-300 uppercase">🧩 Классификация государств по морфологическим особенностям территории (4 типа):</div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div class="p-3 rounded-xl bg-space-950 border border-slate-800 space-y-1">
+          <div class="text-xs font-black text-cyan-300">📏 Вытянутой формы</div>
+          <p class="text-xs text-slate-300">Чили, Норвегия, Швеция, Вьетнам, Италия, Панама, Того, Гамбия.</p>
+        </div>
+        <div class="p-3 rounded-xl bg-space-950 border border-slate-800 space-y-1">
+          <div class="text-xs font-black text-emerald-300">⬢ Компактные (цельные)</div>
+          <p class="text-xs text-slate-300">Франция, Испания, Польша, Венгрия.</p>
+        </div>
+        <div class="p-3 rounded-xl bg-space-950 border border-slate-800 space-y-1">
+          <div class="text-xs font-black text-amber-300">🏝️ Раздробленные (дисперсные)</div>
+          <p class="text-xs text-slate-300">Индонезия, Филиппины (островные), Малайзия (из 2 частей), США (Гавайи, Аляска).</p>
+        </div>
+        <div class="p-3 rounded-xl bg-space-950 border border-slate-800 space-y-1">
+          <div class="text-xs font-black text-rose-300">🎯 Имеющие анклавы</div>
+          <p class="text-xs text-slate-300">Россия (Калининград), Испания (анклавы Сеута, Мелилья).</p>
+        </div>
+      </div>
+      <div class="p-3 rounded-xl bg-indigo-950/30 border border-indigo-500/30 text-xs text-slate-200">
+        <b>Анклав</b> – часть территории государства, полностью окруженная сухопутной территорией другого государства.
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK 6: BORDERS, DELIMITATION, DEMARCATION & KAZAKHSTAN BORDERS -->
+  <div data-theory-block="6" class="p-4 sm:p-5 rounded-2xl bg-space-900/50 border border-slate-800/90 space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+      <h4 class="text-sm sm:text-base font-black text-rose-400 flex items-center gap-2">
+        <span class="px-2 py-0.5 rounded-lg bg-rose-500/15 text-rose-300 text-xs">Раздел 6</span>
+        <span>Государственные границы: Делимитация, Демаркация и границы РК</span>
+      </h4>
+      <span class="text-[11px] text-slate-400 font-bold hidden sm:inline">Динамика границ РК</span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+      <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-2">
+        <div class="text-xs font-black text-cyan-300 uppercase">🏔️ Виды государственных границ (2):</div>
+        <ul class="space-y-1.5 text-xs text-slate-200">
+          <li>• <b class="text-emerald-300">Природные (естественные)</b> – границы, разделяющие территории стран по морям, рекам, озерам, горным хребтам.</li>
+          <li>• <b class="text-amber-300">Искусственные</b> – границы, обозначенные при помощи созданных человеком специальных инженерных сооружений.</li>
+        </ul>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-2">
+        <div class="text-xs font-black text-rose-300 uppercase">📏 Этапы определения и обозначения границ:</div>
+        <ul class="space-y-1.5 text-xs text-slate-200">
+          <li>• <b class="text-cyan-300">Делимитация</b> – определение общих правил и направления государственной границы путем переговоров между соседними государствами <i>(на карте)</i>.</li>
+          <li>• <b class="text-amber-300">Демаркация</b> – определение и обозначение государственной границы на местности путем установки пограничных знаков в соответствии с договорами о делимитации <i>(пограничные столбы на местности)</i>.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Kazakhstan Border Formation Cards -->
+    <div class="space-y-2">
+      <div class="text-xs font-black text-white uppercase">🇰🇿 Процесс и динамика формирования государственных границ Республики Казахстан:</div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 text-xs">
+        <div class="p-3 rounded-xl bg-space-950 border border-slate-800 space-y-1">
+          <div class="font-black text-rose-300">🇨🇳 Китай</div>
+          <div class="text-slate-400 text-[11px]">Делимитация: <b class="text-white">1992–1998 гг.</b></div>
+          <div class="text-slate-400 text-[11px]">Демаркация: <b class="text-emerald-300">2002 г.</b></div>
+        </div>
+        <div class="p-3 rounded-xl bg-space-950 border border-slate-800 space-y-1">
+          <div class="font-black text-sky-300">🇷🇺 Россия</div>
+          <div class="text-slate-400 text-[11px]">Делимитация: <b class="text-white">сентябрь 1999 – январь 2005 г.</b></div>
+          <div class="text-slate-400 text-[11px]">Демаркация: <b class="text-emerald-300">2009 г.</b></div>
+        </div>
+        <div class="p-3 rounded-xl bg-space-950 border border-slate-800 space-y-1">
+          <div class="font-black text-emerald-300">🇺🇿 Узбекистан</div>
+          <div class="text-slate-400 text-[11px]">Делимитация: <b class="text-white">2000–2002 гг.</b></div>
+          <div class="text-slate-400 text-[11px]">Демаркация: <b class="text-emerald-300">2003–2004 гг.</b></div>
+        </div>
+        <div class="p-3 rounded-xl bg-space-950 border border-slate-800 space-y-1">
+          <div class="font-black text-amber-300">🇹🇲 Туркменистан</div>
+          <div class="text-slate-400 text-[11px]">Делимитация: <b class="text-white">2001 г.</b></div>
+          <div class="text-slate-400 text-[11px]">Демаркация: <b class="text-emerald-300">начата в 2003 г., уточнена в 2017 г.</b></div>
+        </div>
+        <div class="p-3 rounded-xl bg-space-950 border border-slate-800 space-y-1">
+          <div class="font-black text-purple-300">🇰🇬 Кыргызстан</div>
+          <div class="text-slate-400 text-[11px]">Делимитация: <b class="text-white">ноябрь 1999 – декабрь 2001 г.</b></div>
+          <div class="text-slate-400 text-[11px]">Демаркация: <b class="text-emerald-300">начата в 2008 г., уточнена в 2017 г.</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+`;
+
+    const svgDiagramKz = `
+<svg viewBox="0 0 880 460" class="w-full h-auto rounded-2xl bg-[#080d1a] border border-slate-800 p-2 shadow-inner">
+  <defs>
+    <linearGradient id="gradSea" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#0f172a" stop-opacity="0.9"/>
+    </linearGradient>
+    <linearGradient id="gradLand" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d97706" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#0f172a" stop-opacity="0.9"/>
+    </linearGradient>
+  </defs>
+
+  <!-- TOP ROW: THALASSОКРАТИЯ vs TELLUROCRACY & NUCLEAR CLUB -->
+  <rect x="16" y="14" width="270" height="118" rx="12" fill="url(#gradSea)" stroke="#0ea5e9" stroke-width="1.5"/>
+  <text x="32" y="40" fill="#38bdf8" font-size="13" font-weight="900">🌊 ТАЛАССОКРАТИЯ</text>
+  <text x="32" y="58" fill="#cbd5e1" font-size="10.5">гр. таласса – теңіз, кратос – билік</text>
+  <text x="32" y="80" fill="#f8fafc" font-size="11" font-weight="700">Теңіз арқылы басымдылыққа</text>
+  <text x="32" y="96" fill="#f8fafc" font-size="11" font-weight="700">ие болу (мұхиттық державалар)</text>
+  <text x="32" y="118" fill="#7dd3fc" font-size="10" font-weight="700">Құралдар: Саяси • Экономикалық • Идеологиялық</text>
+
+  <rect x="302" y="14" width="270" height="118" rx="12" fill="url(#gradLand)" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="318" y="40" fill="#fbbf24" font-size="13" font-weight="900">🌍 ТЕЛЛУРОКРАТИЯ</text>
+  <text x="318" y="58" fill="#cbd5e1" font-size="10.5">теллус – римдік Жер-Ана құдайы</text>
+  <text x="318" y="80" fill="#f8fafc" font-size="11" font-weight="700">Құрлық арқылы басымдылыққа</text>
+  <text x="318" y="96" fill="#f8fafc" font-size="11" font-weight="700">ие болу (континенттік державалар)</text>
+  <text x="318" y="118" fill="#fde68a" font-size="10" font-weight="700">Экспансия: ықпал ету аймағын кеңейту</text>
+
+  <rect x="588" y="14" width="276" height="118" rx="12" fill="#131129" stroke="#f43f5e" stroke-width="1.5"/>
+  <text x="604" y="40" fill="#fb7185" font-size="13" font-weight="900">☢️ ЯДРОЛЫҚ КЛУБ (8 ЕЛ)</text>
+  <text x="604" y="60" fill="#f8fafc" font-size="11" font-weight="700">Азиядағы 4 ядролық мемлекет:</text>
+  <text x="604" y="80" fill="#fda4af" font-size="11" font-weight="800">• Қытай   • Үндістан</text>
+  <text x="604" y="96" fill="#fda4af" font-size="11" font-weight="800">• Пәкістан • КХДР</text>
+  <text x="604" y="118" fill="#38bdf8" font-size="10.5" font-weight="800">Ең қуаттысы: Ресей Федерациясы</text>
+
+  <!-- MIDDLE ROW: PIROZHNIKOV PROPORTIONAL BAR CHART -->
+  <rect x="16" y="146" width="848" height="136" rx="12" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+  <text x="32" y="172" fill="#38bdf8" font-size="13" font-weight="900">📊 И.И. ПИРОЖНИКОВ БОЙЫНША МЕМЛЕКЕТТЕРДІ ЖЕР АУДАНЫМЕН ТОПТАСТЫРУ (195 ЕЛ • 135,8 МЛН КМ²)</text>
+
+  <rect x="32" y="186" width="445" height="36" rx="6" fill="#0284c7"/>
+  <text x="254" y="203" fill="#ffffff" font-size="11" font-weight="900" text-anchor="middle">Алып (9 ел): 75,8 млн км² (55,8%)</text>
+  <text x="254" y="216" fill="#e0f2fe" font-size="9.5" font-weight="700" text-anchor="middle">&gt;2,5 млн км² (Ресей, Канада, Қытай, АҚШ, Бразилия, Аустралия, Үндістан, Аргентина, ҚР)</text>
+
+  <rect x="480" y="186" width="256" height="36" rx="6" fill="#10b981"/>
+  <text x="608" y="203" fill="#052e16" font-size="11" font-weight="900" text-anchor="middle">Ірі (49 ел): 45,2 млн (33,3%)</text>
+  <text x="608" y="216" fill="#064e3b" font-size="9.5" font-weight="800" text-anchor="middle">350 мың – 2,5 млн км²</text>
+
+  <rect x="739" y="186" width="46" height="36" rx="4" fill="#f59e0b"/>
+  <text x="762" y="208" fill="#451a03" font-size="9.5" font-weight="900" text-anchor="middle">5,2%</text>
+  <rect x="787" y="186" width="26" height="36" rx="3" fill="#a855f7"/>
+  <rect x="815" y="186" width="16" height="36" rx="3" fill="#ec4899"/>
+  <rect x="833" y="186" width="15" height="36" rx="3" fill="#64748b"/>
+
+  <text x="32" y="245" fill="#38bdf8" font-size="10.5" font-weight="700">■ Алып (9 ел): &gt;2,5 млн км² (55,8%)</text>
+  <text x="235" y="245" fill="#34d399" font-size="10.5" font-weight="700">■ Ірі (49 ел): 350 мың–2,5 млн (33,3%)</text>
+  <text x="465" y="245" fill="#fbbf24" font-size="10.5" font-weight="700">■ Орташа (28 ел): 150–350 мың (5,2%)</text>
+  <text x="688" y="245" fill="#c084fc" font-size="10.5" font-weight="700">■ Шағын (43 ел): 2,6%</text>
+  <text x="32" y="266" fill="#f472b6" font-size="10.5" font-weight="700">■ Ұсақ / Микро (66 ел): &lt;30 мың км² — 1,8 млн км² (1,3%)</text>
+  <text x="355" y="266" fill="#94a3b8" font-size="10.5" font-weight="700">■ Тәуелді аймақтар: 2,3 млн км² (1,7%)</text>
+  <text x="595" y="266" fill="#fde047" font-size="10.5" font-weight="800">⚡ Экватор кесіп өтеді: 13 ел</text>
+
+  <!-- BOTTOM ROW: MORPHOLOGY (4 TYPES) & DELIMITATION vs DEMARCATION -->
+  <rect x="16" y="296" width="485" height="148" rx="12" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+  <text x="32" y="320" fill="#a78bfa" font-size="12.5" font-weight="900">🧩 МЕМЛЕКЕТ ПІШІНДЕРІНІҢ МОРФОЛОГИЯСЫ (4 ТИП)</text>
+
+  <rect x="30" y="332" width="106" height="98" rx="8" fill="#1e293b"/>
+  <rect x="76" y="340" width="14" height="44" rx="5" fill="#38bdf8"/>
+  <text x="83" y="400" fill="#38bdf8" font-size="10" font-weight="800" text-anchor="middle">Созылыңқы</text>
+  <text x="83" y="415" fill="#cbd5e1" font-size="9" text-anchor="middle">Чили, Норвегия,</text>
+  <text x="83" y="425" fill="#cbd5e1" font-size="9" text-anchor="middle">Вьетнам, Италия</text>
+
+  <rect x="146" y="332" width="106" height="98" rx="8" fill="#1e293b"/>
+  <polygon points="199,340 218,352 214,376 184,376 180,352" fill="#34d399"/>
+  <text x="199" y="400" fill="#34d399" font-size="10" font-weight="800" text-anchor="middle">Біртұтас</text>
+  <text x="199" y="415" fill="#cbd5e1" font-size="9" text-anchor="middle">Франция, Испания,</text>
+  <text x="199" y="425" fill="#cbd5e1" font-size="9" text-anchor="middle">Польша, Венгрия</text>
+
+  <rect x="262" y="332" width="106" height="98" rx="8" fill="#1e293b"/>
+  <circle cx="298" cy="352" r="8" fill="#fbbf24"/>
+  <circle cx="320" cy="360" r="10" fill="#fbbf24"/>
+  <circle cx="305" cy="374" r="6" fill="#fbbf24"/>
+  <circle cx="334" cy="348" r="5" fill="#fbbf24"/>
+  <text x="315" y="400" fill="#fbbf24" font-size="10" font-weight="800" text-anchor="middle">Шашыраңқы</text>
+  <text x="315" y="415" fill="#cbd5e1" font-size="9" text-anchor="middle">Индонезия, АҚШ,</text>
+  <text x="315" y="425" fill="#cbd5e1" font-size="9" text-anchor="middle">Филиппин, Малайзия</text>
+
+  <rect x="378" y="332" width="108" height="98" rx="8" fill="#1e293b"/>
+  <rect x="408" y="342" width="48" height="36" rx="6" fill="#475569"/>
+  <circle cx="432" cy="360" r="9" fill="#fb7185" stroke="#fff" stroke-width="1.5"/>
+  <text x="432" y="400" fill="#fb7185" font-size="10" font-weight="800" text-anchor="middle">Анклавты</text>
+  <text x="432" y="415" fill="#cbd5e1" font-size="9" text-anchor="middle">Ресей (Калининград)</text>
+  <text x="432" y="425" fill="#cbd5e1" font-size="9" text-anchor="middle">Испания (Сеута)</text>
+
+  <rect x="515" y="296" width="349" height="148" rx="12" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+  <text x="531" y="320" fill="#38bdf8" font-size="12.5" font-weight="900">🚧 ШЕГАРА ҚАЛЫПТАСУЫНЫҢ 2 КЕЗЕҢІ</text>
+
+  <rect x="531" y="332" width="146" height="98" rx="8" fill="#0c4a6e" stroke="#0284c7"/>
+  <text x="604" y="354" fill="#7dd3fc" font-size="11" font-weight="900" text-anchor="middle">1. ДЕЛИМИТАЦИЯ</text>
+  <text x="604" y="374" fill="#f8fafc" font-size="10" text-anchor="middle">Келіссөздер арқылы</text>
+  <text x="604" y="390" fill="#f8fafc" font-size="10" text-anchor="middle">шегара бағытын</text>
+  <text x="604" y="406" fill="#38bdf8" font-size="10.5" font-weight="800" text-anchor="middle">КАРТАДА анықтау 🗺️</text>
+
+  <text x="689" y="384" fill="#94a3b8" font-size="16" font-weight="900" text-anchor="middle">➔</text>
+
+  <rect x="702" y="332" width="146" height="98" rx="8" fill="#064e3b" stroke="#10b981"/>
+  <text x="775" y="354" fill="#6ee7b7" font-size="11" font-weight="900" text-anchor="middle">2. ДЕМАРКАЦИЯ</text>
+  <text x="775" y="374" fill="#f8fafc" font-size="10" text-anchor="middle">Жергілікті жерде</text>
+  <text x="775" y="390" fill="#f8fafc" font-size="10" text-anchor="middle">арнайы шегаралық</text>
+  <text x="775" y="406" fill="#34d399" font-size="10.5" font-weight="800" text-anchor="middle">БЕЛГІ ҚОЮ 📍</text>
+</svg>
+`;
+
+    const svgDiagramRu = `
+<svg viewBox="0 0 880 460" class="w-full h-auto rounded-2xl bg-[#080d1a] border border-slate-800 p-2 shadow-inner">
+  <defs>
+    <linearGradient id="gradSeaRu" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#0f172a" stop-opacity="0.9"/>
+    </linearGradient>
+    <linearGradient id="gradLandRu" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d97706" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#0f172a" stop-opacity="0.9"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="16" y="14" width="270" height="118" rx="12" fill="url(#gradSeaRu)" stroke="#0ea5e9" stroke-width="1.5"/>
+  <text x="32" y="40" fill="#38bdf8" font-size="13" font-weight="900">🌊 ТАЛАССОКРАТИЯ</text>
+  <text x="32" y="58" fill="#cbd5e1" font-size="10.5">греч. таласса – море, кратос – власть</text>
+  <text x="32" y="80" fill="#f8fafc" font-size="11" font-weight="700">Превосходство государства</text>
+  <text x="32" y="96" fill="#f8fafc" font-size="11" font-weight="700">через морское могущество</text>
+  <text x="32" y="118" fill="#7dd3fc" font-size="10" font-weight="700">Основы: Полит. • Эконом. • Идеолог.</text>
+
+  <rect x="302" y="14" width="270" height="118" rx="12" fill="url(#gradLandRu)" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="318" y="40" fill="#fbbf24" font-size="13" font-weight="900">🌍 ТЕЛЛУРОКРАТИЯ</text>
+  <text x="318" y="58" fill="#cbd5e1" font-size="10.5">теллус – римская богиня Мать-Земля</text>
+  <text x="318" y="80" fill="#f8fafc" font-size="11" font-weight="700">Превосходство государства</text>
+  <text x="318" y="96" fill="#f8fafc" font-size="11" font-weight="700">через сухопутное могущество</text>
+  <text x="318" y="118" fill="#fde68a" font-size="10" font-weight="700">Экспансия: расширение сфер влияния</text>
+
+  <rect x="588" y="14" width="276" height="118" rx="12" fill="#131129" stroke="#f43f5e" stroke-width="1.5"/>
+  <text x="604" y="40" fill="#fb7185" font-size="13" font-weight="900">☢️ ЯДЕРНЫЙ КЛУБ (8 СТРАН)</text>
+  <text x="604" y="60" fill="#f8fafc" font-size="11" font-weight="700">4 ядерные державы в Азии:</text>
+  <text x="604" y="80" fill="#fda4af" font-size="11" font-weight="800">• Китай    • Индия</text>
+  <text x="604" y="96" fill="#fda4af" font-size="11" font-weight="800">• Пакистан • КНДР</text>
+  <text x="604" y="118" fill="#38bdf8" font-size="10.5" font-weight="800">Лидер по ядерной мощи: РФ</text>
+
+  <rect x="16" y="146" width="848" height="136" rx="12" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+  <text x="32" y="172" fill="#38bdf8" font-size="13" font-weight="900">📊 ГРУППИРОВКА ГОСУДАРСТВ ПО ПЛОЩАДИ (И.И. ПИРОЖНИКОВ: 195 СТРАН • 135,8 МЛН КМ²)</text>
+
+  <rect x="32" y="186" width="445" height="36" rx="6" fill="#0284c7"/>
+  <text x="254" y="203" fill="#ffffff" font-size="11" font-weight="900" text-anchor="middle">Гигантские (9 стран): 75,8 млн км² (55,8%)</text>
+  <text x="254" y="216" fill="#e0f2fe" font-size="9.5" font-weight="700" text-anchor="middle">&gt;2,5 млн км² (Россия, Канада, Китай, США, Бразилия, Австралия, Индия, Аргентина, РК)</text>
+
+  <rect x="480" y="186" width="256" height="36" rx="6" fill="#10b981"/>
+  <text x="608" y="203" fill="#052e16" font-size="11" font-weight="900" text-anchor="middle">Крупные (49 стран): 45,2 млн (33,3%)</text>
+  <text x="608" y="216" fill="#064e3b" font-size="9.5" font-weight="800" text-anchor="middle">350 тыс. – 2,5 млн км²</text>
+
+  <rect x="739" y="186" width="46" height="36" rx="4" fill="#f59e0b"/>
+  <text x="762" y="208" fill="#451a03" font-size="9.5" font-weight="900" text-anchor="middle">5,2%</text>
+  <rect x="787" y="186" width="26" height="36" rx="3" fill="#a855f7"/>
+  <rect x="815" y="186" width="16" height="36" rx="3" fill="#ec4899"/>
+  <rect x="833" y="186" width="15" height="36" rx="3" fill="#64748b"/>
+
+  <text x="32" y="245" fill="#38bdf8" font-size="10.5" font-weight="700">■ Гигантские (9): &gt;2,5 млн км² (55,8%)</text>
+  <text x="242" y="245" fill="#34d399" font-size="10.5" font-weight="700">■ Крупные (49): 350 тыс.–2,5 млн (33,3%)</text>
+  <text x="475" y="245" fill="#fbbf24" font-size="10.5" font-weight="700">■ Средние (28): 150–350 тыс. (5,2%)</text>
+  <text x="690" y="245" fill="#c084fc" font-size="10.5" font-weight="700">■ Малые (43): 2,6%</text>
+  <text x="32" y="266" fill="#f472b6" font-size="10.5" font-weight="700">■ Мелкие / Микро (66 стран): &lt;30 тыс. км² — 1,8 млн км² (1,3%)</text>
+  <text x="370" y="266" fill="#94a3b8" font-size="10.5" font-weight="700">■ Зависимые территории: 2,3 млн км² (1,7%)</text>
+  <text x="615" y="266" fill="#fde047" font-size="10.5" font-weight="800">⚡ Экватор пересекает: 13 стран</text>
+
+  <rect x="16" y="296" width="485" height="148" rx="12" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+  <text x="32" y="320" fill="#a78bfa" font-size="12.5" font-weight="900">🧩 МОРФОЛОГИЯ ТЕРРИТОРИИ ГОСУДАРСТВ (4 ТИПА)</text>
+
+  <rect x="30" y="332" width="106" height="98" rx="8" fill="#1e293b"/>
+  <rect x="76" y="340" width="14" height="44" rx="5" fill="#38bdf8"/>
+  <text x="83" y="400" fill="#38bdf8" font-size="10" font-weight="800" text-anchor="middle">Вытянутые</text>
+  <text x="83" y="415" fill="#cbd5e1" font-size="9" text-anchor="middle">Чили, Норвегия,</text>
+  <text x="83" y="425" fill="#cbd5e1" font-size="9" text-anchor="middle">Вьетнам, Италия</text>
+
+  <rect x="146" y="332" width="106" height="98" rx="8" fill="#1e293b"/>
+  <polygon points="199,340 218,352 214,376 184,376 180,352" fill="#34d399"/>
+  <text x="199" y="400" fill="#34d399" font-size="10" font-weight="800" text-anchor="middle">Компактные</text>
+  <text x="199" y="415" fill="#cbd5e1" font-size="9" text-anchor="middle">Франция, Испания,</text>
+  <text x="199" y="425" fill="#cbd5e1" font-size="9" text-anchor="middle">Польша, Венгрия</text>
+
+  <rect x="262" y="332" width="106" height="98" rx="8" fill="#1e293b"/>
+  <circle cx="298" cy="352" r="8" fill="#fbbf24"/>
+  <circle cx="320" cy="360" r="10" fill="#fbbf24"/>
+  <circle cx="305" cy="374" r="6" fill="#fbbf24"/>
+  <circle cx="334" cy="348" r="5" fill="#fbbf24"/>
+  <text x="315" y="400" fill="#fbbf24" font-size="10" font-weight="800" text-anchor="middle">Раздробленные</text>
+  <text x="315" y="415" fill="#cbd5e1" font-size="9" text-anchor="middle">Индонезия, США,</text>
+  <text x="315" y="425" fill="#cbd5e1" font-size="9" text-anchor="middle">Филиппины, Малайзия</text>
+
+  <rect x="378" y="332" width="108" height="98" rx="8" fill="#1e293b"/>
+  <rect x="408" y="342" width="48" height="36" rx="6" fill="#475569"/>
+  <circle cx="432" cy="360" r="9" fill="#fb7185" stroke="#fff" stroke-width="1.5"/>
+  <text x="432" y="400" fill="#fb7185" font-size="10" font-weight="800" text-anchor="middle">С анклавами</text>
+  <text x="432" y="415" fill="#cbd5e1" font-size="9" text-anchor="middle">Россия (Калининград)</text>
+  <text x="432" y="425" fill="#cbd5e1" font-size="9" text-anchor="middle">Испания (Сеута)</text>
+
+  <rect x="515" y="296" width="349" height="148" rx="12" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+  <text x="531" y="320" fill="#38bdf8" font-size="12.5" font-weight="900">🚧 2 ЭТАПА УСТАНОВЛЕНИЯ ГРАНИЦ</text>
+
+  <rect x="531" y="332" width="146" height="98" rx="8" fill="#0c4a6e" stroke="#0284c7"/>
+  <text x="604" y="354" fill="#7dd3fc" font-size="11" font-weight="900" text-anchor="middle">1. ДЕЛИМИТАЦИЯ</text>
+  <text x="604" y="374" fill="#f8fafc" font-size="10" text-anchor="middle">Определение общего</text>
+  <text x="604" y="390" fill="#f8fafc" font-size="10" text-anchor="middle">направления границы</text>
+  <text x="604" y="406" fill="#38bdf8" font-size="10.5" font-weight="800" text-anchor="middle">НА КАРТЕ 🗺️</text>
+
+  <text x="689" y="384" fill="#94a3b8" font-size="16" font-weight="900" text-anchor="middle">➔</text>
+
+  <rect x="702" y="332" width="146" height="98" rx="8" fill="#064e3b" stroke="#10b981"/>
+  <text x="775" y="354" fill="#6ee7b7" font-size="11" font-weight="900" text-anchor="middle">2. ДЕМАРКАЦИЯ</text>
+  <text x="775" y="374" fill="#f8fafc" font-size="10" text-anchor="middle">Обозначение границы</text>
+  <text x="775" y="390" fill="#f8fafc" font-size="10" text-anchor="middle">пограничными знаками</text>
+  <text x="775" y="406" fill="#34d399" font-size="10.5" font-weight="800" text-anchor="middle">НА МЕСТНОСТИ 📍</text>
+</svg>
+`;
+
+    const topicData = {
+      num: 42,
+      title_kz: "Геосаясат",
+      title_ru: "Геополитика",
+      category_kz: "Геосаяси концепциялар",
+      category_ru: "Геополитические концепции",
+      summary_kz: "Геосаясат — мемлекеттің стратегиялық әлеуетіне ықпал ететін географиялық, саяси, тарихи және басқа факторларды тұтас бірлікте зерттейтін ғылым. Тақырыпта экспансия, талассократия мен теллурократия, XXI ғасырдағы саяси факторлар, «АТТАК-Франция» (1998 ж.), ядролық клуб (8 ел, оның 4-еуі Азияда), И.И. Пирожников бойынша мемлекеттерді ауданы бойынша топтастыру, мемлекет морфологиясы және ҚР мемлекеттік шегараларының делимитациясы мен демаркациясы толық жүйеленген.",
+      summary_ru: "Геополитика — наука, изучающая в целостном единстве географические, политические, исторические и другие факторы, влияющие на стратегический потенциал государства. В конспекте подробно рассмотрены экспансия, талассократия и теллурократия, политические факторы XXI века, «АТТАК-Франция» (1998 г.), ядерный клуб (8 стран, из них 4 в Азии), классификация стран по площади И.И. Пирожникова, морфология государств, а также делимитация и демаркация границ Республики Казахстан.",
+      full_theory_kz: fullTheoryKz,
+      full_theory_ru: fullTheoryRu,
+      svg_diagram: svgDiagramKz,
+      svg_diagram_ru: svgDiagramRu,
+      tables_kz: [
+        {
+          id: "borders",
+          title: "1. ҚР мемлекеттік шегараларының қалыптасу үдерісі, динамикасы",
+          cols: ["Шегаралас елдер", "Делимитация (картада келісу)", "Демаркация (жергілікті жерде белгі қою)"],
+          rows: [
+            ["🇨🇳 Қытай", "1992–1998 жылдары", "2002 жылы"],
+            ["🇷🇺 Ресей", "1999 жылдың қыркүйегінен 2005 жылдың қаңтарға дейін созылды", "2009 жылы"],
+            ["🇺🇿 Өзбекстан", "2000–2002 жж. аралығы", "2003–2004 жылдар аралығы"],
+            ["🇹🇲 Түрікменстан", "2001 ж.", "2003 жылы басталып, 2017 жылы нақтыланды"],
+            ["🇰🇬 Қырғызстан", "1999 жылдың қарашасынан 2001 жылдың желтоқсанына дейін созылды", "2008 жылы басталып, 2017 жылы нақтыланды"]
+          ]
+        },
+        {
+          id: "pirozhnikov",
+          title: "2. Мемлекеттерді жерінің ауданы бойынша топтастыру (И.И. Пирожников)",
+          cols: ["№", "Мемлекеттер типтері", "Аумағы", "Ел саны", "Жалпы ауданы (млн км²)", "Үлесі (%)"],
+          rows: [
+            ["1", "Алып мемлекеттер", "2,5 млн км² астам", "9", "75,8", "55,8%"],
+            ["2", "Ірі мемлекеттер", "350 мың – 2,5 млн км²", "49", "45,2", "33,3%"],
+            ["3", "Орташа мемлекеттер", "150 – 350 мың км²", "28", "7,1", "5,2%"],
+            ["4", "Шағын мемлекеттер", "30 – 150 мың км²", "43", "3,5", "2,6%"],
+            ["5", "Ұсақ мемлекеттер (микромемлекеттер)", "30 мың км² аз", "66", "1,8", "1,3%"],
+            ["6", "Тәуелді аймақтар", "—", "—", "2,3", "1,7%"],
+            ["Σ", "Барлығы", "Жер шары бойынша", "195", "135,8", "100,0%"]
+          ]
+        },
+        {
+          id: "morphology",
+          title: "3. Мемлекет аумағының морфологиялық жіктелуі және негізгі ұғымдар",
+          cols: ["Категория / Термин", "Сипаттамасы мен мағынасы", "Мысал елдер мен деректер"],
+          rows: [
+            ["Созылыңқы пішіндегі мемлекеттер", "Аумағы меридиандық немесе ендік бағытта ұзыннан созылып жатқан елдер", "Чили, Норвегия, Швеция, Вьетнам, Италия, Панама, Того, Гамбия"],
+            ["Біртұтас аумақты мемлекеттер", "Аумағы жинақы, біртұтас пішінді алып жатқан мемлекеттер", "Франция, Испания, Польша, Венгрия"],
+            ["Шашыраңқы мемлекеттер", "Аралдық архипелагтарда немесе бірнеше бөлікте орналасқан елдер", "Индонезия, Филиппин (аралдық), Малайзия (2 бөліктен тұрады), АҚШ (Гавай, Аляска)"],
+            ["Құрамында анклав бар мемлекеттер", "Анклав – ел аумағының басқа мемлекет аумағымен толығымен қоршалып жатқан бөлігі", "Ресей – Калининград, Испания – Сеута, Мелилья анклавтары"],
+            ["Микромемлекеттер (< 30 мың км²)", "Адам қоныстанған құрлықтың 1,3%-ын алып жатқан Еуропа мен Мұхиттық аралдар елдері", "Ватикан, Монако, Лихтенштейн, Мальта, Андорра, Мальдив Республикасы, Науру, Тувалу"],
+            ["Табиғаты қатал елдер", "Мемлекет аумағының игерілу деңгейіне табиғат жағдайының шектеу қоюы", "Аустралияның 1/3 бөлігі – шөлдер; Ресейдің 3/5 бөлігі – климаты қатал"]
+          ]
+        }
+      ],
+      tables_ru: [
+        {
+          id: "borders",
+          title: "1. Процесс и динамика формирования государственных границ Республики Казахстан",
+          cols: ["Приграничные страны", "Делимитация (определение на карте)", "Демаркация (обозначение знаками на местности)"],
+          rows: [
+            ["🇨🇳 Китай", "1992–1998 годы", "2002 год"],
+            ["🇷🇺 Россия", "С сентября 1999 г. по январь 2005 г.", "2009 год"],
+            ["🇺🇿 Узбекистан", "2000–2002 гг.", "2003–2004 годы"],
+            ["🇹🇲 Туркменистан", "2001 г.", "Началась в 2003 г., уточнена в 2017 г."],
+            ["🇰🇬 Кыргызстан", "С ноября 1999 г. по декабрь 2001 г.", "Началась в 2008 г., уточнена в 2017 г."]
+          ]
+        },
+        {
+          id: "pirozhnikov",
+          title: "2. Группировка государств по площади территории (по И.И. Пирожникову)",
+          cols: ["№", "Типы государств", "Площадь территории", "Число стран", "Общая площадь (млн км²)", "Доля (%)"],
+          rows: [
+            ["1", "Гигантские государства", "Более 2,5 млн км²", "9", "75,8", "55,8%"],
+            ["2", "Крупные государства", "350 тыс. – 2,5 млн км²", "49", "45,2", "33,3%"],
+            ["3", "Средние государства", "150 – 350 тыс. км²", "28", "7,1", "5,2%"],
+            ["4", "Малые государства", "30 – 150 тыс. км²", "43", "3,5", "2,6%"],
+            ["5", "Мелкие (микрогосударства)", "Менее 30 тыс. км²", "66", "1,8", "1,3%"],
+            ["6", "Зависимые территории", "—", "—", "2,3", "1,7%"],
+            ["Σ", "Всего", "По всему миру", "195", "135,8", "100,0%"]
+          ]
+        },
+        {
+          id: "morphology",
+          title: "3. Морфологическая классификация государств и ключевые понятия",
+          cols: ["Категория / Термин", "Характеристика и значение", "Примеры стран и показатели"],
+          rows: [
+            ["Государства вытянутой формы", "Территория вытянута в меридиональном или широтном направлении", "Чили, Норвегия, Швеция, Вьетнам, Италия, Панама, Того, Гамбия"],
+            ["Компактные (цельные) государства", "Государства, занимающие единую компактную территорию", "Франция, Испания, Польша, Венгрия"],
+            ["Раздробленные государства", "Островные государства-архипелаги или страны, состоящие из нескольких частей", "Индонезия, Филиппины (островные), Малайзия (из 2 частей), США (Гавайи, Аляска)"],
+            ["Государства с анклавами", "Анклав – часть территории страны, полностью окруженная территорией другого государства", "Россия – Калининград, Испания – анклавы Сеута и Мелилья"],
+            ["Микрогосударства (< 30 тыс. км²)", "Занимают 1,3% обитаемой суши («карликовые» страны Европы и островные страны Океании)", "Ватикан, Монако, Лихтенштейн, Мальта, Андорра, Мальдивская Республика, Науру, Тувалу"],
+            ["Страны с суровой природой", "Влияние суровых природных условий на уровень освоенности территории", "У Австралии 1/3 территории – пустыни; у России 3/5 территории – суровый климат"]
+          ]
+        }
+      ],
+      key_facts_kz: [
+        "<b>Геосаясат</b> – мемлекеттің стратегиялық әлеуетіне ықпал ететін географиялық, саяси, тарихи және басқа факторларды тұтас бірлікте зерттейтін ғылым.",
+        "<b>Экспансия</b> – басым топтардың, мемлекеттердің күш көрсету, экономикалық немесе мәдени-ақпараттық ықпал ету аймақтарының кеңеюі.",
+        "<b>Геосаясаттың 5 негізгі құралы</b>: саяси, идеологиялық, экономикалық, ақпараттық, мәдени.",
+        "<b>1998 жылы Францияда</b> пайда болған <b>«АТТАК-Франция»</b> (Қаржы операцияларына салық салуды жақтайтын азаматтар ассоциациясы) – антиглобализмнің алғашқы ресми ұйымы.",
+        "Әлемде ресми түрде <b>8 мемлекет</b> ядролық қаруға ие, оның <b>4-еуі Азияда</b>: Қытай, Үндістан, Пәкістан, КХДР. Ядролық қуаты ең жоғары ел – <b>Ресей Федерациясы</b>.",
+        "<b>Талассократия</b> – теңіз арқылы басымдылыққа ие болу; <b>Теллурократия</b> – құрлық арқылы басымдылыққа ие болу.",
+        "<b>Кибершабуыл</b> – ақпараттық қауіпсіздік жүйесіне қастандық.",
+        "Жерінің ауданы бойынша ерекшеленетін <b>9 алып ел (&gt;2,5 млн км²)</b>: Ресей, Канада, Қытай, АҚШ, Бразилия, Аустралия, Үндістан, Аргентина, Қазақстан (75,8 млн км² немесе 55,8%).",
+        "Игерілу деңгейі бойынша табиғаты қатал елдер: <b>Аустралияның 1/3 бөлігі</b> шөлдер, <b>Ресейдің 3/5 бөлігі</b> климаты қатал. Экватор сызығы <b>13 елді</b> кесіп өтеді.",
+        "<b>Делимитация</b> – шегараны келіссөздер арқылы картада анықтау; <b>Демаркация</b> – жергілікті жерде шегаралық белгілер қою."
+      ],
+      key_facts_ru: [
+        "<b>Геополитика</b> – наука, изучающая в целостном единстве географические, политические, исторические и другие факторы, влияющие на стратегический потенциал государства.",
+        "<b>Экспансия</b> – расширение сфер силового, экономического или культурно-информационного влияния доминирующих групп и государств.",
+        "<b>5 основных инструментов геополитики</b>: политические, идеологические, экономические, информационные, культурные.",
+        "Созданная в <b>1998 году во Франции «АТТАК-Франция»</b> (Ассоциация граждан за налогообложение финансовых операций) – первая официальная организация антиглобализма.",
+        "В мире официально <b>8 ядерных держав</b>, из них <b>4 в Азии</b>: Китай, Индия, Пакистан, КНДР. Страна с наибольшей ядерной мощью – <b>Российская Федерация</b>.",
+        "<b>Талассократия</b> – превосходство через море; <b>Теллурократия</b> – превосходство через сушу.",
+        "<b>Кибератака</b> – посягательство на систему информационной безопасности.",
+        "<b>9 гигантских стран мира (&gt;2,5 млн км²)</b>: Россия, Канада, Китай, США, Бразилия, Австралия, Индия, Аргентина, Казахстан (75,8 млн км² или 55,8% суши).",
+        "Природные ограничения освоенности: у <b>Австралии 1/3</b> территории – пустыни, у <b>России 3/5</b> – суровый климат. Линия экватора пересекает <b>13 стран</b>.",
+        "<b>Делимитация</b> – определение направления границы путем переговоров (на карте); <b>Демаркация</b> – установка пограничных знаков на местности."
+      ],
+      traps_kz: [
+        "⚠️ <b>ҰБТ қақпаны (Талассократия vs Теллурократия):</b> «Таласса» (грекше) = Теңіз билігі, ал «Теллус» (римдік Жер-Ана құдайы) = Құрлық билігі. Осы екі терминді орындарымен шатастырмаңыз!",
+        "⚠️ <b>ҰБТ қақпаны (Делимитация vs Демаркация):</b> Дели<b>М</b>итация = <b>М</b>асштабта / картада келіссөз арқылы сызу (1-кезең), ал Демаркация = жергілікті жерде шегаралық бағандар мен белгілер орнату (2-кезең).",
+        "⚠️ <b>ҰБТ қақпаны (ҚР шегара жылдары):</b> Қазақстан ең алғаш делимитацияны <b>Қытаймен (1992–1998 жж., демаркация 2002 ж.)</b> бастады, ал ең ұзақ шегара <b>Ресеймен (делимитация 1999–2005 жж., демаркация 2009 ж.)</b> белгіленді. Түрікменстан мен Қырғызстан демаркациясы <b>2017 жылы</b> нақтыланды.",
+        "⚠️ <b>ҰБТ қақпаны (Сандық үлестер):</b> Аустралияның <b>1/3 бөлігі</b> шөлдер болса, Ресейдің <b>3/5 бөлігі</b> климаты қатал аймақтар. Ал микромемлекеттер (<30 мың км², 66 ел) құрлықтың тек <b>1,3%</b>-ын (1,8 млн км²) алып жатыр."
+      ],
+      traps_ru: [
+        "⚠️ <b>Ловушка ЕНТ (Талассократия vs Теллурократия):</b> «Таласса» (греч.) = Морская мощь, а «Теллус» (римская богиня Мать-Земля) = Сухопутная мощь. Не перепутайте корни терминов!",
+        "⚠️ <b>Ловушка ЕНТ (Делимитация vs Демаркация):</b> Делимитация – это переговоры и нанесение линии границы на <b>карту</b> (1-й этап), а Демаркация – установка пограничных столбов и знаков <b>на местности</b> (2-й этап).",
+        "⚠️ <b>Ловушка ЕНТ (Даты границ РК):</b> Первая делимитация началась с <b>Китаем (1992–1998 гг., демаркация в 2002 г.)</b>, с <b>Россией</b> делимитация шла с <b>сентября 1999 по январь 2005 г. (демаркация в 2009 г.)</b>. С Туркменистаном и Кыргызстаном демаркация была уточнена в <b>2017 году</b>.",
+        "⚠️ <b>Ловушка ЕНТ (Числа и доли):</b> У Австралии пустыни занимают <b>1/3 территории</b>, а у России районы с суровым климатом – <b>3/5 территории</b>. Микрогосударства (<30 тыс. км², 66 стран) занимают лишь <b>1,3%</b> суши (1,8 млн км²)."
+      ]
+    };
+
+    const flashcardsData = {
+      kz: [
+        { q: "Геосаясат дегеніміз не?", a: "Мемлекеттің стратегиялық әлеуетіне ықпал ететін географиялық, саяси, тарихи және басқа факторларды тұтас бірлікте зерттейтін ғылым.", tag: "Анықтама" },
+        { q: "Антиглобализмнің алғашқы ресми ұйымы қашан және қайда пайда болды?", a: "1998 жылы Францияда — «АТТАК-Франция» (Қаржы операцияларына салық салуды жақтайтын азаматтар ассоциациясы).", tag: "Ұйым • 1998" },
+        { q: "Әлемде неше ресми ядролық мемлекет бар және оның нешеуі Азияда?", a: "Әлемде 8 мемлекет. Оның 4-еуі Азияда: Қытай, Үндістан, Пәкістан, КХДР. Ядролық қуаты ең жоғары ел — Ресей Федерациясы.", tag: "Ядролық клуб" },
+        { q: "Талассократия мен Теллурократия айырмашылығы қандай?", a: "Талассократия — мемлекеттің теңіз арқылы басымдылыққа ие болуы. Теллурократия — мемлекеттің құрлық арқылы басымдылыққа ие болуы.", tag: "Концепция" },
+        { q: "И.И. Пирожников бойынша «Алып мемлекеттерге» (>2,5 млн км²) қанша ел кіреді?", a: "9 ел (75,8 млн км² немесе 55,8%): Ресей, Канада, Қытай, АҚШ, Бразилия, Аустралия, Үндістан, Аргентина, Қазақстан.", tag: "Пирожников" },
+        { q: "ҚР-ның Ресеймен және Қытаймен шегарасының делимитация/демаркация жылдары?", a: "Қытай: делимитация 1992–1998 жж., демаркация 2002 ж. Ресей: делимитация 1999 ж. қыркүйек – 2005 ж. қаңтар, демаркация 2009 ж.", tag: "ҚР Шегарасы" }
+      ],
+      ru: [
+        { q: "Что такое геополитика?", a: "Наука, изучающая в целостном единстве географические, политические, исторические и другие факторы, влияющие на стратегический потенциал государства.", tag: "Определение" },
+        { q: "Когда и где появилась первая официальная организация антиглобализма?", a: "В 1998 году во Франции — «АТТАК-Франция» (Ассоциация граждан за налогообложение финансовых операций).", tag: "Организация • 1998" },
+        { q: "Сколько в мире официальных ядерных держав и сколько из них в Азии?", a: "В мире 8 стран. Из них 4 в Азии: Китай, Индия, Пакистан, КНДР. Наибольшая ядерная мощь — у Российской Федерации.", tag: "Ядерный клуб" },
+        { q: "В чем различие между Талассократией и Теллурократией?", a: "Талассократия — превосходство государства через морское могущество. Теллурократия — превосходство через сушу (континентальное).", tag: "Концепция" },
+        { q: "Сколько стран входит в «Гигантские государства» (>2,5 млн км²) по И.И. Пирожникову?", a: "9 стран (75,8 млн км² или 55,8% суши): Россия, Канада, Китай, США, Бразилия, Австралия, Индия, Аргентина, Казахстан.", tag: "Пирожников" },
+        { q: "Годы делимитации и демаркации границ РК с Китаем и Россией?", a: "Китай: делимитация 1992–1998 гг., демаркация 2002 г. Россия: делимитация сентябрь 1999 – январь 2005 г., демаркация 2009 г.", tag: "Границы РК" }
+      ]
+    };
+
+    const quizData = {
+      kz: [
+        {
+          q: "1. 1998 жылы Францияда пайда болған антиглобализмнің алғашқы ресми ұйымы:",
+          opts: ["«Гринпис»", "«АТТАК-Франция»", "«Рим клубы»", "«НАТО»"],
+          ans: 1,
+          exp: "1998 жылы Францияда пайда болған «АТТАК-Франция» (Қаржы операцияларына салық салуды жақтайтын азаматтар ассоциациясы) – антиглобализмнің алғашқы ресми ұйымы."
+        },
+        {
+          q: "2. Әлемде ресми түрде ядролық қаруға ие 8 мемлекеттің ішіндегі Азияның 4 елін көрсетіңіз:",
+          opts: ["Қытай, Үндістан, Пәкістан, КХДР", "Қытай, Жапония, Үндістан, Иран", "Ресей, Қытай, Үндістан, Оңтүстік Корея", "Үндістан, Пәкістан, Израиль, Түркия"],
+          ans: 0,
+          exp: "Азиядағы ресми 4 ядролық мемлекет: Қытай, Үндістан, Пәкістан және Корея Халық Демократиялық Республикасы (КХДР)."
+        },
+        {
+          q: "3. Мемлекеттің құрлық арқылы басымдылыққа ие болуы қалай аталады?",
+          opts: ["Талассократия", "Теллурократия", "Экспансия", "Делимитация"],
+          ans: 1,
+          exp: "Теллурократия (теллус – ежелгі римдіктердің Жер-Ана құдайы) – мемлекеттің құрлық арқылы басымдылыққа ие болуы."
+        },
+        {
+          q: "4. И.И. Пирожников жіктемесі бойынша ауданы 2,5 млн км²-ден асатын «Алып мемлекеттер» саны мен үлесі:",
+          opts: ["9 ел — 75,8 млн км² (55,8%)", "49 ел — 45,2 млн км² (33,3%)", "28 ел — 7,1 млн км² (5,2%)", "66 ел — 1,8 млн км² (1,3%)"],
+          ans: 0,
+          exp: "Алып мемлекеттер (>2,5 млн км²) саны — 9 ел (Ресей, Канада, Қытай, АҚШ, Бразилия, Аустралия, Үндістан, Аргентина, Қазақстан), жалпы ауданы 75,8 млн км² (55,8%)."
+        },
+        {
+          q: "5. Морфологиялық ерекшелігі бойынша «Біртұтас аумақты алып жатқан» мемлекеттер қатары:",
+          opts: ["Чили, Норвегия, Швеция, Вьетнам", "Франция, Испания, Польша, Венгрия", "Индонезия, Филиппин, Малайзия, АҚШ", "Ватикан, Монако, Науру, Тувалу"],
+          ans: 1,
+          exp: "Біртұтас аумақты алып жатқан мемлекеттерге Франция, Испания, Польша, Венгрия жатады."
+        },
+        {
+          q: "6. Мемлекет аумағының игерілу деңгейіне байланысты Аустралия мен Ресейдің табиғаты қатал бөліктері:",
+          opts: ["Аустралияның 1/2 бөлігі шөлдер, Ресейдің 1/4 бөлігі қатал", "Аустралияның 1/3 бөлігі шөлдер, Ресейдің 3/5 бөлігі климаты қатал", "Аустралияның 3/5 бөлігі шөлдер, Ресейдің 1/3 бөлігі климаты қатал", "Екеуінің де 2/3 бөлігі игерілмеген"],
+          ans: 1,
+          exp: "Мемлекет аумағы игерілу деңгейіне байланысты табиғаты қатал елдерге: Аустралияның 1/3 бөлігі шөлдер, Ресейдің 3/5 бөлігі климаты қатал."
+        },
+        {
+          q: "7. Көршілес мемлекеттердің арасында келіссөздерге сәйкес жергілікті жерде шегаралық белгілер қою үдерісі:",
+          opts: ["Делимитация", "Демаркация", "Анклав", "Экспансия"],
+          ans: 1,
+          exp: "Демаркация – жергілікті жерде шегаралық белгілер қою арқылы мемлекеттік шегараны анықтау мен белгілеу."
+        },
+        {
+          q: "8. Қазақстан мен Ресей арасындағы мемлекеттік шегараны делимитациялау және демаркациялау уақыты:",
+          opts: ["Делимитация: 1992–1998 жж., Демаркация: 2002 ж.", "Делимитация: 1999 ж. қыркүйек – 2005 ж. қаңтар, Демаркация: 2009 ж.", "Делимитация: 2000–2002 жж., Демаркация: 2003–2004 жж.", "Делимитация: 2001 ж., Демаркация: 2017 ж."],
+          ans: 1,
+          exp: "ҚР мен Ресей шегарасының делимитациясы 1999 жылдың қыркүйегінен 2005 жылдың қаңтарына дейін созылды, ал демаркациясы 2009 жылы жүргізілді."
+        }
+      ],
+      ru: [
+        {
+          q: "1. Первая официальная организация антиглобализма, появившаяся во Франции в 1998 году:",
+          opts: ["«Гринпис»", "«АТТАК-Франция»", "«Римский клуб»", "«НАТО»"],
+          ans: 1,
+          exp: "Появившаяся в 1998 году во Франции «АТТАК-Франция» (Ассоциация граждан за налогообложение финансовых операций) – первая официальная организация антиглобализма."
+        },
+        {
+          q: "2. Укажите 4 азиатские страны из 8 государств мира, официально обладающих ядерным оружием:",
+          opts: ["Китай, Индия, Пакистан, КНДР", "Китай, Япония, Индия, Иран", "Россия, Китай, Индия, Южная Корея", "Индия, Пакистан, Израиль, Турция"],
+          ans: 0,
+          exp: "Четыре официальные ядерные державы Азии: Китай, Индия, Пакистан и Корейская Народно-Демократическая Республика (КНДР)."
+        },
+        {
+          q: "3. Как называется обладание государством превосходством через сушу (континентальное могущество)?",
+          opts: ["Талассократия", "Теллурократия", "Экспансия", "Делимитация"],
+          ans: 1,
+          exp: "Теллурократия (теллус – древнеримская богиня Мать-Земля) – обладание государством превосходством через сушу."
+        },
+        {
+          q: "4. Число и доля «Гигантских государств» (>2,5 млн км²) по классификации И.И. Пирожникова:",
+          opts: ["9 стран — 75,8 млн км² (55,8%)", "49 стран — 45,2 млн км² (33,3%)", "28 стран — 7,1 млн км² (5,2%)", "66 стран — 1,8 млн км² (1,3%)"],
+          ans: 0,
+          exp: "Гигантские государства (>2,5 млн км²) насчитывают 9 стран (Россия, Канада, Китай, США, Бразилия, Австралия, Индия, Аргентина, Казахстан), общая площадь — 75,8 млн км² (55,8%)."
+        },
+        {
+          q: "5. Ряд государств, занимающих цельную (компактную) территорию по морфологической классификации:",
+          opts: ["Чили, Норвегия, Швеция, Вьетнам", "Франция, Испания, Польша, Венгрия", "Индонезия, Филиппины, Малайзия, США", "Ватикан, Монако, Науру, Тувалу"],
+          ans: 1,
+          exp: "К государствам с цельной (компактной) территорией относятся Франция, Испания, Польша, Венгрия."
+        },
+        {
+          q: "6. Доля территорий с суровыми природными условиями в Австралии и России:",
+          opts: ["1/2 Австралии — пустыни, 1/4 России — суровый климат", "1/3 Австралии — пустыни, 3/5 России — суровый климат", "3/5 Австралии — пустыни, 1/3 России — суровый климат", "У обеих стран по 2/3 территории"],
+          ans: 1,
+          exp: "По уровню освоенности к странам с суровой природой относятся: Австралия (1/3 территории – пустыни) и Россия (3/5 территории – суровый климат)."
+        },
+        {
+          q: "7. Определение и обозначение государственной границы на местности путем установки пограничных знаков:",
+          opts: ["Делимитация", "Демаркация", "Анклав", "Экспансия"],
+          ans: 1,
+          exp: "Демаркация – определение и обозначение государственной границы на местности пограничными знаками в соответствии с договорами о делимитации."
+        },
+        {
+          q: "8. Период делимитации и демаркации государственной границы между Казахстаном и Россией:",
+          opts: ["Делимитация: 1992–1998 гг., Демаркация: 2002 г.", "Делимитация: сентябрь 1999 – январь 2005 г., Демаркация: 2009 г.", "Делимитация: 2000–2002 гг., Демаркация: 2003–2004 гг.", "Делимитация: 2001 г., Демаркация: 2017 г."],
+          ans: 1,
+          exp: "Делимитация границы РК и России длилась с сентября 1999 года по январь 2005 года, а демаркация проведена в 2009 году."
+        }
+      ]
+    };
+
+    const blooketData = {
+      kz: "https://dashboard.blooket.com/set/6a96ed4bab599b2e92eceacf",
+      ru: "https://dashboard.blooket.com/set/6a95ed18089e743aeedae673"
+    };
+
     let currentLang = 'kz';
+    let currentTheoryFilter = 'all';
+    let currentTableTab = 'all';
+    let currentPracticeMode = 'cards';
+    let quizAnswers = {};
 
     // Safe localStorage helper
     const safeStorage = {
@@ -250,6 +1610,18 @@
         try { localStorage.setItem(k, v); } catch (e) {}
       }
     };
+
+    function navigateCourse(url) {
+      const inPreview = (window.self !== window.top) || !window.location.hostname || window.location.hostname.indexOf('googleusercontent') !== -1 || window.location.protocol === 'blob:' || window.location.protocol === 'data:' || window.location.protocol === 'about:';
+      if (inPreview) {
+        const msg = (currentLang === 'ru')
+          ? "Навигация курса («" + url + "») активна на полном сайте GeoTany"
+          : "Курс навигациясы («" + url + "») толық GeoTany платформасында жұмыс істейді";
+        showToast(msg);
+      } else {
+        window.location.href = url;
+      }
+    }
 
     function getCompletedSet() {
       try {
@@ -288,7 +1660,7 @@
       t.classList.remove('translate-y-20', 'opacity-0');
       setTimeout(() => {
         t.classList.add('translate-y-20', 'opacity-0');
-      }, 2500);
+      }, 2600);
     }
 
     function toggleComplete() {
@@ -311,57 +1683,254 @@
       updateCompleteButton();
     }
 
-    function renderTable(isRu) {
-      const tbl = isRu ? (topicData.table_ru || topicData.table_kz) : topicData.table_kz;
-      const container = document.getElementById('tableContainer');
-      if (!tbl || !tbl.cols || !tbl.rows || tbl.rows.length === 0) {
-        document.getElementById('tableSection').classList.add('hidden');
-        return;
-      }
-      document.getElementById('tableSection').classList.remove('hidden');
+    function renderHeroStats(isRu) {
+      const stats = isRu ? [
+        { val: "8 / 4", label: "Ядерных держав (в мире / Азии)", color: "text-rose-400" },
+        { val: "9 стран", label: "Гиганты >2,5 млн км² (55,8%)", color: "text-cyan-400" },
+        { val: "195 стран", label: "Классификация Пирожникова", color: "text-emerald-400" },
+        { val: "5 соседей", label: "Делимитация и демаркация РК", color: "text-amber-400" }
+      ] : [
+        { val: "8 / 4", label: "Ядролық ел (әлемде / Азияда)", color: "text-rose-400" },
+        { val: "9 ел", label: "Алып елдер >2,5 млн км² (55,8%)", color: "text-cyan-400" },
+        { val: "195 ел", label: "Пирожников классификациясы", color: "text-emerald-400" },
+        { val: "5 көрші ел", label: "ҚР делимитация & демаркациясы", color: "text-amber-400" }
+      ];
+      const grid = document.getElementById('heroStatsGrid');
+      grid.innerHTML = stats.map(s => `
+        <div class="p-3 rounded-xl bg-space-900/90 border border-slate-800/90">
+          <div class="text-base sm:text-lg font-black ${s.color}">${s.val}</div>
+          <div class="text-[11px] text-slate-400 font-medium leading-tight mt-0.5">${s.label}</div>
+        </div>
+      `).join('');
+    }
 
-      let html = '<table class="w-full text-left text-xs border-collapse">';
-      html += '<thead><tr class="border-b border-slate-800 text-slate-400 font-bold">';
-      tbl.cols.forEach(col => {
-        html += `<th class="p-2.5 sm:p-3 bg-space-900/60 rounded-lg whitespace-nowrap text-cyan-300 font-bold">${col}</th>`;
+    function renderTheoryFilters(isRu) {
+      const filters = isRu ? [
+        { id: 'all', label: 'Все (1–6)' },
+        { id: '1', label: '1. Понятия' },
+        { id: '2', label: '2. XXI в. и США' },
+        { id: '3', label: '3. Азия и Ядерный клуб' },
+        { id: '4', label: '4. Ресурсы и Технологии' },
+        { id: '5', label: '5. Площадь и Морфология' },
+        { id: '6', label: '6. Границы РК' }
+      ] : [
+        { id: 'all', label: 'Барлығы (1–6)' },
+        { id: '1', label: '1. Ұғымдар' },
+        { id: '2', label: '2. XXI ғ. & АҚШ' },
+        { id: '3', label: '3. Азия & Ядролық клуб' },
+        { id: '4', label: '4. Ресурстар & Технология' },
+        { id: '5', label: '5. Ауданы & Морфология' },
+        { id: '6', label: '6. ҚР Шегарасы' }
+      ];
+      const bar = document.getElementById('theoryFilterBar');
+      bar.innerHTML = filters.map(f => {
+        const active = (currentTheoryFilter === f.id);
+        const cls = active
+          ? "px-2.5 py-1 rounded-lg text-[11px] font-black bg-cyan-500 text-space-950 shadow transition"
+          : "px-2.5 py-1 rounded-lg text-[11px] font-bold bg-space-900 text-slate-400 hover:text-white border border-slate-800 transition";
+        return `<button onclick="setTheoryFilter('${f.id}')" class="${cls}">${f.label}</button>`;
+      }).join('');
+    }
+
+    function setTheoryFilter(filterId) {
+      currentTheoryFilter = filterId;
+      renderTheoryFilters(currentLang === 'ru');
+      const blocks = document.querySelectorAll('#theoryContent [data-theory-block]');
+      blocks.forEach(b => {
+        if (filterId === 'all' || b.getAttribute('data-theory-block') === filterId) {
+          b.classList.remove('hidden');
+        } else {
+          b.classList.add('hidden');
+        }
       });
-      html += '</tr></thead><tbody class="divide-y divide-slate-800/60">';
-      tbl.rows.forEach(row => {
-        html += '<tr class="hover:bg-space-900/40 transition">';
-        row.forEach((cell, idx) => {
-          const cls = idx === 0 ? "font-bold text-white whitespace-nowrap" : (idx === 1 ? "text-cyan-300 font-medium" : "text-slate-300");
-          html += `<td class="p-2.5 sm:p-3 ${cls}">${cell}</td>`;
+    }
+
+    function setTableTab(tabId) {
+      currentTableTab = tabId;
+      renderTable(currentLang === 'ru');
+    }
+
+    function renderTable(isRu) {
+      const tables = isRu ? topicData.tables_ru : topicData.tables_kz;
+      const tabsBar = document.getElementById('tableTabsBar');
+      const container = document.getElementById('tableContainer');
+
+      const tabItems = [
+        { id: 'all', label: isRu ? 'Все таблицы (3)' : 'Барлық кестелер (3)' },
+        { id: 'borders', label: isRu ? '1. Границы РК' : '1. ҚР Шегарасы' },
+        { id: 'pirozhnikov', label: isRu ? '2. И.И. Пирожников' : '2. И.И. Пирожников' },
+        { id: 'morphology', label: isRu ? '3. Морфология стран' : '3. Елдер морфологиясы' }
+      ];
+
+      tabsBar.innerHTML = tabItems.map(t => {
+        const active = (currentTableTab === t.id);
+        const cls = active
+          ? "px-2.5 py-1 rounded-lg text-[11px] font-black bg-cyan-500 text-space-950 shadow transition"
+          : "px-2.5 py-1 rounded-lg text-[11px] font-bold bg-space-900 text-slate-400 hover:text-white border border-slate-800 transition";
+        return `<button onclick="setTableTab('${t.id}')" class="${cls}">${t.label}</button>`;
+      }).join('');
+
+      const filtered = tables.filter(tb => currentTableTab === 'all' || tb.id === currentTableTab);
+      container.innerHTML = filtered.map(tbl => {
+        let html = `<div class="space-y-2">`;
+        html += `<div class="text-xs font-extrabold text-amber-300">${tbl.title}</div>`;
+        html += `<div class="overflow-x-auto rounded-xl border border-slate-800">`;
+        html += `<table class="w-full text-left text-xs border-collapse">`;
+        html += `<thead><tr class="border-b border-slate-800 bg-space-900/90 text-cyan-300 font-bold">`;
+        tbl.cols.forEach(col => {
+          html += `<th class="p-2.5 sm:p-3 whitespace-nowrap">${col}</th>`;
         });
-        html += '</tr>';
-      });
-      html += '</tbody></table>';
-      container.innerHTML = html;
+        html += `</tr></thead><tbody class="divide-y divide-slate-800/70">`;
+        tbl.rows.forEach((row) => {
+          const isTotal = row[0] === 'Σ';
+          const rowBg = isTotal ? "bg-cyan-950/30 font-extrabold" : "hover:bg-space-900/50 transition";
+          html += `<tr class="${rowBg}">`;
+          row.forEach((cell, idx) => {
+            const cls = idx === 0
+              ? "font-bold text-white whitespace-nowrap"
+              : (idx === 1 ? "text-cyan-300 font-semibold" : "text-slate-200");
+            html += `<td class="p-2.5 sm:p-3 ${cls}">${cell}</td>`;
+          });
+          html += `</tr>`;
+        });
+        html += `</tbody></table></div></div>`;
+        return html;
+      }).join('');
     }
 
     function renderFacts(isRu) {
-      const facts = isRu ? (topicData.key_facts_ru || topicData.key_facts_kz) : topicData.key_facts_kz;
+      const facts = isRu ? topicData.key_facts_ru : topicData.key_facts_kz;
       const list = document.getElementById('factsList');
-      if (!facts || facts.length === 0) {
-        document.getElementById('factsSection').classList.add('hidden');
-        return;
-      }
-      document.getElementById('factsSection').classList.remove('hidden');
-      list.innerHTML = facts.map(f => `<li class="flex items-start space-x-2"><span class="text-amber-400 font-bold shrink-0 mt-0.5">•</span><span>${f}</span></li>`).join('');
+      list.innerHTML = facts.map((f, i) => `
+        <li class="p-3 rounded-xl bg-space-900/60 border border-slate-800/90 flex items-start space-x-2.5">
+          <span class="px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-300 font-black text-[11px] shrink-0 mt-0.5">#${i + 1}</span>
+          <span class="leading-relaxed">${f}</span>
+        </li>
+      `).join('');
     }
 
     function renderTraps(isRu) {
-      const traps = isRu ? (topicData.traps_ru || topicData.traps_kz) : topicData.traps_kz;
+      const traps = isRu ? topicData.traps_ru : topicData.traps_kz;
       const list = document.getElementById('trapsList');
-      if (!traps || traps.length === 0) {
-        document.getElementById('trapsSection').classList.add('hidden');
-        return;
-      }
-      document.getElementById('trapsSection').classList.remove('hidden');
-      list.innerHTML = traps.map(tr => {
-        const str = String(tr);
-        const icon = str.startsWith('⚠️') ? '' : '<span class="text-amber-400 shrink-0 mt-0.5">⚠️</span> ';
-        return `<p class="leading-relaxed flex items-start space-x-2">${icon}<span>${str}</span></p>`;
+      list.innerHTML = traps.map(tr => `
+        <div class="p-3.5 rounded-xl bg-space-950/90 border border-amber-500/30 leading-relaxed">
+          ${tr}
+        </div>
+      `).join('');
+    }
+
+    function toggleFlashcard(idx) {
+      const card = document.getElementById('fcard-' + idx);
+      if (card) card.classList.toggle('flipped');
+    }
+
+    function renderFlashcards(isRu) {
+      const cards = isRu ? flashcardsData.ru : flashcardsData.kz;
+      const grid = document.getElementById('flashcardsGrid');
+      const tapLabel = isRu ? "Нажмите, чтобы перевернуть ↻" : "Аудару үшін басыңыз ↻";
+      const ansLabel = isRu ? "Ответ" : "Жауабы";
+
+      grid.innerHTML = cards.map((c, idx) => `
+        <div id="fcard-${idx}" onclick="toggleFlashcard(${idx})" class="flip-card cursor-pointer h-44 perspective-1000 select-none">
+          <div class="flip-card-inner relative w-full h-full">
+            <div class="flip-card-front absolute inset-0 p-4 rounded-2xl bg-space-900 border border-slate-800 hover:border-purple-500/50 transition flex flex-col justify-between">
+              <div class="flex items-center justify-between">
+                <span class="px-2 py-0.5 rounded-md bg-purple-500/15 text-purple-300 text-[10px] font-black">${c.tag}</span>
+                <span class="text-xs text-slate-500 font-bold">#${idx + 1}</span>
+              </div>
+              <p class="text-xs sm:text-sm font-extrabold text-white leading-snug">${c.q}</p>
+              <div class="text-[11px] text-cyan-400 font-bold">${tapLabel}</div>
+            </div>
+            <div class="flip-card-back absolute inset-0 p-4 rounded-2xl bg-gradient-to-br from-purple-950/80 to-space-900 border border-purple-500/50 flex flex-col justify-between">
+              <div class="text-[10px] font-black uppercase text-emerald-300">✓ ${ansLabel}</div>
+              <p class="text-xs text-slate-100 leading-relaxed font-medium">${c.a}</p>
+              <div class="text-[10px] text-purple-300 font-bold text-right">↻</div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function answerQuiz(qIdx, optIdx) {
+      if (quizAnswers[qIdx] !== undefined) return;
+      quizAnswers[qIdx] = optIdx;
+      renderQuiz(currentLang === 'ru');
+    }
+
+    function resetQuiz() {
+      quizAnswers = {};
+      renderQuiz(currentLang === 'ru');
+    }
+
+    function renderQuiz(isRu) {
+      const items = isRu ? quizData.ru : quizData.kz;
+      const container = document.getElementById('quizQuestionsList');
+      let correctCount = 0;
+      Object.keys(quizAnswers).forEach(k => {
+        const idx = parseInt(k, 10);
+        if (items[idx] && quizAnswers[idx] === items[idx].ans) correctCount++;
+      });
+
+      document.getElementById('quizScoreText').textContent = isRu
+        ? `Результат: ${correctCount} / ${items.length} (отвечено: ${Object.keys(quizAnswers).length})`
+        : `Нәтиже: ${correctCount} / ${items.length} (жауап берілді: ${Object.keys(quizAnswers).length})`;
+
+      container.innerHTML = items.map((item, qIdx) => {
+        const userAns = quizAnswers[qIdx];
+        const answered = userAns !== undefined;
+
+        const optsHtml = item.opts.map((opt, oIdx) => {
+          let btnCls = "w-full text-left px-3.5 py-2.5 rounded-xl border text-xs font-semibold transition flex items-center justify-between ";
+          let badge = "";
+          if (!answered) {
+            btnCls += "bg-space-950 border-slate-800 hover:border-cyan-500/50 hover:bg-space-850 text-slate-200";
+          } else if (oIdx === item.ans) {
+            btnCls += "bg-emerald-950/50 border-emerald-500/60 text-emerald-200 font-bold";
+            badge = "✓";
+          } else if (oIdx === userAns) {
+            btnCls += "bg-rose-950/50 border-rose-500/60 text-rose-200";
+            badge = "✗";
+          } else {
+            btnCls += "bg-space-950/50 border-slate-800/50 text-slate-500";
+          }
+          return `<button onclick="answerQuiz(${qIdx}, ${oIdx})" class="${btnCls}"><span>${opt}</span><span>${badge}</span></button>`;
+        }).join('');
+
+        const expHtml = answered
+          ? `<div class="p-3 rounded-xl bg-space-950 border border-slate-800 text-xs text-slate-300 mt-2"><b class="text-cyan-300">${isRu ? 'Пояснение:' : 'Түсіндірме:'}</b> ${item.exp}</div>`
+          : '';
+
+        return `
+          <div class="p-4 rounded-2xl bg-space-900/70 border border-slate-800 space-y-2.5">
+            <div class="text-xs sm:text-sm font-extrabold text-white">${item.q}</div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">${optsHtml}</div>
+            ${expHtml}
+          </div>
+        `;
       }).join('');
+    }
+
+    function setPracticeMode(mode) {
+      currentPracticeMode = mode;
+      const isRu = (currentLang === 'ru');
+      const btnCards = document.getElementById('btnModeCards');
+      const btnQuiz = document.getElementById('btnModeQuiz');
+      const viewCards = document.getElementById('flashcardsView');
+      const viewQuiz = document.getElementById('quizView');
+
+      if (mode === 'quiz') {
+        btnQuiz.className = "px-3 py-1 rounded-lg text-xs font-black transition bg-purple-500 text-space-950 shadow";
+        btnCards.className = "px-3 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+        viewCards.classList.add('hidden');
+        viewQuiz.classList.remove('hidden');
+      } else {
+        btnCards.className = "px-3 py-1 rounded-lg text-xs font-black transition bg-purple-500 text-space-950 shadow";
+        btnQuiz.className = "px-3 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+        viewQuiz.classList.add('hidden');
+        viewCards.classList.remove('hidden');
+      }
+      btnCards.textContent = isRu ? "🗂️ Карточки (6)" : "🗂️ Карточкалар (6)";
+      btnQuiz.textContent = isRu ? "📝 ЕНТ Тест (8 вопросов)" : "📝 ҰБТ Тест (8 сұрақ)";
     }
 
     function setLang(lang) {
@@ -380,10 +1949,22 @@
         btnRu.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
       }
 
-      // Update text fields
-      document.getElementById('navCatBadge').textContent = isRu ? (topicData.category_ru || 'География') : (topicData.category_kz || 'География');
-      document.getElementById('heroCatBadge').textContent = isRu ? (topicData.category_ru || 'География') : (topicData.category_kz || 'География');
+      // Navbar & Badges
+      document.getElementById('btnBackToCourseText').textContent = isRu ? "Назад" : "Артқа";
+      document.getElementById('navCatBadge').textContent = isRu ? topicData.category_ru : topicData.category_kz;
+      document.getElementById('heroCatBadge').textContent = isRu ? topicData.category_ru : topicData.category_kz;
+      document.getElementById('readTimeBadge').textContent = isRu ? "⏱️ ~10-15 мин чтения" : "⏱️ ~10-15 мин оқу";
+      document.getElementById('untWeightBadge').textContent = isRu ? "🔥 Важная тема ЕНТ" : "🔥 ҰБТ маңызды тақырыбы";
       document.getElementById('heroTitle').textContent = isRu ? topicData.title_ru : topicData.title_kz;
+      document.getElementById('btnBlooketText').textContent = isRu ? "Игра Blooket" : "Blooket ойыны";
+      document.getElementById('btnQuickPracticeText').textContent = isRu ? "Тест и Карточки" : "Тест & Флеш-карталар";
+
+      document.getElementById('navJumpTheory').textContent = isRu ? "📚 Теория" : "📚 Теория";
+      document.getElementById('navJumpSvg').textContent = isRu ? "🎨 Схема" : "🎨 Инфографика";
+      document.getElementById('navJumpTable').textContent = isRu ? "📊 Таблицы" : "📊 Кестелер";
+      document.getElementById('navJumpQuiz').textContent = isRu ? "🧠 Тренажер" : "🧠 Тренажер";
+
+      renderHeroStats(isRu);
 
       // Summary
       document.getElementById('summaryHeader').textContent = isRu ? "КРАТКИЙ ОБЗОР ТЕМЫ" : "ТАҚЫРЫПҚА ҚЫСҚАША ШОЛУ";
@@ -392,14 +1973,15 @@
       // Theory
       document.getElementById('theoryHeader').textContent = isRu ? "ПОЛНЫЙ ТЕОРЕТИЧЕСКИЙ МАТЕРИАЛ И КОНСПЕКТ" : "ТОЛЫҚ ТЕОРИЯЛЫҚ МАТЕРИАЛ МЕН КОНСПЕКТ";
       document.getElementById('theoryContent').innerHTML = isRu ? topicData.full_theory_ru : topicData.full_theory_kz;
+      setTheoryFilter(currentTheoryFilter);
 
       // SVG
       document.getElementById('svgHeader').textContent = isRu ? "НАГЛЯДНАЯ СХЕМА И ИНФОГРАФИКА" : "КӨРНЕКІ СХЕМА МЕН ИНФОГРАФИКА";
-      const svgCode = isRu ? (topicData.svg_diagram_ru || topicData.svg_diagram) : topicData.svg_diagram;
-      document.getElementById('svgContainer').innerHTML = svgCode || '';
+      document.getElementById('svgSubBadge').textContent = isRu ? "Визуальные опорные схемы" : "Визуалды тірек-схемалар";
+      document.getElementById('svgContainer').innerHTML = isRu ? topicData.svg_diagram_ru : topicData.svg_diagram;
 
       // Table, Facts, Traps
-      document.getElementById('tableHeader').textContent = isRu ? "СТРУКТУРИРОВАННАЯ ТАБЛИЦА ПОКАЗАТЕЛЕЙ И КЛАССИФИКАЦИИ" : "НАҚТЫ КӨРСЕТКІШТЕР МЕН КЛАССИФИКАЦИЯ КЕСТЕСІ";
+      document.getElementById('tableHeader').textContent = isRu ? "СТРУКТУРИРОВАННЫЕ ТАБЛИЦЫ ПОКАЗАТЕЛЕЙ И КЛАССИФИКАЦИИ" : "НАҚТЫ КӨРСЕТКІШТЕР МЕН КЛАССИФИКАЦИЯ КЕСТЕЛЕРІ";
       renderTable(isRu);
 
       document.getElementById('factsHeader').textContent = isRu ? "ГЛАВНЫЕ ФАКТЫ ДЛЯ ЕНТ И ЗАПОМИНАНИЯ" : "ҰБТ-ҒА ҚАЖЕТТІ НЕГІЗГІ ЕРЕЖЕЛЕР МЕН ФАКТІЛЕР";
@@ -408,7 +1990,24 @@
       document.getElementById('trapsHeader').textContent = isRu ? "ЛОВУШКИ И ЛАЙФХАКИ ЕНТ" : "ҰБТ ҚАҚПАНДАРЫ МЕН ЛАЙФХАКТАР";
       renderTraps(isRu);
 
-      // Blooket & Doc links
+      // Interactive Section
+      document.getElementById('interactiveHeader').textContent = isRu
+        ? "ИНТЕРАКТИВНЫЙ ТРЕНАЖЕР: ФЛЕШ-КАРТОЧКИ И ТЕСТ ЕНТ"
+        : "ИНТЕРАКТИВТІ ЖАТТЫҒУ: ФЛЕШ-КАРТАЛАР МЕН ҰБТ ТЕСТІ";
+      document.getElementById('flashcardsHint').textContent = isRu
+        ? "Нажмите на карточку, чтобы увидеть точный ответ и факты:"
+        : "Карточканы бассаңыз, жауабы мен нақты дерегі ашылады:";
+      document.getElementById('btnResetQuiz').textContent = isRu ? "🔄 Начать заново" : "🔄 Қайта бастау";
+      renderFlashcards(isRu);
+      renderQuiz(isRu);
+      setPracticeMode(currentPracticeMode);
+
+      // Footer
+      document.getElementById('footerPrevText').textContent = isRu ? "#41 Предыдущая тема" : "#41 Алдыңғы тақырып";
+      document.getElementById('footerHomeText').textContent = isRu ? "Все темы" : "Барлық тақырыптар";
+      document.getElementById('footerNextText').textContent = isRu ? "Следующая тема #43" : "Келесі тақырып #43";
+
+      // Blooket link
       const btnB = document.getElementById('btnBlooket');
       const bUrl = isRu ? (blooketData.ru || blooketData.kz) : (blooketData.kz || blooketData.ru);
       if (bUrl) {
@@ -418,13 +2017,9 @@
         btnB.classList.add('hidden');
       }
 
-      const btnD = document.getElementById('btnDoc');
-      if (btnD) { const dUrl = isRu ? (blooketData.doc_ru || blooketData.doc_kz) : (blooketData.doc_kz || blooketData.doc_ru); if (dUrl) { btnD.href = dUrl; btnD.classList.remove('hidden'); } else { btnD.classList.add('hidden'); } }
-
       updateCompleteButton();
     }
 
-    // Initialization on page load with URL param and localStorage sync
     document.addEventListener('DOMContentLoaded', () => {
       const urlParams = new URLSearchParams(window.location.search);
       const queryLang = urlParams.get('lang');
