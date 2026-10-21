@@ -42,6 +42,18 @@ window.SMB_CONFIG = {
       desc_ru: '20 полных пробников: Reading, Listening, Writing, Speaking и ИИ-экзаменатор',
       level_kz: 'IELTS Academic',
       level_ru: 'IELTS Academic'
+    },
+    {
+      id: 'pravo',
+      icon: '⚖️',
+      label: 'Pravo',
+      start: 'pravo/pravo.html',
+      title_kz: 'Құқық негіздері: ҰБТ-ға толық курс',
+      title_ru: 'Основы права: полный курс подготовки к ЕНТ',
+      desc_kz: '13 тақырып конспектісі, 290 сұрақ, ҰБТ форматындағы 4 нұсқа, терминдер және қателермен жұмыс',
+      desc_ru: '13 тем с конспектами, 290 вопросов, 4 варианта в формате ЕНТ, термины и работа над ошибками',
+      level_kz: 'ҰБТ / 11 сынып',
+      level_ru: 'ЕНТ / 11 класс'
     }
   ]
 };
