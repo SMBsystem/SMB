@@ -443,6 +443,15 @@
       </div>
     </section>
 
+    <!-- 7. FINAL KNOWLEDGE CHECK -->
+    <section id="quizSection" class="scroll-mt-24 p-5 rounded-2xl bg-gradient-to-r from-cyan-950/40 via-space-950 to-space-950 border border-cyan-500/40 space-y-3 shadow-xl">
+      <h3 class="text-xs font-black text-cyan-400 flex items-center space-x-2">
+        <span>🎯</span>
+        <span id="quizHeader">ӨЗІҢДІ ТЕКСЕР: ҚОРЫТЫНДЫ ТЕСТ (15 СҰРАҚ)</span>
+      </h3>
+      <div id="quizBox" class="space-y-3"></div>
+    </section>
+
     <!-- FOOTER NAVIGATION -->
     <nav class="pt-4 pb-8 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3 text-xs">
       <a href="topic_20.html" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white transition shadow-sm">
@@ -595,6 +604,91 @@
       }).join('');
     }
 
+    // ===== FINAL KNOWLEDGE CHECK (quiz) =====
+    const ONYM = {
+      kz: { horo: 'Хороним', oro: 'Ороним', hydro: 'Гидроним', oiko: 'Ойконим', urbo: 'Урбоним', dromo: 'Дромоним', phyto: 'Фитоним', zoo: 'Зооним', cosmo: 'Космоним', ethno: 'Этноним' },
+      ru: { horo: 'Хороним', oro: 'Ороним', hydro: 'Гидроним', oiko: 'Ойконим', urbo: 'Урбоним', dromo: 'Дромоним', phyto: 'Фитоним', zoo: 'Зооним', cosmo: 'Космоним', ethno: 'Этноним' }
+    };
+    const quizData = [
+      { o: ['oro', 'hydro', 'horo', 'oiko'], a: 1, kz: 'Тұйықсу мұздығы — қай оним?', ru: 'Ледник Туюксу — какой это оним?', ekz: 'Мұздық таудың басында тұрса да — судың қатты күйі, яғни гидроним.', eru: 'Ледник лежит в горах, но это вода в твёрдом состоянии — гидроним.' },
+      { o: ['urbo', 'oro', 'dromo', 'horo'], a: 1, kz: 'Іле Алатауы — қай оним?', ru: 'Заилийский Алатау — какой это оним?', ekz: 'Тау жүйесі — жер бедері формасы, яғни ороним.', eru: 'Горная система — форма рельефа, то есть ороним.' },
+      { o: ['oiko', 'horo', 'urbo', 'phyto'], a: 1, kz: 'Алматы облысы — қай оним?', ru: 'Алматинская область — какой это оним?', ekz: 'Облыс — аумақтық бірлік, яғни хороним. «Алматы қаласы» — ойконим.', eru: 'Область — территориальная единица, то есть хороним. «Город Алматы» — ойконим.' },
+      { o: ['urbo', 'dromo', 'oiko', 'cosmo'], a: 2, kz: 'Баянауыл ауылы — қай оним?', ru: 'Аул Баянаул — какой это оним?', ekz: 'Тұтас елді мекен атауы — ойконим.', eru: 'Название населённого пункта целиком — ойконим.' },
+      { o: ['oiko', 'urbo', 'horo', 'hydro'], a: 1, kz: 'Абай даңғылы — қай оним?', ru: 'Проспект Абая — какой это оним?', ekz: 'Қала ішіндегі нысан — урбоним.', eru: 'Объект внутри города — урбоним.' },
+      { o: ['urbo', 'oro', 'dromo', 'ethno'], a: 2, kz: 'Ұлы Жібек жолы — қай оним?', ru: 'Великий Шёлковый путь — какой это оним?', ekz: 'Тарихи керуен жолы — дромоним.', eru: 'Исторический караванный путь — дромоним.' },
+      { o: ['zoo', 'phyto', 'cosmo', 'ethno'], a: 1, kz: 'Сексеуіл — қай оним?', ru: 'Саксаул — какой это оним?', ekz: 'Өсімдік атауы — фитоним.', eru: 'Название растения — фитоним.' },
+      { o: ['phyto', 'ethno', 'zoo', 'oro'], a: 2, kz: 'Қар барысы — қай оним?', ru: 'Снежный барс — какой это оним?', ekz: 'Жануар атауы — зооним.', eru: 'Название животного — зооним.' },
+      { o: ['cosmo', 'horo', 'zoo', 'hydro'], a: 0, kz: 'Темірқазық — қай оним?', ru: 'Полярная звезда (Темирказык) — какой это оним?', ekz: 'Жұлдыз атауы — космоним.', eru: 'Название звезды — космоним.' },
+      { o: ['ethno', 'oiko', 'phyto', 'urbo'], a: 0, kz: 'Қыпшақ — қай оним?', ru: 'Кыпчаки — какой это оним?', ekz: 'Тайпа (халық) атауы — этноним.', eru: 'Название племени (народа) — этноним.' },
+      { o: ['urbo', 'oiko', 'horo', 'dromo'], a: 0, kz: '«Астана Опера» театры — қай оним?', ru: 'Театр «Астана Опера» — какой это оним?', ekz: 'Қала ішіндегі нысан — урбоним (ойконим емес: ойконим — тұтас қала).', eru: 'Объект внутри города — урбоним (не ойконим: ойконим — город целиком).' },
+      { t: { kz: ['Топонимика — ономастиканың бір бөлігі', 'Ономастика — топонимиканың бір бөлігі', 'Екеуі де бірдей ұғым', 'Топонимика тек адам есімдерін зерттейді'], ru: ['Топонимика — часть ономастики', 'Ономастика — часть топонимики', 'Это одно и то же понятие', 'Топонимика изучает только имена людей'] }, a: 0, kz: 'Ономастика мен топонимиканың қатынасы қандай?', ru: 'Как соотносятся ономастика и топонимика?', ekz: 'Ономастика — барлық жалқы есімдер, топонимика — оның географиялық атауларды зерттейтін бөлімі.', eru: 'Ономастика изучает все имена собственные, топонимика — её раздел о географических названиях.' },
+      { t: { kz: ['Атаудың дыбысталуын беру', 'Атауды басқа тіл әріптерімен әріппе-әріп беру', 'Атауды басқа тілге аудару', 'Атаудың шығу тегін зерттеу'], ru: ['Передача звучания названия', 'Передача названия буква в букву другим алфавитом', 'Перевод названия на другой язык', 'Изучение происхождения названия'] }, a: 1, kz: 'Транслитерация дегеніміз не?', ru: 'Что такое транслитерация?', ekz: 'Транслитерация — әріп, транскрипция — дыбыс (Қарағанды → Karaganda).', eru: 'Транслитерация — буквы, транскрипция — звуки (Қарағанды → Karaganda).' },
+      { t: { kz: ['тау', 'су', 'жол', 'мекен'], ru: ['гора', 'вода', 'путь', 'поселение'] }, a: 2, kz: 'Грек сөзі δρόμος нені білдіреді?', ru: 'Что означает греческое слово δρόμος?', ekz: 'δρόμος — жол, жүгіру: дромоним — қатынас жолдарының атауы.', eru: 'δρόμος — путь, бег: дромоним — название путей сообщения.' },
+      { t: { kz: ['хороним ⊃ ойконим ⊃ урбоним', 'урбоним ⊃ ойконим ⊃ хороним', 'ойконим ⊃ хороним ⊃ урбоним', 'ороним ⊃ гидроним ⊃ урбоним'], ru: ['хороним ⊃ ойконим ⊃ урбоним', 'урбоним ⊃ ойконим ⊃ хороним', 'ойконим ⊃ хороним ⊃ урбоним', 'ороним ⊃ гидроним ⊃ урбоним'] }, a: 0, kz: '«Матрешка» тәсілі бойынша дұрыс ішкі реттілік қайсы?', ru: 'Какая вложенность верна по приёму «Матрёшка»?', ekz: 'Қазақстан (хороним) ⊃ Астана (ойконим) ⊃ Тәуелсіздік даңғылы (урбоним).', eru: 'Казахстан (хороним) ⊃ Астана (ойконим) ⊃ проспект Независимости (урбоним).' }
+    ];
+    const quizState = { answers: [], bound: false };
+
+    function renderQuiz(isRu) {
+      const box = document.getElementById('quizBox');
+      if (!box) return;
+      const L = isRu ? 'ru' : 'kz';
+      document.getElementById('quizHeader').textContent = isRu ? 'ПРОВЕРЬ СЕБЯ: ИТОГОВЫЙ ТЕСТ (15 ВОПРОСОВ)' : 'ӨЗІҢДІ ТЕКСЕР: ҚОРЫТЫНДЫ ТЕСТ (15 СҰРАҚ)';
+      const n = quizData.length;
+      const answered = quizState.answers.filter(v => v !== undefined).length;
+      const correct = quizState.answers.filter((v, i) => v !== undefined && v === quizData[i].a).length;
+      let html = `<div class="flex items-center justify-between text-[11px] font-bold text-slate-400"><span>${isRu ? 'Отвечено' : 'Жауап берілді'}: ${answered}/${n}</span><span class="text-emerald-300">${isRu ? 'Верно' : 'Дұрыс'}: ${correct}</span></div>`;
+      html += `<div class="h-2 rounded bg-slate-800 overflow-hidden"><div class="h-2 bg-cyan-400 transition-all" style="width:${Math.round(answered / n * 100)}%"></div></div>`;
+      quizData.forEach((q, qi) => {
+        const opts = q.o ? q.o.map(k => ONYM[L][k]) : q.t[L];
+        const chosen = quizState.answers[qi];
+        const done = chosen !== undefined;
+        html += `<div class="p-3.5 rounded-xl bg-space-900/80 border ${done ? (chosen === q.a ? 'border-emerald-500/40' : 'border-rose-500/40') : 'border-slate-800'} space-y-2.5">`;
+        html += `<div class="flex items-start space-x-2.5"><span class="shrink-0 w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-300 text-[11px] font-black flex items-center justify-center">${qi + 1}</span><span class="font-bold text-slate-100 text-xs sm:text-sm">${isRu ? q.ru : q.kz}</span></div>`;
+        html += `<div class="grid grid-cols-1 sm:grid-cols-2 gap-2">`;
+        opts.forEach((txt, oi) => {
+          let cls = 'border-slate-700 bg-space-950 text-slate-200 hover:border-cyan-500/60 hover:bg-space-850';
+          let mark = String.fromCharCode(65 + oi);
+          if (done) {
+            if (oi === q.a) { cls = 'border-emerald-500/60 bg-emerald-500/15 text-emerald-200'; mark = '✓'; }
+            else if (oi === chosen) { cls = 'border-rose-500/60 bg-rose-500/15 text-rose-200'; mark = '✕'; }
+            else { cls = 'border-slate-800 bg-space-950 text-slate-500'; }
+          }
+          html += `<button type="button" data-q="${qi}" data-o="${oi}" ${done ? 'disabled' : ''} class="quiz-opt text-left px-3 py-2 rounded-lg border text-xs font-bold transition flex items-center space-x-2 ${cls}"><span class="shrink-0 w-5 h-5 rounded-md bg-slate-800/80 text-[10px] font-black flex items-center justify-center">${mark}</span><span>${txt}</span></button>`;
+        });
+        html += `</div>`;
+        if (done) html += `<div class="text-[11px] leading-relaxed ${chosen === q.a ? 'text-emerald-300' : 'text-amber-200'}">${chosen === q.a ? '✅ ' : '💡 '}${isRu ? q.eru : q.ekz}</div>`;
+        html += `</div>`;
+      });
+      if (answered === n) {
+        const pct = Math.round(correct / n * 100);
+        let msg, col;
+        if (pct >= 90) { msg = isRu ? 'Отлично! Ты уверенно различаешь онимы.' : 'Тамаша! Онимдерді сенімді ажыратасың.'; col = 'emerald'; }
+        else if (pct >= 70) { msg = isRu ? 'Хорошо! Повтори ловушки — и будет 100%.' : 'Жақсы! Қақпандарды қайталасаң, 100% болады.'; col = 'sky'; }
+        else if (pct >= 50) { msg = isRu ? 'Неплохо, но стоит повторить «лесенку» онимов и матрёшку.' : 'Жаман емес, бірақ онимдер «баспалдағы» мен «матрешканы» қайтала.'; col = 'amber'; }
+        else { msg = isRu ? 'Перечитай теорию и попробуй ещё раз.' : 'Теорияны қайта оқып, қайта көр.'; col = 'rose'; }
+        const best = parseInt(safeStorage.getItem('geotany_quiz_21_best') || '0', 10);
+        if (pct > best) safeStorage.setItem('geotany_quiz_21_best', String(pct));
+        const bestShown = Math.max(best, pct);
+        html += `<div class="p-4 rounded-xl bg-${col}-500/10 border border-${col}-500/40 text-center space-y-2"><div class="text-3xl font-black text-${col}-300">${correct} / ${n} · ${pct}%</div><div class="text-xs text-slate-200">${msg}</div><div class="text-[11px] text-slate-400">${isRu ? 'Лучший результат' : 'Үздік нәтиже'}: ${bestShown}%</div><button type="button" id="quizRetry" class="px-4 py-2 rounded-xl bg-cyan-500 text-space-950 text-xs font-black hover:bg-cyan-400 transition">${isRu ? '🔄 Пройти заново' : '🔄 Қайта бастау'}</button></div>`;
+      }
+      box.innerHTML = html;
+      if (!quizState.bound) {
+        quizState.bound = true;
+        box.addEventListener('click', ev => {
+          const retry = ev.target.closest('#quizRetry');
+          if (retry) { quizState.answers = []; renderQuiz(currentLang === 'ru'); document.getElementById('quizSection').scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+          const b = ev.target.closest('.quiz-opt');
+          if (!b || b.disabled) return;
+          const qi = parseInt(b.dataset.q, 10), oi = parseInt(b.dataset.o, 10);
+          if (quizState.answers[qi] !== undefined) return;
+          const y = window.scrollY;
+          quizState.answers[qi] = oi;
+          renderQuiz(currentLang === 'ru');
+          window.scrollTo(0, y);
+        });
+      }
+    }
+
     function setLang(lang) {
       currentLang = lang;
       safeStorage.setItem('geotany_lang', lang);
@@ -638,6 +732,8 @@
 
       document.getElementById('trapsHeader').textContent = isRu ? "ЛОВУШКИ И ЛАЙФХАКИ ЕНТ" : "ҰБТ ҚАҚПАНДАРЫ МЕН ЛАЙФХАКТАР";
       renderTraps(isRu);
+
+      renderQuiz(isRu);
 
       // Blooket & Doc links
       const btnB = document.getElementById('btnBlooket');

@@ -360,6 +360,15 @@
       </div>
     </section>
 
+    <!-- 2b. DYNAMIC RELIEF MAP -->
+    <section id="reliefMapSection" class="scroll-mt-24 p-5 rounded-2xl bg-space-950 border border-cyan-500/40 space-y-3 shadow-xl">
+      <h3 class="text-xs font-black text-cyan-400 flex items-center space-x-2">
+        <span>🗺️</span>
+        <span id="reliefMapHeader">ДИНАМИКАЛЫҚ КАРТА: ҚАЗАҚСТАН РЕЛЬЕФІ ҚАЛАЙ ҚАЛЫПТАСТЫ</span>
+      </h3>
+      <div id="reliefMapBox" class="space-y-3"></div>
+    </section>
+
     <!-- 3. VISUAL SVG DIAGRAM / ILLUSTRATION -->
     <section id="svgSection" class="p-5 rounded-2xl bg-space-950 border border-slate-800 space-y-3 shadow-xl">
       <div class="flex items-center space-x-2 text-amber-400 font-extrabold text-xs">
@@ -554,6 +563,163 @@
       }).join('');
     }
 
+    // ===== DYNAMIC RELIEF MAP: how the relief of Kazakhstan formed =====
+    const RM_STAGES = [
+      { seg: 0, col: '#3b82f6',
+        era: { kz: 'Докембрий', ru: 'Докембрий' }, fold: { kz: 'Байкал қатпарлануы — Қазақстанда болған жоқ', ru: 'Байкальская складчатость — в Казахстане не проявлялась' },
+        title: { kz: 'Докембрий: таулар әлі жоқ', ru: 'Докембрий: гор ещё нет' },
+        regions: { kz: ['аумақ түгел су астында'], ru: ['вся территория под водой'] },
+        text: { kz: 'Қазақстанның жері түгелдей су астындағы геосинклиналь аймақ болды. Байкал қатпарлануы осы аумақта жүрген жоқ — ҰБТ-да бұл жиі қате жауап.', ru: 'Территория Казахстана целиком была геосинклинальной областью под водой. Байкальская складчатость здесь не проходила — на ЕНТ это частый неверный вариант ответа.' } },
+      { seg: 1, col: '#38bdf8',
+        era: { kz: 'Палеозой', ru: 'Палеозой' }, fold: { kz: 'Каледон қатпарлануы', ru: 'Каледонская складчатость' },
+        title: { kz: 'Каледон: алғашқы таулар көтерілді', ru: 'Каледон: поднялись первые горы' },
+        regions: { kz: ['Сарыарқаның солтүстік-батысы', 'Солтүстік Тянь-Шань'], ru: ['северо-запад Сарыарки', 'Северный Тянь-Шань'] },
+        text: { kz: 'Палеозой эрасындағы каледон қатпарлануында Сарыарқаның солтүстік-батысы мен Солтүстік Тянь-Шань көтерілді.', ru: 'В каледонскую складчатость палеозоя поднялись северо-запад Сарыарки и Северный Тянь-Шань.' } },
+      { seg: 1, col: '#a78bfa',
+        era: { kz: 'Палеозой', ru: 'Палеозой' }, fold: { kz: 'Герцин қатпарлануы', ru: 'Герцинская складчатость' },
+        title: { kz: 'Герцин: таулар жүйесі кеңейді', ru: 'Герцин: горные системы расширились' },
+        regions: { kz: ['Алтай', 'Жетісу Алатауы', 'Сарыарқаның шығысы (Қызыларай, Қарқаралы)', 'Мұғалжар'], ru: ['Алтай', 'Жетысуский Алатау', 'восток Сарыарки (Кызыларай, Каркаралы)', 'Мугалжары'] },
+        text: { kz: 'Палеозойдағы герцин қатпарлануында Алтай, Жетісу Алатауы, Сарыарқаның шығысы және Мұғалжар көтерілді. Сарыарқаның солтүстік-батысы — каледонда, шығысы — герцинде: шатастырма!', ru: 'В герцинскую складчатость палеозоя поднялись Алтай, Жетысуский Алатау, восток Сарыарки и Мугалжары. Северо-запад Сарыарки — каледон, восток — герцин: не путай!' } },
+      { seg: 2, col: '#fb923c',
+        era: { kz: 'Мезозой', ru: 'Мезозой' }, fold: { kz: 'Киммерий қатпарлануы', ru: 'Киммерийская складчатость' },
+        title: { kz: 'Киммерий: Маңғыстау таулары', ru: 'Киммерий: горы Мангистау' },
+        regions: { kz: ['Маңғыстау таулары'], ru: ['горы Мангистау'] },
+        text: { kz: 'Мезозой эрасындағы киммерий қатпарлануында Маңғыстау таулары көтерілді.', ru: 'В киммерийскую складчатость мезозоя поднялись горы Мангистау.' } },
+      { seg: 3, col: '#fbbf24',
+        era: { kz: 'Кайнозой', ru: 'Кайнозой' }, fold: { kz: 'Альпі қатпарлануы', ru: 'Альпийская складчатость' },
+        title: { kz: 'Альпі: ескі таулар екінші рет көтерілді', ru: 'Альпы: старые горы поднялись второй раз' },
+        regions: { kz: ['Алтай', 'Сауыр-Тарбағатай', 'Жетісу Алатауы', 'Тянь-Шань'], ru: ['Алтай', 'Саур-Тарбагатай', 'Жетысуский Алатау', 'Тянь-Шань'] },
+        text: { kz: 'Алтай, Сауыр-Тарбағатай, Жетісу Алатауы және Тянь-Шань палеозойда пайда болып, кейін үгіліп тегістелген. Қазіргі биік қалпына олар кайнозойдың альпі қатпарлануында ЕКІНШІ РЕТ көтерілді — бұлар жас емес, жаңғырған (қайта көтерілген) таулар.', ru: 'Алтай, Саур-Тарбагатай, Жетысуский Алатау и Тянь-Шань возникли в палеозое, затем были разрушены и выровнены. Современную высоту они получили во ВТОРОЙ раз — в альпийскую складчатость кайнозоя: это не молодые, а омоложенные (вновь поднятые) горы.' } },
+      { seg: 4, col: '#34d399',
+        era: { kz: 'Қорытынды', ru: 'Итог' }, fold: { kz: 'Төрт қатпарлану қабатасып жатыр', ru: 'Четыре складчатости наложились друг на друга' },
+        title: { kz: 'Қазіргі рельеф — көп кезеңнің нәтижесі', ru: 'Современный рельеф — итог нескольких этапов' },
+        regions: { kz: ['Каледон', 'Герцин', 'Киммерий', 'Альпі'], ru: ['Каледон', 'Герцин', 'Киммерий', 'Альпы'] },
+        text: { kz: 'Палеозой (330 млн жыл) → Мезозой (165 млн жыл) → Кайнозой (67 млн жыл). Көне таулар кейін қайта көтерілді, сондықтан бір таудың жасы мен қазіргі биіктігі әртүрлі кезеңдерден тұрады.', ru: 'Палеозой (330 млн лет) → Мезозой (165 млн лет) → Кайнозой (67 млн лет). Древние горы позже поднимались вновь, поэтому возраст горы и её современная высота относятся к разным этапам.' } }
+    ];
+    // geometry (schematic): [cx, cy, rx, ry, rotate]
+    const RM_LAYERS = [
+      { id: 'caledon', at: 1, col: '#38bdf8', shapes: [[280, 92, 46, 22, -10], [425, 205, 20, 7, -30]] },
+      { id: 'hercynian', at: 2, col: '#a78bfa', shapes: [[466, 108, 28, 14, -20], [448, 184, 22, 8, -25], [352, 114, 30, 17, 0], [142, 108, 11, 30, 0]] },
+      { id: 'cimmerian', at: 3, col: '#fb923c', shapes: [[98, 205, 24, 10, 10]] },
+      { id: 'alpine', at: 4, col: '#fbbf24', shapes: [[466, 108, 34, 18, -20], [478, 130, 16, 9, 0], [448, 184, 28, 10, -25], [396, 224, 42, 11, -20]], dash: true }
+    ];
+    const RM_NAMES = [
+      { t: { kz: 'Сарыарқа (СБ)', ru: 'Сарыарка (СЗ)' }, x: 280, y: 74, min: 1, max: 1 },
+      { t: { kz: 'Сарыарқа', ru: 'Сарыарка' }, x: 316, y: 76, min: 2, max: 9 },
+      { t: { kz: 'Сол. Тянь-Шань', ru: 'Сев. Тянь-Шань' }, x: 385, y: 246, min: 1, max: 3, a: 'middle' },
+      { t: { kz: 'Тянь-Шань', ru: 'Тянь-Шань' }, x: 380, y: 250, min: 4, max: 9, a: 'middle' },
+      { t: { kz: 'Алтай', ru: 'Алтай' }, x: 466, y: 82, min: 2, max: 9, a: 'middle' },
+      { t: { kz: 'Сауыр-Тарбағатай', ru: 'Саур-Тарбагатай' }, x: 492, y: 150, min: 4, max: 9, a: 'middle' },
+      { t: { kz: 'Жетісу Алатауы', ru: 'Жетысуский Алатау' }, x: 500, y: 190, min: 2, max: 9, a: 'end' },
+      { t: { kz: 'Мұғалжар', ru: 'Мугалжары' }, x: 142, y: 72, min: 2, max: 9, a: 'middle' },
+      { t: { kz: 'Маңғыстау', ru: 'Мангистау' }, x: 98, y: 228, min: 3, max: 9, a: 'middle' }
+    ];
+    const rmState = { i: 0, timer: null, bound: false };
+
+    function rmStop() { if (rmState.timer) { clearInterval(rmState.timer); rmState.timer = null; } const p = document.getElementById('rmPlay'); if (p) p.textContent = (currentLang === 'ru' ? '▶ Играть' : '▶ Ойнату'); }
+    function rmGo(i) { rmState.i = Math.max(0, Math.min(RM_STAGES.length - 1, i)); rmUpdate(); }
+
+    function renderReliefMap(isRu) {
+      const box = document.getElementById('reliefMapBox');
+      if (!box) return;
+      rmStop();
+      const L = isRu ? 'ru' : 'kz';
+      document.getElementById('reliefMapHeader').textContent = isRu ? 'ДИНАМИЧЕСКАЯ КАРТА: КАК ФОРМИРОВАЛСЯ РЕЛЬЕФ КАЗАХСТАНА' : 'ДИНАМИКАЛЫҚ КАРТА: ҚАЗАҚСТАН РЕЛЬЕФІ ҚАЛАЙ ҚАЛЫПТАСТЫ';
+      const pts = '30,120 80,82 170,70 250,40 350,55 430,80 500,100 480,150 420,170 440,210 390,240 320,225 260,260 200,245 170,200 110,185 60,160';
+      let svg = `<svg viewBox="0 0 560 290" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;max-width:640px;min-width:420px;background:#0b1120;border-radius:12px" font-family="system-ui,sans-serif">`;
+      svg += `<defs><pattern id="rmWave" width="26" height="14" patternUnits="userSpaceOnUse"><path d="M0 7 Q6.5 0 13 7 T26 7" fill="none" stroke="#93c5fd" stroke-width="1.4" opacity=".7"/></pattern><clipPath id="rmClip"><polygon points="${pts}"/></clipPath></defs>`;
+      svg += `<polygon id="rmBase" points="${pts}" style="transition:fill .8s;fill:#1e293b" stroke="#64748b" stroke-width="2"/>`;
+      svg += `<g clip-path="url(#rmClip)"><rect id="rmWater" x="0" y="0" width="560" height="290" fill="url(#rmWave)" style="transition:opacity .8s;opacity:0"/></g>`;
+      RM_LAYERS.forEach(ly => {
+        svg += `<g id="rmL_${ly.id}" class="rm-layer" style="transition:opacity .7s;opacity:0">`;
+        ly.shapes.forEach(s => {
+          svg += `<ellipse cx="${s[0]}" cy="${s[1]}" rx="${s[2]}" ry="${s[3]}" transform="rotate(${s[4]} ${s[0]} ${s[1]})" fill="${ly.col}" fill-opacity="${ly.dash ? 0.45 : 0.8}" stroke="${ly.dash ? '#fff' : ly.col}" stroke-width="${ly.dash ? 2 : 1.5}" ${ly.dash ? 'stroke-dasharray="5 3"' : ''}/>`;
+        });
+        svg += `</g>`;
+      });
+      svg += `<g id="rmNames">`;
+      RM_NAMES.forEach((n, k) => {
+        svg += `<text data-k="${k}" x="${n.x}" y="${n.y}" text-anchor="${n.a || 'middle'}" font-size="10.5" font-weight="bold" fill="#f1f5f9" style="transition:opacity .6s;opacity:0;paint-order:stroke;stroke:#0b1120;stroke-width:3px">${n.t[L]}</text>`;
+      });
+      svg += `</g>`;
+      svg += `<text id="rmWaterLbl" x="280" y="160" text-anchor="middle" font-size="14" font-weight="bold" fill="#dbeafe" style="transition:opacity .8s;opacity:0;paint-order:stroke;stroke:#1e3a8a;stroke-width:4px">${isRu ? 'ГЕОСИНКЛИНАЛЬ — ВСЁ ПОД ВОДОЙ' : 'ГЕОСИНКЛИНАЛЬ — ТҮГЕЛ СУ АСТЫНДА'}</text>`;
+      svg += `<text x="552" y="283" text-anchor="end" font-size="9.5" fill="#475569">${isRu ? 'схема: положение гор примерное, береговые линии не показаны' : 'схема: таулардың орны шамамен, жағалау сызықтары көрсетілмеген'}</text>`;
+      svg += `</svg>`;
+      const wTot = 100 - 22; const tot = 330 + 165 + 67;
+      const segs = [
+        { n: isRu ? 'Докембрий' : 'Докембрий', sub: isRu ? 'масштаб не соблюдён' : 'масштаб сақталмаған', w: 22, c: 'blue', folds: [] },
+        { n: isRu ? 'Палеозой' : 'Палеозой', sub: '330 ' + (isRu ? 'млн лет' : 'млн жыл'), w: wTot * 330 / tot, c: 'violet', folds: [[1, isRu ? 'Каледон' : 'Каледон'], [2, isRu ? 'Герцин' : 'Герцин']] },
+        { n: isRu ? 'Мезозой' : 'Мезозой', sub: '165 ' + (isRu ? 'млн лет' : 'млн жыл'), w: wTot * 165 / tot, c: 'orange', folds: [[3, isRu ? 'Киммерий' : 'Киммерий']] },
+        { n: isRu ? 'Кайнозой' : 'Кайнозой', sub: '67 ' + (isRu ? 'млн лет' : 'млн жыл'), w: wTot * 67 / tot, c: 'amber', folds: [[4, isRu ? 'Альпы' : 'Альпі']] }
+      ];
+      let tl = `<div class="flex w-full rounded-lg overflow-hidden border border-slate-800">`;
+      segs.forEach((s, si) => { tl += `<div id="rmSeg${si}" class="rm-seg py-1.5 px-1 text-center border-r border-slate-900 bg-${s.c}-500/20 text-${s.c}-200 transition-all" style="width:${s.w.toFixed(1)}%;opacity:.45"><div class="text-[10px] sm:text-[11px] font-black truncate">${s.n}</div><div class="text-[9px] text-slate-400 truncate">${s.sub}</div></div>`; });
+      tl += `</div><div class="flex w-full">`;
+      segs.forEach((s, si) => { tl += `<div style="width:${s.w.toFixed(1)}%" class="px-0.5 pt-1 flex flex-wrap justify-center gap-1">` + s.folds.map(f => `<button type="button" data-go="${f[0]}" class="rm-go px-1.5 py-0.5 rounded-md text-[9px] sm:text-[10px] font-black bg-${s.c}-500/20 text-${s.c}-200 border border-${s.c}-500/40 hover:bg-${s.c}-500/40">${f[1]}</button>`).join('') + `</div>`; });
+      tl += `</div>`;
+      const ctrl = `<div class="flex flex-wrap items-center gap-2">
+        <button type="button" id="rmPrev" class="px-3 py-1.5 rounded-xl bg-space-900 border border-slate-700 text-xs font-black text-slate-200 hover:border-cyan-500/60">◀</button>
+        <button type="button" id="rmPlay" class="px-3.5 py-1.5 rounded-xl bg-cyan-500 text-space-950 text-xs font-black hover:bg-cyan-400">${isRu ? '▶ Играть' : '▶ Ойнату'}</button>
+        <button type="button" id="rmNext" class="px-3 py-1.5 rounded-xl bg-space-900 border border-slate-700 text-xs font-black text-slate-200 hover:border-cyan-500/60">▶</button>
+        <input id="rmRange" type="range" min="0" max="${RM_STAGES.length - 1}" step="1" value="${rmState.i}" class="flex-1 min-w-[140px] accent-cyan-400" aria-label="${isRu ? 'Этап' : 'Кезең'}">
+        <span id="rmCount" class="text-[11px] font-black text-slate-400"></span></div>`;
+      box.innerHTML = `<p class="text-[11px] text-slate-400">${isRu ? 'Нажми «Играть» или двигай ползунок: горы появляются в порядке складчатостей. Данные — только из конспекта урока.' : '«Ойнату» батырмасын бас немесе жүгірткіні жылжыт: таулар қатпарлану ретімен пайда болады. Деректер — тек сабақ конспектінен.'}</p>`
+        + `<div class="grid grid-cols-1 lg:grid-cols-5 gap-3"><div class="lg:col-span-3 space-y-2"><div class="overflow-x-auto rounded-xl">${svg}</div>${ctrl}</div>`
+        + `<div class="lg:col-span-2 space-y-2.5"><div id="rmInfo" class="p-3.5 rounded-xl bg-space-900/80 border border-slate-800 space-y-2 min-h-[170px]"></div></div></div>`
+        + `<div class="space-y-1"><div class="text-[11px] font-black text-slate-400 uppercase tracking-wider">${isRu ? 'Шкала эр (Палеозой → Мезозой → Кайнозой)' : 'Эралар шкаласы (Палеозой → Мезозой → Кайнозой)'}</div>${tl}</div>`
+        + `<div class="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-slate-300"><span><i class="inline-block w-2.5 h-2.5 rounded-sm align-middle" style="background:#38bdf8"></i> ${isRu ? 'Каледон' : 'Каледон'}</span><span><i class="inline-block w-2.5 h-2.5 rounded-sm align-middle" style="background:#a78bfa"></i> ${isRu ? 'Герцин' : 'Герцин'}</span><span><i class="inline-block w-2.5 h-2.5 rounded-sm align-middle" style="background:#fb923c"></i> ${isRu ? 'Киммерий' : 'Киммерий'}</span><span><i class="inline-block w-2.5 h-2.5 rounded-sm align-middle" style="background:#fbbf24"></i> ${isRu ? 'Альпы (пунктир — повторное поднятие)' : 'Альпі (үзік сызық — екінші рет көтерілу)'}</span></div>`;
+      if (!rmState.bound) {
+        rmState.bound = true;
+        box.addEventListener('click', ev => {
+          if (ev.target.closest('#rmPrev')) { rmStop(); rmGo(rmState.i - 1); return; }
+          if (ev.target.closest('#rmNext')) { rmStop(); rmGo(rmState.i + 1); return; }
+          const g = ev.target.closest('.rm-go');
+          if (g) { rmStop(); rmGo(parseInt(g.dataset.go, 10)); return; }
+          if (ev.target.closest('#rmPlay')) {
+            if (rmState.timer) { rmStop(); return; }
+            if (rmState.i >= RM_STAGES.length - 1) rmState.i = 0;
+            rmUpdate();
+            document.getElementById('rmPlay').textContent = (currentLang === 'ru' ? '⏸ Пауза' : '⏸ Тоқтату');
+            rmState.timer = setInterval(() => {
+              if (rmState.i >= RM_STAGES.length - 1) { rmStop(); return; }
+              rmGo(rmState.i + 1);
+            }, 3600);
+          }
+        });
+        box.addEventListener('input', ev => { if (ev.target && ev.target.id === 'rmRange') { rmStop(); rmGo(parseInt(ev.target.value, 10)); } });
+      }
+      rmUpdate();
+    }
+
+    function rmUpdate() {
+      const isRu = currentLang === 'ru', L = isRu ? 'ru' : 'kz';
+      const i = rmState.i, st = RM_STAGES[i], last = (i === RM_STAGES.length - 1);
+      const base = document.getElementById('rmBase'); if (!base) return;
+      base.style.fill = (i === 0) ? '#1e3a8a' : '#1e293b';
+      document.getElementById('rmWater').style.opacity = (i === 0) ? 1 : 0;
+      document.getElementById('rmWaterLbl').style.opacity = (i === 0) ? 1 : 0;
+      RM_LAYERS.forEach(ly => {
+        const g = document.getElementById('rmL_' + ly.id);
+        let op = 0;
+        if (last) op = 1; else if (ly.at === i) op = 1; else if (ly.at < i) op = 0.45;
+        g.style.opacity = op;
+        g.querySelectorAll('ellipse').forEach(e => { e.style.filter = (!last && ly.at === i) ? 'drop-shadow(0 0 6px ' + ly.col + ')' : 'none'; });
+      });
+      document.querySelectorAll('#rmNames text').forEach(t => {
+        const n = RM_NAMES[parseInt(t.dataset.k, 10)];
+        t.style.opacity = (i >= n.min && i <= n.max) ? 1 : 0;
+      });
+      document.querySelectorAll('.rm-seg').forEach((s, si) => { s.style.opacity = (last || si === st.seg) ? 1 : 0.4; s.style.boxShadow = (!last && si === st.seg) ? 'inset 0 0 0 2px ' + st.col : 'none'; });
+      document.getElementById('rmRange').value = i;
+      document.getElementById('rmCount').textContent = (i + 1) + ' / ' + RM_STAGES.length;
+      const chips = st.regions[L].map(r => `<span class="inline-block px-2 py-0.5 rounded-full text-[11px] font-bold border" style="color:${st.col};border-color:${st.col}66;background:${st.col}1f">${r}</span>`).join(' ');
+      document.getElementById('rmInfo').innerHTML =
+        `<div class="flex flex-wrap items-center gap-2"><span class="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider text-space-950" style="background:${st.col}">${st.era[L]}</span><span class="text-[11px] font-black text-slate-300">${st.fold[L]}</span></div>`
+        + `<div class="font-black text-white text-sm leading-snug">${st.title[L]}</div>`
+        + `<div class="flex flex-wrap gap-1.5">${chips}</div>`
+        + `<p class="text-[11px] sm:text-xs text-slate-300 leading-relaxed">${st.text[L]}</p>`;
+    }
+
     function setLang(lang) {
       currentLang = lang;
       safeStorage.setItem('geotany_lang', lang);
@@ -597,6 +763,8 @@
 
       document.getElementById('trapsHeader').textContent = isRu ? "ЛОВУШКИ И ЛАЙФХАКИ ЕНТ" : "ҰБТ ҚАҚПАНДАРЫ МЕН ЛАЙФХАКТАР";
       renderTraps(isRu);
+
+      renderReliefMap(isRu);
 
       // Blooket & Doc links
       const btnB = document.getElementById('btnBlooket');
