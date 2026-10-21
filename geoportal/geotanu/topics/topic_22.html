@@ -411,6 +411,15 @@
       </div>
     </section>
 
+    <!-- 7. GEO-QUEST -->
+    <section id="questSection" class="scroll-mt-24 p-5 rounded-2xl bg-gradient-to-r from-cyan-950/40 via-space-950 to-space-950 border border-cyan-500/40 space-y-3 shadow-xl">
+      <h3 class="text-xs font-black text-cyan-400 flex items-center space-x-2">
+        <span>🎯</span>
+        <span id="questHeader">ГЕО-КВЕСТ: ҚОРЫТЫНДЫ БІЛІМ ТЕКСЕРУ (15 ТАПСЫРМА)</span>
+      </h3>
+      <div id="questBox" class="space-y-3"></div>
+    </section>
+
     <!-- FOOTER NAVIGATION -->
     <nav class="pt-4 pb-8 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3 text-xs">
       <a href="topic_21.html" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-space-900 hover:bg-space-850 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white transition shadow-sm">
@@ -720,6 +729,122 @@
         + `<p class="text-[11px] sm:text-xs text-slate-300 leading-relaxed">${st.text[L]}</p>`;
     }
 
+    // ===== GEO-QUEST: final knowledge check (test + map tasks) =====
+    const QUEST_REGIONS = {
+      sarNW: { cx: 280, cy: 92, rx: 46, ry: 22, rot: -10, kz: 'Сарыарқаның солтүстік-батысы', ru: 'северо-запад Сарыарки' },
+      sarE: { cx: 352, cy: 114, rx: 30, ry: 17, rot: 0, kz: 'Сарыарқаның шығысы (Қызыларай, Қарқаралы)', ru: 'восток Сарыарки (Кызыларай, Каркаралы)' },
+      mug: { cx: 142, cy: 108, rx: 11, ry: 30, rot: 0, kz: 'Мұғалжар', ru: 'Мугалжары' },
+      man: { cx: 98, cy: 205, rx: 24, ry: 10, rot: 10, kz: 'Маңғыстау таулары', ru: 'горы Мангистау' },
+      altai: { cx: 466, cy: 108, rx: 28, ry: 14, rot: -20, kz: 'Алтай', ru: 'Алтай' },
+      zhet: { cx: 448, cy: 184, rx: 24, ry: 9, rot: -25, kz: 'Жетісу Алатауы', ru: 'Жетысуский Алатау' }
+    };
+    const QUEST = [
+      { t: { kz: ['3,5–3,6 млн жыл', '4,5–4,6 млрд жыл', '45–46 млн жыл', '450–460 млн жыл'], ru: ['3,5–3,6 млн лет', '4,5–4,6 млрд лет', '45–46 млн лет', '450–460 млн лет'] }, a: 1, kz: 'Жердің геологиялық жасы қанша?', ru: 'Каков геологический возраст Земли?', ekz: 'Жердің жасы — 4,5–4,6 млрд жыл.', eru: 'Возраст Земли — 4,5–4,6 млрд лет.' },
+      { t: { kz: ['100 млн жылда', '75 млрд жылда', '75 млн жылда', '750 мың жылда'], ru: ['за 100 млн лет', 'за 75 млрд лет', 'за 75 млн лет', 'за 750 тыс. лет'] }, a: 2, kz: '100 г уран қанша уақытта 1 г қорғасын бөледі?', ru: 'За какое время 100 г урана дают 1 г свинца?', ekz: '100 г уран → 75 млн жыл → 1 г қорғасын. Бұл — абсолютті жас.', eru: '100 г урана → 75 млн лет → 1 г свинца. Это абсолютный возраст.' },
+      { t: { kz: ['Петрография', 'Минералогия', 'Геотектоника', 'Палеонтология'], ru: ['Петрография', 'Минералогия', 'Геотектоника', 'Палеонтология'] }, a: 3, kz: 'Жойылған ағзалардың қазба қалдықтарын қай ғылым зерттейді?', ru: 'Какая наука изучает ископаемые остатки вымерших организмов?', ekz: 'Палеонтология — ҚАЗБА ТІРШІЛІК.', eru: 'Палеонтология — ископаемая жизнь.' },
+      { t: { kz: ['Төмен қабат — ежелгі', 'Төмен қабат — жас', 'Жасы қабатқа байланысты емес', 'Жоғарғы қабат — ежелгі'], ru: ['Нижний слой — древнее', 'Нижний слой — моложе', 'Возраст не зависит от слоя', 'Верхний слой — древнее'] }, a: 0, kz: 'Салыстырмалы жас қалай анықталады?', ru: 'Как определяется относительный возраст?', ekz: 'Қабаттың жатуына қарай: қабат төмен болған сайын, жасы үлкен.', eru: 'По залеганию слоёв: чем ниже слой, тем он древнее.' },
+      { t: { kz: ['Байкал', 'Каледон', 'Герцин', 'Альпі'], ru: ['Байкальская', 'Каледонская', 'Герцинская', 'Альпийская'] }, a: 0, kz: 'Қазақстанда қай қатпарлану болған жоқ?', ru: 'Какая складчатость в Казахстане НЕ проявлялась?', ekz: 'Байкал қатпарлануы Қазақстанда болған жоқ; докембрийде аумақ түгел су астында болды.', eru: 'Байкальской складчатости в Казахстане не было; в докембрии территория была под водой.' },
+      { t: { kz: ['Каледон', 'Герцин', 'Киммерий', 'Альпі'], ru: ['Каледонская', 'Герцинская', 'Киммерийская', 'Альпийская'] }, a: 2, kz: 'Маңғыстау таулары қай қатпарлануда көтерілді?', ru: 'В какую складчатость поднялись горы Мангистау?', ekz: 'Киммерий қатпарлануы — мезозой.', eru: 'Киммерийская складчатость — мезозой.' },
+      { t: { kz: ['Докембрий', 'Палеозой', 'Мезозой', 'Кайнозой'], ru: ['Докембрий', 'Палеозой', 'Мезозой', 'Кайнозой'] }, a: 3, kz: 'Алтай мен Тянь-Шань екінші рет қай эрада көтерілді?', ru: 'В какую эру Алтай и Тянь-Шань поднялись во второй раз?', ekz: 'Кайнозой — Альпі қатпарлануы. Бұлар жаңғырған таулар.', eru: 'Кайнозой — альпийская складчатость. Это омоложенные горы.' },
+      { t: { kz: ['Палеозой → Докембрий → Мезозой → Кайнозой', 'Докембрий → Палеозой → Мезозой → Кайнозой', 'Докембрий → Мезозой → Палеозой → Кайнозой', 'Кайнозой → Мезозой → Палеозой → Докембрий'], ru: ['Палеозой → Докембрий → Мезозой → Кайнозой', 'Докембрий → Палеозой → Мезозой → Кайнозой', 'Докембрий → Мезозой → Палеозой → Кайнозой', 'Кайнозой → Мезозой → Палеозой → Докембрий'] }, a: 1, kz: 'Эралардың ежелгіден жасқа қарай дұрыс реті қайсы?', ru: 'Верный порядок эр от древней к молодой?', ekz: 'Докембрий → Палеозой (330 млн) → Мезозой (165 млн) → Кайнозой (67 млн).', eru: 'Докембрий → Палеозой (330 млн) → Мезозой (165 млн) → Кайнозой (67 млн).' },
+      { t: { kz: ['екеуі де герцинде', 'екеуі де каледонда', 'СБ — каледонда, шығысы — герцинде', 'СБ — герцинде, шығысы — каледонда'], ru: ['обе — в герцине', 'обе — в каледоне', 'СЗ — в каледоне, восток — в герцине', 'СЗ — в герцине, восток — в каледоне'] }, a: 2, kz: 'Сарыарқаның солтүстік-батысы мен шығысы қай қатпарлануда көтерілген?', ru: 'В какие складчатости поднялись северо-запад и восток Сарыарки?', ekz: 'СБ — каледон, шығысы (Қызыларай, Қарқаралы) — герцин. Шатастырма!', eru: 'СЗ — каледон, восток (Кызыларай, Каркаралы) — герцин. Не путай!' },
+      { t: { kz: ['Каледон', 'Герцин', 'Киммерий', 'Байкал'], ru: ['Каледон', 'Герцин', 'Киммерий', 'Байкал'] }, a: 1, kz: 'Алтай, Жетісу Алатауы, Мұғалжар алғаш рет қай қатпарлануда көтерілді?', ru: 'В какую складчатость Алтай, Жетысуский Алатау и Мугалжары поднялись впервые?', ekz: 'Герцин қатпарлануы (палеозой).', eru: 'Герцинская складчатость (палеозой).' },
+      { map: 'mug', a: 'mug', kz: '🗺️ Картадан Мұғалжарды тап.', ru: '🗺️ Найди на карте Мугалжары.', ekz: 'Мұғалжар — Батыс Қазақстанның төменгі таулары, герцин қатпарлануы.', eru: 'Мугалжары — невысокие горы на западе Казахстана, герцинская складчатость.' },
+      { map: 'man', a: 'man', kz: '🗺️ Картадан Маңғыстау таулары қайда екенін көрсет.', ru: '🗺️ Покажи на карте горы Мангистау.', ekz: 'Маңғыстау таулары — батыс-оңтүстік-батыс, киммерий қатпарлануы (мезозой).', eru: 'Горы Мангистау — на юго-западе, киммерийская складчатость (мезозой).' },
+      { map: 'zhet', a: 'zhet', kz: '🗺️ Картадан Жетісу Алатауын тап.', ru: '🗺️ Найди на карте Жетысуский Алатау.', ekz: 'Жетісу Алатауы — оңтүстік-шығыс; палеозойда (герцин) көтеріліп, кайнозойда (Альпі) қайта көтерілді.', eru: 'Жетысуский Алатау — юго-восток; поднялся в палеозое (герцин) и вновь в кайнозое (Альпы).' },
+      { map: 'sarNW', a: 'sarNW', kz: '🗺️ Картада каледон қатпарлануында көтерілген Сарыарқаның бөлігін көрсет.', ru: '🗺️ Покажи на карте часть Сарыарки, поднявшуюся в каледонскую складчатость.', ekz: 'Каледонда — Сарыарқаның солтүстік-батысы.', eru: 'В каледон — северо-запад Сарыарки.' },
+      { map: 'sarE', a: 'sarE', kz: '🗺️ Картада герцин қатпарлануында көтерілген Сарыарқаның бөлігін көрсет (Қызыларай, Қарқаралы).', ru: '🗺️ Покажи на карте часть Сарыарки, поднявшуюся в герцинскую складчатость (Кызыларай, Каркаралы).', ekz: 'Герцинде — Сарыарқаның шығысы (Қызыларай, Қарқаралы).', eru: 'В герцин — восток Сарыарки (Кызыларай, Каркаралы).' }
+    ];
+    const questState = { answers: [], bound: false };
+
+    function questMapSvg(qi, chosen, correct, L) {
+      const pts = '30,120 80,82 170,70 250,40 350,55 430,80 500,100 480,150 420,170 440,210 390,240 320,225 260,260 200,245 170,200 110,185 60,160';
+      let s = `<svg viewBox="0 0 560 290" width="100%" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;max-width:560px;min-width:360px;background:#0b1120;border-radius:12px"><polygon points="${pts}" fill="#1e293b" stroke="#64748b" stroke-width="2"/>`;
+      Object.keys(QUEST_REGIONS).forEach(id => {
+        const r = QUEST_REGIONS[id];
+        const done = chosen !== undefined;
+        let fill = '#64748b', op = 0.7, stroke = '#94a3b8';
+        if (done) {
+          if (id === correct) { fill = '#34d399'; op = 0.95; stroke = '#a7f3d0'; }
+          else if (id === chosen) { fill = '#f87171'; op = 0.95; stroke = '#fecaca'; }
+          else { op = 0.25; }
+        }
+        s += `<ellipse class="${done ? '' : 'quest-region cursor-pointer'}" data-q="${qi}" data-r="${id}" cx="${r.cx}" cy="${r.cy}" rx="${r.rx}" ry="${r.ry}" transform="rotate(${r.rot} ${r.cx} ${r.cy})" fill="${fill}" fill-opacity="${op}" stroke="${stroke}" stroke-width="2" style="transition:all .2s"/>`;
+        if (done && (id === correct || id === chosen)) s += `<text x="${r.cx}" y="${r.cy - r.ry - 6}" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#f1f5f9" style="paint-order:stroke;stroke:#0b1120;stroke-width:3px">${r[L]}</text>`;
+      });
+      return s + `<text x="552" y="283" text-anchor="end" font-size="9.5" fill="#475569">${L === 'ru' ? 'схема, положение примерное' : 'схема, орналасуы шамамен'}</text></svg>`;
+    }
+
+    function renderQuest(isRu) {
+      const box = document.getElementById('questBox');
+      if (!box) return;
+      const L = isRu ? 'ru' : 'kz';
+      document.getElementById('questHeader').textContent = isRu ? 'ГЕО-КВЕСТ: ИТОГОВАЯ ПРОВЕРКА ЗНАНИЙ (15 ЗАДАНИЙ)' : 'ГЕО-КВЕСТ: ҚОРЫТЫНДЫ БІЛІМ ТЕКСЕРУ (15 ТАПСЫРМА)';
+      const n = QUEST.length;
+      const answered = questState.answers.filter(v => v !== undefined).length;
+      const correct = questState.answers.filter((v, i) => v !== undefined && v === QUEST[i].a).length;
+      let html = `<p class="text-[11px] text-slate-400">${isRu ? '1-й уровень: 10 вопросов по теории. 2-й уровень: 5 заданий «найди на карте». После каждого ответа видно правильный вариант и пояснение.' : '1-деңгей: теория бойынша 10 сұрақ. 2-деңгей: «картадан тап» 5 тапсырмасы. Әр жауаптан кейін дұрыс нұсқа мен түсініктеме көрінеді.'}</p>`;
+      html += `<div class="flex items-center justify-between text-[11px] font-bold text-slate-400"><span>${isRu ? 'Выполнено' : 'Орындалды'}: ${answered}/${n}</span><span class="text-emerald-300">${isRu ? 'Верно' : 'Дұрыс'}: ${correct}</span></div>`;
+      html += `<div class="h-2 rounded bg-slate-800 overflow-hidden"><div class="h-2 bg-cyan-400 transition-all" style="width:${Math.round(answered / n * 100)}%"></div></div>`;
+      QUEST.forEach((q, qi) => {
+        if (qi === 0) html += `<div class="text-[11px] font-black tracking-widest text-cyan-300 uppercase pt-1">${isRu ? '🎓 Уровень 1 · Теория' : '🎓 1-деңгей · Теория'}</div>`;
+        if (qi === 10) html += `<div class="text-[11px] font-black tracking-widest text-amber-300 uppercase pt-2">${isRu ? '🧭 Уровень 2 · Найди на карте' : '🧭 2-деңгей · Картадан тап'}</div>`;
+        const chosen = questState.answers[qi];
+        const done = chosen !== undefined;
+        const ok = done && chosen === q.a;
+        html += `<div class="p-3.5 rounded-xl bg-space-900/80 border ${done ? (ok ? 'border-emerald-500/40' : 'border-rose-500/40') : 'border-slate-800'} space-y-2.5">`;
+        html += `<div class="flex items-start space-x-2.5"><span class="shrink-0 w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-300 text-[11px] font-black flex items-center justify-center">${qi + 1}</span><span class="font-bold text-slate-100 text-xs sm:text-sm">${isRu ? q.ru : q.kz}</span></div>`;
+        if (q.map) {
+          html += `<div class="overflow-x-auto rounded-xl">${questMapSvg(qi, chosen, q.a, L)}</div>`;
+          if (!done) html += `<div class="text-[11px] text-slate-500">${isRu ? 'Нажми на нужную область на карте.' : 'Картадағы қажетті аймақты бас.'}</div>`;
+        } else {
+          const opts = q.t[L];
+          html += `<div class="grid grid-cols-1 sm:grid-cols-2 gap-2">`;
+          opts.forEach((txt, oi) => {
+            let cls = 'border-slate-700 bg-space-950 text-slate-200 hover:border-cyan-500/60 hover:bg-space-850';
+            let mark = String.fromCharCode(65 + oi);
+            if (done) {
+              if (oi === q.a) { cls = 'border-emerald-500/60 bg-emerald-500/15 text-emerald-200'; mark = '✓'; }
+              else if (oi === chosen) { cls = 'border-rose-500/60 bg-rose-500/15 text-rose-200'; mark = '✕'; }
+              else { cls = 'border-slate-800 bg-space-950 text-slate-500'; }
+            }
+            html += `<button type="button" data-q="${qi}" data-o="${oi}" ${done ? 'disabled' : ''} class="quest-opt text-left px-3 py-2 rounded-lg border text-xs font-bold transition flex items-center space-x-2 ${cls}"><span class="shrink-0 w-5 h-5 rounded-md bg-slate-800/80 text-[10px] font-black flex items-center justify-center">${mark}</span><span>${txt}</span></button>`;
+          });
+          html += `</div>`;
+        }
+        if (done) html += `<div class="text-[11px] leading-relaxed ${ok ? 'text-emerald-300' : 'text-amber-200'}">${ok ? '✅ ' : '💡 '}${isRu ? q.eru : q.ekz}</div>`;
+        html += `</div>`;
+      });
+      if (answered === n) {
+        const pct = Math.round(correct / n * 100);
+        let rank, msg, col;
+        if (pct >= 90) { rank = isRu ? '🏆 Академик-геолог' : '🏆 Академик-геолог'; msg = isRu ? 'Блестяще! Ты уверенно знаешь эры, складчатости и горы Казахстана.' : 'Тамаша! Эралар мен қатпарлануларды, Қазақстан таулары сенімді білесің.'; col = 'emerald'; }
+        else if (pct >= 70) { rank = isRu ? '⛏️ Геолог' : '⛏️ Геолог'; msg = isRu ? 'Хорошо! Повтори ловушки (Байкал, второй подъём гор) — и будет 100%.' : 'Жақсы! Қақпандарды (Байкал, таулардың екінші рет көтерілуі) қайталасаң, 100% болады.'; col = 'sky'; }
+        else if (pct >= 50) { rank = isRu ? '🧭 Исследователь' : '🧭 Зерттеуші'; msg = isRu ? 'Неплохо! Пересмотри карту выше — пройди все 6 этапов ещё раз.' : 'Жаман емес! Жоғарыдағы картаны қайта қарап, 6 кезеңді тағы өт.'; col = 'amber'; }
+        else { rank = isRu ? '🌱 Начинающий' : '🌱 Жаңадан бастаушы'; msg = isRu ? 'Перечитай конспект и пройди динамическую карту, затем попробуй снова.' : 'Конспектіні қайта оқып, динамикалық картаны өтіп, қайта көр.'; col = 'rose'; }
+        const best = parseInt(safeStorage.getItem('geotany_quest_22_best') || '0', 10);
+        if (pct > best) safeStorage.setItem('geotany_quest_22_best', String(pct));
+        html += `<div class="p-4 rounded-xl bg-${col}-500/10 border border-${col}-500/40 text-center space-y-2"><div class="text-lg font-black text-${col}-300">${rank}</div><div class="text-3xl font-black text-${col}-300">${correct} / ${n} · ${pct}%</div><div class="text-xs text-slate-200">${msg}</div><div class="text-[11px] text-slate-400">${isRu ? 'Лучший результат' : 'Үздік нәтиже'}: ${Math.max(best, pct)}%</div><button type="button" id="questRetry" class="px-4 py-2 rounded-xl bg-cyan-500 text-space-950 text-xs font-black hover:bg-cyan-400 transition">${isRu ? '🔄 Пройти заново' : '🔄 Қайта бастау'}</button></div>`;
+      }
+      box.innerHTML = html;
+      if (!questState.bound) {
+        questState.bound = true;
+        box.addEventListener('click', ev => {
+          if (ev.target.closest('#questRetry')) { questState.answers = []; renderQuest(currentLang === 'ru'); document.getElementById('questSection').scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+          let qi = -1, val = null;
+          const b = ev.target.closest('.quest-opt');
+          const r = ev.target.closest('.quest-region');
+          if (b && !b.disabled) { qi = parseInt(b.dataset.q, 10); val = parseInt(b.dataset.o, 10); }
+          else if (r) { qi = parseInt(r.dataset.q, 10); val = r.dataset.r; }
+          if (qi < 0 || questState.answers[qi] !== undefined) return;
+          const y = window.scrollY;
+          questState.answers[qi] = val;
+          renderQuest(currentLang === 'ru');
+          window.scrollTo(0, y);
+        });
+      }
+    }
+
     function setLang(lang) {
       currentLang = lang;
       safeStorage.setItem('geotany_lang', lang);
@@ -765,6 +890,8 @@
       renderTraps(isRu);
 
       renderReliefMap(isRu);
+
+      renderQuest(isRu);
 
       // Blooket & Doc links
       const btnB = document.getElementById('btnBlooket');
