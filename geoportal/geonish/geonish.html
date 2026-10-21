@@ -241,14 +241,14 @@
     <!-- FILTER & SEARCH BAR -->
     <div class="bg-space-900 border border-slate-800 rounded-2xl p-3 sm:p-4 space-y-3 shadow-md">
       
-      <!-- Department Selector (Қазақ тобы / Русская группа) -->
+      <!-- Section Selector (Конспекты / Тесты) -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
         <div class="flex items-center space-x-2 overflow-x-auto touch-scroll pb-1 scrollbar-none">
-          <button onclick="setNisDept('kz')" id="dept-btn-kz" class="px-3.5 py-1.5 rounded-xl text-xs font-black transition bg-emerald-500 text-space-950 shadow-lg shadow-emerald-500/25 whitespace-nowrap">
-            🇰🇿 Қазақ тобы (15 тақырып)
+          <button onclick="setNisSection('conspects')" id="section-btn-conspects" class="px-3.5 py-1.5 rounded-xl text-xs font-black transition bg-emerald-500 text-space-950 shadow-lg shadow-emerald-500/25 whitespace-nowrap">
+            📄 Конспектілер
           </button>
-          <button onclick="setNisDept('ru')" id="dept-btn-ru" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition bg-space-850 text-slate-400 hover:text-white border border-slate-700/80 whitespace-nowrap">
-            🇷🇺 Русская группа (15 тем)
+          <button onclick="setNisSection('tests')" id="section-btn-tests" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition bg-space-850 text-slate-400 hover:text-white border border-slate-700/80 whitespace-nowrap">
+            📝 Тестілер
           </button>
         </div>
 
@@ -898,6 +898,7 @@
     let currentLang = localStorage.getItem('nis_lang') || 'kz'; localStorage.getItem('nis_lang') || 'kz';
     let currentDept = localStorage.getItem('nis_dept') || 'kz';
     let currentCategory = 'all';
+    let currentSection = localStorage.getItem('nis_section') === 'tests' ? 'tests' : 'conspects';
     let activeTopicId = null;
     let modalActiveTab = 'conspect';
     let modalLang = 'kz';
@@ -962,19 +963,26 @@
       localStorage.setItem('nis_dept', dept);
       if (playSound) playBeep(520, 'sine', 0.04);
 
-      ['kz', 'ru'].forEach(d => {
-        const btn = document.getElementById('dept-btn-' + d);
-        if (btn) {
-          if (d === dept) {
-            btn.className = "px-3.5 py-1.5 rounded-xl text-xs font-black transition bg-emerald-500 text-space-950 shadow-lg shadow-emerald-500/25 whitespace-nowrap";
-          } else {
-            btn.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold transition bg-space-850 text-slate-400 hover:text-white border border-slate-700/80 whitespace-nowrap";
-          }
-        }
-      });
-
       applyUIStrings();
       renderNisCards();
+    }
+
+    function setNisSection(section) {
+      currentSection = section === 'tests' ? 'tests' : 'conspects';
+      localStorage.setItem('nis_section', currentSection);
+      playBeep(520, 'sine', 0.04);
+      applyUIStrings();
+      renderNisCards();
+    }
+
+    function updateSectionButtons() {
+      ['conspects', 'tests'].forEach(s => {
+        const btn = document.getElementById('section-btn-' + s);
+        if (!btn) return;
+        btn.className = (s === currentSection)
+          ? "px-3.5 py-1.5 rounded-xl text-xs font-black transition bg-emerald-500 text-space-950 shadow-lg shadow-emerald-500/25 whitespace-nowrap"
+          : "px-3.5 py-1.5 rounded-xl text-xs font-bold transition bg-space-850 text-slate-400 hover:text-white border border-slate-700/80 whitespace-nowrap";
+      });
     }
 
     function filterCategory(cat) {
@@ -998,18 +1006,25 @@
 
     function applyUIStrings() {
       const isRu = (currentDept === 'ru');
-      
+      const isTests = (currentSection === 'tests');
+
+      updateSectionButtons();
+      document.getElementById('section-btn-conspects').textContent = isRu ? '📄 Конспекты' : '📄 Конспектілер';
+      document.getElementById('section-btn-tests').textContent = isRu ? '📝 Тесты' : '📝 Тестілер';
+
       document.getElementById('heroBadge').textContent = isRu 
         ? 'КОНКУРСНЫЙ ВСТУПИТЕЛЬНЫЙ ЭКЗАМЕН В НИШ • 6 КЛАСС' 
         : 'НЗМ 6-СЫНЫП ІРІКТЕУ ЕМТИХАНЫ';
 
-      document.getElementById('heroTitle').textContent = isRu 
-        ? 'Интерактивные конспекты по предмету «Естествознание»' 
-        : 'Жаратылыстану пәні бойынша интерактивті конспектілер';
+      document.getElementById('heroTitle').textContent = isTests
+        ? (isRu ? 'Онлайн-тесты по предмету «Естествознание»' : 'Жаратылыстану пәні бойынша онлайн тестілер')
+        : (isRu ? 'Интерактивные конспекты по предмету «Естествознание»' : 'Жаратылыстану пәні бойынша интерактивті конспектілер');
 
-      document.getElementById('heroDesc').textContent = isRu
-        ? 'Все 15 тематических конспектов открываются прямо на сайте с наглядными схемами, рисунками и онлайн-тестами.'
-        : 'Барлық 15 тақырыптық конспект сайт ішінде сызбалармен, суреттермен және онлайн сынақтармен толық ашылады.';
+      document.getElementById('heroDesc').textContent = isTests
+        ? (isRu ? 'Проверочные тесты по всем 15 темам: онлайн-тест на сайте, Blooket и файл с тестом.' : 'Барлық 15 тақырып бойынша сынақ тесттері: сайттағы онлайн тест, Blooket және тест файлы.')
+        : (isRu
+          ? 'Все 15 тематических конспектов открываются прямо на сайте с наглядными схемами, рисунками и онлайн-тестами.'
+          : 'Барлық 15 тақырыптық конспект сайт ішінде сызбалармен, суреттермен және онлайн сынақтармен толық ашылады.');
 
       document.getElementById('meterLabel').textContent = isRu ? 'Уровень готовности:' : 'Дайындық деңгейі:';
       document.getElementById('nisSearchInput').placeholder = isRu ? 'Поиск темы...' : 'Тақырыпты іздеу...';
@@ -1119,6 +1134,24 @@
             ${descTag}
           </div>
 
+          ${currentSection === 'tests' ? `
+          <div class="mt-4 pt-3.5 border-t border-slate-800 space-y-2.5">
+            <button onclick="openLessonModal(${t.num}, 'quiz')" class="w-full px-3.5 py-2 rounded-xl bg-amber-500 text-space-950 font-black text-xs transition shadow-lg shadow-amber-500/20 hover:bg-amber-400 flex items-center justify-center space-x-1.5">
+              <span>📝</span>
+              <span>${isRu ? 'Пройти онлайн-тест →' : 'Онлайн тестті тапсыру →'}</span>
+            </button>
+            <div class="flex flex-wrap items-center gap-1.5">
+              ${bkUrl && bkUrl.startsWith('http') ? `
+                <a href="${bkUrl}" target="_blank" onclick="playSuccessChime();" class="px-2.5 py-1.5 rounded-xl bg-brand-500/20 text-brand-300 hover:bg-brand-500/30 border border-brand-500/40 text-xs font-bold transition flex items-center space-x-1 shadow-sm">
+                  <span>🎮</span><span>Blooket</span>
+                </a>` : ''}
+              ${testUrl && testUrl.startsWith('http') ? `
+                <a href="${testUrl}" target="_blank" class="px-2.5 py-1.5 rounded-xl bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 border border-amber-500/40 text-xs font-bold transition flex items-center space-x-1 shadow-sm">
+                  <span>💾</span><span>${isRu ? 'Файл теста' : 'Тест файлы'}</span>
+                </a>` : ''}
+            </div>
+          </div>
+          ` : `
           <div class="mt-4 pt-3.5 border-t border-slate-800 space-y-2.5">
             <!-- 1. MAIN IN-APP CONSPECT & LESSON BUTTON (DOES NOT KICK USER OUT) -->
             <button onclick="openLessonModal(${t.num})" class="w-full px-3.5 py-2 rounded-xl bg-emerald-500 text-space-950 font-black text-xs transition shadow-lg shadow-emerald-500/20 hover:bg-emerald-400 flex items-center justify-center space-x-1.5">
@@ -1154,24 +1187,25 @@
               ` : ''}
             </div>
           </div>
+          `}
         `;
         grid.appendChild(card);
       });
     }
 
     // MODAL INTERACTION
-    function openLessonModal(num) {
+    function openLessonModal(num, tab = 'conspect') {
       if (!isUserAllowed()) {
         openStudentRegModal();
         return;
       }
       activeTopicId = num;
-      modalActiveTab = 'conspect';
+      modalActiveTab = tab;
       modalUserAnswers = {};
       isConspectDirectEditable = false;
 
       setModalLang(currentDept);
-      switchModalTab('conspect');
+      switchModalTab(tab);
 
       // Check modal admin bar visibility
       const modalBar = document.getElementById('modalAdminEditBar');
