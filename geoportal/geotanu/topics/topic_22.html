@@ -789,12 +789,12 @@
 
     // ===== GEO-QUEST: final knowledge check (test + map tasks) =====
     const QUEST_REGIONS = {
-      sarNW: { cx: 280, cy: 92, rx: 46, ry: 22, rot: -10, kz: 'Сарыарқаның солтүстік-батысы', ru: 'северо-запад Сарыарки' },
-      sarE: { cx: 352, cy: 114, rx: 30, ry: 17, rot: 0, kz: 'Сарыарқаның шығысы (Қызыларай, Қарқаралы)', ru: 'восток Сарыарки (Кызыларай, Каркаралы)' },
-      mug: { cx: 142, cy: 108, rx: 11, ry: 30, rot: 0, kz: 'Мұғалжар', ru: 'Мугалжары' },
-      man: { cx: 98, cy: 205, rx: 24, ry: 10, rot: 10, kz: 'Маңғыстау таулары', ru: 'горы Мангистау' },
-      altai: { cx: 466, cy: 108, rx: 28, ry: 14, rot: -20, kz: 'Алтай', ru: 'Алтай' },
-      zhet: { cx: 448, cy: 184, rx: 24, ry: 9, rot: -25, kz: 'Жетісу Алатауы', ru: 'Жетысуский Алатау' }
+      sarNW: { k: 'sarNW', kz: 'Сарыарқаның солтүстік-батысы', ru: 'северо-запад Сарыарки' },
+      sarE: { k: 'sarE', kz: 'Сарыарқаның шығысы (Қызыларай, Қарқаралы)', ru: 'восток Сарыарки (Кызыларай, Каркаралы)' },
+      mug: { k: 'mugodzhar', kz: 'Мұғалжар', ru: 'Мугалжары' },
+      man: { k: 'mangystau', kz: 'Маңғыстау таулары', ru: 'горы Мангистау' },
+      altai: { k: 'altai', kz: 'Алтай', ru: 'Алтай' },
+      zhet: { k: 'alataw', kz: 'Жетісу Алатауы', ru: 'Жетысуский Алатау' }
     };
     const QUEST = [
       { t: { kz: ['3,5–3,6 млн жыл', '4,5–4,6 млрд жыл', '45–46 млн жыл', '450–460 млн жыл'], ru: ['3,5–3,6 млн лет', '4,5–4,6 млрд лет', '45–46 млн лет', '450–460 млн лет'] }, a: 1, kz: 'Жердің геологиялық жасы қанша?', ru: 'Каков геологический возраст Земли?', ekz: 'Жердің жасы — 4,5–4,6 млрд жыл.', eru: 'Возраст Земли — 4,5–4,6 млрд лет.' },
@@ -815,22 +815,29 @@
     ];
     const questState = { answers: [], bound: false };
 
+    function questXY(p) { return [(p[1] - 46) * 13.5, (55.7 - p[0]) * 20.1]; }
+    function questPath(pts) { return 'M' + pts.map(p => questXY(p).map(v => v.toFixed(1)).join(',')).join('L') + 'Z'; }
     function questMapSvg(qi, chosen, correct, L) {
-      const pts = '30,120 80,82 170,70 250,40 350,55 430,80 500,100 480,150 420,170 440,210 390,240 320,225 260,260 200,245 170,200 110,185 60,160';
-      let s = `<svg viewBox="0 0 560 290" width="100%" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;max-width:560px;min-width:360px;background:#0b1120;border-radius:12px"><polygon points="${pts}" fill="#1e293b" stroke="#64748b" stroke-width="2"/>`;
+      const poly = k => (RM_HAND.includes(k) ? rmSmooth(RM_GEO[k]) : RM_GEO[k]);
+      let s = `<svg viewBox="0 0 560 304" width="100%" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;max-width:600px;min-width:360px;background:#0b1120;border-radius:12px"><path d="${questPath(RM_GEO.border)}" fill="#1e293b" stroke="#cbd5e1" stroke-width="1.6" stroke-linejoin="round"/>`;
       Object.keys(QUEST_REGIONS).forEach(id => {
-        const r = QUEST_REGIONS[id];
+        if (id === 'altai') return;
+        const r = QUEST_REGIONS[id], d = questPath(poly(r.k));
         const done = chosen !== undefined;
-        let fill = '#64748b', op = 0.7, stroke = '#94a3b8';
+        let fill = '#64748b', op = 0.75, stroke = '#cbd5e1';
         if (done) {
           if (id === correct) { fill = '#34d399'; op = 0.95; stroke = '#a7f3d0'; }
           else if (id === chosen) { fill = '#f87171'; op = 0.95; stroke = '#fecaca'; }
-          else { op = 0.25; }
+          else { op = 0.3; stroke = '#64748b'; }
         }
-        s += `<ellipse class="${done ? '' : 'quest-region cursor-pointer'}" data-q="${qi}" data-r="${id}" cx="${r.cx}" cy="${r.cy}" rx="${r.rx}" ry="${r.ry}" transform="rotate(${r.rot} ${r.cx} ${r.cy})" fill="${fill}" fill-opacity="${op}" stroke="${stroke}" stroke-width="2" style="transition:all .2s"/>`;
-        if (done && (id === correct || id === chosen)) s += `<text x="${r.cx}" y="${r.cy - r.ry - 6}" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#f1f5f9" style="paint-order:stroke;stroke:#0b1120;stroke-width:3px">${r[L]}</text>`;
+        s += `<path d="${d}" fill="${fill}" fill-opacity="${op}" stroke="${stroke}" stroke-width="1.8" stroke-linejoin="round" style="transition:all .2s"/>`;
+        if (!done) s += `<path class="quest-region cursor-pointer" data-q="${qi}" data-r="${id}" d="${d}" fill="transparent" stroke="transparent" stroke-width="14" style="pointer-events:all"/>`;
+        if (done && (id === correct || id === chosen)) {
+          const ps = poly(r.k).map(questXY), cx = ps.reduce((a, p) => a + p[0], 0) / ps.length, top = Math.min(...ps.map(p => p[1]));
+          s += `<text x="${Math.max(60, Math.min(500, cx)).toFixed(0)}" y="${(top - 6).toFixed(0)}" text-anchor="middle" font-size="11" font-weight="bold" fill="#f1f5f9" style="paint-order:stroke;stroke:#0b1120;stroke-width:3px">${r[L]}</text>`;
+        }
       });
-      return s + `<text x="552" y="283" text-anchor="end" font-size="9.5" fill="#475569">${L === 'ru' ? 'схема, положение примерное' : 'схема, орналасуы шамамен'}</text></svg>`;
+      return s + `<text x="552" y="298" text-anchor="end" font-size="9.5" fill="#64748b">${L === 'ru' ? 'контур Казахстана — Natural Earth; горы — схематично' : 'Қазақстан контуры — Natural Earth; таулар — схемалық'}</text></svg>`;
     }
 
     function renderQuest(isRu) {
