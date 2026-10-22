@@ -47,13 +47,13 @@ window.SMB_CONFIG = {
       id: 'english',
       icon: '🇬🇧',
       label: 'English',
-      start: 'english/english.html',
-      title_kz: 'English: жалпы ағылшын тілі курсы (A1–C1)',
-      title_ru: 'English: универсальный курс английского языка (A1–C1)',
-      desc_kz: 'Деңгей тесті, әр сабақта 6 тапсырма: лексика, грамматика, оқу, тыңдау, жазылым және айтылым',
-      desc_ru: 'Тест уровня и по 6 заданий в каждом уроке: лексика, грамматика, чтение, аудирование, письмо и речь',
-      level_kz: 'A1–C1 / барлық жас',
-      level_ru: 'A1–C1 / для всех'
+      start: 'english/hub.html',
+      title_kz: 'English Hub: ағылшын тілі курсы (A1–C2) және IELTS дайындығы',
+      title_ru: 'English Hub: курс английского языка (A1–C2) и подготовка к IELTS',
+      desc_kz: 'Reading, Writing, Listening, Speaking, Vocabulary және Grammar бойынша 62 тапсырмадан, 7500 сөз және IELTS карточкалары',
+      desc_ru: 'Reading, Writing, Listening, Speaking, Vocabulary и Grammar: по 62 задания, 7500 слов и карточки для подготовки к IELTS',
+      level_kz: 'A1–C2 / барлық жас',
+      level_ru: 'A1–C2 / для всех'
     },
     {
       id: 'pravo',

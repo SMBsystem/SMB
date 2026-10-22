@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <title>English Hub — курс английского языка — SMB</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#f8fafc">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .hidden { display: none !important; }
+    .inp { width: 100%; padding: .65rem .9rem; background: #fff; border: 1px solid #cbd5e1; border-radius: .75rem; font-size: .9rem; color: #0f172a; }
+    .inp:focus { outline: none; border-color: #4f46e5; box-shadow: 0 0 0 3px rgba(79,70,229,.15); }
+    .lbl { display: block; font-size: 12px; font-weight: 600; color: #475569; margin-bottom: .3rem; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: .4rem; padding: .6rem 1.1rem; border-radius: .75rem; font-weight: 600; font-size: .85rem; transition: background .15s; cursor: pointer; }
+    .btn-primary { background: #4f46e5; color: #fff; } .btn-primary:hover { background: #4338ca; }
+    .btn-ghost { background: #fff; color: #334155; border: 1px solid #cbd5e1; } .btn-ghost:hover { background: #f1f5f9; }
+    .btn:disabled { opacity: .55; cursor: not-allowed; }
+    .passage p { margin-bottom: .9rem; line-height: 1.75; }
+    .gap { display: inline-block; width: 7.5rem; padding: .1rem .45rem; border: 0; border-bottom: 2px solid #94a3b8; background: #f8fafc; font-size: .9rem; text-align: center; }
+    .gap:focus { outline: none; border-color: #4f46e5; background: #eef2ff; }
+    .ok { border-color: #10b981 !important; background: #ecfdf5 !important; }
+    .bad { border-color: #f43f5e !important; background: #fff1f2 !important; }
+    .line-active { background: #e0e7ff; box-shadow: inset 3px 0 0 #4f46e5; }
+    .tab-on { color: #4f46e5; border-color: #4f46e5; }
+    .scroll-y { max-height: 78vh; overflow-y: auto; }
+    .chip { padding: .3rem .8rem; border-radius: 9999px; border: 1px solid #cbd5e1; background: #fff; font-size: .75rem; font-weight: 700; color: #475569; cursor: pointer; }
+    .chip.on { background: #4f46e5; border-color: #4f46e5; color: #fff; }
+    .flip { perspective: 1000px; }
+    .flip-in { transition: transform .45s; transform-style: preserve-3d; position: relative; min-height: 14rem; }
+    .flip.on .flip-in { transform: rotateY(180deg); }
+    .face { position: absolute; inset: 0; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1.25rem; text-align: center; border-radius: 1rem; }
+    .face.back { transform: rotateY(180deg); background: #eef2ff; }
+    .face.front { background: #fff; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen">
+
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-slate-200">
+    <div class="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between gap-3">
+      <a href="#" id="logoLink" class="flex items-center gap-2 min-w-0">
+        <span class="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-extrabold text-xs">SMB</span>
+        <span class="font-bold truncate">English Hub</span>
+      </a>
+      <div class="flex items-center gap-2">
+        <a href="../gate.html?c=ielts" class="btn btn-ghost hidden md:inline-flex">🎓 IELTS Academic ↗</a>
+        <button id="btnAiSettings" type="button" class="btn btn-ghost">🤖 <span class="hidden sm:inline">ИИ-проверка</span></button>
+        <button id="btnProfile" type="button" class="btn btn-primary">👤 Войти / Регистрация</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 py-8">
+
+    <!-- ЭКРАН 1 -->
+    <section id="screenHome" class="space-y-6">
+      <div class="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h1 class="text-2xl font-extrabold">English Hub: английский от A1 до C2</h1>
+          <p id="welcomeLine" class="text-sm text-slate-500 mt-1"></p>
+        </div>
+        <span id="securityBadge" class="self-start sm:self-auto text-xs font-semibold px-3 py-1.5 rounded-full"></span>
+      </div>
+
+      <article class="bg-white border border-slate-200 rounded-2xl p-6 hover:border-indigo-300 transition">
+        <div class="flex flex-col md:flex-row gap-5 md:items-center">
+          <div class="text-5xl" aria-hidden="true">🇬🇧</div>
+          <div class="flex-1 min-w-0">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-indigo-600">Курс №1 · 6 навыков × 6 уровней</span>
+            <h2 class="text-xl font-bold mt-1">English по навыкам</h2>
+            <p class="text-sm text-slate-600 mt-2 leading-relaxed">Reading, Writing, Listening, Speaking, Vocabulary и Grammar: по 62 задания в каждом разделе, уровни A1, A2, B1, B2, C1 и C2. Классика для чтения, диалоги и лекции с озвучкой, письменные шаблоны, речевые карточки, 7500 слов с переводом и 62 темы грамматики с проверкой.</p>
+            <div class="flex flex-wrap gap-2 mt-3">
+              <button type="button" data-home-skill="reading" class="chip">📖 Reading</button>
+              <button type="button" data-home-skill="writing" class="chip">✍️ Writing</button>
+              <button type="button" data-home-skill="listening" class="chip">🎧 Listening</button>
+              <button type="button" data-home-skill="speaking" class="chip">🎤 Speaking</button>
+              <button type="button" data-home-skill="vocabulary" class="chip">🔤 Vocabulary</button>
+              <button type="button" data-home-skill="grammar" class="chip">🧩 Grammar</button>
+            </div>
+            <div class="flex flex-wrap gap-2 mt-3 text-xs text-slate-600">
+              <span class="px-2 py-1 bg-slate-100 rounded-lg">6 разделов × 62 задания</span>
+              <span class="px-2 py-1 bg-slate-100 rounded-lg">Автосохранение в профиль</span>
+              <span class="px-2 py-1 bg-slate-100 rounded-lg">ИИ-проверка Writing и Speaking</span>
+            </div>
+          </div>
+          <button id="btnOpenCourse" type="button" class="btn btn-primary md:self-center">Открыть курс →</button>
+        </div>
+      </article>
+
+      <article class="bg-white border border-slate-200 rounded-2xl p-6 hover:border-indigo-300 transition">
+        <div class="flex flex-col md:flex-row gap-5 md:items-center">
+          <div class="text-5xl" aria-hidden="true">🎓</div>
+          <div class="flex-1 min-w-0">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-indigo-600">Курс №2 · IELTS Prep</span>
+            <h2 class="text-xl font-bold mt-1">Подготовка к IELTS: карточки по темам</h2>
+            <p class="text-sm text-slate-600 mt-2 leading-relaxed">26 колод карточек: фразы для Writing Task 1 и 2, ответы для Speaking Part 1–3, лексика по 16 экзаменационным темам, стратегии Reading и Listening и шпаргалка по критериям оценки. Карточки, список и тест на каждый набор. Полные пробники — в курсе IELTS Academic.</p>
+            <div class="flex flex-wrap gap-2 mt-3 text-xs text-slate-600">
+              <span class="px-2 py-1 bg-slate-100 rounded-lg">26 колод</span>
+              <span class="px-2 py-1 bg-slate-100 rounded-lg">Writing · Speaking · темы · стратегии</span>
+              <span class="px-2 py-1 bg-slate-100 rounded-lg">Карточки + тест</span>
+            </div>
+          </div>
+          <button id="btnOpenIelts" type="button" class="btn btn-primary md:self-center">Открыть →</button>
+        </div>
+      </article>
+
+      <article class="bg-white border border-slate-200 rounded-2xl p-6 hover:border-indigo-300 transition">
+        <div class="flex flex-col md:flex-row gap-5 md:items-center">
+          <div class="text-5xl" aria-hidden="true">🧭</div>
+          <div class="flex-1 min-w-0">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Дополнительно</span>
+            <h2 class="text-xl font-bold mt-1">Уроки A1 с переводом на казахский</h2>
+            <p class="text-sm text-slate-600 mt-2 leading-relaxed">Первая версия курса: 10 уроков уровня A1 по 6 навыкам и тест уровня на 20 вопросов.</p>
+          </div>
+          <a href="english.html" class="btn btn-ghost md:self-center">Открыть →</a>
+        </div>
+      </article>
+      <p class="text-xs text-slate-400">Оценки ИИ-проверки — тренировочные ориентиры, а не официальный балл. Тексты для чтения — произведения из общественного достояния (Project Gutenberg). Переводы слов подготовлены с помощью ИИ.</p>
+    </section>
+
+    <!-- ЭКРАН 2 (содержимое появляется только после проверки сессии) -->
+    <section id="screenCourse" class="hidden space-y-5">
+      <div class="flex items-center justify-between gap-3">
+        <button type="button" data-nav="home" class="btn btn-ghost">← Курсы</button>
+        <h2 id="courseTitle" class="font-bold text-lg">English Hub</h2>
+        <span></span>
+      </div>
+      <div id="skillTabs" role="tablist" class="flex gap-1 border-b border-slate-200 overflow-x-auto"></div>
+      <div id="variantSearchWrap" class="space-y-3">
+        <div id="levelChips" class="flex flex-wrap gap-2"></div>
+        <input id="variantSearch" type="search" class="inp" placeholder="Поиск по названию" aria-label="Поиск">
+      </div>
+      <div id="variantsList" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
+    </section>
+
+    <!-- ЭКРАН 3 -->
+    <section id="screenTest" class="hidden">
+      <div id="testWorkspace"></div>
+    </section>
+  </main>
+
+  <div id="toast" class="fixed top-16 left-1/2 -translate-x-1/2 z-[80] px-4 py-2 rounded-xl text-sm font-semibold shadow-lg bg-slate-900 text-white opacity-0 transition-opacity pointer-events-none max-w-[92vw] text-center" role="status"></div>
+
+  <!-- Модальное окно: вход / регистрация -->
+  <div id="authModal" class="hidden fixed inset-0 z-[70] bg-slate-900/50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4 max-h-[92vh] overflow-y-auto">
+      <div class="flex items-start justify-between gap-3">
+        <h3 id="authTitle" class="font-bold text-lg">Вход</h3>
+        <button type="button" id="authClose" class="text-slate-400 hover:text-slate-700 text-2xl leading-none" aria-label="Закрыть">×</button>
+      </div>
+      <div id="authNotice" class="hidden p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs font-medium"></div>
+
+      <div id="profileBox" class="hidden space-y-3">
+        <p class="text-sm">Вы вошли как <b id="profName"></b><br><span id="profEmail" class="text-slate-500 text-xs"></span></p>
+        <p id="profStats" class="text-xs text-slate-500"></p>
+        <div class="flex gap-2">
+          <button type="button" id="btnLogout" class="btn btn-ghost flex-1">Выйти</button>
+          <button type="button" id="btnWipe" class="btn btn-ghost flex-1 text-rose-600">Стереть мой прогресс</button>
+        </div>
+      </div>
+
+      <div id="codeBox" class="hidden space-y-3 text-sm">
+        <p>Доступ к курсу открывается по <b>коду от преподавателя</b>. Введите код на главной странице SMB, затем нажмите «Войти в курс».</p>
+        <a href="../index.html" class="btn btn-primary w-full">Ввести код курса →</a>
+      </div>
+
+      <div id="authForms">
+        <div class="flex rounded-xl bg-slate-100 p-1 text-sm font-semibold">
+          <button type="button" id="tabLogin" class="flex-1 py-1.5 rounded-lg bg-white shadow-sm">Вход</button>
+          <button type="button" id="tabRegister" class="flex-1 py-1.5 rounded-lg text-slate-500">Регистрация</button>
+        </div>
+        <form id="authForm" class="space-y-3 mt-4" novalidate autocomplete="on">
+          <div id="authError" role="alert" class="hidden p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium"></div>
+          <div id="nameRow" class="hidden"><label class="lbl" for="aName">Имя</label><input id="aName" class="inp" autocomplete="name" maxlength="80"></div>
+          <div><label class="lbl" for="aEmail">Email</label><input id="aEmail" type="email" class="inp" autocomplete="email" maxlength="120"></div>
+          <div><label class="lbl" for="aPass">Пароль <span id="passHint" class="font-normal text-slate-400"></span></label><input id="aPass" type="password" class="inp" autocomplete="current-password" maxlength="100"></div>
+          <button id="authSubmit" type="submit" class="btn btn-primary w-full">Войти</button>
+          <p class="text-[11px] text-slate-400 leading-snug">Аккаунт хранится только в этом браузере. Пароль не сохраняется в открытом виде: используется соль и многораундовое хеширование.</p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модальное окно: настройки ИИ -->
+  <div id="aiModal" class="hidden fixed inset-0 z-[70] bg-slate-900/50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="aiTitle">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4 max-h-[92vh] overflow-y-auto">
+      <div class="flex items-start justify-between gap-3">
+        <h3 id="aiTitle" class="font-bold text-lg">🤖 ИИ-проверка</h3>
+        <button type="button" id="aiClose" class="text-slate-400 hover:text-slate-700 text-2xl leading-none" aria-label="Закрыть">×</button>
+      </div>
+      <div class="space-y-2 text-sm">
+        <label class="flex gap-2 p-3 border border-slate-200 rounded-xl cursor-pointer"><input type="radio" name="aiMode" value="local"><span><b>Локальный аудитор</b> (по умолчанию)<br><span class="text-xs text-slate-500">Работает сразу, без ключа, текст остаётся в браузере.</span></span></label>
+        <label class="flex gap-2 p-3 border border-slate-200 rounded-xl cursor-pointer"><input type="radio" name="aiMode" value="free"><span><b>Бесплатный облачный ИИ</b> (без ключа)<br><span class="text-xs text-slate-500">window.ai или pollinations.ai. Ваш текст уходит стороннему сервису. При сбое — локальный аудитор.</span></span></label>
+        <label class="flex gap-2 p-3 border border-slate-200 rounded-xl cursor-pointer"><input type="radio" name="aiMode" value="gemini"><span><b>Google Gemini</b> (gemini-2.5-flash)<br><span class="text-xs text-slate-500">Нужен ваш API-ключ.</span></span></label>
+        <label class="flex gap-2 p-3 border border-slate-200 rounded-xl cursor-pointer"><input type="radio" name="aiMode" value="openai"><span><b>OpenAI</b> (gpt-4o-mini + Neural TTS)<br><span class="text-xs text-slate-500">Нужен ваш API-ключ. Он же включает нейроголоса для Listening.</span></span></label>
+      </div>
+      <div><label class="lbl" for="geminiKey">Gemini API key</label><input id="geminiKey" type="password" class="inp" autocomplete="off" placeholder="AIza…"></div>
+      <div><label class="lbl" for="openaiKey">OpenAI API key</label><input id="openaiKey" type="password" class="inp" autocomplete="off" placeholder="sk-…"></div>
+      <p class="text-[11px] text-slate-400 leading-snug">Ключи хранятся только в вашем браузере (localStorage) и отправляются только провайдеру, которого вы выбрали. Общий компьютер — не вводите ключи.</p>
+      <button type="button" id="aiSave" class="btn btn-primary w-full">Сохранить</button>
+    </div>
+  </div>
+
+  <script src="../smb-config.js"></script>
+  <script src="../smb-common.js"></script>
+  <script src="hub/hub-core.js"></script>
+  <script src="../ielts/ielts-ai.js"></script>
+  <script src="../ielts/ielts-audio.js"></script>
+  <script src="hub/hub-ui.js?v=1"></script>
+  <script>IELTS.boot();</script>
+</body>
+</html>

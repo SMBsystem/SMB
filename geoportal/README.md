@@ -46,9 +46,14 @@
 │   └── data/                   # lib.js (помощники), m01–m13.js (13 тем: конспект + тест),
 │                               # t01–t04.js (варианты ЕНТ: 40 вопросов, 50 баллов), plan.js (план, справка)
 │
-├── english/                    # [КУРС 5] «English» — универсальный курс английского (A1–C1)
-│   ├── english.html            # страница курса в стиле GeoTany: путь, 6 навыков, тест уровня, окно урока
-│   ├── english.js              # движок: прогресс, озвучка, проверки, XP, тест уровня
+├── english/                    # [КУРС 5] «English Hub» — английский A1–C2 + подготовка к IELTS (шаблон ielts/)
+│   ├── hub.html                # точка входа курса (в smb-config: english/hub.html), каркас как у ielts.html
+│   ├── hub/hub-core.js         # ядро: сессия по коду курса english, маршруты, прогресс (копия ielts-core.js)
+│   ├── hub/hub-ui.js           # интерфейс: Reading, Writing, Listening, Speaking, Vocabulary, Grammar, IELTS Prep
+│   ├── hub/data/               # reading/writing/listening/speaking/vocabulary/grammar.js (по 62 задания, A1–C2),
+│   │                           # ielts.js (26 колод карточек); ИИ-проверка и озвучка берутся из ../ielts/
+│   ├── english.html            # первая версия курса (уроки A1 в стиле GeoTany), открывается ссылкой с hub.html
+│   ├── english.js              # движок первой версии: прогресс, озвучка, проверки, XP, тест уровня
 │   └── data/                   # lessons-a1-1.js (уроки 1–5), lessons-a1-2.js (6–10), placement.js (тест из 20 вопросов)
 │
 └── platform/                   # Отдельная платформа на Supabase (пока не подключена)

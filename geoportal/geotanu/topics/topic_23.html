@@ -1050,6 +1050,42 @@
         names: [{ ll: [48.2, 66.5], kz: 'ҚАЗАҚСТАН', ru: 'КАЗАХСТАН' }],
         caption: { kz: 'Әлемдегі ең терең 5 ойыс Африка мен Азияда орналасқан. Бесіншісі — біздің Қарақия (Маңғыстау).', ru: 'Пять самых глубоких впадин мира расположены в Африке и Азии. Пятая — наша Карагие (Мангистау).' } }
     };
+    // ===== Sub-divisions shown when a plain is clicked on the lesson map (schematic outlines, except the Caspian lowland) =====
+    (function () {
+      const R = T23_DEFS.plains.regions;
+      R[0].subs = [
+        { c: '#38bdf8', kz: 'Каспий маңы ойпаты', ru: 'Прикаспийская низменность', poly: () => RM23_GEO.caspian, at: [47.6, 50.2],
+          dkz: 'Жалпы Сырт пен Каспий теңізінің аралығында, мемлекеттік шекарадан Жайық-Жем үстіртіне дейін созылған. Нарын құмдары, Бэр төбешіктері, тұз күмбездері осында; ең төменгі жері теңіз деңгейінен төмен.',
+          dru: 'Лежит между Общим Сыртом и Каспием, от госграницы до плато Урал-Эмба. Здесь пески Нарын, Бэровские бугры, соляные купола; самые низкие места — ниже уровня моря.',
+          pts: [{ ll: [47.2, 48.6], kz: 'Нарын құмдары', ru: 'Нарынские пески' }, { ll: [46.7, 50.6], kz: 'Бэр төбешіктері', ru: 'Бэровские бугры' }, { ll: [48.4, 51.9], kz: 'Тұз күмбездері', ru: 'Соляные купола' }] },
+        { c: '#a78bfa', kz: 'Жалпы Сырт', ru: 'Общий Сырт', poly: () => rmSmooth23([[51.9, 50.0], [52.1, 52.6], [51.8, 54.4], [50.9, 54.9], [50.3, 53.4], [50.5, 51.2]]), at: [51.2, 52.6],
+          dkz: 'Оңтүстік Орал мен Еділ аралығындағы қырат; Қазақстанда оның оңтүстік-шығыс бөлігі ғана кіреді. Каспий маңы ойпатының солтүстігін жиектейді.',
+          dru: 'Возвышенность между Южным Уралом и Волгой; в Казахстане лежит лишь её юго-восточная часть. Обрамляет Прикаспийскую низменность с севера.' },
+        { c: '#fbbf24', kz: 'Жайық-Жем үстірті', ru: 'плато Урал-Эмба (Жайык-Жем)', poly: () => rmSmooth23([[49.9, 53.6], [50.0, 56.4], [49.0, 57.4], [47.8, 56.6], [47.4, 54.6], [48.4, 53.2]]), at: [48.8, 55.2],
+          dkz: 'Жайық пен Жем (Ембі) өзендерінің аралығындағы үстірт; шығыстан Мұғалжар етегімен шектеседі.',
+          dru: 'Плато между реками Жайык (Урал) и Жем (Эмба); на востоке примыкает к предгорьям Мугалжар.' }
+      ];
+      R[1].subs = [
+        { c: '#34d399', kz: 'Тобыл-Обаған жазығы', ru: 'Тобол-Убаганская равнина', poly: () => rmSmooth23([[53.0, 61.4], [55.2, 61.5], [55.3, 65.5], [53.4, 66.8], [52.2, 65.5], [51.2, 64.0], [51.2, 62.0]]), at: [53.6, 63.8],
+          dkz: 'Тобыл мен Обаған өзендерінің аралығы; Батыс Сібір жазығының батыс бөлігі.', dru: 'Междуречье Тобола и Убагана; западная часть Западно-Сибирской равнины.' },
+        { c: '#38bdf8', kz: 'Есіл-Ертіс жазығы', ru: 'Ишимская (Есиль-Иртышская) равнина', poly: () => rmSmooth23([[55.3, 65.5], [55.0, 70.0], [54.9, 72.6], [52.9, 73.0], [53.6, 70.0], [53.4, 67.0], [53.4, 66.8]]), at: [54.1, 69.5],
+          dkz: 'Есіл орманды дала зонасы: көктерек пен қайың шоқтары (колки), көптеген тақырлы көлдер.', dru: 'Лесостепь Есиля: берёзово-осиновые колки и множество блюдцеобразных озёр.' },
+        { c: '#fbbf24', kz: 'Ертіс-Құлынды жазығы', ru: 'Иртыш-Кулундинская равнина', poly: () => rmSmooth23([[54.9, 72.6], [54.8, 74.0], [54.0, 77.5], [52.8, 80.0], [51.4, 81.0], [51.3, 78.5], [52.2, 76.0], [52.9, 73.0]]), at: [53.2, 76.6],
+          dkz: 'Ертіс бойындағы жазық; Павлодар Ертісі, қарағайлы ормандар жолағы Ертіс құмдарында.', dru: 'Равнина вдоль Иртыша; сосновые боры по пескам Прииртышья.' }
+      ];
+      R[2].subs = [
+        { c: '#f87171', kz: 'Қарақия ойысы', ru: 'Впадина Каракия', poly: () => rmSmooth23([[43.9, 51.2], [44.0, 52.2], [43.4, 52.5], [42.9, 51.9], [43.1, 51.2]]), at: [43.45, 51.8],
+          dkz: 'Қазақстандағы ең терең нүкте — теңіз деңгейінен 132 м төмен (Маңғыстау).', dru: 'Самая низкая точка Казахстана — 132 м ниже уровня моря (Мангистау).' },
+        { c: '#fbbf24', kz: 'Үстірт үстірті', ru: 'плато Устюрт', poly: () => rmSmooth23([[45.4, 54.6], [45.3, 57.6], [44.0, 58.7], [42.7, 57.2], [42.3, 55.4], [43.4, 54.9]]), at: [44.2, 56.6],
+          dkz: 'Жазық үстірт, шеттері тік жарқабақ — чинктермен аяқталады; шөл, сазды және тасты.', dru: 'Плоское плато с обрывистыми краями — чинками; пустыня, глинистая и каменистая.' },
+        { c: '#fb923c', kz: 'Қызылқұм', ru: 'Кызылкум', poly: () => rmSmooth23([[45.6, 63.0], [44.6, 66.6], [42.9, 66.3], [42.3, 64.0], [43.6, 62.5]]), at: [44.0, 64.7],
+          dkz: 'Сырдария мен Әмудария аралығындағы құмды шөл; бекітілген құм жоталары, бархандар.', dru: 'Песчаная пустыня между Сырдарьёй и Амударьёй; закреплённые гряды и барханы.' },
+        { c: '#a3e635', kz: 'Бетпақдала', ru: 'Бетпакдала', poly: () => rmSmooth23([[47.6, 67.6], [47.6, 72.0], [45.6, 73.0], [45.0, 70.0], [45.8, 67.5]]), at: [46.6, 70.0],
+          dkz: 'Орталық Қазақстандағы ең ірі сазды (үстірт) шөл; «аш дала», такырлар көп.', dru: 'Крупнейшая глинистая пустыня Центрального Казахстана — «Голодная степь», много такыров.' },
+        { c: '#22d3ee', kz: 'Мойынқұм', ru: 'Мойынкум', poly: () => rmSmooth23([[45.3, 70.2], [45.5, 73.2], [44.2, 74.0], [43.4, 72.2], [44.0, 70.3]]), at: [44.5, 72.0],
+          dkz: 'Шу өзені мен Талас аралығындағы құмды шөл.', dru: 'Песчаная пустыня между реками Шу и Талас.' }
+      ];
+    })();
     window.T23Maps = (function () {
       const live = [];
       const tri = (c, big) => `<svg viewBox="0 0 24 24" style="width:${big ? 28 : 22}px;height:${big ? 28 : 22}px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.7))"><path d="M12 3 L22 21 H2Z" fill="${c}" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg>`;
@@ -1061,7 +1097,7 @@
       function build(el, key, isRu) {
         const def = T23_DEFS[key]; if (!def) return;
         const nm = (o) => isRu ? o.ru : o.kz;
-        el.innerHTML = `<div class="rel-mapbox" style="margin:10px 0 4px"><div class="t23m" style="height:${key === 'deep' ? 380 : 420}px;background:#0b1120"></div></div><p class="text-[11px] text-slate-400 leading-relaxed px-1">${nm(def.caption)}</p><p class="text-[9.5px] text-slate-600 px-1">${isRu ? 'Подложка — Esri (рельеф). Реальные контуры — Natural Earth; схематичные районы подписаны на карте урока.' : 'Негіз — Esri (рельеф). Нақты контурлар — Natural Earth; схемалық аудандар сабақ картасында көрсетілген.'}</p>`;
+        el.innerHTML = `<div class="rel-mapbox" style="margin:10px 0 4px"><div class="t23m" style="height:${key === 'deep' ? 380 : 420}px;background:#0b1120"></div></div><p class="text-[11px] text-slate-400 leading-relaxed px-1">${nm(def.caption)}</p><p class="text-[9.5px] text-slate-600 px-1">${isRu ? 'Подложка — Esri (рельеф). Реальные контуры — Natural Earth; схематичные районы подписаны на карте урока.' : 'Негіз — Esri (рельеф). Нақты контурлар — Natural Earth; схемалық аудандар сабақ картасында көрсетілген.'}</p>${def.regions.some(r => r.subs) ? `<p class="text-[11px] text-cyan-300 font-bold px-1 mt-1">👆 ${isRu ? 'Нажмите на равнину на карте (Восточно-Европейская, Западно-Сибирская, Туранская) — она раскроется на составные части.' : 'Картадағы жазықты (Шығыс Еуропа, Батыс Сібір, Тұран) басыңыз — ол құрамдас бөліктерге бөлінеді.'}</p><div class="t23sub"></div>` : ''}`;
         const host = el.querySelector('.t23m');
         const map = L.map(host, { zoomControl: true, scrollWheelZoom: false, zoomSnap: .25, minZoom: 3, maxBounds: [[2, 15], [70, 115]] });
         map.fitBounds(def.bounds, { padding: [6, 6] });
@@ -1069,17 +1105,50 @@
         b.relief.addTo(map); b.reliefRef.addTo(map);
         L.control.layers({ 'Рельеф': b.relief, 'Топо': b.topo, 'Спутник': b.sat }, null, { collapsed: true, position: 'topright' }).addTo(map);
         map.on('baselayerchange', ev => { if (map.hasLayer(b.reliefRef)) map.removeLayer(b.reliefRef); if (ev.layer === b.relief || ev.layer === b.sat) b.reliefRef.addTo(map); });
+        const mainL = [], subL = L.layerGroup().addTo(map), ptL = L.layerGroup().addTo(map), panel = el.querySelector('.t23sub');
+        let open = null;
+        const hexA = (c, a) => c;
+        function collapse() {
+          open = null; subL.clearLayers();
+          mainL.forEach(m => { m.pg.setStyle({ fillOpacity: m.r.ghost ? 0.14 : 0.34, opacity: 1 }); const e = m.tip.getElement(); if (e) e.style.display = ''; });
+          if (!map.hasLayer(ptL)) ptL.addTo(map);
+          if (panel) panel.innerHTML = '';
+          map.flyToBounds(def.bounds, { padding: [6, 6], duration: .8 });
+        }
+        function focusSub(s) { map.flyToBounds(L.latLngBounds(s.poly()), { padding: [40, 40], maxZoom: 7.5, duration: .8 }); }
+        function expand(r) {
+          open = r; subL.clearLayers();
+          mainL.forEach(m => { const on = m.r === r; m.pg.setStyle({ fillOpacity: on ? 0.08 : 0.06, opacity: on ? 1 : .35 }); const e = m.tip.getElement(); if (e) e.style.display = 'none'; });
+          if (map.hasLayer(ptL)) map.removeLayer(ptL);
+          r.subs.forEach((s, k) => {
+            const pg = L.polygon(s.poly(), { color: s.c, weight: 2.4, fillColor: s.c, fillOpacity: .42, bubblingMouseEvents: false }).addTo(subL);
+            pg.bindTooltip(nm(s), { sticky: true, className: 'rel-pt' });
+            pg.on('click', (ev) => { L.DomEvent.stopPropagation(ev); focusSub(s); });
+            L.tooltip({ permanent: true, direction: 'center', className: 'rel-name', interactive: false }).setLatLng(s.at).setContent(nm(s)).addTo(subL);
+            (s.pts || []).forEach(p => { L.circleMarker(p.ll, { radius: 4, color: '#fff', weight: 1.5, fillColor: s.c, fillOpacity: 1 }).addTo(subL).bindTooltip(nm(p), { direction: 'right', className: 'rel-pt' }); });
+          });
+          map.flyToBounds(L.latLngBounds(r.subs.map(s => s.poly()).flat(1)), { padding: [28, 28], maxZoom: 7, duration: .9 });
+          if (panel) {
+            panel.innerHTML = `<div class="rounded-xl border border-slate-700 bg-space-950/80 p-3 mt-2 space-y-2"><div class="flex items-center justify-between gap-2"><b class="text-xs text-white">${nm(r)} — ${isRu ? 'составные части' : 'құрамдас бөліктері'}</b><button type="button" class="t23back text-[11px] font-black px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-300">${isRu ? '← Назад ко всем' : '← Барлығына оралу'}</button></div>`
+              + r.subs.map((s, k) => `<button type="button" data-k="${k}" class="t23card block w-full text-left rounded-lg p-2.5 border border-slate-800 hover:border-slate-600" style="border-left:4px solid ${s.c}"><div class="text-xs font-extrabold" style="color:${s.c}">${k + 1}. ${nm(s)}</div><div class="text-[11px] text-slate-300 leading-relaxed mt-0.5">${isRu ? s.dru : s.dkz}</div></button>`).join('') + '</div>';
+            panel.querySelector('.t23back').onclick = collapse;
+            panel.querySelectorAll('.t23card').forEach(b => b.onclick = () => focusSub(r.subs[+b.dataset.k]));
+          }
+        }
+        map.on('click', () => { if (open) collapse(); });
         def.regions.forEach(r => {
-          const pg = L.polygon(r.poly(), { color: r.c, weight: r.ghost ? 1.6 : 2, dashArray: r.ghost ? '6 5' : null, fillColor: r.c, fillOpacity: r.ghost ? 0.14 : 0.34, bubblingMouseEvents: false }).addTo(map);
-          pg.bindTooltip(nm(r), { sticky: true, className: 'rel-pt' });
-          L.tooltip({ permanent: true, direction: 'center', className: 'rel-name', interactive: false }).setLatLng(r.at).setContent(nm(r)).addTo(map);
+          const pg = L.polygon(r.poly(), { color: r.c, weight: r.ghost ? 1.6 : 2, dashArray: r.ghost ? '6 5' : null, fillColor: r.c, fillOpacity: r.ghost ? 0.14 : 0.34, bubblingMouseEvents: false, className: r.subs ? 'rel-poly' : '' }).addTo(map);
+          pg.bindTooltip(nm(r) + (r.subs ? (isRu ? ' — нажмите' : ' — басыңыз') : ''), { sticky: true, className: 'rel-pt' });
+          const tip = L.tooltip({ permanent: true, direction: 'center', className: 'rel-name', interactive: false }).setLatLng(r.at).setContent(nm(r) + (r.subs ? ' ▸' : '')).addTo(map);
+          mainL.push({ pg, tip, r });
+          if (r.subs) pg.on('click', (ev) => { L.DomEvent.stopPropagation(ev); expand(r); });
         });
         (def.lines || []).forEach(ln => { L.polyline(ln.ll, { color: ln.c, weight: 3, opacity: .95, dashArray: '2 6', lineCap: 'round' }).addTo(map).bindTooltip(nm(ln), { sticky: true, className: 'rel-pt' }); });
         if (def.mask) t23Mask(map);
         if (def.kzFill) L.polygon(RM23_GEO.border, { color: '#22d3ee', weight: 2, fillColor: '#22d3ee', fillOpacity: 0.28, interactive: false }).addTo(map);
         (def.names || []).forEach(n => L.tooltip({ permanent: true, direction: 'center', className: 'rel-name', interactive: false }).setLatLng(n.ll).setContent(nm(n)).addTo(map));
         def.points.forEach(p => {
-          const m = L.marker(p.ll, { icon: icon(p), keyboard: false, riseOnHover: true }).addTo(map);
+          const m = L.marker(p.ll, { icon: icon(p), keyboard: false, riseOnHover: true }).addTo(ptL);
           m.bindTooltip(nm(p), { permanent: true, direction: p.d || 'right', offset: p.d === 'top' ? [0, -14] : p.d === 'bottom' ? [0, 8] : [p.d === 'left' ? -8 : 8, p.t === 'peak' ? -4 : 0], className: 'rel-pt' });
           const t = m.getTooltip(); t.on('add', () => { const e = t.getElement(); if (e) e.style.setProperty('--c', p.c || '#22d3ee'); });
         });

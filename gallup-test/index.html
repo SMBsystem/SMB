@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Тест сильных сторон — прототип</title>
+  <meta name="description" content="Прототип теста сильных сторон в формате Gallup: 34 таланта, парные утверждения, таймер, проверка достоверности.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main id="app" class="wrap">
+
+    <div class="langbar noprint" role="group" aria-label="Тіл / Язык">
+      <button type="button" class="lang" data-lang="kz">ҚАЗ</button>
+      <button type="button" class="lang" data-lang="ru">РУС</button>
+      <button type="button" class="lang" data-lang="en">ENG</button>
+    </div>
+
+    <!-- Старт -->
+    <section id="screen-intro" class="screen">
+      <p class="eyebrow" data-i="eyebrow"></p>
+      <h1 data-i="title"></h1>
+      <p class="lead" data-i="lead"></p>
+
+      <ol class="rules">
+        <li data-i="r1H"></li>
+        <li data-i="r2H"></li>
+        <li data-i="r3H"></li>
+        <li data-i="r4H"></li>
+      </ol>
+
+      <div class="actions">
+        <button id="btn-start" class="btn primary" data-i="start"></button>
+        <button id="btn-resume" class="btn" data-i="resume" hidden></button>
+        <button id="btn-last" class="btn" data-i="last" hidden></button>
+      </div>
+
+      <p class="fineprint" data-i="fine1"></p>
+    </section>
+
+    <!-- Тест -->
+    <section id="screen-test" class="screen" hidden>
+      <div class="topbar">
+        <span id="progress-text" aria-live="polite"></span>
+        <span id="timer-text" class="timer-text">20</span>
+      </div>
+      <div class="bar" aria-hidden="true"><div id="progress-bar"></div></div>
+      <div class="bar timer" aria-hidden="true"><div id="timer-bar"></div></div>
+
+      <p class="prompt" data-i="prompt"></p>
+
+      <div class="pair">
+        <div class="card" id="card-l"><span class="tag">А</span><p id="txt-l"></p></div>
+        <div class="card" id="card-r"><span class="tag">Б</span><p id="txt-r"></p></div>
+      </div>
+
+      <div class="scale" role="group">
+        <button class="dot d2" data-v="-2" data-aria="s_2"><span>1</span></button>
+        <button class="dot d1" data-v="-1" data-aria="s_1"><span>2</span></button>
+        <button class="dot d0" data-v="0"  data-aria="s0"><span>3</span></button>
+        <button class="dot d1" data-v="1"  data-aria="s1"><span>4</span></button>
+        <button class="dot d2" data-v="2"  data-aria="s2"><span>5</span></button>
+      </div>
+      <div class="scale-labels" aria-hidden="true">
+        <span data-i="s_2"></span><span data-i="s_1"></span><span data-i="s0"></span><span data-i="s1"></span><span data-i="s2"></span>
+      </div>
+      <p class="hint" data-i="hint"></p>
+    </section>
+
+    <!-- Результат -->
+    <section id="screen-result" class="screen" hidden>
+      <p class="eyebrow" data-i="resEyebrow"></p>
+      <h1 data-i="resTitle"></h1>
+      <div id="validity" class="validity" hidden></div>
+
+      <h2 data-i="top5"></h2>
+      <div id="top5" class="top5"></div>
+      <p id="tie-note" class="fineprint" hidden></p>
+
+      <h2 data-i="domains"></h2>
+      <div id="domains" class="domains"></div>
+
+      <h2 data-i="all34"></h2>
+      <p class="fineprint" data-i="allNote"></p>
+      <ol id="full" class="full"></ol>
+
+      <section id="analysis" class="analysis">
+        <h2 data-i="anTitle"></h2>
+        <p id="an-prelim" class="validity warn" hidden></p>
+
+        <h3 data-i="anPortrait"></h3>
+        <div id="an-portrait"></div>
+
+        <h3 data-i="anWatchTitle"></h3>
+        <p class="fineprint" data-i="anWatchLead"></p>
+        <ul id="an-watch" class="watch"></ul>
+
+        <h3 data-i="anBalanceTitle"></h3>
+        <div id="an-balance"></div>
+
+        <h3 data-i="anJobsTitle"></h3>
+        <p class="fineprint" data-i="anJobsLead"></p>
+        <ol id="an-jobs" class="jobs"></ol>
+
+        <h3 data-i="anPathTitle"></h3>
+        <p id="an-pathlead" class="fineprint"></p>
+        <ol id="an-path" class="path"></ol>
+
+        <p class="fineprint" data-i="anNote"></p>
+      </section>
+
+      <div class="actions noprint">
+        <button id="btn-print" class="btn primary" data-i="print"></button>
+        <button id="btn-copy" class="btn" data-i="copy"></button>
+        <button id="btn-retake" class="btn" data-i="retake"></button>
+      </div>
+      <p id="copy-status" class="fineprint" aria-live="polite"></p>
+      <p class="fineprint" data-i="fine2"></p>
+    </section>
+  </main>
+
+  <script src="data.js"></script>
+  <script src="data.kz.js"></script>
+  <script src="data.en.js"></script>
+  <script src="data.career.js"></script>
+  <script src="i18n.js"></script>
+  <script src="engine.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
