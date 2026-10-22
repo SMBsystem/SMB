@@ -44,6 +44,18 @@ window.SMB_CONFIG = {
       level_ru: 'IELTS Academic'
     },
     {
+      id: 'english',
+      icon: '🇬🇧',
+      label: 'English',
+      start: 'english/english.html',
+      title_kz: 'English: жалпы ағылшын тілі курсы (A1–C1)',
+      title_ru: 'English: универсальный курс английского языка (A1–C1)',
+      desc_kz: 'Деңгей тесті, әр сабақта 6 тапсырма: лексика, грамматика, оқу, тыңдау, жазылым және айтылым',
+      desc_ru: 'Тест уровня и по 6 заданий в каждом уроке: лексика, грамматика, чтение, аудирование, письмо и речь',
+      level_kz: 'A1–C1 / барлық жас',
+      level_ru: 'A1–C1 / для всех'
+    },
+    {
       id: 'pravo',
       icon: '⚖️',
       label: 'Pravo',

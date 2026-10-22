@@ -21,7 +21,7 @@ var CONFIG = {
   COL_LAST_SEEN: 10,             // колонка J — «Последний вход»
   ACCESS_OK: "✅ Есть допуск",
   ACCESS_BLOCKED: "⛔ Нет допуска",
-  COURSE_IDS: ["geotanu", "geonish", "ielts", "pravo"],
+  COURSE_IDS: ["geotanu", "geonish", "ielts", "pravo", "english"],
   MAX_LEN: 120,
   FAILS_LIMIT: 10,               // неверных кодов с одного email за окно ниже
   FAIL_WINDOW_SEC: 3600,

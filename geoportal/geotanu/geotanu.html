@@ -249,6 +249,21 @@
     .gc-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s; }
     .gc:hover .gc-thumb img { transform: scale(1.04); }
     .sec-empty { grid-column: 1 / -1; text-align: center; padding: 2.5rem 1rem; color: #64748b; font-size: .85rem; border: 1px dashed #263248; border-radius: 1rem; }
+
+    /* ===== +Extra Level (IELTS): блок доступа и «как это работает» ===== */
+    .xl-access { display: flex; flex-direction: column; gap: .75rem; padding: 1rem 1.1rem; border-radius: 1.1rem; border: 1px solid #1e293b; background: linear-gradient(180deg, #111a2e 0%, #0c1322 100%); }
+    @media (min-width: 640px) { .xl-access { flex-direction: row; align-items: center; justify-content: space-between; } }
+    .xl-access.lock { border-color: rgba(251, 191, 36, .45); background: linear-gradient(180deg, rgba(251, 191, 36, .09) 0%, #0c1322 100%); }
+    .xl-access.open { border-color: rgba(52, 211, 153, .45); background: linear-gradient(180deg, rgba(52, 211, 153, .09) 0%, #0c1322 100%); }
+    .xl-access b { color: #fff; font-size: .85rem; font-weight: 800; }
+    .xl-access p { color: #94a3b8; font-size: .75rem; line-height: 1.5; margin-top: .15rem; }
+    .xl-steps { display: grid; grid-template-columns: repeat(1, minmax(0, 1fr)); gap: .75rem; }
+    @media (min-width: 768px) { .xl-steps { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+    .xl-step { display: flex; gap: .75rem; align-items: flex-start; padding: .85rem 1rem; border-radius: 1rem; background: #0a1020; border: 1px solid #1e293b; }
+    .xl-step i { font-style: normal; flex-shrink: 0; width: 1.9rem; height: 1.9rem; border-radius: .65rem; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: .85rem;
+      color: rgb(167, 139, 250); background: rgba(167, 139, 250, .13); border: 1px solid rgba(167, 139, 250, .35); }
+    .xl-step b { display: block; color: #fff; font-size: .8rem; font-weight: 800; line-height: 1.3; }
+    .xl-step span { display: block; color: #94a3b8; font-size: .72rem; line-height: 1.5; margin-top: .15rem; }
   </style>
 </head>
 <body class="bg-space-950 text-slate-100 min-h-screen flex flex-col selection:bg-brand-500 selection:text-white">
@@ -376,6 +391,12 @@
         <button onclick="switchMainPart('videolar_listening')" id="nav-btn-videolar_listening" class="part-nav-btn shrink-0 whitespace-nowrap px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs font-extrabold transition flex items-center space-x-1.5 bg-space-850 text-slate-400 hover:text-white hover:bg-space-800">
           <span>🎬</span>
           <span>Видеолар (Listening)</span>
+        </button>
+
+        <!-- 7. Extra Level — Preparing for the IELTS -->
+        <button onclick="switchMainPart('ielts_extra')" id="nav-btn-ielts_extra" class="part-nav-btn shrink-0 whitespace-nowrap px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs font-extrabold transition flex items-center space-x-1.5 bg-space-850 text-slate-400 hover:text-white hover:bg-space-800">
+          <span>🎓</span>
+          <span>+Extra Level (IELTS)</span>
         </button>
 
       </div>
@@ -899,6 +920,44 @@
       </div>
 
 <div id="listeningGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4"></div>
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- SECTION 7: +EXTRA LEVEL — PREPARING FOR THE IELTS              -->
+    <!-- ============================================================== -->
+    <section id="section-ielts_extra" class="part-section hidden space-y-4 sm:space-y-6">
+      <div class="sec-bar ac-violet">
+        <div class="sec-head">
+          <div class="sec-info">
+            <div class="sec-ico">🎓</div>
+            <div class="min-w-0">
+              <h3 class="sec-title" id="xlTitle">Extra Level — Preparing for the IELTS</h3>
+              <p class="sec-sub" id="xlSub">ҰБТ-дан кейінгі келесі қадам: Reading, Listening, Writing және Speaking бойынша IELTS Academic дайындығы</p>
+            </div>
+          </div>
+          <div class="sec-tools">
+            <label class="sec-search"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span>
+              <input type="text" id="xlSearch" oninput="renderIeltsExtra()" placeholder="Іздеу...">
+            </label>
+            <div class="sec-track" id="xlTrack"></div>
+          </div>
+        </div>
+        <div class="sec-pills" id="xlFilters">
+          <button onclick="filterIeltsExtra('all')" id="xlf-all" class="chip-btn on">Барлығы (8)</button>
+          <button onclick="filterIeltsExtra('course')" id="xlf-course" class="chip-btn">📘 Негізгі курс (4)</button>
+          <button onclick="filterIeltsExtra('names')" id="xlf-names" class="chip-btn">🌙 99 есім (4)</button>
+        </div>
+      </div>
+
+      <!-- Доступ: код курса IELTS -->
+      <div id="xlAccess"></div>
+
+      <!-- Как это работает -->
+      <div id="xlSteps" class="xl-steps"></div>
+
+      <div id="xlGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4"></div>
+
+      <p id="xlNote" class="text-[11px] text-slate-500 leading-relaxed px-1"></p>
     </section>
 
   </main>
@@ -4931,7 +4990,8 @@ function toggleAdminEditMode() {
         'zhattau_grammar': isRu ? 'Запоминание (Grammar)' : 'Жаттау (Grammar)',
         'testter_writing': isRu ? 'Тесты (Writing)' : 'Тесттер (Writing)',
         'nomenklatura_speaking': isRu ? 'Номенклатура (Speaking)' : 'Номенклатура (Speaking)',
-        'videolar_listening': isRu ? 'Видео (Listening)' : 'Видеолар (Listening)'
+        'videolar_listening': isRu ? 'Видео (Listening)' : 'Видеолар (Listening)',
+        'ielts_extra': '+Extra Level (IELTS)'
       };
 
       Object.keys(navTexts).forEach(key => {
@@ -5446,7 +5506,8 @@ function toggleAdminEditMode() {
       'zhattau_grammar',
       'testter_writing',
       'nomenklatura_speaking',
-      'videolar_listening'
+      'videolar_listening',
+      'ielts_extra'
     ];
     const LAST_PART_KEY = 'geotany_last_part';
 
@@ -5523,6 +5584,12 @@ function toggleAdminEditMode() {
           badge: isRu ? '6-РАЗДЕЛ' : '6-БӨЛІМ',
           title: isRu ? 'Видео (Listening) — Видеоразборы ЕНТ' : 'Видеолар (Listening) — ҰБТ бейнеталдаулары',
           desc: isRu ? 'Видеоразборы вариантов ЕНТ по темам курса.' : 'Курс тақырыптары бойынша ҰБТ нұсқаларының бейнеталдаулары.'
+        },
+        'ielts_extra': {
+          icon: '🎓',
+          badge: isRu ? 'EXTRA LEVEL' : 'EXTRA LEVEL',
+          title: isRu ? '+Extra Level — Preparing for the IELTS' : '+Extra Level — Preparing for the IELTS',
+          desc: isRu ? 'Бонусный уровень: подготовка к IELTS Academic по четырём навыкам, 20 полных пробников и 99 тем-имён с ИИ-экзаменатором.' : 'Бонус деңгей: IELTS Academic-ке төрт дағды бойынша дайындық, 20 толық сынақ және ЖИ-емтихан алушысы бар 99 тақырып.'
         }
       };
 
@@ -5540,6 +5607,9 @@ function toggleAdminEditMode() {
 
       if (partId === 'zhattau_grammar') {
         renderGrammarTable();
+      }
+      if (partId === 'ielts_extra') {
+        renderIeltsExtra();
       }
 
     }
@@ -5568,6 +5638,160 @@ function toggleAdminEditMode() {
       return `<div class="sec-empty">🔍 ${currentLang === 'ru' ? 'Ничего не найдено' : 'Ештеңе табылмады'}</div>`;
     }
 
+    /* ============================================================
+       7. +EXTRA LEVEL — PREPARING FOR THE IELTS
+       Хаб-раздел: ведёт в отдельный курс IELTS (вход по своему коду).
+       Прогресс читается из хранилища курса IELTS на этом устройстве.
+       ============================================================ */
+    let ieltsExtraFilter = 'all';
+    const IELTS_SKILLS = [
+      { id: 'reading',   icon: '📖', ac: 'cyan',   kz: 'Reading',   ru: 'Reading' },
+      { id: 'listening', icon: '🎧', ac: 'violet', kz: 'Listening', ru: 'Listening' },
+      { id: 'writing',   icon: '✍️', ac: 'amber',  kz: 'Writing',   ru: 'Writing' },
+      { id: 'speaking',  icon: '🎤', ac: 'teal',   kz: 'Speaking',  ru: 'Speaking' }
+    ];
+    const IELTS_TOPICS = {
+      course: { total: 5,  kz: 'Негізгі курс', ru: 'Основной курс', prefix: '' },
+      names:  { total: 99, kz: '99 есім',      ru: '99 имён',       prefix: 'names-' }
+    };
+    // Подписи карточек: [описание, три показателя]
+    const IELTS_CARD_INFO = {
+      'course:reading':   { kz: ['Академиялық мәтіндер: Matching Information, True / False / Not Given, Summary Completion.', ['5', 'нұсқа'], ['12', 'сұрақ'], ['~800', 'сөз']],
+                            ru: ['Академические тексты: Matching Information, True / False / Not Given, Summary Completion.', ['5', 'вариантов'], ['12', 'вопросов'], ['~800', 'слов']] },
+      'course:listening': { kz: ['Көп дауысты диалогтар мен дәрістер, транскрипт, жылдамдықты таңдау.', ['5', 'нұсқа'], ['8', 'сұрақ'], ['3', 'дауыс']],
+                            ru: ['Диалоги и лекции с несколькими голосами, транскрипт, выбор скорости.', ['5', 'вариантов'], ['8', 'вопросов'], ['3', 'голоса']] },
+      'course:writing':   { kz: ['Task 1 (график, кесте, процесс) және Task 2 (эссе). ЖИ-емтихан алушы Band қояды.', ['5', 'нұсқа'], ['2', 'тапсырма'], ['9.0', 'эталон']],
+                            ru: ['Task 1 (график, таблица, процесс) и Task 2 (эссе). ИИ-экзаменатор ставит Band.', ['5', 'вариантов'], ['2', 'задания'], ['9.0', 'эталон']] },
+      'course:speaking':  { kz: ['Part 1–3: сұрақтар, cue card және үлгі монолог. Жауапты микрофонмен жазуға болады.', ['5', 'нұсқа'], ['3', 'бөлім'], ['8–10', 'минут']],
+                            ru: ['Part 1–3: вопросы, cue card и образец монолога. Ответ можно записать микрофоном.', ['5', 'вариантов'], ['3', 'части'], ['8–10', 'минут']] },
+      'names:reading':    { kz: ['Әр есімге IELTS-мәтін: Matching Headings, T / F / NG, Yes / No / NG, Summary Completion.', ['99', 'нұсқа'], ['15', 'сұрақ'], ['4', 'абзац']],
+                            ru: ['Текст IELTS на каждое имя: Matching Headings, T / F / NG, Yes / No / NG, Summary Completion.', ['99', 'вариантов'], ['15', 'вопросов'], ['4', 'абзаца']] },
+      'names:listening':  { kz: ['Әр есімге аудио: Notes, Multiple Choice, Matching және Short answer.', ['99', 'нұсқа'], ['13–14', 'сұрақ'], ['4', 'формат']],
+                            ru: ['Аудио на каждое имя: Notes, Multiple Choice, Matching и Short answer.', ['99', 'вариантов'], ['13–14', 'вопросов'], ['4', 'формата']] },
+      'names:writing':    { kz: ['Task 1 (диаграмма, кесте, процесс сипаттау) және Task 2 (эссе), эталон мен талдау.', ['99', 'нұсқа'], ['2', 'тапсырма'], ['250+', 'сөз']],
+                            ru: ['Task 1 (описание диаграммы, таблицы, процесса) и Task 2 (эссе), эталон и разбор.', ['99', 'вариантов'], ['2', 'задания'], ['250+', 'слов']] },
+      'names:speaking':   { kz: ['Part 1–3, cue card, жоспар және үлгі жауап — әр есім тақырыбында.', ['99', 'нұсқа'], ['3', 'бөлім'], ['240+', 'сөз']],
+                            ru: ['Part 1–3, cue card, план и образец ответа — по теме каждого имени.', ['99', 'вариантов'], ['3', 'части'], ['240+', 'слов']] }
+    };
+
+    // Прогресс из хранилища курса IELTS: берём профиль с самой свежей активностью
+    function readIeltsProgressItems() {
+      let best = null, bestT = -1;
+      try {
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (!k || k.indexOf('ielts_progress_v1_') !== 0) continue;
+          const p = JSON.parse(localStorage.getItem(k) || 'null');
+          if (!p || !p.items) continue;
+          let t = 0;
+          Object.keys(p.items).forEach(key => { t = Math.max(t, Number(p.items[key] && p.items[key].t) || 0); });
+          if (t > bestT) { bestT = t; best = p.items; }
+        }
+      } catch (e) { best = null; }
+      return best || {};
+    }
+    function ieltsStartedCount(items, topicId, skillId) {
+      const pre = IELTS_TOPICS[topicId].prefix + skillId + ':';
+      let n = 0;
+      Object.keys(items).forEach(k => {
+        if (k.indexOf(pre) !== 0) return;
+        const it = items[k] || {};
+        if (Object.keys(it.a || {}).length || Object.keys(it.d || {}).length) n++;
+      });
+      return n;
+    }
+    function ieltsHasAccess() {
+      try {
+        const s = (window.SMB && SMB.readSession) ? SMB.readSession() : null;
+        return !!(s && s.courseId === 'ielts');
+      } catch (e) { return false; }
+    }
+    function filterIeltsExtra(f) {
+      ieltsExtraFilter = f;
+      setChips(['xlf-all', 'xlf-course', 'xlf-names'], 'xlf-' + f);
+      renderIeltsExtra();
+    }
+    function renderIeltsExtra() {
+      const grid = document.getElementById('xlGrid');
+      if (!grid) return;
+      const isRu = (currentLang === 'ru');
+      const L = (kz, ru) => isRu ? ru : kz;
+      const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+      const access = ieltsHasAccess();
+      const items = readIeltsProgressItems();
+
+      setText('xlTitle', L('IELTS Academic: 4 дағды, 2 бағыт', 'IELTS Academic: 4 навыка, 2 направления'));
+      setText('xlSub', L('Негізгі курс (5 толық нұсқа) және 99 тақырыптық нұсқа: әр дағдыға бөлек', 'Основной курс (5 полных вариантов) и 99 тематических вариантов: отдельно на каждый навык'));
+      const search = document.getElementById('xlSearch');
+      if (search) search.placeholder = L('Іздеу...', 'Поиск...');
+      setText('xlf-all', L('Барлығы (8)', 'Все (8)'));
+      setText('xlf-course', '📘 ' + L('Негізгі курс (4)', 'Основной курс (4)'));
+      setText('xlf-names', '🌙 ' + L('99 есім (4)', '99 имён (4)'));
+
+      // Блок доступа
+      const accEl = document.getElementById('xlAccess');
+      if (accEl) {
+        accEl.innerHTML = access
+          ? `<div class="xl-access open"><div><b>✅ ${L('Қолжетімді: сіз IELTS курсындасыз', 'Доступ открыт: вы в курсе IELTS')}</b>` +
+            `<p>${L('Карточканы басып, тікелей қажетті дағдыға өтіңіз.', 'Нажмите на карточку — откроется нужный навык.')}</p></div>` +
+            `<a href="../ielts/ielts.html" class="gc-btn2" style="--ac:52,211,153">${L('Курсты ашу', 'Открыть курс')} →</a></div>`
+          : `<div class="xl-access lock"><div><b>🔒 ${L('IELTS курсына жеке код қажет', 'Для курса IELTS нужен отдельный код')}</b>` +
+            `<p>${L('Кодты мұғалімнен алып, енгізіңіз — ол порталда сақталады. IELTS-ке кірсеңіз, GeoTany-ға порталдан сақталған кодпен бір басуда қайта оралуға болады.',
+                    'Получите код у преподавателя и введите его — он сохранится в портале. После входа в IELTS вернуться в GeoTany можно одним нажатием по сохранённому коду.')}</p></div>` +
+            `<a href="../gate.html?c=ielts" class="gc-btn2" style="--ac:251,191,36">${L('Кодты енгізу', 'Ввести код')} →</a></div>`;
+      }
+
+      // Как это работает
+      const stepsEl = document.getElementById('xlSteps');
+      if (stepsEl) {
+        const st = [
+          [L('Код алыңыз', 'Получите код'), L('IELTS курс кодын мұғалімнен алып, порталға енгізіңіз.', 'Возьмите код курса IELTS у преподавателя и введите его в портале.')],
+          [L('Дағдыны таңдаңыз', 'Выберите навык'), L('Негізгі курс (5 нұсқа) немесе 99 есім тақырыбы: әр дағдыға бөлек нұсқалар.', 'Основной курс (5 вариантов) или 99 тем-имён: отдельные варианты на каждый навык.')],
+          [L('Band-ты көріңіз', 'Узнайте Band'), L('Reading/Listening — автоматты Band, Writing/Speaking — ЖИ-емтихан алушы. Бағалар — ориентир.', 'Reading/Listening — автоматический Band, Writing/Speaking — ИИ-экзаменатор. Оценки ориентировочные.')]
+        ];
+        stepsEl.innerHTML = st.map((s, i) => `<div class="xl-step"><i>${i + 1}</i><div><b>${esc(s[0])}</b><span>${esc(s[1])}</span></div></div>`).join('');
+      }
+
+      // Карточки
+      const q = (document.getElementById('xlSearch')?.value || '').toLowerCase().trim();
+      let startedAll = 0, totalAll = 0;
+      const cards = [];
+      Object.keys(IELTS_TOPICS).forEach(tid => {
+        const tp = IELTS_TOPICS[tid];
+        IELTS_SKILLS.forEach(sk => {
+          const info = IELTS_CARD_INFO[tid + ':' + sk.id][isRu ? 'ru' : 'kz'];
+          const started = ieltsStartedCount(items, tid, sk.id);
+          startedAll += started; totalAll += tp.total;
+          const text = [sk.kz, isRu ? tp.ru : tp.kz, info[0]].join(' ').toLowerCase();
+          if (ieltsExtraFilter !== 'all' && ieltsExtraFilter !== tid) return;
+          if (q && text.indexOf(q) < 0) return;
+          cards.push({ tid, sk, tp, info, started });
+        });
+      });
+      renderTrack('xlTrack', startedAll, totalAll, 'басталды', 'начато');
+
+      grid.innerHTML = cards.map(c => {
+        const href = access ? `../ielts/ielts.html#${c.tid === 'names' ? 'names/' : ''}course/${c.sk.id}` : '../gate.html?c=ielts';
+        const pct = Math.round(c.started / c.tp.total * 100);
+        const done = c.started >= c.tp.total;
+        const status = access
+          ? (c.started ? `<span class="gc-status">${c.started}/${c.tp.total}</span>` : '')
+          : `<span class="gc-status warn">🔒 ${L('Код', 'Код')}</span>`;
+        return `<article class="gc ac-${c.sk.ac}${done ? ' done' : ''}">` +
+          `<div class="gc-top"><div class="gc-num">${c.sk.icon}</div>` +
+          `<div class="min-w-0 flex-1"><div class="gc-kicker">${esc(isRu ? c.tp.ru : c.tp.kz)}</div><h4 class="gc-title">${esc(c.sk.kz)}</h4></div>${status}</div>` +
+          `<p class="gc-sub">${esc(c.info[0])}</p>` +
+          `<div class="gc-stats">${[c.info[1], c.info[2], c.info[3]].map(s => `<div class="gc-stat"><b>${esc(s[0])}</b><span>${esc(s[1])}</span></div>`).join('')}</div>` +
+          `<div class="gc-bar"><i style="width:${pct}%;background:rgb(var(--ac))"></i></div>` +
+          `<div class="gc-foot"><a href="${href}" class="gc-btn">${access ? L('Ашу', 'Открыть') : L('Кодты енгізу', 'Ввести код')} →</a></div>` +
+          `</article>`;
+      }).join('');
+      if (!cards.length) grid.innerHTML = emptyNote();
+
+      setText('xlNote', L('Бағалар (Band) — ориентир: Reading/Listening кесте бойынша, Writing/Speaking ЖИ арқылы есептеледі. Нақты IELTS емтиханы басқаша бағалауы мүмкін. Мәтіндер ЖИ көмегімен дайындалған және мұғалімнің тексеруін қажет етеді.',
+                          'Оценки (Band) ориентировочные: Reading/Listening считаются по таблице, Writing/Speaking — ИИ. Настоящий экзамен IELTS может оценить иначе. Тексты подготовлены с помощью ИИ и требуют проверки преподавателем.'));
+    }
+
     function renderAllSections() {
       renderBlooketCards();
       renderSabaktar();
@@ -5575,6 +5799,7 @@ function toggleAdminEditMode() {
       renderTestter();
       renderThematicMapsHub();
       renderListeningCards();
+      renderIeltsExtra();
     }
 
     // 1. BLOOKET (VOCABULARY) CARDS — ZERO MISSING LINKS!
