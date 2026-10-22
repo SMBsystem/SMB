@@ -393,11 +393,6 @@
           <span>Видеолар (Listening)</span>
         </button>
 
-        <!-- 7. Extra Level — Preparing for the IELTS -->
-        <button onclick="switchMainPart('ielts_extra')" id="nav-btn-ielts_extra" class="part-nav-btn shrink-0 whitespace-nowrap px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs font-extrabold transition flex items-center space-x-1.5 bg-space-850 text-slate-400 hover:text-white hover:bg-space-800">
-          <span>🎓</span>
-          <span>+Extra Level (IELTS)</span>
-        </button>
 
       </div>
     </div>
@@ -922,43 +917,6 @@
 <div id="listeningGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4"></div>
     </section>
 
-    <!-- ============================================================== -->
-    <!-- SECTION 7: +EXTRA LEVEL — PREPARING FOR THE IELTS              -->
-    <!-- ============================================================== -->
-    <section id="section-ielts_extra" class="part-section hidden space-y-4 sm:space-y-6">
-      <div class="sec-bar ac-violet">
-        <div class="sec-head">
-          <div class="sec-info">
-            <div class="sec-ico">🎓</div>
-            <div class="min-w-0">
-              <h3 class="sec-title" id="xlTitle">Extra Level — Preparing for the IELTS</h3>
-              <p class="sec-sub" id="xlSub">ҰБТ-дан кейінгі келесі қадам: Reading, Listening, Writing және Speaking бойынша IELTS Academic дайындығы</p>
-            </div>
-          </div>
-          <div class="sec-tools">
-            <label class="sec-search"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span>
-              <input type="text" id="xlSearch" oninput="renderIeltsExtra()" placeholder="Іздеу...">
-            </label>
-            <div class="sec-track" id="xlTrack"></div>
-          </div>
-        </div>
-        <div class="sec-pills" id="xlFilters">
-          <button onclick="filterIeltsExtra('all')" id="xlf-all" class="chip-btn on">Барлығы (8)</button>
-          <button onclick="filterIeltsExtra('course')" id="xlf-course" class="chip-btn">📘 Негізгі курс (4)</button>
-          <button onclick="filterIeltsExtra('names')" id="xlf-names" class="chip-btn">🌙 99 есім (4)</button>
-        </div>
-      </div>
-
-      <!-- Доступ: код курса IELTS -->
-      <div id="xlAccess"></div>
-
-      <!-- Как это работает -->
-      <div id="xlSteps" class="xl-steps"></div>
-
-      <div id="xlGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4"></div>
-
-      <p id="xlNote" class="text-[11px] text-slate-500 leading-relaxed px-1"></p>
-    </section>
 
   </main>
   </div> <!-- /#appContainer -->
@@ -4990,8 +4948,7 @@ function toggleAdminEditMode() {
         'zhattau_grammar': isRu ? 'Запоминание (Grammar)' : 'Жаттау (Grammar)',
         'testter_writing': isRu ? 'Тесты (Writing)' : 'Тесттер (Writing)',
         'nomenklatura_speaking': isRu ? 'Номенклатура (Speaking)' : 'Номенклатура (Speaking)',
-        'videolar_listening': isRu ? 'Видео (Listening)' : 'Видеолар (Listening)',
-        'ielts_extra': '+Extra Level (IELTS)'
+        'videolar_listening': isRu ? 'Видео (Listening)' : 'Видеолар (Listening)'
       };
 
       Object.keys(navTexts).forEach(key => {
@@ -5506,8 +5463,7 @@ function toggleAdminEditMode() {
       'zhattau_grammar',
       'testter_writing',
       'nomenklatura_speaking',
-      'videolar_listening',
-      'ielts_extra'
+      'videolar_listening'
     ];
     const LAST_PART_KEY = 'geotany_last_part';
 
@@ -5584,12 +5540,6 @@ function toggleAdminEditMode() {
           badge: isRu ? '6-РАЗДЕЛ' : '6-БӨЛІМ',
           title: isRu ? 'Видео (Listening) — Видеоразборы ЕНТ' : 'Видеолар (Listening) — ҰБТ бейнеталдаулары',
           desc: isRu ? 'Видеоразборы вариантов ЕНТ по темам курса.' : 'Курс тақырыптары бойынша ҰБТ нұсқаларының бейнеталдаулары.'
-        },
-        'ielts_extra': {
-          icon: '🎓',
-          badge: isRu ? 'EXTRA LEVEL' : 'EXTRA LEVEL',
-          title: isRu ? '+Extra Level — Preparing for the IELTS' : '+Extra Level — Preparing for the IELTS',
-          desc: isRu ? 'Бонусный уровень: подготовка к IELTS Academic по четырём навыкам, 20 полных пробников и 99 тем-имён с ИИ-экзаменатором.' : 'Бонус деңгей: IELTS Academic-ке төрт дағды бойынша дайындық, 20 толық сынақ және ЖИ-емтихан алушысы бар 99 тақырып.'
         }
       };
 
@@ -5607,9 +5557,6 @@ function toggleAdminEditMode() {
 
       if (partId === 'zhattau_grammar') {
         renderGrammarTable();
-      }
-      if (partId === 'ielts_extra') {
-        renderIeltsExtra();
       }
 
     }
