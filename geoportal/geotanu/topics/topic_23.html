@@ -884,6 +884,11 @@
           R.map((r, i) => `<button type="button" class="rel-chip${i === sel ? ' on' : ''}" style="--c:${r.c}" data-i="${i}"><i></i>${nm(r)}</button>`).join('');
         document.querySelectorAll('#relChips [data-i]').forEach(b => b.onclick = () => select(+b.dataset.i));
       }
+      function subsHtml(i) {
+        const sb = i < 3 ? ((T23_DEFS.plains.regions[i] || {}).subs || []) : [];
+        if (!sb.length) return '';
+        return '<div class="mt-2 space-y-1.5">' + sb.map((s, k) => '<div class="rounded-lg p-2 border border-slate-800" style="border-left:4px solid ' + s.c + '"><div class="text-xs font-extrabold" style="color:' + s.c + '">' + (k + 1) + '. ' + nm(s) + '</div><div class="text-[11px] text-slate-300 leading-relaxed">' + (ru ? s.dru : s.dkz) + '</div></div>').join('') + '</div>';
+      }
       function renderInfo() {
         const el = document.getElementById('relInfo');
         if (sel < 0) { el.style.setProperty('--c', '#22d3ee'); el.innerHTML = `<div class="text-xs text-slate-400">${tt().empty}</div>`; return; }
@@ -892,7 +897,7 @@
         el.innerHTML = `<div class="flex items-start justify-between gap-3"><div class="nm">${row[0]}</div>
             <div class="flex gap-1.5 shrink-0"><button type="button" class="rel-nav" id="relPrev" aria-label="prev">‹</button><button type="button" class="rel-nav" id="relNext" aria-label="next">›</button></div></div>
           <div class="hi"><small>⛰ ${tt().hi}</small>${row[1]}</div>
-          <div class="dt"><small class="block text-[10px] font-extrabold tracking-wider text-slate-500 uppercase">${tt().more}</small>${row[2]}</div>`;
+          <div class="dt"><small class="block text-[10px] font-extrabold tracking-wider text-slate-500 uppercase">${tt().more}</small>${row[2]}</div>${subsHtml(sel)}`;
         document.getElementById('relPrev').onclick = () => select((sel + R.length - 1) % R.length);
         document.getElementById('relNext').onclick = () => select((sel + 1) % R.length);
       }
@@ -914,7 +919,7 @@
         R.forEach((r, i) => {
           const on = i === sel;
           if (sel >= 0 && !on) return;
-          const list = r.pk.concat(on ? r.pt : []);
+          const list = (on && i < 3) ? [] : r.pk.concat(on ? r.pt : []);
           list.forEach((p, k) => {
             const main = k < r.pk.length;
             const m = L.marker(p.ll, { icon: icon(r.c, main ? p.t : 'pt', on && main), keyboard: false, riseOnHover: true }).addTo(mk);
@@ -923,6 +928,7 @@
             const t = m.getTooltip(); t.on('add', () => { const e = t.getElement(); if (e) e.style.setProperty('--c', r.c); });
             if (on) setTimeout(() => { const e = m.getTooltip() && m.getTooltip().getElement(); if (e) e.style.setProperty('--c', r.c); }, 0);
           });
+          if (on && i < 3) { const sb = (T23_DEFS.plains.regions[i] || {}).subs || []; sb.forEach(s => { const pg = L.polygon(s.poly(), { color: s.c, weight: 2.4, fillColor: s.c, fillOpacity: .45, interactive: true }).addTo(mk); pg.bindTooltip(nm(s), { sticky: true, className: 'rel-pt' }); L.tooltip({ permanent: true, direction: 'center', className: 'rel-name', interactive: false }).setLatLng(s.at).setContent(nm(s)).addTo(mk); (s.pts || []).forEach(q => L.circleMarker(q.ll, { radius: 4, color: '#fff', weight: 1.5, fillColor: s.c, fillOpacity: 1 }).addTo(mk).bindTooltip(nm(q), { direction: 'right', className: 'rel-pt' })); }); }
           if (on && r.line) {
             const ln = L.polyline(r.line.ll, { color: '#7dd3fc', weight: 3, opacity: .9, dashArray: '2 6', lineCap: 'round' }).addTo(mk).bindTooltip(nm(r.line), { sticky: true, className: 'rel-pt' });
             ln.on('add', () => {});
@@ -931,6 +937,7 @@
         if (sel < 0) R.forEach((r, i) => { /* overview: main points only (already drawn) */ });
       }
       function boundsOf(i) {
+        if (i < 3) { const sb = (T23_DEFS.plains.regions[i] || {}).subs; if (sb && sb.length) return L.latLngBounds(sb.map(s => s.poly()).flat(1)); }
         if (R[i].fb) return L.latLngBounds(R[i].fb);
         const pts = R[i].polys.flat().concat(R[i].pk.map(p => p.ll));
         return L.latLngBounds(pts);
