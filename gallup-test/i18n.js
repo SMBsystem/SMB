@@ -8,22 +8,23 @@ window.GALLUP_I18N = {
     r1H: '<b>Пара утверждений.</b> Отметьте, какое из двух ближе к вам и насколько. Правильных ответов нет.',
     r2H: '<b>20 секунд на пару.</b> Отвечайте по первому впечатлению. Если время вышло, пара засчитывается как пропущенная.',
     r3H: '<b>Назад вернуться нельзя.</b> Так результат отражает ваши первые реакции, а не обдуманные подгонки.',
-    r4H: '<b>Около 18 минут.</b> 51 пара и 6 контрольных повторов для проверки согласованности. Сядьте там, где вас никто не отвлечёт.',
+    r4H: '<b>Около 20–25 минут, два этапа.</b> Сначала 51 основная пара и 6 контрольных повторов, затем около 40 уточняющих пар, которые тест подбирает под ваши ответы. Сядьте там, где вас никто не отвлечёт.',
     start: 'Начать тест', resume: 'Продолжить сохранённый', last: 'Показать последний результат',
-    fine1: 'Это независимый учебный прототип в формате теста сильных сторон. Он не является официальным тестом Gallup® / CliftonStrengths® и не заменяет его: вопросов в нём 51, а не 177, поэтому результат ориентировочный. Данные хранятся только в вашем браузере.',
+    fine1: 'Это независимый учебный прототип в формате теста сильных сторон. Он не является официальным тестом Gallup® / CliftonStrengths® и не заменяет его: в нём около 100 пар, а в оригинале около 200, и нет нормативной базы, поэтому результат ориентировочный. Данные хранятся только в вашем браузере.',
     prompt: 'Какое утверждение точнее описывает вас?',
     s_2: 'Точно А', s_1: 'Скорее А', s0: 'Затрудняюсь', s1: 'Скорее Б', s2: 'Точно Б',
     hint: 'Клавиши 1–5 тоже работают. Возврата назад нет.',
     resEyebrow: 'Результат', resTitle: 'Ваши сильные стороны',
     top5: 'Топ-5 талантов', domains: 'Области', all34: 'Все 34 таланта',
-    allNote: 'Чем длиннее полоса, тем сильнее талант выражен в ваших ответах. Различия внутри одной «ступеньки» небольшие — опирайтесь прежде всего на первую пятёрку.',
+    allNote: 'Чем длиннее полоса, тем сильнее талант выражен в ваших ответах. Различия между соседними талантами небольшие — смотрите на группы, а не на точные места.',
     print: 'Печать / PDF', copy: 'Скопировать итог', retake: 'Пройти заново',
     fine2: 'Независимый учебный прототип. Не является официальным тестом Gallup® / CliftonStrengths®. Результат ориентировочный.',
     tie: 'Пятый и шестой таланты набрали одинаково — считайте, что в вашем профиле сильны оба.',
     vOk: 'Результат выглядит достоверным',
     vWarn: 'Результат стоит трактовать осторожно',
     vBad: 'Результат ненадёжен — рекомендуем пройти тест заново',
-    vLine: function (a, t, c, m) { return 'Отвечено: ' + a + ' из ' + t + ' · согласованность повторных пар: ' + c + ' · медианное время ответа: ' + m + ' с'; },
+    vLine: function (a, t, c, m, s) { return 'Отвечено: ' + a + ' из ' + t + ' · согласованность повторных пар: ' + c + ' · стабильность профиля: ' + s + ' · медианное время ответа: ' + m + ' с'; },
+    topNote: 'Как читать: по проверке на смоделированных респондентах из пяти найденных качеств в среднем почти четыре попадают точно в «настоящую» пятёрку, а четыре–пять входят в «настоящую» десятку. Поэтому относитесь к топ-10 как к группе ваших сильных сторон.',
     pair: function (n, total) { return 'Пара ' + n + ' из ' + total; },
     tipPrefix: 'Как использовать: ',
     confirm: 'Начать заново? Текущий результат будет удалён.',
@@ -37,7 +38,9 @@ window.GALLUP_I18N = {
       neutralWarn: function () { return 'Более половины ответов — «затрудняюсь», различия между талантами сглажены.'; },
       sideWarn: function () { return 'Ответы сильно смещены в одну сторону экрана — это снижает точность.'; },
       consBad: function (p) { return 'Ответы на повторяющиеся пары не совпали (' + p + '%) — результат ненадёжен.'; },
-      consWarn: function (p) { return 'Согласованность повторных пар невысока (' + p + '%).'; }
+      consWarn: function (p) { return 'Согласованность повторных пар невысока (' + p + '%).'; },
+      stabBad: function (p) { return 'Две половины теста дали почти несовпадающие профили (стабильность ' + p + '%) — ответы похожи на случайные.'; },
+      stabWarn: function (p) { return 'Стабильность профиля невысока (' + p + '%): две половины теста дали заметно разные результаты.'; }
     }
   },
   kz: {
@@ -48,22 +51,23 @@ window.GALLUP_I18N = {
     r1H: '<b>Тұжырымдар жұбы.</b> Екеуінің қайсысы сізге жақын екенін және қаншалықты екенін белгілеңіз. Дұрыс жауап жоқ.',
     r2H: '<b>Әр жұпқа 20 секунд.</b> Алғашқы әсеріңізбен жауап беріңіз. Уақыт біткен болса, жұп өткізіп жіберілді деп саналады.',
     r3H: '<b>Артқа қайту мүмкін емес.</b> Сонда нәтиже ойланып түзетілген емес, алғашқы реакцияларыңызды көрсетеді.',
-    r4H: '<b>Шамамен 18 минут.</b> 51 жұп және үйлесімділікті тексеретін 6 бақылау қайталауы. Ешкім алаңдатпайтын жерге отырыңыз.',
+    r4H: '<b>Шамамен 20–25 минут, екі кезең.</b> Алдымен 51 негізгі жұп және 6 бақылау қайталауы, содан кейін тест жауаптарыңызға қарай таңдайтын шамамен 40 нақтылау жұбы. Ешкім алаңдатпайтын жерге отырыңыз.',
     start: 'Тестті бастау', resume: 'Сақталғанды жалғастыру', last: 'Соңғы нәтижені көрсету',
-    fine1: 'Бұл — күшті жақтар тесті форматындағы тәуелсіз оқу прототипі. Ол ресми Gallup® / CliftonStrengths® тесті емес және оны алмастырмайды: онда 177 емес, 51 сұрақ бар, сондықтан нәтиже шамамен ғана. Деректер тек сіздің браузеріңізде сақталады.',
+    fine1: 'Бұл — күшті жақтар тесті форматындағы тәуелсіз оқу прототипі. Ол ресми Gallup® / CliftonStrengths® тесті емес және оны алмастырмайды: онда шамамен 100 жұп бар, ал түпнұсқада шамамен 200, әрі нормативтік база жоқ, сондықтан нәтиже шамамен ғана. Деректер тек сіздің браузеріңізде сақталады.',
     prompt: 'Қай тұжырым сізді дәлірек сипаттайды?',
     s_2: 'Дәл А', s_1: 'Көбірек А', s0: 'Қиналамын', s1: 'Көбірек Б', s2: 'Дәл Б',
     hint: '1–5 пернелері де жұмыс істейді. Артқа қайту жоқ.',
     resEyebrow: 'Нәтиже', resTitle: 'Сіздің күшті жақтарыңыз',
     top5: 'Үздік 5 талант', domains: 'Салалар', all34: 'Барлық 34 талант',
-    allNote: 'Жолақ неғұрлым ұзын болса, талант жауаптарыңызда соғұрлым күшті көрінген. Бір сатыдағы айырмашылық шамалы — ең алдымен алғашқы бестікке сүйеніңіз.',
+    allNote: 'Жолақ неғұрлым ұзын болса, талант жауаптарыңызда соғұрлым күшті көрінген. Көрші таланттар арасындағы айырмашылық шамалы — нақты орындарға емес, топтарға қараңыз.',
     print: 'Басып шығару / PDF', copy: 'Қорытындыны көшіру', retake: 'Қайта тапсыру',
     fine2: 'Тәуелсіз оқу прототипі. Ресми Gallup® / CliftonStrengths® тесті емес. Нәтиже шамамен ғана.',
     tie: 'Бесінші және алтыншы таланттар бірдей балл жинады — екеуі де профиліңізде күшті деп есептеңіз.',
     vOk: 'Нәтиже сенімді көрінеді',
     vWarn: 'Нәтижені сақтықпен түсіндірген жөн',
     vBad: 'Нәтиже сенімсіз — тестті қайта тапсыруды ұсынамыз',
-    vLine: function (a, t, c, m) { return 'Жауап берілді: ' + a + ' / ' + t + ' · қайталанған жұптардың үйлесімділігі: ' + c + ' · жауаптың орташа уақыты: ' + m + ' с'; },
+    vLine: function (a, t, c, m, s) { return 'Жауап берілді: ' + a + ' / ' + t + ' · қайталанған жұптардың үйлесімділігі: ' + c + ' · профильдің тұрақтылығы: ' + s + ' · жауаптың орташа уақыты: ' + m + ' с'; },
+    topNote: 'Қалай оқу керек: модельденген респонденттермен тексеру бойынша табылған бес қасиеттің орта есеппен төртке жуығы «шын» бестікке дәл түседі, ал төрт-бесеуі «шын» ондыққа кіреді. Сондықтан үздік 10-ды күшті жақтарыңыздың тобы деп қабылдаңыз.',
     pair: function (n, total) { return 'Жұп ' + n + ' / ' + total; },
     tipPrefix: 'Қалай пайдалану керек: ',
     confirm: 'Қайтадан бастаймыз ба? Қазіргі нәтиже жойылады.',
@@ -77,7 +81,9 @@ window.GALLUP_I18N = {
       neutralWarn: function () { return 'Жауаптардың жартысынан көбі — «қиналамын», таланттар арасындағы айырмашылық бұлыңғырланған.'; },
       sideWarn: function () { return 'Жауаптар экранның бір жағына қатты ығысқан — бұл дәлдікті төмендетеді.'; },
       consBad: function (p) { return 'Қайталанған жұптарға жауаптар сәйкес келмеді (' + p + '%) — нәтиже сенімсіз.'; },
-      consWarn: function (p) { return 'Қайталанған жұптардың үйлесімділігі төмен (' + p + '%).'; }
+      consWarn: function (p) { return 'Қайталанған жұптардың үйлесімділігі төмен (' + p + '%).'; },
+      stabBad: function (p) { return 'Тесттің екі жартысы дерлік сәйкес келмейтін профиль берді (тұрақтылық ' + p + '%) — жауаптар кездейсоққа ұқсайды.'; },
+      stabWarn: function (p) { return 'Профильдің тұрақтылығы төмен (' + p + '%): тесттің екі жартысы айтарлықтай әртүрлі нәтиже берді.'; }
     }
   },
   en: {
@@ -88,22 +94,23 @@ window.GALLUP_I18N = {
     r1H: '<b>A pair of statements.</b> Mark which of the two is closer to you and by how much. There are no right answers.',
     r2H: '<b>20 seconds per pair.</b> Answer with your first impression. If time runs out, the pair counts as skipped.',
     r3H: '<b>No going back.</b> This way the result reflects your first reactions rather than second-guessing.',
-    r4H: '<b>About 18 minutes.</b> 51 pairs plus 6 control repeats to check consistency. Sit somewhere you will not be disturbed.',
+    r4H: '<b>About 20–25 minutes, in two stages.</b> First 51 main pairs and 6 control repeats, then about 40 refinement pairs that the test picks based on your answers. Sit somewhere you will not be disturbed.',
     start: 'Start the test', resume: 'Continue saved test', last: 'Show last result',
-    fine1: 'This is an independent educational prototype in the format of a strengths test. It is not the official Gallup® / CliftonStrengths® assessment and does not replace it: it has 51 questions rather than 177, so the result is approximate. Data is stored only in your browser.',
+    fine1: 'This is an independent educational prototype in the format of a strengths test. It is not the official Gallup® / CliftonStrengths® assessment and does not replace it: it has about 100 pairs versus roughly 200 in the original and no norm database, so the result is approximate. Data is stored only in your browser.',
     prompt: 'Which statement describes you more accurately?',
     s_2: 'Strongly A', s_1: 'Rather A', s0: 'Not sure', s1: 'Rather B', s2: 'Strongly B',
     hint: 'Keys 1–5 work too. There is no going back.',
     resEyebrow: 'Result', resTitle: 'Your strengths',
     top5: 'Top 5 talents', domains: 'Domains', all34: 'All 34 talents',
-    allNote: 'The longer the bar, the stronger the talent shows in your answers. Differences within one “step” are small, so rely mainly on the top five.',
+    allNote: 'The longer the bar, the stronger the talent shows in your answers. Differences between neighboring talents are small, so look at groups rather than exact places.',
     print: 'Print / PDF', copy: 'Copy summary', retake: 'Retake',
     fine2: 'Independent educational prototype. Not the official Gallup® / CliftonStrengths® assessment. The result is approximate.',
     tie: 'The fifth and sixth talents scored the same, so treat both as strong in your profile.',
     vOk: 'The result looks reliable',
     vWarn: 'Interpret the result with caution',
     vBad: 'The result is unreliable; we recommend retaking the test',
-    vLine: function (a, t, c, m) { return 'Answered: ' + a + ' of ' + t + ' · consistency of repeated pairs: ' + c + ' · median response time: ' + m + ' s'; },
+    vLine: function (a, t, c, m, s) { return 'Answered: ' + a + ' of ' + t + ' · consistency of repeated pairs: ' + c + ' · profile stability: ' + s + ' · median response time: ' + m + ' s'; },
+    topNote: 'How to read this: in checks with simulated respondents, almost four of the five talents found land exactly in the “true” top five, and four to five fall within the “true” top ten. Treat your top ten as a group of strengths.',
     pair: function (n, total) { return 'Pair ' + n + ' of ' + total; },
     tipPrefix: 'How to use it: ',
     confirm: 'Start over? The current result will be deleted.',
@@ -117,7 +124,9 @@ window.GALLUP_I18N = {
       neutralWarn: function () { return 'More than half of the answers were “not sure”, which flattens the differences between talents.'; },
       sideWarn: function () { return 'Answers lean strongly to one side of the screen, which lowers accuracy.'; },
       consBad: function (p) { return 'Answers to repeated pairs did not match (' + p + '%), so the result is unreliable.'; },
-      consWarn: function (p) { return 'Consistency of repeated pairs is low (' + p + '%).'; }
+      consWarn: function (p) { return 'Consistency of repeated pairs is low (' + p + '%).'; },
+      stabBad: function (p) { return 'The two halves of the test gave almost unrelated profiles (stability ' + p + '%), so the answers look random.'; },
+      stabWarn: function (p) { return 'Profile stability is low (' + p + '%): the two halves of the test gave noticeably different results.'; }
     }
   }
 };
@@ -125,6 +134,11 @@ window.GALLUP_I18N = {
 /* Тексты раздела «Анализ» — добавляются ко всем трём языкам */
 (function (I) {
   Object.assign(I.ru, {
+    st2Eyebrow: 'Основная часть пройдена',
+    st2Title: 'Теперь уточним спорные места',
+    st2Text: 'По вашим ответам уже видна общая картина, но у некоторых качеств места почти равны. Дальше тест сам подберёт пары, которые лучше всего помогут расставить их по порядку. Правила те же: 20 секунд на пару, назад вернуться нельзя. Впереди около 40 пар.',
+    st2Btn: 'Продолжить',
+    stageTag: 'уточнение',
     anTitle: 'Анализ вашего профиля',
     anPortrait: 'Общий портрет',
     anIntro: function (d, names) { return 'Ваша ведущая область — «' + d + '». Самые выраженные таланты: ' + names + '.'; },
@@ -142,6 +156,11 @@ window.GALLUP_I18N = {
     anNote: 'Анализ ориентировочный: он построен на ответах в коротком тесте и не заменяет консультацию специалиста по профориентации. Выбор профессии определяют не только таланты, но и интересы, ценности, образование и возможности.'
   });
   Object.assign(I.kz, {
+    st2Eyebrow: 'Негізгі бөлім аяқталды',
+    st2Title: 'Енді даулы орындарды нақтылаймыз',
+    st2Text: 'Жауаптарыңыз бойынша жалпы көрініс көрінді, бірақ кейбір қасиеттердің орындары дерлік тең. Одан әрі тест оларды ретімен қоюға ең жақсы көмектесетін жұптарды өзі таңдайды. Ережелер сол: әр жұпқа 20 секунд, артқа қайту жоқ. Алда шамамен 40 жұп.',
+    st2Btn: 'Жалғастыру',
+    stageTag: 'нақтылау',
     anTitle: 'Профиліңіздің талдауы',
     anPortrait: 'Жалпы портрет',
     anIntro: function (d, names) { return 'Сіздің жетекші саласыңыз — «' + d + '». Ең айқын таланттар: ' + names + '.'; },
@@ -159,6 +178,11 @@ window.GALLUP_I18N = {
     anNote: 'Талдау шамамен ғана: ол қысқа тесттегі жауаптарға негізделген және кәсіптік бағдар маманының кеңесін алмастырмайды. Мамандық таңдауды таланттар ғана емес, қызығушылық, құндылықтар, білім және мүмкіндіктер де анықтайды.'
   });
   Object.assign(I.en, {
+    st2Eyebrow: 'Main part complete',
+    st2Title: 'Now let us settle the close calls',
+    st2Text: 'Your answers already show the overall picture, but some talents are almost tied. Next, the test chooses the pairs that will best put them in order. The rules are the same: 20 seconds per pair and no going back. About 40 pairs ahead.',
+    st2Btn: 'Continue',
+    stageTag: 'refinement',
     anTitle: 'Analysis of your profile',
     anPortrait: 'Overall portrait',
     anIntro: function (d, names) { return 'Your leading domain is “' + d + '”. Your most pronounced talents are: ' + names + '.'; },

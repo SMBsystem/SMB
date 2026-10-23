@@ -2,7 +2,7 @@
   'use strict';
 
   var E = window.GallupEngine, THEMES = window.GALLUP_THEMES, DOMAINS = window.GALLUP_DOMAINS;
-  var KEY = 'gallupProto.v1';
+  var KEY = 'gallupProto.v2';
   var SEC = E.SECONDS;
   var themeById = {};
   THEMES.forEach(function (t) { themeById[t.id] = t; });
@@ -26,6 +26,8 @@
     var p = pack(lang);
     return (p && p.themes[id]) || themeById[id];
   }
+  // официальное английское название в скобках для RU/KZ, как в отчётах Gallup
+  function dname(id) { return lang === 'en' ? th(id).name : th(id).name + ' (' + themeById[id].en + ')'; }
   function dom(k) {
     var p = pack(lang), d = (p && p.domains[k]) || DOMAINS[k];
     return { name: d.name, note: d.note, color: DOMAINS[k].color };
@@ -62,7 +64,7 @@
   function clear() { try { localStorage.removeItem(KEY); } catch (e) {} }
 
   function show(name) {
-    ['intro', 'test', 'result'].forEach(function (s) { $('screen-' + s).hidden = s !== name; });
+    ['intro', 'stage2', 'test', 'result'].forEach(function (s) { $('screen-' + s).hidden = s !== name; });
     window.scrollTo(0, 0);
   }
 
@@ -75,7 +77,9 @@
   }
 
   function start() {
-    state = { items: E.buildItems(THEMES), answers: [], idx: 0, deadline: null, done: false };
+    var items = E.buildItems(THEMES);
+    // total: основная часть + уточняющие пары, которые подбираются по ходу теста
+    state = { items: items, answers: [], idx: 0, deadline: null, done: false, total: items.length + E.STAGE2, stage2Seen: false };
     save();
     runItem();
   }
@@ -88,6 +92,14 @@
 
   /* ---------- вопрос ---------- */
   function runItem() {
+    if (state.idx >= state.items.length) {
+      // основная часть пройдена: после краткого пояснения подбираем пары уточнения под ответы человека
+      if (!state.stage2Seen) { show('stage2'); return; }
+      var next = E.nextAdaptiveItem(THEMES, state.items, state.answers);
+      if (!next) { state.total = state.idx; state.done = true; save(); showResult(); return; }
+      state.items.push(next);
+      save();
+    }
     show('test');
     renderItem();
     $('card-l').className = 'card';
@@ -105,8 +117,8 @@
   // подписи пары; вызывается и при смене языка, таймер при этом не трогаем
   function renderItem() {
     var it = state.items[Math.min(state.idx, state.items.length - 1)];
-    var total = state.items.length;
-    $('progress-text').textContent = T().pair(state.idx + 1, total);
+    var total = state.total;
+    $('progress-text').textContent = T().pair(state.idx + 1, total) + (it.stage === 2 ? ' · ' + T().stageTag : '');
     $('progress-bar').style.width = (state.idx / total * 100) + '%';
     $('txt-l').textContent = th(it.L.t).st[it.L.s];
     $('txt-r').textContent = th(it.R.t).st[it.R.s];
@@ -131,7 +143,7 @@
     state.answers[state.idx] = { v: v, rt: v === null ? SEC * 1000 : rt };
     state.idx++;
     state.deadline = null;
-    if (state.idx >= state.items.length) state.done = true;
+    if (state.idx >= state.total) state.done = true;
     save();
 
     if (v !== null) {
@@ -178,7 +190,8 @@
     var head = res.level === 'ok' ? T().vOk : res.level === 'warn' ? T().vWarn : T().vBad;
     v.appendChild(el('b', null, head));
     v.appendChild(el('span', 'fineprint',
-      T().vLine(res.validity.answered, res.validity.scored, cons, (res.validity.medianRt / 1000).toFixed(1))));
+      T().vLine(res.validity.answered, res.validity.scored, cons, (res.validity.medianRt / 1000).toFixed(1),
+        res.validity.stability === null ? '—' : Math.round(res.validity.stability * 100) + '%')));
     if (res.issues.length) {
       var ul = el('ul');
       res.issues.forEach(function (m) { ul.appendChild(el('li', null, T().issues[m.k](m.p))); });
@@ -193,7 +206,7 @@
       c.style.borderLeftColor = DOMAINS[r.domain].color;
       var h = el('div', 'head');
       h.appendChild(el('span', 'rank', String(r.rank)));
-      h.appendChild(el('span', 'name', t.name));
+      h.appendChild(el('span', 'name', dname(r.id)));
       h.appendChild(chip(r.domain));
       c.appendChild(h);
       c.appendChild(el('p', null, t.desc));
@@ -213,21 +226,22 @@
       l.appendChild(el('small', null, dom(k).note));
       var tr = el('div', 'track'); var f = el('div');
       f.style.background = DOMAINS[k].color;
-      f.style.width = Math.max(3, Math.min(100, (res.domains[k] + 3) / 6 * 100)) + '%';
+      f.style.width = Math.max(3, Math.min(100, (res.domains[k] + 1.5) / 3 * 100)) + '%';
       tr.appendChild(f); row.appendChild(l); row.appendChild(tr); dm.appendChild(row);
     });
 
     // все таланты
     var full = $('full'); full.textContent = '';
+    var lo = res.ranking[res.ranking.length - 1].theta, hi = res.ranking[0].theta;
     res.ranking.forEach(function (r) {
       var li = el('li', r.rank <= 5 ? 'top' : '');
       li.appendChild(el('span', 'n', String(r.rank)));
-      li.appendChild(el('span', 'nm', th(r.id).name));
+      li.appendChild(el('span', 'nm', dname(r.id)));
       var tr = el('div', 'track'); var f = el('div');
       f.style.background = DOMAINS[r.domain].color;
-      f.style.width = Math.max(2, (r.score + 6) / 12 * 100) + '%';
+      f.style.width = Math.max(2, (r.theta - lo) / (hi - lo) * 100) + '%';
       tr.appendChild(f); li.appendChild(tr);
-      li.appendChild(el('span', 'sc', (r.score > 0 ? '+' : '') + r.score));
+      li.appendChild(el('span', 'sc', (r.theta > 0 ? '+' : '') + r.theta.toFixed(1)));
       full.appendChild(li);
     });
     renderAnalysis(res);
@@ -294,7 +308,7 @@
     var res = E.score(state.items, state.answers, THEMES);
     var lines = [T().summaryHead];
     res.ranking.slice(0, 5).forEach(function (r) {
-      lines.push(r.rank + '. ' + th(r.id).name + ' — ' + dom(r.domain).name);
+      lines.push(r.rank + '. ' + dname(r.id) + ' — ' + dom(r.domain).name);
     });
     return lines.join('\n');
   }
@@ -310,6 +324,7 @@
   /* ---------- события ---------- */
   $('btn-start').addEventListener('click', start);
   $('btn-resume').addEventListener('click', resume);
+  $('btn-stage2').addEventListener('click', function () { state.stage2Seen = true; save(); runItem(); });
   $('btn-last').addEventListener('click', function () { state = load(); showResult(); });
   $('btn-print').addEventListener('click', function () { window.print(); });
   $('btn-copy').addEventListener('click', copySummary);

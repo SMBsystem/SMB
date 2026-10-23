@@ -5,13 +5,13 @@
   var esc = IELTS.escapeHtml;
   var $ = IELTS.$;
   var META = {
-    reading: { label: 'Reading', icon: '📖', count: 62 },
-    writing: { label: 'Writing', icon: '✍️', count: 62 },
-    listening: { label: 'Listening', icon: '🎧', count: 62 },
-    speaking: { label: 'Speaking', icon: '🎤', count: 62 },
-    vocabulary: { label: 'Vocabulary', icon: '🔤', count: 62 },
-    grammar: { label: 'Grammar', icon: '🧩', count: 62 },
-    ielts: { label: 'IELTS Prep', icon: '🎓', count: 26 }
+    reading: { label: 'Reading', icon: '📖', count: 62, ac: '34, 211, 238', sub: 'Тексты классической литературы с пропусками, ключевыми словами и вопросами' },
+    writing: { label: 'Writing', icon: '✍️', count: 62, ac: '167, 139, 250', sub: 'Письменные шаблоны, образцы и ИИ-проверка вашего текста' },
+    listening: { label: 'Listening', icon: '🎧', count: 62, ac: '251, 191, 36', sub: 'Диалоги и лекции с озвучкой и проверкой ответов' },
+    speaking: { label: 'Speaking', icon: '🎤', count: 62, ac: '248, 113, 113', sub: 'Речевые фразы, тренажёр и запись ответа с микрофона' },
+    vocabulary: { label: 'Vocabulary', icon: '🔤', count: 62, ac: '52, 211, 153', sub: '7500 слов с переводом: карточки, список и тест' },
+    grammar: { label: 'Grammar', icon: '🧩', count: 62, ac: '45, 212, 191', sub: 'Правила, формы, примеры и проверочный тест' },
+    ielts: { label: 'IELTS Prep', icon: '🎓', count: 26, ac: '167, 139, 250', sub: '26 колод карточек: Writing, Speaking, темы и стратегии' }
   };
   var LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
   var IELTS_CATS = ['Writing', 'Speaking', 'Vocabulary', 'Strategy'];
@@ -91,31 +91,44 @@
   function variantCard(skill, i, d) {
     var st = IELTS.vstate(skill, i);
     var status = statusText(skill, st);
-    return '<article class="bg-white border border-slate-200 rounded-2xl p-5 flex flex-col gap-3 hover:border-indigo-300 transition">' +
-      '<div class="flex items-center justify-between gap-2"><span class="flex items-center gap-2 text-xs font-bold text-indigo-600">№ ' + i + ' ' + lvlBadge(d) + '</span>' +
-      (status ? '<span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700">' + esc(status) + '</span>' : '') + '</div>' +
-      '<h3 class="font-bold leading-snug">' + esc(d.title) + '</h3><p class="text-xs text-slate-500">' + esc(d.spec || '') + '</p>' +
-      (d.takeaway ? '<p class="text-sm text-slate-600 leading-relaxed">' + esc(d.takeaway) + '</p>' : '') +
-      '<button type="button" data-open-test="' + i + '" data-skill="' + skill + '" class="btn btn-primary mt-auto">' + (status ? 'Продолжить' : 'Начать') + ' →</button></article>';
+    var m = META[skill], lv = lvlOf(d);
+    return '<article class="gc' + (status ? ' done' : '') + '" style="--ac:' + m.ac + '">' +
+      '<div class="gc-top"><div class="gc-num">' + i + '</div><div class="min-w-0 flex-1"><div class="gc-kicker">' + m.icon + ' ' + m.label + (lv ? ' · ' + esc(lv) : '') + '</div>' +
+      '<div class="gc-title">' + esc(d.title) + '</div></div>' + (status ? '<span class="gc-status">' + esc(status) + '</span>' : '') + '</div>' +
+      (d.spec ? '<p class="gc-sub">' + esc(d.spec) + '</p>' : '') +
+      (d.takeaway ? '<p class="gc-sub" style="color:#cbd5e1">' + esc(d.takeaway) + '</p>' : '') +
+      '<div class="gc-foot"><button type="button" data-open-test="' + i + '" data-skill="' + skill + '" class="gc-btn">' + (status ? 'Продолжить' : 'Начать') + ' →</button></div></article>';
+  }
+  function renderTabs(skill) {
+    $('skillTabs').innerHTML = IELTS.SKILLS.map(function (s) {
+      var m = META[s];
+      return '<button type="button" role="tab" aria-selected="' + (s === skill) + '" data-open-skill="' + s + '" class="part-nav-btn' + (s === skill ? ' on' : '') + '"><span>' + m.icon + '</span><span>' + m.label + '</span></button>';
+    }).join('');
   }
   function renderCourse(skill) {
     if (!IELTS.verifySessionIntegrity()) return;
     var f = filters[skill] = filters[skill] || { lvl: 'all', q: '' };
-    $('courseTitle').textContent = skill === 'ielts' ? 'Подготовка к IELTS' : 'English Hub';
-    $('skillTabs').innerHTML = IELTS.SKILLS.map(function (s) {
-      var m = META[s];
-      return '<button type="button" role="tab" aria-selected="' + (s === skill) + '" data-open-skill="' + s + '" class="px-4 py-2.5 text-sm font-semibold border-b-2 whitespace-nowrap ' + (s === skill ? 'tab-on' : 'border-transparent text-slate-500 hover:text-slate-800') + '">' + m.icon + ' ' + m.label + ' <span class="text-xs font-normal text-slate-400">(' + m.count + ')</span></button>';
-    }).join('');
+    var cm = META[skill], all = curList(skill);
+    $('courseTitle').textContent = cm.label + (skill === 'ielts' ? ' — подготовка к IELTS' : ' · English Hub');
+    $('secSub').textContent = cm.sub;
+    $('secIco').textContent = cm.icon;
+    $('secBar').style.setProperty('--ac', cm.ac);
+    var started = all.filter(function (d, i) { return statusText(skill, IELTS.vstate(skill, i + 1)); }).length;
+    var pct = all.length ? Math.round(started * 100 / all.length) : 0;
+    $('trackNum').innerHTML = started + '<small>/ ' + all.length + '</small>';
+    $('trackPct').textContent = pct + '%';
+    $('trackBar').style.width = pct + '%';
+    renderTabs(skill);
     var opts = skill === 'ielts' ? IELTS_CATS : LEVELS;
     $('levelChips').innerHTML = ['all'].concat(opts).map(function (l) {
-      return '<button type="button" class="chip ' + (f.lvl === l ? 'on' : '') + '" data-lvl="' + l + '">' + (l === 'all' ? 'Все' : l) + '</button>';
+      return '<button type="button" class="chip-btn ' + (f.lvl === l ? 'on' : '') + '" data-lvl="' + l + '">' + (l === 'all' ? 'Все' : l) + '</button>';
     }).join('');
     $('variantSearch').value = f.q;
     var q = f.q.trim().toLowerCase();
     var cards = curList(skill).map(function (d, i) { return { d: d, i: i + 1 }; }).filter(function (x) {
       return (f.lvl === 'all' || lvlOf(x.d) === f.lvl) && (!q || (x.d.title + ' ' + (x.d.spec || '')).toLowerCase().indexOf(q) >= 0);
     });
-    $('variantsList').innerHTML = cards.map(function (x) { return variantCard(skill, x.i, x.d); }).join('') || '<p class="text-sm text-slate-500 col-span-full">Ничего не найдено.</p>';
+    $('variantsList').innerHTML = cards.map(function (x) { return variantCard(skill, x.i, x.d); }).join('') || '<p class="sec-empty">Ничего не найдено.</p>';
   }
   $('variantSearch').addEventListener('input', function () {
     if (!IELTS.verifySessionIntegrity()) return;
@@ -455,6 +468,7 @@
   function renderTest(skill, v) {
     if (!IELTS.verifySessionIntegrity()) return;
     var d = curList(skill)[v - 1];
+    renderTabs(skill);
     var root = $('testWorkspace');
     if (!d) { root.innerHTML = '<p class="text-sm text-slate-500">Задание не найдено.</p><button type="button" class="btn btn-ghost mt-3" data-nav="course" data-skill="' + skill + '">← К списку</button>'; return; }
     var st = IELTS.vstate(skill, v);

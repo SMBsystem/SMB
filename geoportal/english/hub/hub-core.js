@@ -482,6 +482,7 @@
   function showScreen(name) {
     var map = { home: 'screenHome', course: 'screenCourse', test: 'screenTest' };
     Object.keys(map).forEach(function (k) { $(map[k]).classList.toggle('hidden', k !== name); });
+    var nav = $('skillNav'); if (nav) nav.classList.toggle('hidden', name === 'home');
     if (name !== 'test' && IELTS.stopAll) IELTS.stopAll();
     window.scrollTo(0, 0);
   }

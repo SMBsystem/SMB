@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="kk" class="dark">
+<head>
+  <!-- COURSE ACCESS GUARD: вход только по коду курса -->
+  <style id="authCloak">body { display: none !important; }</style>
+  <script>
+    (function () {
+      try {
+        var s = null;
+        try { s = JSON.parse(localStorage.getItem('geotany_user_session') || 'null'); } catch (e) {}
+        var ok = s && s.v === 2 && (s.exp || 0) > Date.now() && s.email && s.courseId === 'ent';
+        if (!ok) { window.location.replace('../index.html?need_course=ent'); return; }
+        var c = document.getElementById('authCloak');
+        if (c) c.remove();
+      } catch (err) { window.location.replace('../index.html'); }
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#090d16">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <title>ЕНТ-тренажёр — тесты по направлениям · SMB</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
+    body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+    .rich { line-height: 1.6; overflow-wrap: anywhere; }
+    .rich p { margin: .4rem 0; }
+    .rich img { max-width: 100%; height: auto; background: #fff; border-radius: .75rem; margin: .5rem 0; display: block; }
+    .rich table { border-collapse: collapse; margin: .5rem 0; font-size: .85rem; }
+    .rich td, .rich th { border: 1px solid #475569; padding: .3rem .55rem; vertical-align: top; }
+    .rich math { font-size: 1.08em; }
+    .prose-l p { margin: .55rem 0; line-height: 1.75; color: #cbd5e1; }
+    .prose-l b, .prose-l strong { color: #fde68a; font-weight: 800; }
+    .opt { display: flex; gap: .7rem; align-items: flex-start; width: 100%; text-align: left; padding: .75rem .9rem; border-radius: .9rem; border: 2px solid #1e293b; background: #0f172a; transition: border-color .15s; }
+    .opt:hover { border-color: #0e7490; }
+    .opt.sel { border-color: #22d3ee; background: rgba(34,211,238,.08); }
+    .opt.right { border-color: #10b981; background: rgba(16,185,129,.12); }
+    .opt.wrong { border-color: #f43f5e; background: rgba(244,63,94,.12); }
+    .nav-b { width: 2.1rem; height: 2.1rem; border-radius: .6rem; font-size: .75rem; font-weight: 800; border: 2px solid #334155; color: #94a3b8; }
+    .nav-b.ans { background: #0e7490; border-color: #0e7490; color: #fff; }
+    .nav-b.cur { border-color: #fbbf24; color: #fbbf24; }
+    .nav-b.flag { box-shadow: 0 0 0 2px #f43f5e; }
+    .nav-b.ok { background: #059669; border-color: #059669; color: #fff; }
+    .nav-b.no { background: #e11d48; border-color: #e11d48; color: #fff; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: .4rem; padding: .65rem 1.2rem; border-radius: 1rem; font-weight: 800; font-size: .85rem; cursor: pointer; transition: opacity .15s; }
+    .btn:disabled { opacity: .45; cursor: not-allowed; }
+    .btn-main { background: linear-gradient(90deg,#10b981,#06b6d4,#fbbf24); color: #020617; }
+    .btn-sec { background: #1e293b; border: 1px solid #334155; color: #67e8f9; }
+    .card { background: rgba(15,23,42,.85); border: 1px solid #1e293b; border-radius: 1.4rem; }
+    .chip { padding: .35rem .85rem; border-radius: .8rem; font-size: .75rem; font-weight: 800; border: 1px solid #334155; background: #0f172a; color: #94a3b8; cursor: pointer; }
+    .chip.on { background: #0e7490; border-color: #22d3ee; color: #fff; }
+    .tag { display: inline-block; padding: .1rem .5rem; border-radius: .5rem; font-size: 10px; font-weight: 800; }
+  </style>
+</head>
+<body class="bg-[#090d16] text-slate-100 min-h-screen overflow-x-hidden">
+
+  <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800">
+    <div class="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between gap-3">
+      <a href="#/" class="flex items-center gap-3 min-w-0">
+        <span class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 via-cyan-500 to-amber-400 flex items-center justify-center shrink-0 text-[11px] font-black text-slate-950 font-mono">ЕНТ</span>
+        <span class="min-w-0"><span class="block font-black leading-tight truncate" id="hTitle">ЕНТ-тренажёр</span><span class="block text-[10px] text-slate-400 truncate" id="hSub"></span></span>
+      </a>
+      <div class="flex items-center gap-2">
+        <a href="../index.html" id="hPortal" class="hidden sm:inline-block text-xs font-bold text-slate-300 hover:text-white px-2"></a>
+        <select id="langSel" aria-label="Тіл / Язык" class="bg-slate-800 text-xs text-slate-200 border border-slate-700 rounded-xl px-2.5 py-1.5 font-bold cursor-pointer">
+          <option value="kz">🇰🇿 KZ</option><option value="ru">🇷🇺 RU</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <main id="app" class="max-w-6xl mx-auto px-4 py-6 pb-24"></main>
+  <div id="toast" role="status" class="fixed top-16 left-1/2 -translate-x-1/2 z-[80] px-4 py-2 rounded-xl text-sm font-bold shadow-xl bg-emerald-400 text-slate-950 opacity-0 transition-opacity pointer-events-none max-w-[92vw] text-center"></div>
+
+  <script src="../smb-config.js"></script>
+  <script src="../smb-common.js"></script>
+  <script src="../geotanu/tests/data/index.js"></script>
+  <script src="data/index.js"></script>
+
+  <script>
+  (function () {
+    'use strict';
+    const E = window.ENT;
+    const LS = 'ent_progress_v1', RUNK = 'ent_run_v1', PENDK = 'ent_pending_results', LANGK = 'geotany_lang';
+    const LET = 'ABCDEFGH';
+
+    const UI = {
+      kz: {
+        sub: 'ҰБТ / ЕНТ · бағыттар бойынша тесттер', portal: '← Курстар', home: 'Басты бет',
+        hero: 'ҰБТ тренажері', heroText: 'Бағытыңды таңда да, толық ҰБТ нұсқасын тапсыр: 120 сұрақ, 140 балл, 4 сағат. Нәтиже мұғалімге автоматты түрде жіберіледі.',
+        dirs: 'Бағыттар', shelf: 'Пән бойынша жеке тесттер', soon: 'Тесттер дайындалуда', of: 'бар', tests: 'тест',
+        statDone: 'Тапсырылған тест', statBest: 'Үздік ҰБТ-нұсқа', statAvg: 'Орташа нәтиже', statMist: 'Қате банкінде',
+        myRes: 'Менің нәтижелерім', mist: 'Қателермен жұмыс', noRes: 'Әзірге нәтиже жоқ.', variant: 'Нұсқа',
+        langAll: 'Барлығы', langRu: 'Орысша', langKz: 'Қазақша', testLang: 'Тест тілі', noTests: 'Бұл бағыт бойынша тесттер жақында қосылады.',
+        resume: 'Аяқталмаған емтихан', continue: 'Жалғастыру', discard: 'Бас тарту', best: 'Үздік', attempts: 'әрекет',
+        min: 'мин', q: 'сұрақ', pts: 'балл', start: 'Бастау', sections: 'Бөлімдер',
+        exam: 'Емтихан режимі', examDesc: 'Таймер, жауаптар тек соңында көрінеді. Нәтиже мұғалімге жіберіледі.',
+        practice: 'Жаттығу (таймерсіз)', practiceDesc: 'Әр сұрақты тексеріп, түсініктемені бірден көресіз.', onlySec: 'Тек осы бөлім',
+        question: 'Сұрақ', prev: 'Алдыңғы', next: 'Келесі', check: 'Тексеру', flag: 'Белгілеу', finish: 'Аяқтау',
+        leaveAsk: 'Жауапсыз сұрақ', leaveQ: 'Аяқтаймыз ба?', timeUp: 'Уақыт бітті!', ctx: 'Мәтін / материал',
+        multiHint: 'Бірнеше жауап таңдауға болады', matchHint: 'Әр нөмірге сәйкес әріпті таңдаңыз', pick: '—',
+        score: 'Балл', time: 'Уақыт', review: 'Қателер талдауы', onlyWrong: 'Тек қателер', allQ: 'Барлық сұрақ',
+        yourAns: 'Сіздің жауабыңыз', rightAns: 'Дұрыс жауап', noAns: 'жауап жоқ', again: 'Қайта өту', toList: 'Тізімге',
+        sending: 'Нәтиже мұғалімге жіберілуде…', sent: '✓ Нәтиже мұғалімге жіберілді.', sendFail: 'Нәтижені жіберу мүмкін болмады. Ол сақталды: «Қайта жіберу» басыңыз немесе бетті кейін ашыңыз.',
+        resend: 'Қайта жіберу', practiceNote: 'Жаттығу нәтижесі мұғалімге жіберілмейді.',
+        mistDesc: 'Қателескен сұрақтар осында жиналады. Дұрыс жауап берсеңіз — тізімнен шығады.', noMist: 'Қате жоқ — тамаша!',
+        reset: 'Прогрессті тазарту', resetAsk: 'Барлық прогресс осы браузерде өшіріледі. Жалғастырамыз ба?',
+        loadErr: 'Тестті жүктеу мүмкін болмады. Бетті жаңартып көріңіз.', verdict: 'Нәтиже', total: 'Барлығы',
+        shelfTitle: 'Пән тесттері', hours: 'сағ'
+      },
+      ru: {
+        sub: 'ЕНТ · тесты по направлениям', portal: '← К курсам', home: 'Главная',
+        hero: 'Тренажёр ЕНТ', heroText: 'Выберите направление и сдайте полный вариант ЕНТ: 120 вопросов, 140 баллов, 4 часа. Результат автоматически уходит учителю.',
+        dirs: 'Направления', shelf: 'Отдельные тесты по предметам', soon: 'Тесты готовятся', of: 'из', tests: 'тестов',
+        statDone: 'Сдано тестов', statBest: 'Лучший вариант ЕНТ', statAvg: 'Средний результат', statMist: 'В банке ошибок',
+        myRes: 'Мои результаты', mist: 'Работа над ошибками', noRes: 'Пока нет результатов.', variant: 'Вариант',
+        langAll: 'Все', langRu: 'Русский', langKz: 'Қазақша', testLang: 'Язык теста', noTests: 'Тесты по этому направлению скоро появятся.',
+        resume: 'Незавершённый экзамен', continue: 'Продолжить', discard: 'Отменить', best: 'Лучший', attempts: 'попыток',
+        min: 'мин', q: 'вопр.', pts: 'балл.', start: 'Начать', sections: 'Разделы',
+        exam: 'Режим экзамена', examDesc: 'Таймер, ответы видны только в конце. Результат отправляется учителю.',
+        practice: 'Тренировка (без таймера)', practiceDesc: 'Каждый вопрос проверяется сразу, видно объяснение.', onlySec: 'Только этот раздел',
+        question: 'Вопрос', prev: 'Назад', next: 'Далее', check: 'Проверить', flag: 'Пометить', finish: 'Завершить',
+        leaveAsk: 'Без ответа', leaveQ: 'Завершить?', timeUp: 'Время вышло!', ctx: 'Текст / материал',
+        multiHint: 'Можно выбрать несколько ответов', matchHint: 'Для каждого номера выберите букву', pick: '—',
+        score: 'Балл', time: 'Время', review: 'Разбор ответов', onlyWrong: 'Только ошибки', allQ: 'Все вопросы',
+        yourAns: 'Ваш ответ', rightAns: 'Верный ответ', noAns: 'нет ответа', again: 'Пройти ещё раз', toList: 'К списку',
+        sending: 'Отправляем результат учителю…', sent: '✓ Результат отправлен учителю.', sendFail: 'Не удалось отправить результат. Он сохранён: нажмите «Отправить снова» или откройте страницу позже — отправим автоматически.',
+        resend: 'Отправить снова', practiceNote: 'Результат тренировки учителю не отправляется.',
+        mistDesc: 'Сюда попадают вопросы, в которых вы ошиблись. Ответите верно — вопрос уйдёт из списка.', noMist: 'Ошибок нет — отлично!',
+        reset: 'Сбросить прогресс', resetAsk: 'Весь прогресс будет удалён в этом браузере. Продолжить?',
+        loadErr: 'Не удалось загрузить тест. Обновите страницу.', verdict: 'Итог', total: 'Всего',
+        shelfTitle: 'Тесты по предмету', hours: 'ч'
+      }
+    };
+
+    let lang = 'kz';
+    try { lang = localStorage.getItem(LANGK) === 'ru' ? 'ru' : 'kz'; } catch (e) {}
+    const t = (k) => UI[lang][k] || k;
+    const pk = (o, k) => (lang === 'ru' && o[k + '_ru'] != null ? o[k + '_ru'] : o[k]);
+    const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const $ = (id) => document.getElementById(id);
+    const R = (q, s) => (q.html ? String(s == null ? '' : s) : esc(s));   // тесты из Word содержат разметку (формулы, рисунки)
+    const nm = (o) => (o ? o[lang] || o.ru || '' : '');
+
+    /* ---------- каталог ---------- */
+    const SUBJ = E.SUBJ, DIRS = E.DIRS;
+    const REG = E.REG.map((m) => Object.assign({ kind: 'full', minutes: 240, base: '', src: 'data/tests/' + m.id + '.js' }, m));
+    const LEG = [];
+    const READY = window.GEOTANY_TEST_READY || {};
+    Object.keys(READY).map(Number).sort((a, b) => a - b).forEach((n) => LEG.push({
+      id: 'geo-' + n, kind: 'subj', subj: 'geo', lang: 'both', n: n, count: READY[n].count, points: READY[n].points, minutes: READY[n].time,
+      src: '../geotanu/tests/data/test_' + (n < 10 ? '0' : '') + n + '.js', ns: 'geotanu', base: '../geotanu/'
+    }));
+    [1, 2, 3, 4].forEach((n) => LEG.push({
+      id: 'law-' + n, kind: 'subj', subj: 'law', lang: 'both', n: n, count: 40, points: 50, minutes: 60,
+      src: '../pravo/data/t0' + n + '.js', pre: '../pravo/data/lib.js', ns: 'pravo', base: ''
+    }));
+    const META = {};
+    REG.concat(LEG).forEach((m) => { META[m.id] = m; });
+    const SHELF = [{ subj: 'geo', icon: '🌍' }, { subj: 'law', icon: '⚖️' }];
+
+    const dirOf = (id) => DIRS.filter((d) => d.id === id)[0];
+    const dirName = (d, l) => d.subj.map((s) => SUBJ[s][l || lang]).join(' – ');
+    const langTag = (m) => (m.lang === 'kz' ? 'KZ' : m.lang === 'ru' ? 'RU' : '');
+    const variantWord = (l) => ((l || lang) === 'ru' ? 'Вариант ' : 'Нұсқа ');
+    // Название для таблицы учителя — всегда по-русски
+    function titleRu(m) {
+      if (m.kind === 'subj') return 'ЕНТ · предмет ' + SUBJ[m.subj].ru + ' · Вариант ' + m.n;
+      const d = dirOf(m.dir);
+      return 'ЕНТ · ' + (d ? dirName(d, 'ru') : m.dir) + (m.lang === 'kz' ? ' (КО)' : ' (РО)') + ' · Вариант ' + m.n;
+    }
+    function titleUi(m) {
+      if (m.kind === 'subj') return SUBJ[m.subj][lang] + ' · ' + variantWord() + m.n;
+      const d = dirOf(m.dir);
+      return (d ? dirName(d) : m.dir) + ' · ' + variantWord() + m.n + ' · ' + langTag(m);
+    }
+
+    /* ---------- прогресс ---------- */
+    function load() {
+      let d = null;
+      try { d = JSON.parse(localStorage.getItem(LS) || 'null'); } catch (e) {}
+      d = d || {};
+      d.hist = d.hist || {}; d.mist = d.mist || {};
+      return d;
+    }
+    function save(d) { try { localStorage.setItem(LS, JSON.stringify(d)); } catch (e) {} }
+    function toast(m) {
+      const b = $('toast'); b.textContent = m; b.style.opacity = '1';
+      clearTimeout(b._t); b._t = setTimeout(() => { b.style.opacity = '0'; }, 2500);
+    }
+
+    /* ---------- загрузка теста и приведение к единому виду ---------- */
+    const CACHE = {}, LOADED = {};
+    function loadScript(src) {
+      return new Promise((res, rej) => {
+        if (LOADED[src]) return res();
+        const s = document.createElement('script');
+        s.src = src;
+        s.onload = () => { LOADED[src] = 1; res(); };
+        s.onerror = () => rej(new Error('load ' + src));
+        document.head.appendChild(s);
+      });
+    }
+    function prefixSrc(html, base) {
+      if (!base || !html) return html;
+      return String(html).replace(/(src=")(?!https?:|data:|\/|\.\.\/)/g, '$1' + base);
+    }
+    function norm(meta, raw) {
+      const base = meta.base || '';
+      const mono = meta.lang === 'ru' || meta.lang === 'kz';   // тест на одном языке — оба поля одинаковы
+      const ctxs = {};
+      Object.keys(raw.contexts || {}).forEach((k) => {
+        const c = raw.contexts[k];
+        const kzb = c.kz != null ? c.kz : (c.text != null ? c.text : (c.html || ''));
+        const rub = c.ru != null ? c.ru : (c.text_ru != null ? c.text_ru : (c.html != null ? c.html : (c.text || '')));
+        ctxs[k] = { title: c.title_kz || c.title || '', title_ru: c.title_ru || c.title || '', text: prefixSrc(kzb, base), text_ru: prefixSrc(rub, base) };
+      });
+      const secs = raw.sections || [{ id: meta.subj || 'misc', questions: raw.questions || [] }];
+      const T = { id: meta.id, meta: meta, lang: meta.lang, minutes: meta.minutes || raw.minutes || raw.timeMinutes || 60, sections: [] };
+      secs.forEach((s) => {
+        const sec = { id: s.id, name: SUBJ[s.id] || { kz: s.id, ru: s.id }, questions: s.questions };
+        s.questions.forEach((q, qi) => {
+          if (!q._n) {
+            q._n = 1;
+            if (mono) ['q', 'options', 'left', 'explanation'].forEach((f) => { if (q[f] != null) q[f + '_ru'] = q[f]; });
+            q.html = !!raw.html;
+            if (q.img) q.img = base + q.img;
+            if (q.img_ru) q.img_ru = base + q.img_ru;
+            q.qid = meta.id + ':' + s.id + ':' + (qi + 1);
+            if (q.ctx && ctxs[q.ctx]) q._ctx = ctxs[q.ctx];
+          }
+        });
+        T.sections.push(sec);
+      });
+      return T;
+    }
+    async function getTest(id) {
+      if (CACHE[id]) return CACHE[id];
+      const m = META[id];
+      if (!m) throw new Error('unknown test');
+      if (m.pre) await loadScript(m.pre);
+      await loadScript(m.src);
+      let raw = null;
+      if (m.ns === 'geotanu') raw = (window.GEOTANY_TESTS || {})[m.n];
+      else if (m.ns === 'pravo') raw = (window.PRAVO && window.PRAVO.tests || {})[m.n];
+      else raw = (E.tests || {})[m.id];
+      if (!raw) throw new Error('empty test');
+      CACHE[id] = norm(m, raw);
+      return CACHE[id];
+    }
+
+    /* ---------- баллы ---------- */
+    const maxPts = (q) => (q.type === 'multi' ? 2 : q.type === 'match' ? q.left.length : 1);
+    function grade(q, a) {
+      if (a == null) return 0;
+      if (q.type === 'single') return a === q.answer ? 1 : 0;
+      if (q.type === 'multi') {
+        if (!a.length) return 0;
+        let err = 0;
+        q.options.forEach((_, i) => { if ((a.indexOf(i) >= 0) !== (q.answer.indexOf(i) >= 0)) err++; });
+        return err === 0 ? 2 : err === 1 ? 1 : 0;
+      }
+      let s = 0;
+      q.answer.forEach((v, i) => { if (a[i] === v) s++; });
+      return s;
+    }
+    function answered(q, a) {
+      if (a == null) return false;
+      if (q.type === 'multi') return a.length > 0;
+      if (q.type === 'match') return a.some((v) => v != null && v >= 0);
+      return true;
+    }
+    const secMax = (sec) => sec.questions.reduce((s, q) => s + maxPts(q), 0);
+    const testMax = (T) => T.sections.reduce((s, sec) => s + secMax(sec), 0);
+    const fmt = (s) => {
+      s = Math.max(0, s);
+      const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), x = ('0' + (s % 60)).slice(-2);
+      return h ? h + ':' + ('0' + m).slice(-2) + ':' + x : m + ':' + x;
+    };
+
+    /* ---------- роутинг ---------- */
+    let run = null, timer = null, nav = 0;
+    function go(h) { if (location.hash === h) route(); else location.hash = h; }
+    function chrome() {
+      document.documentElement.lang = lang === 'ru' ? 'ru' : 'kk';
+      $('langSel').value = lang;
+      $('hSub').textContent = t('sub');
+      $('hPortal').textContent = t('portal');
+    }
+    function crumbs(items) {
+      return '<nav class="flex flex-wrap items-center gap-2 text-xs text-slate-400 mb-4"><a class="hover:text-cyan-300" href="#/">' + t('home') + '</a>' +
+        items.map((i) => '<span>›</span>' + (i.h ? '<a class="hover:text-cyan-300" href="' + i.h + '">' + esc(i.t) + '</a>' : '<span class="text-slate-200">' + esc(i.t) + '</span>')).join('') + '</nav>';
+    }
+    function route() {
+      clearInterval(timer);
+      nav++;
+      const p = (location.hash || '#/').replace(/^#\/?/, '').split('/');
+      if (run && p[0] !== 'run') run = null;
+      window.scrollTo(0, 0);
+      if (p[0] === 'd' && dirOf(p[1])) return viewDir(p[1]);
+      if (p[0] === 's' && SHELF.some((x) => x.subj === p[1])) return viewShelf(p[1]);
+      if (p[0] === 't' && META[p[1]]) return viewIntro(p[1]);
+      if (p[0] === 'res') return viewResults();
+      if (p[0] === 'mist') return viewMistakes();
+      if (p[0] === 'run' && run) return viewRun();
+      viewHome();
+    }
+
+    /* ---------- главная ---------- */
+    function stats(d) {
+      let n = 0, sum = 0, best = 0, bestMax = 0;
+      Object.keys(d.hist).forEach((id) => d.hist[id].forEach((r) => {
+        n++; sum += r.score / r.max;
+        if (META[id] && META[id].kind === 'full' && r.mode === 'exam' && r.score > best) { best = r.score; bestMax = r.max; }
+      }));
+      return { n: n, avg: n ? Math.round(sum / n * 100) : 0, best: best, bestMax: bestMax, mist: Object.keys(d.mist).length };
+    }
+    function statBox(v, l) { return '<div class="rounded-2xl bg-slate-800/70 border border-slate-700 p-3"><div class="text-2xl font-black text-white">' + v + '</div><div class="text-[11px] text-slate-400">' + l + '</div></div>'; }
+    function readSaved() {
+      try {
+        const s = JSON.parse(localStorage.getItem(RUNK) || 'null');
+        if (s && META[s.id] && s.t0 + META[s.id].minutes * 60000 > Date.now()) return s;
+      } catch (e) {}
+      return null;
+    }
+
+    function viewHome() {
+      chrome();
+      const d = load(), S = stats(d), sv = readSaved();
+      let h = '<section class="card p-6 sm:p-8 mb-6">' +
+        '<p class="text-[11px] font-black uppercase tracking-[.25em] text-cyan-300">' + t('sub') + '</p>' +
+        '<h1 class="mt-2 text-3xl sm:text-4xl font-black text-white">' + t('hero') + '</h1>' +
+        '<p class="mt-2 text-sm text-slate-400 max-w-2xl">' + t('heroText') + '</p>' +
+        '<div class="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-3">' +
+        statBox(S.n, t('statDone')) + statBox(S.best ? S.best + '/' + S.bestMax : '—', t('statBest')) + statBox(S.n ? S.avg + '%' : '—', t('statAvg')) + statBox(S.mist, t('statMist')) + '</div>' +
+        '<div class="mt-5 flex flex-wrap gap-3"><a class="btn btn-sec" href="#/res">📊 ' + t('myRes') + '</a>' +
+        '<a class="btn btn-sec" href="#/mist">🔁 ' + t('mist') + (S.mist ? ' (' + S.mist + ')' : '') + '</a></div></section>';
+
+      if (sv) {
+        h += '<section class="card p-5 mb-6 border-amber-500/40 flex flex-wrap items-center justify-between gap-3">' +
+          '<div><p class="text-[11px] font-black uppercase tracking-widest text-amber-300">' + t('resume') + '</p><p class="font-bold">' + esc(titleUi(META[sv.id])) + '</p></div>' +
+          '<div class="flex gap-2"><button class="btn btn-main" data-act="resume">▶ ' + t('continue') + '</button><button class="btn btn-sec" data-act="drop">' + t('discard') + '</button></div></section>';
+      }
+
+      h += '<h2 class="text-lg font-black mb-3">' + t('dirs') + '</h2><div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-8">' +
+        DIRS.map((dir) => {
+          const ts = REG.filter((m) => m.dir === dir.id);
+          const ru = ts.filter((m) => m.lang === 'ru').length, kz = ts.filter((m) => m.lang === 'kz').length;
+          const done = ts.filter((m) => (d.hist[m.id] || []).length).length;
+          return '<a href="#/d/' + dir.id + '" class="card p-5 hover:border-cyan-500/50 hover:-translate-y-0.5 transition flex flex-col gap-2 ' + (ts.length ? '' : 'opacity-75') + '">' +
+            '<div class="flex items-center justify-between"><span class="text-3xl" aria-hidden="true">' + dir.icon + '</span>' +
+            '<span class="text-[10px] font-black uppercase tracking-wider text-slate-500">' + ts.length + ' / ' + E.TARGET + '</span></div>' +
+            '<h3 class="font-black text-white leading-snug">' + esc(dirName(dir)) + '</h3>' +
+            '<div class="flex flex-wrap gap-2 text-[11px] font-bold mt-1">' +
+            (ts.length
+              ? '<span class="px-2 py-0.5 rounded-lg bg-slate-800 text-slate-300">RU: ' + ru + '</span><span class="px-2 py-0.5 rounded-lg bg-slate-800 text-slate-300">KZ: ' + kz + '</span>' +
+                '<span class="px-2 py-0.5 rounded-lg ' + (done ? 'bg-emerald-500/15 text-emerald-300' : 'bg-slate-800 text-slate-400') + '">✓ ' + done + '</span>'
+              : '<span class="px-2 py-0.5 rounded-lg bg-slate-800 text-slate-400">' + t('soon') + '</span>') +
+            '</div></a>';
+        }).join('') + '</div>';
+
+      h += '<h2 class="text-lg font-black mb-3">' + t('shelf') + '</h2><div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">' +
+        SHELF.map((sh) => {
+          const ts = LEG.filter((m) => m.subj === sh.subj);
+          const done = ts.filter((m) => (d.hist[m.id] || []).length).length;
+          return '<a href="#/s/' + sh.subj + '" class="card p-5 hover:border-cyan-500/50 hover:-translate-y-0.5 transition flex items-center gap-4">' +
+            '<span class="text-4xl" aria-hidden="true">' + sh.icon + '</span><span><span class="block font-black text-white">' + esc(SUBJ[sh.subj][lang]) + '</span>' +
+            '<span class="block text-xs text-slate-400">' + t('tests') + ': ' + ts.length + ' · ✓ ' + done + '</span></span></a>';
+        }).join('') + '</div>' +
+        '<p class="mt-6"><button class="text-xs text-slate-500 hover:text-rose-300 underline" data-act="reset">' + t('reset') + '</button></p>';
+      $('app').innerHTML = h;
+    }
+
+    /* ---------- направление и полка предмета ---------- */
+    let langFilter = 'all';
+    function bestOf(d, id) { return (d.hist[id] || []).reduce((b, r) => (r.score > b.score ? r : b), { score: -1, max: 0 }); }
+    function testCard(m, d) {
+      const hist = d.hist[m.id] || [], b = bestOf(d, m.id);
+      return '<a href="#/t/' + m.id + '" class="card p-4 hover:border-cyan-500/50 hover:-translate-y-0.5 transition flex flex-col gap-2">' +
+        '<div class="flex items-center justify-between gap-2"><h3 class="font-black text-white">' + variantWord() + m.n + '</h3>' +
+        (langTag(m) ? '<span class="tag ' + (m.lang === 'kz' ? 'bg-sky-500/15 text-sky-300' : 'bg-rose-500/15 text-rose-300') + '">' + langTag(m) + '</span>' : '') + '</div>' +
+        '<p class="text-xs text-slate-400">' + (m.kind === 'full' ? '120 ' + t('q') + ' · 140 ' + t('pts') + ' · ' + (m.minutes / 60) + ' ' + t('hours') : m.count + ' ' + t('q') + ' · ' + m.points + ' ' + t('pts') + ' · ' + m.minutes + ' ' + t('min')) + '</p>' +
+        '<p class="text-xs text-slate-500">' + t('best') + ': <b class="text-amber-300">' + (hist.length ? b.score + '/' + b.max : '—') + '</b> · ' + hist.length + ' ' + t('attempts') + '</p></a>';
+    }
+    function viewDir(id) {
+      chrome();
+      const dir = dirOf(id), d = load();
+      const all = REG.filter((m) => m.dir === id);
+      const list = all.filter((m) => langFilter === 'all' || m.lang === langFilter)
+        .sort((a, b) => (a.lang === b.lang ? a.n - b.n : a.lang < b.lang ? 1 : -1));
+      const pct = Math.min(100, Math.round(all.length / E.TARGET * 100));
+      let h = crumbs([{ t: dirName(dir) }]) +
+        '<div class="flex items-start gap-4 mb-4"><span class="text-5xl">' + dir.icon + '</span><div><h1 class="text-2xl sm:text-3xl font-black text-white leading-tight">' + esc(dirName(dir)) + '</h1>' +
+        '<p class="text-sm text-slate-400 mt-1">' + esc(nm(SUBJ.hist)) + ' · ' + esc(nm(SUBJ.read)) + ' · ' + esc(nm(SUBJ.mlit)) + ' · ' + dir.subj.map((s) => esc(nm(SUBJ[s]))).join(' · ') + '</p></div></div>' +
+        '<div class="mb-4 h-2 rounded-full bg-slate-800 overflow-hidden"><div class="h-full bg-gradient-to-r from-emerald-500 via-cyan-500 to-amber-400" style="width:' + pct + '%"></div></div>' +
+        '<div class="flex flex-wrap items-center gap-2 mb-5"><span class="text-xs text-slate-400 mr-1">' + t('testLang') + ':</span>' +
+        [['all', 'langAll'], ['ru', 'langRu'], ['kz', 'langKz']].map((x) => '<button class="chip ' + (langFilter === x[0] ? 'on' : '') + '" data-act="lf" data-v="' + x[0] + '">' + t(x[1]) + '</button>').join('') + '</div>';
+      if (!list.length) h += '<div class="card p-6 text-slate-300">' + t('noTests') + '</div>';
+      else h += '<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">' + list.map((m) => testCard(m, d)).join('') + '</div>';
+      $('app').innerHTML = h;
+    }
+    function viewShelf(subj) {
+      chrome();
+      const d = load(), ts = LEG.filter((m) => m.subj === subj);
+      $('app').innerHTML = crumbs([{ t: SUBJ[subj][lang] }]) +
+        '<h1 class="text-2xl font-black mb-1">' + esc(SUBJ[subj][lang]) + '</h1><p class="text-sm text-slate-400 mb-5">' + t('tests') + ': ' + ts.length + '</p>' +
+        '<div class="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">' + ts.map((m) => testCard(m, d)).join('') + '</div>';
+    }
+
+    /* ---------- вступительный экран теста ---------- */
+    async function viewIntro(id) {
+      chrome();
+      const my = nav, m = META[id];
+      $('app').innerHTML = '<p class="text-slate-400 text-sm">…</p>';
+      let T;
+      try { T = await getTest(id); } catch (e) { if (my === nav) $('app').innerHTML = crumbs([{ t: titleUi(m) }]) + '<div class="card p-6 text-rose-300">' + t('loadErr') + '</div>'; return; }
+      if (my !== nav) return;
+      const d = load(), hist = d.hist[id] || [], total = testMax(T), nq = T.sections.reduce((s, x) => s + x.questions.length, 0);
+      const back = m.kind === 'full' ? { t: dirName(dirOf(m.dir)), h: '#/d/' + m.dir } : { t: SUBJ[m.subj][lang], h: '#/s/' + m.subj };
+      let h = crumbs([back, { t: variantWord() + m.n }]) +
+        '<article class="card p-5 sm:p-8"><p class="text-[11px] font-black uppercase tracking-widest text-cyan-300">' + esc(m.kind === 'full' ? dirName(dirOf(m.dir)) : SUBJ[m.subj][lang]) + (langTag(m) ? ' · ' + langTag(m) : '') + '</p>' +
+        '<h1 class="text-2xl sm:text-3xl font-black text-white mt-1">' + variantWord() + m.n + '</h1>' +
+        '<p class="mt-2 text-slate-300">' + nq + ' ' + t('q') + ' · ' + total + ' ' + t('pts') + ' · ' + T.minutes + ' ' + t('min') + '</p>' +
+        '<div class="mt-5 grid gap-2">' + T.sections.map((sec, si) =>
+          '<div class="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-slate-800/60 border border-slate-700 px-4 py-2.5">' +
+          '<div><b class="text-white">' + esc(nm(sec.name)) + '</b><span class="ml-2 text-xs text-slate-400">' + sec.questions.length + ' ' + t('q') + ' · ' + secMax(sec) + ' ' + t('pts') + '</span></div>' +
+          (T.sections.length > 1 ? '<button class="btn btn-sec !py-1.5 !px-3 !text-xs" data-act="start" data-id="' + id + '" data-mode="practice" data-sec="' + si + '">' + t('onlySec') + '</button>' : '') + '</div>').join('') + '</div>' +
+        '<div class="mt-6 grid gap-3 sm:grid-cols-2">' +
+        '<div class="rounded-2xl border border-slate-700 p-4"><b class="text-white">⏱ ' + t('exam') + '</b><p class="text-xs text-slate-400 mt-1 mb-3">' + t('examDesc') + '</p><button class="btn btn-main" data-act="start" data-id="' + id + '" data-mode="exam">' + t('start') + '</button></div>' +
+        '<div class="rounded-2xl border border-slate-700 p-4"><b class="text-white">🧠 ' + t('practice') + '</b><p class="text-xs text-slate-400 mt-1 mb-3">' + t('practiceDesc') + '</p><button class="btn btn-sec" data-act="start" data-id="' + id + '" data-mode="practice">' + t('start') + '</button></div></div>' +
+        (hist.length ? '<p class="mt-5 text-xs text-slate-500">' + t('best') + ': <b class="text-amber-300">' + bestOf(d, id).score + '/' + bestOf(d, id).max + '</b> · ' + hist.length + ' ' + t('attempts') + '</p>' : '') +
+        '</article>';
+      $('app').innerHTML = h;
+    }
+
+    /* ---------- запуск и прохождение ---------- */
+    function buildItems(T, secs) {
+      const items = [];
+      T.sections.forEach((sec, si) => {
+        if (secs && secs.indexOf(si) < 0) return;
+        sec.questions.forEach((q, qi) => items.push({ q: q, s: si, n: qi + 1 }));
+      });
+      return items;
+    }
+    function startRun(T, mode, secs, restore) {
+      run = { kind: 'test', T: T, mode: mode, secs: secs || null, items: buildItems(T, secs), ans: {}, checked: {}, flags: {}, idx: 0, t0: Date.now(), min: mode === 'exam' ? T.minutes : 0, done: false, showAll: false, back: '#/t/' + T.id };
+      if (restore) { run.ans = restore.ans || {}; run.flags = restore.flags || {}; run.idx = restore.idx || 0; run.t0 = restore.t0; }
+      persistRun();
+      go('#/run');
+      if (location.hash === '#/run') route();
+    }
+    function persistRun() {
+      if (!run || run.kind !== 'test' || run.mode !== 'exam' || run.done) return;
+      try { localStorage.setItem(RUNK, JSON.stringify({ id: run.T.id, secs: run.secs, t0: run.t0, ans: run.ans, flags: run.flags, idx: run.idx })); } catch (e) {}
+    }
+    function clearSaved() { try { localStorage.removeItem(RUNK); } catch (e) {} }
+    async function resumeSaved() {
+      const sv = readSaved();
+      if (!sv) return;
+      try { startRun(await getTest(sv.id), 'exam', sv.secs, sv); } catch (e) { toast(t('loadErr')); }
+    }
+    function runMistakes() {
+      const d = load();
+      const qs = Object.keys(d.mist).map((k) => d.mist[k].q).filter(Boolean);
+      if (!qs.length) { toast(t('noMist')); return; }
+      run = { kind: 'mist', T: null, mode: 'practice', secs: null, items: qs.map((q, i) => ({ q: q, s: 0, n: i + 1 })), ans: {}, checked: {}, flags: {}, idx: 0, t0: Date.now(), min: 0, done: false, showAll: false, back: '#/mist' };
+      go('#/run');
+      if (location.hash === '#/run') route();
+    }
+
+    function renderQ(q, a, chk) {
+      let h = '';
+      if (q._ctx) {
+        h += '<div class="mb-5 rounded-2xl bg-slate-800/70 border border-slate-700 p-4"><p class="text-[11px] font-black uppercase tracking-wider text-amber-300 mb-1">' + t('ctx') + (pk(q._ctx, 'title') ? ': ' + esc(pk(q._ctx, 'title')) : '') + '</p><div class="rich text-sm text-slate-200">' + pk(q._ctx, 'text') + '</div></div>';
+      }
+      h += '<div class="rich text-lg font-bold text-white leading-snug whitespace-pre-line">' + R(q, pk(q, 'q')) + '</div>';
+      const img = lang === 'ru' && q.img_ru ? q.img_ru : q.img;
+      if (img) h += '<img class="mt-3" style="max-width:100%;height:auto;background:#fff;border-radius:.75rem" src="' + esc(img) + '" alt="">';
+      const opts = pk(q, 'options') || [];
+      if (q.type === 'multi') h += '<p class="text-xs text-amber-300 mt-2">' + t('multiHint') + '</p>';
+      if (q.type === 'match') {
+        const left = pk(q, 'left');
+        h += '<p class="text-xs text-amber-300 mt-2 mb-2">' + t('matchHint') + '</p><div class="grid gap-2 mb-3">' +
+          left.map((l, i) => {
+            const sel = a && a[i] != null ? a[i] : -1;
+            const cls = chk ? (sel === q.answer[i] ? 'border-emerald-500' : 'border-rose-500') : 'border-slate-600';
+            return '<div class="flex items-center gap-3"><span class="font-black text-cyan-300 w-6">' + (i + 1) + '</span><span class="rich flex-1 text-sm">' + R(q, l) + '</span>' +
+              '<select data-act="match" data-i="' + i + '" ' + (chk ? 'disabled' : '') + ' class="bg-slate-800 border-2 ' + cls + ' rounded-xl px-2 py-1.5 text-sm font-bold"><option value="-1">' + t('pick') + '</option>' +
+              opts.map((o, k) => '<option value="' + k + '"' + (sel === k ? ' selected' : '') + '>' + LET[k] + '</option>').join('') + '</select></div>';
+          }).join('') + '</div><ol class="grid gap-1.5 text-sm text-slate-300">' +
+          opts.map((o, k) => '<li class="flex gap-3"><span class="font-black text-amber-300 w-6">' + LET[k] + '</span><span class="rich">' + R(q, o) + '</span></li>').join('') + '</ol>';
+      } else {
+        h += '<div class="mt-4 grid gap-2.5">' + opts.map((o, k) => {
+          let cls = 'opt';
+          const on = q.type === 'multi' ? (a || []).indexOf(k) >= 0 : a === k;
+          if (on) cls += ' sel';
+          if (chk) {
+            const right = q.type === 'multi' ? q.answer.indexOf(k) >= 0 : q.answer === k;
+            if (right) cls = 'opt right'; else if (on) cls = 'opt wrong';
+          }
+          return '<button class="' + cls + '" data-act="opt" data-k="' + k + '" ' + (chk ? 'disabled' : '') + '><span class="font-black text-cyan-300 w-5 shrink-0">' + LET[k] + '</span><span class="rich text-sm sm:text-base">' + R(q, o) + '</span></button>';
+        }).join('') + '</div>';
+      }
+      return h;
+    }
+    function rightText(q) {
+      const o = pk(q, 'options');
+      if (q.type === 'single') return LET[q.answer] + '. ' + stripTags(q, o[q.answer]);
+      if (q.type === 'multi') return q.answer.map((k) => LET[k] + '. ' + stripTags(q, o[k])).join('; ');
+      return pk(q, 'left').map((l, i) => (i + 1) + ' → ' + LET[q.answer[i]]).join(', ');
+    }
+    function userText(q, a) {
+      const o = pk(q, 'options');
+      if (!answered(q, a)) return t('noAns');
+      if (q.type === 'single') return LET[a] + '. ' + stripTags(q, o[a]);
+      if (q.type === 'multi') return a.slice().sort().map((k) => LET[k] + '. ' + stripTags(q, o[k])).join('; ');
+      return pk(q, 'left').map((l, i) => (i + 1) + ' → ' + (a[i] != null && a[i] >= 0 ? LET[a[i]] : '—')).join(', ');
+    }
+    function stripTags(q, s) { return q.html ? String(s == null ? '' : s).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim() : s; }
+    function expl(q) {
+      const e = pk(q, 'explanation');
+      return '<div class="mt-4 rounded-2xl bg-slate-800/70 border border-slate-700 p-4 text-sm"><p class="text-emerald-300 font-bold">' + t('rightAns') + ': ' + esc(rightText(q)) + '</p>' +
+        (e ? '<div class="rich mt-2 text-slate-300 leading-relaxed">' + R(q, e) + '</div>' : '') + '</div>';
+    }
+
+    function viewRun() {
+      chrome();
+      if (run.done) return viewResult();
+      const practice = run.mode === 'practice', it = run.items[run.idx], q = it.q, a = run.ans[run.idx], chk = !!run.checked[run.idx];
+      if (run.min) run.left = run.min * 60 - Math.floor((Date.now() - run.t0) / 1000);
+      const secTitle = run.T ? nm(run.T.sections[it.s].name) : t('mist');
+      const inSec = run.items.filter((x) => x.s === it.s).length;
+      let h = '<div class="flex flex-wrap items-center justify-between gap-3 mb-4">' +
+        '<div><p class="text-[11px] font-black uppercase tracking-widest text-cyan-300">' + esc(secTitle) + '</p><p class="text-sm text-slate-400">' + t('question') + ' ' + it.n + (run.T ? ' / ' + inSec : ' / ' + run.items.length) + '</p></div>' +
+        (run.min ? '<div class="px-4 py-2 rounded-2xl bg-slate-800 border border-slate-700 font-mono font-black text-amber-300" id="clock">' + fmt(run.left) + '</div>' : '') + '</div>';
+
+      let last = -1;
+      h += '<div class="mb-5 grid gap-2">';
+      run.items.forEach((x, i) => {
+        if (run.T && x.s !== last) {
+          if (last !== -1) h += '</div>';
+          h += '<div><p class="text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1">' + esc(nm(run.T.sections[x.s].name)) + '</p><div class="flex flex-wrap gap-1.5">';
+        } else if (!run.T && i === 0) h += '<div><div class="flex flex-wrap gap-1.5">';
+        last = x.s;
+        let cls = 'nav-b';
+        if (practice && run.checked[i]) cls += grade(x.q, run.ans[i]) === maxPts(x.q) ? ' ok' : ' no';
+        else if (answered(x.q, run.ans[i])) cls += ' ans';
+        if (i === run.idx) cls += ' cur';
+        if (run.flags[i]) cls += ' flag';
+        h += '<button class="' + cls + '" data-act="jump" data-i="' + i + '">' + x.n + '</button>';
+      });
+      h += '</div></div></div>';
+
+      h += '<section class="card p-5 sm:p-7">' + renderQ(q, a, chk) + (chk ? expl(q) : '') + '</section>';
+      h += '<div class="mt-5 flex flex-wrap items-center justify-between gap-3">' +
+        '<div class="flex gap-2"><button class="btn btn-sec" data-act="prev" ' + (run.idx === 0 ? 'disabled' : '') + '>← ' + t('prev') + '</button>' +
+        (!practice ? '<button class="btn btn-sec" data-act="flag">' + (run.flags[run.idx] ? '🚩' : '⚑') + ' ' + t('flag') + '</button>' : '') + '</div>' +
+        '<div class="flex gap-2">' +
+        (practice && !chk ? '<button class="btn btn-main" data-act="check" ' + (answered(q, a) ? '' : 'disabled') + '>' + t('check') + '</button>' : '') +
+        (run.idx < run.items.length - 1 ? '<button class="btn ' + (practice && !chk ? 'btn-sec' : 'btn-main') + '" data-act="next">' + t('next') + ' →</button>' : '') +
+        '<button class="btn btn-sec" data-act="finish">🏁 ' + t('finish') + '</button></div></div>';
+      $('app').innerHTML = h;
+      if (run.min && !run.done) {
+        clearInterval(timer);
+        timer = setInterval(() => {
+          run.left = run.min * 60 - Math.floor((Date.now() - run.t0) / 1000);
+          const el = $('clock'); if (el) el.textContent = fmt(run.left);
+          if (run.left <= 0) { clearInterval(timer); toast(t('timeUp')); finishRun(); }
+        }, 1000);
+      }
+    }
+
+    /* ---------- завершение и отправка учителю ---------- */
+    let sendInfo = null, lastPayload = null;
+    function finishRun() {
+      if (!run || run.done) return;
+      clearInterval(timer);
+      run.done = true;
+      run.sec = Math.round((Date.now() - run.t0) / 1000);
+      if (run.min) run.sec = Math.min(run.sec, run.min * 60);
+      const d = load(), per = {};
+      let got = 0, max = 0, ok = 0;
+      run.items.forEach((it, i) => {
+        const g = grade(it.q, run.ans[i]), m = maxPts(it.q);
+        got += g; max += m;
+        const p = per[it.s] = per[it.s] || { got: 0, max: 0, ok: 0, n: 0 };
+        p.got += g; p.max += m; p.n++;
+        if (g === m) { p.ok++; ok++; }
+        const key = it.q.qid;
+        if (g < m) d.mist[key] = { at: Date.now(), n: ((d.mist[key] && d.mist[key].n) || 0) + 1, q: it.q };
+        else if (d.mist[key]) delete d.mist[key];
+      });
+      const keys = Object.keys(d.mist);
+      if (keys.length > 250) keys.sort((x, y) => d.mist[y].at - d.mist[x].at).slice(250).forEach((k) => { delete d.mist[k]; });
+      run.got = got; run.max = max; run.ok = ok; run.per = per;
+      if (run.kind === 'test') {
+        (d.hist[run.T.id] = d.hist[run.T.id] || []).push({
+          score: got, max: max, at: Date.now(), sec: run.sec, mode: run.mode, partial: !!run.secs,
+          secs: Object.keys(per).map((s) => [run.T.sections[s].id, per[s].got, per[s].max])
+        });
+      }
+      save(d);
+      if (run.kind === 'test' && run.mode === 'exam') {
+        clearSaved();
+        sendInfo = null;
+        lastPayload = buildPayload();
+        sendResult(lastPayload);
+      } else { sendInfo = null; lastPayload = null; }
+      go('#/run');
+      route();
+    }
+    function buildPayload() {
+      const st = window.SMB && SMB.readSession ? SMB.readSession() : null, T = run.T;
+      const details = Object.keys(run.per).map((s) => nmRu(T.sections[s].name) + ' ' + run.per[s].got + '/' + run.per[s].max).join('; ');
+      return {
+        email: st ? st.email : '', name: st ? (st.name || '') : '', grade: st ? (st.grade || '') : '', course: 'ent',
+        quiz: T.id, quizTitle: titleRu(T.meta).slice(0, 110), lang: T.lang === 'kz' ? 'kz' : T.lang === 'ru' ? 'ru' : lang,
+        score: run.got, max: run.max, percent: run.max ? Math.round(run.got / run.max * 100) : 0, mark: 0, total: run.items.length,
+        found: run.ok, mistakes: run.items.length - run.ok, seconds: run.sec, missed: '', wrong: '', details: details.slice(0, 1400),
+        finishedAt: new Date().toISOString()
+      };
+    }
+    const nmRu = (o) => (o ? o.ru || o.kz || '' : '');
+    async function postResult(p) {
+      try {
+        const r = await SMB.api('result', p, 45000);
+        return !!(r && r.status === 'success');
+      } catch (e) { return false; }
+    }
+    function readPending() { try { return JSON.parse(localStorage.getItem(PENDK) || '[]'); } catch (e) { return []; } }
+    function writePending(l) { try { localStorage.setItem(PENDK, JSON.stringify(l.slice(-10))); } catch (e) {} }
+    function savePending(p) { const l = readPending().filter((x) => x.finishedAt !== p.finishedAt); l.push(p); writePending(l); }
+    function dropPending(p) { writePending(readPending().filter((x) => x.finishedAt !== p.finishedAt)); }
+    function paintSend() {
+      const b = $('sendBox');
+      if (!b || !sendInfo) return;
+      b.className = 'mt-4 text-sm font-bold ' + (sendInfo.cls === 'ok' ? 'text-emerald-300' : sendInfo.cls === 'bad' ? 'text-rose-300' : 'text-slate-400');
+      b.textContent = t(sendInfo.key);
+      if (sendInfo.cls === 'bad') {
+        const btn = document.createElement('button');
+        btn.className = 'btn btn-sec ml-3'; btn.textContent = t('resend'); btn.setAttribute('data-act', 'resend');
+        b.appendChild(btn);
+      }
+    }
+    async function sendResult(p) {
+      sendInfo = { cls: 'info', key: 'sending' }; paintSend();
+      const ok = await postResult(p);
+      if (ok) { dropPending(p); sendInfo = { cls: 'ok', key: 'sent' }; }
+      else { savePending(p); sendInfo = { cls: 'bad', key: 'sendFail' }; }
+      paintSend();
+    }
+    async function flushPending() {
+      const list = readPending();
+      if (!list.length || !window.SMB) return;
+      const st = SMB.readSession ? SMB.readSession() : null;
+      for (const p of list) {
+        if (!p.email) { if (!st) continue; Object.assign(p, { email: st.email, name: st.name || '', grade: st.grade || '' }); savePending(p); }
+        if (await postResult(p)) dropPending(p);
+      }
+    }
+
+    function viewResult() {
+      const pct = run.max ? Math.round(run.got / run.max * 100) : 0;
+      let h = '<section class="card p-6 sm:p-8 text-center"><p class="text-[11px] font-black uppercase tracking-widest text-cyan-300">' + esc(run.T ? titleUi(run.T.meta) : t('mist')) + '</p>' +
+        '<div class="mt-3 text-6xl font-black text-white">' + run.got + '<span class="text-2xl text-slate-500"> / ' + run.max + '</span></div>' +
+        '<p class="mt-1 text-slate-400">' + pct + '% · ' + t('time') + ' ' + fmt(run.sec) + '</p>';
+      if (run.T) {
+        h += '<div class="mt-5 grid gap-2 max-w-xl mx-auto text-left">' + Object.keys(run.per).map((s) => {
+          const p = run.per[s], w = p.max ? Math.round(p.got / p.max * 100) : 0;
+          return '<div><div class="flex justify-between text-xs font-bold"><span class="text-slate-200">' + esc(nm(run.T.sections[s].name)) + '</span><span class="text-amber-300">' + p.got + ' / ' + p.max + '</span></div>' +
+            '<div class="h-2 rounded-full bg-slate-800 overflow-hidden mt-1"><div class="h-full bg-gradient-to-r from-emerald-500 to-cyan-500" style="width:' + w + '%"></div></div></div>';
+        }).join('') + '</div>';
+      }
+      if (run.kind === 'test') h += run.mode === 'exam' ? '<div id="sendBox" class="mt-4 text-sm font-bold"></div>' : '<p class="mt-4 text-xs text-slate-500">' + t('practiceNote') + '</p>';
+      h += '<div class="mt-5 flex flex-wrap gap-3 justify-center"><button class="btn btn-main" data-act="again">' + t('again') + '</button>' +
+        '<a class="btn btn-sec" href="' + run.back + '">' + t('toList') + '</a><a class="btn btn-sec" href="#/mist">🔁 ' + t('mist') + '</a></div></section>' +
+        '<div class="flex flex-wrap items-center justify-between gap-3 mt-8 mb-3"><h2 class="text-lg font-black">' + t('review') + '</h2>' +
+        '<div class="flex gap-2"><button class="chip ' + (!run.showAll ? 'on' : '') + '" data-act="rv" data-v="0">' + t('onlyWrong') + '</button><button class="chip ' + (run.showAll ? 'on' : '') + '" data-act="rv" data-v="1">' + t('allQ') + '</button></div></div><div class="grid gap-3">';
+      run.items.forEach((it, i) => {
+        const g = grade(it.q, run.ans[i]), m = maxPts(it.q);
+        if (!run.showAll && g === m) return;
+        const col = g === m ? 'border-emerald-500/50' : g > 0 ? 'border-amber-500/50' : 'border-rose-500/50';
+        h += '<div class="card p-4 border-2 ' + col + '"><div class="flex justify-between gap-3 text-xs font-bold text-slate-400"><span>' + (run.T ? esc(nm(run.T.sections[it.s].name)) + ' · ' : '') + t('question') + ' ' + it.n + '</span><span>' + g + ' / ' + m + ' ' + t('pts') + '</span></div>' +
+          '<div class="rich mt-1 font-bold text-white whitespace-pre-line">' + R(it.q, pk(it.q, 'q')) + '</div>' +
+          '<p class="mt-2 text-sm"><span class="text-slate-400">' + t('yourAns') + ':</span> <span class="' + (g === m ? 'text-emerald-300' : 'text-rose-300') + '">' + esc(userText(it.q, run.ans[i])) + '</span></p>' +
+          (g === m ? '' : expl(it.q)) + '</div>';
+      });
+      $('app').innerHTML = h + '</div>';
+      paintSend();
+    }
+
+    /* ---------- результаты и ошибки ---------- */
+    function viewResults() {
+      chrome();
+      const d = load(), rows = [];
+      Object.keys(d.hist).forEach((id) => { if (META[id]) d.hist[id].forEach((r) => rows.push({ id: id, r: r })); });
+      rows.sort((a, b) => b.r.at - a.r.at);
+      let h = crumbs([{ t: t('myRes') }]) + '<h1 class="text-2xl font-black mb-4">📊 ' + t('myRes') + '</h1>';
+      if (!rows.length) h += '<div class="card p-6 text-slate-300">' + t('noRes') + '</div>';
+      else h += '<div class="grid gap-3">' + rows.slice(0, 100).map((x) => {
+        const r = x.r, pct = r.max ? Math.round(r.score / r.max * 100) : 0;
+        return '<a href="#/t/' + x.id + '" class="card p-4 hover:border-cyan-500/50 transition block"><div class="flex flex-wrap items-center justify-between gap-2">' +
+          '<b class="text-white">' + esc(titleUi(META[x.id])) + '</b><span class="text-amber-300 font-black">' + r.score + ' / ' + r.max + ' <span class="text-slate-500 font-bold">(' + pct + '%)</span></span></div>' +
+          '<p class="text-xs text-slate-500 mt-1">' + new Date(r.at).toLocaleString(lang === 'ru' ? 'ru-RU' : 'kk-KZ') + ' · ' + fmt(r.sec) + ' · ' + (r.mode === 'exam' ? t('exam') : t('practice')) +
+          (r.secs && r.secs.length > 1 ? '<br>' + r.secs.map((s) => esc((SUBJ[s[0]] ? SUBJ[s[0]][lang] : s[0]) + ' ' + s[1] + '/' + s[2])).join(' · ') : '') + '</p></a>';
+      }).join('') + '</div>';
+      $('app').innerHTML = h;
+    }
+    function viewMistakes() {
+      chrome();
+      const d = load(), ks = Object.keys(d.mist).filter((k) => d.mist[k].q);
+      let h = crumbs([{ t: t('mist') }]) + '<h1 class="text-2xl font-black mb-1">🔁 ' + t('mist') + '</h1><p class="text-sm text-slate-400 mb-5">' + t('mistDesc') + '</p>';
+      if (!ks.length) h += '<div class="card p-6 text-slate-300">' + t('noMist') + '</div>';
+      else h += '<button class="btn btn-main mb-5" data-act="mrun">' + t('start') + ' (' + ks.length + ')</button><div class="grid gap-3">' +
+        ks.map((k) => { const q = d.mist[k].q; return '<div class="card p-4"><div class="rich font-bold text-white whitespace-pre-line">' + R(q, pk(q, 'q')) + '</div>' + expl(q) + '</div>'; }).join('') + '</div>';
+      $('app').innerHTML = h;
+    }
+
+    /* ---------- события ---------- */
+    document.addEventListener('click', async (e) => {
+      const b = e.target.closest('[data-act]');
+      if (!b) return;
+      const act = b.getAttribute('data-act');
+      if (act === 'lf') { langFilter = b.getAttribute('data-v'); return route(); }
+      if (act === 'resume') return resumeSaved();
+      if (act === 'drop') { clearSaved(); return viewHome(); }
+      if (act === 'mrun') return runMistakes();
+      if (act === 'resend') return lastPayload && sendResult(lastPayload);
+      if (act === 'reset') {
+        if (confirm(t('resetAsk'))) { try { localStorage.removeItem(LS); localStorage.removeItem(RUNK); } catch (x) {} viewHome(); }
+        return;
+      }
+      if (act === 'start') {
+        const id = b.getAttribute('data-id'), mode = b.getAttribute('data-mode'), sec = b.getAttribute('data-sec');
+        try { return startRun(await getTest(id), mode, sec != null ? [+sec] : null); } catch (x) { return toast(t('loadErr')); }
+      }
+      if (!run) return;
+      if (act === 'rv') { run.showAll = b.getAttribute('data-v') === '1'; return viewResult(); }
+      if (act === 'again') {
+        if (run.kind === 'mist') return runMistakes();
+        return startRun(run.T, run.mode, run.secs);
+      }
+      if (run.done) return;
+      const q = run.items[run.idx].q;
+      if (act === 'opt') {
+        const k = +b.getAttribute('data-k');
+        if (q.type === 'multi') {
+          const a = run.ans[run.idx] || [], p = a.indexOf(k);
+          if (p >= 0) a.splice(p, 1); else a.push(k);
+          run.ans[run.idx] = a;
+        } else run.ans[run.idx] = k;
+        persistRun();
+        return viewRun();
+      }
+      if (act === 'check') { run.checked[run.idx] = true; return viewRun(); }
+      if (act === 'next') { run.idx = Math.min(run.items.length - 1, run.idx + 1); persistRun(); return viewRun(); }
+      if (act === 'prev') { run.idx = Math.max(0, run.idx - 1); persistRun(); return viewRun(); }
+      if (act === 'jump') { run.idx = +b.getAttribute('data-i'); persistRun(); return viewRun(); }
+      if (act === 'flag') { run.flags[run.idx] = !run.flags[run.idx]; persistRun(); return viewRun(); }
+      if (act === 'finish') {
+        const left = run.items.filter((it, i) => !answered(it.q, run.ans[i])).length;
+        if (left && !confirm(t('leaveAsk') + ': ' + left + '. ' + t('leaveQ'))) return;
+        if (!left && run.mode === 'exam' && !confirm(t('leaveQ'))) return;
+        return finishRun();
+      }
+    });
+    document.addEventListener('change', (e) => {
+      const s = e.target.closest('[data-act="match"]');
+      if (!s || !run || run.done) return;
+      const a = run.ans[run.idx] || [];
+      a[+s.getAttribute('data-i')] = +s.value;
+      run.ans[run.idx] = a;
+      persistRun();
+      viewRun();
+    });
+    // Клавиши: ←/→ — вопросы, A–F — выбор варианта
+    document.addEventListener('keydown', (e) => {
+      if (!run || run.done || e.ctrlKey || e.metaKey || e.altKey || /^(INPUT|SELECT|TEXTAREA)$/.test((e.target.tagName || ''))) return;
+      if (e.key === 'ArrowRight') { run.idx = Math.min(run.items.length - 1, run.idx + 1); persistRun(); viewRun(); }
+      else if (e.key === 'ArrowLeft') { run.idx = Math.max(0, run.idx - 1); persistRun(); viewRun(); }
+      else {
+        const k = LET.indexOf(String(e.key).toUpperCase());
+        const q = run.items[run.idx].q;
+        if (k < 0 || String(e.key).length !== 1 || q.type === 'match' || run.checked[run.idx] || k >= (q.options || []).length) return;
+        const btn = document.querySelector('[data-act="opt"][data-k="' + k + '"]');
+        if (btn) btn.click();
+      }
+    });
+    $('langSel').addEventListener('change', (e) => {
+      lang = e.target.value === 'ru' ? 'ru' : 'kz';
+      try { localStorage.setItem(LANGK, lang); } catch (x) {}
+      route();
+    });
+    window.addEventListener('hashchange', route);
+    route();
+    flushPending();
+  })();
+  </script>
+</body>
+</html>
