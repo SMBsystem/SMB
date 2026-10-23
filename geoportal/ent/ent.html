@@ -27,7 +27,10 @@
     body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
     .rich { line-height: 1.6; overflow-wrap: anywhere; }
     .rich p { margin: .4rem 0; }
-    .rich img { max-width: 100%; height: auto; background: #fff; border-radius: .75rem; margin: .5rem 0; display: block; }
+    .rich img { max-width: 100%; height: auto; background: #fff; vertical-align: middle; }
+    .rich img.fb { display: block; border-radius: .75rem; margin: .5rem 0; }
+    .rich img.fi { display: inline-block; margin: 0 .1rem; border-radius: .2rem; }
+    .qwarn { display: inline-block; margin-bottom: .6rem; padding: .25rem .6rem; border-radius: .6rem; font-size: 11px; font-weight: 800; background: rgba(245,158,11,.15); color: #fcd34d; border: 1px solid rgba(245,158,11,.4); }
     .rich table { border-collapse: collapse; margin: .5rem 0; font-size: .85rem; }
     .rich td, .rich th { border: 1px solid #475569; padding: .3rem .55rem; vertical-align: top; }
     .rich math { font-size: 1.08em; }
@@ -108,7 +111,9 @@
         mistDesc: 'Қателескен сұрақтар осында жиналады. Дұрыс жауап берсеңіз — тізімнен шығады.', noMist: 'Қате жоқ — тамаша!',
         reset: 'Прогрессті тазарту', resetAsk: 'Барлық прогресс осы браузерде өшіріледі. Жалғастырамыз ба?',
         loadErr: 'Тестті жүктеу мүмкін болмады. Бетті жаңартып көріңіз.', verdict: 'Нәтиже', total: 'Барлығы',
-        shelfTitle: 'Пән тесттері', hours: 'сағ'
+        shelfTitle: 'Пән тесттері', hours: 'сағ',
+        warnSkip: 'Бұл сұрақта дұрыс жауап кілтте жоқ немесе анықталмаған — ол балға есептелмейді.',
+        warnChk: 'Бұл сұрақтың жауабы мұғалім тексеруін қажет етеді.', warnSoft: 'Жауап толық сенімділікпен анықталмаған.'
       },
       ru: {
         sub: 'ЕНТ · тесты по направлениям', portal: '← К курсам', home: 'Главная',
@@ -131,7 +136,9 @@
         mistDesc: 'Сюда попадают вопросы, в которых вы ошиблись. Ответите верно — вопрос уйдёт из списка.', noMist: 'Ошибок нет — отлично!',
         reset: 'Сбросить прогресс', resetAsk: 'Весь прогресс будет удалён в этом браузере. Продолжить?',
         loadErr: 'Не удалось загрузить тест. Обновите страницу.', verdict: 'Итог', total: 'Всего',
-        shelfTitle: 'Тесты по предмету', hours: 'ч'
+        shelfTitle: 'Тесты по предмету', hours: 'ч',
+        warnSkip: 'У этого вопроса нет верного ответа в ключе — он не учитывается в баллах.',
+        warnChk: 'Ответ на этот вопрос требует проверки преподавателем.', warnSoft: 'Ответ определён с неполной уверенностью.'
       }
     };
 
@@ -146,7 +153,7 @@
 
     /* ---------- каталог ---------- */
     const SUBJ = E.SUBJ, DIRS = E.DIRS;
-    const REG = E.REG.map((m) => Object.assign({ kind: 'full', minutes: 240, base: '', src: 'data/tests/' + m.id + '.js' }, m));
+    const REG = E.REG.map((m) => Object.assign({ kind: 'full', minutes: 240, base: '', src: 'data/sets/' + m.set + '.js' }, m));
     const LEG = [];
     const READY = window.GEOTANY_TEST_READY || {};
     Object.keys(READY).map(Number).sort((a, b) => a - b).forEach((n) => LEG.push({
@@ -169,12 +176,12 @@
     function titleRu(m) {
       if (m.kind === 'subj') return 'ЕНТ · предмет ' + SUBJ[m.subj].ru + ' · Вариант ' + m.n;
       const d = dirOf(m.dir);
-      return 'ЕНТ · ' + (d ? dirName(d, 'ru') : m.dir) + (m.lang === 'kz' ? ' (КО)' : ' (РО)') + ' · Вариант ' + m.n;
+      return 'ЕНТ · ' + (d ? dirName(d, 'ru') : m.dir) + (m.lang === 'kz' ? ' (КО)' : ' (РО)') + ' · Вариант ' + m.n + (m.label ? ' · ' + m.label.ru : '');
     }
     function titleUi(m) {
       if (m.kind === 'subj') return SUBJ[m.subj][lang] + ' · ' + variantWord() + m.n;
       const d = dirOf(m.dir);
-      return (d ? dirName(d) : m.dir) + ' · ' + variantWord() + m.n + ' · ' + langTag(m);
+      return (d ? dirName(d) : m.dir) + ' · ' + variantWord() + m.n + ' · ' + langTag(m) + (m.label ? ' · ' + nm(m.label) : '');
     }
 
     /* ---------- прогресс ---------- */
@@ -228,13 +235,26 @@
             q.html = !!raw.html;
             if (q.img) q.img = base + q.img;
             if (q.img_ru) q.img_ru = base + q.img_ru;
-            q.qid = meta.id + ':' + s.id + ':' + (qi + 1);
+            q.qid = (raw.setId || meta.id) + ':' + s.id + ':' + (qi + 1);
             if (q.ctx && ctxs[q.ctx]) q._ctx = ctxs[q.ctx];
           }
         });
         T.sections.push(sec);
       });
       return T;
+    }
+    // Вариант по направлению собирается из блоков набора: история + чтение + мат. грамотность + два профильных предмета
+    function composeFromSet(meta) {
+      const S = E.sets[meta.set], dir = dirOf(meta.dir);
+      if (!S || !dir) return null;
+      const contexts = {}, sections = [];
+      ['hist', 'read', 'mlit'].concat(dir.subj).forEach((k) => {
+        const b = S.blocks[k];
+        if (!b) return;
+        Object.keys(b.contexts || {}).forEach((c) => { contexts[c] = b.contexts[c]; });
+        sections.push({ id: k, questions: b.questions.map((q) => Object.assign({}, q)) });
+      });
+      return { html: !!S.html, minutes: 240, contexts: contexts, sections: sections, setId: meta.set };
     }
     async function getTest(id) {
       if (CACHE[id]) return CACHE[id];
@@ -245,6 +265,7 @@
       let raw = null;
       if (m.ns === 'geotanu') raw = (window.GEOTANY_TESTS || {})[m.n];
       else if (m.ns === 'pravo') raw = (window.PRAVO && window.PRAVO.tests || {})[m.n];
+      else if (m.set) raw = composeFromSet(m);
       else raw = (E.tests || {})[m.id];
       if (!raw) throw new Error('empty test');
       CACHE[id] = norm(m, raw);
@@ -252,9 +273,9 @@
     }
 
     /* ---------- баллы ---------- */
-    const maxPts = (q) => (q.type === 'multi' ? 2 : q.type === 'match' ? q.left.length : 1);
+    const maxPts = (q) => (q.skip ? 0 : q.type === 'multi' ? 2 : q.type === 'match' ? q.left.length : 1);   // skip — у вопроса нет верного ответа в ключе: в баллы не входит
     function grade(q, a) {
-      if (a == null) return 0;
+      if (a == null || q.skip) return 0;
       if (q.type === 'single') return a === q.answer ? 1 : 0;
       if (q.type === 'multi') {
         if (!a.length) return 0;
@@ -381,6 +402,7 @@
       return '<a href="#/t/' + m.id + '" class="card p-4 hover:border-cyan-500/50 hover:-translate-y-0.5 transition flex flex-col gap-2">' +
         '<div class="flex items-center justify-between gap-2"><h3 class="font-black text-white">' + variantWord() + m.n + '</h3>' +
         (langTag(m) ? '<span class="tag ' + (m.lang === 'kz' ? 'bg-sky-500/15 text-sky-300' : 'bg-rose-500/15 text-rose-300') + '">' + langTag(m) + '</span>' : '') + '</div>' +
+        (m.label ? '<p class="text-[11px] font-bold text-cyan-300">' + esc(nm(m.label)) + '</p>' : '') +
         '<p class="text-xs text-slate-400">' + (m.kind === 'full' ? '120 ' + t('q') + ' · 140 ' + t('pts') + ' · ' + (m.minutes / 60) + ' ' + t('hours') : m.count + ' ' + t('q') + ' · ' + m.points + ' ' + t('pts') + ' · ' + m.minutes + ' ' + t('min')) + '</p>' +
         '<p class="text-xs text-slate-500">' + t('best') + ': <b class="text-amber-300">' + (hist.length ? b.score + '/' + b.max : '—') + '</b> · ' + hist.length + ' ' + t('attempts') + '</p></a>';
     }
@@ -420,7 +442,7 @@
       const d = load(), hist = d.hist[id] || [], total = testMax(T), nq = T.sections.reduce((s, x) => s + x.questions.length, 0);
       const back = m.kind === 'full' ? { t: dirName(dirOf(m.dir)), h: '#/d/' + m.dir } : { t: SUBJ[m.subj][lang], h: '#/s/' + m.subj };
       let h = crumbs([back, { t: variantWord() + m.n }]) +
-        '<article class="card p-5 sm:p-8"><p class="text-[11px] font-black uppercase tracking-widest text-cyan-300">' + esc(m.kind === 'full' ? dirName(dirOf(m.dir)) : SUBJ[m.subj][lang]) + (langTag(m) ? ' · ' + langTag(m) : '') + '</p>' +
+        '<article class="card p-5 sm:p-8"><p class="text-[11px] font-black uppercase tracking-widest text-cyan-300">' + esc(m.kind === 'full' ? dirName(dirOf(m.dir)) : SUBJ[m.subj][lang]) + (langTag(m) ? ' · ' + langTag(m) : '') + (m.label ? ' · ' + esc(nm(m.label)) : '') + '</p>' +
         '<h1 class="text-2xl sm:text-3xl font-black text-white mt-1">' + variantWord() + m.n + '</h1>' +
         '<p class="mt-2 text-slate-300">' + nq + ' ' + t('q') + ' · ' + total + ' ' + t('pts') + ' · ' + T.minutes + ' ' + t('min') + '</p>' +
         '<div class="mt-5 grid gap-2">' + T.sections.map((sec, si) =>
@@ -472,6 +494,8 @@
 
     function renderQ(q, a, chk) {
       let h = '';
+      if (q.skip) h += '<p class="qwarn">⚠ ' + t('warnSkip') + '</p>';
+      else if (q.conf === 2) h += '<p class="qwarn">⚠ ' + t('warnChk') + '</p>';
       if (q._ctx) {
         h += '<div class="mb-5 rounded-2xl bg-slate-800/70 border border-slate-700 p-4"><p class="text-[11px] font-black uppercase tracking-wider text-amber-300 mb-1">' + t('ctx') + (pk(q._ctx, 'title') ? ': ' + esc(pk(q._ctx, 'title')) : '') + '</p><div class="rich text-sm text-slate-200">' + pk(q._ctx, 'text') + '</div></div>';
       }
@@ -521,7 +545,9 @@
     function stripTags(q, s) { return q.html ? String(s == null ? '' : s).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim() : s; }
     function expl(q) {
       const e = pk(q, 'explanation');
+      if (q.skip) return '<div class="mt-4 rounded-2xl bg-slate-800/70 border border-slate-700 p-4 text-sm text-amber-200">' + t('warnSkip') + '</div>';
       return '<div class="mt-4 rounded-2xl bg-slate-800/70 border border-slate-700 p-4 text-sm"><p class="text-emerald-300 font-bold">' + t('rightAns') + ': ' + esc(rightText(q)) + '</p>' +
+        (q.conf ? '<p class="mt-1 text-xs text-amber-200">' + t(q.conf === 2 ? 'warnChk' : 'warnSoft') + '</p>' : '') +
         (e ? '<div class="rich mt-2 text-slate-300 leading-relaxed">' + R(q, e) + '</div>' : '') + '</div>';
     }
 
