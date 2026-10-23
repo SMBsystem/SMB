@@ -134,10 +134,11 @@
       if (state.answered || state.done) return;
       var it = state.order[state.i];
       var d = e.latlng.distanceTo(L.latLng(it.lat, it.lng)) / 1000;
-      var ok = d <= it.r;
+      var R = it.r <= 150 ? Math.max(it.r * 2.5, 200) : (it.r <= 500 ? it.r * 1.6 : it.r * 1.25);
+      var ok = d <= R;
       state.answered = true; if (ok) state.ok += hinted ? 0.5 : 1; else state.wrong.push(it);
       markers.push(L.marker(e.latlng, { icon: L.divIcon({ className: '', html: '<div style="width:14px;height:14px;border-radius:50%;background:' + (ok ? '#34d399' : '#fb7185') + ';border:2px solid #fff"></div>', iconSize: [14, 14], iconAnchor: [7, 7] }) }).addTo(map));
-      markers.push(L.circle([it.lat, it.lng], { radius: it.r * 1000, color: '#34d399', weight: 2, fillColor: '#34d399', fillOpacity: .15, interactive: false }).addTo(map));
+      markers.push(L.circle([it.lat, it.lng], { radius: R * 1000, color: '#34d399', weight: 2, fillColor: '#34d399', fillOpacity: .15, interactive: false }).addTo(map));
       markers.push(L.circleMarker([it.lat, it.lng], { radius: 5, color: '#fff', weight: 2, fillColor: '#34d399', fillOpacity: 1, interactive: false }).bindTooltip(names(it), { permanent: true, direction: 'top', offset: [0, -6] }).addTo(map));
       if (!ok) markers.push(L.polyline([e.latlng, [it.lat, it.lng]], { color: '#fb7185', weight: 2, dashArray: '4 4', interactive: false }).addTo(map));
       fbFn = function () { var n = names(it); return ok ? '✓ ' + T('Дұрыс! ', 'Верно! ') + n + (hinted ? T(' (көмекпен: ½ ұпай)', ' (с подсказкой: ½ балла)') : '') + ' (' + Math.round(d) + ' ' + T('км қате', 'км от центра') + ')' : '✗ ' + T('Қате. Бұл — ', 'Мимо. Это — ') + n + ' (' + Math.round(d) + ' ' + T('км қашық', 'км от цели') + ')'; };
