@@ -152,6 +152,7 @@
   </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="../maphome.js"></script>
 </head>
 <body class="bg-[#070b14] text-slate-100 min-h-screen flex flex-col selection:bg-cyan-500 selection:text-space-950">
 
@@ -1178,6 +1179,7 @@
         list.innerHTML = order.map(z => `<button type="button" data-n="${z.n}" class="text-left rounded-lg p-2.5 border border-slate-800 hover:border-slate-600" style="border-left:4px solid ${z.c}"><div class="text-xs font-extrabold" style="color:${z.c}">${z.n}. ${nm(z)}</div><div class="text-[11px] text-slate-300 leading-relaxed mt-0.5">${isRu ? z.dru : z.dkz}</div></button>`).join('');
         list.querySelectorAll('[data-n]').forEach(c => c.onclick = () => pick(+c.dataset.n));
         style();
+        map.on('homereset', () => { map.__homeHandled = true; sel = 0; style(); map.flyToBounds(home, { padding: [4, 4], duration: .6 }); });
         live.push(map);
         setTimeout(() => { if (live.indexOf(map) >= 0) map.invalidateSize(); }, 250);
       }
@@ -1224,6 +1226,7 @@
           }
         }
         map.on('click', () => { if (open) collapse(); });
+        map.on('homereset', () => { map.__homeHandled = true; if (open) collapse(); else map.flyToBounds(def.bounds, { padding: [6, 6], duration: .6 }); });
         def.regions.forEach(r => {
           const pg = L.polygon(r.poly(), { color: r.c, weight: r.ghost ? 1.6 : 2, dashArray: r.ghost ? '6 5' : null, fillColor: r.c, fillOpacity: r.ghost ? 0.14 : 0.34, bubblingMouseEvents: false, className: r.subs ? 'rel-poly' : '' }).addTo(map);
           pg.bindTooltip(nm(r) + (r.subs ? (isRu ? ' — нажмите' : ' — басыңыз') : ''), { sticky: true, className: 'rel-pt' });
