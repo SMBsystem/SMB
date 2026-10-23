@@ -43,6 +43,7 @@ window.ENT = window.ENT || { tests: {}, sets: {} };
   E.SETS = [
     { id: 'aug1-ru', lang: 'ru', order: 40, label: { ru: 'Август · набор 1', kz: 'Тамыз · 1-жинақ' }, dirs: ALL },
     { id: 'aug1-kz', lang: 'kz', order: 40, label: { ru: 'Август · набор 1', kz: 'Тамыз · 1-жинақ' }, dirs: ALL },
+    { id: 'aug2-ru', lang: 'ru', order: 50, label: { ru: 'Август · набор 2', kz: 'Тамыз · 2-жинақ' }, dirs: ALL },
     { id: 'sep-off-ru', lang: 'ru', order: 70, label: { ru: 'Сентябрь · оффлайн', kz: 'Қыркүйек · оффлайн' }, dirs: ALL },
     { id: 'sep-off-kz', lang: 'kz', order: 70, label: { ru: 'Сентябрь · оффлайн', kz: 'Қыркүйек · оффлайн' }, dirs: ALL }
   ];
