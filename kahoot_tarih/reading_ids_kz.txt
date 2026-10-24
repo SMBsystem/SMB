@@ -1,0 +1,107 @@
+﻿# Казахские Kahoot — id (создаются после русских)
+# language поля Kahoot: казахского нет в списке -> "Русский"; название по-казахски. 12 quiz + 3 TF.
+01 00df6f5a-c105-4e4f-b9ec-0e22bcafeeac
+02 4229abba-95f3-4903-83e0-cc38049636f2
+03 ffccad7c-9d33-4e6b-9b73-1cfe56976c02
+04 d4978d7b-ff7a-4d2e-9693-e26809321b8c
+05 c4513022-ad41-4b51-8cb4-3c7c6f4312a3
+06 1551b0c4-1044-45c1-9f94-5a1684ac7904
+07 b9687df1-79d8-4540-8ff2-b4ebd7fd04d0
+08 a41799e8-be4f-4f81-8665-269c66618924
+09 2edd6eef-d129-4515-8ee6-07fcbc9441b7
+10 e893b24b-a2b1-4b68-9300-439292550b55
+11 8719cf33-ba71-4068-a25f-74f3943fa36b
+12 d897f8af-5011-4b92-be7e-6a6fa316b055  (опечатка «қарыппен» -> «қаріппен» в Q10)
+13 9cb97940-372b-485f-bdd1-bcbc4ae52fbd
+14 0b6a7ebf-943f-4d6f-9380-4453fa07bd3f
+15 c2523ef0-f499-43f0-a3b0-253bd0806479
+16 6582761e-9047-4791-bda0-f7f4d54aba00
+17 121d5cad-87bb-400f-8e8d-a0b628d915b2  (в Q7 латинская «i» в «берушi» -> исправить)
+18 da23b861-712b-44c5-81b2-81476b499c59
+# СТОП: после №18 коннектор Kahoot потерял авторизацию (нужно переподключить). №19–24 тексты были готовы, но не созданы. Продолжать с №19.
+19 865b9731-59d7-44a3-9f19-38ae61d45298
+20 a12d3922-e6cb-4bda-b36e-90e46b942bbc
+21 269e0212-1bb4-4ec4-a569-412e86f237ea
+22 021cf291-4ac7-4d26-929e-586982a5849d
+23 7ea327dc-c60f-4d69-b6fe-11c0974eddb2
+24 60d6fa09-aa87-46b7-9db4-ded2a70625b2
+# коннектор восстановлен, продолжаем с 25
+25 4b434b56-33ca-49cb-938c-fe041dd1cd09
+26 d08c0542-dac2-4321-936e-5dd80c8d6c7d
+27 f98d1bbf-0947-4383-9d2a-aff7de8708eb
+28 a13b63c5-a5ef-426d-8b32-fc5c5cd63250
+29 f4eed0fb-645a-4839-b61a-c3ea207d0085
+30 b2eca35c-333f-4450-9bf6-a787847312ca
+31 ddc746de-a391-442e-bf94-7a57e1ea6199
+32 6c17fb0f-d47d-440d-b578-a17fea26b27f
+33 87cc52a5-97ce-4e92-b449-56907fe6d2a5
+34 3a4e5959-9fcd-43bf-9e90-9d7725ab5f62
+35 b925ecab-49f2-40aa-b3c4-b66fff328f45
+36 7e7b71c5-6388-464a-9297-5a59e3411938
+37 e46eb3b7-fcbe-41cf-ad5c-1e66f7acdd1d
+38 739b9b6f-70d1-40a6-9dd1-c66853d32844
+39 01bf9f0c-50c4-4e92-8e5b-c12a085b2038
+41 5d881ef8-cf0c-4ca6-afc9-067a509a9fbd
+42 d6008f5e-b09c-4cba-9c7d-9e6bd65b6bef
+40 daca5c32-557c-42fc-9236-57936cc21e95 (fixed)
+43 7a48b723-6f94-4e0a-933b-2563ed456d8d
+44 4def004c-34c9-45a0-ba3c-3f7b3fe2588b
+45 57e2690a-e21a-4e74-b265-6332b48778f6
+46 43533b88-ea59-4110-a3c9-08a0e6d182af
+47 07f27e56-9645-425e-9f3a-9fc633b7f078 (fixed)
+48 d8c31771-f077-468a-a17f-af5e60d50ac9 (fixed)
+49 133e55dc-26cf-4de2-8e62-4b4fd9edd876
+50 1d3ec7f1-a532-4820-a7e1-4868895eddd7
+51 b180e372-60a0-4a26-a06b-3fd0bec92057
+52 3bd83105-7085-4ff4-9eee-a8225efc6eb1
+53 bf37b45e-8691-4400-8b88-ff37fc5b3bd1
+54 88dd1ed0-91f4-4123-8b30-ec36d3ac64f3
+55 f9ff7027-1aeb-47ed-aa03-88522cb2b90d
+56 bec92c1f-4d01-4791-861a-2237be19508b
+57 3057a8e2-232b-418f-bf70-a33e1652c9db
+58 1ea45802-2514-43e5-a33f-910b651fc357
+59 ba606d3b-ee78-4051-8848-22e0eab9c669 (TODO fix: nonsense wording "Одаға", Q4 option "Жұпынысыз", Q12; rewrite)
+60 49e0d5d2-a173-4580-857e-68f5ae550cdf (TODO fix: Q1, Q3 option "Баскет", Q5 "тату" nonsense, Q9)
+61 28ce955b-e46c-40a6-ab3a-4b9fa9eaf424
+62 9eb163f3-f1ba-4ff6-9eca-bba0f84998c1 (minor: title says үстеу but topic is verbs)
+63 5fd547b4-97af-4b43-a980-eb6410dd7495
+64 d62bbce2-4384-4506-86a1-bcca5e5b84f7 (minor typo "Эмле")
+66 7eee3ddc-dcb1-4a8d-beef-58e62211047b
+67 0d765b9f-ebf6-4ed2-9912-7de3d14735e2
+68 6a3f6591-7ea4-4470-bb3b-351685093b43
+69 39ac2060-cc84-4d5f-b706-14ee12031b3f
+70 e5bc2db3-0397-4318-af49-c3503db73eb8
+65 6b0f880d-0cad-4aa8-935f-a6d8f8e0b6f1
+71 39437b2e-3edd-4913-b696-53079259786b (fixed)
+72 b9e7a4d1-6294-4272-8344-8c64267ee763
+73 f001f577-97b9-4f0c-92df-2e618da06605 (fixed)
+74 8de104cb-1c87-4ad9-a390-4fdad557b2b6 (TODO fix Q4 "Тұз ішу" garbled answer)
+75 604e7915-8f98-4251-af6b-8287dec82700 (TODO fix Q11 stray quote)
+76 a95ad487-8965-418a-b2d6-a2a33f6c0dcd
+77 a2c55817-fd55-42cd-a053-3915980a60c1
+78 55a456ca-acba-4abe-bb35-9cb8dbe404f4
+79 7afa931d-8fe0-4d11-8f14-c8ca3b4ece81 (minor typos: тілдіғі, адатта)
+80 667cb986-6ad4-40cf-9282-93cc79ee7b80 (TODO fix Q9 garbled, Q5 "ілісерсің")
+81 41dbe287-0eb7-4999-9ac0-4ff5d3f7db75 (minor Q5, Q9 wording)
+82 4cd65482-2929-4d16-8a54-d0fa8c6979f1
+83 1db6b770-3ba9-4833-9acf-538a49e900b8
+84 15bc3cec-710a-4c89-a4fa-5a48d7e2b3b1
+85 12a6a169-1edc-481b-b422-8e1310468a8c (minor: "бораман" typo Q7)
+86 e7cae33a-a62d-46ee-bfa0-c9c86393c473 (minor: "Бұраба" Q3, Q10 wording)
+87 c2da3e3e-5926-4c5d-9881-e476ab8c58ff
+88 a8c1a947-1b89-4632-a1c8-5fb74f544c94 (TODO fix: Q1 "пайыз", Q7 chain wording, Q10)
+89 60372058-d2b4-4e44-99a5-c4a514fa1798 (minor typo Q2 "тебренбес")
+90 08e83a57-af60-4403-8b65-0d3bf378464c (TODO fix Q7 garbled "Қара жара...")
+91 a1c93cda-edc0-4bc9-8513-0d3b4df00b7e (minor Q6)
+92 99fb960a-2adb-4406-83d0-5468356f60f8 (TODO Q7: "бұраба" nonsense word)
+93 e4a05ff9-9c2e-485e-8fff-54271a89999c
+94 a570667b-e846-4f94-bd61-f36cffa28433
+95 7a324611-8205-4298-927f-4f873a3d32aa (minor typos "семдейді", "құлайлы")
+96 e3ff4e75-7c44-4718-b77e-d5ff86b4339c (minor typos "жаттық", "өнбағар", "Тегін")
+97 24de8cd2-3575-4c4f-9ea0-e0ec31ebc45e
+98 660d8c6b-d1ca-4366-b087-08271b08aca3
+99 39fa17c0-1b8d-4b89-a07b-d00d8bcc500a
+100 260598e5-4697-4860-8e2a-b2b4783d7311
+# --- 2026-10-24: all 100 KZ created. Fix pass done for 59,60,74,75,80,86,88,89,90,92,95,96 (rewritten).
+# Remaining minor typos to eyeball: 12(Q10), 17(Q7), 62(title says үстеу), 64("Эмле"), 79("тілдіғі","адатта"), 81(Q5,Q9), 85(Q7 "бораман"), 91(Q6), 21-30/37-58 weaker distractors.
+# === KZ typos in 12,17,62,64,79,81,85,91 fixed 2026-10-24. ===

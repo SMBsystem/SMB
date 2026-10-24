@@ -1,0 +1,22 @@
+﻿"Blooket
+Import Template",,,,,,,
+"Question #","Question Text","Answer 1","Answer 2","Answer 3
+(Optional)","Answer 4
+(Optional)","Time Limit (sec)
+(Max: 300 seconds)","Correct Answer(s)
+(Only include Answer #)"
+"1","Допустимое имя переменной","1x","my_var","my-var","class","20","2"
+"2","Допустимое имя переменной","2nd","a b","for","_tmp","20","4"
+"3","Ключевое слово Python","print","input","len","while","20","4"
+"4","Ключевое слово Python","sum","max","range","def","20","4"
+"5","Как начинается комментарий в Python?","//","#","/*","--","20","2"
+"6","Чем выделяется блок в Python?","скобками { }","отступом","begin/end","точкой с запятой","20","2"
+"7","Какая ошибка возникает при неверном отступе?","NameError","ZeroDivisionError","IndentationError","ValueError","20","3"
+"8","Какую ошибку даёт print(1/0)?","NameError","ZeroDivisionError","TypeError","IndexError","20","2"
+"9","Ошибка при использовании необъявленной переменной","ValueError","NameError","IndexError","KeyError","20","2"
+"10","Какую ошибку даёт ""a"" + 1?","NameError","ZeroDivisionError","IndexError","TypeError","20","4"
+"11","Ошибка при выходе индекса за границы списка","IndexError","NameError","TypeError","ValueError","20","1"
+"12","Какую ошибку даёт int(""abc"")?","NameError","ValueError","IndexError","ZeroDivisionError","20","2"
+"13","Если после условия не поставить двоеточие","NameError","ZeroDivisionError","ничего не произойдёт","SyntaxError","20","4"
+"14","True и true","True — логическое значение, true — неопределённое имя","одинаковы","оба верны","оба неверны","20","1"
+"15","Какими кавычками можно записывать строки Python?","одинарными или двойными","только двойными","только одинарными","без кавычек","20","1"

@@ -1,0 +1,22 @@
+﻿"Blooket
+Import Template",,,,,,,
+"Question #","Question Text","Answer 1","Answer 2","Answer 3
+(Optional)","Answer 4
+(Optional)","Time Limit (sec)
+(Max: 300 seconds)","Correct Answer(s)
+(Only include Answer #)"
+"1","s = ""Python""; s[0]","P","y","n","Python","20","1"
+"2","s = ""Python""; s[-1]","P","o","n","қате","20","3"
+"3","s = ""Python""; s[1:4]","ytho","Pyt","yth","tho","20","3"
+"4","s = ""Python""; s[:2]","Pyt","yt","on","Py","20","4"
+"5","s = ""Python""; s[3:]","ho","hon","thon","Pyt","20","2"
+"6","s = ""Python""; s[::-1]","nohtyP","Python","Pytho","nohty","20","1"
+"7","s = ""Python""; s[::2]","yhn","Python","Pyt","Pto","20","4"
+"8","s = ""Python""; len(s)","5","7","6","4","20","3"
+"9","""t"" in ""Python""","False","қате","None","True","20","4"
+"10","""Py"" * 2","Py2","PyPy","Py Py","қате","20","2"
+"11","""abc""[5]","""""","None","IndexError","c","20","3"
+"12","s = ""abc""; s[0] = ""x""","s = ""xbc""","s = ""abcx""","ештеңе болмайды","TypeError (жол өзгермейді)","20","4"
+"13","ord(""A"")","1","97","64","65","20","4"
+"14","chr(66)","66","A","B","b","20","3"
+"15","Жолдағы индекс қайдан басталады?","1","−1","2","0","20","4"

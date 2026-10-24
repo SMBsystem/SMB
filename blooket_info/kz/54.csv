@@ -1,0 +1,22 @@
+﻿"Blooket
+Import Template",,,,,,,
+"Question #","Question Text","Answer 1","Answer 2","Answer 3
+(Optional)","Answer 4
+(Optional)","Time Limit (sec)
+(Max: 300 seconds)","Correct Answer(s)
+(Only include Answer #)"
+"1","5 == 5","True","False","5","None","20","1"
+"2","5 != 5","True","0","False","None","20","3"
+"3","3 < 2","True","3","None","False","20","4"
+"4","not True","True","0","False","None","20","3"
+"5","True and False","True","1","None","False","20","4"
+"6","True or False","False","0","None","True","20","4"
+"7","5 > 3 and 2 > 1","False","True","5","None","20","2"
+"8","5 > 3 and 2 > 4","True","3","None","False","20","4"
+"9","not (5 > 3)","True","5","None","False","20","4"
+"10","1 < 2 < 3","True","False","қате","None","20","1"
+"11","3 < 2 < 5","True","False","қате","None","20","2"
+"12","""a"" == ""A""","True","қате","None","False","20","4"
+"13","""abc"" < ""abd""","False","қате","True","None","20","3"
+"14","bool("""")","True","None","""""","False","20","4"
+"15","bool(""0"")","True","False","None","0","20","1"

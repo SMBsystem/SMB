@@ -1,0 +1,22 @@
+﻿"Blooket
+Import Template",,,,,,,
+"Question #","Question Text","Answer 1","Answer 2","Answer 3
+(Optional)","Answer 4
+(Optional)","Time Limit (sec)
+(Max: 300 seconds)","Correct Answer(s)
+(Only include Answer #)"
+"1","Команда добавления новой записи в таблицу","SELECT","INSERT INTO","UPDATE","DROP","20","2"
+"2","Команда изменения существующих записей","INSERT","SELECT","UPDATE","CREATE","20","3"
+"3","Команда удаления записей","DROP COLUMN","DELETE FROM","REMOVE","CLEAR","20","2"
+"4","Команда создания новой таблицы","INSERT TABLE","CREATE TABLE","NEW TABLE","MAKE TABLE","20","2"
+"5","Команда удаления таблицы вместе со структурой","DELETE","CLEAR","REMOVE","DROP TABLE","20","4"
+"6","Команда добавления столбца в таблицу","UPDATE","INSERT","ALTER TABLE","SELECT","20","3"
+"7","INSERT INTO t (a, b) VALUES (1, 2). Что добавляется?","новая строка с a = 1, b = 2","a = 2, b = 1","все строки удаляются","новая таблица","20","1"
+"8","Как подействует UPDATE Students SET Score = 60 без WHERE?","на все записи","только на первую","ни на какую","только на последнюю","20","1"
+"9","Как подействует DELETE FROM Students без WHERE?","удалит все записи","удалит первую запись","ничего не удалит","создаст таблицу","20","1"
+"10","Score: 78, 92, 65, 88, 55 (11A: 78, 92, 55; 11B: 65, 88). UPDATE … SET Score = Score + 5 WHERE Class = '11B'. Максимальный Score после","92","93","97","88","30","2"
+"11","5 записей. DELETE WHERE Score < 60 (только 55 < 60). Сколько записей останется?","4","5","3","1","20","1"
+"12","5 записей (11A — 3, 11B — 2). DELETE WHERE Class = '11A'. Сколько записей останется?","3","5","0","2","20","4"
+"13","5 записей (Айдар, Мадина, Ерлан, Аружан, Дәурен). UPDATE SET Score = 100 WHERE Name LIKE 'А%'. Сколько записей изменится?","1","3","2","5","30","3"
+"14","Число записей после добавления (5 записей + 1 INSERT)","5","4","6","1","20","3"
+"15","К командам DDL (определения структуры) относятся","INSERT, UPDATE, DELETE","CREATE, ALTER, DROP","SELECT, WHERE","ORDER BY, GROUP BY","20","2"

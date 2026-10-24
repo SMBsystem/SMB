@@ -1,0 +1,22 @@
+﻿"Blooket
+Import Template",,,,,,,
+"Question #","Question Text","Answer 1","Answer 2","Answer 3
+(Optional)","Answer 4
+(Optional)","Time Limit (sec)
+(Max: 300 seconds)","Correct Answer(s)
+(Only include Answer #)"
+"1","Python-да бүтін сан типі","float","str","int","bool","20","3"
+"2","Python-да нақты сан типі","float","int","str","bool","20","1"
+"3","Python-да мәтін типі","int","float","bool","str","20","4"
+"4","Python-да логикалық тип","int","str","list","bool","20","4"
+"5","type(5) нәтижесі","float","str","bool","int","20","4"
+"6","type(5.0) нәтижесі","int","float","str","bool","20","2"
+"7","type(""5"") нәтижесі","str","int","float","bool","20","1"
+"8","type(3 / 2) нәтижесі","float","int","str","bool","20","1"
+"9","type(4 // 2) нәтижесі","float","str","bool","int","20","4"
+"10","type(True) нәтижесі","bool","int","str","float","20","1"
+"11","int(""12"") + 3 нәтижесі","""123""","123","15","қате","20","3"
+"12","""12"" + ""3"" нәтижесі","15","123.0","қате","""123""","20","4"
+"13","str(15) + ""5"" нәтижесі","20","155.0","қате","""155""","20","4"
+"14","float(""2.5"") нәтижесі","""2.5""","2","қате","2.5","20","4"
+"15","bool(0) нәтижесі","True","False","0","None","20","2"

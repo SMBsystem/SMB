@@ -1,0 +1,22 @@
+﻿"Blooket
+Import Template",,,,,,,
+"Question #","Question Text","Answer 1","Answer 2","Answer 3
+(Optional)","Answer 4
+(Optional)","Time Limit (sec)
+(Max: 300 seconds)","Correct Answer(s)
+(Only include Answer #)"
+"1","Дұрыс айнымалы аты","1x","my_var","my-var","class","20","2"
+"2","Дұрыс айнымалы аты","2nd","a b","for","_tmp","20","4"
+"3","Python кілт сөзі","print","input","len","while","20","4"
+"4","Python кілт сөзі","sum","max","range","def","20","4"
+"5","Python-да пікір (комментарий) қалай басталады?","//","#","/*","--","20","2"
+"6","Python-да блок немен белгіленеді?","жақшамен { }","шегіністі","begin/end","нүктелі үтірмен","20","2"
+"7","Шегініс қате болса қандай қате шығады?","NameError","ZeroDivisionError","IndentationError","ValueError","20","3"
+"8","print(1/0) қандай қате береді?","NameError","ZeroDivisionError","TypeError","IndexError","20","2"
+"9","Анықталмаған айнымалыны пайдалану қатесі","ValueError","NameError","IndexError","KeyError","20","2"
+"10","""a"" + 1 қандай қате береді?","NameError","ZeroDivisionError","IndexError","TypeError","20","4"
+"11","Тізімнен шектен тыс индекс алу қатесі","IndexError","NameError","TypeError","ValueError","20","1"
+"12","int(""abc"") қандай қате береді?","NameError","ValueError","IndexError","ZeroDivisionError","20","2"
+"13","Шарттан кейін қос нүкте қойылмаса","NameError","ZeroDivisionError","ештеңе болмайды","SyntaxError","20","4"
+"14","True және true","True — логикалық мән, true — анықталмаған ат","бірдей","екеуі де дұрыс","екеуі де қате","20","1"
+"15","Python жолдарын қандай тырнақшамен жазуға болады?","бір не қос тырнақша","тек қос","тек бір","тырнақшасыз","20","1"
