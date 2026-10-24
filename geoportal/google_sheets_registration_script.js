@@ -248,6 +248,55 @@ function codeCourse_(code) {
   return null;
 }
 
+var CODE_PREFIXES = {
+  geotanu: "GEO", geonish: "NISH", ielts: "IELTS", pravo: "PRV", english: "ENG", ent: "ENT",
+  biotanu: "BIO", tarihtanu: "TAR", worldtanu: "WLD", readtanu: "RDG", mattanu: "MAT",
+  infotanu: "INF", fiztanu: "FIZ", chemtanu: "CHM"
+};
+
+// Запускается вручную (Выполнить → setupCourseCodes). Существующие коды НЕ трогает:
+// только для курсов, у которых кода ещё нет, создаёт новый вида PREFIX-XXXX-XXXX.
+// Итоговый список печатается в «Журнале выполнения» (View → Logs / Просмотр → Журналы).
+function setupCourseCodes() {
+  var props = PropertiesService.getScriptProperties();
+  var map = {};
+  try { map = JSON.parse(props.getProperty("COURSE_CODES") || "{}"); } catch (e) { map = {}; }
+
+  var have = {};
+  for (var k in map) have[map[k]] = true;
+
+  var alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // без похожих O/0, I/1
+  var added = [];
+  CONFIG.COURSE_IDS.forEach(function (id) {
+    if (have[id]) return;
+    var code;
+    do {
+      var raw = Utilities.getUuid().replace(/-/g, "");
+      var part = "";
+      for (var i = 0; i < 8; i++) part += alphabet.charAt(parseInt(raw.substr(i * 2, 2), 16) % alphabet.length);
+      code = (CODE_PREFIXES[id] || id.toUpperCase()) + "-" + part.slice(0, 4) + "-" + part.slice(4);
+    } while (map[code]);
+    map[code] = id;
+    added.push(id);
+  });
+
+  props.setProperty("COURSE_CODES", JSON.stringify(map));
+  Logger.log("Новые коды созданы для: " + (added.join(", ") || "— (все курсы уже имели коды)"));
+  listCourseCodes();
+}
+
+// Показывает в журнале все коды по курсам (и курсы без кода).
+function listCourseCodes() {
+  var map = {};
+  try { map = JSON.parse(PropertiesService.getScriptProperties().getProperty("COURSE_CODES") || "{}"); } catch (e) {}
+  var byCourse = {};
+  for (var k in map) (byCourse[map[k]] = byCourse[map[k]] || []).push(k);
+  var lines = CONFIG.COURSE_IDS.map(function (id) {
+    return id + ": " + (byCourse[id] ? byCourse[id].join(", ") : "⚠ НЕТ КОДА");
+  });
+  Logger.log(lines.join("\n"));
+}
+
 /* ===================== Лист «Регистрации» ===================== */
 
 function sheet_() {

@@ -37,6 +37,16 @@
     .art { position:absolute; inset:-7% 0; will-change:transform; }
     .art > * { position:absolute; inset:0; }
     .art img { width:100%; height:100%; object-fit:cover; display:block; }
+    .art:has(img) { inset:0; }
+    .panel.crop-b .art img { object-position:50% 100%; }
+    .panel.fade-b { -webkit-mask-image:linear-gradient(#000 84%, transparent); mask-image:linear-gradient(#000 84%, transparent); }
+    /* текстовый «бит»: повествование на тёмном фоне под картинкой */
+    .panel.beat { background:none; overflow:visible; }
+    .beat .bi { margin:0 6cqw; padding-left:5cqw; border-left:3px solid var(--acc); }
+    .beat .b { margin:0 0 1.15em; font-size:clamp(17px,4.4cqw,27px); line-height:1.62; font-weight:400; color:#f2eee2; text-wrap:pretty; opacity:0; transform:translateY(16px); transition:opacity .8s ease var(--d,0s), transform .8s ease var(--d,0s); }
+    .beat .b:last-child { margin-bottom:0; }
+    .beat .b.q { font-style:italic; font-weight:500; color:#fff; text-shadow:0 0 24px var(--acc); }
+    .panel.in .b { opacity:1; transform:none; }
     .sc svg { position:absolute; left:0; top:0; width:100%; height:60%; }
     .bu { background:#fff; }
     .bu svg { width:100%; height:100%; display:block; -webkit-mask-image:radial-gradient(circle at 50% 46%, transparent 24%, #000 62%); mask-image:radial-gradient(circle at 50% 46%, transparent 24%, #000 62%); }
@@ -137,6 +147,14 @@
     .gatep input::placeholder { text-transform:none; letter-spacing:0; font-weight:500; color:#6c7893; }
     .gatep .btn { padding:13px 22px; }
     .err { min-height:20px; margin-top:10px; font-size:13px; font-weight:900; color:#a8173a; }
+    /* шлюз с готовой картинкой (туман и замок нарисованы на ней) */
+    .gatep.img { align-items:flex-end; padding-bottom:34px; background:#0d1a1c; }
+    .gatep.img::before { content:''; position:absolute; inset:0; background:var(--gimg) center top/cover no-repeat; transition:opacity 1.6s ease, transform 1.6s ease; }
+    .gatep.img::after { content:''; position:absolute; inset:0; background:linear-gradient(rgba(7,14,16,0) 38%, rgba(7,14,16,.82) 78%); pointer-events:none; }
+    .gatep.img.parting::before { opacity:0; transform:scale(1.18); }
+    .gatep.img .fb, .gatep.img .lock { display:none; }
+    .gatep.img h3 { color:#fff; text-shadow:0 2px 14px rgba(0,0,0,.7); }
+    .gatep.img p { color:#dbe7ea; text-shadow:0 1px 8px rgba(0,0,0,.7); }
     .gatep.passed { min-height:46svh; background:linear-gradient(#05060c, #0d1428); }
     .gatep.passed h3 { color:var(--ink); text-shadow:none; }
     .link { background:none; border:0; color:var(--muted); text-decoration:underline; cursor:pointer; font-size:13px; margin-top:24px; }
@@ -290,8 +308,14 @@
     function panelHTML(p, id) {
       var fx = (p.fx || '').split(' ').filter(Boolean);
       imgList.push(id);
-      return '<div class="panel g-' + (p.gap || 'm') + (fx.indexOf('flash') > -1 ? ' fx-flash' : '') + (fx.indexOf('shake') > -1 ? ' fx-shake' : '') + '" data-id="' + id + '"' + (fx.indexOf('zoom') > -1 ? ' data-zoom="1"' : '') +
+      return '<div class="panel g-' + (p.gap || 'm') + (p.fade ? ' fade-' + p.fade : '') + (p.crop ? ' crop-' + p.crop : '') + (fx.indexOf('flash') > -1 ? ' fx-flash' : '') + (fx.indexOf('shake') > -1 ? ' fx-shake' : '') + '" data-id="' + id + '"' + (fx.indexOf('zoom') > -1 ? ' data-zoom="1"' : '') +
         ' style="aspect-ratio:' + (p.ratio || '4/5') + '"><div class="art">' + artHTML(p.art) + '</div><div class="ov">' + itemsHTML(p.items) + '</div><i class="fl"></i></div>';
+    }
+    // Текстовый «бит» под картинкой: абзацы на тёмном фоне, появляются по очереди
+    function beatHTML(p) {
+      var h = '<div class="panel beat g-' + (p.gap || 'm') + '" style="--acc:' + (p.acc || '#ffd36b') + '"><div class="bi">';
+      p.beat.forEach(function (b, i) { h += '<p class="b' + (b.q ? ' q' : '') + '" style="--d:' + (0.15 + i * 0.55).toFixed(2) + 's">' + esc(b[lang]) + '</p>'; });
+      return h + '</div></div>';
     }
     function lockSVG(passed) {
       return '<svg class="lock' + (passed ? ' open passed' : '') + '" viewBox="0 0 120 140" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe08a"/><stop offset="1" stop-color="#d9a032"/></linearGradient></defs><circle class="ring" cx="60" cy="92" r="30"/><path class="shackle" d="M34 64 V46 a26 26 0 0 1 52 0 V64"/><rect x="20" y="62" width="80" height="64" rx="14" fill="url(#lg)"/><circle class="keyhole" cx="60" cy="88" r="8" fill="#2b2230"/><rect x="56.5" y="90" width="7" height="18" rx="3" fill="#2b2230"/></svg>';
@@ -321,10 +345,12 @@
         { id: id + '3', ratio: '4/5', gap: 'm', fx: 'flash', art: { type: 'dark', glow: sky }, items: [{ k: 'nar', x: 8, y: 38, w: 84, kz: ep.insight.kz, ru: ep.insight.ru }] }
       ];
     }
-    function chapterHTML(n) {
-      var c = CH[n], u = U(), h = '<section class="chap" data-ch="' + n + '">';
+    // part: 'intro' — только пролог (виден всем до кода), 'rest' — глава после шлюза (эпизоды, финал главы)
+    function chapterHTML(n, part) {
+      var c = CH[n], u = U(), h = '<section class="chap"' + (part === 'rest' ? ' id="chapRest"' : '') + ' data-ch="' + n + '">';
       if (n > 0) h += panelHTML({ id: 't' + n, ratio: '16/10', gap: 's', fx: 'zoom', art: { type: 'scene', scene: c.scene }, items: [{ k: 'title', y: 34, num: n + ' / ' + N + ' · ' + u.stage, kz: c.name.kz, ru: c.name.ru }] }, 't' + n);
-      (c.intro || []).forEach(function (p) { h += p.art.type === 'title' ? titleHTML() : panelHTML(p, p.id); });
+      if (part !== 'rest') (c.intro || []).forEach(function (p) { h += p.beat ? beatHTML(p) : p.art.type === 'title' ? titleHTML() : panelHTML(p, p.id); });
+      if (part === 'intro') return h + '</section>';
       if (!c.episodes.length) {
         h += panelHTML({ id: 'd' + n, ratio: '4/5', gap: 'l', art: { type: 'dark', glow: SCENES[c.scene].sky[2] }, items: [
           { k: 'nar', x: 8, y: 34, w: 84, big: true, kz: J.ui.kz.devTitle, ru: J.ui.ru.devTitle }, { k: 'nar', x: 8, y: 60, w: 84, kz: J.ui.kz.devText, ru: J.ui.ru.devText }] }, 'd' + n);
@@ -337,16 +363,17 @@
       return h + '</section>';
     }
     function gateHTML(n, passed) {
-      var u = U(), entry = n < 0;
+      var u = U(), entry = n < 0, img = entry && !passed && J.gateImage && (J.images || []).indexOf(J.gateImage) > -1;
       if (entry) u = { passed: u.passed, gateTitle: u.entryTitle, gateText: u.entryText, codePh: u.codePh, unlock: u.entryBtn };
-      return '<section class="chap gatep' + (passed ? ' passed' : '') + '" data-ch="' + Math.max(0, n) + '" data-gate="' + n + '"><i class="fb"></i><i class="fb"></i><i class="fb"></i><i class="fb"></i><i class="fb"></i><div class="in">' + lockSVG(passed) +
+      return '<section class="chap gatep' + (passed ? ' passed' : '') + (img ? ' img' : '') + '" data-ch="' + Math.max(0, n) + '" data-gate="' + n + '"' + (img ? ' style="--gimg:url(' + J.imgDir + J.gateImage + '.' + J.imgExt + ')"' : '') + '><i class="fb"></i><i class="fb"></i><i class="fb"></i><i class="fb"></i><i class="fb"></i><div class="in">' + lockSVG(passed) +
         (passed ? '<h3>' + esc(u.passed) + '</h3>' : '<h3>' + esc(u.gateTitle) + '</h3><p>' + esc(u.gateText) + '</p><form novalidate><input id="codeIn" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="12" placeholder="' + esc(u.codePh) + '" aria-label="' + esc(u.codePh) + '"><button class="btn" type="submit">' + esc(u.unlock) + '</button></form><div class="err" role="alert"></div>') + '</div></section>';
     }
     function render() {
       var u = U(), h = '';
       imgList = [];
-      if (!entered) h += '<section class="chap" data-ch="0">' + titleHTML() + '</section>' + gateHTML(-1, false);
-      else h += chapterHTML(0) + gateHTML(0, opened > 0);
+      // пролог виден всем; после него шлюз 0 (код входа), затем глава 0
+      h += chapterHTML(0, 'intro') + gateHTML(-1, entered);
+      if (entered) h += chapterHTML(0, 'rest') + gateHTML(0, opened > 0);
       for (var n = 1; entered && n <= opened; n++) {
         h += chapterHTML(n);
         if (n < N) h += gateHTML(n, n < opened);
@@ -415,7 +442,9 @@
         var r = p.getBoundingClientRect(); if (r.bottom < -50 || r.top > vh + 50) return;
         var art = p.querySelector('.art'); if (!art) return;
         var t = (r.top + r.height / 2 - vh / 2) / vh;
-        art.style.transform = 'translateY(' + (t * -5).toFixed(2) + '%) scale(' + (p.dataset.zoom ? 1.02 + (0.6 - t) * 0.1 : 1.01).toFixed(3) + ')';
+        // готовая картинка: лёгкий сдвиг без обрезки краёв; временный рисунок: прежний сильный параллакс
+        if (art.querySelector('img')) art.style.transform = 'translateY(' + (t * -1.6).toFixed(2) + '%) scale(' + (p.dataset.zoom ? 1.04 + (0.6 - t) * 0.06 : 1.04).toFixed(3) + ')';
+        else art.style.transform = 'translateY(' + (t * -5).toFixed(2) + '%) scale(' + (p.dataset.zoom ? 1.02 + (0.6 - t) * 0.1 : 1.01).toFixed(3) + ')';
       });
       var secs = document.querySelectorAll('#strip > .chap'), ch = 0;
       for (var i = 0; i < secs.length; i++) if (secs[i].getBoundingClientRect().top <= vh / 2) ch = +secs[i].dataset.ch;
@@ -428,15 +457,16 @@
     var fails = 0, cooldownUntil = 0;
     async function tryUnlock(form) {
       var u = U(), gate = form.closest('.gatep'), err = gate.querySelector('.err'), lockEl = gate.querySelector('.lock'), code = normCode(form.querySelector('input').value);
-      if (Date.now() < cooldownUntil) { err.textContent = u.wrong; return; }
+      var wrong = !entered && u.entryWrong ? u.entryWrong : u.wrong;
+      if (Date.now() < cooldownUntil) { err.textContent = wrong; return; }
       if (!(window.crypto && crypto.subtle)) { err.textContent = u.nocrypto; return; }
       var next = entered ? opened + 1 : 0, ok = false;
       if (code.length === 9) ok = (await sha256('smb-journey:' + next + ':' + code)) === CH[next].hash;
-      if (!ok) { fails++; if (fails >= 5) { cooldownUntil = Date.now() + 10000; fails = 0; } err.textContent = u.wrong; lockEl.classList.remove('shake'); void lockEl.getBBox; lockEl.classList.add('shake'); return; }
+      if (!ok) { fails++; if (fails >= 5) { cooldownUntil = Date.now() + 10000; fails = 0; } err.textContent = wrong; lockEl.classList.remove('shake'); void lockEl.getBBox; lockEl.classList.add('shake'); return; }
       err.textContent = ''; form.querySelector('button').disabled = true; form.querySelector('input').disabled = true;
       lockEl.classList.add('open');
       setTimeout(function () { gate.classList.add('parting'); var f = document.getElementById('flash'); f.classList.remove('go'); void f.offsetWidth; f.classList.add('go'); }, reduce ? 0 : 700);
-      setTimeout(function () { if (entered) opened = next; else entered = true; saveOpened(opened); render(); goChapter(opened); }, reduce ? 200 : 1900);
+      setTimeout(function () { if (entered) opened = next; else entered = true; var first = !entered; if (entered) opened = next; else entered = true; saveOpened(opened); render(); if (first) { var r = document.getElementById('chapRest'); if (r) window.scrollTo({ top: r.offsetTop, behavior: reduce ? 'auto' : 'smooth' }); } else goChapter(opened); }, reduce ? 200 : 1900);
     }
     var strip = document.getElementById('strip');
     strip.addEventListener('submit', function (e) { if (e.target.closest('.gatep')) { e.preventDefault(); tryUnlock(e.target); } });
