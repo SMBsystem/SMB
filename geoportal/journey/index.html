@@ -30,7 +30,9 @@
     @keyframes flash { 0% { opacity:0; } 12% { opacity:.95; } 100% { opacity:0; } }
 
     /* лента */
-    #strip { max-width:720px; margin:0 auto; padding-top:calc(var(--hud) + 18px); padding-bottom:30vh; box-shadow:0 0 120px rgba(0,0,0,.65); }
+    /* страница заканчивается ровно на последнем элементе: пустого чёрного хвоста после шлюза нет */
+    #strip { max-width:720px; margin:0 auto; padding-top:calc(var(--hud) + 18px); padding-bottom:28px; box-shadow:0 0 120px rgba(0,0,0,.65); }
+    #strip:has(> .gatep:last-child) { padding-bottom:0; }
     .panel { position:relative; overflow:hidden; container-type:inline-size; background:#000; opacity:0; transform:translateY(34px); transition:opacity .7s ease, transform .7s ease; }
     .panel.in { opacity:1; transform:none; }
     .g-s { margin-bottom:6px; } .g-m { margin-bottom:30px; } .g-l { margin-bottom:96px; } .g-xl { margin-bottom:180px; }
@@ -444,7 +446,8 @@
       if (entered) h += chapterHTML(0, 'rest') + gateHTML(0, opened > 0);
       for (var n = 1; entered && n <= opened; n++) {
         h += chapterHTML(n);
-        if (n < N) h += gateHTML(n, n < opened);
+        // после главы без содержимого («Продолжение следует…») шлюз не показываем: история пока кончается здесь
+        if (n < N && (CH[n].story || CH[n].episodes.length)) h += gateHTML(n, n < opened);
       }
       if (entered && opened === N) {
         var f = J.finale, e = U();
